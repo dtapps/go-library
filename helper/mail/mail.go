@@ -1,4 +1,4 @@
-package helper_mail
+package mail
 
 import (
 	"fmt"

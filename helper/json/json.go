@@ -1,4 +1,4 @@
-package helper_json
+package json
 
 import "encoding/json"
 

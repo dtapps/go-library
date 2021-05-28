@@ -1,4 +1,4 @@
-package helper_decimal
+package decimal
 
 import (
 	"fmt"
