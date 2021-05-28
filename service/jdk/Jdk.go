@@ -1,7 +1,6 @@
 package jdk
 
 import (
-	"GoLibrary/excepyion/service"
 	"bytes"
 	"crypto/md5"
 	"encoding/hex"
@@ -17,6 +16,11 @@ import (
 	"sort"
 	"strings"
 	"time"
+)
+
+var (
+	ErrTypeIsNil   = errors.New("类型为Nil")
+	ErrTypeUnknown = errors.New("未处理到的数据类型")
 )
 
 var (
@@ -165,7 +169,7 @@ func getSign(params Parameter) string {
 
 func interfaceToString(src interface{}) string {
 	if src == nil {
-		panic(service.ErrTypeIsNil)
+		panic(ErrTypeIsNil)
 	}
 	switch src.(type) {
 	case string:
