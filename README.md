@@ -4,12 +4,16 @@
 
 📦 Golang扩展包
 
+[![Build Status](https://secure.travis-ci.com/dtapps/GoLibrary.png?branch=master)](http://travis-ci.org/dtapps/GoLibrary)
+[![GoDoc](https://godoc.org/github.com/dtapps/GoLibrary?status.svg)](https://godoc.org/github.com/dtapps/GoLibrary)
+[![GoDoc](https://godoc.org/gitee.com/dtapps/GoLibrary?status.svg)](https://godoc.org/gitee.com/dtapps/GoLibrary)
+[![GitHub release](https://img.shields.io/github/release/dtapps/GoLibrary.svg)](https://github.com/dtapps/GoLibrary/releases/latest)
+
 ### 安装
-```text
+```Importing
 go get gitee.com/dtapps/GoLibrary
 ```
 
-### 安装
-```text
-go get github.com/dtapps/GoLibrary
+```Importing
+ get github.com/dtapps/GoLibrary
 ```
