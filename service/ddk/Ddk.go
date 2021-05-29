@@ -38,6 +38,9 @@ var (
 // Parameter 参数
 type Parameter map[string]interface{}
 
+// ParameterJsonEncode 参数
+type ParameterJsonEncode []string
+
 // copyParameter 复制参数
 func copyParameter(srcParams Parameter) Parameter {
 	newParams := make(Parameter)
