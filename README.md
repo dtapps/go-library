@@ -23,5 +23,5 @@ go get gitee.com/dtapps/GoLibrary
 ```
 
 ```Importing
- get github.com/dtapps/GoLibrary
+go get github.com/dtapps/GoLibrary
 ```
