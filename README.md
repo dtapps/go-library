@@ -4,6 +4,7 @@
 
 📦 Golang扩展包
 
+[![Code Health](https://hn.devcloud.huaweicloud.com/codecheck/v1/codecheck/task/codehealth.svg?taskId=82a0bdc87df1459da1507c17329bd445)](https://hn.devcloud.huaweicloud.com/codecheck/project/b7a03c9ea96e40cb93fed6e23a27a7be/codecheck/task/82a0bdc87df1459da1507c17329bd445/detail)
 [![Build Status](https://secure.travis-ci.com/dtapps/GoLibrary.png?branch=master)](http://travis-ci.org/dtapps/GoLibrary)
 [![GoDoc](https://godoc.org/github.com/dtapps/GoLibrary?status.svg)](https://godoc.org/github.com/dtapps/GoLibrary)
 [![GoDoc](https://godoc.org/gitee.com/dtapps/GoLibrary?status.svg)](https://godoc.org/gitee.com/dtapps/GoLibrary)
