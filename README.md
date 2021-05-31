@@ -10,7 +10,7 @@
 [![GitHub release](https://img.shields.io/github/release/dtapps/GoLibrary.svg)](https://github.com/dtapps/GoLibrary/releases/latest)
 [![codecov](https://codecov.io/gh/dtapps/GoLibrary/branch/master/graph/badge.svg)](https://codecov.io/gh/dtapps/GoLibrary)
 [![Build Status](https://travis-ci.org/dtapps/GoLibrary.svg?branch=master)](https://travis-ci.org/dtapps/GoLibrary)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%dtapps%2FGoLibrary.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%dtapps%2FGoLibrary?ref=badge_shield)
+[![FOSSA Status](https://app.fossa.com/api/projects/github.com%2Fdtapps%2FGoLibrary?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%dtapps%2FGoLibrary?ref=badge_shield)
 [![Goproxy.cn](https://goproxy.cn/stats/github.com/dtapps/GoLibrary/badges/download-count.svg)](https://goproxy.cn)
 
 
