@@ -7,3 +7,5 @@
 git.sh
 gitv.sh
 *_test.go
+go.mod
+go.sum
