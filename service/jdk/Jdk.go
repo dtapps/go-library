@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/bitly/go-simplejson"
+	"github.com/dtapps/GoLibrary/service"
 	"github.com/nilorg/sdk/convert"
 	"io"
 	"io/ioutil"
@@ -16,11 +17,6 @@ import (
 	"sort"
 	"strings"
 	"time"
-)
-
-var (
-	ErrTypeIsNil   = errors.New("类型为Nil")
-	ErrTypeUnknown = errors.New("未处理到的数据类型")
 )
 
 var (
@@ -169,7 +165,7 @@ func getSign(params Parameter) string {
 
 func interfaceToString(src interface{}) string {
 	if src == nil {
-		panic(ErrTypeIsNil)
+		panic(service.ErrTypeIsNil)
 	}
 	switch src.(type) {
 	case string:
