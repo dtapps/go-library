@@ -4,5 +4,4 @@ go:
   - master
 
 after_success:
-  - CODECOV_TOKEN='8c97795f-daed-4374-8f21-619d54f55c38'
   - bash <(curl -s https://codecov.io/bash)

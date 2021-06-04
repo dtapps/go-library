@@ -4,36 +4,78 @@
 
 📦 Golang扩展包
 
+[comment]: <> (dtapps)
+![GitHub Org's stars](https://img.shields.io/github/stars/dtapps?style=for-the-badge)
+
 [comment]: <> (go)
-[![Golang Version](https://img.shields.io/badge/golang-%3E%3D1.6-8892BF.svg)](https://golang.google.cn/)
-[![GoDoc](https://pkg.go.dev/badge/github.com/dtapps/go-library?status.svg)](https://pkg.go.dev/github.com/dtapps/go-library?tab=doc)
+![golang version](https://img.shields.io/badge/golang-%3E%3D1.6-8892BF.svg?style=for-the-badge)
+![godoc](https://pkg.go.dev/badge/github.com/dtapps/go-library?status.svg)
 
 [comment]: <> (goproxy.cn)
-[![Goproxy.cn](https://goproxy.cn/stats/github.com/dtapps/go-library/badges/download-count.svg)](https://goproxy.cn)
+![goproxy](https://goproxy.cn/stats/github.com/dtapps/go-library/badges/download-count.svg)
 
 [comment]: <> (goreportcard.com)
-[![Go Report Card](https://goreportcard.com/badge/github.com/dtapps/go-library)](https://goreportcard.com/report/github.com/dtapps/go-library)
+![go report card](https://goreportcard.com/badge/github.com/dtapps/go-library)
+
+[comment]: <> (badge.fury.io)
+![go project version](https://badge.fury.io/go/github.com%2Fdtapps%2Fgo-library.svg)
 
 [comment]: <> (github.com)
-[![Release](https://img.shields.io/github/release/dtapps/go-library.svg?style=flat-square)](https://github.com/dtapps/go-library/releases)
+![latest release](https://badgen.net/github/release/dtapps/go-library)
+![latest stable release](https://badgen.net/github/release/dtapps/go-library/stable)
+![latest tag](https://badgen.net/github/tag/dtapps/go-library)
+![watchers](https://badgen.net/github/watchers/dtapps/go-library)
+![combined checks (master branch)](https://badgen.net/github/checks/dtapps/go-library)
+![stars](https://badgen.net/github/stars/dtapps/go-library)
+![forks](https://badgen.net/github/forks/dtapps/go-library)
+![issues](https://badgen.net/github/issues/dtapps/go-library)
+![branches](https://badgen.net/github/branches/dtapps/go-library)
+![releases](https://badgen.net/github/releases/dtapps/go-library)
+![tags](https://badgen.net/github/tags/dtapps/go-library)
+![license](https://badgen.net/github/license/dtapps/go-library)
+![contributors](https://badgen.net/github/contributors/dtapps/go-library)
+![assets downloads for latest release](https://badgen.net/github/assets-dl/dtapps/go-library)
+![assets downloads for a tag](https://badgen.net/github/assets-dl/dtapps/go-library/1.0.11)
+![repository dependents](https://badgen.net/github/dependents-repo/dtapps/go-library)
+![package dependents](https://badgen.net/github/dependents-pkg/dtapps/go-library)
+![dependabot status](https://badgen.net/github/dependabot/dtapps/go-library)
+![GitHub last commit](https://img.shields.io/github/last-commit/dtapps/go-library?style=for-the-badge)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dtapps/go-library?style=for-the-badge)
+![Github All Contributors](https://img.shields.io/github/all-contributors/dtapps/go-library/master?style=for-the-badge)
+![GitHub go.mod Go version (branch)](https://img.shields.io/github/go-mod/go-version/dtapps/go-version/master?style=for-the-badge)
+![GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/dtapps/go-library?style=for-the-badge)
+![GitHub go.mod Go version (branch & subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/dtapps/go-library/master?style=for-the-badge)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/dtapps/go-library?style=for-the-badge)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/dtapps/go-library?style=for-the-badge)
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/dtapps/go-library?style=for-the-badge)
+![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/dtapps/go-library?style=for-the-badge)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/dtapps/go-library?style=for-the-badge)
+![GitHub issues](https://img.shields.io/github/issues/dtapps/go-library?style=for-the-badge)
+![GitHub Sponsors](https://img.shields.io/github/sponsors/dtapps?style=for-the-badge)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/dtapps/go-library?style=for-the-badge)
+![GitHub language count](https://img.shields.io/github/languages/count/dtapps/go-library?style=for-the-badge)
+![GitHub search hit counter](https://img.shields.io/github/search/dtapps/go-library/go?style=for-the-badge)
+![GitHub top language](https://img.shields.io/github/languages/top/dtapps/go-library?style=for-the-badge)
 
 [comment]: <> (sourcegraph.com)
-[![Sourcegraph](https://sourcegraph.com/github.com/dtapps/go-library/-/badge.svg)](https://sourcegraph.com/github.com/dtapps/go-library?badge)
+![sourcegraph](https://sourcegraph.com/github.com/dtapps/go-library/-/badge.svg)
 
 [comment]: <> (scrutinizer-ci.com)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/dtapps/go-library/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/dtapps/go-library/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/dtapps/go-library/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/dtapps/go-library/?branch=master)
-[![Code Build](https://scrutinizer-ci.com/g/dtapps/go-library/badges/build.png?b=master)](https://scrutinizer-ci.com/g/dtapps/go-library/?branch=master)
-[![Code Intelligence](https://scrutinizer-ci.com/g/dtapps/go-library/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/g/dtapps/go-library/?branch=master)
+![Scrutinizer build (GitHub/Bitbucket)](https://img.shields.io/scrutinizer/build/g/dtapps/go-library/master?style=for-the-badge)
+![Scrutinizer coverage (GitHub/BitBucket)](https://img.shields.io/scrutinizer/coverage/g/dtapps/go-library/master?style=for-the-badge)
+![Scrutinizer code quality (GitHub/Bitbucket)](https://img.shields.io/scrutinizer/quality/g/dtapps/go-library/master?style=for-the-badge)
 
 [comment]: <> (www.codetriage.com)
-[![Open Source Helpers](https://www.codetriage.com/dtapps/go-library/badges/users.svg)](https://www.codetriage.com/dtapps/go-library)
+![open source helpers](https://www.codetriage.com/dtapps/go-library/badges/users.svg)
 
 [comment]: <> (www.travis-ci.com)
-[![Build Status](https://api.travis-ci.com/dtapps/go-library.svg?branch=master)](https://www.travis-ci.com/github/dtapps/go-library)
+![Travis (.com) branch](https://img.shields.io/travis/com/dtapps/go-library/master?style=for-the-badge)
 
 [comment]: <> (app.codecov.io)
-[![codecov](https://codecov.io/gh/dtapps/go-library/branch/master/graph/badge.svg)](https://codecov.io/gh/dtapps/go-library)
+![Codecov branch](https://img.shields.io/codecov/c/github/dtapps/go-library/master?style=for-the-badge)
+
+[comment]: <> (twitter.com)
+![Twitter Follow](https://img.shields.io/twitter/follow/GC19980202?style=for-the-badge)
 
 ## Install
 
