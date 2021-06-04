@@ -8,7 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/bitly/go-simplejson"
-	"github.com/dtapps/GoLibrary/service"
+	"github.com/dtapps/go-library/service"
 	"github.com/nilorg/sdk/convert"
 	"io"
 	"io/ioutil"
