@@ -4,21 +4,25 @@
 
 📦 Golang扩展包
 
-[![Code Health](https://hn.devcloud.huaweicloud.com/codecheck/v1/codecheck/task/codehealth.svg?taskId=82a0bdc87df1459da1507c17329bd445)](https://hn.devcloud.huaweicloud.com/codecheck/project/b7a03c9ea96e40cb93fed6e23a27a7be/codecheck/task/82a0bdc87df1459da1507c17329bd445/detail)
-[![Build Status](https://secure.travis-ci.com/dtapps/GoLibrary.png?branch=master)](http://travis-ci.org/dtapps/GoLibrary)
-[![GoDoc](https://godoc.org/github.com/dtapps/GoLibrary?status.svg)](https://godoc.org/github.com/dtapps/GoLibrary)
-[![GitHub release](https://img.shields.io/github/release/dtapps/GoLibrary.svg)](https://github.com/dtapps/GoLibrary/releases/latest)
-[![codecov](https://codecov.io/gh/dtapps/GoLibrary/branch/master/graph/badge.svg)](https://codecov.io/gh/dtapps/GoLibrary)
-[![Build Status](https://travis-ci.org/dtapps/GoLibrary.svg?branch=master)](https://travis-ci.org/dtapps/GoLibrary)
-[![FOSSA Status](https://app.fossa.com/api/projects/github.com%2Fdtapps%2FGoLibrary?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%dtapps%2FGoLibrary?ref=badge_shield)
-[![Goproxy.cn](https://goproxy.cn/stats/github.com/dtapps/GoLibrary/badges/download-count.svg)](https://goproxy.cn)
+[![Golang Version](https://img.shields.io/badge/golang-%3E%3D1.6-8892BF.svg)](https://golang.google.cn/)
+[![Goproxy.cn](https://goproxy.cn/stats/github.com/dtapps/go-library/badges/download-count.svg)](https://goproxy.cn)
+[![Build Status](https://api.travis-ci.com/dtapps/go-library.svg?branch=master)](https://www.travis-ci.com/github/dtapps/go-library)
+[![codecov](https://codecov.io/gh/dtapps/go-library/branch/master/graph/badge.svg)](https://codecov.io/gh/dtapps/go-library)
+[![Go Report Card](https://goreportcard.com/badge/github.com/dtapps/go-library)](https://goreportcard.com/report/github.com/dtapps/go-library)
+[![GoDoc](https://pkg.go.dev/badge/github.com/dtapps/go-library?status.svg)](https://pkg.go.dev/github.com/dtapps/go-library?tab=doc)
+[![Join the chat at https://gitter.im/dtapps/go-library](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dtapps/go-library?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Sourcegraph](https://sourcegraph.com/github.com/dtapps/go-library/-/badge.svg)](https://sourcegraph.com/github.com/dtapps/go-library?badge)
+[![Open Source Helpers](https://www.codetriage.com/dtapps/go-library/badges/users.svg)](https://www.codetriage.com/dtapps/go-library)
+[![Release](https://img.shields.io/github/release/dtapps/go-library.svg?style=flat-square)](https://github.com/dtapps/go-library/releases)
+[![TODOs](https://badgen.net/https/api.tickgit.com/badgen/github.com/dtapps/go-library)](https://www.tickgit.com/browse?repo=github.com/dtapps/go-library)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/dtapps/go-library/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/dtapps/go-library/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/dtapps/go-library/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/dtapps/go-library/?branch=master)
+[![Code Build](https://scrutinizer-ci.com/g/dtapps/go-library/badges/build.png?b=master)](https://scrutinizer-ci.com/g/dtapps/go-library/?branch=master)
+[![Code Intelligence](https://scrutinizer-ci.com/g/dtapps/go-library/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/g/dtapps/go-library/?branch=master)
 
-
-## License
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2dtapps%2FGoLibrary.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2dtapps%2FGoLibrary?ref=badge_large)
 
 ## Install
 
 ```Importing
-go get github.com/dtapps/GoLibrary
+go get github.com/dtapps/go-library
 ```
