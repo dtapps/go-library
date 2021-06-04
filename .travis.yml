@@ -3,14 +3,10 @@ language: go
 
 # 指定版本，可以指定多个
 go:
-  - 1.8.x
-
-before_install:
-  - go get -t -v ./...
+  - master
 
 script:
   - go test -race -coverprofile=coverage.txt -covermode=atomic
 
 after_success:
-  - export CODECOV_TOKEN="8c97795f-daed-4374-8f21-619d54f55c38"
   - bash <(curl -s https://codecov.io/bash)
