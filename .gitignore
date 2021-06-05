@@ -6,4 +6,3 @@
 *.log
 git.sh
 gitv.sh
-*_test.go
