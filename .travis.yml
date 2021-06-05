@@ -3,5 +3,6 @@ language: go
 go:
   - master
 
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+script:
+  - go mod tidy
+  - ls -lh

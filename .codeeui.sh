@@ -5,8 +5,6 @@ export GOPROXY=https://goproxy.cn,direct
 mkdir -p $GOPATH/src/dtapps/golibrary/
 ##拷贝代码到创建好的目录
 cp -rf . $GOPATH/src/dtapps/golibrary/
-##未使用vendor时，下载依赖包
-go get
 ##进入项目
 cd $GOPATH/src/dtapps/golibrary/
 ##构建，在GOPATH下生成构建包
