@@ -63,10 +63,10 @@ func CreateFile(fileName string) (bool, error) {
 }
 
 // CreateFiles 创建文件夹
-func CreateFiles(path string) (bool, error) {
-	err := os.Mkdir(path, os.ModePerm)
+func CreateFiles(path string, perm int) (bool, error) {
+	err := os.MkdirAll(path, os.FileMode(perm))
 	if err != nil {
-		return false, nil
+		return false, err
 	} else {
 		return true, nil
 	}
