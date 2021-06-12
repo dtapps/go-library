@@ -1,6 +1,7 @@
 package request
 
 import (
+	"fmt"
 	"math/rand"
 	"net"
 	"net/http"
@@ -10,17 +11,33 @@ import (
 // ClientIp 尽最大努力实现获取客户端 IP 的算法。
 // 解析 X-Real-IP 和 X-Forwarded-For 以便于反向代理（nginx 或 haproxy）可以正常工作。
 func ClientIp(r *http.Request) string {
+	// xForwardedFor
 	xForwardedFor := r.Header.Get("X-Forwarded-For")
+	fmt.Printf("xForwardedFor：%v \n", xForwardedFor)
 	ip := strings.TrimSpace(strings.Split(xForwardedFor, ",")[0])
 	if ip != "" {
 		return ip
 	}
-
+	// xRealIp
 	ip = strings.TrimSpace(r.Header.Get("X-Real-Ip"))
 	if ip != "" {
 		return ip
 	}
-
+	// HTTPCLIENTIP
+	HTTPCLIENTIP := r.Header.Get("HTTP_CLIENT_IP")
+	fmt.Printf("HTTPCLIENTIP：%v \n", HTTPCLIENTIP)
+	ip = strings.TrimSpace(strings.Split(HTTPCLIENTIP, ",")[0])
+	if ip != "" {
+		return ip
+	}
+	// HTTPXFORWARDEDFOR
+	HTTPXFORWARDEDFOR := r.Header.Get("HTTP_X_FORWARDED_FOR")
+	fmt.Printf("HTTPXFORWARDEDFOR：%v \n", HTTPXFORWARDEDFOR)
+	ip = strings.TrimSpace(strings.Split(HTTPXFORWARDEDFOR, ",")[0])
+	if ip != "" {
+		return ip
+	}
+	// system
 	if ip, _, err := net.SplitHostPort(strings.TrimSpace(r.RemoteAddr)); err == nil {
 		return ip
 	}
