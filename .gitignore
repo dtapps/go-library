@@ -5,5 +5,5 @@
 .vscode
 *.log
 git.sh
-gitv.sh
+gittag.sh
 *_test.go
