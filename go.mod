@@ -1,4 +1,4 @@
-module gitee.com/dtapps/go-library
+module github.com/dtapps/go-library
 
 go 1.16
 

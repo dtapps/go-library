@@ -2,8 +2,8 @@ package http
 
 import (
 	"encoding/json"
-	"gitee.com/dtapps/go-library/helper/request"
 	"github.com/bitly/go-simplejson"
+	"github.com/dtapps/go-library/helper/request"
 	"gopkg.in/h2non/gentleman.v2"
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
 )
