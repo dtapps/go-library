@@ -3,7 +3,7 @@ package http
 import (
 	"encoding/json"
 	"github.com/bitly/go-simplejson"
-	"github.com/dtapps/go-library/helper/request"
+	"gopkg.in/dtapps/go-library.v2/request"
 	"gopkg.in/h2non/gentleman.v2"
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
 )

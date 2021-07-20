@@ -2,7 +2,7 @@ package uuid_test
 
 import (
 	"fmt"
-	"github.com/dtapps/go-library/helper/uuid"
+	"gopkg.in/dtapps/go-library.v2/uuid"
 	"testing"
 )
 
