@@ -17,9 +17,9 @@ func TestName(t *testing.T) {
 		},
 	}
 	send, err := bot.Send(msg)
+	log.Printf("send：%v\n", send)
 	if err != nil {
-		log.Printf("err：%v\n", err)
+		t.Errorf("err：%v\n", err)
 		return
 	}
-	log.Printf("send：%v\n", send)
 }

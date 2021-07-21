@@ -16,9 +16,9 @@ func TestName(t *testing.T) {
 		OrderId: 827669582783,
 	}
 	send, err := wl.Send(msg, url.Order)
+	log.Printf("send：%s\n", send)
 	if err != nil {
-		log.Printf("错误：%v\n", err)
+		t.Errorf("err：%v\n", err)
 		return
 	}
-	log.Printf("返回：%s\n", send)
 }

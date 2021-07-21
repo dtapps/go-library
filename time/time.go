@@ -36,7 +36,7 @@ func GetCurrentWjDate() string {
 	return time.Now().Format("20060102")
 }
 
-func FormatISO8601Date(timestamp_second int64) string {
-	tm := time.Unix(timestamp_second, 0).UTC()
+func FormatISO8601Date(timestampSecond int64) string {
+	tm := time.Unix(timestampSecond, 0).UTC()
 	return tm.Format(ISO8601Format)
 }

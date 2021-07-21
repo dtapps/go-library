@@ -1,11 +1,11 @@
 package go_library
 
 import (
-	"fmt"
 	"gopkg.in/dtapps/go-library.v2/library"
+	"log"
 	"testing"
 )
 
-func TestName(t *testing.T) {
-	fmt.Println(library.Version())
+func TestVersion(t *testing.T) {
+	log.Println(library.Version())
 }
