@@ -9,8 +9,8 @@ import (
 
 func TestName(t *testing.T) {
 	wl := KaShangWl{
-		customerId:  0000000,
-		customerKey: "xxx",
+		CustomerId:  0000000,
+		CustomerKey: "xxx",
 	}
 	msg := message.Order{
 		OrderId: 827669582783,

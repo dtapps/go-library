@@ -18,8 +18,8 @@ const api = "http://www.kashangwl.com/api/"
 
 // KaShangWl 每次请求需传入以下参数
 type KaShangWl struct {
-	customerId  int    // 商家编号
-	customerKey string // 商家密钥
+	CustomerId  int    // 商家编号
+	CustomerKey string // 商家密钥
 }
 
 // Send 发送 http://cha.kashangwl.com/api-doc/
@@ -29,9 +29,9 @@ func (w *KaShangWl) Send(msg interface{}, url string) (*simplejson.Json, error) 
 	// 处理数据
 	marshal, _ := json.Marshal(msg)
 	newJson, _ := simplejson.NewJson(marshal)
-	newJson.Set("customer_id", w.customerId)
+	newJson.Set("customer_id", w.CustomerId)
 	newJson.Set("timestamp", timestamp)
-	signStr := sign(newJson, w.customerKey)
+	signStr := sign(newJson, w.CustomerKey)
 	newJson.Set("sign", signStr)
 	j, e := newJson.MarshalJSON()
 	if e != nil {
