@@ -16,3 +16,7 @@ func HmacSha256Hex(key, strToSign string) string {
 func ToLower(str string) string {
 	return strings.ToLower(str)
 }
+
+func ToUpper(str string) string {
+	return strings.ToUpper(str)
+}

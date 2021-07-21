@@ -2,8 +2,8 @@ package params
 
 import (
 	"encoding/json"
+	"github.com/nilorg/sdk/convert"
 	"net/url"
-	"strconv"
 )
 
 type Params map[string]interface{}
@@ -39,19 +39,18 @@ func (p Params) GetQuery() string {
 	return u.Encode()
 }
 
-func GetParamsString(i interface{}) string {
-	switch v := i.(type) {
+func GetParamsString(src interface{}) string {
+	switch src.(type) {
 	case string:
-		return v
-	case []byte:
-		return string(v)
-	case int:
-		return strconv.Itoa(v)
-	case bool:
-		return strconv.FormatBool(v)
-	default:
-		bytes, _ := json.Marshal(v)
-		return string(bytes)
+		return src.(string)
+	case int, int8, int32, int64:
+	case uint8, uint16, uint32, uint64:
+	case float32, float64:
+		return convert.ToString(src)
 	}
-	return ""
+	data, err := json.Marshal(src)
+	if err != nil {
+		panic(err)
+	}
+	return string(data)
 }

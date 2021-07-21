@@ -146,7 +146,7 @@ func (p Parameter) getRequestData() string {
 // 获取签名
 func getSign(params Parameter) string {
 	// 获取Key
-	keys := []string{}
+	var keys []string
 	for k := range params {
 		keys = append(keys, k)
 	}

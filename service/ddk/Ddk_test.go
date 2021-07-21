@@ -1,7 +1,7 @@
 package ddk
 
 import (
-	"fmt"
+	"log"
 	"testing"
 )
 
@@ -11,7 +11,6 @@ func init() {
 }
 
 func TestName(t *testing.T) {
-	fmt.Println("Hello World")
 	res, err := Execute("pdd.ddk.goods.recommend.get", Parameter{
 		"limit":        10,
 		"channel_type": 3,
@@ -21,9 +20,9 @@ func TestName(t *testing.T) {
 			"Y9v2lh2s6e1GWdnxwfbZF9sHlepFWs13_JmF4wnW72",
 		},
 	})
+	log.Printf("res：%#v\n", res)
 
 	if err != nil {
-		fmt.Printf("错误：%#v\n", err)
+		t.Errorf("错误：%#v\n", err)
 	}
-	fmt.Printf("结果：%#v\n", res)
 }

@@ -11,7 +11,7 @@ func TestName(t *testing.T) {
 	// 连接
 	err := InitRedis("127.0.0.1", 6379, "", 2)
 	if err != nil {
-		panic(err)
+		t.Errorf("err：%v", err)
 	}
 	jsonSimpleJson()
 }
