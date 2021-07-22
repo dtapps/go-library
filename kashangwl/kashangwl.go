@@ -1,12 +1,13 @@
 package kashangwl
 
 import (
+	"bytes"
+	"crypto/md5"
+	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"github.com/bitly/go-simplejson"
-	md52 "gopkg.in/dtapps/go-library.v2/md5"
 	params2 "gopkg.in/dtapps/go-library.v2/params"
-	string2 "gopkg.in/dtapps/go-library.v2/string"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"sort"
@@ -16,6 +17,12 @@ import (
 
 const api = "http://www.kashangwl.com/api/"
 
+// Parameter 参数
+type Parameter map[string]interface{}
+
+// ParameterEncode 参数
+type ParameterEncode []string
+
 // KaShangWl 每次请求需传入以下参数
 type KaShangWl struct {
 	CustomerId  int    // 商家编号
@@ -23,26 +30,16 @@ type KaShangWl struct {
 }
 
 // Send 发送 http://cha.kashangwl.com/api-doc/
-func (w *KaShangWl) Send(msg interface{}, url string) (*simplejson.Json, error) {
-	// 	当前时间戳（单位：秒）
-	timestamp := time.Now().UnixNano() / 1e6
+func (w *KaShangWl) Send(url string, param Parameter) (*simplejson.Json, error) {
 	// 处理数据
-	marshal, _ := json.Marshal(msg)
-	newJson, _ := simplejson.NewJson(marshal)
-	newJson.Set("customer_id", w.CustomerId)
-	newJson.Set("timestamp", timestamp)
-	signStr := sign(newJson, w.CustomerKey)
-	newJson.Set("sign", signStr)
-	j, e := newJson.MarshalJSON()
-	if e != nil {
-		return nil, e
-	}
-	resp, e := http.Post(api+url, "application/json", strings.NewReader(string(j)))
+	param.setRequestData(w)
+	// 请求
+	resp, e := http.Post(api+url, "application/json", strings.NewReader(param.getRequestData()))
 	if e != nil {
 		return nil, e
 	}
 	defer resp.Body.Close()
-
+	// 返回结果
 	body, _ := ioutil.ReadAll(resp.Body)
 	respJson, err := simplejson.NewJson(body)
 	if err != nil {
@@ -52,21 +49,37 @@ func (w *KaShangWl) Send(msg interface{}, url string) (*simplejson.Json, error) 
 }
 
 // md5(key + 参数1名称 + 参数1值 + 参数2名称 + 参数2值...) 加密源串应为{key}customer_id1192442order_id827669582783timestamp1626845767
-func sign(params *simplejson.Json, key string) string {
-	var dataParams string
+func sign(params Parameter, customerKey string) string {
 	// 参数按照参数名的字典升序排列
 	var keys []string
-	for k := range params.MustMap() {
+	for k := range params {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
 	// 拼接
-	dataParams = fmt.Sprintf("%s%s", dataParams, key)
+	query := bytes.NewBufferString(customerKey)
 	for _, k := range keys {
-		dataParams = fmt.Sprintf("%s%s%s", dataParams, k, params2.GetParamsString(params.Get(k)))
+		query.WriteString(k)
+		query.WriteString(params2.GetParamsString(params[k]))
 	}
 	// MD5加密
-	md5Str := md52.GetMD5Encode(dataParams)
-	str := string2.ToLower(md5Str)
-	return str
+	h := md5.New()
+	io.Copy(h, query)
+	return strings.ToLower(hex.EncodeToString(h.Sum(nil)))
+}
+
+// 设置请求数据
+func (p Parameter) setRequestData(w *KaShangWl) {
+	// 	当前时间戳（单位：秒）
+	timestamp := time.Now().UnixNano() / 1e6
+	p["timestamp"] = timestamp
+	p["customer_id"] = w.CustomerId
+	// 设置签名
+	p["sign"] = sign(p, w.CustomerKey)
+}
+
+// 获取请求数据
+func (p Parameter) getRequestData() string {
+	j, _ := json.Marshal(p)
+	return string(j)
 }

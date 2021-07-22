@@ -31,14 +31,16 @@ type PinDuoDuo struct {
 }
 
 func (d *PinDuoDuo) Send(method string, param Parameter) (*simplejson.Json, error) {
+	// 处理数据
 	param["type"] = method
 	param.setRequestData(d)
+	// 请求
 	resp, err := http.Post(api, "application/x-www-form-urlencoded;charset=utf-8", strings.NewReader(param.getRequestData()))
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
-
+	// 返回结果
 	body, _ := ioutil.ReadAll(resp.Body)
 	respJson, err := simplejson.NewJson(body)
 	if err != nil {
