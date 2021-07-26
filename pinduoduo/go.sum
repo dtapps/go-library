@@ -4,6 +4,8 @@ github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 h1:DDGfHa7BWjL4Yn
 github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869/go.mod h1:Ekp36dRnpXw/yCqJaO+ZrUyxD+3VXMFFr56k5XYrpB4=
 github.com/dtapps/go-library/params v0.0.0-20210726063253-212f0a0415d8 h1:D5kWQ7DTNwP7JLVtEcTw9Zoz3JlWUWcQ4N5KBUVcK+Y=
 github.com/dtapps/go-library/params v0.0.0-20210726063253-212f0a0415d8/go.mod h1:GyaRzaRnHSoluxr1Q8qIa6XLppQBlbT/pZP1DQOuLeE=
+github.com/dtapps/go-library/params v0.0.0-20210726084511-d3126e0d7b75 h1:QwTvdvHvIFCk7e2k+9LnEHUkzKfP52Qo7y972x6rqkc=
+github.com/dtapps/go-library/params v0.0.0-20210726084511-d3126e0d7b75/go.mod h1:GyaRzaRnHSoluxr1Q8qIa6XLppQBlbT/pZP1DQOuLeE=
 github.com/kr/pretty v0.2.1 h1:Fmg33tUaq4/8ym9TJN1x7sLJnHVwhP33CNkpYV/7rwI=
 github.com/kr/pretty v0.2.1/go.mod h1:ipq/a2n7PKx3OHsz4KJII5eveXtPO4qwEXGdVfWzfnI=
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=

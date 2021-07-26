@@ -12,7 +12,7 @@ require (
 	github.com/dtapps/go-library/dmail v0.0.0-20210726080930-0164efa3bf60 // indirect
 	github.com/dtapps/go-library/drequest v0.0.0-20210726083631-b1d525f5f55d // indirect
 	github.com/dtapps/go-library/dstring v0.0.0-20210726080930-0164efa3bf60 // indirect
-	github.com/dtapps/go-library/params v0.0.0-20210726080930-0164efa3bf60 // indirect
+	github.com/dtapps/go-library/params v0.0.0-20210726084511-d3126e0d7b75 // indirect
 	github.com/kr/pretty v0.2.1 // indirect
 	github.com/nilorg/sdk v0.0.0-20210429091026-95b6cdc95c84
 )

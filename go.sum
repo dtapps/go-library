@@ -26,6 +26,8 @@ github.com/dtapps/go-library/dstring v0.0.0-20210726080930-0164efa3bf60 h1:2/zgj
 github.com/dtapps/go-library/dstring v0.0.0-20210726080930-0164efa3bf60/go.mod h1:TU3i4tY29OsE+LWeZXmNzEvLf/E1ZwG4KYZgq0Lckds=
 github.com/dtapps/go-library/params v0.0.0-20210726080930-0164efa3bf60 h1:jo8BMrJtoPs/Z3iXdHikkfUSkXNh6cT6Vasejx5Wm9o=
 github.com/dtapps/go-library/params v0.0.0-20210726080930-0164efa3bf60/go.mod h1:GyaRzaRnHSoluxr1Q8qIa6XLppQBlbT/pZP1DQOuLeE=
+github.com/dtapps/go-library/params v0.0.0-20210726084511-d3126e0d7b75 h1:QwTvdvHvIFCk7e2k+9LnEHUkzKfP52Qo7y972x6rqkc=
+github.com/dtapps/go-library/params v0.0.0-20210726084511-d3126e0d7b75/go.mod h1:GyaRzaRnHSoluxr1Q8qIa6XLppQBlbT/pZP1DQOuLeE=
 github.com/kr/pretty v0.2.1 h1:Fmg33tUaq4/8ym9TJN1x7sLJnHVwhP33CNkpYV/7rwI=
 github.com/kr/pretty v0.2.1/go.mod h1:ipq/a2n7PKx3OHsz4KJII5eveXtPO4qwEXGdVfWzfnI=
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
