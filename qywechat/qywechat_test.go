@@ -1,19 +1,18 @@
 package qywechat
 
 import (
-	v20210726 "github.com/dtapps/go-library/qywechat/v20210726"
-	"github.com/dtapps/go-library/qywechat/v20210726/msgtype"
+	msgtype2 "github.com/dtapps/go-library/qywechat/msgtype"
 	"log"
 	"testing"
 )
 
 func TestName(t *testing.T) {
-	bot := v20210726.QyBot{
+	bot := QyBot{
 		Key: "",
 	}
-	param := v20210726.Parameter{
-		"msgtype": msgtype.TextStr,
-		"text": v20210726.Parameter{
+	param := Parameter{
+		"msgtype": msgtype2.TextStr,
+		"text": Parameter{
 			"content": "测试",
 		},
 	}

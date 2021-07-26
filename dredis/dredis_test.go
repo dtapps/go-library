@@ -3,7 +3,6 @@ package dredis
 import (
 	"fmt"
 	"github.com/bitly/go-simplejson"
-	v20210726 "github.com/dtapps/go-library/dredis/v20210726"
 	"log"
 	"testing"
 	"time"
@@ -15,7 +14,7 @@ func TestName(t *testing.T) {
 
 func client() {
 	// 连接
-	err := v20210726.InitRedis("127.0.0.1", 6379, "", 2)
+	err := InitRedis("127.0.0.1", 6379, "", 2)
 	if err != nil {
 		fmt.Printf("err：%v\n", err)
 	}
@@ -24,19 +23,19 @@ func client() {
 
 func set() {
 	// 设置
-	v20210726.NewStringOperation().Set("test", "test", v20210726.WithExpire(time.Second*1))
+	NewStringOperation().Set("test", "test", WithExpire(time.Second*1))
 }
 
 func mGet() {
 	// 获取
-	iter := v20210726.NewStringOperation().MGet("test1", "test2").Iter()
+	iter := NewStringOperation().MGet("test1", "test2").Iter()
 	for iter.HasNext() {
 		log.Println("MGet：", iter.Next())
 	}
 }
 
 func json() {
-	newCache := v20210726.NewSimpleCache(v20210726.NewStringOperation(), time.Second*10, v20210726.SerializerJson)
+	newCache := NewSimpleCache(NewStringOperation(), time.Second*10, SerializerJson)
 	newCache.JsonGetter = func() interface{} {
 		log.Println("【没有命中】SerializerJson")
 		type a []string
@@ -50,7 +49,7 @@ func json() {
 }
 
 func dbString() {
-	newCache := v20210726.NewSimpleCache(v20210726.NewStringOperation(), time.Second*10, v20210726.SerializerString)
+	newCache := NewSimpleCache(NewStringOperation(), time.Second*10, SerializerString)
 	newCache.DBGetter = func() string {
 		log.Println("【没有命中】SerializerString")
 		return "data by id=123"
@@ -60,7 +59,7 @@ func dbString() {
 }
 
 func simpleJson() {
-	newCache := v20210726.NewSimpleCache(v20210726.NewStringOperation(), time.Second*50, v20210726.SerializerSimpleJson)
+	newCache := NewSimpleCache(NewStringOperation(), time.Second*50, SerializerSimpleJson)
 	newCache.SimpleJsonGetter = func() *simplejson.Json {
 		log.Println("_test【没有命中】SerializerSimpleJson")
 		js := simplejson.New()
@@ -72,7 +71,7 @@ func simpleJson() {
 }
 
 func jsonSimpleJson() {
-	newCache := v20210726.NewSimpleCache(v20210726.NewStringOperation(), time.Second*50, v20210726.SerializerJson)
+	newCache := NewSimpleCache(NewStringOperation(), time.Second*50, SerializerJson)
 	newCache.JsonGetter = func() interface{} {
 		log.Println("【没有命中】SerializerJson")
 		type a []string
