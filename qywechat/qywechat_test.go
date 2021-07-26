@@ -1,8 +1,8 @@
 package qywechat
 
 import (
+	"fmt"
 	msgtype2 "github.com/dtapps/go-library/qywechat/msgtype"
-	"log"
 	"testing"
 )
 
@@ -17,7 +17,7 @@ func TestName(t *testing.T) {
 		},
 	}
 	send, err := bot.Send(param)
-	log.Printf("send：%v\n", send)
+	fmt.Printf("send：%v\n", send)
 	if err != nil {
 		t.Errorf("err：%v\n", err)
 		return

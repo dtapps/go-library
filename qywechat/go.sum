@@ -1,6 +1,0 @@
-github.com/dtapps/go-library/params v0.0.0-20210726063253-212f0a0415d8 h1:D5kWQ7DTNwP7JLVtEcTw9Zoz3JlWUWcQ4N5KBUVcK+Y=
-github.com/dtapps/go-library/params v0.0.0-20210726063253-212f0a0415d8/go.mod h1:GyaRzaRnHSoluxr1Q8qIa6XLppQBlbT/pZP1DQOuLeE=
-github.com/dtapps/go-library/params v0.0.0-20210726084511-d3126e0d7b75 h1:QwTvdvHvIFCk7e2k+9LnEHUkzKfP52Qo7y972x6rqkc=
-github.com/dtapps/go-library/params v0.0.0-20210726084511-d3126e0d7b75/go.mod h1:GyaRzaRnHSoluxr1Q8qIa6XLppQBlbT/pZP1DQOuLeE=
-github.com/nilorg/sdk v0.0.0-20210429091026-95b6cdc95c84 h1:Nxk1uViXfb9MHgtHBlQFWzlQCsJbDQuotfTsAFcFP3o=
-github.com/nilorg/sdk v0.0.0-20210429091026-95b6cdc95c84/go.mod h1:X1swpPdqguAZaBDoEPyEWHSsJii0YQ1o+3piMv6W3JU=

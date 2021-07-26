@@ -1,7 +1,7 @@
 package ddk
 
 import (
-	"log"
+	"fmt"
 	"testing"
 )
 
@@ -20,7 +20,7 @@ func TestName(t *testing.T) {
 			"Y9v2lh2s6e1GWdnxwfbZF9sHlepFWs13_JmF4wnW72",
 		},
 	})
-	log.Printf("res：%#v\n", res)
+	fmt.Printf("res：%#v\n", res)
 
 	if err != nil {
 		t.Errorf("错误：%#v\n", err)

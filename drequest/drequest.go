@@ -1,6 +1,7 @@
 package drequest
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"net"
@@ -193,4 +194,41 @@ var userAgentList = []string{
 	"Opera/9.80 (Windows NT 6.0; U; pl) Presto/2.7.62 Version/11.01",
 	"Opera/9.80 (Windows NT 5.2; U; ru) Presto/2.7.62 Version/11.01",
 	"Opera/9.80 (Windows NT 5.1; U;) Presto/2.7.62 Version/11.01",
+}
+
+func ExternalIP() (string, error) {
+	ifaces, err := net.Interfaces()
+	if err != nil {
+		return "", err
+	}
+	for _, iface := range ifaces {
+		if iface.Flags&net.FlagUp == 0 {
+			continue // interface down
+		}
+		if iface.Flags&net.FlagLoopback != 0 {
+			continue // loopback interface
+		}
+		addrs, err := iface.Addrs()
+		if err != nil {
+			return "", err
+		}
+		for _, addr := range addrs {
+			var ip net.IP
+			switch v := addr.(type) {
+			case *net.IPNet:
+				ip = v.IP
+			case *net.IPAddr:
+				ip = v.IP
+			}
+			if ip == nil || ip.IsLoopback() {
+				continue
+			}
+			ip = ip.To4()
+			if ip == nil {
+				continue // not an ipv4 address
+			}
+			return ip.String(), nil
+		}
+	}
+	return "", errors.New("are you connected to the network?")
 }

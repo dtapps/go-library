@@ -6,7 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	params "github.com/dtapps/go-library/params/v20210726"
+	params "github.com/dtapps/go-library/params"
 	"io/ioutil"
 	"net/http"
 	"net/url"

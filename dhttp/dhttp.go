@@ -3,7 +3,7 @@ package dhttp
 import (
 	"encoding/json"
 	"github.com/bitly/go-simplejson"
-	dRequest "github.com/dtapps/go-library/drequest/v20210726"
+	dRequest "github.com/dtapps/go-library/drequest"
 	"gopkg.in/h2non/gentleman.v2"
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
 )

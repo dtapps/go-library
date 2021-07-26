@@ -3,7 +3,7 @@ package qywechat
 import (
 	"encoding/json"
 	"fmt"
-	params2 "github.com/dtapps/go-library/params/v20210726"
+	params2 "github.com/dtapps/go-library/params"
 	"io/ioutil"
 	"net/http"
 	"net/url"

@@ -6,7 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"github.com/bitly/go-simplejson"
-	params2 "github.com/dtapps/go-library/params/v20210726"
+	params2 "github.com/dtapps/go-library/params"
 	"io"
 	"io/ioutil"
 	"net/http"

@@ -1,11 +1,11 @@
 package duuid_test
 
 import (
+	"fmt"
 	"github.com/dtapps/go-library/duuid"
-	"log"
 	"testing"
 )
 
 func TestName(t *testing.T) {
-	log.Println(duuid.GenUUID())
+	fmt.Println(duuid.GenUUID())
 }
