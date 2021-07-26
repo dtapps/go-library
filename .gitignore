@@ -6,3 +6,4 @@
 *.log
 git.sh
 gittag.sh
+gittagdel.sh

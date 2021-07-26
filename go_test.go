@@ -1,7 +1,7 @@
 package go_library
 
 import (
-	"gopkg.in/dtapps/go-library.v2/library"
+	"github.com/dtapps/go-library/library"
 	"log"
 	"testing"
 )

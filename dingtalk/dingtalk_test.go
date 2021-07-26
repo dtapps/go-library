@@ -1,23 +1,24 @@
 package dingtalk
 
 import (
-	"gopkg.in/dtapps/go-library.v2/dingtalk/message"
+	v20210726 "github.com/dtapps/go-library/dingtalk/v20210726"
+	"github.com/dtapps/go-library/dingtalk/v20210726/msgtype"
 	"log"
 	"testing"
 )
 
 func TestName(t *testing.T) {
-	bot := DingBot{
+	bot := v20210726.DingBot{
 		Secret:      "",
 		AccessToken: "",
 	}
-	msg := message.Message{
-		MsgType: message.TextStr,
-		Text: message.Text_{
-			Content: "测试",
+	param := v20210726.Parameter{
+		"msgtype": msgtype.TextStr,
+		"text": v20210726.Parameter{
+			"content": "测试",
 		},
 	}
-	send, err := bot.Send(msg)
+	send, err := bot.Send(param)
 	log.Printf("send：%v\n", send)
 	if err != nil {
 		t.Errorf("err：%v\n", err)
