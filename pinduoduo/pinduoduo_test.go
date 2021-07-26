@@ -1,8 +1,8 @@
 package pinduoduo
 
 import (
-	v20210726 "github.com/dtapps/go-library/daes/v20210726"
-	_type "gopkg.in/dtapps/go-library.v2/pinduoduo/type"
+	v20210726 "github.com/dtapps/go-library/pinduoduo/v20210726"
+	_type "github.com/dtapps/go-library/pinduoduo/v20210726/type"
 	"log"
 	"testing"
 )

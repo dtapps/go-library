@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/bitly/go-simplejson"
 	dRequest "github.com/dtapps/go-library/drequest/v20210726"
-	"gopkg.in/dtapps/go-library.v2/request"
 	"gopkg.in/h2non/gentleman.v2"
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
 )
@@ -50,7 +49,7 @@ func PostJson(url string, data map[string]interface{}, headers map[string]interf
 		// 设置请求首部（Header）
 		req.SetHeader(key, value.(string))
 	}
-	req.SetHeader("User-Agent", request.GetUserAgent())
+	req.SetHeader("User-Agent", dRequest.GetUserAgent())
 	// 发送请求，获取响应对象res
 	response, err := req.Send()
 	if err != nil {
@@ -77,7 +76,7 @@ func PostXml(url string, data map[string]string, headers map[string]interface{})
 		// 设置请求首部（Header）
 		req.SetHeader(key, value.(string))
 	}
-	req.SetHeader("User-Agent", request.GetUserAgent())
+	req.SetHeader("User-Agent", dRequest.GetUserAgent())
 	// 发送请求，获取响应对象res
 	response, err := req.Send()
 	if err != nil {

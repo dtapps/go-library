@@ -1,7 +1,7 @@
 package dssh
 
 import (
-	v20210726 "gopkg.in/dtapps/go-library.v2/dssh/v20210726"
+	v20210726 "github.com/dtapps/go-library/dssh/v20210726"
 	"testing"
 )
 

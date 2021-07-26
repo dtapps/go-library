@@ -3,7 +3,7 @@ package dredis
 import (
 	"fmt"
 	"github.com/bitly/go-simplejson"
-	v20210726 "gopkg.in/dtapps/go-library.v2/dredis/v20210726"
+	v20210726 "github.com/dtapps/go-library/dredis/v20210726"
 	"log"
 	"testing"
 	"time"

@@ -11,5 +11,5 @@
 ## Install 安装
 
 ```Importing
-go get -u github.com/dtapps/go-library
+go get -v -u github.com/dtapps/go-library@latest
 ```

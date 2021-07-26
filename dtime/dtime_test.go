@@ -2,7 +2,7 @@ package dtime
 
 import (
 	"fmt"
-	v20210726 "gopkg.in/dtapps/go-library.v2/dtime/v20210726"
+	v20210726 "github.com/dtapps/go-library/dtime/v20210726"
 	"testing"
 )
 

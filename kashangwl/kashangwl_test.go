@@ -1,7 +1,7 @@
 package kashangwl
 
 import (
-	v20210726 "github.com/dtapps/go-library/daes/v20210726"
+	v20210726 "github.com/dtapps/go-library/kashangwl/v20210726"
 	_url "gopkg.in/dtapps/go-library.v2/kashangwl/url"
 	"log"
 	"testing"

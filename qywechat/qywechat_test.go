@@ -2,7 +2,7 @@ package qywechat
 
 import (
 	v20210726 "github.com/dtapps/go-library/qywechat/v20210726"
-	"gopkg.in/dtapps/go-library.v2/qywechat/message"
+	"github.com/dtapps/go-library/qywechat/v20210726/msgtype"
 	"log"
 	"testing"
 )
@@ -12,7 +12,7 @@ func TestName(t *testing.T) {
 		Key: "",
 	}
 	param := v20210726.Parameter{
-		"msgtype": message.TextStr,
+		"msgtype": msgtype.TextStr,
 		"text": v20210726.Parameter{
 			"content": "测试",
 		},
