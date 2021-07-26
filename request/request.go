@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 	"strings"
+	"time"
 )
 
 // ClientIp 尽最大努力实现获取客户端 IP 的算法。
@@ -48,6 +49,11 @@ func ClientIp(r *http.Request) string {
 // GetUserAgent 获取用户ua
 func GetUserAgent() string {
 	return userAgentList[rand.Intn(len(userAgentList))]
+}
+
+func GetRandomUserAgent() string {
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	return userAgentList[r.Intn(len(userAgentList))]
 }
 
 var userAgentList = []string{

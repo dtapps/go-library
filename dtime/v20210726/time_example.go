@@ -1,11 +1,8 @@
-package time
+package v20210726
 
-import (
-	"fmt"
-	"testing"
-)
+import "fmt"
 
-func TestName(t *testing.T) {
+func main() {
 	fmt.Println(GetCurrentDate())
 	fmt.Println(GetCurrentUnix())
 	fmt.Println(GetCurrentMilliUnix())
