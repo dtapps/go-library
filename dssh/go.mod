@@ -1,4 +1,4 @@
-module gopkg.in/dtapps/go-library.v2/dssh
+module github.com/dtapps/go-library/dssh
 
 go 1.16
 

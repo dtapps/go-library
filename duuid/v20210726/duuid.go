@@ -1,4 +1,4 @@
-package uuid
+package v20210726
 
 import (
 	"github.com/google/uuid"

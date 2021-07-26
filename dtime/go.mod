@@ -1,3 +1,3 @@
-module gopkg.in/dtapps/go-library.v2/dtime
+module github.com/dtapps/go-library/dtime
 
 go 1.16

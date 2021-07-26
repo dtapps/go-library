@@ -1,4 +1,4 @@
-module gopkg.in/dtapps/go-library.v2/dredis
+module github.com/dtapps/go-library/dredis
 
 go 1.16
 
