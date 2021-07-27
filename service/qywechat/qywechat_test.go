@@ -2,7 +2,7 @@ package qywechat
 
 import (
 	"fmt"
-	message2 "github.com/dtapps/go-library/service/qywechat/message"
+	"gitee.com/dtapps/go-library/service/qywechat/message"
 	"testing"
 )
 
@@ -10,9 +10,9 @@ func TestName(t *testing.T) {
 	bot := QyBot{
 		Key: "",
 	}
-	msg := message2.Message{
-		MsgType: message2.TextStr,
-		Text: message2.Text_{
+	msg := message.Message{
+		MsgType: message.TextStr,
+		Text: message.Text_{
 			Content: "测试",
 		},
 	}

@@ -2,7 +2,7 @@ package go_library
 
 import (
 	"fmt"
-	"github.com/dtapps/go-library/library"
+	"gitee.com/dtapps/go-library/library"
 	"testing"
 )
 

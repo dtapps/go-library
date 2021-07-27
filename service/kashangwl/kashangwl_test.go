@@ -2,7 +2,7 @@ package kashangwl
 
 import (
 	"fmt"
-	_url2 "github.com/dtapps/go-library/service/kashangwl/url"
+	_url "gitee.com/dtapps/go-library/service/kashangwl/url"
 	"testing"
 )
 
@@ -15,7 +15,7 @@ func TestName(t *testing.T) {
 	param := Parameter{
 		"order_id": 827669582783,
 	}
-	send, err := wl.Send(_url2.Order, param)
+	send, err := wl.Send(_url.Order, param)
 	fmt.Printf("send：%s\n", send)
 	if err != nil {
 		t.Errorf("err：%v\n", err)

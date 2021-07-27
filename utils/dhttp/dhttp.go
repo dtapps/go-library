@@ -2,8 +2,8 @@ package dhttp
 
 import (
 	"encoding/json"
+	"gitee.com/dtapps/go-library/utils/drequest"
 	"github.com/bitly/go-simplejson"
-	"github.com/dtapps/go-library/utils/drequest"
 	"gopkg.in/h2non/gentleman.v2"
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
 )

@@ -6,9 +6,9 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	config2 "github.com/dtapps/go-library/service/dingtalk/config"
-	message2 "github.com/dtapps/go-library/service/dingtalk/message"
-	djson2 "github.com/dtapps/go-library/utils/djson"
+	"gitee.com/dtapps/go-library/service/dingtalk/config"
+	"gitee.com/dtapps/go-library/service/dingtalk/message"
+	"gitee.com/dtapps/go-library/utils/djson"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -25,12 +25,12 @@ type response struct {
 	Errmsg  string `json:"errmsg"`
 }
 
-func (bot *DingBot) Send(msg message2.Message) (response, error) {
+func (bot *DingBot) Send(msg message.Message) (response, error) {
 	timestamp := time.Now().UnixNano() / 1e6
 	var response response
 	signStr := sign(timestamp, bot.Secret)
-	dingUrl := fmt.Sprintf("%s?access_token=%s&timestamp=%d&sign=%s", config2.Api, bot.AccessToken, timestamp, signStr)
-	toString, err := djson2.MarshalToString(msg)
+	dingUrl := fmt.Sprintf("%s?access_token=%s&timestamp=%d&sign=%s", config.Api, bot.AccessToken, timestamp, signStr)
+	toString, err := djson.MarshalToString(msg)
 	if err != nil {
 		return response, err
 	}
