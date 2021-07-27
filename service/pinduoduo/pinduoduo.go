@@ -5,7 +5,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"github.com/bitly/go-simplejson"
-	params2 "github.com/dtapps/go-library/params"
+	params3 "github.com/dtapps/go-library/utils/params"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -61,7 +61,7 @@ func sign(params Parameter, clientSecret string) string {
 	query := bytes.NewBufferString(clientSecret)
 	for _, k := range keys {
 		query.WriteString(k)
-		query.WriteString(params2.GetParamsString(params[k]))
+		query.WriteString(params3.GetParamsString(params[k]))
 	}
 	query.WriteString(clientSecret)
 	// MD5加密
@@ -89,7 +89,7 @@ func (p Parameter) getRequestData() string {
 	args := url.Values{}
 	// 请求参数
 	for key, val := range p {
-		args.Set(key, params2.GetParamsString(val))
+		args.Set(key, params3.GetParamsString(val))
 	}
 	return args.Encode()
 }

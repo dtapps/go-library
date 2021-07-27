@@ -3,7 +3,7 @@ package dhttp
 import (
 	"encoding/json"
 	"github.com/bitly/go-simplejson"
-	dRequest "github.com/dtapps/go-library/drequest"
+	"github.com/dtapps/go-library/utils/drequest"
 	"gopkg.in/h2non/gentleman.v2"
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
 )
@@ -21,7 +21,7 @@ func GetJson(url string, data string, headers map[string]interface{}) (res []byt
 		// 设置请求首部（Header）
 		req.SetHeader(key, value.(string))
 	}
-	req.SetHeader("User-Agent", dRequest.GetUserAgent())
+	req.SetHeader("User-Agent", drequest.GetUserAgent())
 	// 发送请求，获取响应对象res
 	response, err := req.Send()
 	if err != nil {
@@ -49,7 +49,7 @@ func PostJson(url string, data map[string]interface{}, headers map[string]interf
 		// 设置请求首部（Header）
 		req.SetHeader(key, value.(string))
 	}
-	req.SetHeader("User-Agent", dRequest.GetUserAgent())
+	req.SetHeader("User-Agent", drequest.GetUserAgent())
 	// 发送请求，获取响应对象res
 	response, err := req.Send()
 	if err != nil {
@@ -76,7 +76,7 @@ func PostXml(url string, data map[string]string, headers map[string]interface{})
 		// 设置请求首部（Header）
 		req.SetHeader(key, value.(string))
 	}
-	req.SetHeader("User-Agent", dRequest.GetUserAgent())
+	req.SetHeader("User-Agent", drequest.GetUserAgent())
 	// 发送请求，获取响应对象res
 	response, err := req.Send()
 	if err != nil {
