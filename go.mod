@@ -1,6 +1,6 @@
 module gitee.com/dtapps/go-library
 
-go 1.16
+go 1.17
 
 require (
 	github.com/bitly/go-simplejson v0.5.0
