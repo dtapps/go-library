@@ -1,4 +1,4 @@
-package durl
+package url
 
 import (
 	"io"

@@ -1,4 +1,4 @@
-package dstring
+package string
 
 import (
 	"crypto/hmac"

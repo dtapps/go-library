@@ -1,4 +1,4 @@
-package dssh
+package ssh
 
 import (
 	"testing"

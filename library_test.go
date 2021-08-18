@@ -5,6 +5,6 @@ import (
 	"testing"
 )
 
-func TestName(t *testing.T) {
+func TestVersion(t *testing.T) {
 	fmt.Println(Version())
 }
