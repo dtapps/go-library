@@ -6,8 +6,6 @@ import (
 )
 
 type PayTransactionsJsapi struct {
-	Appid       string                          `json:"appid"`                 //【是】应用ID
-	Mchid       string                          `json:"mchid"`                 //【是】直连商户号
 	Description string                          `json:"description"`           //【是】商品描述
 	OutTradeNo  string                          `json:"out_trade_no"`          //【是】商户订单号
 	TimeExpire  time.Time                       `json:"time_expire,omitempty"` //【否】交易结束时间

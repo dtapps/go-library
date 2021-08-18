@@ -32,6 +32,10 @@ type ErrResp struct {
 
 func (app *App) request(url string, params map[string]interface{}) (resp []byte, result ErrResp, err error) {
 
+	// common params
+	params["appid"] = app.AppId
+	params["mchid"] = app.MchId
+
 	canonicalURL := fmt.Sprintf("%s/%s", WechatPayAPIServer, url)
 	method := "POST"
 	authorization, _ := app.authorization(method, params, canonicalURL)
