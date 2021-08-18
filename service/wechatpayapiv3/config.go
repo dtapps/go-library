@@ -1,4 +1,4 @@
-package v3
+package wechatpayapiv3
 
 // 微信支付 API 地址
 const (

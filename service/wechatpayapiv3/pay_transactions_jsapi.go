@@ -1,4 +1,4 @@
-package v3
+package wechatpayapiv3
 
 import (
 	"encoding/json"
