@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"gitee.com/dtapps/go-library/service/qywechat/config"
 	"gitee.com/dtapps/go-library/service/qywechat/message"
-	"gitee.com/dtapps/go-library/utils/djson"
+	utilsJson "gitee.com/dtapps/go-library/utils/json"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -26,7 +26,7 @@ type response struct {
 func (bot *QyBot) Send(msg message.Message) (response, error) {
 	var response response
 	qyUrl := fmt.Sprintf("%s?key=%s", config.Api, bot.Key)
-	toString, err := djson.MarshalToString(msg)
+	toString, err := utilsJson.MarshalToString(msg)
 	if err != nil {
 		return response, err
 	}

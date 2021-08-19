@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"gitee.com/dtapps/go-library/service/dingtalk/config"
 	"gitee.com/dtapps/go-library/service/dingtalk/message"
-	"gitee.com/dtapps/go-library/utils/djson"
+	utilsJson "gitee.com/dtapps/go-library/utils/json"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -30,7 +30,7 @@ func (bot *DingBot) Send(msg message.Message) (response, error) {
 	var response response
 	signStr := sign(timestamp, bot.Secret)
 	dingUrl := fmt.Sprintf("%s?access_token=%s&timestamp=%d&sign=%s", config.Api, bot.AccessToken, timestamp, signStr)
-	toString, err := djson.MarshalToString(msg)
+	toString, err := utilsJson.MarshalToString(msg)
 	if err != nil {
 		return response, err
 	}
