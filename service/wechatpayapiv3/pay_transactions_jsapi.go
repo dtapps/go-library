@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// PayTransactionsJsapi 入参
 type PayTransactionsJsapi struct {
 	Description string                          `json:"description"`           //【是】商品描述
 	OutTradeNo  string                          `json:"out_trade_no"`          //【是】商户订单号
@@ -66,6 +67,7 @@ type PayTransactionsJsapiSettleInfo struct {
 	ProfitSharing bool `json:"profit_sharing,omitempty"` //【否】是否指定分账
 }
 
+// PayTransactionsJsapiResult 返回参数
 type PayTransactionsJsapiResult struct {
 	PrepayId string `json:"prepay_id"`
 }
