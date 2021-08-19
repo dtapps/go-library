@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"gitee.com/dtapps/go-library/utils/request"
 	"io/ioutil"
 	"net/http"
 )
@@ -30,27 +31,29 @@ type ErrResp struct {
 	} `json:"detail"`
 }
 
-func (app *App) request(url string, params map[string]interface{}) (resp []byte, result ErrResp, err error) {
+func (app *App) request(url string, params map[string]interface{}, method string) (resp []byte, result ErrResp, err error) {
 
 	// common params
-	params["appid"] = app.AppId
-	params["mchid"] = app.MchId
+	if method == "POST" {
+		params["appid"] = app.AppId
+		params["mchid"] = app.MchId
+	}
 
 	canonicalURL := fmt.Sprintf("%s/%s", WechatPayAPIServer, url)
-	method := "POST"
-	authorization, _ := app.authorization(method, params, canonicalURL)
-
+	authorization, err := app.authorization(method, params, canonicalURL)
 	marshal, _ := json.Marshal(params)
 
 	var req *http.Request
 	req, err = http.NewRequest(method, canonicalURL, bytes.NewReader(marshal))
 	if err != nil {
-		return
+		return nil, result, err
 	}
+	req.Header.Add("Authorization", "WECHATPAY2-SHA256-RSA2048 "+authorization)
+	req.Header.Add("User-Agent", request.GetUserAgent())
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Accept-Language", "zh-CN")
-	req.Header.Add("Authorization", "WECHATPAY2-SHA256-RSA2048 "+authorization)
+
 	httpClient := &http.Client{}
 	var response *http.Response
 	response, err = httpClient.Do(req)

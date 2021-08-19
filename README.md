@@ -11,5 +11,5 @@
 ## Install 安装
 
 ```Importing
-go get -v -u gitee.com/dtapps/go-library@v1.0.24
+go get -v -u gitee.com/dtapps/go-library@v1.0.25
 ```

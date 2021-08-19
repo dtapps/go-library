@@ -83,7 +83,7 @@ func (app *App) PayTransactionsJsapi(param PayTransactionsJsapi) (resp PayTransa
 		params[k] = v
 	}
 
-	body, result, err := app.request("pay/transactions/jsapi", params)
+	body, result, err := app.request("pay/transactions/jsapi", params, "POST")
 
 	if err != nil {
 		return
