@@ -2,7 +2,7 @@ package qywechat
 
 import (
 	"fmt"
-	"gitee.com/dtapps/go-library/service/qywechat/message"
+	"github.com/dtapps/go-library/service/qywechat/message"
 	"testing"
 )
 

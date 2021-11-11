@@ -2,7 +2,7 @@ package wechatpayapiv3
 
 import (
 	"fmt"
-	"gitee.com/dtapps/go-library/utils/random"
+	"github.com/dtapps/go-library/utils/random"
 	"io/ioutil"
 	"os"
 	"time"

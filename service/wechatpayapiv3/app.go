@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"gitee.com/dtapps/go-library/utils/request"
+	"github.com/dtapps/go-library/utils/request"
 	"io/ioutil"
 	"net/http"
 )

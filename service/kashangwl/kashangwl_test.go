@@ -2,7 +2,7 @@ package kashangwl
 
 import (
 	"fmt"
-	_url "gitee.com/dtapps/go-library/service/kashangwl/url"
+	_url "github.com/dtapps/go-library/service/kashangwl/url"
 	"testing"
 )
 

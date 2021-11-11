@@ -3,9 +3,9 @@ package qywechat
 import (
 	"encoding/json"
 	"fmt"
-	"gitee.com/dtapps/go-library/service/qywechat/config"
-	"gitee.com/dtapps/go-library/service/qywechat/message"
-	utilsJson "gitee.com/dtapps/go-library/utils/json"
+	"github.com/dtapps/go-library/service/qywechat/config"
+	"github.com/dtapps/go-library/service/qywechat/message"
+	utilsJson "github.com/dtapps/go-library/utils/json"
 	"io/ioutil"
 	"net/http"
 	"strings"
