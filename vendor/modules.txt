@@ -1,0 +1,70 @@
+# github.com/bitly/go-simplejson v0.5.0
+## explicit
+github.com/bitly/go-simplejson
+# github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869
+## explicit
+# github.com/cespare/xxhash/v2 v2.1.2
+## explicit; go 1.11
+github.com/cespare/xxhash/v2
+# github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f
+## explicit
+github.com/dgryski/go-rendezvous
+# github.com/go-redis/redis/v8 v8.11.4
+## explicit; go 1.13
+github.com/go-redis/redis/v8
+github.com/go-redis/redis/v8/internal
+github.com/go-redis/redis/v8/internal/hashtag
+github.com/go-redis/redis/v8/internal/hscan
+github.com/go-redis/redis/v8/internal/pool
+github.com/go-redis/redis/v8/internal/proto
+github.com/go-redis/redis/v8/internal/rand
+github.com/go-redis/redis/v8/internal/util
+# github.com/google/uuid v1.3.0
+## explicit
+github.com/google/uuid
+# github.com/kr/pretty v0.2.1
+## explicit; go 1.12
+# github.com/nbio/st v0.0.0-20140626010706-e9e8d9816f32
+## explicit
+# github.com/nilorg/sdk v0.0.0-20210429091026-95b6cdc95c84
+## explicit; go 1.12
+github.com/nilorg/sdk/convert
+# golang.org/x/crypto v0.0.0-20211215153901-e495a2d5b3d3
+## explicit; go 1.17
+golang.org/x/crypto/blowfish
+golang.org/x/crypto/chacha20
+golang.org/x/crypto/curve25519
+golang.org/x/crypto/curve25519/internal/field
+golang.org/x/crypto/ed25519
+golang.org/x/crypto/ed25519/internal/edwards25519
+golang.org/x/crypto/internal/poly1305
+golang.org/x/crypto/internal/subtle
+golang.org/x/crypto/ssh
+golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
+# golang.org/x/net v0.0.0-20211216030914-fe4d6282115f
+## explicit; go 1.17
+golang.org/x/net/publicsuffix
+# golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e
+## explicit; go 1.17
+golang.org/x/sys/cpu
+# gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc
+## explicit
+gopkg.in/alexcesaro/quotedprintable.v3
+# gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
+## explicit
+gopkg.in/gomail.v2
+# gopkg.in/h2non/gentleman.v2 v2.0.5
+## explicit
+gopkg.in/h2non/gentleman.v2
+gopkg.in/h2non/gentleman.v2/context
+gopkg.in/h2non/gentleman.v2/middleware
+gopkg.in/h2non/gentleman.v2/mux
+gopkg.in/h2non/gentleman.v2/plugin
+gopkg.in/h2non/gentleman.v2/plugins/body
+gopkg.in/h2non/gentleman.v2/plugins/bodytype
+gopkg.in/h2non/gentleman.v2/plugins/cookies
+gopkg.in/h2non/gentleman.v2/plugins/headers
+gopkg.in/h2non/gentleman.v2/plugins/multipart
+gopkg.in/h2non/gentleman.v2/plugins/query
+gopkg.in/h2non/gentleman.v2/plugins/url
+gopkg.in/h2non/gentleman.v2/utils
