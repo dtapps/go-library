@@ -5,7 +5,6 @@ go 1.17
 require (
 	github.com/bitly/go-simplejson v0.5.0
 	github.com/go-redis/redis/v8 v8.11.4
-	github.com/google/uuid v1.3.0
 	github.com/nilorg/sdk v0.0.0-20210429091026-95b6cdc95c84
 	golang.org/x/crypto v0.0.0-20211215153901-e495a2d5b3d3
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
