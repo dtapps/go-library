@@ -13,7 +13,7 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"github.com/dtapps/go-library/utils/random"
+	"github.com/dtapps/go-library/utils/gorandom"
 	"io/ioutil"
 	"net/url"
 	"os"
@@ -70,7 +70,7 @@ func (app *App) authorization(method string, paramMap map[string]interface{}, ra
 	}
 	canonicalUrl := urlPart.RequestURI()
 	timestamp := time.Now().Unix()
-	nonce := random.Alphanumeric(32)
+	nonce := gorandom.Alphanumeric(32)
 	message := fmt.Sprintf("%s\n%s\n%d\n%s\n%s\n", method, canonicalUrl, timestamp, nonce, body)
 	open, err := os.Open(app.MchPrivateKey) // 商户私有证书路径或者从数据库读取
 	if err != nil {

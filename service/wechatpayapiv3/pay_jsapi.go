@@ -2,7 +2,7 @@ package wechatpayapiv3
 
 import (
 	"fmt"
-	"github.com/dtapps/go-library/utils/random"
+	"github.com/dtapps/go-library/utils/gorandom"
 	"io/ioutil"
 	"os"
 	"time"
@@ -28,7 +28,7 @@ func (app *App) GetJsApi(param GetJsApi) (params GetJsApiResult, err error) {
 
 	// sign params
 	timeStamp := time.Now().Unix()
-	nonce := random.Alphanumeric(32)
+	nonce := gorandom.Alphanumeric(32)
 
 	params.AppId = app.AppId
 	params.TimeStamp = fmt.Sprintf("%v", timeStamp)

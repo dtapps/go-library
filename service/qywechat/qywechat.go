@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/dtapps/go-library/service/qywechat/config"
 	"github.com/dtapps/go-library/service/qywechat/message"
-	utilsJson "github.com/dtapps/go-library/utils/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -15,7 +15,7 @@ type QyBot struct {
 	Key string
 }
 
-type response struct {
+type Response struct {
 	Errcode   int64  `json:"errcode"`
 	Errmsg    string `json:"errmsg"`
 	Type      string `json:"type"`
@@ -23,10 +23,10 @@ type response struct {
 	CreatedAt string `json:"created_at"`
 }
 
-func (bot *QyBot) Send(msg message.Message) (response, error) {
-	var response response
+func (bot *QyBot) Send(msg message.Message) (Response, error) {
+	var response Response
 	qyUrl := fmt.Sprintf("%s?key=%s", config.Api, bot.Key)
-	toString, err := utilsJson.MarshalToString(msg)
+	toString, err := gojson.MarshalToString(msg)
 	if err != nil {
 		return response, err
 	}

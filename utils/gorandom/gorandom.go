@@ -1,4 +1,4 @@
-package random
+package gorandom
 
 import (
 	"math/rand"

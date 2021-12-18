@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"github.com/dtapps/go-library/service/dingtalk/config"
 	"github.com/dtapps/go-library/service/dingtalk/message"
-	utilsJson "github.com/dtapps/go-library/utils/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -20,17 +20,17 @@ type DingBot struct {
 	AccessToken string
 }
 
-type response struct {
+type Response struct {
 	Errcode int64  `json:"errcode"`
 	Errmsg  string `json:"errmsg"`
 }
 
-func (bot *DingBot) Send(msg message.Message) (response, error) {
+func (bot *DingBot) Send(msg message.Message) (Response, error) {
 	timestamp := time.Now().UnixNano() / 1e6
-	var response response
+	var response Response
 	signStr := sign(timestamp, bot.Secret)
 	dingUrl := fmt.Sprintf("%s?access_token=%s&timestamp=%d&sign=%s", config.Api, bot.AccessToken, timestamp, signStr)
-	toString, err := utilsJson.MarshalToString(msg)
+	toString, err := gojson.MarshalToString(msg)
 	if err != nil {
 		return response, err
 	}
