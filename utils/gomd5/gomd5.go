@@ -1,10 +1,18 @@
-package md5
+package gomd5
 
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
+	"io"
 	"strings"
 )
+
+func Php(str string) string {
+	h := md5.New()
+	io.WriteString(h, str)
+	return fmt.Sprintf("%x", h.Sum(nil))
+}
 
 func Md5(str string) string {
 	s := md5.New()
@@ -12,7 +20,8 @@ func Md5(str string) string {
 	return hex.EncodeToString(s.Sum(nil))
 }
 
-func Md5ToUpper(str string) string {
+// ToUpper md5加密后转大写
+func ToUpper(str string) string {
 	h := md5.New()
 	h.Write([]byte(str))
 	cipherStr := h.Sum(nil)
