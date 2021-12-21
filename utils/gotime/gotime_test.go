@@ -37,3 +37,7 @@ func TestDiff(t *testing.T) {
 	fmt.Println(Current().DiffInMinutesWithAbs(SetCurrentParse("2021-11-26 14:50:00").Time))
 	fmt.Println(Current().DiffInMinutes(SetCurrentParse("2021-11-26 14:50:00").Time))
 }
+
+func TestUnix(t *testing.T) {
+	fmt.Println(SetCurrentUnix(1640067240).Format())
+}

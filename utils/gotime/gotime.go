@@ -86,6 +86,13 @@ func SetCurrentParse(str string) Pro {
 	return p
 }
 
+// SetCurrentUnix 设置当前的时间 Unix时间戳
+func SetCurrentUnix(ts int64) Pro {
+	p := NewPro()
+	p.Time = time.Unix(ts, 0)
+	return p
+}
+
 // StartOfDay 本日开始时间
 func (p Pro) StartOfDay() Pro {
 	p.Time = time.Date(p.Time.Year(), p.Time.Month(), p.Time.Day(), 0, 0, 0, 0, p.Time.Location())
