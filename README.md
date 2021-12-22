@@ -8,8 +8,29 @@
 [![goreportcard.com](https://goreportcard.com/badge/github.com/dtapps/go-library)](https://goreportcard.com/report/github.com/dtapps/go-library)
 [![deps.dev](https://img.shields.io/badge/deps-go-red.svg)](https://deps.dev/go/github.com%2Fdtapps%2Fgo-library)
 
-## Install 安装
+#### 安装使用
 
-```Importing
-go get -v -u github.com/dtapps/go-library@v1.0.30
+```go
+go get -v -u github.com/dtapps/go-library
+
+import (
+    "github.com/dtapps/go-library"
+)
+```
+
+#### 用法示例
+
+> 默认时区为 Local，即服务器所在时区
+
+##### 当前时间
+
+```go
+import (
+	"github.com/dtapps/go-library/utils/gotime"
+)
+
+gotime.Current().Now()
+gotime.Current().Format()
+gotime.Current().Timestamp()
+gotime.Current().TimestampWithMillisecond()
 ```
