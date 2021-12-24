@@ -5,6 +5,6 @@ import (
 	"testing"
 )
 
-func TestName(t *testing.T) {
-	fmt.Println(ExternalIP())
+func TestExternalIp(t *testing.T) {
+	fmt.Println(ExternalIp())
 }
