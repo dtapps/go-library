@@ -1,4 +1,4 @@
-package preg
+package gopreg
 
 import (
 	"regexp"

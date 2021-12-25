@@ -1,14 +1,13 @@
 package goint
 
 import (
-	"fmt"
 	"testing"
 )
 
 func TestToString(t *testing.T) {
-	fmt.Println(ToString(2222))
+	t.Log(ToString(9898))
 }
 
 func TestToFloat64(t *testing.T) {
-	fmt.Println(ToFloat64(2222))
+	t.Log(ToFloat64(9898))
 }

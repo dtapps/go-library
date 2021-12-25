@@ -1,0 +1,5 @@
+package goarray
+
+func Grouping() {
+
+}
