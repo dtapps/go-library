@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/dtapps/go-library/utils/request"
+	"github.com/dtapps/go-library/utils/gorequest"
 	"io/ioutil"
 	"net/http"
 )
@@ -49,7 +49,7 @@ func (app *App) request(url string, params map[string]interface{}, method string
 		return nil, result, err
 	}
 	req.Header.Add("Authorization", "WECHATPAY2-SHA256-RSA2048 "+authorization)
-	req.Header.Add("User-Agent", request.GetRandomUserAgent())
+	req.Header.Add("User-Agent", gorequest.GetRandomUserAgent())
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Accept-Language", "zh-CN")

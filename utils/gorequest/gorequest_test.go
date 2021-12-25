@@ -1,10 +1,9 @@
-package request
+package gorequest
 
 import (
-	"fmt"
 	"testing"
 )
 
 func TestExternalIp(t *testing.T) {
-	fmt.Println(ExternalIp())
+	t.Log(ExternalIp())
 }

@@ -1,4 +1,4 @@
-package rsa
+package gorsa
 
 import (
 	"crypto/rand"

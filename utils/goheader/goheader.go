@@ -1,4 +1,4 @@
-package header
+package goheader
 
 import (
 	"encoding/json"

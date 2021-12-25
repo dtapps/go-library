@@ -1,8 +1,9 @@
-package params
+package goparams
 
 import (
 	"encoding/json"
 	"github.com/nilorg/sdk/convert"
+	"log"
 	"net/url"
 )
 
@@ -50,7 +51,7 @@ func GetParamsString(src interface{}) string {
 	}
 	data, err := json.Marshal(src)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	return string(data)
 }

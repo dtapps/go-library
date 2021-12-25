@@ -6,7 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"github.com/bitly/go-simplejson"
-	params3 "github.com/dtapps/go-library/utils/params"
+	"github.com/dtapps/go-library/utils/goparams"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -60,7 +60,7 @@ func sign(params Parameter, customerKey string) string {
 	query := bytes.NewBufferString(customerKey)
 	for _, k := range keys {
 		query.WriteString(k)
-		query.WriteString(params3.GetParamsString(params[k]))
+		query.WriteString(goparams.GetParamsString(params[k]))
 	}
 	// MD5加密
 	h := md5.New()

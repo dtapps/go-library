@@ -1,4 +1,4 @@
-package request
+package gorequest
 
 import (
 	"errors"

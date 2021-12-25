@@ -1,6 +1,7 @@
-package files
+package gofiles
 
 import (
+	"log"
 	"os"
 )
 
@@ -70,4 +71,31 @@ func CreateFiles(path string, perm int) (bool, error) {
 	} else {
 		return true, nil
 	}
+}
+
+// DirExist 判断目录是否存在,存在返回 true
+func DirExist(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
+}
+
+// CreateDir 创建目录
+func CreateDir(path string) error {
+	dirExist, err := DirExist(path)
+	if err != nil {
+		return err
+	}
+	if !dirExist {
+		err := os.Mkdir(path, os.ModePerm)
+		if err != nil {
+			log.Printf("创建[%s]目录失败: %s\n", path, err)
+		}
+	}
+	return err
 }

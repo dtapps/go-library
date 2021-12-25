@@ -5,13 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gorequest"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
-
-	"github.com/dtapps/go-library/utils/request"
 )
 
 type Response struct {
@@ -36,7 +35,7 @@ func Get(url string, params map[string]interface{}) (httpResponse Response, err 
 		req.URL.RawQuery = q.Encode()
 	}
 	// 设置请求头
-	req.Header.Set("User-Agent", request.GetRandomUserAgent())
+	req.Header.Set("User-Agent", gorequest.GetRandomUserAgent())
 	// 发送请求
 	resp, err := client.Do(req)
 	if err != nil {
@@ -71,7 +70,7 @@ func PostForm(targetUrl string, params map[string]interface{}) (httpResponse Res
 	// 创建请求
 	req, _ := http.NewRequest(http.MethodPost, targetUrl, strings.NewReader(form.Encode()))
 	// 设置请求头
-	req.Header.Set("User-Agent", request.GetRandomUserAgent())
+	req.Header.Set("User-Agent", gorequest.GetRandomUserAgent())
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	// 发送请求
 	resp, err := client.Do(req)
@@ -98,7 +97,7 @@ func PostJson(targetUrl string, paramsStr []byte) (httpResponse Response, err er
 	// 创建请求
 	req, _ := http.NewRequest(http.MethodPost, targetUrl, bytes.NewBuffer(paramsStr))
 	// 设置请求头
-	req.Header.Set("User-Agent", request.GetRandomUserAgent())
+	req.Header.Set("User-Agent", gorequest.GetRandomUserAgent())
 	req.Header.Set("Content-Type", "application/json")
 	// 创建 http 客户端
 	client := &http.Client{}
