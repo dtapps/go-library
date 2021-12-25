@@ -1,4 +1,6 @@
-package redis
+package goredis
+
+import "log"
 
 type SliceResult struct {
 	Result []interface{}
@@ -12,7 +14,7 @@ func NewSliceResult(result []interface{}, err error) *SliceResult {
 // Unwrap 空值情况下返回错误
 func (r *SliceResult) Unwrap() []interface{} {
 	if r.Err != nil {
-		panic(r.Err)
+		log.Fatal(r.Err)
 	}
 	return r.Result
 }

@@ -1,4 +1,4 @@
-package redis
+package goredis
 
 type Iterator struct {
 	data  []interface{}

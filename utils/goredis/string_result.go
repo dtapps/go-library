@@ -1,4 +1,6 @@
-package redis
+package goredis
+
+import "log"
 
 type StringResult struct {
 	Result string
@@ -12,7 +14,7 @@ func NewStringResult(result string, err error) *StringResult {
 // Unwrap 空值情况下返回错误
 func (r *StringResult) Unwrap() string {
 	if r.Err != nil {
-		panic(r.Err)
+		log.Fatal(r.Err)
 	}
 	return r.Result
 }
