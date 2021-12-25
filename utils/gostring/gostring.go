@@ -102,13 +102,13 @@ func NumericalToString(value interface{}) (string, bool) {
 		val = strconv.FormatUint(uint64(intVal), 10)
 	case uint64:
 		intVal, _ := value.(uint64)
-		val = strconv.FormatUint(uint64(intVal), 10)
+		val = strconv.FormatUint(intVal, 10)
 	case float32:
 		floatVal, _ := value.(float32)
 		val = strconv.FormatFloat(float64(floatVal), 'f', -1, 32)
 	case float64:
 		floatVal, _ := value.(float64)
-		val = strconv.FormatFloat(float64(floatVal), 'f', -1, 64)
+		val = strconv.FormatFloat(floatVal, 'f', -1, 64)
 	}
 	return val, true
 }
