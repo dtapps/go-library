@@ -1,16 +1,14 @@
 package url
 
 import (
-	"fmt"
+	"log"
 	"testing"
 )
 
 func TestLenCode(t *testing.T) {
-	u := "https://www.dtapp.net"
-	fmt.Println(LenCode(u))
+	log.Println(LenCode("https://www.dtapp.net"))
 }
 
 func TestDeCode(t *testing.T) {
-	u := "https%3A%2F%2Fwww.dtapp.net"
-	fmt.Println(DeCode(u))
+	log.Println(DeCode(LenCode("https://www.dtapp.net")))
 }
