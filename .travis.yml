@@ -4,5 +4,4 @@ go:
   - master
 
 script:
-  - go mod tidy
-  - ls -lh
+  - go test -v ./...
