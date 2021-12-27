@@ -1,5 +1,6 @@
-## v1.0.36 / 2021-12-27
+## v1.0.37 / 2021-12-27
 
+- update kashangwl service
 - update pinduoduo service
 
 ## v1.0.35 / 2021-12-25
