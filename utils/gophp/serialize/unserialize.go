@@ -214,7 +214,7 @@ func readLength(reader *bytes.Reader) (int, error) {
 		return 0, err
 	}
 	if raw, err = readUntil(reader, ':'); err != nil {
-		return 0, fmt.Errorf("UnMarshal: Error while reading lenght of value: %v", err)
+		return 0, fmt.Errorf("UnMarshal: Error while reading length of value: %v", err)
 	} else {
 		if val, err = strconv.Atoi(raw); err != nil {
 			return 0, fmt.Errorf("UnMarshal: Unable to convert %s to int: %v", raw, err)
