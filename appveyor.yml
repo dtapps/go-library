@@ -1,0 +1,14 @@
+build: off
+
+clone_folder: /usr/go/src/github.com/$username/$project
+
+environment:
+  GOPATH: /usr/go/
+
+stack: go 1.17
+
+before_test:
+  - go vet ./...
+
+test_script:
+  - go test ./...
