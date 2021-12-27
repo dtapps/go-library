@@ -1,3 +1,7 @@
+## v1.0.36 / 2021-12-27
+
+- update pinduoduo service
+
 ## v1.0.35 / 2021-12-25
 
 - update utils

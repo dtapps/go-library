@@ -1,4 +1,6 @@
-<h1><a href="https://www.dtapp.net/">Golang Library</a></h1>
+<h1>
+<a href="https://www.dtapp.net/">Golang Library</a>
+</h1>
 
 📦 Golang 扩展包
 
@@ -15,7 +17,6 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/d6rq6xynt8wkev5k?svg=true)](https://ci.appveyor.com/project/dtapps/go-library)
 [![codecov](https://codecov.io/gh/dtapps/go-library/branch/master/graph/badge.svg?token=BrtbyKKPQX)](https://codecov.io/gh/dtapps/go-library)
 [![Build Status](https://app.travis-ci.com/dtapps/go-library.svg?branch=master)](https://app.travis-ci.com/dtapps/go-library)
-
 
 #### 安装使用
 
