@@ -54,6 +54,6 @@ gotime.Current().TimestampWithMillisecond()
 
 ## 🔑 License
 
-[MIT](https://github.com/dtapps/go-library/blob/master/LICENSE.md)
+[MIT](https://github.com/dtapps/go-library/blob/master/LICENSE)
 
 Copyright (c) 2018 茂名聚合科技有限公司
