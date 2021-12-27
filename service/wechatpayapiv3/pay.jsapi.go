@@ -3,8 +3,6 @@ package wechatpayapiv3
 import (
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorandom"
-	"io/ioutil"
-	"os"
 	"time"
 )
 
@@ -24,35 +22,27 @@ type GetJsApiResult struct {
 }
 
 // GetJsApi JSAPI调起支付API https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_4.shtml
-func (app *App) GetJsApi(param GetJsApi) (params GetJsApiResult, err error) {
+func (app *App) GetJsApi(param GetJsApi) (result GetJsApiResult, err error) {
 
 	// sign params
 	timeStamp := time.Now().Unix()
 	nonce := gorandom.Alphanumeric(32)
 
-	params.AppId = app.AppId
-	params.TimeStamp = fmt.Sprintf("%v", timeStamp)
-	params.NonceStr = nonce
-	params.Package = param.Package
+	result.AppId = app.AppId
+	result.TimeStamp = fmt.Sprintf("%v", timeStamp)
+	result.NonceStr = nonce
+	result.Package = param.Package
 
 	// 签名
 	message := fmt.Sprintf("%s\n%s\n%s\n%s\n", app.AppId, fmt.Sprintf("%v", timeStamp), nonce, param.Package)
-	open, err := os.Open(app.MchPrivateKey)
+
+	signBytes, err := app.signPKCS1v15(message, []byte(app.MchPrivateKey))
 	if err != nil {
-		return params, err
-	}
-	defer open.Close()
-	privateKey, err := ioutil.ReadAll(open)
-	if err != nil {
-		return params, err
-	}
-	signBytes, err := app.signPKCS1v15(message, privateKey)
-	if err != nil {
-		return params, err
+		return result, err
 	}
 
 	sign := app.base64EncodeStr(signBytes)
-	params.PaySign = sign
-	params.SignType = "RSA"
-	return params, nil
+	result.PaySign = sign
+	result.SignType = "RSA"
+	return result, nil
 }

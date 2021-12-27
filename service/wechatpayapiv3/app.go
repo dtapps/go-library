@@ -3,12 +3,12 @@ package wechatpayapiv3
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"io/ioutil"
 	"net/http"
 )
 
+// App 微信支付服务
 type App struct {
 	AppId           string // 小程序或者公众号的appid
 	AppSecret       string
@@ -16,7 +16,7 @@ type App struct {
 	AesKey          string
 	ApiV3           string
 	PrivateSerialNo string // 私钥证书号
-	MchPrivateKey   string // 路径 apiclient_key.pem
+	MchPrivateKey   string // 商户私有证书内容 apiclient_key.pem
 }
 
 // ErrResp 错误返回
@@ -32,19 +32,17 @@ type ErrResp struct {
 }
 
 func (app *App) request(url string, params map[string]interface{}, method string) (resp []byte, result ErrResp, err error) {
-
-	// common params
-	if method == "POST" {
-		params["appid"] = app.AppId
-		params["mchid"] = app.MchId
+	// 公共参数
+	if method == http.MethodPost {
+		if url != "https://api.mch.weixin.qq.com/v3/refund/domestic/refunds" {
+			params["appid"] = app.AppId
+			params["mchid"] = app.MchId
+		}
 	}
-
-	canonicalURL := fmt.Sprintf("%s/%s", WechatPayAPIServer, url)
-	authorization, err := app.authorization(method, params, canonicalURL)
+	authorization, err := app.authorization(method, params, url)
 	marshal, _ := json.Marshal(params)
-
 	var req *http.Request
-	req, err = http.NewRequest(method, canonicalURL, bytes.NewReader(marshal))
+	req, err = http.NewRequest(method, url, bytes.NewReader(marshal))
 	if err != nil {
 		return nil, result, err
 	}

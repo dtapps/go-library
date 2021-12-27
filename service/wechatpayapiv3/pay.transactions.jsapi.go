@@ -74,6 +74,7 @@ type PayTransactionsJsapiResult struct {
 
 // PayTransactionsJsapi 小程序 JSAPI下单 https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_5_1.shtml
 func (app *App) PayTransactionsJsapi(param PayTransactionsJsapi) (resp PayTransactionsJsapiResult, result ErrResp, err error) {
+
 	// api params
 	params := map[string]interface{}{}
 	b, _ := json.Marshal(&param)
@@ -83,7 +84,7 @@ func (app *App) PayTransactionsJsapi(param PayTransactionsJsapi) (resp PayTransa
 		params[k] = v
 	}
 
-	body, result, err := app.request("pay/transactions/jsapi", params, "POST")
+	body, result, err := app.request("https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi", params, "POST")
 
 	if err != nil {
 		return

@@ -14,9 +14,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorandom"
-	"io/ioutil"
 	"net/url"
-	"os"
 	"time"
 )
 
@@ -72,18 +70,8 @@ func (app *App) authorization(method string, paramMap map[string]interface{}, ra
 	timestamp := time.Now().Unix()
 	nonce := gorandom.Alphanumeric(32)
 	message := fmt.Sprintf("%s\n%s\n%d\n%s\n%s\n", method, canonicalUrl, timestamp, nonce, body)
-	open, err := os.Open(app.MchPrivateKey) // 商户私有证书路径或者从数据库读取
-	if err != nil {
-		return token, err
-	}
-	defer open.Close()
-	privateKey, err := ioutil.ReadAll(open)
 
-	if err != nil {
-		return token, err
-	}
-
-	signBytes, err := app.signPKCS1v15(message, privateKey)
+	signBytes, err := app.signPKCS1v15(message, []byte(app.MchPrivateKey))
 
 	if err != nil {
 		return token, err

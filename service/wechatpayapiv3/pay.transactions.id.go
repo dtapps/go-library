@@ -5,12 +5,12 @@ import (
 	"fmt"
 )
 
-type PayTransactionsOutTradeNo struct {
-	OutTradeNo string `json:"out_trade_no"`
+type PayTransactionsId struct {
+	TransactionId string `json:"transaction_id"`
 }
 
-// PayTransactionsOutTradeNoResult 返回参数
-type PayTransactionsOutTradeNoResult struct {
+// PayTransactionsIdResult 返回参数
+type PayTransactionsIdResult struct {
 	Appid          string `json:"appid"`
 	Mchid          string `json:"mchid"`
 	OutTradeNo     string `json:"out_trade_no"`
@@ -54,10 +54,10 @@ type PayTransactionsOutTradeNoResult struct {
 	}
 }
 
-// PayTransactionsOutTradeNo 商户订单号查询 https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_2.shtml
-func (app *App) PayTransactionsOutTradeNo(param PayTransactionsOutTradeNo) (resp PayTransactionsOutTradeNoResult, result ErrResp, err error) {
+// PayTransactionsId 微信支付订单号查询 https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_2.shtml
+func (app *App) PayTransactionsId(param PayTransactionsId) (resp PayTransactionsIdResult, result ErrResp, err error) {
 
-	body, result, err := app.request(fmt.Sprintf("pay/transactions/out-trade-no/%s?mchid=%s", param.OutTradeNo, app.MchId), map[string]interface{}{}, "GET")
+	body, result, err := app.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/pay/transactions/id/%s?mchid=%s", param.TransactionId, app.MchId), map[string]interface{}{}, "GET")
 
 	if err != nil {
 		return
