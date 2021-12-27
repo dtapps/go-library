@@ -46,7 +46,7 @@ gotime.Current().TimestampWithMillisecond()
 
 ## JetBrains 开源证书支持
 
-`go-library` 基于 JetBrains 公司旗下的 GoLand 集成开发环境中进行开发，基于免费开源许可证。
+`go-library` 基于 JetBrains 公司旗下的 GoLand 集成开发环境中进行开发。
 
 <a href="https://www.jetbrains.com/?from=kubeadm-ha" target="_blank">
 <img src="https://raw.githubusercontent.com/panjf2000/illustrations/master/jetbrains/jetbrains-variant-4.png" width="250" align="middle"/>
