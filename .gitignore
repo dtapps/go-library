@@ -4,11 +4,3 @@
 .idea
 .vscode
 *.log
-git.sh
-gittag.sh
-gittagdel.sh
-gomod@latest.sh
-/gitmod.sh
-tests/
-/tests
-/tests/

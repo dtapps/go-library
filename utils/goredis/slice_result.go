@@ -1,12 +1,11 @@
 package goredis
 
-import "log"
-
 type SliceResult struct {
 	Result []interface{}
 	Err    error
 }
 
+// NewSliceResult 构造函数
 func NewSliceResult(result []interface{}, err error) *SliceResult {
 	return &SliceResult{Result: result, Err: err}
 }
@@ -14,7 +13,7 @@ func NewSliceResult(result []interface{}, err error) *SliceResult {
 // Unwrap 空值情况下返回错误
 func (r *SliceResult) Unwrap() []interface{} {
 	if r.Err != nil {
-		log.Fatal(r.Err)
+		panic(r.Err)
 	}
 	return r.Result
 }

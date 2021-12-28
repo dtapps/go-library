@@ -23,6 +23,7 @@ type SimpleCache struct {
 	Serializer string           // 序列化方式
 }
 
+// NewSimpleCache 构造函数
 func (app *App) NewSimpleCache(operation *StringOperation, expire time.Duration, serializer string) *SimpleCache {
 	return &SimpleCache{
 		Operation:  operation,  // 操作类
