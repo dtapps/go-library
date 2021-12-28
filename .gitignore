@@ -9,3 +9,6 @@ gittag.sh
 gittagdel.sh
 gomod@latest.sh
 /gitmod.sh
+tests/
+/tests
+/tests/
