@@ -3,6 +3,7 @@ package wechatminiprogram
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 )
 
 // SubscribeMessageSend 入参
@@ -21,6 +22,8 @@ type SubscribeMessageSendResult struct {
 	Errmsg  string // 错误信息
 }
 
+// SubscribeMessageSend 发送订阅消息
+// https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/subscribe-message/subscribeMessage.send.html
 func (app *App) SubscribeMessageSend(param SubscribeMessageSend) (result SubscribeMessageSendResult, err error) {
 	// api params
 	params := map[string]interface{}{}
@@ -32,7 +35,7 @@ func (app *App) SubscribeMessageSend(param SubscribeMessageSend) (result Subscri
 	}
 
 	// request
-	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=%s", app.AccessToken), params, "POST")
+	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=%s", app.AccessToken), params, http.MethodPost)
 	if err != nil {
 		return
 	}

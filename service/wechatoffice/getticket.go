@@ -13,6 +13,8 @@ type GetTicketResult struct {
 	ExpiresIn int    `json:"expires_in"`
 }
 
+// GetTicket 获取api_ticket
+// https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html
 func (app *App) GetTicket(accessToken, Type string) (result GetTicketResult, err error) {
 	// request
 	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=%s", accessToken, Type), map[string]interface{}{}, "GET")
