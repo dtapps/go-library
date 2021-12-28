@@ -23,8 +23,12 @@ type SimpleCache struct {
 	Serializer string           // 序列化方式
 }
 
-func NewSimpleCache(operation *StringOperation, expire time.Duration, serializer string) *SimpleCache {
-	return &SimpleCache{Operation: operation, Expire: expire, Serializer: serializer}
+func (app *App) NewSimpleCache(operation *StringOperation, expire time.Duration, serializer string) *SimpleCache {
+	return &SimpleCache{
+		Operation:  operation,  // 操作类
+		Expire:     expire,     // 过去时间
+		Serializer: serializer, // 缓存不存在的操作 DB
+	}
 }
 
 // SetCache 设置缓存

@@ -2,15 +2,20 @@ package goredis
 
 import (
 	"context"
+	"github.com/go-redis/redis/v8"
 	"time"
 )
 
 type StringOperation struct {
+	db  *redis.Client
 	ctx context.Context
 }
 
-func NewStringOperation() *StringOperation {
-	return &StringOperation{ctx: context.Background()}
+func (app *App) NewStringOperation() *StringOperation {
+	return &StringOperation{
+		db:  app.Rdb,
+		ctx: context.Background(),
+	}
 }
 
 // Set 设置
@@ -19,15 +24,15 @@ func (o *StringOperation) Set(key string, value interface{}, attrs ...*Operation
 	if exp == nil {
 		exp = time.Second * 0
 	}
-	return NewStringResult(Rdb.Set(o.ctx, key, value, exp.(time.Duration)).Result())
+	return NewStringResult(o.db.Set(o.ctx, key, value, exp.(time.Duration)).Result())
 }
 
 // Get 获取单个
 func (o *StringOperation) Get(key string) *StringResult {
-	return NewStringResult(Rdb.Get(o.ctx, key).Result())
+	return NewStringResult(o.db.Get(o.ctx, key).Result())
 }
 
 // MGet 获取多个
 func (o *StringOperation) MGet(keys ...string) *SliceResult {
-	return NewSliceResult(Rdb.MGet(o.ctx, keys...).Result())
+	return NewSliceResult(o.db.MGet(o.ctx, keys...).Result())
 }

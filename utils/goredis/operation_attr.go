@@ -5,8 +5,8 @@ import "time"
 type empty struct{}
 
 const (
-	AttrExpr = "expr" //过期时间
-	AttrNx   = "nx"   // setNx
+	AttrExpr = "expr" // 过期时间
+	AttrNx   = "nx"   // 设置Nx
 )
 
 type OperationAttr struct {
