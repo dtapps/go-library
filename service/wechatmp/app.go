@@ -4,18 +4,24 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/go-redis/redis/v8"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 	"io/ioutil"
 	"net/http"
 )
 
 // App 微信小程序服务
 type App struct {
-	AppId       string      // 小程序唯一凭证，即 AppID
-	AppSecret   string      // 小程序唯一凭证密钥，即 AppSecret
-	AccessToken string      // 接口调用凭证
-	JsapiTicket string      // 签名凭证
-	ZapLog      *zap.Logger // 日志服务
+	AppId       string        // 小程序唯一凭证，即 AppID
+	AppSecret   string        // 小程序唯一凭证密钥，即 AppSecret
+	AccessToken string        // 接口调用凭证
+	JsapiTicket string        // 签名凭证
+	ZapLog      *zap.Logger   // 日志服务
+	Db          *gorm.DB      // 关系数据库服务
+	RDb         *redis.Client // 缓存数据库服务
+	MDb         *mongo.Client // 非关系数据库服务
 }
 
 func (app *App) request(url string, params map[string]interface{}, method string) (resp []byte, err error) {

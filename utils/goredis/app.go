@@ -2,6 +2,8 @@ package goredis
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"github.com/go-redis/redis/v8"
 	"time"
 )
@@ -16,7 +18,7 @@ type App struct {
 }
 
 // InitClient 初始化连接 普通连接
-func (app *App) InitClient() (err error) {
+func (app *App) InitClient() {
 	if app.PoolSize == 0 {
 		app.PoolSize = 100
 	}
@@ -30,6 +32,9 @@ func (app *App) InitClient() (err error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	_, err = app.Rdb.Ping(ctx).Result()
-	return err
+	_, err := app.Rdb.Ping(ctx).Result()
+	if err != nil {
+		panic(errors.New(fmt.Sprintf("goredis ping error：%v", err)))
+	}
+	return
 }
