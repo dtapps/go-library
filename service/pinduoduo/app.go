@@ -3,8 +3,8 @@ package pinduoduo
 import (
 	"encoding/json"
 	"fmt"
+	"go.uber.org/zap"
 	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
-	"gopkg.in/dtapps/go-library.v3/utils/golog"
 	"gopkg.in/dtapps/go-library.v3/utils/gostring"
 	"regexp"
 	"strconv"
@@ -13,10 +13,10 @@ import (
 
 // App 公共请求参数
 type App struct {
-	ClientId     string    // POP分配给应用的client_id
-	ClientSecret string    // POP分配给应用的client_secret
-	Pid          string    // 推广位
-	ZapLog       golog.App // 日志服务
+	ClientId     string      // POP分配给应用的client_id
+	ClientSecret string      // POP分配给应用的client_secret
+	Pid          string      // 推广位
+	ZapLog       *zap.Logger // 日志服务
 }
 
 type ErrResp struct {
@@ -40,9 +40,8 @@ func (app *App) request(params map[string]interface{}) (resp []byte, err error) 
 	// 发送请求
 	httpGet, err := gohttp.Get("https://gw-api.pinduoduo.com/api/router", params)
 	// 日志
-	if app.ZapLog.Logger != nil {
-		app.ZapLog.LogName = "pinduoduo.log"
-		app.ZapLog.Logger.Sugar().Info(httpGet)
+	if app.ZapLog != nil {
+		app.ZapLog.Sugar().Info(httpGet)
 	}
 	// 检查错误
 	var errResp ErrResp

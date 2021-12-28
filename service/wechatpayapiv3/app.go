@@ -3,7 +3,7 @@ package wechatpayapiv3
 import (
 	"bytes"
 	"encoding/json"
-	"gopkg.in/dtapps/go-library.v3/utils/golog"
+	"go.uber.org/zap"
 	"gopkg.in/dtapps/go-library.v3/utils/gorequest"
 	"io/ioutil"
 	"net/http"
@@ -16,9 +16,9 @@ type App struct {
 	MchId           string // 微信支付的商户id
 	AesKey          string
 	ApiV3           string
-	PrivateSerialNo string    // 私钥证书号
-	MchPrivateKey   string    // 商户私有证书内容 apiclient_key.pem
-	ZapLog          golog.App // 日志服务
+	PrivateSerialNo string      // 私钥证书号
+	MchPrivateKey   string      // 商户私有证书内容 apiclient_key.pem
+	ZapLog          *zap.Logger // 日志服务
 }
 
 // ErrResp 错误返回
@@ -72,9 +72,8 @@ func (app *App) request(url string, params map[string]interface{}, method string
 	}
 
 	// 日志
-	if app.ZapLog.Logger != nil {
-		app.ZapLog.LogName = "wechatpayapiv3.log"
-		app.ZapLog.Logger.Sugar().Info(result)
+	if app.ZapLog != nil {
+		app.ZapLog.Sugar().Info(result)
 	}
 
 	// 检查请求错误

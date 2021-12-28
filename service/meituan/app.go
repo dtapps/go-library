@@ -3,16 +3,16 @@ package meituan
 import (
 	"encoding/json"
 	"errors"
+	"go.uber.org/zap"
 	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
-	"gopkg.in/dtapps/go-library.v3/utils/golog"
 	"net/http"
 )
 
 // App 美团联盟
 type App struct {
-	Secret string    // 秘钥
-	AppKey string    // 渠道标记
-	ZapLog golog.App // 日志服务
+	Secret string      // 秘钥
+	AppKey string      // 渠道标记
+	ZapLog *zap.Logger // 日志服务
 }
 
 func (app *App) request(url string, params map[string]interface{}, method string) (resp []byte, err error) {
@@ -21,9 +21,8 @@ func (app *App) request(url string, params map[string]interface{}, method string
 		// 请求
 		get, err := gohttp.Get(url, params)
 		// 日志
-		if app.ZapLog.Logger != nil {
-			app.ZapLog.LogName = "meituan.log"
-			app.ZapLog.Logger.Sugar().Info(get)
+		if app.ZapLog != nil {
+			app.ZapLog.Sugar().Info(get)
 		}
 		return get.Body, err
 	case http.MethodPost:
@@ -31,9 +30,8 @@ func (app *App) request(url string, params map[string]interface{}, method string
 		paramsStr, err := json.Marshal(params)
 		postJson, err := gohttp.PostJson(url, paramsStr)
 		// 日志
-		if app.ZapLog.Logger != nil {
-			app.ZapLog.LogName = "meituan.log"
-			app.ZapLog.Logger.Sugar().Info(postJson)
+		if app.ZapLog != nil {
+			app.ZapLog.Sugar().Info(postJson)
 		}
 		return postJson.Body, err
 	default:

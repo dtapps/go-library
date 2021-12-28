@@ -2,8 +2,8 @@ package wikeyun
 
 import (
 	"fmt"
+	"go.uber.org/zap"
 	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
-	"gopkg.in/dtapps/go-library.v3/utils/golog"
 )
 
 type App struct {
@@ -11,7 +11,7 @@ type App struct {
 	AppKey    int
 	AppSecret string
 	ClientIP  string
-	ZapLog    golog.App // 日志服务
+	ZapLog    *zap.Logger // 日志服务
 }
 
 func (app *App) request(url string, params map[string]interface{}) (resp []byte, err error) {
@@ -21,9 +21,8 @@ func (app *App) request(url string, params map[string]interface{}) (resp []byte,
 	requestUrl := fmt.Sprintf("%s?app_key=%d&timestamp=%s&client=%s&format=%s&v=%s&sign=%s", url, app.AppKey, sign.Timestamp, sign.Client, sign.Format, sign.V, sign.Sign)
 	postForm, err := gohttp.PostForm(requestUrl, params)
 	// 日志
-	if app.ZapLog.Logger != nil {
-		app.ZapLog.LogName = "wikeyun.log"
-		app.ZapLog.Logger.Sugar().Info(postForm)
+	if app.ZapLog != nil {
+		app.ZapLog.Sugar().Info(postForm)
 	}
 	return postForm.Body, err
 }

@@ -3,8 +3,8 @@ package ejiaofei
 import (
 	"errors"
 	"fmt"
+	"go.uber.org/zap"
 	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
-	"gopkg.in/dtapps/go-library.v3/utils/golog"
 	"gopkg.in/dtapps/go-library.v3/utils/gomd5"
 	"net/http"
 )
@@ -14,7 +14,7 @@ type App struct {
 	Pwd     string
 	Key     string
 	signStr string
-	ZapLog  golog.App // 日志服务
+	ZapLog  *zap.Logger // 日志服务
 }
 
 func (app *App) request(url string, params map[string]interface{}, method string) ([]byte, error) {
@@ -28,18 +28,16 @@ func (app *App) request(url string, params map[string]interface{}, method string
 		// 请求
 		get, err := gohttp.Get(url, params)
 		// 日志
-		if app.ZapLog.Logger != nil {
-			app.ZapLog.LogName = "ejiaofei.log"
-			app.ZapLog.Logger.Sugar().Info(get)
+		if app.ZapLog != nil {
+			app.ZapLog.Sugar().Info(get)
 		}
 		return get.Body, err
 	case http.MethodPost:
 		// 请求
 		postJson, err := gohttp.PostForm(url, params)
 		// 日志
-		if app.ZapLog.Logger != nil {
-			app.ZapLog.LogName = "ejiaofei.log"
-			app.ZapLog.Logger.Sugar().Info(postJson)
+		if app.ZapLog != nil {
+			app.ZapLog.Sugar().Info(postJson)
 		}
 		return postJson.Body, err
 	default:
