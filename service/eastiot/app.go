@@ -2,6 +2,7 @@ package eastiot
 
 import (
 	"errors"
+	"fmt"
 	"go.uber.org/zap"
 	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
 	"net/http"
@@ -26,7 +27,7 @@ func (app *App) request(url string, params map[string]interface{}, method string
 		get, err := gohttp.Get(url, params)
 		// 日志
 		if app.ZapLog != nil {
-			app.ZapLog.Sugar().Info(get)
+			app.ZapLog.Sugar().Info(fmt.Sprintf("%s", get.Body))
 		}
 		return get.Body, err
 	case http.MethodPost:
@@ -34,7 +35,7 @@ func (app *App) request(url string, params map[string]interface{}, method string
 		postJson, err := gohttp.PostForm(url, params)
 		// 日志
 		if app.ZapLog != nil {
-			app.ZapLog.Sugar().Info(postJson)
+			app.ZapLog.Sugar().Info(fmt.Sprintf("%s", postJson.Body))
 		}
 		return postJson.Body, err
 	default:

@@ -3,6 +3,7 @@ package wechatmp
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"go.uber.org/zap"
 	"io/ioutil"
 	"net/http"
@@ -40,7 +41,7 @@ func (app *App) request(url string, params map[string]interface{}, method string
 
 	// 日志
 	if app.ZapLog != nil {
-		app.ZapLog.Sugar().Info(response.Body)
+		app.ZapLog.Sugar().Info(fmt.Sprintf("%s", resp))
 	}
 
 	// 检查请求错误

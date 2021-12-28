@@ -38,15 +38,15 @@ func (app *App) request(params map[string]interface{}) (resp []byte, err error) 
 	// 签名
 	app.Sign(params)
 	// 发送请求
-	httpGet, err := gohttp.Get("https://gw-api.pinduoduo.com/api/router", params)
+	get, err := gohttp.Get("https://gw-api.pinduoduo.com/api/router", params)
 	// 日志
 	if app.ZapLog != nil {
-		app.ZapLog.Sugar().Info(httpGet)
+		app.ZapLog.Sugar().Info(fmt.Sprintf("%s", get.Body))
 	}
 	// 检查错误
 	var errResp ErrResp
-	_ = json.Unmarshal(httpGet.Body, &errResp)
-	return httpGet.Body, err
+	_ = json.Unmarshal(get.Body, &errResp)
+	return get.Body, err
 }
 
 func (app *App) SalesTipParseInt64(salesTip string) int64 {

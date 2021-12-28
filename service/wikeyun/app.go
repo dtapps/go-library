@@ -22,7 +22,7 @@ func (app *App) request(url string, params map[string]interface{}) (resp []byte,
 	postForm, err := gohttp.PostForm(requestUrl, params)
 	// 日志
 	if app.ZapLog != nil {
-		app.ZapLog.Sugar().Info(postForm)
+		app.ZapLog.Sugar().Info(fmt.Sprintf("%s", postForm.Body))
 	}
 	return postForm.Body, err
 }

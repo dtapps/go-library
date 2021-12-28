@@ -56,7 +56,7 @@ func (app *App) request(url string, params map[string]interface{}) ([]byte, erro
 
 	// 日志
 	if app.ZapLog != nil {
-		app.ZapLog.Sugar().Info(response.Body)
+		app.ZapLog.Sugar().Info(fmt.Sprintf("%s", body))
 	}
 
 	// 检查错误
