@@ -3,8 +3,8 @@ package pinduoduo
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gohttp"
-	"github.com/dtapps/go-library/utils/gostring"
+	"gopkg.in/dtapps/go-library.v2/utils/gohttp"
+	"gopkg.in/dtapps/go-library.v2/utils/gostring"
 	"regexp"
 	"strconv"
 	"strings"

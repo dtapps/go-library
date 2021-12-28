@@ -1,9 +1,8 @@
 package dingdanxia
 
 import (
+	"gopkg.in/dtapps/go-library.v2/utils/gohttp"
 	"net/http"
-
-	"github.com/dtapps/go-library/utils/gohttp"
 )
 
 type App struct {

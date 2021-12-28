@@ -3,7 +3,7 @@ package wechatmp
 import (
 	"crypto/sha1"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gorandom"
+	"gopkg.in/dtapps/go-library.v2/utils/gorandom"
 	"io"
 	"time"
 )

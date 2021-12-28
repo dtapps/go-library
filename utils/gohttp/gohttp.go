@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"gopkg.in/dtapps/go-library.v2/utils/gorequest"
 	"io/ioutil"
 	"net/http"
 	"net/url"

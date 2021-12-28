@@ -3,7 +3,7 @@ package ip2region
 import (
 	_ "embed"
 	"errors"
-	"github.com/dtapps/go-library/utils/gostring"
+	"gopkg.in/dtapps/go-library.v2/utils/gostring"
 	"os"
 	"strconv"
 	"strings"

@@ -2,7 +2,7 @@ package gouuid_test
 
 import (
 	"fmt"
-	"github.com/dtapps/go-library/utils/gouuid"
+	"gopkg.in/dtapps/go-library.v2/utils/gouuid"
 	"testing"
 )
 

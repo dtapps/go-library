@@ -5,15 +5,15 @@
 📦 Golang 扩展包
 
 [comment]: <> (go)
-[![Release](https://img.shields.io/github/release/dtapps/go-library.svg)](https://github.com/dtapps/go-library/releases/latest)
-[![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/dtapps/go-library)
-[![go](https://github.com/dtapps/go-library/actions/workflows/go.yml/badge.svg)](https://github.com/dtapps/go-library/actions/workflows/go.yml)
-[![godoc](https://pkg.go.dev/badge/github.com/dtapps/go-library?status.svg)](https://pkg.go.dev/github.com/dtapps/go-library)
-[![goproxy.cn](https://goproxy.cn/stats/github.com/dtapps/go-library/badges/download-count.svg)](https://goproxy.cn/stats/github.com/dtapps/go-library)
-[![goreportcard.com](https://goreportcard.com/badge/github.com/dtapps/go-library)](https://goreportcard.com/report/github.com/dtapps/go-library)
+[![Release](https://img.shields.io/github/release/dtapps/go-library.svg)](https://gopkg.in/dtapps/go-library.v2/releases/latest)
+[![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://gopkg.in/dtapps/go-library.v2)
+[![go](https://gopkg.in/dtapps/go-library.v2/actions/workflows/go.yml/badge.svg)](https://gopkg.in/dtapps/go-library.v2/actions/workflows/go.yml)
+[![godoc](https://pkg.go.dev/badge/gopkg.in/dtapps/go-library.v2?status.svg)](https://pkg.go.dev/gopkg.in/dtapps/go-library.v2)
+[![goproxy.cn](https://goproxy.cn/stats/gopkg.in/dtapps/go-library.v2/badges/download-count.svg)](https://goproxy.cn/stats/gopkg.in/dtapps/go-library.v2)
+[![goreportcard.com](https://goreportcard.com/badge/gopkg.in/dtapps/go-library.v2)](https://goreportcard.com/report/gopkg.in/dtapps/go-library.v2)
 [![deps.dev](https://img.shields.io/badge/deps-go-red.svg)](https://deps.dev/go/github.com%2Fdtapps%2Fgo-library)
 [![Coverage Status](https://coveralls.io/repos/github/dtapps/go-library/badge.svg?branch=master)](https://coveralls.io/github/dtapps/go-library?branch=master)
-[![Sourcegraph](https://sourcegraph.com/github.com/dtapps/go-library/-/badge.svg)](https://sourcegraph.com/github.com/dtapps/go-library?badge)
+[![Sourcegraph](https://sourcegraph.com/gopkg.in/dtapps/go-library.v2/-/badge.svg)](https://sourcegraph.com/gopkg.in/dtapps/go-library.v2?badge)
 [![Build status](https://ci.appveyor.com/api/projects/status/d6rq6xynt8wkev5k?svg=true)](https://ci.appveyor.com/project/dtapps/go-library)
 [![codecov](https://codecov.io/gh/dtapps/go-library/branch/master/graph/badge.svg?token=BrtbyKKPQX)](https://codecov.io/gh/dtapps/go-library)
 [![Build Status](https://app.travis-ci.com/dtapps/go-library.svg?branch=master)](https://app.travis-ci.com/dtapps/go-library)
@@ -21,10 +21,10 @@
 #### 安装使用
 
 ```go
-go get -v -u github.com/dtapps/go-library
+go get -v -u gopkg.in/dtapps/go-library.v2
 
 import (
-    "github.com/dtapps/go-library"
+    "gopkg.in/dtapps/go-library.v2"
 )
 ```
 
@@ -36,7 +36,7 @@ import (
 
 ```go
 import (
-	"github.com/dtapps/go-library/utils/gotime"
+	"gopkg.in/dtapps/go-library.v2/utils/gotime"
 )
 
 gotime.Current().Now()
@@ -55,6 +55,6 @@ gotime.Current().TimestampWithMillisecond()
 
 ## 🔑 License
 
-[MIT](https://github.com/dtapps/go-library/blob/master/LICENSE)
+[MIT](https://gopkg.in/dtapps/go-library.v2/blob/master/LICENSE)
 
 Copyright (c) 2018 茂名聚合科技有限公司

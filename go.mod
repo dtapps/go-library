@@ -1,4 +1,4 @@
-module github.com/dtapps/go-library
+module gopkg.in/dtapps/go-library.v2
 
 go 1.17
 

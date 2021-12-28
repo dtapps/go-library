@@ -2,7 +2,7 @@ package kashangwl
 
 import (
 	"encoding/json"
-	"github.com/dtapps/go-library/utils/gohttp"
+	"gopkg.in/dtapps/go-library.v2/utils/gohttp"
 	"time"
 )
 
