@@ -2,7 +2,7 @@ package dingtalk
 
 import (
 	"fmt"
-	"gopkg.in/dtapps/go-library.v2/service/dingtalk/message"
+	"gopkg.in/dtapps/go-library.v3/service/dingtalk/message"
 	"testing"
 )
 

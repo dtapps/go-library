@@ -3,7 +3,7 @@ package v6
 import (
 	_ "embed"
 	"encoding/binary"
-	"gopkg.in/dtapps/go-library.v2/utils/gostring"
+	"gopkg.in/dtapps/go-library.v3/utils/gostring"
 	"math/big"
 	"net"
 	"strings"

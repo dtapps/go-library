@@ -1,4 +1,4 @@
-module gopkg.in/dtapps/go-library.v2
+module gopkg.in/dtapps/go-library.v3
 
 go 1.17
 

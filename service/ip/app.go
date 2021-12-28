@@ -1,9 +1,9 @@
 package ip
 
 import (
-	"gopkg.in/dtapps/go-library.v2/service/ip/ip2region"
-	v4 "gopkg.in/dtapps/go-library.v2/service/ip/v4"
-	v6 "gopkg.in/dtapps/go-library.v2/service/ip/v6"
+	"gopkg.in/dtapps/go-library.v3/service/ip/ip2region"
+	v4 "gopkg.in/dtapps/go-library.v3/service/ip/v4"
+	v6 "gopkg.in/dtapps/go-library.v3/service/ip/v6"
 	"os"
 	"strings"
 )

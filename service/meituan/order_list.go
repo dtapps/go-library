@@ -2,7 +2,7 @@ package meituan
 
 import (
 	"encoding/json"
-	"gopkg.in/dtapps/go-library.v2/utils/gotime"
+	"gopkg.in/dtapps/go-library.v3/utils/gotime"
 )
 
 // OrderList 请求参数

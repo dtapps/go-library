@@ -2,8 +2,8 @@ package ejiaofei
 
 import (
 	"fmt"
-	"gopkg.in/dtapps/go-library.v2/utils/gohttp"
-	"gopkg.in/dtapps/go-library.v2/utils/gomd5"
+	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
+	"gopkg.in/dtapps/go-library.v3/utils/gomd5"
 	"net/http"
 )
 

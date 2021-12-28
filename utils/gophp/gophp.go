@@ -1,6 +1,6 @@
 package gophp
 
-import "gopkg.in/dtapps/go-library.v2/utils/gophp/serialize"
+import "gopkg.in/dtapps/go-library.v3/utils/gophp/serialize"
 
 // Serialize 序列
 func Serialize(value interface{}) ([]byte, error) {

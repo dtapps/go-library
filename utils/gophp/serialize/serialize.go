@@ -3,8 +3,8 @@ package serialize
 import (
 	"bytes"
 	"fmt"
-	"gopkg.in/dtapps/go-library.v2/utils/goless"
-	"gopkg.in/dtapps/go-library.v2/utils/gostring"
+	"gopkg.in/dtapps/go-library.v3/utils/goless"
+	"gopkg.in/dtapps/go-library.v3/utils/gostring"
 	"reflect"
 	"sort"
 )

@@ -5,7 +5,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
-	"gopkg.in/dtapps/go-library.v2/utils/goparams"
+	"gopkg.in/dtapps/go-library.v3/utils/goparams"
 	"io"
 	"net/url"
 	"sort"
