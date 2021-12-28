@@ -2,6 +2,7 @@ package meituan
 
 import (
 	"encoding/json"
+	"net/http"
 )
 
 // GenerateLinkResult 返回参数
@@ -27,7 +28,7 @@ func (app *App) GenerateLink(actId int64, sid string, linkType, shortLink int) (
 	params["sign"] = app.getSign(app.Secret, params)
 
 	// 请求
-	body, err := app.request("https://openapi.meituan.com/api/generateLink", params, "GET")
+	body, err := app.request("https://openapi.meituan.com/api/generateLink", params, http.MethodGet)
 	if err != nil {
 		return
 	}

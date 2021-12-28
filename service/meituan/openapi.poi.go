@@ -2,6 +2,7 @@ package meituan
 
 import (
 	"encoding/json"
+	"net/http"
 )
 
 type OpenapiPoiCategoryResult struct {
@@ -26,7 +27,7 @@ func (app *App) OpenapiPoiCategory(cityID int) (result OpenapiPoiCategoryResult,
 	params := app.NewParamsWith(param)
 
 	// 请求
-	body, err := app.request("https://openapi.meituan.com/poi/category", params, "GET")
+	body, err := app.request("https://openapi.meituan.com/poi/category", params, http.MethodGet)
 	if err != nil {
 		return
 	}
@@ -58,7 +59,7 @@ func (app *App) OpenapiPoiArea(cityID int) (result OpenapiPoiAreaResult, err err
 	params := app.NewParamsWith(param)
 
 	// 请求
-	body, err := app.request("https://openapi.meituan.com/poi/area", params, "GET")
+	body, err := app.request("https://openapi.meituan.com/poi/area", params, http.MethodGet)
 	if err != nil {
 		return
 	}
@@ -86,7 +87,7 @@ func (app *App) OpenapiPoiDistrict(cityID int) (result OpenapiPoiDistrictResult,
 	params := app.NewParamsWith(param)
 
 	// 请求
-	body, err := app.request("https://openapi.meituan.com/poi/district", params, "GET")
+	body, err := app.request("https://openapi.meituan.com/poi/district", params, http.MethodGet)
 	if err != nil {
 		return
 	}
@@ -109,7 +110,7 @@ type OpenapiPoiCityResult struct {
 func (app *App) OpenapiPoiCity() (result OpenapiPoiCityResult, err error) {
 
 	// 请求
-	body, err := app.request("https://openapi.meituan.com/poi/city", map[string]interface{}{}, "GET")
+	body, err := app.request("https://openapi.meituan.com/poi/city", map[string]interface{}{}, http.MethodGet)
 	if err != nil {
 		return
 	}

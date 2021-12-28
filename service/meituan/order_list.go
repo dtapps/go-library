@@ -3,6 +3,7 @@ package meituan
 import (
 	"encoding/json"
 	"gopkg.in/dtapps/go-library.v3/utils/gotime"
+	"net/http"
 )
 
 // OrderList 请求参数
@@ -59,7 +60,7 @@ func (app *App) OrderList(param OrderList) (result OrderListResult, err error) {
 	params["ts"] = gotime.Current().Timestamp()
 	params["key"] = app.AppKey
 	params["sign"] = app.getSign(app.Secret, params)
-	body, err := app.request("https://runion.meituan.com/api/orderList", params, "GET")
+	body, err := app.request("https://runion.meituan.com/api/orderList", params, http.MethodGet)
 
 	if err != nil {
 		return

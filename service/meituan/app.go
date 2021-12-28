@@ -2,27 +2,41 @@ package meituan
 
 import (
 	"encoding/json"
+	"errors"
 	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
+	"gopkg.in/dtapps/go-library.v3/utils/golog"
 	"net/http"
 )
 
 // App 美团联盟
 type App struct {
-	Secret string // 秘钥
-	AppKey string // 渠道标记
+	Secret string    // 秘钥
+	AppKey string    // 渠道标记
+	ZapLog golog.App // 日志服务
 }
 
 func (app *App) request(url string, params map[string]interface{}, method string) (resp []byte, err error) {
-
-	// GET方式
-	if method == http.MethodGet {
+	switch method {
+	case http.MethodGet:
+		// 请求
 		get, err := gohttp.Get(url, params)
+		// 日志
+		if app.ZapLog.Logger != nil {
+			app.ZapLog.LogName = "meituan.log"
+			app.ZapLog.Logger.Sugar().Info(get)
+		}
 		return get.Body, err
-	} else {
-		// 请求参数
+	case http.MethodPost:
+		// 请求
 		paramsStr, err := json.Marshal(params)
 		postJson, err := gohttp.PostJson(url, paramsStr)
+		// 日志
+		if app.ZapLog.Logger != nil {
+			app.ZapLog.LogName = "meituan.log"
+			app.ZapLog.Logger.Sugar().Info(postJson)
+		}
 		return postJson.Body, err
+	default:
+		return nil, errors.New("请求类型不支持")
 	}
-
 }

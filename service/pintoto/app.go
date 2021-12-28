@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"gopkg.in/dtapps/go-library.v3/utils/golog"
 	"io/ioutil"
 	"math"
 	"net/http"
@@ -16,6 +17,7 @@ import (
 type App struct {
 	AppKey    string
 	AppSecret string
+	ZapLog    golog.App // 日志服务
 }
 
 type ErrResp struct {
@@ -52,9 +54,16 @@ func (app *App) request(url string, params map[string]interface{}) ([]byte, erro
 	defer response.Body.Close()
 	body, err := ioutil.ReadAll(response.Body)
 
+	// 日志
+	if app.ZapLog.Logger != nil {
+		app.ZapLog.LogName = "pintoto.log"
+		app.ZapLog.Logger.Sugar().Info(response.Body)
+	}
+
 	// 检查错误
 	apiErr := ErrResp{}
-	if err := json.Unmarshal(body, &apiErr); err != nil {
+	err = json.Unmarshal(body, &apiErr)
+	if err != nil {
 		return nil, err
 	}
 	// 接口状态错误

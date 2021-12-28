@@ -3,11 +3,13 @@ package jd
 import (
 	"encoding/json"
 	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
+	"gopkg.in/dtapps/go-library.v3/utils/golog"
 )
 
 type App struct {
-	AppKey    string // 应用Key
-	SecretKey string // 密钥
+	AppKey    string    // 应用Key
+	SecretKey string    // 密钥
+	ZapLog    golog.App // 日志服务
 }
 
 type ErrResp struct {
@@ -21,6 +23,11 @@ func (app *App) request(params map[string]interface{}) (resp []byte, err error) 
 	app.Sign(params)
 	// 发送请求
 	httpGet, err := gohttp.PostForm("https://api.jd.com/routerjson", params)
+	// 日志
+	if app.ZapLog.Logger != nil {
+		app.ZapLog.LogName = "jd.log"
+		app.ZapLog.Logger.Sugar().Info(httpGet)
+	}
 	// 检查错误
 	var errResp ErrResp
 	_ = json.Unmarshal(httpGet.Body, &errResp)

@@ -3,16 +3,18 @@ package wechatmp
 import (
 	"bytes"
 	"encoding/json"
+	"gopkg.in/dtapps/go-library.v3/utils/golog"
 	"io/ioutil"
 	"net/http"
 )
 
 // App 微信小程序服务
 type App struct {
-	AppId       string // 小程序唯一凭证，即 AppID
-	AppSecret   string // 小程序唯一凭证密钥，即 AppSecret
-	AccessToken string // 接口调用凭证
-	JsapiTicket string // 签名凭证
+	AppId       string    // 小程序唯一凭证，即 AppID
+	AppSecret   string    // 小程序唯一凭证密钥，即 AppSecret
+	AccessToken string    // 接口调用凭证
+	JsapiTicket string    // 签名凭证
+	ZapLog      golog.App // 日志服务
 }
 
 func (app *App) request(url string, params map[string]interface{}, method string) (resp []byte, err error) {
@@ -35,6 +37,12 @@ func (app *App) request(url string, params map[string]interface{}, method string
 	// 	处理成功
 	defer response.Body.Close()
 	resp, err = ioutil.ReadAll(response.Body)
+
+	// 日志
+	if app.ZapLog.Logger != nil {
+		app.ZapLog.LogName = "wechatmp.log"
+		app.ZapLog.Logger.Sugar().Info(response.Body)
+	}
 
 	// 检查请求错误
 	if response.StatusCode == 200 {

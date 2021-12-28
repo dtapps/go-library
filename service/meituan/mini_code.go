@@ -2,6 +2,7 @@ package meituan
 
 import (
 	"encoding/json"
+	"net/http"
 )
 
 // MiniCodeResult 返回参数
@@ -25,7 +26,7 @@ func (app *App) MiniCode(actId int64, sid string) (result MiniCodeResult, err er
 	params["sign"] = app.getSign(app.Secret, params)
 
 	// 请求
-	body, err := app.request("https://openapi.meituan.com/api/miniCode", params, "GET")
+	body, err := app.request("https://openapi.meituan.com/api/miniCode", params, http.MethodGet)
 	if err != nil {
 		return
 	}

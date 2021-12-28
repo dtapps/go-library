@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
+	"gopkg.in/dtapps/go-library.v3/utils/golog"
 	"gopkg.in/dtapps/go-library.v3/utils/gostring"
 	"regexp"
 	"strconv"
@@ -11,8 +12,9 @@ import (
 
 // App 公共请求参数
 type App struct {
-	AppKey    string // 应用Key
-	AppSecret string // 密钥
+	AppKey    string    // 应用Key
+	AppSecret string    // 密钥
+	ZapLog    golog.App // 日志服务
 }
 type ErrResp struct {
 	ErrorResponse struct {
@@ -29,6 +31,11 @@ func (app *App) request(params map[string]interface{}) (resp []byte, err error) 
 	app.Sign(params)
 	// 发送请求
 	httpGet, err := gohttp.Get("https://eco.taobao.com/router/rest", params)
+	// 日志
+	if app.ZapLog.Logger != nil {
+		app.ZapLog.LogName = "taobao.log"
+		app.ZapLog.Logger.Sugar().Info(httpGet)
+	}
 	// 检查错误
 	var errResp ErrResp
 	_ = json.Unmarshal(httpGet.Body, &errResp)

@@ -1,8 +1,10 @@
 package ejiaofei
 
 import (
+	"errors"
 	"fmt"
 	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
+	"gopkg.in/dtapps/go-library.v3/utils/golog"
 	"gopkg.in/dtapps/go-library.v3/utils/gomd5"
 	"net/http"
 )
@@ -12,6 +14,7 @@ type App struct {
 	Pwd     string
 	Key     string
 	signStr string
+	ZapLog  golog.App // 日志服务
 }
 
 func (app *App) request(url string, params map[string]interface{}, method string) ([]byte, error) {
@@ -20,12 +23,26 @@ func (app *App) request(url string, params map[string]interface{}, method string
 	params["pwd"] = app.Pwd
 	// 签名
 	params["userkey"] = gomd5.ToUpper(fmt.Sprintf("%s%s", app.signStr, app.Key))
-	// 请求
-	if method == http.MethodGet {
+	switch method {
+	case http.MethodGet:
+		// 请求
 		get, err := gohttp.Get(url, params)
+		// 日志
+		if app.ZapLog.Logger != nil {
+			app.ZapLog.LogName = "ejiaofei.log"
+			app.ZapLog.Logger.Sugar().Info(get)
+		}
 		return get.Body, err
-	} else {
+	case http.MethodPost:
+		// 请求
 		postJson, err := gohttp.PostForm(url, params)
+		// 日志
+		if app.ZapLog.Logger != nil {
+			app.ZapLog.LogName = "ejiaofei.log"
+			app.ZapLog.Logger.Sugar().Info(postJson)
+		}
 		return postJson.Body, err
+	default:
+		return nil, errors.New("请求类型不支持")
 	}
 }
