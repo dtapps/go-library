@@ -25,7 +25,7 @@ func (app *App) request(url string, params map[string]interface{}) (body []byte,
 	postJson, err := gohttp.PostJson(url, paramsStr)
 	// 日志
 	if app.ZapLog != nil {
-		app.ZapLog.Sugar().Info(fmt.Sprintf("%s", postJson.Body))
+		app.ZapLog.Sugar().Info(fmt.Sprintf("%s %s %s", url, postJson.Header, postJson.Body))
 	}
 	return postJson.Body, err
 }

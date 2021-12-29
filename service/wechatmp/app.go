@@ -47,7 +47,7 @@ func (app *App) request(url string, params map[string]interface{}, method string
 
 	// 日志
 	if app.ZapLog != nil {
-		app.ZapLog.Sugar().Info(fmt.Sprintf("%s", resp))
+		app.ZapLog.Sugar().Info(fmt.Sprintf("%s %s", url, resp))
 	}
 
 	// 检查请求错误

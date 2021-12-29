@@ -39,7 +39,7 @@ func (app *App) request(params map[string]interface{}) (resp []byte, err error) 
 	get, err := gohttp.Get("https://eco.taobao.com/router/rest", params)
 	// 日志
 	if app.ZapLog != nil {
-		app.ZapLog.Sugar().Info(fmt.Sprintf("%s", get.Body))
+		app.ZapLog.Sugar().Info(fmt.Sprintf("https://eco.taobao.com/router/rest?method=%s %s %s", params["method"], get.Header, get.Body))
 	}
 	// 检查错误
 	var errResp ErrResp

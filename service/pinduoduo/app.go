@@ -47,7 +47,7 @@ func (app *App) request(params map[string]interface{}) (resp []byte, err error) 
 	get, err := gohttp.Get("https://gw-api.pinduoduo.com/api/router", params)
 	// 日志
 	if app.ZapLog != nil {
-		app.ZapLog.Sugar().Info(fmt.Sprintf("%s", get.Body))
+		app.ZapLog.Sugar().Info(fmt.Sprintf("https://gw-api.pinduoduo.com/api/router?method=%s %s %s", params["type"], get.Header, get.Body))
 	}
 	// 检查错误
 	var errResp ErrResp
