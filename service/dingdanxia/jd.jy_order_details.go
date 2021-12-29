@@ -31,7 +31,7 @@ func NewJdJyOrderDetailsResult(jdJyOrderDetailsResponse JdJyOrderDetailsResponse
 	return &Result{JdJyOrderDetailsResponse: jdJyOrderDetailsResponse, Byte: byte, Err: err}
 }
 
-// JdJyOrderDetails 京佣订单
+// JdJyOrderDetails 【官方不维护】 京佣订单
 func (app *App) JdJyOrderDetails(notMustParams ...Params) *Result {
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
