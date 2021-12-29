@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// JdJyOrderDetailsResponse 返回参数
 type JdJyOrderDetailsResponse struct {
 	Code         int    `json:"code"`
 	Msg          string `json:"msg"`           // 描述

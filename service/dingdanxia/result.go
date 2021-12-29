@@ -1,5 +1,6 @@
 package dingdanxia
 
+// Result 接口
 type Result struct {
 	Byte                      []byte // 内容
 	Err                       error  // 错误

@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// WaimaiMeituanOrdersResult 返回参数
 type WaimaiMeituanOrdersResult struct {
 	Code         int    `json:"code"`
 	Msg          string `json:"msg"`           // 描述
