@@ -1,4 +1,4 @@
-package wechatminiprogram
+package wechatunion
 
 import (
 	"encoding/json"
