@@ -1,6 +1,9 @@
 package dingdanxia
 
-import "net/http"
+import (
+	"encoding/json"
+	"net/http"
+)
 
 type WaimaiMeituanOrdersResult struct {
 	Code         int    `json:"code"`
@@ -23,10 +26,20 @@ type WaimaiMeituanOrdersResult struct {
 	} `json:"data"`
 }
 
-func (app *App) WaimaiMeituanOrders(notMustParams ...Params) (body []byte, err error) {
+// NewWaimaiMeituanOrdersResult 构造函数
+func NewWaimaiMeituanOrdersResult(result WaimaiMeituanOrdersResult, byte []byte, err error) *Result {
+	return &Result{WaimaiMeituanOrdersResult: result, Byte: byte, Err: err}
+}
+
+// WaimaiMeituanOrders 美团联盟外卖/闪购/优选/酒店订单查询API
+// https://www.dingdanxia.com/doc/176/173
+func (app *App) WaimaiMeituanOrders(notMustParams ...Params) *Result {
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
-	body, err = app.request("https://api.tbk.dingdanxia.com/waimai/meituan_orders", params, http.MethodPost)
-	return body, err
+	body, err := app.request("https://api.tbk.dingdanxia.com/waimai/meituan_orders", params, http.MethodPost)
+	// 定义
+	var response WaimaiMeituanOrdersResult
+	err = json.Unmarshal(body, &response)
+	return NewWaimaiMeituanOrdersResult(response, body, err)
 }

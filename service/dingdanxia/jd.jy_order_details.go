@@ -1,8 +1,11 @@
 package dingdanxia
 
-import "net/http"
+import (
+	"encoding/json"
+	"net/http"
+)
 
-type JdJyOrderDetailsResult struct {
+type JdJyOrderDetailsResponse struct {
 	Code         int    `json:"code"`
 	Msg          string `json:"msg"`           // 描述
 	TotalResults int    `json:"total_results"` // 总条数
@@ -23,10 +26,19 @@ type JdJyOrderDetailsResult struct {
 	} `json:"data"`
 }
 
-func (app *App) JdJyOrderDetails(notMustParams ...Params) (body []byte, err error) {
+// NewJdJyOrderDetailsResult 构造函数
+func NewJdJyOrderDetailsResult(jdJyOrderDetailsResponse JdJyOrderDetailsResponse, byte []byte, err error) *Result {
+	return &Result{JdJyOrderDetailsResponse: jdJyOrderDetailsResponse, Byte: byte, Err: err}
+}
+
+// JdJyOrderDetails 京佣订单
+func (app *App) JdJyOrderDetails(notMustParams ...Params) *Result {
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
-	body, err = app.request("https://api.tbk.dingdanxia.com/jd/jy_order_details", params, http.MethodPost)
-	return body, err
+	body, err := app.request("https://api.tbk.dingdanxia.com/jd/jy_order_details", params, http.MethodPost)
+	// 定义
+	var response JdJyOrderDetailsResponse
+	err = json.Unmarshal(body, &response)
+	return NewJdJyOrderDetailsResult(response, body, err)
 }
