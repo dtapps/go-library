@@ -29,19 +29,19 @@ func (app *App) GetAccessTokenDb() string {
 	if wat.AccessToken != "" {
 		return wat.AccessToken
 	} else {
-		token, _ := app.AuthGetAccessToken()
-		if token.AccessToken == "" {
+		token := app.AuthGetAccessToken()
+		if token.AuthGetAccessTokenResponse.AccessToken == "" {
 			return ""
 		} else {
 			// 创建
 			app.Db.Create(&WechatAccessTokenDbModel{
 				AppID:       app.AppId,
 				AppSecret:   app.AppSecret,
-				AccessToken: token.AccessToken,
-				ExpiresIn:   token.ExpiresIn,
+				AccessToken: token.AuthGetAccessTokenResponse.AccessToken,
+				ExpiresIn:   token.AuthGetAccessTokenResponse.ExpiresIn,
 				ExpiresTime: gotime.Current().AfterSeconds(7000).Format(),
 			})
-			return token.AccessToken
+			return token.AuthGetAccessTokenResponse.AccessToken
 		}
 	}
 }

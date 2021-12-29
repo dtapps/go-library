@@ -12,8 +12,8 @@ func (app *App) GetAccessTokenRDb() string {
 	}
 	newCache := redis.NewSimpleStringCache(redis.NewStringOperation(), 7000)
 	newCache.DBGetter = func() string {
-		token, _ := app.AuthGetAccessToken()
-		return token.AccessToken
+		token := app.AuthGetAccessToken()
+		return token.AuthGetAccessTokenResponse.AccessToken
 	}
 	return newCache.GetCache(cacheName)
 }
