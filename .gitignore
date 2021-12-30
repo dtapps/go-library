@@ -5,3 +5,5 @@
 .vscode
 *.log
 gitmod.sh
+/service/*/*_test.go
+/utils/goredis/*_test.go
