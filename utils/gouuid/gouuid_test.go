@@ -1,11 +1,23 @@
-package gouuid_test
+package gouuid
 
 import (
-	"fmt"
-	"gopkg.in/dtapps/go-library.v3/utils/gouuid"
 	"testing"
 )
 
 func TestGetUuId(t *testing.T) {
-	fmt.Println(gouuid.GetUuId())
+	tests := []struct {
+		name string
+		want string
+	}{{}, {}, {}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Log(GetUuId())
+		})
+	}
+}
+
+func BenchmarkGetUuId(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		GetUuId()
+	}
 }
