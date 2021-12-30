@@ -28,12 +28,12 @@ type JdJyOrderDetailsResponse struct {
 
 type JdJyOrderDetailsResult struct {
 	Result JdJyOrderDetailsResponse // 结果
-	body   []byte                   // 内容
+	Body   []byte                   // 内容
 	Err    error                    // 错误
 }
 
 func NewJdJyOrderDetailsResult(result JdJyOrderDetailsResponse, body []byte, err error) *JdJyOrderDetailsResult {
-	return &JdJyOrderDetailsResult{Result: result, body: body, Err: err}
+	return &JdJyOrderDetailsResult{Result: result, Body: body, Err: err}
 }
 
 // JdJyOrderDetails 【官方不维护】 京佣订单

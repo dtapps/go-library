@@ -12,12 +12,12 @@ type GetCallBackIpResponse struct {
 
 type GetCallBackIpResult struct {
 	Result GetCallBackIpResponse // 结果
-	Byte   []byte                // 内容
+	Body   []byte                // 内容
 	Err    error                 // 错误
 }
 
-func NewGetCallBackIpResult(result GetCallBackIpResponse, byte []byte, err error) *GetCallBackIpResult {
-	return &GetCallBackIpResult{Result: result, Byte: byte, Err: err}
+func NewGetCallBackIpResult(result GetCallBackIpResponse, body []byte, err error) *GetCallBackIpResult {
+	return &GetCallBackIpResult{Result: result, Body: body, Err: err}
 }
 
 // GetCallBackIp 获取微信callback IP地址

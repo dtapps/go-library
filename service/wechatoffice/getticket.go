@@ -15,12 +15,12 @@ type GetTicketRespons struct {
 
 type GetTicketResult struct {
 	Result GetTicketRespons // 结果
-	Byte   []byte           // 内容
+	Body   []byte           // 内容
 	Err    error            // 错误
 }
 
-func NewGetTicketResult(result GetTicketRespons, byte []byte, err error) *GetTicketResult {
-	return &GetTicketResult{Result: result, Byte: byte, Err: err}
+func NewGetTicketResult(result GetTicketRespons, body []byte, err error) *GetTicketResult {
+	return &GetTicketResult{Result: result, Body: body, Err: err}
 }
 
 // GetTicket 获取api_ticket

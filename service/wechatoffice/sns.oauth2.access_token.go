@@ -16,12 +16,12 @@ type Oauth2AccessTokenResponse struct {
 
 type Oauth2AccessTokenResult struct {
 	Result Oauth2AccessTokenResponse // 结果
-	Byte   []byte                    // 内容
+	Body   []byte                    // 内容
 	Err    error                     // 错误
 }
 
-func NewOauth2AccessTokenResult(result Oauth2AccessTokenResponse, byte []byte, err error) *Oauth2AccessTokenResult {
-	return &Oauth2AccessTokenResult{Result: result, Byte: byte, Err: err}
+func NewOauth2AccessTokenResult(result Oauth2AccessTokenResponse, body []byte, err error) *Oauth2AccessTokenResult {
+	return &Oauth2AccessTokenResult{Result: result, Body: body, Err: err}
 }
 
 // Oauth2AccessToken 通过code换取网页授权access_token

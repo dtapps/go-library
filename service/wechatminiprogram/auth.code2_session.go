@@ -16,12 +16,12 @@ type AuthCode2SessionResponse struct {
 
 type AuthCode2SessionResult struct {
 	Result AuthCode2SessionResponse // 结果
-	Byte   []byte                   // 内容
+	Body   []byte                   // 内容
 	Err    error                    // 错误
 }
 
-func NewAuthCode2SessionResult(result AuthCode2SessionResponse, byte []byte, err error) *AuthCode2SessionResult {
-	return &AuthCode2SessionResult{Result: result, Byte: byte, Err: err}
+func NewAuthCode2SessionResult(result AuthCode2SessionResponse, body []byte, err error) *AuthCode2SessionResult {
+	return &AuthCode2SessionResult{Result: result, Body: body, Err: err}
 }
 
 func (app *App) AuthCode2Session(jsCode string) *AuthCode2SessionResult {

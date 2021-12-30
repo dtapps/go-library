@@ -43,12 +43,12 @@ type UnionOpenGoodsPromotionGoodsInfoQueryQueryResult struct {
 type UnionOpenGoodsPromotionGoodsInfoQueryResult struct {
 	Responce UnionOpenGoodsPromotionGoodsInfoQueryResultResponse // 结果
 	Result   UnionOpenGoodsPromotionGoodsInfoQueryQueryResult    // 结果
-	body     []byte                                              // 内容
+	Body     []byte                                              // 内容
 	Err      error                                               // 错误
 }
 
 func NewUnionOpenGoodsPromotionGoodsInfoQueryResult(responce UnionOpenGoodsPromotionGoodsInfoQueryResultResponse, result UnionOpenGoodsPromotionGoodsInfoQueryQueryResult, body []byte, err error) *UnionOpenGoodsPromotionGoodsInfoQueryResult {
-	return &UnionOpenGoodsPromotionGoodsInfoQueryResult{Responce: responce, Result: result, body: body, Err: err}
+	return &UnionOpenGoodsPromotionGoodsInfoQueryResult{Responce: responce, Result: result, Body: body, Err: err}
 }
 
 // UnionOpenGoodsPromotionGoodsInfoQuery

@@ -108,12 +108,12 @@ type UnionOpenGoodsJIngFenQueryQueryResult struct {
 type UnionOpenGoodsJIngFenQueryResult struct {
 	Responce UnionOpenGoodsJIngFenQueryResultResponse // 结果
 	Result   UnionOpenGoodsJIngFenQueryQueryResult    // 结果
-	body     []byte                                   // 内容
+	Body     []byte                                   // 内容
 	Err      error                                    // 错误
 }
 
 func NewUnionOpenGoodsJIngFenQueryResult(responce UnionOpenGoodsJIngFenQueryResultResponse, result UnionOpenGoodsJIngFenQueryQueryResult, body []byte, err error) *UnionOpenGoodsJIngFenQueryResult {
-	return &UnionOpenGoodsJIngFenQueryResult{Responce: responce, Result: result, body: body, Err: err}
+	return &UnionOpenGoodsJIngFenQueryResult{Responce: responce, Result: result, Body: body, Err: err}
 }
 
 // UnionOpenGoodsJIngFenQuery

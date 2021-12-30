@@ -22,12 +22,12 @@ type UnionOpenPromotionCommonGetGetResult struct {
 type UnionOpenPromotionCommonGetResult struct {
 	Responce UnionOpenPromotionCommonGetResultResponse // 结果
 	Result   UnionOpenPromotionCommonGetGetResult      // 结果
-	body     []byte                                    // 内容
+	Body     []byte                                    // 内容
 	Err      error                                     // 错误
 }
 
 func NewUnionOpenPromotionCommonGetResult(responce UnionOpenPromotionCommonGetResultResponse, result UnionOpenPromotionCommonGetGetResult, body []byte, err error) *UnionOpenPromotionCommonGetResult {
-	return &UnionOpenPromotionCommonGetResult{Responce: responce, Result: result, body: body, Err: err}
+	return &UnionOpenPromotionCommonGetResult{Responce: responce, Result: result, Body: body, Err: err}
 }
 
 // UnionOpenPromotionCommonGet

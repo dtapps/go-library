@@ -23,12 +23,12 @@ type SubscribeMessageSendResponse struct {
 
 type SubscribeMessageSendResult struct {
 	Result SubscribeMessageSendResponse // 结果
-	Byte   []byte                       // 内容
+	Body   []byte                       // 内容
 	Err    error                        // 错误
 }
 
-func NewSubscribeMessageSendResult(result SubscribeMessageSendResponse, byte []byte, err error) *SubscribeMessageSendResult {
-	return &SubscribeMessageSendResult{Result: result, Byte: byte, Err: err}
+func NewSubscribeMessageSendResult(result SubscribeMessageSendResponse, body []byte, err error) *SubscribeMessageSendResult {
+	return &SubscribeMessageSendResult{Result: result, Body: body, Err: err}
 }
 
 // SubscribeMessageSend 发送订阅消息

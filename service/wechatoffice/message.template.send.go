@@ -14,12 +14,12 @@ type MessageTemplateSendResponse struct {
 
 type MessageTemplateSendResult struct {
 	Result MessageTemplateSendResponse // 结果
-	Byte   []byte                      // 内容
+	Body   []byte                      // 内容
 	Err    error                       // 错误
 }
 
-func NewMessageTemplateSendResult(result MessageTemplateSendResponse, byte []byte, err error) *MessageTemplateSendResult {
-	return &MessageTemplateSendResult{Result: result, Byte: byte, Err: err}
+func NewMessageTemplateSendResult(result MessageTemplateSendResponse, body []byte, err error) *MessageTemplateSendResult {
+	return &MessageTemplateSendResult{Result: result, Body: body, Err: err}
 }
 
 // MessageTemplateSend 模板消息

@@ -43,12 +43,12 @@ type BusinessGetLiveInfoResponse struct {
 
 type BusinessGetLiveInfoResult struct {
 	Result BusinessGetLiveInfoResponse // 结果
-	Byte   []byte                      // 内容
+	Body   []byte                      // 内容
 	Err    error                       // 错误
 }
 
-func NewBusinessGetLiveInfoResult(result BusinessGetLiveInfoResponse, byte []byte, err error) *BusinessGetLiveInfoResult {
-	return &BusinessGetLiveInfoResult{Result: result, Byte: byte, Err: err}
+func NewBusinessGetLiveInfoResult(result BusinessGetLiveInfoResponse, body []byte, err error) *BusinessGetLiveInfoResult {
+	return &BusinessGetLiveInfoResult{Result: result, Body: body, Err: err}
 }
 
 // BusinessGetLiveInfo 获取直播间列表

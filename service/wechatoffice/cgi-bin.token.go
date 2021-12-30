@@ -15,12 +15,12 @@ type AuthGetAccessTokenResponse struct {
 
 type AuthGetAccessTokenResult struct {
 	Result AuthGetAccessTokenResponse // 结果
-	Byte   []byte                     // 内容
+	Body   []byte                     // 内容
 	Err    error                      // 错误
 }
 
-func NewAuthGetAccessTokenResult(result AuthGetAccessTokenResponse, byte []byte, err error) *AuthGetAccessTokenResult {
-	return &AuthGetAccessTokenResult{Result: result, Byte: byte, Err: err}
+func NewAuthGetAccessTokenResult(result AuthGetAccessTokenResponse, body []byte, err error) *AuthGetAccessTokenResult {
+	return &AuthGetAccessTokenResult{Result: result, Body: body, Err: err}
 }
 
 // AuthGetAccessToken

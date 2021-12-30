@@ -20,12 +20,12 @@ type SnsUserinfoResponse struct {
 
 type SnsUserinfoResult struct {
 	Result SnsUserinfoResponse // 结果
-	Byte   []byte              // 内容
+	Body   []byte              // 内容
 	Err    error               // 错误
 }
 
-func NewSnsUserinfoResult(result SnsUserinfoResponse, byte []byte, err error) *SnsUserinfoResult {
-	return &SnsUserinfoResult{Result: result, Byte: byte, Err: err}
+func NewSnsUserinfoResult(result SnsUserinfoResponse, body []byte, err error) *SnsUserinfoResult {
+	return &SnsUserinfoResult{Result: result, Body: body, Err: err}
 }
 
 // SnsUserinfo 拉取用户信息(需scope为 snsapi_userinfo)
