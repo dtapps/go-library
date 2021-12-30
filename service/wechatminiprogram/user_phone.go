@@ -8,15 +8,13 @@ import (
 	"errors"
 )
 
-// UserPhone 请求参数
 type UserPhone struct {
 	SessionKey    string `json:"session_key"`
 	EncryptedData string `json:"encrypted_data"`
 	Iv            string `json:"iv"`
 }
 
-// UserPhoneResult 返回参数
-type UserPhoneResult struct {
+type UserPhoneResponse struct {
 	PhoneNumber     string `json:"phoneNumber"`     // 用户绑定的手机号（国外手机号会有区号）
 	PurePhoneNumber string `json:"purePhoneNumber"` // 没有区号的手机号
 	CountryCode     string `json:"countryCode"`     // 区号
@@ -26,36 +24,46 @@ type UserPhoneResult struct {
 	} `json:"watermark"`
 }
 
+type UserPhoneResult struct {
+	Result UserPhoneResponse // 结果
+	Err    error             // 错误
+}
+
+func NewUserPhoneResult(result UserPhoneResponse, err error) *UserPhoneResult {
+	return &UserPhoneResult{Result: result, Err: err}
+}
+
 // UserPhone 解密手机号信息
-func (app *App) UserPhone(param UserPhone) (result UserPhoneResult, err error) {
+func (app *App) UserPhone(param UserPhone) *UserPhoneResult {
+	var response UserPhoneResponse
 	aesKey, err := base64.StdEncoding.DecodeString(param.SessionKey)
 	if err != nil {
-		return result, err
+		return NewUserPhoneResult(response, err)
 	}
 	cipherText, err := base64.StdEncoding.DecodeString(param.EncryptedData)
 	if err != nil {
-		return result, err
+		return NewUserPhoneResult(response, err)
 	}
 	ivBytes, err := base64.StdEncoding.DecodeString(param.Iv)
 	if err != nil {
-		return result, err
+		return NewUserPhoneResult(response, err)
 	}
 	block, err := aes.NewCipher(aesKey)
 	if err != nil {
-		return result, err
+		return NewUserPhoneResult(response, err)
 	}
 	mode := cipher.NewCBCDecrypter(block, ivBytes)
 	mode.CryptBlocks(cipherText, cipherText)
 	cipherText, err = app.pkcs7Unpaid(cipherText, block.BlockSize())
 	if err != nil {
-		return result, err
+		return NewUserPhoneResult(response, err)
 	}
-	err = json.Unmarshal(cipherText, &result)
+	err = json.Unmarshal(cipherText, &response)
 	if err != nil {
-		return result, err
+		return NewUserPhoneResult(response, err)
 	}
-	if result.Watermark.AppID != app.AppId {
-		return result, errors.New("app id not match")
+	if response.Watermark.AppID != app.AppId {
+		return NewUserPhoneResult(response, errors.New("app id not match"))
 	}
-	return result, nil
+	return NewUserPhoneResult(response, err)
 }

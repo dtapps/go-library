@@ -1,10 +1,12 @@
 package wechatminiprogram
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
 )
 
-type BusinessGetLiveInfoResult struct {
+type BusinessGetLiveInfoResponse struct {
 	Errcode  int    `json:"errcode"` //  // 错误码，0代表成功，1代表未创建直播间
 	Errmsg   string `json:"errmsg"`  // 错误信息
 	Total    int    `json:"total"`
@@ -39,13 +41,26 @@ type BusinessGetLiveInfoResult struct {
 	} `json:"room_info"`
 }
 
+type BusinessGetLiveInfoResult struct {
+	Result BusinessGetLiveInfoResponse // 结果
+	Byte   []byte                      // 内容
+	Err    error                       // 错误
+}
+
+func NewBusinessGetLiveInfoResult(result BusinessGetLiveInfoResponse, byte []byte, err error) *BusinessGetLiveInfoResult {
+	return &BusinessGetLiveInfoResult{Result: result, Byte: byte, Err: err}
+}
+
 // BusinessGetLiveInfo 获取直播间列表
 // 调用此接口获取直播间列表及直播间信息
 // https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/industry/liveplayer/studio-api.html
-func (app *App) BusinessGetLiveInfo(notMustParams ...Params) (body []byte, err error) {
+func (app *App) BusinessGetLiveInfo(notMustParams ...Params) *BusinessGetLiveInfoResult {
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
-	body, err = app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/business/getliveinfo?access_token=%s", app.AccessToken), params, "POST")
-	return
+	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/business/getliveinfo?access_token=%s", app.AccessToken), params, http.MethodPost)
+	// 定义
+	var response BusinessGetLiveInfoResponse
+	err = json.Unmarshal(body, &response)
+	return NewBusinessGetLiveInfoResult(response, body, err)
 }

@@ -16,31 +16,30 @@ type SubscribeMessageSend struct {
 	Lang             string                 `json:"lang,omitempty"`              // 进入小程序查看”的语言类型，支持zh_CN(简体中文)、en_US(英文)、zh_HK(繁体中文)、zh_TW(繁体中文)，默认为zh_CN
 }
 
-// SubscribeMessageSendResult 返回参数
-type SubscribeMessageSendResult struct {
+type SubscribeMessageSendResponse struct {
 	Errcode int    // 错误码
 	Errmsg  string // 错误信息
 }
 
+type SubscribeMessageSendResult struct {
+	Result SubscribeMessageSendResponse // 结果
+	Byte   []byte                       // 内容
+	Err    error                        // 错误
+}
+
+func NewSubscribeMessageSendResult(result SubscribeMessageSendResponse, byte []byte, err error) *SubscribeMessageSendResult {
+	return &SubscribeMessageSendResult{Result: result, Byte: byte, Err: err}
+}
+
 // SubscribeMessageSend 发送订阅消息
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/subscribe-message/subscribeMessage.send.html
-func (app *App) SubscribeMessageSend(param SubscribeMessageSend) (result SubscribeMessageSendResult, err error) {
-	// api params
-	params := map[string]interface{}{}
-	b, _ := json.Marshal(&param)
-	var m map[string]interface{}
-	_ = json.Unmarshal(b, &m)
-	for k, v := range m {
-		params[k] = v
-	}
-
-	// request
+func (app *App) SubscribeMessageSend(notMustParams ...Params) *SubscribeMessageSendResult {
+	// 参数
+	params := app.NewParamsWith(notMustParams...)
+	// 请求
 	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=%s", app.AccessToken), params, http.MethodPost)
-	if err != nil {
-		return
-	}
-	if err = json.Unmarshal(body, &result); err != nil {
-		return
-	}
-	return
+	// 定义
+	var response SubscribeMessageSendResponse
+	err = json.Unmarshal(body, &response)
+	return NewSubscribeMessageSendResult(response, body, err)
 }
