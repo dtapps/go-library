@@ -17,6 +17,9 @@ func (app *App) AuthGetAccessTokenMonitor(qdType string) error {
 	if len(result.GetCallBackIpResponse.IpList) <= 0 {
 		switch qdType {
 		case qdTypeDb:
+			if app.Db == nil {
+				return errors.New("驱动没有初始化")
+			}
 			token := app.AuthGetAccessToken()
 			if token.AuthGetAccessTokenResponse.AccessToken == "" {
 				return errors.New("获取AccessToken失败")
@@ -31,6 +34,9 @@ func (app *App) AuthGetAccessTokenMonitor(qdType string) error {
 				return nil
 			}
 		case qdTypeRdb:
+			if app.RDb == nil {
+				return errors.New("驱动没有初始化")
+			}
 			cacheName := fmt.Sprintf("wechat_access_token:%v", app.AppId)
 			redis := goredis.App{
 				Rdb: app.RDb,
