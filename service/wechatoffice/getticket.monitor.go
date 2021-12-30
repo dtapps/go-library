@@ -9,10 +9,10 @@ func (app *App) AuthGetJsapiTicketMonitor(qdType string) error {
 	result := app.GetCallBackIp()
 	if len(result.Result.IpList) <= 0 {
 		switch qdType {
-		case qdTypeDb:
+		case QdTypeDb:
 			app.GetJsapiTicketDb()
 			return nil
-		case qdTypeRdb:
+		case QdTypeRdb:
 			app.GetJsapiTicketRDb()
 			return nil
 		default:

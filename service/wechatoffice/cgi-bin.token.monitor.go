@@ -8,15 +8,15 @@ import (
 )
 
 var (
-	qdTypeDb  = "DB"
-	qdTypeRdb = "redis"
+	QdTypeDb  = "DB"
+	QdTypeRdb = "redis"
 )
 
 func (app *App) AuthGetAccessTokenMonitor(qdType string) error {
 	result := app.GetCallBackIp()
 	if len(result.Result.IpList) <= 0 {
 		switch qdType {
-		case qdTypeDb:
+		case QdTypeDb:
 			if app.Db == nil {
 				return errors.New("驱动没有初始化")
 			}
@@ -33,7 +33,7 @@ func (app *App) AuthGetAccessTokenMonitor(qdType string) error {
 				})
 				return nil
 			}
-		case qdTypeRdb:
+		case QdTypeRdb:
 			if app.RDb == nil {
 				return errors.New("驱动没有初始化")
 			}
