@@ -6,7 +6,6 @@ import (
 	"net/http"
 )
 
-// AuthGetAccessTokenResponse 返回参数
 type AuthGetAccessTokenResponse struct {
 	AccessToken string `json:"access_token"` // 获取到的凭证
 	ExpiresIn   int    `json:"expires_in"`   // 凭证有效时间，单位：秒。目前是7200秒之内的值
@@ -14,19 +13,20 @@ type AuthGetAccessTokenResponse struct {
 	Errmsg      string `json:"errmsg"`       // 错误信息
 }
 
-// NewAuthGetAccessTokenResult 构造函数
-func NewAuthGetAccessTokenResult(result AuthGetAccessTokenResponse, byte []byte, err error) *Result {
-	return &Result{
-		AuthGetAccessTokenResponse: result,
-		Byte:                       byte,
-		Err:                        err,
-	}
+type AuthGetAccessTokenResult struct {
+	Result AuthGetAccessTokenResponse // 结果
+	Byte   []byte                     // 内容
+	Err    error                      // 错误
+}
+
+func NewAuthGetAccessTokenResult(result AuthGetAccessTokenResponse, byte []byte, err error) *AuthGetAccessTokenResult {
+	return &AuthGetAccessTokenResult{Result: result, Byte: byte, Err: err}
 }
 
 // AuthGetAccessToken
 // 接口调用凭证
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/access-token/auth.getAccessToken.html
-func (app *App) AuthGetAccessToken() *Result {
+func (app *App) AuthGetAccessToken() *AuthGetAccessTokenResult {
 	// 请求
 	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", app.AppId, app.AppSecret), map[string]interface{}{}, http.MethodGet)
 	// 定义

@@ -14,21 +14,21 @@ var (
 
 func (app *App) AuthGetAccessTokenMonitor(qdType string) error {
 	result := app.GetCallBackIp()
-	if len(result.GetCallBackIpResponse.IpList) <= 0 {
+	if len(result.Result.IpList) <= 0 {
 		switch qdType {
 		case qdTypeDb:
 			if app.Db == nil {
 				return errors.New("驱动没有初始化")
 			}
 			token := app.AuthGetAccessToken()
-			if token.AuthGetAccessTokenResponse.AccessToken == "" {
+			if token.Result.AccessToken == "" {
 				return errors.New("获取AccessToken失败")
 			} else {
 				app.Db.Create(&WechatAccessTokenDbModel{
 					AppID:       app.AppId,
 					AppSecret:   app.AppSecret,
-					AccessToken: token.AuthGetAccessTokenResponse.AccessToken,
-					ExpiresIn:   token.AuthGetAccessTokenResponse.ExpiresIn,
+					AccessToken: token.Result.AccessToken,
+					ExpiresIn:   token.Result.ExpiresIn,
 					ExpiresTime: gotime.Current().AfterSeconds(7000).Format(),
 				})
 				return nil
@@ -42,10 +42,10 @@ func (app *App) AuthGetAccessTokenMonitor(qdType string) error {
 				Rdb: app.RDb,
 			}
 			token := app.AuthGetAccessToken()
-			if token.AuthGetAccessTokenResponse.AccessToken == "" {
+			if token.Result.AccessToken == "" {
 				return errors.New("获取AccessToken失败")
 			}
-			redis.NewStringOperation().Set(cacheName, token.AuthGetAccessTokenResponse.AccessToken, goredis.WithExpire(7000))
+			redis.NewStringOperation().Set(cacheName, token.Result.AccessToken, goredis.WithExpire(7000))
 			return nil
 		default:
 			return errors.New("驱动类型不在范围内")
