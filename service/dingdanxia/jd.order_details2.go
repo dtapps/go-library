@@ -7,7 +7,7 @@ import (
 
 // JdOrderDetails2 【官方不维护】 京东联盟订单行查询
 // https://www.dingdanxia.com/doc/180/94
-func (app *App) JdOrderDetails2(notMustParams ...Params) *Result {
+func (app *App) JdOrderDetails2(notMustParams ...Params) *JdJyOrderDetailsResult {
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求

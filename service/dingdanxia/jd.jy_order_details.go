@@ -5,7 +5,6 @@ import (
 	"net/http"
 )
 
-// JdJyOrderDetailsResponse 返回参数
 type JdJyOrderDetailsResponse struct {
 	Code         int    `json:"code"`
 	Msg          string `json:"msg"`           // 描述
@@ -27,13 +26,18 @@ type JdJyOrderDetailsResponse struct {
 	} `json:"data"`
 }
 
-// NewJdJyOrderDetailsResult 构造函数
-func NewJdJyOrderDetailsResult(jdJyOrderDetailsResponse JdJyOrderDetailsResponse, byte []byte, err error) *Result {
-	return &Result{JdJyOrderDetailsResponse: jdJyOrderDetailsResponse, Byte: byte, Err: err}
+type JdJyOrderDetailsResult struct {
+	Result JdJyOrderDetailsResponse // 结果
+	Byte   []byte                   // 内容
+	Err    error                    // 错误
+}
+
+func NewJdJyOrderDetailsResult(result JdJyOrderDetailsResponse, byte []byte, err error) *JdJyOrderDetailsResult {
+	return &JdJyOrderDetailsResult{Result: result, Byte: byte, Err: err}
 }
 
 // JdJyOrderDetails 【官方不维护】 京佣订单
-func (app *App) JdJyOrderDetails(notMustParams ...Params) *Result {
+func (app *App) JdJyOrderDetails(notMustParams ...Params) *JdJyOrderDetailsResult {
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求

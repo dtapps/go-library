@@ -5,8 +5,7 @@ import (
 	"net/http"
 )
 
-// WaimaiMeituanOrdersResult 返回参数
-type WaimaiMeituanOrdersResult struct {
+type WaimaiMeituanOrdersResponse struct {
 	Code         int    `json:"code"`
 	Msg          string `json:"msg"`           // 描述
 	TotalResults int    `json:"total_results"` // 总条数
@@ -27,20 +26,25 @@ type WaimaiMeituanOrdersResult struct {
 	} `json:"data"`
 }
 
-// NewWaimaiMeituanOrdersResult 构造函数
-func NewWaimaiMeituanOrdersResult(result WaimaiMeituanOrdersResult, byte []byte, err error) *Result {
-	return &Result{WaimaiMeituanOrdersResult: result, Byte: byte, Err: err}
+type WaimaiMeituanOrdersResult struct {
+	Result WaimaiMeituanOrdersResponse // 结果
+	Byte   []byte                      // 内容
+	Err    error                       // 错误
+}
+
+func NewWaimaiMeituanOrdersResult(result WaimaiMeituanOrdersResponse, byte []byte, err error) *WaimaiMeituanOrdersResult {
+	return &WaimaiMeituanOrdersResult{Result: result, Byte: byte, Err: err}
 }
 
 // WaimaiMeituanOrders 美团联盟外卖/闪购/优选/酒店订单查询API
 // https://www.dingdanxia.com/doc/176/173
-func (app *App) WaimaiMeituanOrders(notMustParams ...Params) *Result {
+func (app *App) WaimaiMeituanOrders(notMustParams ...Params) *WaimaiMeituanOrdersResult {
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
 	body, err := app.request("https://api.tbk.dingdanxia.com/waimai/meituan_orders", params, http.MethodPost)
 	// 定义
-	var response WaimaiMeituanOrdersResult
+	var response WaimaiMeituanOrdersResponse
 	err = json.Unmarshal(body, &response)
 	return NewWaimaiMeituanOrdersResult(response, body, err)
 }
