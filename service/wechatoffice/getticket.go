@@ -3,6 +3,7 @@ package wechatoffice
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 )
 
 type GetTicketRespons struct {
@@ -26,7 +27,7 @@ func NewGetTicketResult(result GetTicketRespons, byte []byte, err error) *GetTic
 // https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html
 func (app *App) GetTicket(accessToken, Type string) *GetTicketResult {
 	// request
-	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=%s", accessToken, Type), map[string]interface{}{}, "GET")
+	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=%s", accessToken, Type), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response GetTicketRespons
 	err = json.Unmarshal(body, &response)

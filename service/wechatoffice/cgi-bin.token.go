@@ -3,6 +3,7 @@ package wechatoffice
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 )
 
 type AuthGetAccessTokenResponse struct {
@@ -27,7 +28,7 @@ func NewAuthGetAccessTokenResult(result AuthGetAccessTokenResponse, byte []byte,
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/access-token/auth.getAccessToken.html
 func (app *App) AuthGetAccessToken() *AuthGetAccessTokenResult {
 	// request
-	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", app.AppId, app.AppSecret), map[string]interface{}{}, "GET")
+	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", app.AppId, app.AppSecret), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response AuthGetAccessTokenResponse
 	err = json.Unmarshal(body, &response)

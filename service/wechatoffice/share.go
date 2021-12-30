@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-type ShareResult struct {
+type ShareResponse struct {
 	AppId     string `json:"app_id"`
 	NonceStr  string `json:"nonce_str"`
 	Timestamp int64  `json:"timestamp"`
@@ -17,14 +17,24 @@ type ShareResult struct {
 	Signature string `json:"signature"`
 }
 
-func (app *App) Share(url string) (result ShareResult) {
-	result.AppId = app.AppId
-	result.NonceStr = gorandom.Alphanumeric(32)
-	result.Timestamp = time.Now().Unix()
-	result.Url = url
-	result.RawString = fmt.Sprintf("jsapi_ticket=%v&noncestr=%v&timestamp=%v&url=%v", app.JsapiTicket, result.NonceStr, result.Timestamp, result.Url)
+type ShareResult struct {
+	Result ShareResponse // 结果
+	Err    error         // 错误
+}
+
+func NewShareResult(result ShareResponse, err error) *ShareResult {
+	return &ShareResult{Result: result, Err: err}
+}
+
+func (app *App) Share(url string) *ShareResult {
+	var response ShareResponse
+	response.AppId = app.AppId
+	response.NonceStr = gorandom.Alphanumeric(32)
+	response.Timestamp = time.Now().Unix()
+	response.Url = url
+	response.RawString = fmt.Sprintf("jsapi_ticket=%v&noncestr=%v&timestamp=%v&url=%v", app.JsapiTicket, response.NonceStr, response.Timestamp, response.Url)
 	t := sha1.New()
-	io.WriteString(t, result.RawString)
-	result.Signature = fmt.Sprintf("%x", t.Sum(nil))
-	return result
+	_, err := io.WriteString(t, response.RawString)
+	response.Signature = fmt.Sprintf("%x", t.Sum(nil))
+	return NewShareResult(response, err)
 }
