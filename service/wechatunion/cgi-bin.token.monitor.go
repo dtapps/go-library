@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gopkg.in/dtapps/go-library.v3/utils/goredis"
 	"gopkg.in/dtapps/go-library.v3/utils/gotime"
+	"time"
 )
 
 var (
@@ -45,7 +46,7 @@ func (app *App) AuthGetAccessTokenMonitor(qdType string) error {
 			if token.Result.AccessToken == "" {
 				return errors.New("获取AccessToken失败")
 			}
-			redis.NewStringOperation().Set(cacheName, token.Result.AccessToken, goredis.WithExpire(7000))
+			redis.NewStringOperation().Set(cacheName, token.Result.AccessToken, goredis.WithExpire(time.Minute*7000))
 			return nil
 		default:
 			return errors.New("驱动类型不在范围内")
