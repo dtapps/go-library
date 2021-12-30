@@ -28,12 +28,12 @@ type WaimaiMeituanOrdersResponse struct {
 
 type WaimaiMeituanOrdersResult struct {
 	Result WaimaiMeituanOrdersResponse // 结果
-	Byte   []byte                      // 内容
+	body   []byte                      // 内容
 	Err    error                       // 错误
 }
 
-func NewWaimaiMeituanOrdersResult(result WaimaiMeituanOrdersResponse, byte []byte, err error) *WaimaiMeituanOrdersResult {
-	return &WaimaiMeituanOrdersResult{Result: result, Byte: byte, Err: err}
+func NewWaimaiMeituanOrdersResult(result WaimaiMeituanOrdersResponse, body []byte, err error) *WaimaiMeituanOrdersResult {
+	return &WaimaiMeituanOrdersResult{Result: result, body: body, Err: err}
 }
 
 // WaimaiMeituanOrders 美团联盟外卖/闪购/优选/酒店订单查询API

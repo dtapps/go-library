@@ -1,7 +1,6 @@
 package jd
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -19,12 +18,6 @@ type App struct {
 	MDb       *mongo.Client // 非关系数据库服务
 }
 
-type ErrResp struct {
-	Code          string `json:"code"`
-	ErrorMessage  string `json:"errorMessage"`
-	ErrorSolution string `json:"errorSolution"`
-}
-
 func (app *App) request(params map[string]interface{}) (resp []byte, err error) {
 	// 签名
 	app.Sign(params)
@@ -34,9 +27,6 @@ func (app *App) request(params map[string]interface{}) (resp []byte, err error) 
 	if app.ZapLog != nil {
 		app.ZapLog.Sugar().Info(fmt.Sprintf("https://api.jd.com/routerjson?method=%s %s %s", params["method"], get.Header, get.Body))
 	}
-	// 检查错误
-	var errResp ErrResp
-	err = json.Unmarshal(get.Body, &errResp)
 	return get.Body, err
 }
 

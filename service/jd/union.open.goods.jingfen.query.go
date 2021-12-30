@@ -1,6 +1,8 @@
 package jd
 
-type UnionOpenGoodsJIngFenQueryResult struct {
+import "encoding/json"
+
+type UnionOpenGoodsJIngFenQueryResultResponse struct {
 	JdUnionOpenGoodsJingfenQueryResponce struct {
 		Code        string `json:"code"`
 		QueryResult string `json:"queryResult"`
@@ -103,13 +105,29 @@ type UnionOpenGoodsJIngFenQueryQueryResult struct {
 	TotalCount int    `json:"totalCount"`
 }
 
+type UnionOpenGoodsJIngFenQueryResult struct {
+	Responce UnionOpenGoodsJIngFenQueryResultResponse // 结果
+	Result   UnionOpenGoodsJIngFenQueryQueryResult    // 结果
+	body     []byte                                   // 内容
+	Err      error                                    // 错误
+}
+
+func NewUnionOpenGoodsJIngFenQueryResult(responce UnionOpenGoodsJIngFenQueryResultResponse, result UnionOpenGoodsJIngFenQueryQueryResult, body []byte, err error) *UnionOpenGoodsJIngFenQueryResult {
+	return &UnionOpenGoodsJIngFenQueryResult{Responce: responce, Result: result, body: body, Err: err}
+}
+
 // UnionOpenGoodsJIngFenQuery
 // 京东联盟精选优质商品，每日更新，可通过频道ID查询各个频道下的精选商品。用获取的优惠券链接调用转链接口时，需传入搜索接口link字段返回的原始优惠券链接，切勿对链接进行任何encode、decode操作，否则将导致转链二合一推广链接时校验失败
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.goods.jingfen.query
-func (app *App) UnionOpenGoodsJIngFenQuery(notMustParams ...Params) (body []byte, err error) {
+func (app *App) UnionOpenGoodsJIngFenQuery(notMustParams ...Params) *UnionOpenGoodsJIngFenQueryResult {
 	// 参数
 	params := NewParamsWithType("jd.union.open.goods.jingfen.query", notMustParams...)
 	// 请求
-	body, err = app.request(params)
-	return
+	body, err := app.request(params)
+	// 定义
+	var responce UnionOpenGoodsJIngFenQueryResultResponse
+	var result UnionOpenGoodsJIngFenQueryQueryResult
+	err = json.Unmarshal(body, &responce)
+	err = json.Unmarshal([]byte(responce.JdUnionOpenGoodsJingfenQueryResponce.QueryResult), &result)
+	return NewUnionOpenGoodsJIngFenQueryResult(responce, result, body, err)
 }
