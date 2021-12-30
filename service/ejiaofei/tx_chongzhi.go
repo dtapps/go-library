@@ -16,7 +16,7 @@ type TxChOngZhiParams struct {
 	Times     string `json:"times"`     // 时间戳 格式：yyyyMMddhhmmss
 }
 
-type TxChOngZhiResult struct {
+type TxChOngZhiResponse struct {
 	XMLName   xml.Name `xml:"response"`
 	UserID    string   `xml:"userid"`    // 用户编号
 	PorderID  string   `xml:"Porderid"`  // 鼎信平台订单号
@@ -30,14 +30,27 @@ type TxChOngZhiResult struct {
 	Error     string   `xml:"error"`     // 错误提示
 }
 
+type TxChOngZhiResult struct {
+	Result TxChOngZhiResponse // 结果
+	Body   []byte             // 内容
+	Err    error              // 错误
+}
+
+func NewTxChOngZhiResult(result TxChOngZhiResponse, body []byte, err error) *TxChOngZhiResult {
+	return &TxChOngZhiResult{Result: result, Body: body, Err: err}
+}
+
 // TxChOngZhi 流量充值接口
-func (app *App) TxChOngZhi(param TxChOngZhiParams) (body []byte, err error) {
+func (app *App) TxChOngZhi(param TxChOngZhiParams) *TxChOngZhiResult {
 	// 签名
 	app.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vproductid%vamount%vip%vtimes%v", app.UserID, app.Pwd, param.OrderID, param.Account, param.ProductID, param.Amount, param.Ip, param.Times)
 	// 请求
 	b, _ := json.Marshal(&param)
 	var params map[string]interface{}
 	_ = json.Unmarshal(b, &params)
-	body, err = app.request("http://api.ejiaofei.net:11140/txchongzhi.do", params, http.MethodGet)
-	return body, err
+	body, err := app.request("http://api.ejiaofei.net:11140/txchongzhi.do", params, http.MethodGet)
+	// 定义
+	var response TxChOngZhiResponse
+	err = xml.Unmarshal(body, &response)
+	return NewTxChOngZhiResult(response, body, err)
 }

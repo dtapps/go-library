@@ -17,7 +17,7 @@ type GprsChOngZhiAdvanceParams struct {
 	Times      string `json:"times"`      // 时间戳 格式：yyyyMMddhhmmss
 }
 
-type GprsChOngZhiAdvanceResult struct {
+type GprsChOngZhiAdvanceResponse struct {
 	XMLName    xml.Name `xml:"response"`
 	UserID     string   `xml:"userid"`     // 会员账号
 	OrderID    string   `xml:"orderid"`    // 会员提交订单号
@@ -34,14 +34,27 @@ type GprsChOngZhiAdvanceResult struct {
 	Validity   string   `xml:"validity"`   // 流量有效期（显示月数，0为当月）
 }
 
+type GprsChOngZhiAdvanceResult struct {
+	Result GprsChOngZhiAdvanceResponse // 结果
+	Body   []byte                      // 内容
+	Err    error                       // 错误
+}
+
+func NewGprsChOngZhiAdvanceResult(result GprsChOngZhiAdvanceResponse, body []byte, err error) *GprsChOngZhiAdvanceResult {
+	return &GprsChOngZhiAdvanceResult{Result: result, Body: body, Err: err}
+}
+
 // GprsChOngZhiAdvance 流量充值接口
-func (app *App) GprsChOngZhiAdvance(param GprsChOngZhiAdvanceParams) (body []byte, err error) {
+func (app *App) GprsChOngZhiAdvance(param GprsChOngZhiAdvanceParams) *GprsChOngZhiAdvanceResult {
 	// 签名
 	app.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vgprs%varea%veffecttime%vvalidity%vtimes%v", app.UserID, app.Pwd, param.OrderID, param.Account, param.Gprs, param.Area, param.EffectTime, param.Validity, param.Times)
 	// 请求
 	b, _ := json.Marshal(&param)
 	var params map[string]interface{}
 	_ = json.Unmarshal(b, &params)
-	body, err = app.request("http://api.ejiaofei.net:11140/gprsChongzhiAdvance.do", params, http.MethodGet)
-	return body, err
+	body, err := app.request("http://api.ejiaofei.net:11140/gprsChongzhiAdvance.do", params, http.MethodGet)
+	// 定义
+	var response GprsChOngZhiAdvanceResponse
+	err = xml.Unmarshal(body, &response)
+	return NewGprsChOngZhiAdvanceResult(response, body, err)
 }

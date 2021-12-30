@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-type CheckCostResult struct {
+type CheckCostResponse struct {
 	XMLName xml.Name `xml:"response"`
 	UserID  string   `xml:"userid"`  // 用户账号
 	OrderID string   `xml:"orderid"` // 用户提交订单号
@@ -15,8 +15,18 @@ type CheckCostResult struct {
 	Error   int      `xml:"error"`   // 错误提示
 }
 
+type CheckCostResult struct {
+	Result CheckCostResponse // 结果
+	Body   []byte            // 内容
+	Err    error             // 错误
+}
+
+func NewCheckCostResult(result CheckCostResponse, body []byte, err error) *CheckCostResult {
+	return &CheckCostResult{Result: result, Body: body, Err: err}
+}
+
 // CheckCost 会员订单成本价查询接口
-func (app *App) CheckCost(orderID string) (body []byte, err error) {
+func (app *App) CheckCost(orderID string) *CheckCostResult {
 	// 参数
 	param := NewParams()
 	param.Set("orderid", orderID)
@@ -24,6 +34,9 @@ func (app *App) CheckCost(orderID string) (body []byte, err error) {
 	// 签名
 	app.signStr = fmt.Sprintf("userid%vpwd%vorderid%v", app.UserID, app.Pwd, orderID)
 	// 请求
-	body, err = app.request("http://api.ejiaofei.net:11140/checkCost.do", params, http.MethodGet)
-	return body, err
+	body, err := app.request("http://api.ejiaofei.net:11140/checkCost.do", params, http.MethodGet)
+	// 定义
+	var response CheckCostResponse
+	err = xml.Unmarshal(body, &response)
+	return NewCheckCostResult(response, body, err)
 }

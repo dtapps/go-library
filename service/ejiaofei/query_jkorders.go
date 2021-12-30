@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-type QueryJkOrdersResult struct {
+type QueryJkOrdersResponse struct {
 	XMLName   xml.Name `xml:"response"`
 	UserID    string   `xml:"userid"`    // 会员账号
 	POrderID  string   `xml:"Porderid"`  // 鼎信平台订单号
@@ -20,9 +20,19 @@ type QueryJkOrdersResult struct {
 	Error     string   `xml:"error"`     // 错误提示
 }
 
+type QueryJkOrdersResult struct {
+	Result QueryJkOrdersResponse // 结果
+	Body   []byte                // 内容
+	Err    error                 // 错误
+}
+
+func NewQueryJkOrdersResult(result QueryJkOrdersResponse, body []byte, err error) *QueryJkOrdersResult {
+	return &QueryJkOrdersResult{Result: result, Body: body, Err: err}
+}
+
 // QueryJkOrders 通用查询接口
 // orderid 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
-func (app *App) QueryJkOrders(orderID string) (body []byte, err error) {
+func (app *App) QueryJkOrders(orderID string) *QueryJkOrdersResult {
 	// 参数
 	param := NewParams()
 	param.Set("orderid", orderID)
@@ -30,6 +40,9 @@ func (app *App) QueryJkOrders(orderID string) (body []byte, err error) {
 	// 签名
 	app.signStr = fmt.Sprintf("userid%vpwd%vorderid%v", app.UserID, app.Pwd, orderID)
 	// 请求
-	body, err = app.request("http://api.ejiaofei.net:11140/query_jkorders.do", params, http.MethodGet)
-	return body, err
+	body, err := app.request("http://api.ejiaofei.net:11140/query_jkorders.do", params, http.MethodGet)
+	// 定义
+	var response QueryJkOrdersResponse
+	err = xml.Unmarshal(body, &response)
+	return NewQueryJkOrdersResult(response, body, err)
 }

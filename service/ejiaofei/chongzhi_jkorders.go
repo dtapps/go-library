@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-type ChOngZhiJkOrdersResult struct {
+type ChOngZhiJkOrdersResponse struct {
 	XMLName   xml.Name `xml:"response"`
 	UserID    string   `xml:"userid"`    // 会员账号
 	PorderID  string   `xml:"Porderid"`  // 鼎信平台订单号
@@ -20,11 +20,21 @@ type ChOngZhiJkOrdersResult struct {
 	Error     string   `xml:"error"`     // 错误提示
 }
 
+type ChOngZhiJkOrdersResult struct {
+	Result ChOngZhiJkOrdersResponse // 结果
+	Body   []byte                   // 内容
+	Err    error                    // 错误
+}
+
+func NewChOngZhiJkOrdersResult(result ChOngZhiJkOrdersResponse, body []byte, err error) *ChOngZhiJkOrdersResult {
+	return &ChOngZhiJkOrdersResult{Result: result, Body: body, Err: err}
+}
+
 // ChOngZhiJkOrders 话费充值接口
 // orderid 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
 // face 充值面值	以元为单位，包含10、20、30、50、100、200、300、500 移动联通电信
 // account 手机号码	需要充值的手机号码
-func (app *App) ChOngZhiJkOrders(orderID string, face int, account string) (body []byte, err error) {
+func (app *App) ChOngZhiJkOrders(orderID string, face int, account string) *ChOngZhiJkOrdersResult {
 	// 参数
 	param := NewParams()
 	param.Set("orderid", orderID)
@@ -35,6 +45,9 @@ func (app *App) ChOngZhiJkOrders(orderID string, face int, account string) (body
 	// 签名
 	app.signStr = fmt.Sprintf("userid%vpwd%vorderid%vface%vaccount%vamount1", app.UserID, app.Pwd, orderID, face, account)
 	// 请求
-	body, err = app.request("http://api.ejiaofei.net:11140/chongzhi_jkorders.do", params, http.MethodGet)
-	return body, err
+	body, err := app.request("http://api.ejiaofei.net:11140/chongzhi_jkorders.do", params, http.MethodGet)
+	// 定义
+	var response ChOngZhiJkOrdersResponse
+	err = xml.Unmarshal(body, &response)
+	return NewChOngZhiJkOrdersResult(response, body, err)
 }
