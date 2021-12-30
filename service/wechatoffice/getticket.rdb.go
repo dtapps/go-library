@@ -12,7 +12,7 @@ func (app *App) GetJsapiTicketRDb() string {
 	redis := goredis.App{
 		Rdb: app.RDb,
 	}
-	newCache := redis.NewSimpleStringCache(redis.NewStringOperation(), time.Minute*7000)
+	newCache := redis.NewSimpleStringCache(redis.NewStringOperation(), time.Second*7000)
 	newCache.DBGetter = func() string {
 		token := app.GetTicket(app.GetAccessTokenRDb(), "jsapi")
 		return token.Result.Ticket

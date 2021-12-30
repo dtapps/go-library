@@ -9,7 +9,7 @@
 [![godoc](https://pkg.go.dev/badge/gopkg.in/dtapps/go-library.v3?status.svg)](https://pkg.go.dev/gopkg.in/dtapps/go-library.v3)
 [![goproxy.cn](https://goproxy.cn/stats/gopkg.in/dtapps/go-library.v3/badges/download-count.svg)](https://goproxy.cn/stats/gopkg.in/dtapps/go-library.v3)
 [![goreportcard.com](https://goreportcard.com/badge/gopkg.in/dtapps/go-library.v3)](https://goreportcard.com/report/gopkg.in/dtapps/go-library.v3)
-[![deps.dev](https://img.shields.io/badge/deps-go-red.svg)](https://deps.dev/go/github.com%2Fdtapps%2Fgo-library)
+[![deps.dev](https://img.shields.io/badge/deps-go-red.svg)](https://deps.dev/go/gopkg.in%2Fdtapps%2Fgo-library.v3)
 [![Coverage Status](https://coveralls.io/repos/github/dtapps/go-library/badge.svg?branch=master)](https://coveralls.io/github/dtapps/go-library?branch=master)
 [![Sourcegraph](https://sourcegraph.com/github.com/dtapps/go-library/-/badge.svg)](https://sourcegraph.com/github.com/dtapps/go-library?badge)
 [![Build status](https://ci.appveyor.com/api/projects/status/d6rq6xynt8wkev5k?svg=true)](https://ci.appveyor.com/project/dtapps/go-library)
