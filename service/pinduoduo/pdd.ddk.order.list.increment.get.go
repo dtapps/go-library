@@ -1,6 +1,8 @@
 package pinduoduo
 
-type OrderListIncrementGetResult struct {
+import "encoding/json"
+
+type OrderListIncrementGetResponse struct {
 	OrderListGetResponse struct {
 		TotalCount int `json:"total_count"`
 		OrderList  []struct {
@@ -53,10 +55,23 @@ type OrderListIncrementGetResult struct {
 	} `json:"order_list_get_response"`
 }
 
-func (app *App) OrderListIncrementGet(notMustParams ...Params) (body []byte, err error) {
+type OrderListIncrementGetResult struct {
+	Result OrderListIncrementGetResponse // 结果
+	Body   []byte                        // 内容
+	Err    error                         // 错误
+}
+
+func NewOrderListIncrementGetResult(result OrderListIncrementGetResponse, body []byte, err error) *OrderListIncrementGetResult {
+	return &OrderListIncrementGetResult{Result: result, Body: body, Err: err}
+}
+
+func (app *App) OrderListIncrementGet(notMustParams ...Params) *OrderListIncrementGetResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.order.list.increment.get", notMustParams...)
 	// 请求
-	body, err = app.request(params)
-	return
+	body, err := app.request(params)
+	// 定义
+	var response OrderListIncrementGetResponse
+	err = json.Unmarshal(body, &response)
+	return NewOrderListIncrementGetResult(response, body, err)
 }

@@ -1,7 +1,8 @@
 package pinduoduo
 
-// GoodsRecommendGetResult 返回参数
-type GoodsRecommendGetResult struct {
+import "encoding/json"
+
+type GoodsRecommendGetResponse struct {
 	GoodsBasicDetailResponse struct {
 		List []struct {
 			ActivityPromotionRate      int      `json:"activity_promotion_rate"`
@@ -62,11 +63,25 @@ type GoodsRecommendGetResult struct {
 	} `json:"goods_basic_detail_response"`
 }
 
-// GoodsRecommendGet 多多进宝商品推荐API https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.recommend.get
-func (app *App) GoodsRecommendGet(notMustParams ...Params) (body []byte, err error) {
+type GoodsRecommendGetResult struct {
+	Result GoodsRecommendGetResponse // 结果
+	Body   []byte                    // 内容
+	Err    error                     // 错误
+}
+
+func NewGoodsRecommendGetResult(result GoodsRecommendGetResponse, body []byte, err error) *GoodsRecommendGetResult {
+	return &GoodsRecommendGetResult{Result: result, Body: body, Err: err}
+}
+
+// GoodsRecommendGet 多多进宝商品推荐API
+// https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.recommend.get
+func (app *App) GoodsRecommendGet(notMustParams ...Params) *GoodsRecommendGetResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.recommend.get", notMustParams...)
 	// 请求
-	body, err = app.request(params)
-	return
+	body, err := app.request(params)
+	// 定义
+	var response GoodsRecommendGetResponse
+	err = json.Unmarshal(body, &response)
+	return NewGoodsRecommendGetResult(response, body, err)
 }

@@ -1,7 +1,8 @@
 package pinduoduo
 
-// ResourceUrlGenResult 返回参数
-type ResourceUrlGenResult struct {
+import "encoding/json"
+
+type ResourceUrlGenResponse struct {
 	ResourceUrlResponse struct {
 		MultiUrlList struct {
 			ShortUrl string `json:"short_url"` // 频道推广短链接
@@ -25,11 +26,25 @@ type ResourceUrlGenResult struct {
 	} `json:"resource_url_response"`
 }
 
-// ResourceUrlGen 创建多多进宝推广位 https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.pid.generate
-func (app *App) ResourceUrlGen(notMustParams ...Params) (body []byte, err error) {
+type ResourceUrlGenResult struct {
+	Result ResourceUrlGenResponse // 结果
+	Body   []byte                 // 内容
+	Err    error                  // 错误
+}
+
+func NewResourceUrlGenResult(result ResourceUrlGenResponse, body []byte, err error) *ResourceUrlGenResult {
+	return &ResourceUrlGenResult{Result: result, Body: body, Err: err}
+}
+
+// ResourceUrlGen 创建多多进宝推广位
+// https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.pid.generate
+func (app *App) ResourceUrlGen(notMustParams ...Params) *ResourceUrlGenResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.resource.url.gen", notMustParams...)
 	// 请求
-	body, err = app.request(params)
-	return
+	body, err := app.request(params)
+	// 定义
+	var response ResourceUrlGenResponse
+	err = json.Unmarshal(body, &response)
+	return NewResourceUrlGenResult(response, body, err)
 }

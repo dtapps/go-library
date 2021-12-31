@@ -1,6 +1,8 @@
 package pinduoduo
 
-type GoodsSearchResult struct {
+import "encoding/json"
+
+type GoodsSearchResponse struct {
 	GoodsSearchResponse struct {
 		GoodsList []struct {
 			ActivityPromotionRate       int      `json:"activity_promotion_rate"`
@@ -75,11 +77,24 @@ type GoodsSearchResult struct {
 	} `json:"goods_search_response"`
 }
 
+type GoodsSearchResult struct {
+	Result GoodsSearchResponse // 结果
+	Body   []byte              // 内容
+	Err    error               // 错误
+}
+
+func NewGoodsSearchResult(result GoodsSearchResponse, body []byte, err error) *GoodsSearchResult {
+	return &GoodsSearchResult{Result: result, Body: body, Err: err}
+}
+
 // GoodsSearch 多多进宝商品查询 https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.search
-func (app *App) GoodsSearch(notMustParams ...Params) (body []byte, err error) {
+func (app *App) GoodsSearch(notMustParams ...Params) *GoodsSearchResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.search", notMustParams...)
 	// 请求
-	body, err = app.request(params)
-	return
+	body, err := app.request(params)
+	// 定义
+	var response GoodsSearchResponse
+	err = json.Unmarshal(body, &response)
+	return NewGoodsSearchResult(response, body, err)
 }

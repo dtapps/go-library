@@ -1,7 +1,8 @@
 package pinduoduo
 
-// RpPromUrlGenerateResult 返回参数
-type RpPromUrlGenerateResult struct {
+import "encoding/json"
+
+type RpPromUrlGenerateResponse struct {
 	RpPromotionUrlGenerateResponse struct {
 		ResourceList []struct {
 			Desc string `json:"desc"` // 活动描述
@@ -41,11 +42,25 @@ type RpPromUrlGenerateResult struct {
 	} `json:"rp_promotion_url_generate_response"`
 }
 
-// RpPromUrlGenerate 生成营销工具推广链接 https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.rp.prom.url.generate
-func (app *App) RpPromUrlGenerate(notMustParams ...Params) (body []byte, err error) {
+type RpPromUrlGenerateResult struct {
+	Result RpPromUrlGenerateResponse // 结果
+	Body   []byte                    // 内容
+	Err    error                     // 错误
+}
+
+func NewRpPromUrlGenerateResult(result RpPromUrlGenerateResponse, body []byte, err error) *RpPromUrlGenerateResult {
+	return &RpPromUrlGenerateResult{Result: result, Body: body, Err: err}
+}
+
+// RpPromUrlGenerate 生成营销工具推广链接
+// https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.rp.prom.url.generate
+func (app *App) RpPromUrlGenerate(notMustParams ...Params) *RpPromUrlGenerateResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.rp.prom.url.generate", notMustParams...)
 	// 请求
-	body, err = app.request(params)
-	return
+	body, err := app.request(params)
+	// 定义
+	var response RpPromUrlGenerateResponse
+	err = json.Unmarshal(body, &response)
+	return NewRpPromUrlGenerateResult(response, body, err)
 }

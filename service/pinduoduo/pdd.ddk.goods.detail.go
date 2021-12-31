@@ -1,7 +1,8 @@
 package pinduoduo
 
-// GoodsDetailResult 返回参数
-type GoodsDetailResult struct {
+import "encoding/json"
+
+type GoodsDetailResponse struct {
 	GoodsDetailResponse struct {
 		GoodsDetails []struct {
 			ActivityPromotionRate       int      `json:"activity_promotion_rate,omitempty"`         // 活动佣金比例，千分比（特定活动期间的佣金比例）
@@ -80,11 +81,25 @@ type GoodsDetailResult struct {
 	} `json:"goods_detail_response"`
 }
 
-// GoodsDetail 多多进宝商品详情查询 https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.detail
-func (app *App) GoodsDetail(notMustParams ...Params) (body []byte, err error) {
+type GoodsDetailResult struct {
+	Result GoodsDetailResponse // 结果
+	Body   []byte              // 内容
+	Err    error               // 错误
+}
+
+func NewGoodsDetailResult(result GoodsDetailResponse, body []byte, err error) *GoodsDetailResult {
+	return &GoodsDetailResult{Result: result, Body: body, Err: err}
+}
+
+// GoodsDetail 多多进宝商品详情查询
+// https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.detail
+func (app *App) GoodsDetail(notMustParams ...Params) *GoodsDetailResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.detail", notMustParams...)
 	// 请求
-	body, err = app.request(params)
-	return
+	body, err := app.request(params)
+	// 定义
+	var response GoodsDetailResponse
+	err = json.Unmarshal(body, &response)
+	return NewGoodsDetailResult(response, body, err)
 }

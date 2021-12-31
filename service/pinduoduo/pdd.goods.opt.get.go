@@ -1,7 +1,8 @@
 package pinduoduo
 
-// GoodsOptGetResult 返回参数
-type GoodsOptGetResult struct {
+import "encoding/json"
+
+type GoodsOptGetResponse struct {
 	GoodsOptGetResponse struct {
 		GoodsOptList []struct {
 			Level       int    `json:"level"`         // 层级，1-一级，2-二级，3-三级，4-四级
@@ -12,13 +13,27 @@ type GoodsOptGetResult struct {
 	} `json:"goods_opt_get_response"`
 }
 
-// GoodsOptGet 查询商品标签列表 https://open.pinduoduo.com/application/document/api?id=pdd.goods.opt.get
-func (app *App) GoodsOptGet(parentOptId int) (body []byte, err error) {
+type GoodsOptGetResult struct {
+	Result GoodsOptGetResponse // 结果
+	Body   []byte              // 内容
+	Err    error               // 错误
+}
+
+func NewGoodsOptGetResult(result GoodsOptGetResponse, body []byte, err error) *GoodsOptGetResult {
+	return &GoodsOptGetResult{Result: result, Body: body, Err: err}
+}
+
+// GoodsOptGet 查询商品标签列表
+// https://open.pinduoduo.com/application/document/api?id=pdd.goods.opt.get
+func (app *App) GoodsOptGet(parentOptId int) *GoodsOptGetResult {
 	// 参数
 	param := NewParams()
 	param.Set("parent_opt_id", parentOptId)
 	params := NewParamsWithType("pdd.goods.opt.get", param)
 	// 请求
-	body, err = app.request(params)
-	return
+	body, err := app.request(params)
+	// 定义
+	var response GoodsOptGetResponse
+	err = json.Unmarshal(body, &response)
+	return NewGoodsOptGetResult(response, body, err)
 }

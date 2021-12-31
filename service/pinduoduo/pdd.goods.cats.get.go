@@ -1,7 +1,8 @@
 package pinduoduo
 
-// GoodsCatsGetResult 返回参数
-type GoodsCatsGetResult struct {
+import "encoding/json"
+
+type GoodsCatsGetResponse struct {
 	GoodsCatsGetResponse struct {
 		GoodsCatsList []struct {
 			CatId       int    `json:"cat_id"`        // 商品类目ID
@@ -12,13 +13,27 @@ type GoodsCatsGetResult struct {
 	} `json:"goods_cats_get_response"`
 }
 
-// GoodsCatsGet 商品标准类目接口 https://open.pinduoduo.com/application/document/api?id=pdd.goods.cats.get
-func (app *App) GoodsCatsGet(parentOptId int) (body []byte, err error) {
+type GoodsCatsGetResult struct {
+	Result GoodsCatsGetResponse // 结果
+	Body   []byte               // 内容
+	Err    error                // 错误
+}
+
+func NewGoodsCatsGetResult(result GoodsCatsGetResponse, body []byte, err error) *GoodsCatsGetResult {
+	return &GoodsCatsGetResult{Result: result, Body: body, Err: err}
+}
+
+// GoodsCatsGet 商品标准类目接口
+// https://open.pinduoduo.com/application/document/api?id=pdd.goods.cats.get
+func (app *App) GoodsCatsGet(parentOptId int) *GoodsCatsGetResult {
 	// 参数
 	param := NewParams()
 	param.Set("parent_cat_id", parentOptId)
 	params := NewParamsWithType("pdd.goods.cats.get", param)
 	// 请求
-	body, err = app.request(params)
-	return
+	body, err := app.request(params)
+	// 定义
+	var response GoodsCatsGetResponse
+	err = json.Unmarshal(body, &response)
+	return NewGoodsCatsGetResult(response, body, err)
 }

@@ -1,7 +1,8 @@
 package pinduoduo
 
-// GoodsPromotionUrlGenerateResult 返回参数
-type GoodsPromotionUrlGenerateResult struct {
+import "encoding/json"
+
+type GoodsPromotionUrlGenerateResponse struct {
 	GoodsPromotionUrlGenerateResponse struct {
 		GoodsPromotionUrlList []struct {
 			MobileShortUrl string `json:"mobile_short_url,omitempty"` // 对应出参mobile_url的短链接，与mobile_url功能一致。
@@ -33,11 +34,25 @@ type GoodsPromotionUrlGenerateResult struct {
 	} `json:"goods_promotion_url_generate_response"`
 }
 
-// GoodsPromotionUrlGenerate 多多进宝推广链接生成 https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.promotion.url.generate
-func (app *App) GoodsPromotionUrlGenerate(notMustParams ...Params) (body []byte, err error) {
+type GoodsPromotionUrlGenerateResult struct {
+	Result GoodsPromotionUrlGenerateResponse // 结果
+	Body   []byte                            // 内容
+	Err    error                             // 错误
+}
+
+func NewGoodsPromotionUrlGenerateResult(result GoodsPromotionUrlGenerateResponse, body []byte, err error) *GoodsPromotionUrlGenerateResult {
+	return &GoodsPromotionUrlGenerateResult{Result: result, Body: body, Err: err}
+}
+
+// GoodsPromotionUrlGenerate 多多进宝推广链接生成
+// https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.promotion.url.generate
+func (app *App) GoodsPromotionUrlGenerate(notMustParams ...Params) *GoodsPromotionUrlGenerateResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.promotion.url.generate", notMustParams...)
 	// 请求
-	body, err = app.request(params)
-	return
+	body, err := app.request(params)
+	// 定义
+	var response GoodsPromotionUrlGenerateResponse
+	err = json.Unmarshal(body, &response)
+	return NewGoodsPromotionUrlGenerateResult(response, body, err)
 }
