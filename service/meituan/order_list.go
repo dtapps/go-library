@@ -16,8 +16,7 @@ type OrderList struct {
 	QueryTimeType string `json:"queryTimeType,omitempty"` // 查询时间类型，枚举值 1 按订单支付时间查询 2 按订单发生修改时间查询
 }
 
-// OrderListResult 返回参数
-type OrderListResult struct {
+type OrderListResponse struct {
 	DataList []struct {
 		Orderid                     string        `json:"orderid"`                     // 订单id
 		Paytime                     string        `json:"paytime"`                     // 订单支付时间，10位时间戳
@@ -39,35 +38,28 @@ type OrderListResult struct {
 	Total int `json:"total"` // 查询条件命中的总数据条数，用于计算分页参数
 }
 
-// OrderList 订单列表查询(新) https://union.meituan.com/v2/apiDetail?id=1
-func (app *App) OrderList(param OrderList) (result OrderListResult, err error) {
-	// 处理默认数据
-	if param.Page == "" {
-		param.Page = "1"
-	}
-	if param.Limit == "" {
-		param.Limit = "100"
-	}
-	// 接口参数
-	params := map[string]interface{}{}
-	b, _ := json.Marshal(&param)
-	var m map[string]interface{}
-	_ = json.Unmarshal(b, &m)
-	for k, v := range m {
-		params[k] = v
-	}
+type OrderListResult struct {
+	Result OrderListResponse // 结果
+	Body   []byte            // 内容
+	Err    error             // 错误
+}
+
+func NewOrderListResult(result OrderListResponse, body []byte, err error) *OrderListResult {
+	return &OrderListResult{Result: result, Body: body, Err: err}
+}
+
+// OrderList 订单列表查询(新)
+// https://union.meituan.com/v2/apiDetail?id=1
+func (app *App) OrderList(notMustParams ...Params) *OrderListResult {
+	// 参数
+	params := app.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s
 	params["ts"] = gotime.Current().Timestamp()
 	params["key"] = app.AppKey
 	params["sign"] = app.getSign(app.Secret, params)
 	body, err := app.request("https://runion.meituan.com/api/orderList", params, http.MethodGet)
-
-	if err != nil {
-		return
-	}
-
-	if err = json.Unmarshal(body, &result); err != nil {
-		return
-	}
-	return
+	// 定义
+	var response OrderListResponse
+	err = json.Unmarshal(body, &response)
+	return NewOrderListResult(response, body, err)
 }
