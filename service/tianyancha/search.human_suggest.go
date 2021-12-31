@@ -1,11 +1,12 @@
 package tianyancha
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
 
-type SearchHumanSuggestResult struct {
+type SearchHumanSuggestResponse struct {
 	Data struct {
 		Id          int         `json:"id"`
 		HumanName   interface{} `json:"humanName"`
@@ -44,7 +45,20 @@ type SearchHumanSuggestResult struct {
 	State      string `json:"state"`
 }
 
-func (app *App) SearchHumanSuggest(key string) (body []byte, err error) {
-	body, err = app.request(fmt.Sprintf("https://www.tianyancha.com/search/humanSuggest.json?key=%s", key), map[string]interface{}{}, http.MethodGet)
-	return body, err
+type SearchHumanSuggestResult struct {
+	Result SearchHumanSuggestResponse // 结果
+	Body   []byte                     // 内容
+	Err    error                      // 错误
+}
+
+func NewSearchHumanSuggestResult(result SearchHumanSuggestResponse, body []byte, err error) *SearchHumanSuggestResult {
+	return &SearchHumanSuggestResult{Result: result, Body: body, Err: err}
+}
+
+func (app *App) SearchHumanSuggest(key string) *SearchHumanSuggestResult {
+	body, err := app.request(fmt.Sprintf("https://www.tianyancha.com/search/humanSuggest.json?key=%s", key), map[string]interface{}{}, http.MethodGet)
+	// 定义
+	var response SearchHumanSuggestResponse
+	err = json.Unmarshal(body, &response)
+	return NewSearchHumanSuggestResult(response, body, err)
 }
