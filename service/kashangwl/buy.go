@@ -1,7 +1,8 @@
 package kashangwl
 
-// ApiBuyResult 返回参数
-type ApiBuyResult struct {
+import "encoding/json"
+
+type BuyResponse struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
 	Data    struct {
@@ -21,11 +22,25 @@ type ApiBuyResult struct {
 	} `json:"data"`
 }
 
-// ApiBuy 购买商品 http://doc.cqmeihu.cn/sales/BuyProduct.html
-func (app *App) ApiBuy(notMustParams ...Params) (body []byte, err error) {
+type BuyResult struct {
+	Result BuyResponse // 结果
+	Body   []byte      // 内容
+	Err    error       // 错误
+}
+
+func NewBuyResult(result BuyResponse, body []byte, err error) *BuyResult {
+	return &BuyResult{Result: result, Body: body, Err: err}
+}
+
+// Buy 购买商品
+// http://doc.cqmeihu.cn/sales/BuyProduct.html
+func (app *App) Buy(notMustParams ...Params) *BuyResult {
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
-	body, err = app.request("http://www.kashangwl.com/api/buy", params)
-	return body, err
+	body, err := app.request("http://www.kashangwl.com/api/buy", params)
+	// 定义
+	var response BuyResponse
+	err = json.Unmarshal(body, &response)
+	return NewBuyResult(response, body, err)
 }

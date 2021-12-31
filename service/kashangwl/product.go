@@ -1,7 +1,8 @@
 package kashangwl
 
-// ProductResult 返回参数
-type ProductResult struct {
+import "encoding/json"
+
+type ProductResponse struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
 	Data    struct {
@@ -19,38 +20,26 @@ type ProductResult struct {
 	} `json:"data"`
 }
 
+type ProductResult struct {
+	Result ProductResponse // 结果
+	Body   []byte          // 内容
+	Err    error           // 错误
+}
+
+func NewProductResult(result ProductResponse, body []byte, err error) *ProductResult {
+	return &ProductResult{Result: result, Body: body, Err: err}
+}
+
 // Product 获取单个商品信息
 // http://doc.cqmeihu.cn/sales/product-info.html
-func (app App) Product(productId int64) (body []byte, err error) {
+func (app App) Product(productId int64) *ProductResult {
 	// 参数
 	params := NewParams()
 	params.Set("product_id", productId)
 	// 请求
-	body, err = app.request("http://www.kashangwl.com/api/product", params)
-	return body, err
-}
-
-// ProductRechargeParamsResult 返回参数
-type ProductRechargeParamsResult struct {
-	Code    string `json:"code"`
-	Message string `json:"message"`
-	Data    struct {
-		RechargeAccountLabel string `json:"recharge_account_label"`
-		RechargeParams       []struct {
-			Name    string `json:"name"`
-			Type    string `json:"type"`
-			Options string `json:"options"`
-		} `json:"recharge_params"`
-	} `json:"data"`
-}
-
-// ProductRechargeParams 接口说明
-// 获取商品的充值参数（仅支持充值类商品）
-// http://doc.cqmeihu.cn/sales/ProductParams.html
-func (app App) ProductRechargeParams(notMustParams ...Params) (body []byte, err error) {
-	// 参数
-	params := app.NewParamsWith(notMustParams...)
-	// 请求
-	body, err = app.request("http://www.kashangwl.com/api/product/recharge-params", params)
-	return body, err
+	body, err := app.request("http://www.kashangwl.com/api/product", params)
+	// 定义
+	var response ProductResponse
+	err = json.Unmarshal(body, &response)
+	return NewProductResult(response, body, err)
 }
