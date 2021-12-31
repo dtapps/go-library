@@ -1,6 +1,8 @@
 package taobao
 
-type TbkDgMaterialOptionalResult struct {
+import "encoding/json"
+
+type TbkDgMaterialOptionalResponse struct {
 	TbkDgMaterialOptionalResponse struct {
 		ResultList struct {
 			MapData []struct {
@@ -59,11 +61,25 @@ type TbkDgMaterialOptionalResult struct {
 	} `json:"tbk_dg_material_optional_response"`
 }
 
-// TbkDgMaterialOptional 淘宝客-推广者-物料搜索 https://open.taobao.com/api.htm?docId=35896&docType=2&source=search
-func (app *App) TbkDgMaterialOptional(notMustParams ...Params) (body []byte, err error) {
+type TbkDgMaterialOptionalResult struct {
+	Result TbkDgMaterialOptionalResponse // 结果
+	Body   []byte                        // 内容
+	Err    error                         // 错误
+}
+
+func NewTbkDgMaterialOptionalResult(result TbkDgMaterialOptionalResponse, body []byte, err error) *TbkDgMaterialOptionalResult {
+	return &TbkDgMaterialOptionalResult{Result: result, Body: body, Err: err}
+}
+
+// TbkDgMaterialOptional 淘宝客-推广者-物料搜索
+// https://open.taobao.com/api.htm?docId=35896&docType=2&source=search
+func (app *App) TbkDgMaterialOptional(notMustParams ...Params) *TbkDgMaterialOptionalResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.dg.material.optional", notMustParams...)
 	// 请求
-	body, err = app.request(params)
-	return
+	body, err := app.request(params)
+	// 定义
+	var response TbkDgMaterialOptionalResponse
+	err = json.Unmarshal(body, &response)
+	return NewTbkDgMaterialOptionalResult(response, body, err)
 }

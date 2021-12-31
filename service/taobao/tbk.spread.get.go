@@ -1,6 +1,8 @@
 package taobao
 
-type TbkSpreadGetResult struct {
+import "encoding/json"
+
+type TbkSpreadGetResponse struct {
 	TbkSpreadGetResponse struct {
 		Results struct {
 			TbkSpread []struct {
@@ -13,11 +15,25 @@ type TbkSpreadGetResult struct {
 	} `json:"tbk_spread_get_response"`
 }
 
-// TbkSpreadGet 淘宝客-公用-长链转短链 https://open.taobao.com/api.htm?docId=27832&docType=2&source=search
-func (app *App) TbkSpreadGet(notMustParams ...Params) (body []byte, err error) {
+type TbkSpreadGetResult struct {
+	Result TbkSpreadGetResponse // 结果
+	Body   []byte               // 内容
+	Err    error                // 错误
+}
+
+func NewTbkSpreadGetResult(result TbkSpreadGetResponse, body []byte, err error) *TbkSpreadGetResult {
+	return &TbkSpreadGetResult{Result: result, Body: body, Err: err}
+}
+
+// TbkSpreadGet 淘宝客-公用-长链转短链
+// https://open.taobao.com/api.htm?docId=27832&docType=2&source=search
+func (app *App) TbkSpreadGet(notMustParams ...Params) *TbkSpreadGetResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.spread.get", notMustParams...)
 	// 请求
-	body, err = app.request(params)
-	return
+	body, err := app.request(params)
+	// 定义
+	var response TbkSpreadGetResponse
+	err = json.Unmarshal(body, &response)
+	return NewTbkSpreadGetResult(response, body, err)
 }

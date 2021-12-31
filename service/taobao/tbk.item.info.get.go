@@ -1,6 +1,8 @@
 package taobao
 
-type TbkItemInfoGetResult struct {
+import "encoding/json"
+
+type TbkItemInfoGetResponse struct {
 	TbkItemInfoGetResponse struct {
 		Results struct {
 			NTbkItem []struct {
@@ -40,11 +42,25 @@ type TbkItemInfoGetResult struct {
 	} `json:"tbk_item_info_get_response"`
 }
 
-// TbkItemInfoGet 淘宝客-公用-淘宝客商品详情查询(简版) https://open.taobao.com/api.htm?docId=24518&docType=2&source=search
-func (app *App) TbkItemInfoGet(notMustParams ...Params) (body []byte, err error) {
+type TbkItemInfoGetResult struct {
+	Result TbkItemInfoGetResponse // 结果
+	Body   []byte                 // 内容
+	Err    error                  // 错误
+}
+
+func NewTbkItemInfoGetResult(result TbkItemInfoGetResponse, body []byte, err error) *TbkItemInfoGetResult {
+	return &TbkItemInfoGetResult{Result: result, Body: body, Err: err}
+}
+
+// TbkItemInfoGet 淘宝客-公用-淘宝客商品详情查询(简版)
+// https://open.taobao.com/api.htm?docId=24518&docType=2&source=search
+func (app *App) TbkItemInfoGet(notMustParams ...Params) *TbkItemInfoGetResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.item.info.get", notMustParams...)
 	// 请求
-	body, err = app.request(params)
-	return
+	body, err := app.request(params)
+	// 定义
+	var response TbkItemInfoGetResponse
+	err = json.Unmarshal(body, &response)
+	return NewTbkItemInfoGetResult(response, body, err)
 }

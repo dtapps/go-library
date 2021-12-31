@@ -1,6 +1,8 @@
 package taobao
 
-type TbkActivityInfoGetResult struct {
+import "encoding/json"
+
+type TbkActivityInfoGetResponse struct {
 	TbkActivityInfoGetResponse struct {
 		Data struct {
 			WxQrcodeUrl       string `json:"wx_qrcode_url"`
@@ -16,11 +18,25 @@ type TbkActivityInfoGetResult struct {
 	} `json:"tbk_activity_info_get_response"`
 }
 
-// TbkActivityInfoGet 淘宝客-推广者-官方活动转链 https://open.taobao.com/api.htm?spm=a219a.7386797.0.0.5a83669a7rURsF&source=search&docId=48340&docType=2
-func (app *App) TbkActivityInfoGet(notMustParams ...Params) (body []byte, err error) {
+type TbkActivityInfoGetResult struct {
+	Result TbkActivityInfoGetResponse // 结果
+	Body   []byte                     // 内容
+	Err    error                      // 错误
+}
+
+func NewTbkActivityInfoGetResult(result TbkActivityInfoGetResponse, body []byte, err error) *TbkActivityInfoGetResult {
+	return &TbkActivityInfoGetResult{Result: result, Body: body, Err: err}
+}
+
+// TbkActivityInfoGet 淘宝客-推广者-官方活动转链
+// https://open.taobao.com/api.htm?spm=a219a.7386797.0.0.5a83669a7rURsF&source=search&docId=48340&docType=2
+func (app *App) TbkActivityInfoGet(notMustParams ...Params) *TbkActivityInfoGetResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.activity.info.get", notMustParams...)
 	// 请求
-	body, err = app.request(params)
-	return
+	body, err := app.request(params)
+	// 定义
+	var response TbkActivityInfoGetResponse
+	err = json.Unmarshal(body, &response)
+	return NewTbkActivityInfoGetResult(response, body, err)
 }

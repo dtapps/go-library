@@ -1,6 +1,8 @@
 package taobao
 
-type TbkDgOptimusMaterialResult struct {
+import "encoding/json"
+
+type TbkDgOptimusMaterialResponse struct {
 	TbkDgOptimusMaterialResponse struct {
 		IsDefault  string `json:"is_default"`
 		ResultList struct {
@@ -43,11 +45,25 @@ type TbkDgOptimusMaterialResult struct {
 	} `json:"tbk_dg_optimus_material_response"`
 }
 
-// TbkDgOptimusMaterial 淘宝客-推广者-物料精选 https://open.taobao.com/api.htm?spm=a219a.7386797.0.0.5d67669aIeQeVI&source=search&docId=33947&docType=2
-func (app *App) TbkDgOptimusMaterial(notMustParams ...Params) (body []byte, err error) {
+type TbkDgOptimusMaterialResult struct {
+	Result TbkDgOptimusMaterialResponse // 结果
+	Body   []byte                       // 内容
+	Err    error                        // 错误
+}
+
+func NewTbkDgOptimusMaterialResult(result TbkDgOptimusMaterialResponse, body []byte, err error) *TbkDgOptimusMaterialResult {
+	return &TbkDgOptimusMaterialResult{Result: result, Body: body, Err: err}
+}
+
+// TbkDgOptimusMaterial 淘宝客-推广者-物料精选
+// https://open.taobao.com/api.htm?spm=a219a.7386797.0.0.5d67669aIeQeVI&source=search&docId=33947&docType=2
+func (app *App) TbkDgOptimusMaterial(notMustParams ...Params) *TbkDgOptimusMaterialResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.dg.optimus.material", notMustParams...)
 	// 请求
-	body, err = app.request(params)
-	return
+	body, err := app.request(params)
+	// 定义
+	var response TbkDgOptimusMaterialResponse
+	err = json.Unmarshal(body, &response)
+	return NewTbkDgOptimusMaterialResult(response, body, err)
 }
