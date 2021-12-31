@@ -21,7 +21,7 @@ func NewMiniCodeResult(result MiniCodeResponse, body []byte, err error) *MiniCod
 	return &MiniCodeResult{Result: result, Body: body, Err: err}
 }
 
-// MiniCode 小程序二维码生成
+// MiniCode 小程序生成二维码（新版）
 // https://union.meituan.com/v2/apiDetail?id=26
 func (app *App) MiniCode(actId int64, sid string) *MiniCodeResult {
 	// 参数

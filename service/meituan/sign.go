@@ -11,6 +11,8 @@ import (
 	"strconv"
 )
 
+// 签名(sign)生成逻辑（新版）
+// https://union.meituan.com/v2/apiDetail?id=27
 func (app *App) getSign(Secret string, params map[string]interface{}) string {
 	// 参数按照参数名的字典升序排列
 	var keys []string

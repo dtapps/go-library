@@ -21,7 +21,7 @@ func NewGenerateLinkResult(result GenerateLinkResponse, body []byte, err error) 
 	return &GenerateLinkResult{Result: result, Body: body, Err: err}
 }
 
-// GenerateLink 自助取链接口
+// GenerateLink 自助取链接口（新版）
 // https://union.meituan.com/v2/apiDetail?id=25
 func (app *App) GenerateLink(actId int64, sid string, linkType, shortLink int) *GenerateLinkResult {
 	// 参数
