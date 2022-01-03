@@ -24,7 +24,7 @@ func (app *App) SaveImg(resp gohttp.Response, dir, saveName string) SaveImgRespo
 	here:
 		f, err := os.OpenFile(dir+outputFileName, os.O_CREATE|os.O_RDWR, 0666)
 		if err != nil {
-			os.Mkdir(dir, 0666)
+			os.Mkdir(dir, 0755)
 			goto here
 		}
 		f.Write(resp.Body)
