@@ -1,14 +1,14 @@
 package wechatminiprogram
 
 import (
-	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.uber.org/zap"
+	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
 	"gorm.io/gorm"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -24,36 +24,25 @@ type App struct {
 	MDb         *mongo.Client // 非关系数据库服务
 }
 
-func (app *App) request(url string, params map[string]interface{}, method string) (resp []byte, err error) {
-	// 请求参数
-	marshal, _ := json.Marshal(params)
-	var req *http.Request
-	req, err = http.NewRequest(method, url, bytes.NewReader(marshal))
-	if err != nil {
-		return nil, err
+func (app *App) request(url string, params map[string]interface{}, method string) (resp gohttp.Response, err error) {
+	switch method {
+	case http.MethodGet:
+		get, err := gohttp.Get(url, params)
+		// 日志
+		if app.ZapLog != nil {
+			app.ZapLog.Sugar().Info(fmt.Sprintf("wechatminiprogram %s %s %s", url, get.Header, get.Body))
+		}
+		return get, err
+	case http.MethodPost:
+		// 请求参数
+		paramsStr, err := json.Marshal(params)
+		postJson, err := gohttp.PostJson(url, paramsStr)
+		// 日志
+		if app.ZapLog != nil {
+			app.ZapLog.Sugar().Info(fmt.Sprintf("wechatminiprogram %s %s %s", url, postJson.Header, postJson.Body))
+		}
+		return postJson, err
+	default:
+		return resp, errors.New("请求类型不支持")
 	}
-
-	httpClient := &http.Client{}
-	var response *http.Response
-	response, err = httpClient.Do(req)
-
-	if err != nil {
-		return nil, err
-	}
-
-	// 	处理成功
-	defer response.Body.Close()
-	resp, err = ioutil.ReadAll(response.Body)
-
-	// 日志
-	if app.ZapLog != nil {
-		app.ZapLog.Sugar().Info(fmt.Sprintf("%s %s", url, resp))
-	}
-
-	// 检查请求错误
-	if response.StatusCode == 200 {
-		return resp, err
-	}
-
-	return nil, err
 }

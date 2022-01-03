@@ -3,6 +3,7 @@ package wechatminiprogram
 import (
 	"encoding/json"
 	"fmt"
+	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
 	"net/http"
 )
 
@@ -16,11 +17,12 @@ type CgiBinWxaAppCreateWxaQrCodeResponse struct {
 type CgiBinWxaAppCreateWxaQrCodeResult struct {
 	Result CgiBinWxaAppCreateWxaQrCodeResponse // 结果
 	Body   []byte                              // 内容
+	Http   gohttp.Response                     // 请求
 	Err    error                               // 错误
 }
 
-func NewCgiBinWxaAppCreateWxaQrCodeResult(result CgiBinWxaAppCreateWxaQrCodeResponse, body []byte, err error) *CgiBinWxaAppCreateWxaQrCodeResult {
-	return &CgiBinWxaAppCreateWxaQrCodeResult{Result: result, Body: body, Err: err}
+func NewCgiBinWxaAppCreateWxaQrCodeResult(result CgiBinWxaAppCreateWxaQrCodeResponse, body []byte, http gohttp.Response, err error) *CgiBinWxaAppCreateWxaQrCodeResult {
+	return &CgiBinWxaAppCreateWxaQrCodeResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // CgiBinWxaAppCreateWxaQrCode 获取小程序二维码，适用于需要的码数量较少的业务场景。通过该接口生成的小程序码，永久有效，有数量限制
@@ -32,9 +34,9 @@ func (app *App) CgiBinWxaAppCreateWxaQrCode(path string, width int) *CgiBinWxaAp
 	param.Set("width", width)
 	params := app.NewParamsWith(param)
 	// 请求
-	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token=%s", app.AccessToken), params, http.MethodPost)
+	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token=%s", app.AccessToken), params, http.MethodPost)
 	// 定义
 	var response CgiBinWxaAppCreateWxaQrCodeResponse
-	err = json.Unmarshal(body, &response)
-	return NewCgiBinWxaAppCreateWxaQrCodeResult(response, body, err)
+	err = json.Unmarshal(request.Body, &response)
+	return NewCgiBinWxaAppCreateWxaQrCodeResult(response, request.Body, request, err)
 }

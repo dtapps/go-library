@@ -3,6 +3,7 @@ package wechatminiprogram
 import (
 	"encoding/json"
 	"fmt"
+	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
 	"net/http"
 )
 
@@ -16,11 +17,12 @@ type AuthGetAccessTokenResponse struct {
 type AuthGetAccessTokenResult struct {
 	Result AuthGetAccessTokenResponse // 结果
 	Body   []byte                     // 内容
+	Http   gohttp.Response            // 请求
 	Err    error                      // 错误
 }
 
-func NewAuthGetAccessTokenResult(result AuthGetAccessTokenResponse, body []byte, err error) *AuthGetAccessTokenResult {
-	return &AuthGetAccessTokenResult{Result: result, Body: body, Err: err}
+func NewAuthGetAccessTokenResult(result AuthGetAccessTokenResponse, body []byte, http gohttp.Response, err error) *AuthGetAccessTokenResult {
+	return &AuthGetAccessTokenResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // AuthGetAccessToken
@@ -28,9 +30,9 @@ func NewAuthGetAccessTokenResult(result AuthGetAccessTokenResponse, body []byte,
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/access-token/auth.getAccessToken.html
 func (app *App) AuthGetAccessToken() *AuthGetAccessTokenResult {
 	// 请求
-	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", app.AppId, app.AppSecret), map[string]interface{}{}, http.MethodGet)
+	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", app.AppId, app.AppSecret), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response AuthGetAccessTokenResponse
-	err = json.Unmarshal(body, &response)
-	return NewAuthGetAccessTokenResult(response, body, err)
+	err = json.Unmarshal(request.Body, &response)
+	return NewAuthGetAccessTokenResult(response, request.Body, request, err)
 }

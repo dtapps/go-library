@@ -3,6 +3,7 @@ package wechatminiprogram
 import (
 	"encoding/json"
 	"fmt"
+	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
 	"net/http"
 )
 
@@ -33,11 +34,12 @@ type WxaQueryUrlLinkResponse struct {
 type WxaQueryUrlLinkResult struct {
 	Result WxaQueryUrlLinkResponse // 结果
 	Body   []byte                  // 内容
+	Http   gohttp.Response         // 请求
 	Err    error                   // 错误
 }
 
-func NewWxaQueryUrlLinkResult(result WxaQueryUrlLinkResponse, body []byte, err error) *WxaQueryUrlLinkResult {
-	return &WxaQueryUrlLinkResult{Result: result, Body: body, Err: err}
+func NewWxaQueryUrlLinkResult(result WxaQueryUrlLinkResponse, body []byte, http gohttp.Response, err error) *WxaQueryUrlLinkResult {
+	return &WxaQueryUrlLinkResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // WxaQueryUrlLink 查询小程序 url_link 配置，及长期有效 quota
@@ -48,9 +50,9 @@ func (app *App) WxaQueryUrlLink(urlLink string) *WxaQueryUrlLinkResult {
 	param.Set("url_link", urlLink)
 	params := app.NewParamsWith(param)
 	// 请求
-	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/query_urllink?access_token=%s", app.AccessToken), params, http.MethodPost)
+	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/query_urllink?access_token=%s", app.AccessToken), params, http.MethodPost)
 	// 定义
 	var response WxaQueryUrlLinkResponse
-	err = json.Unmarshal(body, &response)
-	return NewWxaQueryUrlLinkResult(response, body, err)
+	err = json.Unmarshal(request.Body, &response)
+	return NewWxaQueryUrlLinkResult(response, request.Body, request, err)
 }

@@ -3,6 +3,7 @@ package wechatminiprogram
 import (
 	"encoding/json"
 	"fmt"
+	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
 	"net/http"
 )
 
@@ -17,18 +18,19 @@ type AuthCode2SessionResponse struct {
 type AuthCode2SessionResult struct {
 	Result AuthCode2SessionResponse // 结果
 	Body   []byte                   // 内容
+	Http   gohttp.Response          // 请求
 	Err    error                    // 错误
 }
 
-func NewAuthCode2SessionResult(result AuthCode2SessionResponse, body []byte, err error) *AuthCode2SessionResult {
-	return &AuthCode2SessionResult{Result: result, Body: body, Err: err}
+func NewAuthCode2SessionResult(result AuthCode2SessionResponse, body []byte, http gohttp.Response, err error) *AuthCode2SessionResult {
+	return &AuthCode2SessionResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 func (app *App) AuthCode2Session(jsCode string) *AuthCode2SessionResult {
 	// 请求
-	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", app.AppId, app.AppSecret, jsCode), map[string]interface{}{}, http.MethodGet)
+	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", app.AppId, app.AppSecret, jsCode), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response AuthCode2SessionResponse
-	err = json.Unmarshal(body, &response)
-	return NewAuthCode2SessionResult(response, body, err)
+	err = json.Unmarshal(request.Body, &response)
+	return NewAuthCode2SessionResult(response, request.Body, request, err)
 }

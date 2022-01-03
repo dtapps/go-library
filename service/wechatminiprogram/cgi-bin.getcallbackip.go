@@ -3,6 +3,7 @@ package wechatminiprogram
 import (
 	"encoding/json"
 	"fmt"
+	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
 	"net/http"
 )
 
@@ -13,11 +14,12 @@ type GetCallBackIpResponse struct {
 type GetCallBackIpResult struct {
 	Result GetCallBackIpResponse // 结果
 	Body   []byte                // 内容
+	Http   gohttp.Response       // 请求
 	Err    error                 // 错误
 }
 
-func NewGetCallBackIpResult(result GetCallBackIpResponse, body []byte, err error) *GetCallBackIpResult {
-	return &GetCallBackIpResult{Result: result, Body: body, Err: err}
+func NewGetCallBackIpResult(result GetCallBackIpResponse, body []byte, http gohttp.Response, err error) *GetCallBackIpResult {
+	return &GetCallBackIpResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // GetCallBackIp 获取微信callback IP地址
@@ -25,9 +27,9 @@ func NewGetCallBackIpResult(result GetCallBackIpResponse, body []byte, err error
 // https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_the_WeChat_server_IP_address.html#2.%20%E8%8E%B7%E5%8F%96%E5%BE%AE%E4%BF%A1callback%20IP%E5%9C%B0%E5%9D%80
 func (app *App) GetCallBackIp() *GetCallBackIpResult {
 	// 请求
-	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=%s", app.AccessToken), map[string]interface{}{}, http.MethodGet)
+	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=%s", app.AccessToken), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response GetCallBackIpResponse
-	err = json.Unmarshal(body, &response)
-	return NewGetCallBackIpResult(response, body, err)
+	err = json.Unmarshal(request.Body, &response)
+	return NewGetCallBackIpResult(response, request.Body, request, err)
 }

@@ -2,6 +2,7 @@ package wechatunion
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -22,21 +23,24 @@ type App struct {
 }
 
 func (app *App) request(url string, params map[string]interface{}, method string) (resp []byte, err error) {
-	if method == http.MethodGet {
+	switch method {
+	case http.MethodGet:
 		get, err := gohttp.Get(url, params)
 		// 日志
 		if app.ZapLog != nil {
-			app.ZapLog.Sugar().Info(fmt.Sprintf("%s %s %s", url, get.Header, get.Body))
+			app.ZapLog.Sugar().Info(fmt.Sprintf("wechatunion %s %s %s", url, get.Header, get.Body))
 		}
 		return get.Body, err
-	} else {
+	case http.MethodPost:
 		// 请求参数
 		paramsStr, err := json.Marshal(params)
 		postJson, err := gohttp.PostJson(url, paramsStr)
 		// 日志
 		if app.ZapLog != nil {
-			app.ZapLog.Sugar().Info(fmt.Sprintf("%s %s %s", url, postJson.Header, postJson.Body))
+			app.ZapLog.Sugar().Info(fmt.Sprintf("wechatunion %s %s %s", url, postJson.Header, postJson.Body))
 		}
 		return postJson.Body, err
+	default:
+		return nil, errors.New("请求类型不支持")
 	}
 }

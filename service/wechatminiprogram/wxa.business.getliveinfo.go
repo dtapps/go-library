@@ -3,6 +3,7 @@ package wechatminiprogram
 import (
 	"encoding/json"
 	"fmt"
+	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
 	"net/http"
 )
 
@@ -44,11 +45,12 @@ type BusinessGetLiveInfoResponse struct {
 type BusinessGetLiveInfoResult struct {
 	Result BusinessGetLiveInfoResponse // 结果
 	Body   []byte                      // 内容
+	Http   gohttp.Response             // 请求
 	Err    error                       // 错误
 }
 
-func NewBusinessGetLiveInfoResult(result BusinessGetLiveInfoResponse, body []byte, err error) *BusinessGetLiveInfoResult {
-	return &BusinessGetLiveInfoResult{Result: result, Body: body, Err: err}
+func NewBusinessGetLiveInfoResult(result BusinessGetLiveInfoResponse, body []byte, http gohttp.Response, err error) *BusinessGetLiveInfoResult {
+	return &BusinessGetLiveInfoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // BusinessGetLiveInfo 获取直播间列表
@@ -58,9 +60,9 @@ func (app *App) BusinessGetLiveInfo(notMustParams ...Params) *BusinessGetLiveInf
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
-	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/business/getliveinfo?access_token=%s", app.AccessToken), params, http.MethodPost)
+	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/business/getliveinfo?access_token=%s", app.AccessToken), params, http.MethodPost)
 	// 定义
 	var response BusinessGetLiveInfoResponse
-	err = json.Unmarshal(body, &response)
-	return NewBusinessGetLiveInfoResult(response, body, err)
+	err = json.Unmarshal(request.Body, &response)
+	return NewBusinessGetLiveInfoResult(response, request.Body, request, err)
 }

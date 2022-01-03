@@ -3,6 +3,7 @@ package wechatminiprogram
 import (
 	"encoding/json"
 	"fmt"
+	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
 	"net/http"
 )
 
@@ -16,11 +17,12 @@ type WxaGetWxaCodeUnLimitResponse struct {
 type WxaGetWxaCodeUnLimitResult struct {
 	Result WxaGetWxaCodeUnLimitResponse // 结果
 	Body   []byte                       // 内容
+	Http   gohttp.Response              // 请求
 	Err    error                        // 错误
 }
 
-func NewWxaGetWxaCodeUnLimitResult(result WxaGetWxaCodeUnLimitResponse, body []byte, err error) *WxaGetWxaCodeUnLimitResult {
-	return &WxaGetWxaCodeUnLimitResult{Result: result, Body: body, Err: err}
+func NewWxaGetWxaCodeUnLimitResult(result WxaGetWxaCodeUnLimitResponse, body []byte, http gohttp.Response, err error) *WxaGetWxaCodeUnLimitResult {
+	return &WxaGetWxaCodeUnLimitResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // WxaGetWxaCodeUnLimit 获取小程序码，适用于需要的码数量极多的业务场景。通过该接口生成的小程序码，永久有效，数量暂无限制
@@ -29,9 +31,9 @@ func (app *App) WxaGetWxaCodeUnLimit(notMustParams ...Params) *WxaGetWxaCodeUnLi
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
-	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=%s", app.AccessToken), params, http.MethodPost)
+	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=%s", app.AccessToken), params, http.MethodPost)
 	// 定义
 	var response WxaGetWxaCodeUnLimitResponse
-	err = json.Unmarshal(body, &response)
-	return NewWxaGetWxaCodeUnLimitResult(response, body, err)
+	err = json.Unmarshal(request.Body, &response)
+	return NewWxaGetWxaCodeUnLimitResult(response, request.Body, request, err)
 }
