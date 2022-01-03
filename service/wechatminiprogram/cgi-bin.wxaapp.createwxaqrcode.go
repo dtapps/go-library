@@ -27,12 +27,9 @@ func NewCgiBinWxaAppCreateWxaQrCodeResult(result CgiBinWxaAppCreateWxaQrCodeResp
 
 // CgiBinWxaAppCreateWxaQrCode 获取小程序二维码，适用于需要的码数量较少的业务场景。通过该接口生成的小程序码，永久有效，有数量限制
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.createQRCode.html
-func (app *App) CgiBinWxaAppCreateWxaQrCode(path string, width int) *CgiBinWxaAppCreateWxaQrCodeResult {
+func (app *App) CgiBinWxaAppCreateWxaQrCode(notMustParams ...Params) *CgiBinWxaAppCreateWxaQrCodeResult {
 	// 参数
-	param := NewParams()
-	param.Set("path", path)
-	param.Set("width", width)
-	params := app.NewParamsWith(param)
+	params := app.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token=%s", app.AccessToken), params, http.MethodPost)
 	// 定义
