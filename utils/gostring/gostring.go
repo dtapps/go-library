@@ -23,8 +23,11 @@ func ToInt(s string) int {
 
 // ToInt64 string到int64
 func ToInt64(s string) int64 {
-	i, _ := strconv.ParseInt(s, 10, 64)
-	return i
+	i, err := strconv.ParseInt(s, 10, 64)
+	if err == nil {
+		return i
+	}
+	return int64(ToFloat64(s))
 }
 
 // Replace 字符串替换

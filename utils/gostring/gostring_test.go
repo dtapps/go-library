@@ -2,7 +2,6 @@ package gostring
 
 import (
 	"fmt"
-	"log"
 	"strings"
 	"testing"
 )
@@ -22,11 +21,10 @@ func TestName(t *testing.T) {
 }
 
 func TestToInt64(t *testing.T) {
-	log.Println(ToInt64("120"))
-	log.Println(ToInt64("120.9"))
-
-	log.Println(strings.Contains("120", ","))
-	log.Println(strings.Contains("120,1", ","))
+	t.Log(ToInt64("120"))
+	t.Log(ToInt64("120.9"))
+	t.Log(strings.Contains("120", ","))
+	t.Log(strings.Contains("120,1", ","))
 }
 
 func TestString(t *testing.T) {
