@@ -5,7 +5,12 @@ import (
 	"os"
 )
 
-func (app *App) SaveImg(resp gohttp.Response, dir, saveName string) string {
+type SaveImgResponse struct {
+	Path string
+	Name string
+}
+
+func (app *App) SaveImg(resp gohttp.Response, dir, saveName string) SaveImgResponse {
 	// 返回是二进制图片，或者json错误
 	if resp.Header.Get("Content-Type") == "image/jpeg" || resp.Header.Get("Content-Type") == "image/png" {
 		// 保存在output目录
@@ -24,8 +29,10 @@ func (app *App) SaveImg(resp gohttp.Response, dir, saveName string) string {
 		}
 		f.Write(resp.Body)
 		f.Close()
-		return dir + outputFileName
-	} else {
-		return ""
+		return SaveImgResponse{
+			Path: dir + outputFileName,
+			Name: outputFileName,
+		}
 	}
+	return SaveImgResponse{}
 }
