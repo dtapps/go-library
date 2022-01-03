@@ -16,7 +16,7 @@ import (
 type Response struct {
 	Status        string
 	StatusCode    int
-	Header        map[string][]string
+	Header        http.Header
 	Body          []byte
 	ContentLength int64
 }
