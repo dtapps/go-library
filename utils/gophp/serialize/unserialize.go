@@ -2,8 +2,8 @@ package serialize
 
 import (
 	"bytes"
+	"dtapps/dta/library/utils/gostring"
 	"fmt"
-	"gopkg.in/dtapps/go-library.v3/utils/gostring"
 	"strconv"
 )
 

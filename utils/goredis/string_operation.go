@@ -13,7 +13,7 @@ type StringOperation struct {
 
 func (app *App) NewStringOperation() *StringOperation {
 	return &StringOperation{
-		db:  app.Rdb,
+		db:  app.Db,
 		ctx: context.Background(),
 	}
 }
@@ -35,4 +35,9 @@ func (o *StringOperation) Get(key string) *StringResult {
 // MGet 获取多个
 func (o *StringOperation) MGet(keys ...string) *SliceResult {
 	return NewSliceResult(o.db.MGet(o.ctx, keys...).Result())
+}
+
+// Del 删除key操作，支持批量删除
+func (o *StringOperation) Del(keys ...string) *redis.IntCmd {
+	return o.db.Del(o.ctx, keys...)
 }

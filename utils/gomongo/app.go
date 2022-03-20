@@ -1,4 +1,4 @@
-package gomongodb
+package gomongo
 
 import (
 	"context"
@@ -6,34 +6,32 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"log"
 )
 
 // App 实例
 type App struct {
-	Mgo        *mongo.Client
+	Db         *mongo.Client
 	User       string // 用户名
 	Password   string // 密码
 	Host       string // 地址
 	Port       int    // 端口
-	Database   string // 数据库
-	Collection string // 表名
+	Dbname     string // 数据库
+	Dns        string // 地址
+	collection string // 表名
 }
 
 // InitClient 初始化连接
 func (app *App) InitClient() {
+	log.Printf("gomongo：%+v\n", app)
 	var err error
 	// 连接到MongoDB
-	app.Mgo, err = mongo.Connect(context.TODO(), options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s@%s:%d",
-		app.User,
-		app.Password,
-		app.Host,
-		app.Port,
-	)))
+	app.Db, err = mongo.Connect(context.TODO(), options.Client().ApplyURI(app.Dns))
 	if err != nil {
 		panic(errors.New(fmt.Sprintf("gomongodb connect error：%v", err)))
 	}
 	// 检查连接
-	err = app.Mgo.Ping(context.TODO(), nil)
+	err = app.Db.Ping(context.TODO(), nil)
 	if err != nil {
 		panic(errors.New(fmt.Sprintf("gomongodb ping error：%v", err)))
 	}
@@ -42,7 +40,7 @@ func (app *App) InitClient() {
 
 // Close 关闭
 func (app *App) Close() {
-	err := app.Mgo.Disconnect(context.TODO())
+	err := app.Db.Disconnect(context.TODO())
 	if err != nil {
 		panic(errors.New(fmt.Sprintf("gomongodb close error：%v", err)))
 	}

@@ -28,6 +28,14 @@ func ToUpper(str string) string {
 	return strings.ToUpper(hex.EncodeToString(cipherStr))
 }
 
+// ToLower md5加密后转小写
+func ToLower(str string) string {
+	h := md5.New()
+	h.Write([]byte(str))
+	cipherStr := h.Sum(nil)
+	return strings.ToLower(hex.EncodeToString(cipherStr))
+}
+
 // GetMD5Encode 返回一个32位md5加密后的字符串
 func GetMD5Encode(data string) string {
 	h := md5.New()
