@@ -3,11 +3,11 @@ package ejiaofei
 import (
 	"errors"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gohttp"
+	"github.com/dtapps/go-library/utils/gomd5"
 	"github.com/go-redis/redis/v8"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.uber.org/zap"
-	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
-	"gopkg.in/dtapps/go-library.v3/utils/gomd5"
 	"gorm.io/gorm"
 	"net/http"
 )

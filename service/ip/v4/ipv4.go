@@ -3,8 +3,8 @@ package v4
 import (
 	_ "embed"
 	"encoding/binary"
+	"github.com/dtapps/go-library/utils/gostring"
 	"golang.org/x/text/encoding/simplifiedchinese"
-	"gopkg.in/dtapps/go-library.v3/utils/gostring"
 	"net"
 )
 

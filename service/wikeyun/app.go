@@ -2,10 +2,10 @@ package wikeyun
 
 import (
 	"fmt"
+	"github.com/dtapps/go-library/utils/gohttp"
 	"github.com/go-redis/redis/v8"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.uber.org/zap"
-	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
 	"gorm.io/gorm"
 )
 

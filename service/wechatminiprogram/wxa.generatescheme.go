@@ -3,7 +3,7 @@ package wechatminiprogram
 import (
 	"encoding/json"
 	"fmt"
-	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
+	"github.com/dtapps/go-library/utils/gohttp"
 	"net/http"
 )
 

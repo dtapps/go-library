@@ -1,7 +1,7 @@
 package wechatminiprogram
 
 import (
-	"gopkg.in/dtapps/go-library.v3/utils/gohttp"
+	"github.com/dtapps/go-library/utils/gohttp"
 	"os"
 )
 

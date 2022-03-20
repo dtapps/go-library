@@ -2,7 +2,7 @@ package wechatoffice
 
 import (
 	"fmt"
-	"gopkg.in/dtapps/go-library.v3/utils/goredis"
+	"github.com/dtapps/go-library/utils/goredis"
 	"time"
 )
 

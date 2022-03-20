@@ -1,7 +1,7 @@
 package wechatoffice
 
 import (
-	"gopkg.in/dtapps/go-library.v3/utils/gotime"
+	"github.com/dtapps/go-library/utils/gotime"
 	"time"
 )
 

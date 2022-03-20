@@ -3,7 +3,7 @@ package eastiot
 import (
 	"encoding/json"
 	"fmt"
-	"gopkg.in/dtapps/go-library.v3/utils/gomd5"
+	"github.com/dtapps/go-library/utils/gomd5"
 	"sort"
 	"strconv"
 )
