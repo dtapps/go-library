@@ -30,7 +30,7 @@ func TestToInt64(t *testing.T) {
 func TestString(t *testing.T) {
 	str := "wx6566ef69e8738ad9"
 	fmt.Println(strings.Contains(str, "wx"))
-	myString := "www.5lmh.com"
+	myString := "www.dtapp.net"
 	if strings.HasPrefix(myString, "www") {
 		fmt.Println("Hello to you too")
 	} else {
