@@ -2,7 +2,9 @@ module github.com/dtapps/go-library/utils/golock
 
 go 1.18
 
-require github.com/go-redis/redis/v8 v8.11.5
+require (
+	github.com/go-redis/redis/v8 v8.11.5
+)
 
 require (
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect

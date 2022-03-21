@@ -2,9 +2,9 @@ package serialize
 
 import (
 	"bytes"
-	"dtapps/dta/library/utils/goless"
-	"dtapps/dta/library/utils/gostring"
 	"fmt"
+	"github.com/dtapps/go-library/utils/goless"
+	"github.com/dtapps/go-library/utils/gostring"
 	"reflect"
 	"sort"
 )

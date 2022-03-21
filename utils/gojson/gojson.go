@@ -39,3 +39,9 @@ func JsonEncodeNoError(data interface{}) string {
 	jsons, _ := json.Marshal(data)
 	return string(jsons)
 }
+
+func JsonDecodesNoError(data string) []string {
+	var dat []string
+	_ = json.Unmarshal([]byte(data), &dat)
+	return dat
+}

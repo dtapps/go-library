@@ -2,11 +2,11 @@ package gohttp
 
 import (
 	"bytes"
-	"dtapps/dta/library/utils/goheader"
-	"dtapps/dta/library/utils/gorequest"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/dtapps/go-library/utils/goheader"
+	"github.com/dtapps/go-library/utils/gorequest"
 	"io/ioutil"
 	"net/http"
 	"net/url"
