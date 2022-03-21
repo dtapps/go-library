@@ -1,7 +1,0 @@
-language: go
-
-go:
-  - v3
-
-script:
-  - go test -v ./...
