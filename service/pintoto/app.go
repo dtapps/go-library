@@ -1,8 +1,8 @@
 package pintoto
 
 import (
-	"dtapps/dta/library/utils/gohttp"
-	"dtapps/dta/library/utils/gomongo"
+	"github.com/dtapps/go-library/utils/gohttp"
+	"github.com/dtapps/go-library/utils/gomongo"
 	"math"
 	"net/http"
 	"strconv"

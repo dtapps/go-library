@@ -13,7 +13,7 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"gitee.com/dtapps/go-library/utils/gorandom"
+	"github.com/dtapps/go-library/utils/gorandom"
 	"net/url"
 	"time"
 )

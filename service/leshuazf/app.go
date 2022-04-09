@@ -1,12 +1,12 @@
 package leshuazf
 
 import (
-	"dtapps/dta/library/utils/gohttp"
-	"dtapps/dta/library/utils/gomongo"
-	"dtapps/dta/library/utils/gopostgresql"
 	"errors"
-	"gitee.com/dtapps/go-library/utils/gorandom"
-	"gitee.com/dtapps/go-library/utils/gotime"
+	"github.com/dtapps/go-library/utils/gohttp"
+	"github.com/dtapps/go-library/utils/gomongo"
+	"github.com/dtapps/go-library/utils/gopostgresql"
+	"github.com/dtapps/go-library/utils/gorandom"
+	"github.com/dtapps/go-library/utils/gotime"
 	"log"
 	"net/http"
 )

@@ -1,11 +1,11 @@
 package jobs
 
 import (
-	"dtapps/dta/library/utils/goredis"
 	"fmt"
-	"gitee.com/dtapps/go-library/utils/gojson"
-	"gitee.com/dtapps/go-library/utils/gotime"
-	"gitee.com/dtapps/go-library/utils/gouuid"
+	"github.com/dtapps/go-library/utils/gojson"
+	"github.com/dtapps/go-library/utils/goredis"
+	"github.com/dtapps/go-library/utils/gotime"
+	"github.com/dtapps/go-library/utils/gouuid"
 	"gorm.io/gorm"
 	"net/http"
 )

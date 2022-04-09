@@ -1,11 +1,11 @@
 package wechatpayapiv3
 
 import (
-	"dtapps/dta/library/utils/goheader"
-	"dtapps/dta/library/utils/gohttp"
-	"dtapps/dta/library/utils/gomongo"
 	"encoding/json"
 	"errors"
+	"github.com/dtapps/go-library/utils/goheader"
+	"github.com/dtapps/go-library/utils/gohttp"
+	"github.com/dtapps/go-library/utils/gomongo"
 	"net/http"
 )
 

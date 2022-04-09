@@ -1,9 +1,9 @@
 package v4
 
 import (
-	"dtapps/dta/library/utils/gostring"
 	_ "embed"
 	"encoding/binary"
+	"github.com/dtapps/go-library/utils/gostring"
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"net"
 )

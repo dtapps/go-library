@@ -1,9 +1,9 @@
 package ip2region
 
 import (
-	"dtapps/dta/library/utils/gostring"
 	_ "embed"
 	"errors"
+	"github.com/dtapps/go-library/utils/gostring"
 	"os"
 	"strconv"
 	"strings"

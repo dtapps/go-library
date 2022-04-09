@@ -1,9 +1,9 @@
 package dingtalk
 
 import (
-	"dtapps/dta/library/utils/gohttp"
 	"encoding/json"
-	"gitee.com/dtapps/go-library/utils/gotime"
+	"github.com/dtapps/go-library/utils/gohttp"
+	"github.com/dtapps/go-library/utils/gotime"
 )
 
 // 日志

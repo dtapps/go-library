@@ -1,8 +1,8 @@
 package jobs
 
 import (
-	"dtapps/dta/library/utils/goredis"
 	"fmt"
+	"github.com/dtapps/go-library/utils/goredis"
 	"time"
 )
 

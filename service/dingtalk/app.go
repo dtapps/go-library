@@ -1,10 +1,10 @@
 package dingtalk
 
 import (
-	"dtapps/dta/library/utils/gohttp"
-	"dtapps/dta/library/utils/gomongo"
 	"encoding/json"
 	"errors"
+	"github.com/dtapps/go-library/utils/gohttp"
+	"github.com/dtapps/go-library/utils/gomongo"
 	"net/http"
 )
 

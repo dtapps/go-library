@@ -1,9 +1,9 @@
 package eastiot
 
 import (
-	"dtapps/dta/library/utils/gohttp"
-	"dtapps/dta/library/utils/gomongo"
 	"errors"
+	"github.com/dtapps/go-library/utils/gohttp"
+	"github.com/dtapps/go-library/utils/gomongo"
 	"net/http"
 	"time"
 )

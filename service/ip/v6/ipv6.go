@@ -1,9 +1,9 @@
 package v6
 
 import (
-	"dtapps/dta/library/utils/gostring"
 	_ "embed"
 	"encoding/binary"
+	"github.com/dtapps/go-library/utils/gostring"
 	"math/big"
 	"net"
 	"strings"

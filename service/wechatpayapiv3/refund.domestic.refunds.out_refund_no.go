@@ -1,9 +1,9 @@
 package wechatpayapiv3
 
 import (
-	"dtapps/dta/library/utils/gohttp"
 	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gohttp"
 	"net/http"
 )
 

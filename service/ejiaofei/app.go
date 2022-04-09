@@ -1,11 +1,11 @@
 package ejiaofei
 
 import (
-	"dtapps/dta/library/utils/gohttp"
-	"dtapps/dta/library/utils/gomongo"
 	"errors"
 	"fmt"
-	"gitee.com/dtapps/go-library/utils/gomd5"
+	"github.com/dtapps/go-library/utils/gohttp"
+	"github.com/dtapps/go-library/utils/gomd5"
+	"github.com/dtapps/go-library/utils/gomongo"
 	"net/http"
 )
 

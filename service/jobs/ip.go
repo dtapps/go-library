@@ -1,6 +1,6 @@
 package jobs
 
-import "gitee.com/dtapps/go-library/utils/goip"
+import "github.com/dtapps/go-library/utils/goip"
 
 var TypeIp = map[string]string{
 	// 微信支付查询

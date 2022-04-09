@@ -1,7 +1,7 @@
 package jobs
 
 import (
-	"gitee.com/dtapps/go-library/utils/gotime"
+	"github.com/dtapps/go-library/utils/gotime"
 	"log"
 )
 

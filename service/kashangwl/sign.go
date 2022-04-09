@@ -3,9 +3,9 @@ package kashangwl
 import (
 	"bytes"
 	"crypto/md5"
-	"dtapps/dta/library/utils/goparams"
 	"encoding/hex"
 	"encoding/json"
+	"github.com/dtapps/go-library/utils/goparams"
 	"io"
 	"net/url"
 	"sort"

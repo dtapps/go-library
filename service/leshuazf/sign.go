@@ -1,9 +1,9 @@
 package leshuazf
 
 import (
-	"dtapps/dta/library/utils/gobase64"
 	"encoding/json"
-	"gitee.com/dtapps/go-library/utils/gomd5"
+	"github.com/dtapps/go-library/utils/gobase64"
+	"github.com/dtapps/go-library/utils/gomd5"
 	"sort"
 )
 

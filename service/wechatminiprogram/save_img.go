@@ -1,7 +1,7 @@
 package wechatminiprogram
 
 import (
-	"dtapps/dta/library/utils/gohttp"
+	"github.com/dtapps/go-library/utils/gohttp"
 	"log"
 	"os"
 )

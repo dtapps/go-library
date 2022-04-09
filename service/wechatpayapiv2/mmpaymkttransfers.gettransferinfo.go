@@ -1,9 +1,9 @@
 package wechatpayapiv2
 
 import (
-	"dtapps/dta/library/utils/gohttp"
 	"encoding/xml"
-	"gitee.com/dtapps/go-library/utils/gorandom"
+	"github.com/dtapps/go-library/utils/gohttp"
+	"github.com/dtapps/go-library/utils/gorandom"
 )
 
 type TransfersQueryResponse struct {

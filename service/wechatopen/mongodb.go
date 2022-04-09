@@ -2,8 +2,8 @@ package wechatopen
 
 import (
 	"encoding/json"
-	"gitee.com/dtapps/go-library/utils/gohttp"
-	"gitee.com/dtapps/go-library/utils/gotime"
+	"github.com/dtapps/go-library/utils/gohttp"
+	"github.com/dtapps/go-library/utils/gotime"
 )
 
 // 日志

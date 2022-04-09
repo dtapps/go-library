@@ -1,11 +1,11 @@
 package pinduoduo
 
 import (
-	"dtapps/dta/library/utils/gohttp"
-	"dtapps/dta/library/utils/gomongo"
-	"dtapps/dta/library/utils/gostring"
 	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gohttp"
+	"github.com/dtapps/go-library/utils/gomongo"
+	"github.com/dtapps/go-library/utils/gostring"
 	"net/http"
 	"regexp"
 	"strconv"
