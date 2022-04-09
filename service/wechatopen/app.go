@@ -1,11 +1,11 @@
 package wechatopen
 
 import (
-	"dtapps/dta/library/utils/gomongo"
 	"encoding/json"
 	"errors"
-	"gitee.com/dtapps/go-library/utils/gohttp"
-	"gitee.com/dtapps/go-library/utils/gotime"
+	"github.com/dtapps/go-library/utils/gohttp"
+	"github.com/dtapps/go-library/utils/gomongo"
+	"github.com/dtapps/go-library/utils/gotime"
 	"gorm.io/gorm"
 	"net/http"
 )

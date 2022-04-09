@@ -1,7 +1,7 @@
 package wechatopen
 
 import (
-	"gitee.com/dtapps/go-library/utils/gotime"
+	"github.com/dtapps/go-library/utils/gotime"
 	"gorm.io/gorm"
 	"time"
 )
