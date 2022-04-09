@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/dtapps/go-library/utils/goredis"
 	"github.com/dtapps/go-library/utils/gouuid"
+	"github.com/go-redis/redis/v8"
 	"time"
 )
 
