@@ -4,6 +4,7 @@
 .idea
 .vscode
 *.log
+.github
 gitmod.sh
 /service/*/*_test.go
 /utils/*/*_test.go
