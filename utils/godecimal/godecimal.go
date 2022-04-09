@@ -1,8 +1,8 @@
 package godecimal
 
 import (
-	"dtapps/dta/library/utils/gostring"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gostring"
 	"math"
 	"strconv"
 )

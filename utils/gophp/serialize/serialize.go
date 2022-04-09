@@ -3,7 +3,7 @@ package serialize
 import (
 	"bytes"
 	"fmt"
-	"gitee.com/dtapps/go-library/utils/gostring"
+	"github.com/dtapps/go-library/utils/gostring"
 	"reflect"
 	"sort"
 )

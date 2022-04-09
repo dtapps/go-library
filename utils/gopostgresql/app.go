@@ -85,6 +85,7 @@ func (app *App) InitClient() {
 	if err != nil {
 		panic(fmt.Sprintf("连接数据库服务器失败：%v", err))
 	}
+
 	sqlDB.SetMaxIdleConns(10)                   // 设置空闲连接池中连接的最大数量
 	sqlDB.SetMaxOpenConns(100)                  // 设置打开数据库连接的最大数量。
 	sqlDB.SetConnMaxLifetime(time.Second * 600) // 设置了连接可复用的最大时间。

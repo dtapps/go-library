@@ -2,9 +2,8 @@ package golock
 
 import (
 	"context"
-	"dtapps/dta/global"
-	"gitee.com/dtapps/go-library/utils/gouuid"
-	"github.com/go-redis/redis/v8"
+	"github.com/dtapps/go-library/utils/goredis"
+	"github.com/dtapps/go-library/utils/gouuid"
 	"time"
 )
 
@@ -12,6 +11,7 @@ type lock struct {
 	key        string
 	expiration time.Duration
 	requestId  string
+	Db         goredis.App
 }
 
 func NewLock(key string, expiration time.Duration) *lock {
@@ -26,7 +26,7 @@ func (lk *lock) Get() bool {
 
 	defer cancel()
 
-	ok, err := global.GvaRedis.Db.SetNX(cxt, lk.key, lk.requestId, lk.expiration).Result()
+	ok, err := lk.Db.Db.SetNX(cxt, lk.key, lk.requestId, lk.expiration).Result()
 
 	if err != nil {
 
@@ -53,6 +53,6 @@ func (lk *lock) Release() error {
 
 	script := redis.NewScript(luaScript)
 
-	_, err := script.Run(cxt, global.GvaRedis.Db, []string{lk.key}, lk.requestId).Result()
+	_, err := script.Run(cxt, lk.Db.Db, []string{lk.key}, lk.requestId).Result()
 	return err
 }

@@ -1,9 +1,6 @@
 package gobase64
 
-import (
-	"dtapps/dta/library/utils/gophp"
-	"encoding/base64"
-)
+import "encoding/base64"
 
 // Encode base64编码
 func Encode(input string) string {
