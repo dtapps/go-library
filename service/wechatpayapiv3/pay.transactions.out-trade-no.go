@@ -1,16 +1,13 @@
 package wechatpayapiv3
 
 import (
+	"dtapps/dta/library/utils/gohttp"
 	"encoding/json"
 	"fmt"
+	"net/http"
 )
 
-type PayTransactionsOutTradeNo struct {
-	OutTradeNo string `json:"out_trade_no"`
-}
-
-// PayTransactionsOutTradeNoResult 返回参数
-type PayTransactionsOutTradeNoResult struct {
+type PayTransactionsOutTradeNoResponse struct {
 	Appid          string `json:"appid"`
 	Mchid          string `json:"mchid"`
 	OutTradeNo     string `json:"out_trade_no"`
@@ -54,16 +51,26 @@ type PayTransactionsOutTradeNoResult struct {
 	}
 }
 
+type PayTransactionsOutTradeNoResult struct {
+	Result PayTransactionsOutTradeNoResponse // 结果
+	Body   []byte                            // 内容
+	Http   gohttp.Response                   // 请求
+	Err    error                             // 错误
+}
+
+func NewPayTransactionsOutTradeNoResult(result PayTransactionsOutTradeNoResponse, body []byte, http gohttp.Response, err error) *PayTransactionsOutTradeNoResult {
+	return &PayTransactionsOutTradeNoResult{Result: result, Body: body, Http: http, Err: err}
+}
+
 // PayTransactionsOutTradeNo 商户订单号查询 https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_2.shtml
-func (app *App) PayTransactionsOutTradeNo(param PayTransactionsOutTradeNo) (resp PayTransactionsOutTradeNoResult, result ErrResp, err error) {
-
-	body, result, err := app.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/pay/transactions/out-trade-no/%s?mchid=%s", param.OutTradeNo, app.MchId), map[string]interface{}{}, "GET")
-
+func (app *App) PayTransactionsOutTradeNo(outTradeNo string) *PayTransactionsOutTradeNoResult {
+	// 请求
+	request, err := app.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/pay/transactions/out-trade-no/%s?mchid=%s", outTradeNo, app.MchId), map[string]interface{}{}, http.MethodGet, true)
 	if err != nil {
-		return
+		return NewPayTransactionsOutTradeNoResult(PayTransactionsOutTradeNoResponse{}, request.Body, request, err)
 	}
-	if err = json.Unmarshal(body, &resp); err != nil {
-		return
-	}
-	return
+	// 定义
+	var response PayTransactionsOutTradeNoResponse
+	err = json.Unmarshal(request.Body, &response)
+	return NewPayTransactionsOutTradeNoResult(response, request.Body, request, err)
 }

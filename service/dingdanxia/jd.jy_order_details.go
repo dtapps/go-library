@@ -1,6 +1,7 @@
 package dingdanxia
 
 import (
+	"dtapps/dta/library/utils/gohttp"
 	"encoding/json"
 	"net/http"
 )
@@ -29,11 +30,12 @@ type JdJyOrderDetailsResponse struct {
 type JdJyOrderDetailsResult struct {
 	Result JdJyOrderDetailsResponse // 结果
 	Body   []byte                   // 内容
+	Http   gohttp.Response          // 请求
 	Err    error                    // 错误
 }
 
-func NewJdJyOrderDetailsResult(result JdJyOrderDetailsResponse, body []byte, err error) *JdJyOrderDetailsResult {
-	return &JdJyOrderDetailsResult{Result: result, Body: body, Err: err}
+func NewJdJyOrderDetailsResult(result JdJyOrderDetailsResponse, body []byte, http gohttp.Response, err error) *JdJyOrderDetailsResult {
+	return &JdJyOrderDetailsResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // JdJyOrderDetails 【官方不维护】 京佣订单
@@ -41,9 +43,9 @@ func (app *App) JdJyOrderDetails(notMustParams ...Params) *JdJyOrderDetailsResul
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
-	body, err := app.request("https://api.tbk.dingdanxia.com/jd/jy_order_details", params, http.MethodPost)
+	request, err := app.request("https://api.tbk.dingdanxia.com/jd/jy_order_details", params, http.MethodPost)
 	// 定义
 	var response JdJyOrderDetailsResponse
-	err = json.Unmarshal(body, &response)
-	return NewJdJyOrderDetailsResult(response, body, err)
+	err = json.Unmarshal(request.Body, &response)
+	return NewJdJyOrderDetailsResult(response, request.Body, request, err)
 }

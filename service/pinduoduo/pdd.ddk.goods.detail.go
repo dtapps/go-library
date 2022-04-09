@@ -96,6 +96,7 @@ func NewGoodsDetailResult(result GoodsDetailResponse, body []byte, err error) *G
 func (app *App) GoodsDetail(notMustParams ...Params) *GoodsDetailResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.detail", notMustParams...)
+	params.Set("pid", app.Pid)
 	// 请求
 	body, err := app.request(params)
 	// 定义

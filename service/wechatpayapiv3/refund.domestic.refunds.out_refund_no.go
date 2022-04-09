@@ -1,11 +1,13 @@
 package wechatpayapiv3
 
 import (
+	"dtapps/dta/library/utils/gohttp"
 	"encoding/json"
 	"fmt"
+	"net/http"
 )
 
-type RefundDomesticRefundsOutRefundNoResult struct {
+type RefundDomesticRefundsOutRefundNoResponse struct {
 	RefundId            string `json:"refund_id"`               // 微信支付退款单号
 	OutRefundNo         string `json:"out_refund_no"`           // 商户退款单号
 	TransactionId       string `json:"transaction_id"`          // 微信支付订单号
@@ -47,16 +49,26 @@ type RefundDomesticRefundsOutRefundNoResult struct {
 	} `json:"promotion_detail,omitempty"` // 优惠退款信息
 }
 
+type RefundDomesticRefundsOutRefundNoResult struct {
+	Result RefundDomesticRefundsOutRefundNoResponse // 结果
+	Body   []byte                                   // 内容
+	Http   gohttp.Response                          // 请求
+	Err    error                                    // 错误
+}
+
+func NewRefundDomesticRefundsOutRefundNoResult(result RefundDomesticRefundsOutRefundNoResponse, body []byte, http gohttp.Response, err error) *RefundDomesticRefundsOutRefundNoResult {
+	return &RefundDomesticRefundsOutRefundNoResult{Result: result, Body: body, Http: http, Err: err}
+}
+
 // RefundDomesticRefundsOutRefundNo 查询单笔退款API https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_10.shtml
-func (app *App) RefundDomesticRefundsOutRefundNo(OutRefundNo string) (resp RefundDomesticRefundsOutRefundNoResult, result ErrResp, err error) {
-
-	body, result, err := app.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/refund/domestic/refunds/%s", OutRefundNo), map[string]interface{}{}, "GET")
-
+func (app *App) RefundDomesticRefundsOutRefundNo(outRefundNo string) *RefundDomesticRefundsOutRefundNoResult {
+	// 请求
+	request, err := app.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/refund/domestic/refunds/%s", outRefundNo), map[string]interface{}{}, http.MethodGet, true)
 	if err != nil {
-		return
+		return NewRefundDomesticRefundsOutRefundNoResult(RefundDomesticRefundsOutRefundNoResponse{}, request.Body, request, err)
 	}
-	if err = json.Unmarshal(body, &resp); err != nil {
-		return
-	}
-	return
+	// 定义
+	var response RefundDomesticRefundsOutRefundNoResponse
+	err = json.Unmarshal(request.Body, &response)
+	return NewRefundDomesticRefundsOutRefundNoResult(response, request.Body, request, err)
 }

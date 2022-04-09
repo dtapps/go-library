@@ -14,7 +14,7 @@ type OrderListIncrementGetResponse struct {
 			SubsidyDuoAmountLevel int    `json:"subsidy_duo_amount_level"`
 			CatIds                []int  `json:"cat_ids"`
 			OrderStatus           int    `json:"order_status"`
-			OrderCreateTime       int    `json:"order_create_time"`
+			OrderCreateTime       int64  `json:"order_create_time"`
 			IsDirect              int    `json:"is_direct"`
 			OrderGroupSuccessTime int    `json:"order_group_success_time"`
 			MallId                int    `json:"mall_id"`
@@ -65,6 +65,8 @@ func NewOrderListIncrementGetResult(result OrderListIncrementGetResponse, body [
 	return &OrderListIncrementGetResult{Result: result, Body: body, Err: err}
 }
 
+// OrderListIncrementGet 最后更新时间段增量同步推广订单信息
+// https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.order.list.increment.get
 func (app *App) OrderListIncrementGet(notMustParams ...Params) *OrderListIncrementGetResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.order.list.increment.get", notMustParams...)

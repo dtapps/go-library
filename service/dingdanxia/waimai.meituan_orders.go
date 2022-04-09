@@ -1,6 +1,7 @@
 package dingdanxia
 
 import (
+	"dtapps/dta/library/utils/gohttp"
 	"encoding/json"
 	"net/http"
 )
@@ -29,11 +30,12 @@ type WaimaiMeituanOrdersResponse struct {
 type WaimaiMeituanOrdersResult struct {
 	Result WaimaiMeituanOrdersResponse // 结果
 	Body   []byte                      // 内容
+	Http   gohttp.Response             // 请求
 	Err    error                       // 错误
 }
 
-func NewWaimaiMeituanOrdersResult(result WaimaiMeituanOrdersResponse, body []byte, err error) *WaimaiMeituanOrdersResult {
-	return &WaimaiMeituanOrdersResult{Result: result, Body: body, Err: err}
+func NewWaimaiMeituanOrdersResult(result WaimaiMeituanOrdersResponse, body []byte, http gohttp.Response, err error) *WaimaiMeituanOrdersResult {
+	return &WaimaiMeituanOrdersResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // WaimaiMeituanOrders 美团联盟外卖/闪购/优选/酒店订单查询API
@@ -42,9 +44,9 @@ func (app *App) WaimaiMeituanOrders(notMustParams ...Params) *WaimaiMeituanOrder
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
-	body, err := app.request("https://api.tbk.dingdanxia.com/waimai/meituan_orders", params, http.MethodPost)
+	request, err := app.request("https://api.tbk.dingdanxia.com/waimai/meituan_orders", params, http.MethodPost)
 	// 定义
 	var response WaimaiMeituanOrdersResponse
-	err = json.Unmarshal(body, &response)
-	return NewWaimaiMeituanOrdersResult(response, body, err)
+	err = json.Unmarshal(request.Body, &response)
+	return NewWaimaiMeituanOrdersResult(response, request.Body, request, err)
 }

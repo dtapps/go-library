@@ -1,11 +1,12 @@
 package wechatpayapiv3
 
 import (
+	"dtapps/dta/library/utils/gohttp"
 	"encoding/json"
 	"net/http"
 )
 
-type RefundDomesticRefundsResult struct {
+type RefundDomesticRefundsResponse struct {
 	RefundId            string `json:"refund_id"`               // 微信支付退款单号
 	OutRefundNo         string `json:"out_refund_no"`           // 商户退款单号
 	TransactionId       string `json:"transaction_id"`          // 微信支付订单号
@@ -47,20 +48,28 @@ type RefundDomesticRefundsResult struct {
 	} `json:"promotion_detail,omitempty"` // 优惠退款信息
 }
 
-// RefundDomesticRefunds 申请退款API https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter6_1_26.shtml
-func (app *App) RefundDomesticRefunds(notMustParams ...Params) (resp RefundDomesticRefundsResult, result ErrResp, err error) {
+type RefundDomesticRefundsResult struct {
+	Result RefundDomesticRefundsResponse // 结果
+	Body   []byte                        // 内容
+	Http   gohttp.Response               // 请求
+	Err    error                         // 错误
+}
 
+func NewRefundDomesticRefundsResult(result RefundDomesticRefundsResponse, body []byte, http gohttp.Response, err error) *RefundDomesticRefundsResult {
+	return &RefundDomesticRefundsResult{Result: result, Body: body, Http: http, Err: err}
+}
+
+// RefundDomesticRefunds 申请退款API https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter6_1_26.shtml
+func (app *App) RefundDomesticRefunds(notMustParams ...Params) *RefundDomesticRefundsResult {
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
-
 	// 请求
-	body, result, err := app.request("https://api.mch.weixin.qq.com/v3/refund/domestic/refunds", params, http.MethodPost)
-
+	request, err := app.request("https://api.mch.weixin.qq.com/v3/refund/domestic/refunds", params, http.MethodPost, false)
 	if err != nil {
-		return
+		return NewRefundDomesticRefundsResult(RefundDomesticRefundsResponse{}, request.Body, request, err)
 	}
-	if err = json.Unmarshal(body, &resp); err != nil {
-		return
-	}
-	return
+	// 定义
+	var response RefundDomesticRefundsResponse
+	err = json.Unmarshal(request.Body, &response)
+	return NewRefundDomesticRefundsResult(response, request.Body, request, err)
 }

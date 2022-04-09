@@ -1,14 +1,12 @@
 package pinduoduo
 
 import (
+	"dtapps/dta/library/utils/gohttp"
+	"dtapps/dta/library/utils/gomongo"
+	"dtapps/dta/library/utils/gostring"
 	"encoding/json"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gohttp"
-	"github.com/dtapps/go-library/utils/gostring"
-	"github.com/go-redis/redis/v8"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.uber.org/zap"
-	"gorm.io/gorm"
+	"net/http"
 	"regexp"
 	"strconv"
 	"strings"
@@ -16,13 +14,11 @@ import (
 
 // App 公共请求参数
 type App struct {
-	ClientId     string        // POP分配给应用的client_id
-	ClientSecret string        // POP分配给应用的client_secret
-	Pid          string        // 推广位
-	ZapLog       *zap.Logger   // 日志服务
-	Db           *gorm.DB      // 关系数据库服务
-	RDb          *redis.Client // 缓存数据库服务
-	MDb          *mongo.Client // 非关系数据库服务
+	ClientId     string      // POP分配给应用的client_id
+	ClientSecret string      // POP分配给应用的client_secret
+	MediaId      string      // 媒体ID
+	Pid          string      // 推广位
+	Mongo        gomongo.App // 日志数据库
 }
 
 type ErrResp struct {
@@ -46,9 +42,7 @@ func (app *App) request(params map[string]interface{}) (resp []byte, err error) 
 	// 发送请求
 	get, err := gohttp.Get("https://gw-api.pinduoduo.com/api/router", params)
 	// 日志
-	if app.ZapLog != nil {
-		app.ZapLog.Sugar().Info(fmt.Sprintf("https://gw-api.pinduoduo.com/api/router?method=%s %s %s", params["type"], get.Header, get.Body))
-	}
+	go app.mongoLog(fmt.Sprintf("https://gw-api.pinduoduo.com/api/router?type=%s", params["type"]), params, http.MethodPost, get)
 	// 检查错误
 	var errResp ErrResp
 	_ = json.Unmarshal(get.Body, &errResp)

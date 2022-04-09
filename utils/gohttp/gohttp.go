@@ -2,11 +2,13 @@ package gohttp
 
 import (
 	"bytes"
+	"crypto/tls"
+	"dtapps/dta/library/utils/goheader"
+	"dtapps/dta/library/utils/gorequest"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/dtapps/go-library/utils/goheader"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -163,6 +165,34 @@ func PostJson(targetUrl string, paramsStr []byte) (httpResponse Response, err er
 	return httpResponse, err
 }
 
+func PostXml(targetUrl string, paramsStr []byte) (httpResponse Response, err error) {
+	// 创建请求
+	req, _ := http.NewRequest(http.MethodPost, targetUrl, bytes.NewReader(paramsStr))
+	// 设置请求头
+	req.Header.Set("User-Agent", gorequest.GetRandomUserAgent())
+	// 创建 http 客户端
+	client := &http.Client{}
+	// 发送请求
+	resp, err := client.Do(req)
+	if err != nil {
+		// 格式化返回错误
+		return httpResponse, errors.New(fmt.Sprintf("请求出错 %s", err))
+	}
+	// 最后关闭连接
+	defer resp.Body.Close()
+	// 读取内容
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return httpResponse, errors.New(fmt.Sprintf("解析内容出错 %s", err))
+	}
+	httpResponse.Status = resp.Status
+	httpResponse.StatusCode = resp.StatusCode
+	httpResponse.Header = resp.Header
+	httpResponse.Body = respBody
+	httpResponse.ContentLength = resp.ContentLength
+	return httpResponse, err
+}
+
 func PostJsonHeader(targetUrl string, paramsStr []byte, headers goheader.Headers) (httpResponse Response, err error) {
 	// 创建请求
 	req, _ := http.NewRequest(http.MethodPost, targetUrl, bytes.NewBuffer(paramsStr))
@@ -174,6 +204,45 @@ func PostJsonHeader(targetUrl string, paramsStr []byte, headers goheader.Headers
 	}
 	// 创建 http 客户端
 	client := &http.Client{}
+	// 发送请求
+	resp, err := client.Do(req)
+	if err != nil {
+		// 格式化返回错误
+		return httpResponse, errors.New(fmt.Sprintf("请求出错 %s", err))
+	}
+	// 最后关闭连接
+	defer resp.Body.Close()
+	// 读取内容
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return httpResponse, errors.New(fmt.Sprintf("解析内容出错 %s", err))
+	}
+	httpResponse.Status = resp.Status
+	httpResponse.StatusCode = resp.StatusCode
+	httpResponse.Header = resp.Header
+	httpResponse.Body = respBody
+	httpResponse.ContentLength = resp.ContentLength
+	return httpResponse, err
+}
+
+func PostCert(targetUrl string, params io.Reader, p12Cert *tls.Certificate) (httpResponse Response, err error) {
+	if p12Cert == nil {
+		return httpResponse, errors.New("need p12Cert")
+	}
+	transport := &http.Transport{
+		TLSClientConfig: &tls.Config{
+			Certificates: []tls.Certificate{*p12Cert},
+		},
+		DisableCompression: true,
+	}
+	// 创建请求
+	req, _ := http.NewRequest(http.MethodPost, targetUrl, params)
+	// 设置请求头
+	req.Header.Set("User-Agent", gorequest.GetRandomUserAgent())
+	// 创建 http 客户端
+	client := &http.Client{
+		Transport: transport,
+	}
 	// 发送请求
 	resp, err := client.Do(req)
 	if err != nil {

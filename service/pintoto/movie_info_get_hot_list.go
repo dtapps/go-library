@@ -4,10 +4,6 @@ import (
 	"encoding/json"
 )
 
-type GetHotList struct {
-	CityId int `json:"cityId,omitempty"` // 传入cityId时，会显示当前城市下的相关电影。 如果不传，则默认显示北京的电影
-}
-
 type GetHotListResult struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
@@ -34,15 +30,13 @@ type GetHotListResult struct {
 }
 
 // GetHotList 正在热映 https://www.showdoc.com.cn/1154868044931571/5866125707634369
-func (app *App) GetHotList(param GetHotList) (result GetHotListResult, err error) {
-	// api params
-	params := map[string]interface{}{}
-	b, _ := json.Marshal(&param)
-	var m map[string]interface{}
-	_ = json.Unmarshal(b, &m)
-	for k, v := range m {
-		params[k] = v
-	}
+func (app *App) GetHotList(cityId int) (result GetHotListResult, err error) {
+	// 参数
+	param := NewParams()
+	param.Set("cityId", cityId)
+	// 转换
+	params := app.NewParamsWith(param)
+	// 请求
 	body, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-hot-list", params)
 	if err != nil {
 		return

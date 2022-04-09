@@ -15,7 +15,7 @@ type IotApiQueryOrderedPkgInfoResponse struct {
 		Ntraffic  float64 `json:"ntraffic"`  // 已用量，单位:MB
 		Starttime int     `json:"starttime"` // 流量生效起始时间时间戳
 		Endtime   int     `json:"endtime"`   // 流量生效结束时间时间戳
-		Addtime   int     `json:"addtime"`   // 订购时间时间戳
+		Addtime   int64   `json:"addtime"`   // 订购时间时间戳
 	} `json:"data"`
 	Msg string `json:"msg"`
 }

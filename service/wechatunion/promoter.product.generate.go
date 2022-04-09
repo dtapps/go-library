@@ -1,11 +1,12 @@
 package wechatunion
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
 
-type PromoterProductGenerateResult struct {
+type PromoterProductGenerateResponse struct {
 	Errcode int    `json:"errcode"` // 错误码
 	Errmsg  string `json:"errmsg"`  // 错误信息
 	List    []struct {
@@ -24,6 +25,7 @@ type PromoterProductGenerateResult struct {
 			TotalStockNum int      `json:"totalStockNum"` // 商品库存
 		} `json:"productInfo"` // 商品相关信息
 		ShareInfo struct {
+			Username               string `json:"username"`               // 推广商品的小程序原始id
 			AppId                  string `json:"appId"`                  // 推广商品的小程序AppID
 			Path                   string `json:"path"`                   // 推广商品的小程序Path
 			CouponPath             string `json:"couponPath"`             // 推广商品的带券小程序Path
@@ -33,18 +35,33 @@ type PromoterProductGenerateResult struct {
 			CouponPromotionUrl     string `json:"couponPromotionUrl"`     // 推广商品带券短链
 			PromotionWording       string `json:"promotionWording"`       // 推广商品文案
 			CouponPromotionWording string `json:"couponPromotionWording"` // 推广商品带券文案
+			PromotionTag           string `json:"promotionTag"`           // 推广商品tag
+			CouponPromotionTag     string `json:"couponPromotionTag"`     // 推广商品带券tag
 		} `json:"shareInfo"` // 推广相关信息
 	} `json:"list"`
 }
 
-// PromoterProductGenerate
-// 获取商品推广素材
-// 通过该接口获取商品的推广素材，包括店铺appID、商品详情页Path、推广文案及推广短链、商品图片等
-// https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/product/category.html
-func (app *App) PromoterProductGenerate(notMustParams ...Params) (body []byte, err error) {
+type PromoterProductGenerateResult struct {
+	Result PromoterProductGenerateResponse // 结果
+	Body   []byte                          // 内容
+	Err    error                           // 错误
+}
+
+func NewPromoterProductGenerateResult(result PromoterProductGenerateResponse, body []byte, err error) *PromoterProductGenerateResult {
+	return &PromoterProductGenerateResult{Result: result, Body: body, Err: err}
+}
+
+// PromoterProductGenerate 获取商品推广素材
+// https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/product/category.html#_4-%E8%8E%B7%E5%8F%96%E5%95%86%E5%93%81%E6%8E%A8%E5%B9%BF%E7%B4%A0%E6%9D%90
+func (app *App) PromoterProductGenerate(notMustParams ...Params) *PromoterProductGenerateResult {
+	app.AccessToken = app.GetAccessToken()
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
+	params.Set("pid", app.Pid)
 	// 请求
-	body, err = app.request(fmt.Sprintf("https://api.weixin.qq.com/union/promoter/product/generate?access_token=%s", app.AccessToken), params, http.MethodPost)
-	return body, err
+	body, err := app.request(UnionUrl+fmt.Sprintf("/promoter/product/generate?access_token=%s", app.AccessToken), params, http.MethodPost)
+	// 定义
+	var response PromoterProductGenerateResponse
+	err = json.Unmarshal(body, &response)
+	return NewPromoterProductGenerateResult(response, body, err)
 }

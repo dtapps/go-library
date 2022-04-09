@@ -59,6 +59,11 @@ func (p Params) SetCustomParameters(uid string, sid string) {
 	}
 }
 
+// SetGoodsSignList 设置商品goodsSign列表
+func (p Params) SetGoodsSignList(goodsSign string) {
+	p["goods_sign_list"] = []string{goodsSign}
+}
+
 func (p Params) GetQuery() string {
 	u := url.Values{}
 	for k, v := range p {

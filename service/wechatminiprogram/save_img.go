@@ -1,7 +1,8 @@
 package wechatminiprogram
 
 import (
-	"github.com/dtapps/go-library/utils/gohttp"
+	"dtapps/dta/library/utils/gohttp"
+	"log"
 	"os"
 )
 
@@ -22,7 +23,9 @@ func (app *App) SaveImg(resp gohttp.Response, dir, saveName string) SaveImgRespo
 			outputFileName = outputFileName + ".png"
 		}
 	here:
+		log.Println(dir + outputFileName)
 		f, err := os.OpenFile(dir+outputFileName, os.O_CREATE|os.O_RDWR, 0666)
+		log.Println(err)
 		if err != nil {
 			os.Mkdir(dir, 0755)
 			goto here

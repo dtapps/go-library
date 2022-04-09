@@ -1,9 +1,9 @@
 package wechatminiprogram
 
 import (
+	"dtapps/dta/library/utils/gohttp"
 	"encoding/json"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gohttp"
 	"net/http"
 )
 
@@ -45,6 +45,7 @@ func NewWxaQueryUrlLinkResult(result WxaQueryUrlLinkResponse, body []byte, http 
 // WxaQueryUrlLink 查询小程序 url_link 配置，及长期有效 quota
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/url-link/urllink.query.html
 func (app *App) WxaQueryUrlLink(urlLink string) *WxaQueryUrlLinkResult {
+	app.AccessToken = app.GetAccessToken()
 	// 参数
 	param := NewParams()
 	param.Set("url_link", urlLink)

@@ -16,6 +16,14 @@ func NewParams() Params {
 	return p
 }
 
+func NewParamsWith(params ...Params) Params {
+	p := make(Params)
+	for _, v := range params {
+		p.SetParams(v)
+	}
+	return p
+}
+
 func NewParamsWithType(_method string, params ...Params) Params {
 	p := make(Params)
 	p["method"] = _method

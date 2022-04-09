@@ -1,9 +1,9 @@
 package wechatminiprogram
 
 import (
+	"dtapps/dta/library/utils/gohttp"
 	"encoding/json"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gohttp"
 	"net/http"
 )
 
@@ -26,6 +26,7 @@ func NewSubscribeMessageSendResult(result SubscribeMessageSendResponse, body []b
 // SubscribeMessageSend 发送订阅消息
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/subscribe-message/subscribeMessage.send.html
 func (app *App) SubscribeMessageSend(notMustParams ...Params) *SubscribeMessageSendResult {
+	app.AccessToken = app.GetAccessToken()
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求

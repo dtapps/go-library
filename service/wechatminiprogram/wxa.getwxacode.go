@@ -1,9 +1,9 @@
 package wechatminiprogram
 
 import (
+	"dtapps/dta/library/utils/gohttp"
 	"encoding/json"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gohttp"
 	"net/http"
 )
 
@@ -28,6 +28,7 @@ func NewWxaGetWxaCodeResult(result WxaGetWxaCodeResponse, body []byte, http goht
 // WxaGetWxaCode 获取小程序码，适用于需要的码数量较少的业务场景。通过该接口生成的小程序码，永久有效，有数量限制
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.get.html
 func (app *App) WxaGetWxaCode(notMustParams ...Params) *WxaGetWxaCodeResult {
+	app.AccessToken = app.GetAccessToken()
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求

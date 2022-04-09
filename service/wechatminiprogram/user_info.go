@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"strings"
 )
 
 type UserInfo struct {
@@ -71,4 +72,8 @@ func (app *App) UserInfo(param UserInfo) *UserInfoResult {
 		return NewUserInfoResult(response, errors.New("app id not match"))
 	}
 	return NewUserInfoResult(response, err)
+}
+
+func (u *UserInfoResponse) UserInfoAvatarUrlReal() string {
+	return strings.Replace(u.AvatarUrl, "/132", "/0", -1)
 }

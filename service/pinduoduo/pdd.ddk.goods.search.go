@@ -73,7 +73,7 @@ type GoodsSearchResponse struct {
 		} `json:"goods_list"`
 		ListId     string `json:"list_id"`
 		SearchId   string `json:"search_id"`
-		TotalCount int    `json:"total_count"`
+		TotalCount int64  `json:"total_count"`
 	} `json:"goods_search_response"`
 }
 
@@ -87,10 +87,12 @@ func NewGoodsSearchResult(result GoodsSearchResponse, body []byte, err error) *G
 	return &GoodsSearchResult{Result: result, Body: body, Err: err}
 }
 
-// GoodsSearch 多多进宝商品查询 https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.search
+// GoodsSearch 多多进宝商品查询
+// https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.search
 func (app *App) GoodsSearch(notMustParams ...Params) *GoodsSearchResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.search", notMustParams...)
+	params.Set("pid", app.Pid)
 	// 请求
 	body, err := app.request(params)
 	// 定义

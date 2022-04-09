@@ -1,9 +1,9 @@
 package wechatminiprogram
 
 import (
+	"dtapps/dta/library/utils/gohttp"
 	"encoding/json"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gohttp"
 	"net/http"
 )
 
@@ -57,6 +57,7 @@ func NewBusinessGetLiveInfoResult(result BusinessGetLiveInfoResponse, body []byt
 // 调用此接口获取直播间列表及直播间信息
 // https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/industry/liveplayer/studio-api.html
 func (app *App) BusinessGetLiveInfo(notMustParams ...Params) *BusinessGetLiveInfoResult {
+	app.AccessToken = app.GetAccessToken()
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求

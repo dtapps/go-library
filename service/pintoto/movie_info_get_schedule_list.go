@@ -4,10 +4,6 @@ import (
 	"encoding/json"
 )
 
-type GetScheduleList struct {
-	CinemaId int `json:"cinemaId"` // 影院id
-}
-
 type GetScheduleListResult struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
@@ -38,15 +34,13 @@ type GetScheduleListResult struct {
 }
 
 // GetScheduleList 场次排期 https://www.showdoc.com.cn/1154868044931571/5866708808899217
-func (app *App) GetScheduleList(param GetScheduleList) (result GetScheduleListResult, err error) {
-	// api params
-	params := map[string]interface{}{}
-	b, _ := json.Marshal(&param)
-	var m map[string]interface{}
-	_ = json.Unmarshal(b, &m)
-	for k, v := range m {
-		params[k] = v
-	}
+func (app *App) GetScheduleList(cinemaId int) (result GetScheduleListResult, err error) {
+	// 参数
+	param := NewParams()
+	param.Set("cinemaId", cinemaId)
+	// 转换
+	params := app.NewParamsWith(param)
+	// 请求
 	body, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-schedule-list", params)
 	if err != nil {
 		return

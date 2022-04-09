@@ -33,6 +33,7 @@ func NewTbkActivityInfoGetResult(result TbkActivityInfoGetResponse, body []byte,
 func (app *App) TbkActivityInfoGet(notMustParams ...Params) *TbkActivityInfoGetResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.activity.info.get", notMustParams...)
+	params.Set("adzone_id", app.AdzoneId)
 	// 请求
 	body, err := app.request(params)
 	// 定义

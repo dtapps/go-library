@@ -16,7 +16,7 @@ func (app *App) NewParamsWith(params ...Params) Params {
 	return p
 }
 
-func (p Params) Set(key string, value interface{}) {
+func (p Params) Set(key string, value any) {
 	p[key] = value
 }
 

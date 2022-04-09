@@ -41,15 +41,23 @@ type RpPromUrlGenerateResponse struct {
 		} `json:"url_list"`
 	} `json:"rp_promotion_url_generate_response"`
 }
+type RpPromUrlGenerateError struct {
+	ErrorResponse struct {
+		ErrorMsg string `json:"error_msg"`
+		SubMsg   string `json:"sub_msg"`
+		SubCode  string `json:"sub_code"`
+	} `json:"error_response"`
+}
 
 type RpPromUrlGenerateResult struct {
 	Result RpPromUrlGenerateResponse // 结果
 	Body   []byte                    // 内容
 	Err    error                     // 错误
+	Error  RpPromUrlGenerateError    // 错误结果
 }
 
-func NewRpPromUrlGenerateResult(result RpPromUrlGenerateResponse, body []byte, err error) *RpPromUrlGenerateResult {
-	return &RpPromUrlGenerateResult{Result: result, Body: body, Err: err}
+func NewRpPromUrlGenerateResult(result RpPromUrlGenerateResponse, body []byte, err error, error RpPromUrlGenerateError) *RpPromUrlGenerateResult {
+	return &RpPromUrlGenerateResult{Result: result, Body: body, Err: err, Error: error}
 }
 
 // RpPromUrlGenerate 生成营销工具推广链接
@@ -57,10 +65,13 @@ func NewRpPromUrlGenerateResult(result RpPromUrlGenerateResponse, body []byte, e
 func (app *App) RpPromUrlGenerate(notMustParams ...Params) *RpPromUrlGenerateResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.rp.prom.url.generate", notMustParams...)
+	params.Set("p_id_list", []string{app.Pid})
 	// 请求
 	body, err := app.request(params)
 	// 定义
 	var response RpPromUrlGenerateResponse
 	err = json.Unmarshal(body, &response)
-	return NewRpPromUrlGenerateResult(response, body, err)
+	var responseError RpPromUrlGenerateError
+	err = json.Unmarshal(body, &responseError)
+	return NewRpPromUrlGenerateResult(response, body, err, responseError)
 }

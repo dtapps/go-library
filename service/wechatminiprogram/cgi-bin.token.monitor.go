@@ -1,38 +1,20 @@
 package wechatminiprogram
 
 import (
+	"context"
 	"errors"
+	"time"
 )
 
-var (
-	QdTypeDb  = "DB"
-	QdTypeRdb = "redis"
-)
-
-func (app *App) AuthGetAccessTokenMonitor(qdType string) (string, error) {
-	switch qdType {
-	case QdTypeDb:
-		if app.Db == nil {
-			return "", errors.New("驱动没有初始化")
-		}
-		app.AccessToken = app.GetAccessTokenDb()
-		result := app.GetCallBackIp()
-		if len(result.Result.IpList) <= 0 {
-			return app.GetAccessTokenDb(), nil
-		}
-		return app.AccessToken, nil
-	case QdTypeRdb:
-		if app.RDb == nil {
-			return "", errors.New("驱动没有初始化")
-		}
-		app.AccessToken = app.GetAccessTokenRDb()
-		result := app.GetCallBackIp()
-		if len(result.Result.IpList) <= 0 {
-			return app.GetAccessTokenRDb(), nil
-		}
-		return app.AccessToken, nil
-	default:
-		return "", errors.New("驱动类型不在范围内")
+func (app *App) GetAccessTokenMonitor() (string, error) {
+	if app.Redis.Db == nil {
+		return "", errors.New("驱动没有初始化")
 	}
-	return "", nil
+	result := app.GetCallBackIp()
+	if len(result.Result.IpList) <= 0 {
+		token := app.CgiBinToken()
+		app.Redis.Db.Set(context.Background(), app.getAccessTokenCacheKeyName(), token.Result.AccessToken, time.Second*7000)
+		return token.Result.AccessToken, nil
+	}
+	return app.AccessToken, nil
 }

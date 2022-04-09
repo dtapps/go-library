@@ -1,8 +1,8 @@
 package tianyancha
 
 import (
+	"dtapps/dta/library/utils/gohttp"
 	"encoding/json"
-	"github.com/dtapps/go-library/utils/gohttp"
 	"net/http"
 )
 

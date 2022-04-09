@@ -1,12 +1,10 @@
 package wikeyun
 
 import (
+	"dtapps/dta/library/utils/gohttp"
+	"dtapps/dta/library/utils/gomongo"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gohttp"
-	"github.com/go-redis/redis/v8"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.uber.org/zap"
-	"gorm.io/gorm"
+	"net/http"
 )
 
 type App struct {
@@ -14,10 +12,7 @@ type App struct {
 	AppKey    int
 	AppSecret string
 	ClientIP  string
-	ZapLog    *zap.Logger   // 日志服务
-	Db        *gorm.DB      // 关系数据库服务
-	RDb       *redis.Client // 缓存数据库服务
-	MDb       *mongo.Client // 非关系数据库服务
+	Mongo     gomongo.App // 日志数据库
 }
 
 func (app *App) request(url string, params map[string]interface{}) (resp []byte, err error) {
@@ -27,8 +22,6 @@ func (app *App) request(url string, params map[string]interface{}) (resp []byte,
 	requestUrl := fmt.Sprintf("%s?app_key=%d&timestamp=%s&client=%s&format=%s&v=%s&sign=%s", url, app.AppKey, sign.Timestamp, sign.Client, sign.Format, sign.V, sign.Sign)
 	postForm, err := gohttp.PostForm(requestUrl, params)
 	// 日志
-	if app.ZapLog != nil {
-		app.ZapLog.Sugar().Info(fmt.Sprintf("%s %s %s", url, postForm.Header, postForm.Body))
-	}
+	go app.mongoLog(url, params, http.MethodPost, postForm)
 	return postForm.Body, err
 }

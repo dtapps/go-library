@@ -60,6 +60,7 @@ func NewTbkDgOptimusMaterialResult(result TbkDgOptimusMaterialResponse, body []b
 func (app *App) TbkDgOptimusMaterial(notMustParams ...Params) *TbkDgOptimusMaterialResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.dg.optimus.material", notMustParams...)
+	params.Set("adzone_id", app.AdzoneId)
 	// 请求
 	body, err := app.request(params)
 	// 定义

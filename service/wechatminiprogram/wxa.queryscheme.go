@@ -1,9 +1,9 @@
 package wechatminiprogram
 
 import (
+	"dtapps/dta/library/utils/gohttp"
 	"encoding/json"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gohttp"
 	"net/http"
 )
 
@@ -38,6 +38,7 @@ func NewWxaQuerySchemeResult(result WxaQuerySchemeResponse, body []byte, http go
 // WxaQueryScheme 查询小程序 scheme 码，及长期有效 quota
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/url-scheme/urlscheme.query.html
 func (app *App) WxaQueryScheme(notMustParams ...Params) *WxaQuerySchemeResult {
+	app.AccessToken = app.GetAccessToken()
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求

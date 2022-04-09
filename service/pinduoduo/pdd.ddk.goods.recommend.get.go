@@ -59,7 +59,7 @@ type GoodsRecommendGetResponse struct {
 		} `json:"list"`
 		ListId   string `json:"list_id"`
 		SearchId string `json:"search_id"`
-		Total    int    `json:"total"`
+		Total    int64  `json:"total"`
 	} `json:"goods_basic_detail_response"`
 }
 
@@ -78,6 +78,7 @@ func NewGoodsRecommendGetResult(result GoodsRecommendGetResponse, body []byte, e
 func (app *App) GoodsRecommendGet(notMustParams ...Params) *GoodsRecommendGetResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.recommend.get", notMustParams...)
+	params.Set("pid", app.Pid)
 	// 请求
 	body, err := app.request(params)
 	// 定义

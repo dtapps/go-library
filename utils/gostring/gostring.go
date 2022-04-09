@@ -30,6 +30,24 @@ func ToInt64(s string) int64 {
 	return int64(ToFloat64(s))
 }
 
+// ToUint string到uint64
+func ToUint(s string) uint {
+	i, err := strconv.ParseUint(s, 10, 64)
+	if err == nil {
+		return uint(i)
+	}
+	return 0
+}
+
+// ToUint64 string到uint64
+func ToUint64(s string) uint64 {
+	i, err := strconv.ParseUint(s, 10, 64)
+	if err == nil {
+		return i
+	}
+	return 0
+}
+
 // Replace 字符串替换
 func Replace(str, old, new string) string {
 	return strings.Replace(str, old, new, -1)

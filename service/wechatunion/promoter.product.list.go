@@ -1,11 +1,12 @@
 package wechatunion
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
 
-type PromoterProductListResult struct {
+type PromoterProductListResponse struct {
 	Errcode     int    `json:"errcode"` // 错误码
 	Errmsg      string `json:"errmsg"`  // 错误信息
 	Msg         string `json:"msg"`     // 错误信息
@@ -29,10 +30,11 @@ type PromoterProductListResult struct {
 					DetailImg []string `json:"detailImg"` // 商品详情图片
 				} `json:"detail"` // 商品详细数据
 				Param         []interface{} `json:"param"`         // 商品参数
-				MinPrice      int           `json:"minPrice"`      // 商品最低价格，单位分
-				TotalStockNum int           `json:"totalStockNum"` // 总库存
+				MinPrice      int64         `json:"minPrice"`      // 商品最低价格，单位分
+				TotalStockNum int64         `json:"totalStockNum"` // 总库存
+				TotalSoldNum  int64         `json:"totalSoldNum"`  // 累计销量
 				TotalOrderNum int           `json:"totalOrderNum"` // 累计订单量
-				DiscountPrice int           `json:"discountPrice"` // 商品券后价
+				DiscountPrice int64         `json:"discountPrice"` // 商品券后价
 			} `json:"info"` // 商品具体信息
 			Skus []struct {
 				SkuId          string `json:"skuId"` // 商品SKU ID
@@ -47,9 +49,9 @@ type PromoterProductListResult struct {
 			} `json:"skus"` // 商品SKU
 		} `json:"product"` // 商品数据
 		LeagueExInfo struct {
-			HasCommission   int `json:"hasCommission"`   // 是否有佣金，1/0
-			CommissionRatio int `json:"commissionRatio"` // 佣金比例，万分之一
-			CommissionValue int `json:"commissionValue"` // 佣金金额，单位分
+			HasCommission   int   `json:"hasCommission"`   // 是否有佣金，1/0
+			CommissionRatio int64 `json:"commissionRatio"` // 佣金比例，万分之一
+			CommissionValue int64 `json:"commissionValue"` // 佣金金额，单位分
 		} `json:"leagueExInfo"` // 联盟佣金相关数据
 		ShopInfo struct {
 			Name            string `json:"name"`       // 小商店名称
@@ -104,8 +106,8 @@ type PromoterProductListResult struct {
 						ProductCnt   string   `json:"productCnt"`   // 商品数
 						ProductPrice string   `json:"productPrice"` // 商品金额
 					} `json:"discountCondition"` // 指定商品 id
-					DiscountNum int   `json:"discountNum,omitempty"` // 折扣数，如 5.1 折 为 5.1 * 1000
-					DiscountFee int64 `json:"discountFee,omitempty"` // 直减金额，单位为分
+					DiscountNum int    `json:"discountNum,omitempty"` // 折扣数，如 5.1 折 为 5.1 * 1000
+					DiscountFee string `json:"discountFee,omitempty"` // 直减金额，单位为分
 				} `json:"discountInfo"` // 券面额
 				ValidInfo struct {
 					ValidType   int    `json:"validType"`   // 有效期类型，1 为商品指定时间区间，2 为生效天数
@@ -123,14 +125,26 @@ type PromoterProductListResult struct {
 	} `json:"productList"` // 商品列表数据
 }
 
-// PromoterProductList
-// 查询全量商品
-// 支持开发者根据多种筛选条件获取可供推广的商品列表及详情，筛选条件包括商品关键词（名称、店铺、spuID）、商品累计销量、商品价格、商品佣金、佣金比例、是否含有联盟券、配送方式、发货地区等
-// https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/product/category.html
-func (app *App) PromoterProductList(notMustParams ...Params) (body []byte, err error) {
+type PromoterProductListResult struct {
+	Result PromoterProductListResponse // 结果
+	Body   []byte                      // 内容
+	Err    error                       // 错误
+}
+
+func NewPromoterProductListResult(result PromoterProductListResponse, body []byte, err error) *PromoterProductListResult {
+	return &PromoterProductListResult{Result: result, Body: body, Err: err}
+}
+
+// PromoterProductList 查询全量商品
+// https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/product/category.html#_2-%E6%9F%A5%E8%AF%A2%E5%85%A8%E9%87%8F%E5%95%86%E5%93%81
+func (app *App) PromoterProductList(notMustParams ...Params) *PromoterProductListResult {
+	app.AccessToken = app.GetAccessToken()
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
-	body, err = app.request(fmt.Sprintf("https://api.weixin.qq.com/union/promoter/product/list?access_token=%s", app.AccessToken), params, http.MethodGet)
-	return body, err
+	body, err := app.request(UnionUrl+fmt.Sprintf("/promoter/product/list?access_token=%s", app.AccessToken), params, http.MethodGet)
+	// 定义
+	var response PromoterProductListResponse
+	err = json.Unmarshal(body, &response)
+	return NewPromoterProductListResult(response, body, err)
 }

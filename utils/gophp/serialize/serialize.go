@@ -3,8 +3,7 @@ package serialize
 import (
 	"bytes"
 	"fmt"
-	"github.com/dtapps/go-library/utils/goless"
-	"github.com/dtapps/go-library/utils/gostring"
+	"gitee.com/dtapps/go-library/utils/gostring"
 	"reflect"
 	"sort"
 )
@@ -71,7 +70,7 @@ func MarshalMap(value interface{}) ([]byte, error) {
 	s := reflect.ValueOf(value)
 	mapKeys := s.MapKeys()
 	sort.Slice(mapKeys, func(i, j int) bool {
-		return goless.LessValue(mapKeys[i], mapKeys[j])
+		return lessValue(mapKeys[i], mapKeys[j])
 	})
 	var buffer bytes.Buffer
 	for _, mapKey := range mapKeys {

@@ -31,15 +31,13 @@ type GetSeatSeats struct {
 }
 
 // GetSeat 座位 https://www.showdoc.com.cn/1154868044931571/5866824368760475
-func (app *App) GetSeat(param GetSeat) (result GetSeatResult, err error) {
-	// api params
-	params := map[string]interface{}{}
-	b, _ := json.Marshal(&param)
-	var m map[string]interface{}
-	_ = json.Unmarshal(b, &m)
-	for k, v := range m {
-		params[k] = v
-	}
+func (app *App) GetSeat(showId string) (result GetSeatResult, err error) {
+	// 参数
+	param := NewParams()
+	param.Set("showId", showId)
+	// 转换
+	params := app.NewParamsWith(param)
+	// 请求
 	body, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-seat", params)
 	if err != nil {
 		return

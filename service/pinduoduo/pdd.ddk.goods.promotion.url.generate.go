@@ -49,6 +49,7 @@ func NewGoodsPromotionUrlGenerateResult(result GoodsPromotionUrlGenerateResponse
 func (app *App) GoodsPromotionUrlGenerate(notMustParams ...Params) *GoodsPromotionUrlGenerateResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.promotion.url.generate", notMustParams...)
+	params.Set("p_id", app.Pid)
 	// 请求
 	body, err := app.request(params)
 	// 定义

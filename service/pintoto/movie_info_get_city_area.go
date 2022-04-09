@@ -4,11 +4,7 @@ import (
 	"encoding/json"
 )
 
-type GetCityArea struct {
-	CityId int `json:"cityId"` // 城市id
-}
-
-type GetCityAreaResult struct {
+type GetCityAreaResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 	Data    struct {
@@ -20,22 +16,26 @@ type GetCityAreaResult struct {
 	Success bool `json:"success"`
 }
 
-// GetCityArea 城市下区域 https://www.showdoc.com.cn/1154868044931571/6243539682553126
-func (app *App) GetCityArea(param GetCityArea) (result GetCityAreaResult, err error) {
-	// api params
-	params := map[string]interface{}{}
-	b, _ := json.Marshal(&param)
-	var m map[string]interface{}
-	_ = json.Unmarshal(b, &m)
-	for k, v := range m {
-		params[k] = v
-	}
+type GetCityAreaResult struct {
+	Result GetCityAreaResponse // 结果
+	Body   []byte              // 内容
+	Err    error               // 错误
+}
+
+func NewGetCityAreaResult(result GetCityAreaResponse, body []byte, err error) *GetCityAreaResult {
+	return &GetCityAreaResult{Result: result, Body: body, Err: err}
+}
+
+// GetCityArea 城市下区域
+// https://www.showdoc.com.cn/1154868044931571/6243539682553126
+func (app *App) GetCityArea(cityId int) *GetCityAreaResult {
+	// 测试
+	param := NewParams()
+	param.Set("cityId", cityId)
+	params := app.NewParamsWith(param)
+	// 请求
 	body, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-city-area", params)
-	if err != nil {
-		return
-	}
-	if err = json.Unmarshal(body, &result); err != nil {
-		return
-	}
-	return
+	var response GetCityAreaResponse
+	err = json.Unmarshal(body, &response)
+	return NewGetCityAreaResult(response, body, err)
 }

@@ -1,16 +1,13 @@
 package wechatpayapiv3
 
 import (
+	"dtapps/dta/library/utils/gohttp"
 	"encoding/json"
 	"fmt"
+	"net/http"
 )
 
-type PayTransactionsId struct {
-	TransactionId string `json:"transaction_id"`
-}
-
-// PayTransactionsIdResult 返回参数
-type PayTransactionsIdResult struct {
+type PayTransactionsIdResponse struct {
 	Appid          string `json:"appid"`
 	Mchid          string `json:"mchid"`
 	OutTradeNo     string `json:"out_trade_no"`
@@ -54,16 +51,26 @@ type PayTransactionsIdResult struct {
 	}
 }
 
+type PayTransactionsIdResult struct {
+	Result PayTransactionsIdResponse // 结果
+	Body   []byte                    // 内容
+	Http   gohttp.Response           // 请求
+	Err    error                     // 错误
+}
+
+func NewPayTransactionsIdResult(result PayTransactionsIdResponse, body []byte, http gohttp.Response, err error) *PayTransactionsIdResult {
+	return &PayTransactionsIdResult{Result: result, Body: body, Http: http, Err: err}
+}
+
 // PayTransactionsId 微信支付订单号查询 https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_2.shtml
-func (app *App) PayTransactionsId(param PayTransactionsId) (resp PayTransactionsIdResult, result ErrResp, err error) {
-
-	body, result, err := app.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/pay/transactions/id/%s?mchid=%s", param.TransactionId, app.MchId), map[string]interface{}{}, "GET")
-
+func (app *App) PayTransactionsId(transactionId string) *PayTransactionsIdResult {
+	// 请求
+	request, err := app.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/pay/transactions/id/%s?mchid=%s", transactionId, app.MchId), map[string]interface{}{}, http.MethodGet, true)
 	if err != nil {
-		return
+		return NewPayTransactionsIdResult(PayTransactionsIdResponse{}, request.Body, request, err)
 	}
-	if err = json.Unmarshal(body, &resp); err != nil {
-		return
-	}
-	return
+	// 定义
+	var response PayTransactionsIdResponse
+	err = json.Unmarshal(request.Body, &response)
+	return NewPayTransactionsIdResult(response, request.Body, request, err)
 }

@@ -4,10 +4,6 @@ import (
 	"encoding/json"
 )
 
-type GetCinemaList struct {
-	CityId int `json:"cityId"` // 城市id
-}
-
 type GetCinemaListResult struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
@@ -29,15 +25,13 @@ type GetCinemaListResult struct {
 }
 
 // GetCinemaList 影院列表 https://www.showdoc.com.cn/1154868044931571/5866426126744792
-func (app *App) GetCinemaList(param GetCinemaList) (result GetCinemaListResult, err error) {
-	// api params
-	params := map[string]interface{}{}
-	b, _ := json.Marshal(&param)
-	var m map[string]interface{}
-	_ = json.Unmarshal(b, &m)
-	for k, v := range m {
-		params[k] = v
-	}
+func (app *App) GetCinemaList(cityId int) (result GetCinemaListResult, err error) {
+	// 参数
+	param := NewParams()
+	param.Set("cityId", cityId)
+	// 转换
+	params := app.NewParamsWith(param)
+	// 请求
 	body, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-cinema-list", params)
 	if err != nil {
 		return

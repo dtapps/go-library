@@ -56,7 +56,7 @@ type TbkDgMaterialOptionalResponse struct {
 				CouponAmount   string `json:"coupon_amount"`
 			} `json:"map_data"`
 		} `json:"result_list"`
-		TotalResults int    `json:"total_results"`
+		TotalResults int64  `json:"total_results"`
 		RequestId    string `json:"request_id"`
 	} `json:"tbk_dg_material_optional_response"`
 }
@@ -76,6 +76,7 @@ func NewTbkDgMaterialOptionalResult(result TbkDgMaterialOptionalResponse, body [
 func (app *App) TbkDgMaterialOptional(notMustParams ...Params) *TbkDgMaterialOptionalResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.dg.material.optional", notMustParams...)
+	params.Set("adzone_id", app.AdzoneId)
 	// 请求
 	body, err := app.request(params)
 	// 定义
