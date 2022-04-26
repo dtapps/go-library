@@ -8,12 +8,7 @@
 [![godoc](https://pkg.go.dev/badge/github.com/dtapps/go-library?status.svg)](https://pkg.go.dev/github.com/dtapps/go-library)
 [![goproxy.cn](https://goproxy.cn/stats/github.com/dtapps/go-library/badges/download-count.svg)](https://goproxy.cn/stats/github.com/dtapps/go-library)
 [![goreportcard.com](https://goreportcard.com/badge/github.com/dtapps/go-library)](https://goreportcard.com/report/github.com/dtapps/go-library)
-[![deps.dev](https://img.shields.io/badge/deps-go-red.svg)](https://deps.dev/go/gopkg.in%2Fdtapps%2Fgo-library)
-[![Coverage Status](https://coveralls.io/repos/github/dtapps/go-library/badge.svg?branch=master)](https://coveralls.io/github/dtapps/go-library?branch=master)
-[![Sourcegraph](https://sourcegraph.com/github.com/dtapps/go-library/-/badge.svg)](https://sourcegraph.com/github.com/dtapps/go-library?badge)
-[![Build status](https://ci.appveyor.com/api/projects/status/d6rq6xynt8wkev5k?svg=true)](https://ci.appveyor.com/project/dtapps/go-library)
-[![codecov](https://codecov.io/gh/dtapps/go-library/branch/master/graph/badge.svg?token=BrtbyKKPQX)](https://codecov.io/gh/dtapps/go-library)
-[![Build Status](https://app.travis-ci.com/dtapps/go-library.svg?branch=master)](https://app.travis-ci.com/dtapps/go-library)
+[![deps.dev](https://img.shields.io/badge/deps-go-red.svg)](https://deps.dev/go/github.com%2Fdtapps%2Fgo-library)
 
 #### 安装使用
 
