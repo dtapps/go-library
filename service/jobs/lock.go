@@ -2,7 +2,7 @@ package jobs
 
 import (
 	"fmt"
-	"github.com/dtapps/go-library/utils/goredis"
+	"go.dtapp.net/library/utils/goredis"
 	"time"
 )
 

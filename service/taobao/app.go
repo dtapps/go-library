@@ -3,9 +3,9 @@ package taobao
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gohttp"
-	"github.com/dtapps/go-library/utils/gomongo"
-	"github.com/dtapps/go-library/utils/gostring"
+	"go.dtapp.net/library/utils/gohttp"
+	"go.dtapp.net/library/utils/gomongo"
+	"go.dtapp.net/library/utils/gostring"
 	"net/http"
 	"regexp"
 	"strconv"

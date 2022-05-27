@@ -2,7 +2,7 @@ package wechatpayapiv3
 
 import (
 	"fmt"
-	"github.com/dtapps/go-library/utils/gohttp"
+	"go.dtapp.net/library/utils/gohttp"
 	"net/http"
 )
 

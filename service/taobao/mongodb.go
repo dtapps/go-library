@@ -2,8 +2,8 @@ package taobao
 
 import (
 	"encoding/json"
-	"github.com/dtapps/go-library/utils/gohttp"
-	"github.com/dtapps/go-library/utils/gotime"
+	"go.dtapp.net/library/utils/gohttp"
+	"go.dtapp.net/library/utils/gotime"
 )
 
 // 日志

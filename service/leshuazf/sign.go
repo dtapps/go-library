@@ -2,8 +2,8 @@ package leshuazf
 
 import (
 	"encoding/json"
-	"github.com/dtapps/go-library/utils/gobase64"
-	"github.com/dtapps/go-library/utils/gomd5"
+	"go.dtapp.net/library/utils/gobase64"
+	"go.dtapp.net/library/utils/gomd5"
 	"sort"
 )
 

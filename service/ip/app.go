@@ -1,10 +1,10 @@
 package ip
 
 import (
-	"github.com/dtapps/go-library/service/ip/ip2region"
-	v4 "github.com/dtapps/go-library/service/ip/v4"
-	v6 "github.com/dtapps/go-library/service/ip/v6"
-	"github.com/dtapps/go-library/utils/gopostgresql"
+	"go.dtapp.net/library/service/ip/ip2region"
+	v4 "go.dtapp.net/library/service/ip/v4"
+	v6 "go.dtapp.net/library/service/ip/v6"
+	"go.dtapp.net/library/utils/gopostgresql"
 	"os"
 	"strings"
 )

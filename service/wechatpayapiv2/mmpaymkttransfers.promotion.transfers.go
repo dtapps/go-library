@@ -2,8 +2,8 @@ package wechatpayapiv2
 
 import (
 	"encoding/xml"
-	"github.com/dtapps/go-library/utils/gohttp"
-	"github.com/dtapps/go-library/utils/gorandom"
+	"go.dtapp.net/library/utils/gohttp"
+	"go.dtapp.net/library/utils/gorandom"
 )
 
 type TransfersResponse struct {

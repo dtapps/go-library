@@ -2,7 +2,7 @@ package tianyancha
 
 import (
 	"encoding/json"
-	"github.com/dtapps/go-library/utils/gohttp"
+	"go.dtapp.net/library/utils/gohttp"
 	"net/http"
 )
 

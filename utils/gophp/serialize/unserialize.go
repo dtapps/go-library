@@ -3,7 +3,7 @@ package serialize
 import (
 	"bytes"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gostring"
+	"go.dtapp.net/library/utils/gostring"
 	"strconv"
 )
 

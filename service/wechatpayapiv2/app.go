@@ -2,9 +2,9 @@ package wechatpayapiv2
 
 import (
 	"crypto/tls"
-	"github.com/dtapps/go-library/utils/gohttp"
-	"github.com/dtapps/go-library/utils/gomongo"
-	"github.com/dtapps/go-library/utils/gopostgresql"
+	"go.dtapp.net/library/utils/gohttp"
+	"go.dtapp.net/library/utils/gomongo"
+	"go.dtapp.net/library/utils/gopostgresql"
 )
 
 // App 微信支付服务

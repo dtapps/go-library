@@ -2,9 +2,9 @@ package golock
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/goredis"
-	"github.com/dtapps/go-library/utils/gouuid"
 	"github.com/go-redis/redis/v8"
+	"go.dtapp.net/library/utils/goredis"
+	"go.dtapp.net/library/utils/gouuid"
 	"time"
 )
 

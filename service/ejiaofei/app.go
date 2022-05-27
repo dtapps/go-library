@@ -3,9 +3,9 @@ package ejiaofei
 import (
 	"errors"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gohttp"
-	"github.com/dtapps/go-library/utils/gomd5"
-	"github.com/dtapps/go-library/utils/gomongo"
+	"go.dtapp.net/library/utils/gohttp"
+	"go.dtapp.net/library/utils/gomd5"
+	"go.dtapp.net/library/utils/gomongo"
 	"net/http"
 )
 

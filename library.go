@@ -1,8 +1,8 @@
 package go_library
 
 import (
-	_ "github.com/dtapps/go-library/service"
-	_ "github.com/dtapps/go-library/utils"
+	_ "go.dtapp.net/library/service"
+	_ "go.dtapp.net/library/utils"
 )
 
 func Version() string {

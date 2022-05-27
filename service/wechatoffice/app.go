@@ -3,9 +3,9 @@ package wechatoffice
 import (
 	"encoding/json"
 	"errors"
-	"github.com/dtapps/go-library/utils/gohttp"
-	"github.com/dtapps/go-library/utils/gomongo"
-	"github.com/dtapps/go-library/utils/goredis"
+	"go.dtapp.net/library/utils/gohttp"
+	"go.dtapp.net/library/utils/gomongo"
+	"go.dtapp.net/library/utils/goredis"
 	"net/http"
 )
 

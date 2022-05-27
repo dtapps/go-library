@@ -3,7 +3,7 @@ package v4
 import (
 	_ "embed"
 	"encoding/binary"
-	"github.com/dtapps/go-library/utils/gostring"
+	"go.dtapp.net/library/utils/gostring"
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"net"
 )

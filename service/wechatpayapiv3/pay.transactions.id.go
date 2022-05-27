@@ -3,7 +3,7 @@ package wechatpayapiv3
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gohttp"
+	"go.dtapp.net/library/utils/gohttp"
 	"net/http"
 )
 

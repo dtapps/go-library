@@ -2,7 +2,7 @@ package meituan
 
 import (
 	"encoding/json"
-	"github.com/dtapps/go-library/utils/gotime"
+	"go.dtapp.net/library/utils/gotime"
 	"net/http"
 )
 

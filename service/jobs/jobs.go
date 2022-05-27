@@ -2,10 +2,10 @@ package jobs
 
 import (
 	"fmt"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/goredis"
-	"github.com/dtapps/go-library/utils/gotime"
-	"github.com/dtapps/go-library/utils/gouuid"
+	"go.dtapp.net/library/utils/gojson"
+	"go.dtapp.net/library/utils/goredis"
+	"go.dtapp.net/library/utils/gotime"
+	"go.dtapp.net/library/utils/gouuid"
 	"gorm.io/gorm"
 	"net/http"
 )

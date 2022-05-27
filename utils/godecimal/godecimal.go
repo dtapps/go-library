@@ -2,7 +2,7 @@ package godecimal
 
 import (
 	"fmt"
-	"github.com/dtapps/go-library/utils/gostring"
+	"go.dtapp.net/library/utils/gostring"
 	"math"
 	"strconv"
 )
