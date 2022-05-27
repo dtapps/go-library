@@ -6,6 +6,4 @@
 *.log
 git.sh
 gomod.sh
-/test/
-/service/*/*_test.go
-/utils/*/*_test.go
+/*/*_test.go
