@@ -29,6 +29,11 @@ func RoundYString(y string, n int) float64 {
 	return Round(gostring.ToFloat64(y)/100, n)
 }
 
+// Multiply 相乘
+func Multiply(y, x float64) float64 {
+	return Round(y*x, 2)
+}
+
 // PddCouponAmount 优惠券金额
 func PddCouponAmount(y int64) float64 {
 	return Round(float64(y)/100, 2)
