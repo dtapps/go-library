@@ -11,35 +11,40 @@ const specials = "~!@#$%^*()_+-=[]{}|;:,./<>?"
 const alphanumerics string = letters + numbers
 const ascii string = alphanumerics + specials
 
-func random(n int, chars string) string {
+func random[T int | int64](n T, chars string) string {
 	if n <= 0 {
 		return ""
 	}
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	bytes := make([]byte, n, n)
 	l := len(chars)
-	for i := 0; i < n; i++ {
+	var i T = 0
+	for {
+		if i >= n {
+			break
+		}
 		bytes[i] = chars[r.Intn(l)]
+		i++
 	}
 	return string(bytes)
 }
 
 // Alphanumeric 随机字母数字
-func Alphanumeric(n int) string {
+func Alphanumeric[T int | int64](n T) string {
 	return random(n, alphanumerics)
 }
 
 // Alphabetic 随机字母
-func Alphabetic(n int) string {
+func Alphabetic[T int | int64](n T) string {
 	return random(n, letters)
 }
 
 // Numeric 随机数字
-func Numeric(n int) string {
+func Numeric[T int | int64](n T) string {
 	return random(n, numbers)
 }
 
 // Ascii 随机ASCII
-func Ascii(n int) string {
+func Ascii[T int | int64](n T) string {
 	return random(n, ascii)
 }
