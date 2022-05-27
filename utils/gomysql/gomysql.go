@@ -6,25 +6,32 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"log"
 	"os"
 	"path"
 	"time"
 )
 
 type App struct {
-	Db  *gorm.DB // 驱动
-	Dns string   // 地址
-	Log bool     // 日志
+	Db     *gorm.DB // 驱动
+	Dns    string   // 地址
+	Log    bool     // 日志
+	LogUrl string   // 日志路径
 }
 
 type writer struct{}
 
+// 日志路径
+var logsUrl = ""
+
 func (w writer) Printf(format string, args ...interface{}) {
+
+	// 判断路径
 
 	now := time.Now()
 	logFilePath := ""
 	if dir, err := os.Getwd(); err == nil {
-		logFilePath = dir + "/logs/mysql"
+		logFilePath = dir + logsUrl
 	}
 	if err := os.MkdirAll(logFilePath, 0777); err != nil {
 		fmt.Println(err.Error())
@@ -60,6 +67,13 @@ func (w writer) Printf(format string, args ...interface{}) {
 
 func (app *App) InitClient() {
 
+	log.Printf("mysql config：%+v\n", app)
+
+	// 判断路径
+	if app.LogUrl == "" {
+		logsUrl = "/logs/mysql"
+	}
+
 	var err error
 
 	if app.Log == true {
@@ -79,12 +93,12 @@ func (app *App) InitClient() {
 	}
 
 	if err != nil {
-		panic(fmt.Sprintf("连接数据库失败：%v", err))
+		panic(fmt.Sprintf("数据库【mysql】连接失败：%v", err))
 	}
 
 	sqlDB, err := app.Db.DB()
 	if err != nil {
-		panic(fmt.Sprintf("连接数据库服务器失败：%v", err))
+		panic(fmt.Sprintf("数据库【mysql】连接服务器失败：%v", err))
 	}
 
 	sqlDB.SetMaxIdleConns(10)                   // 设置空闲连接池中连接的最大数量

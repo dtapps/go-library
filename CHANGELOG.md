@@ -14,6 +14,9 @@
 - ip：更新
 - storage：增加存储功能
 - request：合并http
+- mysql：更新
+- postgres：更新
+- redis：更新
 
 ## v1.0.39 / 2021-12-27
 

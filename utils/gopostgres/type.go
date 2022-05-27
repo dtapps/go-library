@@ -1,4 +1,4 @@
-package gopostgresql
+package gopostgres
 
 import (
 	"database/sql/driver"

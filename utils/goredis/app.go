@@ -20,10 +20,13 @@ type App struct {
 
 // InitClient 初始化连接
 func (app *App) InitClient() {
+
+	log.Printf("redis config：%+v\n", app)
+
 	if app.PoolSize == 0 {
 		app.PoolSize = 100
 	}
-	log.Printf("goredis：%+v\n", app)
+
 	app.Db = redis.NewClient(&redis.Options{
 		Addr:     app.Addr,     // 地址
 		Password: app.Password, // 密码
@@ -36,7 +39,7 @@ func (app *App) InitClient() {
 
 	_, err := app.Db.Ping(ctx).Result()
 	if err != nil {
-		panic(errors.New(fmt.Sprintf("goredis ping error：%v", err)))
+		panic(errors.New(fmt.Sprintf("数据库【redis】连接失败：%v", err)))
 	}
 	return
 }
