@@ -3,6 +3,7 @@
 - mod：优化链接
 - random：增加泛型
 - decimal：增加 `Multiply` 方法
+- env：增加 `GetEnvs` 方法
 
 ## v1.0.39 / 2021-12-27
 
