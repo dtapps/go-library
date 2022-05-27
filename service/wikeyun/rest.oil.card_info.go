@@ -5,6 +5,6 @@ func (app *App) RestOilCardInfo(notMustParams ...Params) (body []byte, err error
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
-	body, err = app.request("https://router.wikeyun.cn/rest/Oil/cardInfo", params)
-	return body, err
+	request, err := app.request("https://router.wikeyun.cn/rest/Oil/cardInfo", params)
+	return request.ResponseBody, err
 }

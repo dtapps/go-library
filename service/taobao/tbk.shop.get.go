@@ -1,6 +1,9 @@
 package taobao
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type TbkShopGetResponse struct {
 	TbkShopGetResponse struct {
@@ -22,11 +25,12 @@ type TbkShopGetResponse struct {
 type TbkShopGetResult struct {
 	Result TbkShopGetResponse // 结果
 	Body   []byte             // 内容
+	Http   gorequest.Response // 请求
 	Err    error              // 错误
 }
 
-func NewTbkShopGetResult(result TbkShopGetResponse, body []byte, err error) *TbkShopGetResult {
-	return &TbkShopGetResult{Result: result, Body: body, Err: err}
+func NewTbkShopGetResult(result TbkShopGetResponse, body []byte, http gorequest.Response, err error) *TbkShopGetResult {
+	return &TbkShopGetResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // TbkShopGet 淘宝客-推广者-店铺搜索
@@ -35,9 +39,9 @@ func (app *App) TbkShopGet(notMustParams ...Params) *TbkShopGetResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.shop.get", notMustParams...)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response TbkShopGetResponse
-	err = json.Unmarshal(body, &response)
-	return NewTbkShopGetResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewTbkShopGetResult(response, request.ResponseBody, request, err)
 }

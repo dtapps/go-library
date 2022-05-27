@@ -68,12 +68,16 @@ func (app *App) UserInfo(param UserInfo) *UserInfoResult {
 	if err != nil {
 		return NewUserInfoResult(response, err)
 	}
-	if response.Watermark.AppID != app.AppId {
+	if response.Watermark.AppID != app.appId {
 		return NewUserInfoResult(response, errors.New("app id not match"))
 	}
 	return NewUserInfoResult(response, err)
 }
 
 func (u *UserInfoResponse) UserInfoAvatarUrlReal() string {
-	return strings.Replace(u.AvatarUrl, "/132", "/0", -1)
+	return UserInfoAvatarUrlReal(u.AvatarUrl)
+}
+
+func UserInfoAvatarUrlReal(avatarUrl string) string {
+	return strings.Replace(avatarUrl, "/132", "/0", -1)
 }

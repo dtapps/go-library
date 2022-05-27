@@ -3,6 +3,7 @@ package wechatopen
 import (
 	"encoding/json"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -12,27 +13,27 @@ type WxaCommitResponse struct {
 }
 
 type WxaCommitResult struct {
-	Result WxaCommitResponse // 结果
-	Body   []byte            // 内容
-	Err    error             // 错误
+	Result WxaCommitResponse  // 结果
+	Body   []byte             // 内容
+	Http   gorequest.Response // 请求
+	Err    error              // 错误
 }
 
-func NewWxaCommitResult(result WxaCommitResponse, body []byte, err error) *WxaCommitResult {
-	return &WxaCommitResult{Result: result, Body: body, Err: err}
+func NewWxaCommitResult(result WxaCommitResponse, body []byte, http gorequest.Response, err error) *WxaCommitResult {
+	return &WxaCommitResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // WxaCommit 上传小程序代码并生成体验版
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/commit.html
-func (app *App) WxaCommit(notMustParams ...Params) *WxaCommitResult {
-	app.authorizerAccessToken = app.GetAuthorizerAccessToken()
+func (app *App) WxaCommit(notMustParams ...gorequest.Params) *WxaCommitResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/commit?access_token=%s", app.authorizerAccessToken), params, http.MethodPost)
+	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/commit?access_token=%s", app.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaCommitResponse
-	err = json.Unmarshal(body, &response)
-	return NewWxaCommitResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewWxaCommitResult(response, request.ResponseBody, request, err)
 }
 
 // ErrcodeInfo 错误描述

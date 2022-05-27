@@ -2,6 +2,7 @@ package meituan
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -15,22 +16,23 @@ type PoiCityResponse struct {
 }
 
 type PoiCityResult struct {
-	Result PoiCityResponse // 结果
-	Body   []byte          // 内容
-	Err    error           // 错误
+	Result PoiCityResponse    // 结果
+	Body   []byte             // 内容
+	Http   gorequest.Response // 请求
+	Err    error              // 错误
 }
 
-func NewPoiCityResult(result PoiCityResponse, body []byte, err error) *PoiCityResult {
-	return &PoiCityResult{Result: result, Body: body, Err: err}
+func NewPoiCityResult(result PoiCityResponse, body []byte, http gorequest.Response, err error) *PoiCityResult {
+	return &PoiCityResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // PoiCity 基础数据 - 开放城市接口
 // https://openapi.meituan.com/#api-0.%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE-GetHttpsOpenapiMeituanComPoiCity
 func (app *App) PoiCity() *PoiCityResult {
 	// 请求
-	body, err := app.request("https://openapi.meituan.com/poi/city", map[string]interface{}{}, http.MethodGet)
+	request, err := app.request("https://openapi.meituan.com/poi/city", map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response PoiCityResponse
-	err = json.Unmarshal(body, &response)
-	return NewPoiCityResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewPoiCityResult(response, request.ResponseBody, request, err)
 }

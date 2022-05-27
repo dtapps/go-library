@@ -1,6 +1,9 @@
 package jd
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type UnionOpenOrderRowQueryResultResponse struct {
 	JdUnionOpenOrderRowQueryResponce struct {
@@ -78,11 +81,12 @@ type UnionOpenOrderRowQueryResult struct {
 	Responce UnionOpenOrderRowQueryResultResponse // 结果
 	Result   UnionOpenOrderRowQueryQueryResult    // 结果
 	Body     []byte                               // 内容
+	Http     gorequest.Response                   // 请求
 	Err      error                                // 错误
 }
 
-func NewUnionOpenOrderRowQueryResult(responce UnionOpenOrderRowQueryResultResponse, result UnionOpenOrderRowQueryQueryResult, body []byte, err error) *UnionOpenOrderRowQueryResult {
-	return &UnionOpenOrderRowQueryResult{Responce: responce, Result: result, Body: body, Err: err}
+func NewUnionOpenOrderRowQueryResult(responce UnionOpenOrderRowQueryResultResponse, result UnionOpenOrderRowQueryQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenOrderRowQueryResult {
+	return &UnionOpenOrderRowQueryResult{Responce: responce, Result: result, Body: body, Http: http, Err: err}
 }
 
 // UnionOpenOrderRowQuery 订单行查询接口
@@ -91,11 +95,11 @@ func (app *App) UnionOpenOrderRowQuery(notMustParams ...Params) *UnionOpenOrderR
 	// 参数
 	params := NewParamsWithType("jd.union.open.order.row.query", notMustParams...)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var responce UnionOpenOrderRowQueryResultResponse
 	var result UnionOpenOrderRowQueryQueryResult
-	err = json.Unmarshal(body, &responce)
+	err = json.Unmarshal(request.ResponseBody, &responce)
 	err = json.Unmarshal([]byte(responce.JdUnionOpenOrderRowQueryResponce.QueryResult), &result)
-	return NewUnionOpenOrderRowQueryResult(responce, result, body, err)
+	return NewUnionOpenOrderRowQueryResult(responce, result, request.ResponseBody, request, err)
 }

@@ -3,6 +3,7 @@ package wechatoffice
 import (
 	"encoding/json"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -28,21 +29,22 @@ type CgiBinUserInfoResponse struct {
 type CgiBinUserInfoResult struct {
 	Result CgiBinUserInfoResponse // 结果
 	Body   []byte                 // 内容
+	Http   gorequest.Response     // 请求
 	Err    error                  // 错误
 }
 
-func NewCgiBinUserInfoResult(result CgiBinUserInfoResponse, body []byte, err error) *CgiBinUserInfoResult {
-	return &CgiBinUserInfoResult{Result: result, Body: body, Err: err}
+func NewCgiBinUserInfoResult(result CgiBinUserInfoResponse, body []byte, http gorequest.Response, err error) *CgiBinUserInfoResult {
+	return &CgiBinUserInfoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // CgiBinUserInfo 获取用户基本信息(UnionID机制)
 // https://developers.weixin.qq.com/doc/offiaccount/User_Management/Get_users_basic_information_UnionID.html#UinonId
 func (app *App) CgiBinUserInfo(openid string) *CgiBinUserInfoResult {
-	app.AccessToken = app.GetAccessToken()
+	app.accessToken = app.GetAccessToken()
 	// 请求
-	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN", app.AccessToken, openid), map[string]interface{}{}, http.MethodGet)
+	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN", app.accessToken, openid), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response CgiBinUserInfoResponse
-	err = json.Unmarshal(body, &response)
-	return NewCgiBinUserInfoResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewCgiBinUserInfoResult(response, request.ResponseBody, request, err)
 }

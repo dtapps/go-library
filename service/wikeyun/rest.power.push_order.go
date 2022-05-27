@@ -1,6 +1,9 @@
 package wikeyun
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type RestPowerPushOrderResponse struct {
 	Code string `json:"code"`
@@ -14,21 +17,24 @@ type RestPowerPushOrderResponse struct {
 type RestPowerPushOrderResult struct {
 	Result RestPowerPushOrderResponse // 结果
 	Body   []byte                     // 内容
+	Http   gorequest.Response         // 请求
 	Err    error                      // 错误
 }
 
-func NewRestPowerPushOrderResult(result RestPowerPushOrderResponse, body []byte, err error) *RestPowerPushOrderResult {
-	return &RestPowerPushOrderResult{Result: result, Body: body, Err: err}
+func NewRestPowerPushOrderResult(result RestPowerPushOrderResponse, body []byte, http gorequest.Response, err error) *RestPowerPushOrderResult {
+	return &RestPowerPushOrderResult{Result: result, Body: body, Http: http, Err: err}
 }
 
-// RestPowerPushOrder 充值下单
+// RestPowerPushOrder 电费充值API
+// https://open.wikeyun.cn/#/apiDocument/9/document/311
 func (app *App) RestPowerPushOrder(notMustParams ...Params) *RestPowerPushOrderResult {
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
+	params.Set("store_id", app.storeId) // 店铺ID
 	// 请求
-	body, err := app.request("https://router.wikeyun.cn/rest/Power/pushOrder", params)
+	request, err := app.request("https://router.wikeyun.cn/rest/Power/pushOrder", params)
 	// 定义
 	var response RestPowerPushOrderResponse
-	err = json.Unmarshal(body, &response)
-	return NewRestPowerPushOrderResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewRestPowerPushOrderResult(response, request.ResponseBody, request, err)
 }

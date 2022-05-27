@@ -2,6 +2,7 @@ package eastiot
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -18,20 +19,21 @@ type IotApiGetAllSimTypeResponse struct {
 type IotApiGetAllSimTypeResult struct {
 	Result IotApiGetAllSimTypeResponse // 结果
 	Body   []byte                      // 内容
+	Http   gorequest.Response          // 请求
 	Err    error                       // 错误
 }
 
-func NewIotApiGetAllSimTypeResult(result IotApiGetAllSimTypeResponse, body []byte, err error) *IotApiGetAllSimTypeResult {
-	return &IotApiGetAllSimTypeResult{Result: result, Body: body, Err: err}
+func NewIotApiGetAllSimTypeResult(result IotApiGetAllSimTypeResponse, body []byte, http gorequest.Response, err error) *IotApiGetAllSimTypeResult {
+	return &IotApiGetAllSimTypeResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // IotApiGetAllSimType 卡类型列表查询
 // https://www.showdoc.com.cn/916774523755909/4858492092033167
 func (app *App) IotApiGetAllSimType() *IotApiGetAllSimTypeResult {
 	// 请求
-	body, err := app.request("http://m2m.eastiot.net/Api/IotApi/getAllSimType", map[string]interface{}{}, http.MethodPost)
+	request, err := app.request("http://m2m.eastiot.net/Api/IotApi/getAllSimType", map[string]interface{}{}, http.MethodPost)
 	// 定义
 	var response IotApiGetAllSimTypeResponse
-	err = json.Unmarshal(body, &response)
-	return NewIotApiGetAllSimTypeResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewIotApiGetAllSimTypeResult(response, request.ResponseBody, request, err)
 }

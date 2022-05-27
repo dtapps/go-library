@@ -2,6 +2,7 @@ package eastiot
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -29,11 +30,12 @@ type IotApiQuerySimPkgInfoResponse struct {
 type IotApiQuerySimPkgInfoResult struct {
 	Result IotApiQuerySimPkgInfoResponse // 结果
 	Body   []byte                        // 内容
+	Http   gorequest.Response            // 请求
 	Err    error                         // 错误
 }
 
-func NewIotApiQuerySimPkgInfoResult(result IotApiQuerySimPkgInfoResponse, body []byte, err error) *IotApiQuerySimPkgInfoResult {
-	return &IotApiQuerySimPkgInfoResult{Result: result, Body: body, Err: err}
+func NewIotApiQuerySimPkgInfoResult(result IotApiQuerySimPkgInfoResponse, body []byte, http gorequest.Response, err error) *IotApiQuerySimPkgInfoResult {
+	return &IotApiQuerySimPkgInfoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // IotApiQuerySimPkgInfo 流量卡可用流量包查询
@@ -45,9 +47,9 @@ func (app *App) IotApiQuerySimPkgInfo(simId string, sd int) *IotApiQuerySimPkgIn
 	param.Set("sd", sd)
 	params := app.NewParamsWith(param)
 	// 请求
-	body, err := app.request("http://m2m.eastiot.net/Api/IotApi/querySimPkgInfo", params, http.MethodPost)
+	request, err := app.request("http://m2m.eastiot.net/Api/IotApi/querySimPkgInfo", params, http.MethodPost)
 	// 定义
 	var response IotApiQuerySimPkgInfoResponse
-	err = json.Unmarshal(body, &response)
-	return NewIotApiQuerySimPkgInfoResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewIotApiQuerySimPkgInfoResult(response, request.ResponseBody, request, err)
 }

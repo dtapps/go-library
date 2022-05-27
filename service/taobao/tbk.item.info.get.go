@@ -1,6 +1,9 @@
 package taobao
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type TbkItemInfoGetResponse struct {
 	TbkItemInfoGetResponse struct {
@@ -45,11 +48,12 @@ type TbkItemInfoGetResponse struct {
 type TbkItemInfoGetResult struct {
 	Result TbkItemInfoGetResponse // 结果
 	Body   []byte                 // 内容
+	Http   gorequest.Response     // 请求
 	Err    error                  // 错误
 }
 
-func NewTbkItemInfoGetResult(result TbkItemInfoGetResponse, body []byte, err error) *TbkItemInfoGetResult {
-	return &TbkItemInfoGetResult{Result: result, Body: body, Err: err}
+func NewTbkItemInfoGetResult(result TbkItemInfoGetResponse, body []byte, http gorequest.Response, err error) *TbkItemInfoGetResult {
+	return &TbkItemInfoGetResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // TbkItemInfoGet 淘宝客-公用-淘宝客商品详情查询(简版)
@@ -58,9 +62,9 @@ func (app *App) TbkItemInfoGet(notMustParams ...Params) *TbkItemInfoGetResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.item.info.get", notMustParams...)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response TbkItemInfoGetResponse
-	err = json.Unmarshal(body, &response)
-	return NewTbkItemInfoGetResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewTbkItemInfoGetResult(response, request.ResponseBody, request, err)
 }

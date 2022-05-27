@@ -1,6 +1,9 @@
 package taobao
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type TbkOrderDetailsGetResponse struct {
 	TbkOrderDetailsGetResponse struct {
@@ -69,11 +72,12 @@ type TbkOrderDetailsGetResponse struct {
 type TbkOrderDetailsGetResult struct {
 	Result TbkOrderDetailsGetResponse // 结果
 	Body   []byte                     // 内容
+	Http   gorequest.Response         // 请求
 	Err    error                      // 错误
 }
 
-func NewTbkOrderDetailsGetResult(result TbkOrderDetailsGetResponse, body []byte, err error) *TbkOrderDetailsGetResult {
-	return &TbkOrderDetailsGetResult{Result: result, Body: body, Err: err}
+func NewTbkOrderDetailsGetResult(result TbkOrderDetailsGetResponse, body []byte, http gorequest.Response, err error) *TbkOrderDetailsGetResult {
+	return &TbkOrderDetailsGetResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // TbkOrderDetailsGet 淘宝客-推广者-所有订单查询
@@ -82,9 +86,9 @@ func (app *App) TbkOrderDetailsGet(notMustParams ...Params) *TbkOrderDetailsGetR
 	// 参数
 	params := NewParamsWithType("taobao.tbk.order.details.get", notMustParams...)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response TbkOrderDetailsGetResponse
-	err = json.Unmarshal(body, &response)
-	return NewTbkOrderDetailsGetResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewTbkOrderDetailsGetResult(response, request.ResponseBody, request, err)
 }

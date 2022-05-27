@@ -6,10 +6,10 @@ import (
 )
 
 func (app *App) GetAccessToken() string {
-	if app.Redis.Db == nil {
-		return app.AccessToken
+	if app.redis.Db == nil {
+		return app.accessToken
 	}
-	newCache := app.Redis.NewSimpleStringCache(app.Redis.NewStringOperation(), time.Second*7000)
+	newCache := app.redis.NewSimpleStringCache(app.redis.NewStringOperation(), time.Second*7000)
 	newCache.DBGetter = func() string {
 		token := app.CgiBinToken()
 		return token.Result.AccessToken
@@ -18,5 +18,5 @@ func (app *App) GetAccessToken() string {
 }
 
 func (app *App) getAccessTokenCacheKeyName() string {
-	return fmt.Sprintf("wechat_access_token:%v", app.AppId)
+	return fmt.Sprintf("wechat_access_token:%v", app.appId)
 }

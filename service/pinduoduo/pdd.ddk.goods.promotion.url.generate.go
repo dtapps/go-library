@@ -1,6 +1,9 @@
 package pinduoduo
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type GoodsPromotionUrlGenerateResponse struct {
 	GoodsPromotionUrlGenerateResponse struct {
@@ -37,11 +40,12 @@ type GoodsPromotionUrlGenerateResponse struct {
 type GoodsPromotionUrlGenerateResult struct {
 	Result GoodsPromotionUrlGenerateResponse // 结果
 	Body   []byte                            // 内容
+	Http   gorequest.Response                // 请求
 	Err    error                             // 错误
 }
 
-func NewGoodsPromotionUrlGenerateResult(result GoodsPromotionUrlGenerateResponse, body []byte, err error) *GoodsPromotionUrlGenerateResult {
-	return &GoodsPromotionUrlGenerateResult{Result: result, Body: body, Err: err}
+func NewGoodsPromotionUrlGenerateResult(result GoodsPromotionUrlGenerateResponse, body []byte, http gorequest.Response, err error) *GoodsPromotionUrlGenerateResult {
+	return &GoodsPromotionUrlGenerateResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // GoodsPromotionUrlGenerate 多多进宝推广链接生成
@@ -51,9 +55,9 @@ func (app *App) GoodsPromotionUrlGenerate(notMustParams ...Params) *GoodsPromoti
 	params := NewParamsWithType("pdd.ddk.goods.promotion.url.generate", notMustParams...)
 	params.Set("p_id", app.Pid)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response GoodsPromotionUrlGenerateResponse
-	err = json.Unmarshal(body, &response)
-	return NewGoodsPromotionUrlGenerateResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewGoodsPromotionUrlGenerateResult(response, request.ResponseBody, request, err)
 }

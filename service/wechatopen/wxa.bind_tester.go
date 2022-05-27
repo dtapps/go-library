@@ -3,6 +3,7 @@ package wechatopen
 import (
 	"encoding/json"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -15,26 +16,26 @@ type WxaBindTesterResponse struct {
 type WxaBindTesterResult struct {
 	Result WxaBindTesterResponse // 结果
 	Body   []byte                // 内容
+	Http   gorequest.Response    // 请求
 	Err    error                 // 错误
 }
 
-func NewWxaBindTesterResult(result WxaBindTesterResponse, body []byte, err error) *WxaBindTesterResult {
-	return &WxaBindTesterResult{Result: result, Body: body, Err: err}
+func NewWxaBindTesterResult(result WxaBindTesterResponse, body []byte, http gorequest.Response, err error) *WxaBindTesterResult {
+	return &WxaBindTesterResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // WxaBindTester 绑定微信用户为体验者
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_AdminManagement/Admin.html
 func (app *App) WxaBindTester(wechatid string) *WxaBindTesterResult {
-	app.authorizerAccessToken = app.GetAuthorizerAccessToken()
 	// 参数
 	params := NewParams()
 	params["wechatid"] = wechatid
 	// 请求
-	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/bind_tester?access_token=%s", app.authorizerAccessToken), params, http.MethodPost)
+	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/bind_tester?access_token=%s", app.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaBindTesterResponse
-	err = json.Unmarshal(body, &response)
-	return NewWxaBindTesterResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewWxaBindTesterResult(response, request.ResponseBody, request, err)
 }
 
 // ErrcodeInfo 错误描述

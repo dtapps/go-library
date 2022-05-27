@@ -34,7 +34,7 @@ func (app *App) getSortString(m map[string]interface{}) string {
 // 获取签名
 func (app *App) getMd5Sign(paramMap map[string]interface{}) string {
 	sortString := app.getSortString(paramMap)
-	sign := gomd5.Md5(sortString + "&key=" + app.MchKey)
+	sign := gomd5.Md5(sortString + "&key=" + app.mchKey)
 	return strings.ToUpper(sign)
 }
 

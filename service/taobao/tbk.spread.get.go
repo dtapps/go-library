@@ -1,6 +1,9 @@
 package taobao
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type TbkSpreadGetResponse struct {
 	TbkSpreadGetResponse struct {
@@ -18,11 +21,12 @@ type TbkSpreadGetResponse struct {
 type TbkSpreadGetResult struct {
 	Result TbkSpreadGetResponse // 结果
 	Body   []byte               // 内容
+	Http   gorequest.Response   // 请求
 	Err    error                // 错误
 }
 
-func NewTbkSpreadGetResult(result TbkSpreadGetResponse, body []byte, err error) *TbkSpreadGetResult {
-	return &TbkSpreadGetResult{Result: result, Body: body, Err: err}
+func NewTbkSpreadGetResult(result TbkSpreadGetResponse, body []byte, http gorequest.Response, err error) *TbkSpreadGetResult {
+	return &TbkSpreadGetResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // TbkSpreadGet 淘宝客-公用-长链转短链
@@ -31,9 +35,9 @@ func (app *App) TbkSpreadGet(notMustParams ...Params) *TbkSpreadGetResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.spread.get", notMustParams...)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response TbkSpreadGetResponse
-	err = json.Unmarshal(body, &response)
-	return NewTbkSpreadGetResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewTbkSpreadGetResult(response, request.ResponseBody, request, err)
 }

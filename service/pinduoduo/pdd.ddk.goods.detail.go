@@ -1,6 +1,9 @@
 package pinduoduo
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type GoodsDetailResponse struct {
 	GoodsDetailResponse struct {
@@ -84,11 +87,12 @@ type GoodsDetailResponse struct {
 type GoodsDetailResult struct {
 	Result GoodsDetailResponse // 结果
 	Body   []byte              // 内容
+	Http   gorequest.Response  // 请求
 	Err    error               // 错误
 }
 
-func NewGoodsDetailResult(result GoodsDetailResponse, body []byte, err error) *GoodsDetailResult {
-	return &GoodsDetailResult{Result: result, Body: body, Err: err}
+func NewGoodsDetailResult(result GoodsDetailResponse, body []byte, http gorequest.Response, err error) *GoodsDetailResult {
+	return &GoodsDetailResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // GoodsDetail 多多进宝商品详情查询
@@ -98,9 +102,9 @@ func (app *App) GoodsDetail(notMustParams ...Params) *GoodsDetailResult {
 	params := NewParamsWithType("pdd.ddk.goods.detail", notMustParams...)
 	params.Set("pid", app.Pid)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response GoodsDetailResponse
-	err = json.Unmarshal(body, &response)
-	return NewGoodsDetailResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewGoodsDetailResult(response, request.ResponseBody, request, err)
 }

@@ -1,6 +1,9 @@
 package taobao
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type TbkShopRecommendGetResponse struct {
 	TbkShopRecommendGetResponse struct {
@@ -20,11 +23,12 @@ type TbkShopRecommendGetResponse struct {
 type TbkShopRecommendGetResult struct {
 	Result TbkShopRecommendGetResponse // 结果
 	Body   []byte                      // 内容
+	Http   gorequest.Response          // 请求
 	Err    error                       // 错误
 }
 
-func NewTbkShopRecommendGetResult(result TbkShopRecommendGetResponse, body []byte, err error) *TbkShopRecommendGetResult {
-	return &TbkShopRecommendGetResult{Result: result, Body: body, Err: err}
+func NewTbkShopRecommendGetResult(result TbkShopRecommendGetResponse, body []byte, http gorequest.Response, err error) *TbkShopRecommendGetResult {
+	return &TbkShopRecommendGetResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // TbkShopRecommendGet 淘宝客-公用-店铺关联推荐
@@ -33,9 +37,9 @@ func (app *App) TbkShopRecommendGet(notMustParams ...Params) *TbkShopRecommendGe
 	// 参数
 	params := NewParamsWithType("taobao.tbk.shop.recommend.get", notMustParams...)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response TbkShopRecommendGetResponse
-	err = json.Unmarshal(body, &response)
-	return NewTbkShopRecommendGetResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewTbkShopRecommendGetResult(response, request.ResponseBody, request, err)
 }

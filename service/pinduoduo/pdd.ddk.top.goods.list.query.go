@@ -1,6 +1,9 @@
 package pinduoduo
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type TopGoodsListQueryResponse struct {
 	TopGoodsListGetResponse struct {
@@ -46,11 +49,12 @@ type TopGoodsListQueryResponse struct {
 type TopGoodsListQueryResult struct {
 	Result TopGoodsListQueryResponse // 结果
 	Body   []byte                    // 内容
+	Http   gorequest.Response        // 请求
 	Err    error                     // 错误
 }
 
-func NewTopGoodsListQueryResult(result TopGoodsListQueryResponse, body []byte, err error) *TopGoodsListQueryResult {
-	return &TopGoodsListQueryResult{Result: result, Body: body, Err: err}
+func NewTopGoodsListQueryResult(result TopGoodsListQueryResponse, body []byte, http gorequest.Response, err error) *TopGoodsListQueryResult {
+	return &TopGoodsListQueryResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // TopGoodsListQuery 多多客获取爆款排行商品接口
@@ -60,9 +64,9 @@ func (app *App) TopGoodsListQuery(notMustParams ...Params) *TopGoodsListQueryRes
 	params := NewParamsWithType("pdd.ddk.top.goods.list.query", notMustParams...)
 	params.Set("p_id", app.Pid)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response TopGoodsListQueryResponse
-	err = json.Unmarshal(body, &response)
-	return NewTopGoodsListQueryResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewTopGoodsListQueryResult(response, request.ResponseBody, request, err)
 }

@@ -1,6 +1,9 @@
 package jd
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type UnionOpenActivityQueryResultResponse struct {
 	JdUnionOpenActivityQueryResponce struct {
@@ -48,11 +51,12 @@ type UnionOpenActivityQueryResult struct {
 	Responce UnionOpenActivityQueryResultResponse // 结果
 	Result   UnionOpenActivityQueryQueryResult    // 结果
 	Body     []byte                               // 内容
+	Http     gorequest.Response                   // 请求
 	Err      error                                // 错误
 }
 
-func NewUnionOpenActivityQueryResult(responce UnionOpenActivityQueryResultResponse, result UnionOpenActivityQueryQueryResult, body []byte, err error) *UnionOpenActivityQueryResult {
-	return &UnionOpenActivityQueryResult{Responce: responce, Result: result, Body: body, Err: err}
+func NewUnionOpenActivityQueryResult(responce UnionOpenActivityQueryResultResponse, result UnionOpenActivityQueryQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenActivityQueryResult {
+	return &UnionOpenActivityQueryResult{Responce: responce, Result: result, Body: body, Http: http, Err: err}
 }
 
 // UnionOpenActivityQuery 活动查询接口
@@ -61,11 +65,11 @@ func (app *App) UnionOpenActivityQuery(notMustParams ...Params) *UnionOpenActivi
 	// 参数
 	params := NewParamsWithType("jd.union.open.activity.query", notMustParams...)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var responce UnionOpenActivityQueryResultResponse
 	var result UnionOpenActivityQueryQueryResult
-	err = json.Unmarshal(body, &responce)
+	err = json.Unmarshal(request.ResponseBody, &responce)
 	err = json.Unmarshal([]byte(responce.JdUnionOpenActivityQueryResponce.QueryResult), &result)
-	return NewUnionOpenActivityQueryResult(responce, result, body, err)
+	return NewUnionOpenActivityQueryResult(responce, result, request.ResponseBody, request, err)
 }

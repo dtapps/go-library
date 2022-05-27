@@ -2,7 +2,7 @@ package wechatpayapiv2
 
 import (
 	"encoding/xml"
-	"go.dtapp.net/library/utils/gohttp"
+	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gorandom"
 )
 
@@ -29,11 +29,11 @@ type TransfersQueryResponse struct {
 type TransfersQueryResult struct {
 	Result TransfersQueryResponse // 结果
 	Body   []byte                 // 内容
-	Http   gohttp.Response        // 请求
+	Http   gorequest.Response     // 请求
 	Err    error                  // 错误
 }
 
-func NewTransfersQueryResult(result TransfersQueryResponse, body []byte, http gohttp.Response, err error) *TransfersQueryResult {
+func NewTransfersQueryResult(result TransfersQueryResponse, body []byte, http gorequest.Response, err error) *TransfersQueryResult {
 	return &TransfersQueryResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -44,8 +44,8 @@ func (app *App) TransfersQuery(partnerTradeNo string) *TransfersQueryResult {
 	cert, err := app.P12ToPem()
 	// 参数
 	params := NewParams()
-	params.Set("appid", app.AppId)
-	params.Set("mch_id", app.MchId)
+	params.Set("appid", app.appId)
+	params.Set("mch_id", app.mchId)
 	params.Set("nonce_str", gorandom.Alphanumeric(32))
 	params.Set("partner_trade_no", partnerTradeNo)
 	// 签名
@@ -54,6 +54,6 @@ func (app *App) TransfersQuery(partnerTradeNo string) *TransfersQueryResult {
 	request, err := app.request("https://api.mch.weixin.qq.com/mmpaymkttransfers/gettransferinfo", params, cert)
 	// 定义
 	var response TransfersQueryResponse
-	err = xml.Unmarshal(request.Body, &response)
-	return NewTransfersQueryResult(response, request.Body, request, err)
+	err = xml.Unmarshal(request.ResponseBody, &response)
+	return NewTransfersQueryResult(response, request.ResponseBody, request, err)
 }

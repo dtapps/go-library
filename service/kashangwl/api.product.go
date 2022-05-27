@@ -1,6 +1,9 @@
 package kashangwl
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type ApiProductResponse struct {
 	Code    string `json:"code"`
@@ -23,11 +26,12 @@ type ApiProductResponse struct {
 type ApiProductResult struct {
 	Result ApiProductResponse // 结果
 	Body   []byte             // 内容
+	Http   gorequest.Response // 请求
 	Err    error              // 错误
 }
 
-func NewApiProductResult(result ApiProductResponse, body []byte, err error) *ApiProductResult {
-	return &ApiProductResult{Result: result, Body: body, Err: err}
+func NewApiProductResult(result ApiProductResponse, body []byte, http gorequest.Response, err error) *ApiProductResult {
+	return &ApiProductResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // ApiProduct 获取单个商品信息
@@ -37,9 +41,9 @@ func (app App) ApiProduct(productId int64) *ApiProductResult {
 	params := NewParams()
 	params.Set("product_id", productId)
 	// 请求
-	body, err := app.request("http://www.kashangwl.com/api/product", params)
+	request, err := app.request("http://www.kashangwl.com/api/product", params)
 	// 定义
 	var response ApiProductResponse
-	err = json.Unmarshal(body, &response)
-	return NewApiProductResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewApiProductResult(response, request.ResponseBody, request, err)
 }

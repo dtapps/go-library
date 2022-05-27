@@ -3,6 +3,7 @@ package ejiaofei
 import (
 	"encoding/xml"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -23,26 +24,27 @@ type QueryJkOrdersResponse struct {
 type QueryJkOrdersResult struct {
 	Result QueryJkOrdersResponse // 结果
 	Body   []byte                // 内容
+	Http   gorequest.Response    // 请求
 	Err    error                 // 错误
 }
 
-func NewQueryJkOrdersResult(result QueryJkOrdersResponse, body []byte, err error) *QueryJkOrdersResult {
-	return &QueryJkOrdersResult{Result: result, Body: body, Err: err}
+func NewQueryJkOrdersResult(result QueryJkOrdersResponse, body []byte, http gorequest.Response, err error) *QueryJkOrdersResult {
+	return &QueryJkOrdersResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // QueryJkOrders 通用查询接口
 // orderid 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
-func (app *App) QueryJkOrders(orderID string) *QueryJkOrdersResult {
+func (app *App) QueryJkOrders(orderId string) *QueryJkOrdersResult {
 	// 参数
 	param := NewParams()
-	param.Set("orderid", orderID)
+	param.Set("orderid", orderId)
 	params := app.NewParamsWith(param)
 	// 签名
-	app.signStr = fmt.Sprintf("userid%vpwd%vorderid%v", app.UserID, app.Pwd, orderID)
+	app.signStr = fmt.Sprintf("userid%vpwd%vorderid%v", app.userId, app.pwd, orderId)
 	// 请求
-	body, err := app.request("http://api.ejiaofei.net:11140/query_jkorders.do", params, http.MethodGet)
+	request, err := app.request("http://api.ejiaofei.net:11140/query_jkorders.do", params, http.MethodGet)
 	// 定义
 	var response QueryJkOrdersResponse
-	err = xml.Unmarshal(body, &response)
-	return NewQueryJkOrdersResult(response, body, err)
+	err = xml.Unmarshal(request.ResponseBody, &response)
+	return NewQueryJkOrdersResult(response, request.ResponseBody, request, err)
 }

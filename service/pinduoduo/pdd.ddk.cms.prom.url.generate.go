@@ -1,6 +1,9 @@
 package pinduoduo
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type CmsPromUrlGenerateResponse struct {
 	CmsPromotionUrlGenerateResponse struct {
@@ -48,12 +51,13 @@ type CmsPromUrlGenerateError struct {
 type CmsPromUrlGenerateResult struct {
 	Result CmsPromUrlGenerateResponse // 结果
 	Body   []byte                     // 内容
+	Http   gorequest.Response         // 请求
 	Err    error                      // 错误
 	Error  CmsPromUrlGenerateError    // 错误结果
 }
 
-func NewCmsPromUrlGenerateResult(result CmsPromUrlGenerateResponse, body []byte, err error, error CmsPromUrlGenerateError) *CmsPromUrlGenerateResult {
-	return &CmsPromUrlGenerateResult{Result: result, Body: body, Err: err, Error: error}
+func NewCmsPromUrlGenerateResult(result CmsPromUrlGenerateResponse, body []byte, http gorequest.Response, err error, error CmsPromUrlGenerateError) *CmsPromUrlGenerateResult {
+	return &CmsPromUrlGenerateResult{Result: result, Body: body, Http: http, Err: err, Error: error}
 }
 
 // CmsPromUrlGenerate 生成商城-频道推广链接
@@ -63,11 +67,11 @@ func (app *App) CmsPromUrlGenerate(notMustParams ...Params) *CmsPromUrlGenerateR
 	params := NewParamsWithType("pdd.ddk.cms.prom.url.generate", notMustParams...)
 	params.Set("p_id_list", []string{app.Pid})
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response CmsPromUrlGenerateResponse
-	err = json.Unmarshal(body, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	var responseError CmsPromUrlGenerateError
-	err = json.Unmarshal(body, &responseError)
-	return NewCmsPromUrlGenerateResult(response, body, err, responseError)
+	err = json.Unmarshal(request.ResponseBody, &responseError)
+	return NewCmsPromUrlGenerateResult(response, request.ResponseBody, request, err, responseError)
 }

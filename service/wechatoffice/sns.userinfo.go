@@ -3,6 +3,7 @@ package wechatoffice
 import (
 	"encoding/json"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -21,20 +22,21 @@ type SnsUserinfoResponse struct {
 type SnsUserinfoResult struct {
 	Result SnsUserinfoResponse // 结果
 	Body   []byte              // 内容
+	Http   gorequest.Response  // 请求
 	Err    error               // 错误
 }
 
-func NewSnsUserinfoResult(result SnsUserinfoResponse, body []byte, err error) *SnsUserinfoResult {
-	return &SnsUserinfoResult{Result: result, Body: body, Err: err}
+func NewSnsUserinfoResult(result SnsUserinfoResponse, body []byte, http gorequest.Response, err error) *SnsUserinfoResult {
+	return &SnsUserinfoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // SnsUserinfo 拉取用户信息(需scope为 snsapi_userinfo)
 // https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html#0
 func (app *App) SnsUserinfo(accessToken, openid string) *SnsUserinfoResult {
 	// 请求
-	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN", accessToken, openid), map[string]interface{}{}, http.MethodGet)
+	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN", accessToken, openid), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response SnsUserinfoResponse
-	err = json.Unmarshal(body, &response)
-	return NewSnsUserinfoResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewSnsUserinfoResult(response, request.ResponseBody, request, err)
 }

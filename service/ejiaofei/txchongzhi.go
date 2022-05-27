@@ -1,9 +1,9 @@
 package ejiaofei
 
 import (
-	"encoding/json"
 	"encoding/xml"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -33,24 +33,24 @@ type TxChOngZhiResponse struct {
 type TxChOngZhiResult struct {
 	Result TxChOngZhiResponse // 结果
 	Body   []byte             // 内容
+	Http   gorequest.Response // 请求
 	Err    error              // 错误
 }
 
-func NewTxChOngZhiResult(result TxChOngZhiResponse, body []byte, err error) *TxChOngZhiResult {
-	return &TxChOngZhiResult{Result: result, Body: body, Err: err}
+func NewTxChOngZhiResult(result TxChOngZhiResponse, body []byte, http gorequest.Response, err error) *TxChOngZhiResult {
+	return &TxChOngZhiResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // TxChOngZhi 流量充值接口
-func (app *App) TxChOngZhi(param TxChOngZhiParams) *TxChOngZhiResult {
+func (app *App) TxChOngZhi(notMustParams ...Params) *TxChOngZhiResult {
+	// 参数
+	params := app.NewParamsWith(notMustParams...)
 	// 签名
-	app.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vproductid%vamount%vip%vtimes%v", app.UserID, app.Pwd, param.OrderID, param.Account, param.ProductID, param.Amount, param.Ip, param.Times)
+	app.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vproductid%vamount%vip%vtimes%v", app.userId, app.pwd, params["orderid"], params["account"], params["productid"], params["amount"], params["ip"], params["times"])
 	// 请求
-	b, _ := json.Marshal(&param)
-	var params map[string]interface{}
-	_ = json.Unmarshal(b, &params)
-	body, err := app.request("http://api.ejiaofei.net:11140/txchongzhi.do", params, http.MethodGet)
+	request, err := app.request("http://api.ejiaofei.net:11140/txchongzhi.do", params, http.MethodGet)
 	// 定义
 	var response TxChOngZhiResponse
-	err = xml.Unmarshal(body, &response)
-	return NewTxChOngZhiResult(response, body, err)
+	err = xml.Unmarshal(request.ResponseBody, &response)
+	return NewTxChOngZhiResult(response, request.ResponseBody, request, err)
 }

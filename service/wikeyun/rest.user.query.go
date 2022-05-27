@@ -2,33 +2,38 @@ package wikeyun
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type RestUserQueryResponse struct {
 	Code string `json:"code"`
 	Msg  string `json:"msg"`
 	Data struct {
-		Money string `json:"money"`
-		ID    int    `json:"id"`
+		Id     string `json:"id"`
+		Avatar string `json:"avatar"`
+		Money  string `json:"money"`
+		Mobile string `json:"mobile"`
 	} `json:"data"`
 }
 
 type RestUserQueryResult struct {
 	Result RestUserQueryResponse // 结果
 	Body   []byte                // 内容
+	Http   gorequest.Response    // 请求
 	Err    error                 // 错误
 }
 
-func NewRestUserQueryResult(result RestUserQueryResponse, body []byte, err error) *RestUserQueryResult {
-	return &RestUserQueryResult{Result: result, Body: body, Err: err}
+func NewRestUserQueryResult(result RestUserQueryResponse, body []byte, http gorequest.Response, err error) *RestUserQueryResult {
+	return &RestUserQueryResult{Result: result, Body: body, Http: http, Err: err}
 }
 
-// RestUserQuery 查询余额接口
+// RestUserQuery 用户信息
+// https://open.wikeyun.cn/#/apiDocument/10/document/336
 func (app *App) RestUserQuery() *RestUserQueryResult {
 	// 请求
-	body, err := app.request("https://router.wikeyun.cn/rest/User/query", map[string]interface{}{})
+	request, err := app.request("https://router.wikeyun.cn/rest/User/query", map[string]interface{}{})
 	// 定义
 	var response RestUserQueryResponse
-	err = json.Unmarshal(body, &response)
-	return NewRestUserQueryResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewRestUserQueryResult(response, request.ResponseBody, request, err)
 }

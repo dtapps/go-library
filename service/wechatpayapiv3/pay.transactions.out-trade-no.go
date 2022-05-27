@@ -3,7 +3,7 @@ package wechatpayapiv3
 import (
 	"encoding/json"
 	"fmt"
-	"go.dtapp.net/library/utils/gohttp"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -29,7 +29,7 @@ type PayTransactionsOutTradeNoResponse struct {
 	} `json:"amount,omitempty"`
 	SceneInfo struct {
 		DeviceId string `json:"device_id,omitempty"`
-	}
+	} `json:"scene_info"`
 	PromotionDetail []struct {
 		CouponId            string `json:"coupon_id"`
 		Name                string `json:"name,omitempty"`
@@ -48,29 +48,29 @@ type PayTransactionsOutTradeNoResponse struct {
 			DiscountAmount int    `json:"discount_amount"`
 			GoodsRemark    string `json:"goods_remark,omitempty"`
 		} `json:"goods_detail"`
-	}
+	} `json:"promotion_detail"`
 }
 
 type PayTransactionsOutTradeNoResult struct {
 	Result PayTransactionsOutTradeNoResponse // 结果
 	Body   []byte                            // 内容
-	Http   gohttp.Response                   // 请求
+	Http   gorequest.Response                // 请求
 	Err    error                             // 错误
 }
 
-func NewPayTransactionsOutTradeNoResult(result PayTransactionsOutTradeNoResponse, body []byte, http gohttp.Response, err error) *PayTransactionsOutTradeNoResult {
+func NewPayTransactionsOutTradeNoResult(result PayTransactionsOutTradeNoResponse, body []byte, http gorequest.Response, err error) *PayTransactionsOutTradeNoResult {
 	return &PayTransactionsOutTradeNoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // PayTransactionsOutTradeNo 商户订单号查询 https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_2.shtml
 func (app *App) PayTransactionsOutTradeNo(outTradeNo string) *PayTransactionsOutTradeNoResult {
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/pay/transactions/out-trade-no/%s?mchid=%s", outTradeNo, app.MchId), map[string]interface{}{}, http.MethodGet, true)
+	request, err := app.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/pay/transactions/out-trade-no/%s?mchid=%s", outTradeNo, app.mchId), map[string]interface{}{}, http.MethodGet, true)
 	if err != nil {
-		return NewPayTransactionsOutTradeNoResult(PayTransactionsOutTradeNoResponse{}, request.Body, request, err)
+		return NewPayTransactionsOutTradeNoResult(PayTransactionsOutTradeNoResponse{}, request.ResponseBody, request, err)
 	}
 	// 定义
 	var response PayTransactionsOutTradeNoResponse
-	err = json.Unmarshal(request.Body, &response)
-	return NewPayTransactionsOutTradeNoResult(response, request.Body, request, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewPayTransactionsOutTradeNoResult(response, request.ResponseBody, request, err)
 }

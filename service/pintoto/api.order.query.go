@@ -2,6 +2,7 @@ package pintoto
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type ApiOrderQueryResponse struct {
@@ -35,11 +36,12 @@ type ApiOrderQueryResponse struct {
 type ApiOrderQueryResult struct {
 	Result ApiOrderQueryResponse // 结果
 	Body   []byte                // 内容
+	Http   gorequest.Response    // 请求
 	Err    error                 // 错误
 }
 
-func NewApiOrderQueryResult(result ApiOrderQueryResponse, body []byte, err error) *ApiOrderQueryResult {
-	return &ApiOrderQueryResult{Result: result, Body: body, Err: err}
+func NewApiOrderQueryResult(result ApiOrderQueryResponse, body []byte, http gorequest.Response, err error) *ApiOrderQueryResult {
+	return &ApiOrderQueryResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // ApiOrderQuery 订单查询 https://www.showdoc.com.cn/1154868044931571/5965244588489845
@@ -49,9 +51,9 @@ func (app *App) ApiOrderQuery(thirdOrderId string) *ApiOrderQueryResult {
 	param.Set("thirdOrderId", thirdOrderId)
 	params := app.NewParamsWith(param)
 	// 请求
-	body, err := app.request("https://movieapi2.pintoto.cn/api/order/query", params)
+	request, err := app.request("https://movieapi2.pintoto.cn/api/order/query", params)
 	// 定义
 	var response ApiOrderQueryResponse
-	err = json.Unmarshal(body, &response)
-	return NewApiOrderQueryResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewApiOrderQueryResult(response, request.ResponseBody, request, err)
 }

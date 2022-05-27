@@ -5,7 +5,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
-	"go.dtapp.net/library/utils/goparams"
+	"go.dtapp.net/library/utils/gorequest"
 	"io"
 	"net/url"
 	"sort"
@@ -25,7 +25,7 @@ func (app *App) getSign(customerKey string, params map[string]interface{}) strin
 	query := bytes.NewBufferString(customerKey)
 	for _, k := range keys {
 		query.WriteString(k)
-		query.WriteString(goparams.GetParamsString(params[k]))
+		query.WriteString(gorequest.GetParamsString(params[k]))
 	}
 	// MD5加密
 	h := md5.New()

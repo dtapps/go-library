@@ -2,13 +2,14 @@ package pintoto
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type GetSeat struct {
 	ShowId string `json:"showId"` // 场次标识
 }
 
-type GetSeatResult struct {
+type GetSeatResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 	Data    struct {
@@ -30,20 +31,28 @@ type GetSeatSeats struct {
 	Status     string `json:"status"`     // N可售，LK不可售
 }
 
+type GetSeatResult struct {
+	Result GetSeatResponse    // 结果
+	Body   []byte             // 内容
+	Http   gorequest.Response // 请求
+	Err    error              // 错误
+}
+
+func NewGetSeatResult(result GetSeatResponse, body []byte, http gorequest.Response, err error) *GetSeatResult {
+	return &GetSeatResult{Result: result, Body: body, Http: http, Err: err}
+}
+
 // GetSeat 座位 https://www.showdoc.com.cn/1154868044931571/5866824368760475
-func (app *App) GetSeat(showId string) (result GetSeatResult, err error) {
+func (app *App) GetSeat(showId string) *GetSeatResult {
 	// 参数
 	param := NewParams()
 	param.Set("showId", showId)
 	// 转换
 	params := app.NewParamsWith(param)
 	// 请求
-	body, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-seat", params)
-	if err != nil {
-		return
-	}
-	if err = json.Unmarshal(body, &result); err != nil {
-		return
-	}
-	return
+	request, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-seat", params)
+	// 定义
+	var response GetSeatResponse
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewGetSeatResult(response, request.ResponseBody, request, err)
 }

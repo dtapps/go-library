@@ -3,6 +3,7 @@ package wechatunion
 import (
 	"encoding/json"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -46,23 +47,24 @@ type PromoterOrderSearchResponse struct {
 type PromoterOrderSearchResult struct {
 	Result PromoterOrderSearchResponse // 结果
 	Body   []byte                      // 内容
+	Http   gorequest.Response          // 请求
 	Err    error                       // 错误
 }
 
-func NewPromoterOrderSearchResult(result PromoterOrderSearchResponse, body []byte, err error) *PromoterOrderSearchResult {
-	return &PromoterOrderSearchResult{Result: result, Body: body, Err: err}
+func NewPromoterOrderSearchResult(result PromoterOrderSearchResponse, body []byte, http gorequest.Response, err error) *PromoterOrderSearchResult {
+	return &PromoterOrderSearchResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // PromoterOrderSearch 根据订单支付时间、订单分佣状态拉取订单详情
 // https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/order/order-info.html#_2-%E6%A0%B9%E6%8D%AE%E8%AE%A2%E5%8D%95%E6%94%AF%E4%BB%98%E6%97%B6%E9%97%B4%E3%80%81%E8%AE%A2%E5%8D%95%E5%88%86%E4%BD%A3%E7%8A%B6%E6%80%81%E6%8B%89%E5%8F%96%E8%AE%A2%E5%8D%95%E8%AF%A6%E6%83%85
 func (app *App) PromoterOrderSearch(notMustParams ...Params) *PromoterOrderSearchResult {
-	app.AccessToken = app.GetAccessToken()
+	app.accessToken = app.GetAccessToken()
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
-	body, err := app.request(UnionUrl+fmt.Sprintf("/promoter/order/search?access_token=%s", app.AccessToken), params, http.MethodGet)
+	request, err := app.request(UnionUrl+fmt.Sprintf("/promoter/order/search?access_token=%s", app.accessToken), params, http.MethodGet)
 	// 定义
 	var response PromoterOrderSearchResponse
-	err = json.Unmarshal(body, &response)
-	return NewPromoterOrderSearchResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewPromoterOrderSearchResult(response, request.ResponseBody, request, err)
 }

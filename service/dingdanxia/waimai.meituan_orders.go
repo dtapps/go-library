@@ -2,11 +2,11 @@ package dingdanxia
 
 import (
 	"encoding/json"
-	"go.dtapp.net/library/utils/gohttp"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
-type WaimaiMeituanOrdersResponse struct {
+type WaiMaiMeituanOrdersResponse struct {
 	Code         int    `json:"code"`
 	Msg          string `json:"msg"`           // 描述
 	TotalResults int    `json:"total_results"` // 总条数
@@ -27,26 +27,26 @@ type WaimaiMeituanOrdersResponse struct {
 	} `json:"data"`
 }
 
-type WaimaiMeituanOrdersResult struct {
-	Result WaimaiMeituanOrdersResponse // 结果
+type WaiMaiMeituanOrdersResult struct {
+	Result WaiMaiMeituanOrdersResponse // 结果
 	Body   []byte                      // 内容
-	Http   gohttp.Response             // 请求
+	Http   gorequest.Response          // 请求
 	Err    error                       // 错误
 }
 
-func NewWaimaiMeituanOrdersResult(result WaimaiMeituanOrdersResponse, body []byte, http gohttp.Response, err error) *WaimaiMeituanOrdersResult {
-	return &WaimaiMeituanOrdersResult{Result: result, Body: body, Http: http, Err: err}
+func NewWaiMaiMeituanOrdersResult(result WaiMaiMeituanOrdersResponse, body []byte, http gorequest.Response, err error) *WaiMaiMeituanOrdersResult {
+	return &WaiMaiMeituanOrdersResult{Result: result, Body: body, Http: http, Err: err}
 }
 
-// WaimaiMeituanOrders 美团联盟外卖/闪购/优选/酒店订单查询API
+// WaiMaiMeituanOrders 美团联盟外卖/闪购/优选/酒店订单查询API
 // https://www.dingdanxia.com/doc/176/173
-func (app *App) WaimaiMeituanOrders(notMustParams ...Params) *WaimaiMeituanOrdersResult {
+func (app *App) WaiMaiMeituanOrders(notMustParams ...Params) *WaiMaiMeituanOrdersResult {
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := app.request("https://api.tbk.dingdanxia.com/waimai/meituan_orders", params, http.MethodPost)
 	// 定义
-	var response WaimaiMeituanOrdersResponse
-	err = json.Unmarshal(request.Body, &response)
-	return NewWaimaiMeituanOrdersResult(response, request.Body, request, err)
+	var response WaiMaiMeituanOrdersResponse
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewWaiMaiMeituanOrdersResult(response, request.ResponseBody, request, err)
 }

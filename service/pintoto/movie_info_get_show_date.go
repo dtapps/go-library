@@ -2,14 +2,10 @@ package pintoto
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
-type GetShowDate struct {
-	FilmId int `json:"filmId"` // 影片id，由热映/即将上映接口获得
-	CityId int `json:"cityId"` // 城市id，由城市列表接口获得
-}
-
-type GetShowDateResult struct {
+type GetShowDateResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 	Data    struct {
@@ -18,8 +14,19 @@ type GetShowDateResult struct {
 	Success bool `json:"success"`
 }
 
+type GetShowDateResult struct {
+	Result GetShowDateResponse // 结果
+	Body   []byte              // 内容
+	Http   gorequest.Response  // 请求
+	Err    error               // 错误
+}
+
+func NewGetShowDateResult(result GetShowDateResponse, body []byte, http gorequest.Response, err error) *GetShowDateResult {
+	return &GetShowDateResult{Result: result, Body: body, Http: http, Err: err}
+}
+
 // GetShowDate 包含某电影的日期 https://www.showdoc.com.cn/1154868044931571/6091788579441818
-func (app *App) GetShowDate(cityId, filmId int) (result GetShowDateResult, err error) {
+func (app *App) GetShowDate(cityId, filmId int) *GetShowDateResult {
 	// 参数
 	param := NewParams()
 	param.Set("cityId", cityId)
@@ -27,12 +34,9 @@ func (app *App) GetShowDate(cityId, filmId int) (result GetShowDateResult, err e
 	// 转换
 	params := app.NewParamsWith(param)
 	// 请求
-	body, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-show-date", params)
-	if err != nil {
-		return
-	}
-	if err = json.Unmarshal(body, &result); err != nil {
-		return
-	}
-	return
+	request, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-show-date", params)
+	// 定义
+	var response GetShowDateResponse
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewGetShowDateResult(response, request.ResponseBody, request, err)
 }

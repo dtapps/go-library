@@ -1,6 +1,9 @@
 package pinduoduo
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type GoodsSearchResponse struct {
 	GoodsSearchResponse struct {
@@ -80,11 +83,12 @@ type GoodsSearchResponse struct {
 type GoodsSearchResult struct {
 	Result GoodsSearchResponse // 结果
 	Body   []byte              // 内容
+	Http   gorequest.Response  // 请求
 	Err    error               // 错误
 }
 
-func NewGoodsSearchResult(result GoodsSearchResponse, body []byte, err error) *GoodsSearchResult {
-	return &GoodsSearchResult{Result: result, Body: body, Err: err}
+func NewGoodsSearchResult(result GoodsSearchResponse, body []byte, http gorequest.Response, err error) *GoodsSearchResult {
+	return &GoodsSearchResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // GoodsSearch 多多进宝商品查询
@@ -94,9 +98,9 @@ func (app *App) GoodsSearch(notMustParams ...Params) *GoodsSearchResult {
 	params := NewParamsWithType("pdd.ddk.goods.search", notMustParams...)
 	params.Set("pid", app.Pid)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response GoodsSearchResponse
-	err = json.Unmarshal(body, &response)
-	return NewGoodsSearchResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewGoodsSearchResult(response, request.ResponseBody, request, err)
 }

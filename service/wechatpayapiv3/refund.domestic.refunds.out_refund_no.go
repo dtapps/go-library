@@ -3,7 +3,7 @@ package wechatpayapiv3
 import (
 	"encoding/json"
 	"fmt"
-	"go.dtapp.net/library/utils/gohttp"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -52,11 +52,11 @@ type RefundDomesticRefundsOutRefundNoResponse struct {
 type RefundDomesticRefundsOutRefundNoResult struct {
 	Result RefundDomesticRefundsOutRefundNoResponse // 结果
 	Body   []byte                                   // 内容
-	Http   gohttp.Response                          // 请求
+	Http   gorequest.Response                       // 请求
 	Err    error                                    // 错误
 }
 
-func NewRefundDomesticRefundsOutRefundNoResult(result RefundDomesticRefundsOutRefundNoResponse, body []byte, http gohttp.Response, err error) *RefundDomesticRefundsOutRefundNoResult {
+func NewRefundDomesticRefundsOutRefundNoResult(result RefundDomesticRefundsOutRefundNoResponse, body []byte, http gorequest.Response, err error) *RefundDomesticRefundsOutRefundNoResult {
 	return &RefundDomesticRefundsOutRefundNoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -65,10 +65,10 @@ func (app *App) RefundDomesticRefundsOutRefundNo(outRefundNo string) *RefundDome
 	// 请求
 	request, err := app.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/refund/domestic/refunds/%s", outRefundNo), map[string]interface{}{}, http.MethodGet, true)
 	if err != nil {
-		return NewRefundDomesticRefundsOutRefundNoResult(RefundDomesticRefundsOutRefundNoResponse{}, request.Body, request, err)
+		return NewRefundDomesticRefundsOutRefundNoResult(RefundDomesticRefundsOutRefundNoResponse{}, request.ResponseBody, request, err)
 	}
 	// 定义
 	var response RefundDomesticRefundsOutRefundNoResponse
-	err = json.Unmarshal(request.Body, &response)
-	return NewRefundDomesticRefundsOutRefundNoResult(response, request.Body, request, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewRefundDomesticRefundsOutRefundNoResult(response, request.ResponseBody, request, err)
 }

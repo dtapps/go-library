@@ -3,6 +3,7 @@ package wechatunion
 import (
 	"encoding/json"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -128,23 +129,24 @@ type PromoterProductListResponse struct {
 type PromoterProductListResult struct {
 	Result PromoterProductListResponse // 结果
 	Body   []byte                      // 内容
+	Http   gorequest.Response          // 请求
 	Err    error                       // 错误
 }
 
-func NewPromoterProductListResult(result PromoterProductListResponse, body []byte, err error) *PromoterProductListResult {
-	return &PromoterProductListResult{Result: result, Body: body, Err: err}
+func NewPromoterProductListResult(result PromoterProductListResponse, body []byte, http gorequest.Response, err error) *PromoterProductListResult {
+	return &PromoterProductListResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // PromoterProductList 查询全量商品
 // https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/product/category.html#_2-%E6%9F%A5%E8%AF%A2%E5%85%A8%E9%87%8F%E5%95%86%E5%93%81
 func (app *App) PromoterProductList(notMustParams ...Params) *PromoterProductListResult {
-	app.AccessToken = app.GetAccessToken()
+	app.accessToken = app.GetAccessToken()
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
-	body, err := app.request(UnionUrl+fmt.Sprintf("/promoter/product/list?access_token=%s", app.AccessToken), params, http.MethodGet)
+	request, err := app.request(UnionUrl+fmt.Sprintf("/promoter/product/list?access_token=%s", app.accessToken), params, http.MethodGet)
 	// 定义
 	var response PromoterProductListResponse
-	err = json.Unmarshal(body, &response)
-	return NewPromoterProductListResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewPromoterProductListResult(response, request.ResponseBody, request, err)
 }

@@ -3,6 +3,7 @@ package wechatunion
 import (
 	"encoding/json"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -22,25 +23,26 @@ type PromotionListResponse struct {
 type PromotionListResult struct {
 	Result PromotionListResponse // 结果
 	Body   []byte                // 内容
+	Http   gorequest.Response    // 请求
 	Err    error                 // 错误
 }
 
-func NewPromotionListResult(result PromotionListResponse, body []byte, err error) *PromotionListResult {
-	return &PromotionListResult{Result: result, Body: body, Err: err}
+func NewPromotionListResult(result PromotionListResponse, body []byte, http gorequest.Response, err error) *PromotionListResult {
+	return &PromotionListResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // PromotionList 获取推广位列表
 // https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/promotion.html#_4-%E8%8E%B7%E5%8F%96%E6%8E%A8%E5%B9%BF%E4%BD%8D%E5%88%97%E8%A1%A8
 func (app *App) PromotionList(start int, limit int) *PromotionListResult {
-	app.AccessToken = app.GetAccessToken()
+	app.accessToken = app.GetAccessToken()
 	// 参数
 	params := NewParams()
 	params.Set("start", start) // 偏移
 	params.Set("limit", limit) // 每页条数
 	// 请求
-	body, err := app.request(UnionUrl+fmt.Sprintf("/promoter/promotion/list?access_token%s", app.AccessToken), params, http.MethodGet)
+	request, err := app.request(UnionUrl+fmt.Sprintf("/promoter/promotion/list?access_token%s", app.accessToken), params, http.MethodGet)
 	// 定义
 	var response PromotionListResponse
-	err = json.Unmarshal(body, &response)
-	return NewPromotionListResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewPromotionListResult(response, request.ResponseBody, request, err)
 }

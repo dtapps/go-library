@@ -1,6 +1,9 @@
 package pinduoduo
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type OrderListRangeGetResponse struct {
 	OrderListGetResponse struct {
@@ -58,11 +61,12 @@ type OrderListRangeGetResponse struct {
 type OrderListRangeGetResult struct {
 	Result OrderListRangeGetResponse // 结果
 	Body   []byte                    // 内容
+	Http   gorequest.Response        // 请求
 	Err    error                     // 错误
 }
 
-func NewOrderListRangeGetResult(result OrderListRangeGetResponse, body []byte, err error) *OrderListRangeGetResult {
-	return &OrderListRangeGetResult{Result: result, Body: body, Err: err}
+func NewOrderListRangeGetResult(result OrderListRangeGetResponse, body []byte, http gorequest.Response, err error) *OrderListRangeGetResult {
+	return &OrderListRangeGetResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // OrderListRangeGet 用时间段查询推广订单接口
@@ -71,9 +75,9 @@ func (app *App) OrderListRangeGet(notMustParams ...Params) *OrderListRangeGetRes
 	// 参数
 	params := NewParamsWithType("pdd.ddk.order.list.range.get", notMustParams...)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response OrderListRangeGetResponse
-	err = json.Unmarshal(body, &response)
-	return NewOrderListRangeGetResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewOrderListRangeGetResult(response, request.ResponseBody, request, err)
 }

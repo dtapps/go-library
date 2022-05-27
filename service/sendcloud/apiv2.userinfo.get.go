@@ -2,6 +2,7 @@ package sendcloud
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -41,11 +42,12 @@ type ApiV2UserinfoGetResponse struct {
 type ApiV2UserinfoGetResult struct {
 	Result ApiV2UserinfoGetResponse // 结果
 	Body   []byte                   // 内容
+	Http   gorequest.Response       // 请求
 	Err    error                    // 错误
 }
 
-func NewApiV2UserinfoGetResult(result ApiV2UserinfoGetResponse, body []byte, err error) *ApiV2UserinfoGetResult {
-	return &ApiV2UserinfoGetResult{Result: result, Body: body, Err: err}
+func NewApiV2UserinfoGetResult(result ApiV2UserinfoGetResponse, body []byte, http gorequest.Response, err error) *ApiV2UserinfoGetResult {
+	return &ApiV2UserinfoGetResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // ApiV2UserinfoGet 获取单个订单信息。
@@ -54,13 +56,13 @@ func NewApiV2UserinfoGetResult(result ApiV2UserinfoGetResponse, body []byte, err
 func (app App) ApiV2UserinfoGet() *ApiV2UserinfoGetResult {
 	// 参数
 	param := NewParams()
-	param.Set("apiUser", app.ApiUser)
-	param.Set("apiKey", app.ApiKey)
+	param.Set("apiUser", app.apiUser)
+	param.Set("apiKey", app.apiKey)
 	params := app.NewParamsWith(param)
 	// 请求
-	body, err := app.request("https://api.sendcloud.net/apiv2/userinfo/get", params, http.MethodGet)
+	request, err := app.request("https://api.sendcloud.net/apiv2/userinfo/get", params, http.MethodGet)
 	// 定义
 	var response ApiV2UserinfoGetResponse
-	err = json.Unmarshal(body, &response)
-	return NewApiV2UserinfoGetResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewApiV2UserinfoGetResult(response, request.ResponseBody, request, err)
 }

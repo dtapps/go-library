@@ -1,6 +1,9 @@
 package jd
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type UnionOpenCategoryGoodsGetResultResponse struct {
 	JdUnionOpenCategoryGoodsGetResponce struct {
@@ -25,11 +28,12 @@ type UnionOpenCategoryGoodsGetResult struct {
 	Responce UnionOpenCategoryGoodsGetResultResponse // 结果
 	Result   UnionOpenCategoryGoodsGetQueryResult    // 结果
 	Body     []byte                                  // 内容
+	Http     gorequest.Response                      // 请求
 	Err      error                                   // 错误
 }
 
-func NewUnionOpenCategoryGoodsGetResult(responce UnionOpenCategoryGoodsGetResultResponse, result UnionOpenCategoryGoodsGetQueryResult, body []byte, err error) *UnionOpenCategoryGoodsGetResult {
-	return &UnionOpenCategoryGoodsGetResult{Responce: responce, Result: result, Body: body, Err: err}
+func NewUnionOpenCategoryGoodsGetResult(responce UnionOpenCategoryGoodsGetResultResponse, result UnionOpenCategoryGoodsGetQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenCategoryGoodsGetResult {
+	return &UnionOpenCategoryGoodsGetResult{Responce: responce, Result: result, Body: body, Http: http, Err: err}
 }
 
 // UnionOpenCategoryGoodsGet 商品类目查询接口
@@ -38,11 +42,11 @@ func (app *App) UnionOpenCategoryGoodsGet(notMustParams ...Params) *UnionOpenCat
 	// 参数
 	params := NewParamsWithType("jd.union.open.category.goods.get", notMustParams...)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var responce UnionOpenCategoryGoodsGetResultResponse
 	var result UnionOpenCategoryGoodsGetQueryResult
-	err = json.Unmarshal(body, &responce)
+	err = json.Unmarshal(request.ResponseBody, &responce)
 	err = json.Unmarshal([]byte(responce.JdUnionOpenCategoryGoodsGetResponce.GetResult), &result)
-	return NewUnionOpenCategoryGoodsGetResult(responce, result, body, err)
+	return NewUnionOpenCategoryGoodsGetResult(responce, result, request.ResponseBody, request, err)
 }

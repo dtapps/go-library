@@ -1,6 +1,9 @@
 package jd
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type UnionOpenGoodsPromotionGoodsInfoQueryResultResponse struct {
 	JdUnionOpenGoodsPromotiongoodsinfoQueryResponce struct {
@@ -44,11 +47,12 @@ type UnionOpenGoodsPromotionGoodsInfoQueryResult struct {
 	Responce UnionOpenGoodsPromotionGoodsInfoQueryResultResponse // 结果
 	Result   UnionOpenGoodsPromotionGoodsInfoQueryQueryResult    // 结果
 	Body     []byte                                              // 内容
+	Http     gorequest.Response                                  // 请求
 	Err      error                                               // 错误
 }
 
-func NewUnionOpenGoodsPromotionGoodsInfoQueryResult(responce UnionOpenGoodsPromotionGoodsInfoQueryResultResponse, result UnionOpenGoodsPromotionGoodsInfoQueryQueryResult, body []byte, err error) *UnionOpenGoodsPromotionGoodsInfoQueryResult {
-	return &UnionOpenGoodsPromotionGoodsInfoQueryResult{Responce: responce, Result: result, Body: body, Err: err}
+func NewUnionOpenGoodsPromotionGoodsInfoQueryResult(responce UnionOpenGoodsPromotionGoodsInfoQueryResultResponse, result UnionOpenGoodsPromotionGoodsInfoQueryQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenGoodsPromotionGoodsInfoQueryResult {
+	return &UnionOpenGoodsPromotionGoodsInfoQueryResult{Responce: responce, Result: result, Body: body, Http: http, Err: err}
 }
 
 // UnionOpenGoodsPromotionGoodsInfoQuery 根据skuid查询商品信息接口
@@ -57,11 +61,11 @@ func (app *App) UnionOpenGoodsPromotionGoodsInfoQuery(notMustParams ...Params) *
 	// 参数
 	params := NewParamsWithType("jd.union.open.goods.promotiongoodsinfo.query", notMustParams...)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var responce UnionOpenGoodsPromotionGoodsInfoQueryResultResponse
 	var result UnionOpenGoodsPromotionGoodsInfoQueryQueryResult
-	err = json.Unmarshal(body, &responce)
+	err = json.Unmarshal(request.ResponseBody, &responce)
 	err = json.Unmarshal([]byte(responce.JdUnionOpenGoodsPromotiongoodsinfoQueryResponce.QueryResult), &result)
-	return NewUnionOpenGoodsPromotionGoodsInfoQueryResult(responce, result, body, err)
+	return NewUnionOpenGoodsPromotionGoodsInfoQueryResult(responce, result, request.ResponseBody, request, err)
 }

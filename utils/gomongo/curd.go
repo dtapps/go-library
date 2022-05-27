@@ -2,186 +2,152 @@ package gomongo
 
 import (
 	"context"
+	"errors"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"log"
 	"reflect"
 )
 
-func (app *App) Database(database string) *App {
-	app.Dbname = database
-	return app
+// Database 设置库名
+func (c *Client) Database(database string) *Client {
+	c.DatabaseName = database
+	return c
 }
 
-func (app *App) Collection(collection string) *App {
-	app.collection = collection
-	return app
+// Collection 设置表名
+func (c *Client) Collection(collection string) *Client {
+	c.collectionName = collection
+	return c
 }
 
-func (app *App) Model(value interface{}) *App {
+// Model 传入模型自动获取库名和表名
+func (c *Client) Model(value interface{}) *Client {
 	// https://studygolang.com/articles/896
 	val := reflect.ValueOf(value)
 	if methodValue := val.MethodByName("Database"); methodValue.IsValid() {
-		app.Dbname = methodValue.Call(nil)[0].String()
+		c.DatabaseName = methodValue.Call(nil)[0].String()
 	}
 	if methodValue := val.MethodByName("TableName"); methodValue.IsValid() {
-		app.collection = methodValue.Call(nil)[0].String()
+		c.collectionName = methodValue.Call(nil)[0].String()
 	}
-	return app
+	return c
 }
 
-func (app *App) Session() (session mongo.Session, err error) {
-	session, err = app.Db.StartSession()
-	return
+// CreateResult 返回查询结果
+type CreateResult struct {
+	InsertedID  interface{}   // 创建一条记录的ID
+	InsertedIDs []interface{} // 创建多条记录的ID
 }
 
-// InsertOne 插入单个文档
-func (app *App) InsertOne(value interface{}) (result *mongo.InsertOneResult, err error) {
-	collection := app.Db.Database(app.Dbname).Collection(app.collection)
-	result, err = collection.InsertOne(context.TODO(), value)
-	return result, err
+// Create 创建数据
+func (c *Client) Create(values ...interface{}) (CreateResult, error) {
+	collection := c.db.Database(c.DatabaseName).Collection(c.collectionName)
+
+	const (
+		insertTypeOne  = "one"
+		insertTypeMany = "many"
+	)
+
+	var (
+		insertType     string
+		insertDataOne  interface{}
+		insertDataMany []interface{}
+	)
+
+	for _, value := range values {
+		switch v := value.(type) {
+		case map[string]interface{}:
+		case []map[string]interface{}:
+		case map[string]string:
+		case []map[string]string:
+		default:
+			sliceValue := reflect.Indirect(reflect.ValueOf(value))
+			if sliceValue.Kind() == reflect.Slice {
+				insertType = insertTypeMany
+				size := sliceValue.Len()
+				for i := 0; i < size; i++ {
+					sv := sliceValue.Index(i)                          // 取出第i个元素
+					elemValue := sv.Interface()                        // 原始数据
+					insertDataMany = append(insertDataMany, elemValue) // 加入到数组中
+				}
+			} else {
+				insertType = insertTypeOne
+				insertDataOne = v
+			}
+		}
+	}
+
+	if insertType == insertTypeOne {
+		result, err := collection.InsertOne(context.TODO(), insertDataOne)
+		return CreateResult{InsertedID: result.InsertedID}, err
+	} else if insertType == insertTypeMany {
+		result, err := collection.InsertMany(context.TODO(), insertDataMany)
+		return CreateResult{InsertedIDs: result.InsertedIDs}, err
+	} else {
+		return CreateResult{}, errors.New("values is empty")
+	}
 }
 
-// InsertMany 插入多个文档
-func (app *App) InsertMany(values []interface{}) (result *mongo.InsertManyResult, err error) {
-	collection := app.Db.Database(app.Dbname).Collection(app.collection)
-	result, err = collection.InsertMany(context.TODO(), values)
-	return result, err
+// 查询条件
+type queryFilter struct {
+	Key   string
+	Value interface{}
 }
 
-// Delete 删除文档
-func (app *App) Delete(filter interface{}) (int64, error) {
-	collection := app.Db.Database(app.Dbname).Collection(app.collection)
-	count, err := collection.DeleteOne(context.TODO(), filter, nil)
-	return count.DeletedCount, err
+// Where 条件
+func (c *Client) Where(key string, value interface{}) *Client {
+	log.Println("key", key)
+	log.Println("value", value)
+	c.filterArr = append(c.filterArr, queryFilter{key, value})
+	c.filter = bson.D{{key, value}}
+	return c
 }
 
-// DeleteMany 删除多个文档
-func (app *App) DeleteMany(key string, value interface{}) (int64, error) {
-	collection := app.Db.Database(app.Dbname).Collection(app.collection)
-	filter := bson.D{{key, value}}
-	count, err := collection.DeleteMany(context.TODO(), filter)
-	return count.DeletedCount, err
+// QueryResult 返回查询结果
+type QueryResult struct {
+	RowsAffected int   // 返回找到的记录数
+	Error        error // 错误信息
 }
 
-// UpdateOne 更新单个文档
-// 修改字段的值($set)
-// 字段增加值 inc($inc)
-// 从数组中增加一个元素 push($push)
-// 从数组中删除一个元素 pull($pull)
-func (app *App) UpdateOne(filter, update interface{}) (int64, error) {
-	collection := app.Db.Database(app.Dbname).Collection(app.collection)
-	result, err := collection.UpdateOne(context.TODO(), filter, update)
-	return result.UpsertedCount, err
+// First 获取第一条记录（主键升序）
+func (c *Client) First() *QueryResult {
+	return &QueryResult{}
 }
 
-// UpdateMany 更新多个文档
-// 修改字段的值($set)
-// 字段增加值 inc($inc)
-// 从数组中增加一个元素 push($push)
-// 从数组中删除一个元素 pull($pull)
-func (app *App) UpdateMany(filter, update interface{}) (int64, error) {
-	collection := app.Db.Database(app.Dbname).Collection(app.collection)
-	result, err := collection.UpdateMany(context.TODO(), filter, update)
-	return result.UpsertedCount, err
+// Take 获取一条记录，没有指定排序字段
+func (c *Client) Take(v interface{}) *QueryResult {
+	collection := c.db.Database(c.DatabaseName).Collection(c.collectionName)
+	//log.Printf("c.filterArr：%s\n", c.filterArr)
+	//log.Printf("c.filterArr：%v\n", c.filterArr)
+	//log.Printf("c.filterArr：%+v\n", c.filterArr)
+	//log.Printf("c.filter：%s\n", c.filter)
+	//log.Printf("c.filter：%v\n", c.filter)
+	//log.Printf("c.filter：%+v\n", c.filter)
+	err := collection.FindOne(context.TODO(), c.filter).Decode(v)
+	return &QueryResult{1, err}
 }
 
-// Find 查询
-func (app *App) Find(filter interface{}, opts ...*options.FindOptions) (result *mongo.Cursor, err error) {
-	collection := app.Db.Database(app.Dbname).Collection(app.collection)
-	result, err = collection.Find(context.TODO(), filter, opts...)
-	return result, err
+// Last 获取最后一条记录（主键降序）
+func (c *Client) Last() *QueryResult {
+	return &QueryResult{}
 }
 
-// FindOne 查询单个文档
-func (app *App) FindOne(filter interface{}) (result *mongo.SingleResult) {
-	collection := app.Db.Database(app.Dbname).Collection(app.collection)
-	result = collection.FindOne(context.TODO(), filter)
-	return result
-}
+// Find 获取多条记录
+func (c *Client) Find(v interface{}) *QueryResult {
+	collection := c.db.Database(c.DatabaseName).Collection(c.collectionName)
+	log.Printf("c.filterArr：%s\n", c.filterArr)
+	log.Printf("c.filterArr：%v\n", c.filterArr)
+	log.Printf("c.filterArr：%+v\n", c.filterArr)
+	log.Printf("c.filter：%s\n", c.filter)
+	log.Printf("c.filter：%v\n", c.filter)
+	log.Printf("c.filter：%+v\n", c.filter)
+	cursor, err := collection.Find(context.TODO(), c.filter)
+	if err != nil {
+		return &QueryResult{0, err}
+	}
 
-// FindMany 查询多个文档
-func (app *App) FindMany(filter interface{}) (result *mongo.Cursor, err error) {
-	collection := app.Db.Database(app.Dbname).Collection(app.collection)
-	result, err = collection.Find(context.TODO(), filter)
-	return result, err
-}
+	// 结果遍历和赋值
+	err = cursor.All(context.TODO(), v)
 
-// FindManyByFilters 多条件查询
-func (app *App) FindManyByFilters(filter interface{}) (result *mongo.Cursor, err error) {
-	collection, err := app.Db.Database(app.Dbname).Collection(app.collection).Clone()
-	result, err = collection.Find(context.TODO(), bson.M{"$and": filter})
-	return result, err
-}
-
-// FindManyByFiltersSort 多条件查询支持排序
-func (app *App) FindManyByFiltersSort(filter interface{}, Sort interface{}) (result *mongo.Cursor, err error) {
-	collection, err := app.Db.Database(app.Dbname).Collection(app.collection).Clone()
-	findOptions := options.Find()
-	findOptions.SetSort(Sort)
-	result, err = collection.Find(context.TODO(), filter, findOptions)
-	return result, err
-}
-
-// FindCollection 查询集合文档
-func (app *App) FindCollection(Limit int64) (result *mongo.Cursor, err error) {
-	collection := app.Db.Database(app.Dbname).Collection(app.collection)
-	findOptions := options.Find()
-	findOptions.SetLimit(Limit)
-	result, err = collection.Find(context.TODO(), bson.D{{}}, findOptions)
-	return result, err
-}
-
-// FindCollectionSort 查询集合文档支持排序
-func (app *App) FindCollectionSort(Sort interface{}, Limit int64) (result *mongo.Cursor, err error) {
-	collection := app.Db.Database(app.Dbname).Collection(app.collection)
-	findOptions := options.Find()
-	findOptions.SetSort(Sort)
-	findOptions.SetLimit(Limit)
-	result, err = collection.Find(context.TODO(), bson.D{{}}, findOptions)
-	return result, err
-}
-
-// FindManyCollectionSort 查询集合文档支持排序支持条件
-func (app *App) FindManyCollectionSort(filter interface{}, Sort interface{}) (result *mongo.Cursor, err error) {
-	collection := app.Db.Database(app.Dbname).Collection(app.collection)
-	findOptions := options.Find()
-	findOptions.SetSort(Sort)
-	result, err = collection.Find(context.TODO(), filter, findOptions)
-	return result, err
-}
-
-// CollectionCount 查询集合里有多少数据
-func (app *App) CollectionCount() (name string, size int64) {
-	collection := app.Db.Database(app.Dbname).Collection(app.collection)
-	name = collection.Name()
-	size, _ = collection.EstimatedDocumentCount(context.TODO())
-	return name, size
-}
-
-// CollectionDocuments 按选项查询集合
-// Skip 跳过
-// Limit 读取数量
-// sort 1 ，-1 . 1 为升序 ， -1 为降序
-func (app *App) CollectionDocuments(Skip, Limit int64, sort int, key string, value interface{}) (result *mongo.Cursor, err error) {
-	collection := app.Db.Database(app.Dbname).Collection(app.collection)
-	SORT := bson.D{{"_id", sort}}
-	filter := bson.D{{key, value}}
-	findOptions := options.Find().SetSort(SORT).SetLimit(Limit).SetSkip(Skip)
-	result, err = collection.Find(context.Background(), filter, findOptions)
-	return result, err
-}
-
-// AggregateByFiltersSort 统计分析
-func (app *App) AggregateByFiltersSort(pipeline interface{}, opts ...*options.AggregateOptions) (result *mongo.Cursor, err error) {
-	collection := app.Db.Database(app.Dbname).Collection(app.collection)
-	result, err = collection.Aggregate(context.TODO(), pipeline, opts...)
-	return result, err
-}
-
-// CountDocumentsByFilters 统计数量
-func (app *App) CountDocumentsByFilters(filter interface{}) (count int64, err error) {
-	collection := app.Db.Database(app.Dbname).Collection(app.collection)
-	count, err = collection.CountDocuments(context.TODO(), filter)
-	return count, err
+	return &QueryResult{cursor.RemainingBatchLength(), err}
 }

@@ -1,6 +1,9 @@
 package jd
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type UnionOpenGoodsBigfieldQueryResultResponse struct {
 	JdUnionOpenGoodsBigfieldQueryResponce struct {
@@ -45,11 +48,12 @@ type UnionOpenGoodsBigfieldQueryResult struct {
 	Responce UnionOpenGoodsBigfieldQueryResultResponse // 结果
 	Result   UnionOpenGoodsBigfieldQueryQueryResult    // 结果
 	Body     []byte                                    // 内容
+	Http     gorequest.Response                        // 请求
 	Err      error                                     // 错误
 }
 
-func NewUnionOpenGoodsBigfieldQueryResult(responce UnionOpenGoodsBigfieldQueryResultResponse, result UnionOpenGoodsBigfieldQueryQueryResult, body []byte, err error) *UnionOpenGoodsBigfieldQueryResult {
-	return &UnionOpenGoodsBigfieldQueryResult{Responce: responce, Result: result, Body: body, Err: err}
+func NewUnionOpenGoodsBigfieldQueryResult(responce UnionOpenGoodsBigfieldQueryResultResponse, result UnionOpenGoodsBigfieldQueryQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenGoodsBigfieldQueryResult {
+	return &UnionOpenGoodsBigfieldQueryResult{Responce: responce, Result: result, Body: body, Http: http, Err: err}
 }
 
 // UnionOpenGoodsBigfieldQuery 商品详情查询接口
@@ -58,11 +62,11 @@ func (app *App) UnionOpenGoodsBigfieldQuery(notMustParams ...Params) *UnionOpenG
 	// 参数
 	params := NewParamsWithType("jd.union.open.goods.bigfield.query", notMustParams...)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var responce UnionOpenGoodsBigfieldQueryResultResponse
 	var result UnionOpenGoodsBigfieldQueryQueryResult
-	err = json.Unmarshal(body, &responce)
+	err = json.Unmarshal(request.ResponseBody, &responce)
 	err = json.Unmarshal([]byte(responce.JdUnionOpenGoodsBigfieldQueryResponce.QueryResult), &result)
-	return NewUnionOpenGoodsBigfieldQueryResult(responce, result, body, err)
+	return NewUnionOpenGoodsBigfieldQueryResult(responce, result, request.ResponseBody, request, err)
 }

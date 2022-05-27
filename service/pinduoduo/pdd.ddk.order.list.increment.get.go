@@ -1,6 +1,9 @@
 package pinduoduo
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type OrderListIncrementGetResponse struct {
 	OrderListGetResponse struct {
@@ -58,11 +61,12 @@ type OrderListIncrementGetResponse struct {
 type OrderListIncrementGetResult struct {
 	Result OrderListIncrementGetResponse // 结果
 	Body   []byte                        // 内容
+	Http   gorequest.Response            // 请求
 	Err    error                         // 错误
 }
 
-func NewOrderListIncrementGetResult(result OrderListIncrementGetResponse, body []byte, err error) *OrderListIncrementGetResult {
-	return &OrderListIncrementGetResult{Result: result, Body: body, Err: err}
+func NewOrderListIncrementGetResult(result OrderListIncrementGetResponse, body []byte, http gorequest.Response, err error) *OrderListIncrementGetResult {
+	return &OrderListIncrementGetResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // OrderListIncrementGet 最后更新时间段增量同步推广订单信息
@@ -71,9 +75,9 @@ func (app *App) OrderListIncrementGet(notMustParams ...Params) *OrderListIncreme
 	// 参数
 	params := NewParamsWithType("pdd.ddk.order.list.increment.get", notMustParams...)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response OrderListIncrementGetResponse
-	err = json.Unmarshal(body, &response)
-	return NewOrderListIncrementGetResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewOrderListIncrementGetResult(response, request.ResponseBody, request, err)
 }

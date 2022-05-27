@@ -1,36 +1,68 @@
 package meituan
 
 import (
-	"encoding/json"
-	"errors"
-	"go.dtapp.net/library/utils/gohttp"
-	"go.dtapp.net/library/utils/gomongo"
-	"net/http"
+	"go.dtapp.net/golog"
+	"go.dtapp.net/library/utils/gorequest"
+	"gorm.io/gorm"
 )
 
 // App 美团联盟
 type App struct {
-	Secret string      // 秘钥
-	AppKey string      // 渠道标记
-	Mongo  gomongo.App // 日志数据库
+	secret       string         // 秘钥
+	appKey       string         // 渠道标记
+	pgsql        *gorm.DB       // pgsql数据库
+	client       *gorequest.App // 请求客户端
+	log          *golog.Api     // 日志服务
+	logTableName string         // 日志表名
+	logStatus    bool           // 日志状态
 }
 
-func (app *App) request(url string, params map[string]interface{}, method string) (resp []byte, err error) {
-	switch method {
-	case http.MethodGet:
-		// 请求
-		get, err := gohttp.Get(url, params)
-		// 日志
-		go app.mongoLog(url, params, method, get)
-		return get.Body, err
-	case http.MethodPost:
-		// 请求
-		paramsStr, err := json.Marshal(params)
-		postJson, err := gohttp.PostJson(url, paramsStr)
-		// 日志
-		go app.mongoLog(url, params, method, postJson)
-		return postJson.Body, err
-	default:
-		return nil, errors.New("请求类型不支持")
+func NewApp(secret string, appKey string, pgsql *gorm.DB) *App {
+	app := &App{secret: secret, appKey: appKey}
+	app.client = gorequest.NewHttp()
+	if pgsql != nil {
+		app.pgsql = pgsql
+		app.logStatus = true
+		app.logTableName = "meituan"
+		app.log = golog.NewApi(&golog.ApiConfig{
+			Db:        pgsql,
+			TableName: app.logTableName,
+		})
 	}
+	return app
+}
+
+func (app *App) request(url string, params map[string]interface{}, method string) (resp gorequest.Response, err error) {
+
+	// 创建请求
+	client := app.client
+
+	// 设置请求地址
+	client.SetUri(url)
+
+	// 设置方式
+	client.SetMethod(method)
+
+	// 设置格式
+	client.SetContentTypeJson()
+
+	// 设置参数
+	client.SetParams(params)
+
+	// 发起请求
+	request, err := client.Request()
+	if err != nil {
+		return gorequest.Response{}, err
+	}
+
+	// 日志
+	if app.logStatus == true {
+		go app.postgresqlLog(request)
+	}
+
+	return request, err
+}
+
+func (app *App) GetAppKey() string {
+	return app.appKey
 }

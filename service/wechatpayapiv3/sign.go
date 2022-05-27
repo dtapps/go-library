@@ -71,7 +71,7 @@ func (app *App) authorization(method string, paramMap map[string]interface{}, ra
 	nonce := gorandom.Alphanumeric(32)
 	message := fmt.Sprintf("%s\n%s\n%d\n%s\n%s\n", method, canonicalUrl, timestamp, nonce, body)
 
-	signBytes, err := app.signPKCS1v15(message, []byte(app.MchPrivateKey))
+	signBytes, err := app.signPKCS1v15(message, []byte(app.mchSslKey))
 
 	if err != nil {
 		return token, err
@@ -80,7 +80,7 @@ func (app *App) authorization(method string, paramMap map[string]interface{}, ra
 	sign := app.base64EncodeStr(signBytes)
 
 	token = fmt.Sprintf("mchid=\"%s\",nonce_str=\"%s\",timestamp=\"%d\",serial_no=\"%s\",signature=\"%s\"",
-		app.MchId, nonce, timestamp, app.PrivateSerialNo, sign)
+		app.mchId, nonce, timestamp, app.mchSslSerialNo, sign)
 	return token, nil
 }
 

@@ -40,18 +40,18 @@ func NewParamsWithType(_method string, params ...Params) Params {
 }
 
 func (app *App) Sign(p Params) {
-	p["app_key"] = app.AppKey
+	p["app_key"] = app.appKey
 	// 排序所有的 key
 	var keys []string
 	for key := range p {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
-	signStr := app.SecretKey
+	signStr := app.secretKey
 	for _, key := range keys {
 		signStr += key + getString(p[key])
 	}
-	signStr += app.SecretKey
+	signStr += app.secretKey
 	p["sign"] = createSign(signStr)
 }
 

@@ -1,6 +1,9 @@
 package pinduoduo
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type OrderDetailGetResponse struct {
 	OrderDetailResponse struct {
@@ -54,11 +57,12 @@ type OrderDetailGetResponse struct {
 type OrderDetailGetResult struct {
 	Result OrderDetailGetResponse // 结果
 	Body   []byte                 // 内容
+	Http   gorequest.Response     // 请求
 	Err    error                  // 错误
 }
 
-func NewOrderDetailGetResult(result OrderDetailGetResponse, body []byte, err error) *OrderDetailGetResult {
-	return &OrderDetailGetResult{Result: result, Body: body, Err: err}
+func NewOrderDetailGetResult(result OrderDetailGetResponse, body []byte, http gorequest.Response, err error) *OrderDetailGetResult {
+	return &OrderDetailGetResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // OrderDetailGet 多多进宝商品查询 https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.order.detail.get
@@ -68,9 +72,9 @@ func (app *App) OrderDetailGet(orderSn string) *OrderDetailGetResult {
 	param.Set("order_sn", orderSn)
 	params := NewParamsWithType("pdd.ddk.order.detail.get", param)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response OrderDetailGetResponse
-	err = json.Unmarshal(body, &response)
-	return NewOrderDetailGetResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewOrderDetailGetResult(response, request.ResponseBody, request, err)
 }

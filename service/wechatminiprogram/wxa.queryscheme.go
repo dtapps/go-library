@@ -3,7 +3,7 @@ package wechatminiprogram
 import (
 	"encoding/json"
 	"fmt"
-	"go.dtapp.net/library/utils/gohttp"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -27,24 +27,24 @@ type WxaQuerySchemeResponse struct {
 type WxaQuerySchemeResult struct {
 	Result WxaQuerySchemeResponse // 结果
 	Body   []byte                 // 内容
-	Http   gohttp.Response        // 请求
+	Http   gorequest.Response     // 请求
 	Err    error                  // 错误
 }
 
-func NewWxaQuerySchemeResult(result WxaQuerySchemeResponse, body []byte, http gohttp.Response, err error) *WxaQuerySchemeResult {
+func NewWxaQuerySchemeResult(result WxaQuerySchemeResponse, body []byte, http gorequest.Response, err error) *WxaQuerySchemeResult {
 	return &WxaQuerySchemeResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // WxaQueryScheme 查询小程序 scheme 码，及长期有效 quota
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/url-scheme/urlscheme.query.html
 func (app *App) WxaQueryScheme(notMustParams ...Params) *WxaQuerySchemeResult {
-	app.AccessToken = app.GetAccessToken()
+	app.accessToken = app.GetAccessToken()
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/queryscheme?access_token=%s", app.AccessToken), params, http.MethodPost)
+	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/queryscheme?access_token=%s", app.accessToken), params, http.MethodPost)
 	// 定义
 	var response WxaQuerySchemeResponse
-	err = json.Unmarshal(request.Body, &response)
-	return NewWxaQuerySchemeResult(response, request.Body, request, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewWxaQuerySchemeResult(response, request.ResponseBody, request, err)
 }

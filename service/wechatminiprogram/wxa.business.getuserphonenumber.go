@@ -3,6 +3,7 @@ package wechatminiprogram
 import (
 	"encoding/json"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -23,25 +24,26 @@ type WxaBusinessGetUserPhoneNumberResponse struct {
 type WxaBusinessGetUserPhoneNumberResult struct {
 	Result WxaBusinessGetUserPhoneNumberResponse // 结果
 	Body   []byte                                // 内容
+	Http   gorequest.Response                    // 请求
 	Err    error                                 // 错误
 }
 
-func NewWxaBusinessGetUserPhoneNumberResult(result WxaBusinessGetUserPhoneNumberResponse, body []byte, err error) *WxaBusinessGetUserPhoneNumberResult {
-	return &WxaBusinessGetUserPhoneNumberResult{Result: result, Body: body, Err: err}
+func NewWxaBusinessGetUserPhoneNumberResult(result WxaBusinessGetUserPhoneNumberResponse, body []byte, http gorequest.Response, err error) *WxaBusinessGetUserPhoneNumberResult {
+	return &WxaBusinessGetUserPhoneNumberResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // WxaBusinessGetUserPhoneNumber code换取用户手机号。 每个code只能使用一次，code的有效期为5min
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/phonenumber/phonenumber.getPhoneNumber.html
 func (app *App) WxaBusinessGetUserPhoneNumber(code string) *WxaBusinessGetUserPhoneNumberResult {
-	app.AccessToken = app.GetAccessToken()
+	app.accessToken = app.GetAccessToken()
 	// 参数
 	param := NewParams()
 	param.Set("code", code)
 	params := app.NewParamsWith(param)
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=%s", app.AccessToken), params, http.MethodPost)
+	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=%s", app.accessToken), params, http.MethodPost)
 	// 定义
 	var response WxaBusinessGetUserPhoneNumberResponse
-	err = json.Unmarshal(request.Body, &response)
-	return NewWxaBusinessGetUserPhoneNumberResult(response, request.Body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewWxaBusinessGetUserPhoneNumberResult(response, request.ResponseBody, request, err)
 }

@@ -1,22 +1,41 @@
 package taobao
 
 import (
-	"encoding/json"
 	"fmt"
-	"go.dtapp.net/library/utils/gohttp"
-	"go.dtapp.net/library/utils/gomongo"
-	"go.dtapp.net/library/utils/gostring"
-	"net/http"
+	"go.dtapp.net/golog"
+	"go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/gostring"
+	"gorm.io/gorm"
 	"regexp"
 	"strconv"
 )
 
 // App 公共请求参数
 type App struct {
-	AppKey    string      // 应用Key
-	AppSecret string      // 密钥
-	AdzoneId  int64       // mm_xxx_xxx_xxx的第三位
-	Mongo     gomongo.App // 日志数据库
+	appKey       string         // 应用Key
+	appSecret    string         // 密钥
+	adzoneId     int64          // mm_xxx_xxx_xxx的第三位
+	pgsql        *gorm.DB       // pgsql数据库
+	client       *gorequest.App // 请求客户端
+	log          *golog.Api     // 日志服务
+	logTableName string         // 日志表名
+	logStatus    bool           // 日志状态
+}
+
+func NewApp(appKey string, appSecret string, adzoneId int64, pgsql *gorm.DB) *App {
+	app := &App{appKey: appKey, appSecret: appSecret, adzoneId: adzoneId}
+	app.client = gorequest.NewHttp()
+	app.client.Uri = "https://eco.taobao.com/router/rest"
+	if pgsql != nil {
+		app.pgsql = pgsql
+		app.logStatus = true
+		app.logTableName = "taobao"
+		app.log = golog.NewApi(&golog.ApiConfig{
+			Db:        pgsql,
+			TableName: app.logTableName,
+		})
+	}
+	return app
 }
 
 type ErrResp struct {
@@ -29,17 +48,29 @@ type ErrResp struct {
 	} `json:"error_response"`
 }
 
-func (app *App) request(params map[string]interface{}) (resp []byte, err error) {
+func (app *App) request(params map[string]interface{}) (resp gorequest.Response, err error) {
+
 	// 签名
 	app.Sign(params)
-	// 发送请求
-	get, err := gohttp.Get("https://eco.taobao.com/router/rest", params)
+
+	// 创建请求
+	client := app.client
+
+	// 设置参数
+	client.SetParams(params)
+
+	// 发起请求
+	request, err := client.Get()
+	if err != nil {
+		return gorequest.Response{}, err
+	}
+
 	// 日志
-	go app.mongoLog(fmt.Sprintf("https://eco.taobao.com/router/rest?method=%s", params["method"]), params, http.MethodPost, get)
-	// 检查错误
-	var errResp ErrResp
-	_ = json.Unmarshal(get.Body, &errResp)
-	return get.Body, err
+	if app.logStatus == true {
+		go app.postgresqlLog(gostring.ToString(params["method"]), request)
+	}
+
+	return request, err
 }
 
 func (app *App) ZkFinalPriceParseInt64(ZkFinalPrice string) int64 {
@@ -78,4 +109,12 @@ func (app *App) CouponAmountToInt64(CouponAmount int64) int64 {
 
 func (app *App) CommissionIntegralToInt64(GoodsPrice, CouponProportion int64) int64 {
 	return (GoodsPrice * CouponProportion) / 100
+}
+
+func (app *App) GetAppKey() string {
+	return app.appKey
+}
+
+func (app *App) GetAdzoneId() int64 {
+	return app.adzoneId
 }

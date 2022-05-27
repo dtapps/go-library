@@ -1,6 +1,9 @@
 package pinduoduo
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type RpPromUrlGenerateResponse struct {
 	RpPromotionUrlGenerateResponse struct {
@@ -52,12 +55,13 @@ type RpPromUrlGenerateError struct {
 type RpPromUrlGenerateResult struct {
 	Result RpPromUrlGenerateResponse // 结果
 	Body   []byte                    // 内容
+	Http   gorequest.Response        // 请求
 	Err    error                     // 错误
 	Error  RpPromUrlGenerateError    // 错误结果
 }
 
-func NewRpPromUrlGenerateResult(result RpPromUrlGenerateResponse, body []byte, err error, error RpPromUrlGenerateError) *RpPromUrlGenerateResult {
-	return &RpPromUrlGenerateResult{Result: result, Body: body, Err: err, Error: error}
+func NewRpPromUrlGenerateResult(result RpPromUrlGenerateResponse, body []byte, http gorequest.Response, err error, error RpPromUrlGenerateError) *RpPromUrlGenerateResult {
+	return &RpPromUrlGenerateResult{Result: result, Body: body, Http: http, Err: err, Error: error}
 }
 
 // RpPromUrlGenerate 生成营销工具推广链接
@@ -67,11 +71,11 @@ func (app *App) RpPromUrlGenerate(notMustParams ...Params) *RpPromUrlGenerateRes
 	params := NewParamsWithType("pdd.ddk.rp.prom.url.generate", notMustParams...)
 	params.Set("p_id_list", []string{app.Pid})
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response RpPromUrlGenerateResponse
-	err = json.Unmarshal(body, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	var responseError RpPromUrlGenerateError
-	err = json.Unmarshal(body, &responseError)
-	return NewRpPromUrlGenerateResult(response, body, err, responseError)
+	err = json.Unmarshal(request.ResponseBody, &responseError)
+	return NewRpPromUrlGenerateResult(response, request.ResponseBody, request, err, responseError)
 }

@@ -16,5 +16,5 @@ func (app *App) GetAccessTokenMonitor() (string, error) {
 		app.Redis.Db.Set(context.Background(), app.getAccessTokenCacheKeyName(), token.Result.AccessToken, time.Second*7000)
 		return token.Result.AccessToken, nil
 	}
-	return app.AccessToken, nil
+	return app.accessToken, nil
 }

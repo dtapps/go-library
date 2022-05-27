@@ -2,6 +2,7 @@ package eastiot
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -23,11 +24,12 @@ type IotApiQueryOrderedPkgInfoResponse struct {
 type IotApiQueryOrderedPkgInfoResult struct {
 	Result IotApiQueryOrderedPkgInfoResponse // 结果
 	Body   []byte                            // 内容
+	Http   gorequest.Response                // 请求
 	Err    error                             // 错误
 }
 
-func NewIotApiQueryOrderedPkgInfoResult(result IotApiQueryOrderedPkgInfoResponse, body []byte, err error) *IotApiQueryOrderedPkgInfoResult {
-	return &IotApiQueryOrderedPkgInfoResult{Result: result, Body: body, Err: err}
+func NewIotApiQueryOrderedPkgInfoResult(result IotApiQueryOrderedPkgInfoResponse, body []byte, http gorequest.Response, err error) *IotApiQueryOrderedPkgInfoResult {
+	return &IotApiQueryOrderedPkgInfoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // IotApiQueryOrderedPkgInfo 查询流量卡已订购流量包
@@ -38,9 +40,9 @@ func (app *App) IotApiQueryOrderedPkgInfo(simId string) *IotApiQueryOrderedPkgIn
 	param.Set("simId", simId)
 	params := app.NewParamsWith(param)
 	// 请求
-	body, err := app.request("http://m2m.eastiot.net/Api/IotApi/queryOrderedPkgInfo", params, http.MethodPost)
+	request, err := app.request("http://m2m.eastiot.net/Api/IotApi/queryOrderedPkgInfo", params, http.MethodPost)
 	// 定义
 	var response IotApiQueryOrderedPkgInfoResponse
-	err = json.Unmarshal(body, &response)
-	return NewIotApiQueryOrderedPkgInfoResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewIotApiQueryOrderedPkgInfoResult(response, request.ResponseBody, request, err)
 }

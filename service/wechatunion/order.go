@@ -1,67 +1,8 @@
 package wechatunion
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
-	"net/http"
 )
-
-type OrderInfoResult struct {
-	Errcode   int    `json:"errcode"`
-	Errmsg    string `json:"errmsg"`
-	OrderList []struct {
-		OrderId            string `json:"orderId"`            // 订单ID
-		PayTime            int    `json:"payTime"`            // 支付时间戳，单位为s
-		ConfirmReceiptTime int    `json:"confirmReceiptTime"` // 确认收货时间戳，单位为s，没有时为0
-		ShopName           string `json:"shopName"`           // 店铺名称
-		ShopAppid          string `json:"shopAppid"`          // 店铺 Appid
-		ProductList        []struct {
-			ProductId                  string `json:"productId"`                  // 商品SPU ID
-			SkuId                      string `json:"skuId"`                      // sku ID
-			Title                      string `json:"title"`                      // 商品名称
-			ThumbImg                   string `json:"thumbImg"`                   // 商品缩略图 url
-			Price                      string `json:"price"`                      // 商品成交总价，前带单位 ¥
-			ProductCnt                 int    `json:"productCnt"`                 // 成交数量
-			Ratio                      int    `json:"ratio"`                      // 分佣比例，单位为万分之一
-			CommissionStatus           string `json:"commissionStatus"`           // 分佣状态
-			CommissionStatusUpdateTime string `json:"commissionStatusUpdateTime"` // 分佣状态更新时间戳，单位为s
-			ProfitShardingSucTime      string `json:"profitShardingSucTime"`      // 结算时间，当分佣状态为已结算才有值，单位为s
-			Commission                 string `json:"commission"`                 // 分佣金额，前带单位 ¥
-			EstimatedCommission        int    `json:"estimatedCommission"`        // 预估分佣金额，单位为分
-			CategoryStr                string `json:"categoryStr"`                // 类目名称，多个用英文逗号分隔
-			PromotionInfo              struct {
-				PromotionSourcePid  string `json:"promotionSourcePid"`  // 推广位 id
-				PromotionSourceName string `json:"promotionSourceName"` // 推广位名称
-			} `json:"promotionInfo"` // 推广信息
-			CustomizeInfo string `json:"customizeInfo"` // 自定义信息
-		} `json:"productList"` // 商品列表
-	} `json:"orderList"` // 订单列表
-}
-
-// OrderInfo 根据订单ID查询订单详情 https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/order/order-info.html
-func (app *App) OrderInfo(orderIdList []string) (result OrderInfoResult, err error) {
-	if len(app.AccessToken) <= 0 {
-		return result, errors.New("调用凭证异常")
-	}
-
-	if len(orderIdList) <= 0 || len(orderIdList) > 200 {
-		return result, errors.New("未传入 orderIdList 或 orderIdList 超过上限 200")
-	}
-
-	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/union/promoter/order/info?access_token=%s", app.AccessToken), map[string]interface{}{
-		"orderIdList": orderIdList,
-	}, http.MethodPost)
-	if err != nil {
-		return result, err
-	}
-	err = json.Unmarshal(body, &result)
-	if err != nil {
-		return result, err
-	}
-	return result, err
-
-}
 
 type OrderSearch struct {
 	Page                       int    `json:"page,omitempty"`                       // 页码，起始为 1
@@ -110,7 +51,7 @@ type OrderSearchResult struct {
 
 // OrderSearch 根据订单支付时间、订单分佣状态拉取订单详情 https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/order/order-info.html
 func (app *App) OrderSearch(notMustParams ...Params) (result OrderSearchResult, err error) {
-	if len(app.AccessToken) <= 0 {
+	if len(app.accessToken) <= 0 {
 		return result, errors.New("调用凭证异常")
 	}
 
@@ -121,7 +62,7 @@ func (app *App) OrderSearch(notMustParams ...Params) (result OrderSearchResult, 
 	//	return result, errors.New("未传入 orderIdList 或 orderIdList 超过上限 200")
 	//}
 
-	//body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/union/promoter/order/info?access_token=%s", app.AccessToken), map[string]interface{}{
+	//body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/union/promoter/order/info?access_token=%s", app.accessToken), map[string]interface{}{
 	//	"orderIdList": orderIdList,
 	//}, http.MethodPost)
 	//if err != nil {

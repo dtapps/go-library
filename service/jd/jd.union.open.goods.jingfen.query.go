@@ -1,6 +1,9 @@
 package jd
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type UnionOpenGoodsJIngFenQueryResultResponse struct {
 	JdUnionOpenGoodsJingfenQueryResponce struct {
@@ -109,11 +112,12 @@ type UnionOpenGoodsJIngFenQueryResult struct {
 	Responce UnionOpenGoodsJIngFenQueryResultResponse // 结果
 	Result   UnionOpenGoodsJIngFenQueryQueryResult    // 结果
 	Body     []byte                                   // 内容
+	Http     gorequest.Response                       // 请求
 	Err      error                                    // 错误
 }
 
-func NewUnionOpenGoodsJIngFenQueryResult(responce UnionOpenGoodsJIngFenQueryResultResponse, result UnionOpenGoodsJIngFenQueryQueryResult, body []byte, err error) *UnionOpenGoodsJIngFenQueryResult {
-	return &UnionOpenGoodsJIngFenQueryResult{Responce: responce, Result: result, Body: body, Err: err}
+func NewUnionOpenGoodsJIngFenQueryResult(responce UnionOpenGoodsJIngFenQueryResultResponse, result UnionOpenGoodsJIngFenQueryQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenGoodsJIngFenQueryResult {
+	return &UnionOpenGoodsJIngFenQueryResult{Responce: responce, Result: result, Body: body, Http: http, Err: err}
 }
 
 // UnionOpenGoodsJIngFenQuery 京粉精选商品查询接口
@@ -122,11 +126,11 @@ func (app *App) UnionOpenGoodsJIngFenQuery(notMustParams ...Params) *UnionOpenGo
 	// 参数
 	params := NewParamsWithType("jd.union.open.goods.jingfen.query", notMustParams...)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var responce UnionOpenGoodsJIngFenQueryResultResponse
 	var result UnionOpenGoodsJIngFenQueryQueryResult
-	err = json.Unmarshal(body, &responce)
+	err = json.Unmarshal(request.ResponseBody, &responce)
 	err = json.Unmarshal([]byte(responce.JdUnionOpenGoodsJingfenQueryResponce.QueryResult), &result)
-	return NewUnionOpenGoodsJIngFenQueryResult(responce, result, body, err)
+	return NewUnionOpenGoodsJIngFenQueryResult(responce, result, request.ResponseBody, request, err)
 }

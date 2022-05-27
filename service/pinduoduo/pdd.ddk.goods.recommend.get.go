@@ -1,6 +1,9 @@
 package pinduoduo
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type GoodsRecommendGetResponse struct {
 	GoodsBasicDetailResponse struct {
@@ -66,11 +69,12 @@ type GoodsRecommendGetResponse struct {
 type GoodsRecommendGetResult struct {
 	Result GoodsRecommendGetResponse // 结果
 	Body   []byte                    // 内容
+	Http   gorequest.Response        // 请求
 	Err    error                     // 错误
 }
 
-func NewGoodsRecommendGetResult(result GoodsRecommendGetResponse, body []byte, err error) *GoodsRecommendGetResult {
-	return &GoodsRecommendGetResult{Result: result, Body: body, Err: err}
+func NewGoodsRecommendGetResult(result GoodsRecommendGetResponse, body []byte, http gorequest.Response, err error) *GoodsRecommendGetResult {
+	return &GoodsRecommendGetResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // GoodsRecommendGet 多多进宝商品推荐API
@@ -80,9 +84,9 @@ func (app *App) GoodsRecommendGet(notMustParams ...Params) *GoodsRecommendGetRes
 	params := NewParamsWithType("pdd.ddk.goods.recommend.get", notMustParams...)
 	params.Set("pid", app.Pid)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response GoodsRecommendGetResponse
-	err = json.Unmarshal(body, &response)
-	return NewGoodsRecommendGetResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewGoodsRecommendGetResult(response, request.ResponseBody, request, err)
 }

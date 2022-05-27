@@ -62,7 +62,7 @@ func (app *App) UserPhone(param UserPhone) *UserPhoneResult {
 	if err != nil {
 		return NewUserPhoneResult(response, err)
 	}
-	if response.Watermark.AppID != app.AppId {
+	if response.Watermark.AppID != app.appId {
 		return NewUserPhoneResult(response, errors.New("app id not match"))
 	}
 	return NewUserPhoneResult(response, err)

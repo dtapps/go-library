@@ -1,6 +1,9 @@
 package pinduoduo
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type ResourceUrlGenResponse struct {
 	ResourceUrlResponse struct {
@@ -37,12 +40,13 @@ type ResourceUrlGenError struct {
 type ResourceUrlGenResult struct {
 	Result ResourceUrlGenResponse // 结果
 	Body   []byte                 // 内容
+	Http   gorequest.Response     // 请求
 	Err    error                  // 错误
 	Error  ResourceUrlGenError    // 错误结果
 }
 
-func NewResourceUrlGenResult(result ResourceUrlGenResponse, body []byte, err error, error ResourceUrlGenError) *ResourceUrlGenResult {
-	return &ResourceUrlGenResult{Result: result, Body: body, Err: err, Error: error}
+func NewResourceUrlGenResult(result ResourceUrlGenResponse, body []byte, http gorequest.Response, err error, error ResourceUrlGenError) *ResourceUrlGenResult {
+	return &ResourceUrlGenResult{Result: result, Body: body, Http: http, Err: err, Error: error}
 }
 
 // ResourceUrlGen 生成多多进宝频道推广
@@ -52,11 +56,11 @@ func (app *App) ResourceUrlGen(notMustParams ...Params) *ResourceUrlGenResult {
 	params := NewParamsWithType("pdd.ddk.resource.url.gen", notMustParams...)
 	params.Set("pid", app.Pid)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response ResourceUrlGenResponse
-	err = json.Unmarshal(body, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	var responseError ResourceUrlGenError
-	err = json.Unmarshal(body, &responseError)
-	return NewResourceUrlGenResult(response, body, err, responseError)
+	err = json.Unmarshal(request.ResponseBody, &responseError)
+	return NewResourceUrlGenResult(response, request.ResponseBody, request, err, responseError)
 }

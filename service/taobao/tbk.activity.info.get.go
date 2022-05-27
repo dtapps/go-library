@@ -1,6 +1,9 @@
 package taobao
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type TbkActivityInfoGetResponse struct {
 	TbkActivityInfoGetResponse struct {
@@ -21,11 +24,12 @@ type TbkActivityInfoGetResponse struct {
 type TbkActivityInfoGetResult struct {
 	Result TbkActivityInfoGetResponse // 结果
 	Body   []byte                     // 内容
+	Http   gorequest.Response         // 请求
 	Err    error                      // 错误
 }
 
-func NewTbkActivityInfoGetResult(result TbkActivityInfoGetResponse, body []byte, err error) *TbkActivityInfoGetResult {
-	return &TbkActivityInfoGetResult{Result: result, Body: body, Err: err}
+func NewTbkActivityInfoGetResult(result TbkActivityInfoGetResponse, body []byte, http gorequest.Response, err error) *TbkActivityInfoGetResult {
+	return &TbkActivityInfoGetResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // TbkActivityInfoGet 淘宝客-推广者-官方活动转链
@@ -33,11 +37,11 @@ func NewTbkActivityInfoGetResult(result TbkActivityInfoGetResponse, body []byte,
 func (app *App) TbkActivityInfoGet(notMustParams ...Params) *TbkActivityInfoGetResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.activity.info.get", notMustParams...)
-	params.Set("adzone_id", app.AdzoneId)
+	params.Set("adzone_id", app.adzoneId)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response TbkActivityInfoGetResponse
-	err = json.Unmarshal(body, &response)
-	return NewTbkActivityInfoGetResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewTbkActivityInfoGetResult(response, request.ResponseBody, request, err)
 }

@@ -2,6 +2,7 @@ package meituan
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
 	"net/http"
 )
@@ -35,26 +36,27 @@ type ApiOrderListResponse struct {
 type ApiOrderListResult struct {
 	Result ApiOrderListResponse // 结果
 	Body   []byte               // 内容
+	Http   gorequest.Response   // 请求
 	Err    error                // 错误
 }
 
-func NewApiOrderListResult(result ApiOrderListResponse, body []byte, err error) *ApiOrderListResult {
-	return &ApiOrderListResult{Result: result, Body: body, Err: err}
+func NewApiOrderListResult(result ApiOrderListResponse, body []byte, http gorequest.Response, err error) *ApiOrderListResult {
+	return &ApiOrderListResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // ApiOrderList 订单列表查询接口（新版）
 // https://union.meituan.com/v2/apiDetail?id=23
-func (app *App) ApiOrderList(notMustParams ...Params) *ApiOrderListResult {
+func (app *App) ApiOrderList(notMustParams ...gorequest.Params) *ApiOrderListResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s
 	params["ts"] = gotime.Current().Timestamp()
-	params["appkey"] = app.AppKey
-	params["sign"] = app.getSign(app.Secret, params)
+	params["appkey"] = app.appKey
+	params["sign"] = app.getSign(app.secret, params)
 	// 请求
-	body, err := app.request("https://openapi.meituan.com/api/orderList", params, http.MethodGet)
+	request, err := app.request("https://openapi.meituan.com/api/orderList", params, http.MethodGet)
 	// 定义
 	var response ApiOrderListResponse
-	err = json.Unmarshal(body, &response)
-	return NewApiOrderListResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewApiOrderListResult(response, request.ResponseBody, request, err)
 }

@@ -2,6 +2,7 @@ package leshuazf
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -32,11 +33,12 @@ type DataBankBranch2Response struct {
 type DataBankBranch2Result struct {
 	Result DataBankBranch2Response // 结果
 	Body   []byte                  // 内容
+	Http   gorequest.Response      // 请求
 	Err    error                   // 错误
 }
 
-func NewDataBankBranch2Result(result DataBankBranch2Response, body []byte, err error) *DataBankBranch2Result {
-	return &DataBankBranch2Result{Result: result, Body: body, Err: err}
+func NewDataBankBranch2Result(result DataBankBranch2Response, body []byte, http gorequest.Response, err error) *DataBankBranch2Result {
+	return &DataBankBranch2Result{Result: result, Body: body, Http: http, Err: err}
 }
 
 // DataBankBranch2 代理商通过联行号来查支行信息
@@ -45,9 +47,9 @@ func (app *App) DataBankBranch2(notMustParams ...Params) *DataBankBranch2Result 
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
-	body, err := app.request("data/bankbranch2", params, http.MethodPost)
+	request, err := app.request("data/bankbranch2", params, http.MethodPost)
 	// 定义
 	var response DataBankBranch2Response
-	err = json.Unmarshal(body, &response)
-	return NewDataBankBranch2Result(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewDataBankBranch2Result(response, request.ResponseBody, request, err)
 }

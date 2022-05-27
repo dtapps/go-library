@@ -3,7 +3,7 @@ package wechatminiprogram
 import (
 	"encoding/json"
 	"fmt"
-	"go.dtapp.net/library/utils/gohttp"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -45,11 +45,11 @@ type BusinessGetLiveInfoResponse struct {
 type BusinessGetLiveInfoResult struct {
 	Result BusinessGetLiveInfoResponse // 结果
 	Body   []byte                      // 内容
-	Http   gohttp.Response             // 请求
+	Http   gorequest.Response          // 请求
 	Err    error                       // 错误
 }
 
-func NewBusinessGetLiveInfoResult(result BusinessGetLiveInfoResponse, body []byte, http gohttp.Response, err error) *BusinessGetLiveInfoResult {
+func NewBusinessGetLiveInfoResult(result BusinessGetLiveInfoResponse, body []byte, http gorequest.Response, err error) *BusinessGetLiveInfoResult {
 	return &BusinessGetLiveInfoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -57,13 +57,13 @@ func NewBusinessGetLiveInfoResult(result BusinessGetLiveInfoResponse, body []byt
 // 调用此接口获取直播间列表及直播间信息
 // https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/industry/liveplayer/studio-api.html
 func (app *App) BusinessGetLiveInfo(notMustParams ...Params) *BusinessGetLiveInfoResult {
-	app.AccessToken = app.GetAccessToken()
+	app.accessToken = app.GetAccessToken()
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/business/getliveinfo?access_token=%s", app.AccessToken), params, http.MethodPost)
+	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/business/getliveinfo?access_token=%s", app.accessToken), params, http.MethodPost)
 	// 定义
 	var response BusinessGetLiveInfoResponse
-	err = json.Unmarshal(request.Body, &response)
-	return NewBusinessGetLiveInfoResult(response, request.Body, request, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewBusinessGetLiveInfoResult(response, request.ResponseBody, request, err)
 }

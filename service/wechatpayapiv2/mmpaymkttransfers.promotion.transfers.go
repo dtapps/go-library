@@ -2,7 +2,7 @@ package wechatpayapiv2
 
 import (
 	"encoding/xml"
-	"go.dtapp.net/library/utils/gohttp"
+	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gorandom"
 )
 
@@ -22,13 +22,13 @@ type TransfersResponse struct {
 }
 
 type TransfersResult struct {
-	Result TransfersResponse // 结果
-	Body   []byte            // 内容
-	Http   gohttp.Response   // 请求
-	Err    error             // 错误
+	Result TransfersResponse  // 结果
+	Body   []byte             // 内容
+	Http   gorequest.Response // 请求
+	Err    error              // 错误
 }
 
-func NewTransfersResult(result TransfersResponse, body []byte, http gohttp.Response, err error) *TransfersResult {
+func NewTransfersResult(result TransfersResponse, body []byte, http gorequest.Response, err error) *TransfersResult {
 	return &TransfersResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -39,8 +39,8 @@ func (app *App) Transfers(partnerTradeNo, openid string, amount int64, desc stri
 	cert, err := app.P12ToPem()
 	// 参数
 	params := NewParams()
-	params.Set("mch_appid", app.AppId)
-	params.Set("mchid", app.MchId)
+	params.Set("mch_appid", app.appId)
+	params.Set("mchid", app.mchId)
 	params.Set("nonce_str", gorandom.Alphanumeric(32))
 	params.Set("partner_trade_no", partnerTradeNo)
 	params.Set("openid", openid)
@@ -53,6 +53,6 @@ func (app *App) Transfers(partnerTradeNo, openid string, amount int64, desc stri
 	request, err := app.request("https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers", params, cert)
 	// 定义
 	var response TransfersResponse
-	err = xml.Unmarshal(request.Body, &response)
-	return NewTransfersResult(response, request.Body, request, err)
+	err = xml.Unmarshal(request.ResponseBody, &response)
+	return NewTransfersResult(response, request.ResponseBody, request, err)
 }

@@ -3,6 +3,7 @@ package wechatunion
 import (
 	"encoding/json"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -127,11 +128,12 @@ type PromoterProductSelectResponse struct {
 type PromoterProductSelectResult struct {
 	Result PromoterProductSelectResponse // 结果
 	Body   []byte                        // 内容
+	Http   gorequest.Response            // 请求
 	Err    error                         // 错误
 }
 
-func NewPromoterProductSelectResult(result PromoterProductSelectResponse, body []byte, err error) *PromoterProductSelectResult {
-	return &PromoterProductSelectResult{Result: result, Body: body, Err: err}
+func NewPromoterProductSelectResult(result PromoterProductSelectResponse, body []byte, http gorequest.Response, err error) *PromoterProductSelectResult {
+	return &PromoterProductSelectResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // PromoterProductSelect
@@ -139,13 +141,13 @@ func NewPromoterProductSelectResult(result PromoterProductSelectResponse, body [
 // 支持开发者根据多种筛选条件获取联盟精选的商品列表及详情，筛选条件包括商品价格、商品佣金、商品累计销量、佣金比例、是否含有联盟券、配送方式、发货地区
 // https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/product/category.html#3.%E6%9F%A5%E8%AF%A2%E8%81%94%E7%9B%9F%E7%B2%BE%E9%80%89%E5%95%86%E5%93%81
 func (app *App) PromoterProductSelect(notMustParams ...Params) *PromoterProductSelectResult {
-	app.AccessToken = app.GetAccessToken()
+	app.accessToken = app.GetAccessToken()
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
-	body, err := app.request(UnionUrl+fmt.Sprintf("/promoter/product/select?access_token=%s", app.AccessToken), params, http.MethodGet)
+	request, err := app.request(UnionUrl+fmt.Sprintf("/promoter/product/select?access_token=%s", app.accessToken), params, http.MethodGet)
 	// 定义
 	var response PromoterProductSelectResponse
-	err = json.Unmarshal(body, &response)
-	return NewPromoterProductSelectResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewPromoterProductSelectResult(response, request.ResponseBody, request, err)
 }

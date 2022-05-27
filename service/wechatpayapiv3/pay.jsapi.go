@@ -28,15 +28,15 @@ func (app *App) GetJsApi(param GetJsApi) (result GetJsApiResult, err error) {
 	timeStamp := time.Now().Unix()
 	nonce := gorandom.Alphanumeric(32)
 
-	result.AppId = app.AppId
+	result.AppId = app.appId
 	result.TimeStamp = fmt.Sprintf("%v", timeStamp)
 	result.NonceStr = nonce
 	result.Package = param.Package
 
 	// 签名
-	message := fmt.Sprintf("%s\n%s\n%s\n%s\n", app.AppId, fmt.Sprintf("%v", timeStamp), nonce, param.Package)
+	message := fmt.Sprintf("%s\n%s\n%s\n%s\n", app.appId, fmt.Sprintf("%v", timeStamp), nonce, param.Package)
 
-	signBytes, err := app.signPKCS1v15(message, []byte(app.MchPrivateKey))
+	signBytes, err := app.signPKCS1v15(message, []byte(app.mchSslKey))
 	if err != nil {
 		return result, err
 	}

@@ -3,6 +3,7 @@ package wechatopen
 import (
 	"encoding/json"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -44,21 +45,21 @@ type CgiBinAccountGetAccountBasicInfoResponse struct {
 type CgiBinAccountGetAccountBasicInfoResult struct {
 	Result CgiBinAccountGetAccountBasicInfoResponse // 结果
 	Body   []byte                                   // 内容
+	Http   gorequest.Response                       // 请求
 	Err    error                                    // 错误
 }
 
-func NewCgiBinAccountGetAccountBasicInfoResult(result CgiBinAccountGetAccountBasicInfoResponse, body []byte, err error) *CgiBinAccountGetAccountBasicInfoResult {
-	return &CgiBinAccountGetAccountBasicInfoResult{Result: result, Body: body, Err: err}
+func NewCgiBinAccountGetAccountBasicInfoResult(result CgiBinAccountGetAccountBasicInfoResponse, body []byte, http gorequest.Response, err error) *CgiBinAccountGetAccountBasicInfoResult {
+	return &CgiBinAccountGetAccountBasicInfoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // CgiBinAccountGetAccountBasicInfo 获取基本信息
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_Basic_Info/Mini_Program_Information_Settings.html
 func (app *App) CgiBinAccountGetAccountBasicInfo() *CgiBinAccountGetAccountBasicInfoResult {
-	app.authorizerAccessToken = app.GetAuthorizerAccessToken()
 	// 请求
-	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/account/getaccountbasicinfo?access_token=%v", app.authorizerAccessToken), map[string]interface{}{}, http.MethodGet)
+	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/account/getaccountbasicinfo?access_token=%v", app.GetAuthorizerAccessToken()), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response CgiBinAccountGetAccountBasicInfoResponse
-	err = json.Unmarshal(body, &response)
-	return NewCgiBinAccountGetAccountBasicInfoResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewCgiBinAccountGetAccountBasicInfoResult(response, request.ResponseBody, request, err)
 }

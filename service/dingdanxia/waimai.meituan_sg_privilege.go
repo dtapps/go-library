@@ -2,11 +2,11 @@ package dingdanxia
 
 import (
 	"encoding/json"
-	"go.dtapp.net/library/utils/gohttp"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
-type WaimaiMeituanSgPrivilegeResponse struct {
+type WaiMaiMeituanSgPrivilegeResponse struct {
 	Code int    `json:"code"`
 	Msg  string `json:"msg"`
 	Data struct {
@@ -23,20 +23,20 @@ type WaimaiMeituanSgPrivilegeResponse struct {
 	} `json:"data"`
 }
 
-type WaimaiMeituanSgPrivilegeResult struct {
-	Result WaimaiMeituanSgPrivilegeResponse // 结果
+type WaiMaiMeituanSgPrivilegeResult struct {
+	Result WaiMaiMeituanSgPrivilegeResponse // 结果
 	Body   []byte                           // 内容
-	Http   gohttp.Response                  // 请求
+	Http   gorequest.Response               // 请求
 	Err    error                            // 错误
 }
 
-func NewWaimaiMeituanSgPrivilegeResult(result WaimaiMeituanSgPrivilegeResponse, body []byte, http gohttp.Response, err error) *WaimaiMeituanSgPrivilegeResult {
-	return &WaimaiMeituanSgPrivilegeResult{Result: result, Body: body, Http: http, Err: err}
+func NewWaiMaiMeituanSgPrivilegeResult(result WaiMaiMeituanSgPrivilegeResponse, body []byte, http gorequest.Response, err error) *WaiMaiMeituanSgPrivilegeResult {
+	return &WaiMaiMeituanSgPrivilegeResult{Result: result, Body: body, Http: http, Err: err}
 }
 
-// WaimaiMeituanSgPrivilege 美团闪购CPS推广API接口
+// WaiMaiMeituanSgPrivilege 美团闪购CPS推广API接口
 // https://www.dingdanxia.com/doc/195/173
-func (app *App) WaimaiMeituanSgPrivilege(sid string, generateWeApp, qrcode bool) *WaimaiMeituanSgPrivilegeResult {
+func (app *App) WaiMaiMeituanSgPrivilege(sid string, generateWeApp, qrcode bool) *WaiMaiMeituanSgPrivilegeResult {
 	// 参数
 	param := NewParams()
 	param.Set("sid", sid)
@@ -46,7 +46,7 @@ func (app *App) WaimaiMeituanSgPrivilege(sid string, generateWeApp, qrcode bool)
 	// 请求
 	request, err := app.request("https://api.tbk.dingdanxia.com/waimai/meituan_sg_privilege", params, http.MethodPost)
 	// 定义
-	var response WaimaiMeituanSgPrivilegeResponse
-	err = json.Unmarshal(request.Body, &response)
-	return NewWaimaiMeituanSgPrivilegeResult(response, request.Body, request, err)
+	var response WaiMaiMeituanSgPrivilegeResponse
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewWaiMaiMeituanSgPrivilegeResult(response, request.ResponseBody, request, err)
 }

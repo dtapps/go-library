@@ -2,9 +2,10 @@ package pintoto
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
-type GetScheduleListResult struct {
+type GetScheduleListResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 	Data    struct {
@@ -33,20 +34,28 @@ type GetScheduleListResult struct {
 	Success bool `json:"success"`
 }
 
+type GetScheduleListResult struct {
+	Result GetScheduleListResponse // 结果
+	Body   []byte                  // 内容
+	Http   gorequest.Response      // 请求
+	Err    error                   // 错误
+}
+
+func NewGetScheduleListResult(result GetScheduleListResponse, body []byte, http gorequest.Response, err error) *GetScheduleListResult {
+	return &GetScheduleListResult{Result: result, Body: body, Http: http, Err: err}
+}
+
 // GetScheduleList 场次排期 https://www.showdoc.com.cn/1154868044931571/5866708808899217
-func (app *App) GetScheduleList(cinemaId int) (result GetScheduleListResult, err error) {
+func (app *App) GetScheduleList(cinemaId int) *GetScheduleListResult {
 	// 参数
 	param := NewParams()
 	param.Set("cinemaId", cinemaId)
 	// 转换
 	params := app.NewParamsWith(param)
 	// 请求
-	body, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-schedule-list", params)
-	if err != nil {
-		return
-	}
-	if err = json.Unmarshal(body, &result); err != nil {
-		return
-	}
-	return
+	request, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-schedule-list", params)
+	// 定义
+	var response GetScheduleListResponse
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewGetScheduleListResult(response, request.ResponseBody, request, err)
 }

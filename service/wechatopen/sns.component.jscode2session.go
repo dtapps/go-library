@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 	"strings"
 )
@@ -19,30 +20,30 @@ type SnsComponentJsCode2sessionResponse struct {
 type SnsComponentJsCode2sessionResult struct {
 	Result SnsComponentJsCode2sessionResponse // 结果
 	Body   []byte                             // 内容
+	Http   gorequest.Response                 // 请求
 	Err    error                              // 错误
 }
 
-func NewSnsComponentJsCode2sessionResult(result SnsComponentJsCode2sessionResponse, body []byte, err error) *SnsComponentJsCode2sessionResult {
-	return &SnsComponentJsCode2sessionResult{Result: result, Body: body, Err: err}
+func NewSnsComponentJsCode2sessionResult(result SnsComponentJsCode2sessionResponse, body []byte, http gorequest.Response, err error) *SnsComponentJsCode2sessionResult {
+	return &SnsComponentJsCode2sessionResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // SnsComponentJsCode2session 小程序登录
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/others/WeChat_login.html
 func (app *App) SnsComponentJsCode2session(jsCode string) *SnsComponentJsCode2sessionResult {
-	app.componentAccessToken = app.GetComponentAccessToken()
 	// 参数
 	params := NewParams()
-	params["appid"] = app.AuthorizerAppid                       // 小程序的 AppID
-	params["js_code"] = jsCode                                  // wx.login 获取的 code
-	params["grant_type"] = "authorization_code"                 // 填 authorization_code
-	params["component_appid"] = app.ComponentAppId              // 第三方平台 appid
-	params["component_access_token"] = app.componentAccessToken // 第三方平台的component_access_token
+	params["appid"] = app.authorizerAppid                            // 小程序的 appId
+	params["js_code"] = jsCode                                       // wx.login 获取的 code
+	params["grant_type"] = "authorization_code"                      // 填 authorization_code
+	params["component_appid"] = app.componentAppId                   // 第三方平台 appid
+	params["component_access_token"] = app.GetComponentAccessToken() // 第三方平台的component_access_token
 	// 请求
-	body, err := app.request("https://api.weixin.qq.com/sns/component/jscode2session", params, http.MethodGet)
+	request, err := app.request("https://api.weixin.qq.com/sns/component/jscode2session", params, http.MethodGet)
 	// 定义
 	var response SnsComponentJsCode2sessionResponse
-	err = json.Unmarshal(body, &response)
-	return NewSnsComponentJsCode2sessionResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewSnsComponentJsCode2sessionResult(response, request.ResponseBody, request, err)
 }
 
 type UserInfo struct {

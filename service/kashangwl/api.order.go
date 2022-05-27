@@ -2,6 +2,7 @@ package kashangwl
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type ApiOrderResponse struct {
@@ -38,13 +39,14 @@ type ApiOrderResponse struct {
 }
 
 type ApiOrderResult struct {
-	Result ApiOrderResponse // 结果
-	Body   []byte           // 内容
-	Err    error            // 错误
+	Result ApiOrderResponse   // 结果
+	Body   []byte             // 内容
+	Http   gorequest.Response // 请求
+	Err    error              // 错误
 }
 
-func NewApiOrderResult(result ApiOrderResponse, body []byte, err error) *ApiOrderResult {
-	return &ApiOrderResult{Result: result, Body: body, Err: err}
+func NewApiOrderResult(result ApiOrderResponse, body []byte, http gorequest.Response, err error) *ApiOrderResult {
+	return &ApiOrderResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // ApiOrder 获取单个订单信息。
@@ -56,9 +58,9 @@ func (app App) ApiOrder(orderId string) *ApiOrderResult {
 	param.Set("order_id", orderId)
 	params := app.NewParamsWith(param)
 	// 请求
-	body, err := app.request("http://www.kashangwl.com/api/order", params)
+	request, err := app.request("http://www.kashangwl.com/api/order", params)
 	// 定义
 	var response ApiOrderResponse
-	err = json.Unmarshal(body, &response)
-	return NewApiOrderResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewApiOrderResult(response, request.ResponseBody, request, err)
 }

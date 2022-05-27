@@ -19,6 +19,7 @@ type respSign struct {
 	Sign      string
 }
 
+// 签名
 func (app *App) sign(params map[string]interface{}) respSign {
 	// 默认参数
 	v := "1.0"
@@ -26,8 +27,8 @@ func (app *App) sign(params map[string]interface{}) respSign {
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
 	params["v"] = v                 // 客户端接口版本，目前是1.0
 	params["format"] = format       // 默认json
-	params["app_key"] = app.AppKey  // 应用唯一表示
-	params["client"] = app.ClientIP // 客户端请求ip
+	params["app_key"] = app.appKey  // 应用唯一表示
+	params["client"] = app.clientIp // 客户端请求ip
 	params["timestamp"] = timestamp // unix时间戳（秒单位）
 	// 排序所有的 key
 	var keys []string
@@ -35,15 +36,15 @@ func (app *App) sign(params map[string]interface{}) respSign {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
-	signStr := app.AppSecret
+	signStr := app.appSecret
 	for _, key := range keys {
 		signStr += key + getString(params[key])
 	}
-	signStr += app.AppSecret
+	signStr += app.appSecret
 	return respSign{
-		AppKey:    app.AppKey,
+		AppKey:    app.appKey,
 		Timestamp: timestamp,
-		Client:    app.ClientIP,
+		Client:    app.clientIp,
 		V:         v,
 		Format:    format,
 		Sign:      app.createSign(signStr),

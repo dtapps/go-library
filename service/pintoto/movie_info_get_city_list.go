@@ -2,6 +2,7 @@ package pintoto
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type GetCityListResponse struct {
@@ -22,18 +23,19 @@ type GetCityListResponseDataList struct {
 type GetCityListResult struct {
 	Result GetCityListResponse // 结果
 	Body   []byte              // 内容
+	Http   gorequest.Response  // 请求
 	Err    error               // 错误
 }
 
-func NewGetCityListResult(result GetCityListResponse, body []byte, err error) *GetCityListResult {
-	return &GetCityListResult{Result: result, Body: body, Err: err}
+func NewGetCityListResult(result GetCityListResponse, body []byte, http gorequest.Response, err error) *GetCityListResult {
+	return &GetCityListResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // GetCityList 城市列表
 // https://www.showdoc.com.cn/1154868044931571/5865562425538244
 func (app *App) GetCityList() *GetCityListResult {
-	body, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-city-list", map[string]interface{}{})
+	request, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-city-list", map[string]interface{}{})
 	var response GetCityListResponse
-	err = json.Unmarshal(body, &response)
-	return NewGetCityListResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewGetCityListResult(response, request.ResponseBody, request, err)
 }

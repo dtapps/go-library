@@ -1,6 +1,9 @@
 package taobao
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type TbkDgOptimusMaterialResponse struct {
 	TbkDgOptimusMaterialResponse struct {
@@ -48,11 +51,12 @@ type TbkDgOptimusMaterialResponse struct {
 type TbkDgOptimusMaterialResult struct {
 	Result TbkDgOptimusMaterialResponse // 结果
 	Body   []byte                       // 内容
+	Http   gorequest.Response           // 请求
 	Err    error                        // 错误
 }
 
-func NewTbkDgOptimusMaterialResult(result TbkDgOptimusMaterialResponse, body []byte, err error) *TbkDgOptimusMaterialResult {
-	return &TbkDgOptimusMaterialResult{Result: result, Body: body, Err: err}
+func NewTbkDgOptimusMaterialResult(result TbkDgOptimusMaterialResponse, body []byte, http gorequest.Response, err error) *TbkDgOptimusMaterialResult {
+	return &TbkDgOptimusMaterialResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // TbkDgOptimusMaterial 淘宝客-推广者-物料精选
@@ -60,11 +64,11 @@ func NewTbkDgOptimusMaterialResult(result TbkDgOptimusMaterialResponse, body []b
 func (app *App) TbkDgOptimusMaterial(notMustParams ...Params) *TbkDgOptimusMaterialResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.dg.optimus.material", notMustParams...)
-	params.Set("adzone_id", app.AdzoneId)
+	params.Set("adzone_id", app.adzoneId)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response TbkDgOptimusMaterialResponse
-	err = json.Unmarshal(body, &response)
-	return NewTbkDgOptimusMaterialResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewTbkDgOptimusMaterialResult(response, request.ResponseBody, request, err)
 }

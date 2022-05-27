@@ -1,6 +1,9 @@
 package kashangwl
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type ApiBuyResponse struct {
 	Code    string `json:"code"`
@@ -23,13 +26,14 @@ type ApiBuyResponse struct {
 }
 
 type ApiBuyResult struct {
-	Result ApiBuyResponse // 结果
-	Body   []byte         // 内容
-	Err    error          // 错误
+	Result ApiBuyResponse     // 结果
+	Body   []byte             // 内容
+	Http   gorequest.Response // 请求
+	Err    error              // 错误
 }
 
-func NewApiBuyResult(result ApiBuyResponse, body []byte, err error) *ApiBuyResult {
-	return &ApiBuyResult{Result: result, Body: body, Err: err}
+func NewApiBuyResult(result ApiBuyResponse, body []byte, http gorequest.Response, err error) *ApiBuyResult {
+	return &ApiBuyResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // ApiBuy 购买商品
@@ -38,9 +42,9 @@ func (app *App) ApiBuy(notMustParams ...Params) *ApiBuyResult {
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
-	body, err := app.request("http://www.kashangwl.com/api/buy", params)
+	request, err := app.request("http://www.kashangwl.com/api/buy", params)
 	// 定义
 	var response ApiBuyResponse
-	err = json.Unmarshal(body, &response)
-	return NewApiBuyResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewApiBuyResult(response, request.ResponseBody, request, err)
 }

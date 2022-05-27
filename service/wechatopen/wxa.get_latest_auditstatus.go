@@ -3,6 +3,7 @@ package wechatopen
 import (
 	"encoding/json"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -18,23 +19,23 @@ type WxaGetLatestAuditStatusResponse struct {
 type WxaGetLatestAuditStatusResult struct {
 	Result WxaGetLatestAuditStatusResponse // 结果
 	Body   []byte                          // 内容
+	Http   gorequest.Response              // 请求
 	Err    error                           // 错误
 }
 
-func NewWxaGetLatestAuditStatusResult(result WxaGetLatestAuditStatusResponse, body []byte, err error) *WxaGetLatestAuditStatusResult {
-	return &WxaGetLatestAuditStatusResult{Result: result, Body: body, Err: err}
+func NewWxaGetLatestAuditStatusResult(result WxaGetLatestAuditStatusResponse, body []byte, http gorequest.Response, err error) *WxaGetLatestAuditStatusResult {
+	return &WxaGetLatestAuditStatusResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // WxaGetLatestAuditStatus 查询最新一次提交的审核状态
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_auditstatus.html
 func (app *App) WxaGetLatestAuditStatus() *WxaGetLatestAuditStatusResult {
-	app.authorizerAccessToken = app.GetAuthorizerAccessToken()
 	// 请求
-	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/get_latest_auditstatus?access_token=%s", app.authorizerAccessToken), map[string]interface{}{}, http.MethodPost)
+	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/get_latest_auditstatus?access_token=%s", app.GetAuthorizerAccessToken()), map[string]interface{}{}, http.MethodPost)
 	// 定义
 	var response WxaGetLatestAuditStatusResponse
-	err = json.Unmarshal(body, &response)
-	return NewWxaGetLatestAuditStatusResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewWxaGetLatestAuditStatusResult(response, request.ResponseBody, request, err)
 }
 
 // ErrcodeInfo 错误描述

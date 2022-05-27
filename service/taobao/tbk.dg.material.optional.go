@@ -1,6 +1,9 @@
 package taobao
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type TbkDgMaterialOptionalResponse struct {
 	TbkDgMaterialOptionalResponse struct {
@@ -64,11 +67,12 @@ type TbkDgMaterialOptionalResponse struct {
 type TbkDgMaterialOptionalResult struct {
 	Result TbkDgMaterialOptionalResponse // 结果
 	Body   []byte                        // 内容
+	Http   gorequest.Response            // 请求
 	Err    error                         // 错误
 }
 
-func NewTbkDgMaterialOptionalResult(result TbkDgMaterialOptionalResponse, body []byte, err error) *TbkDgMaterialOptionalResult {
-	return &TbkDgMaterialOptionalResult{Result: result, Body: body, Err: err}
+func NewTbkDgMaterialOptionalResult(result TbkDgMaterialOptionalResponse, body []byte, http gorequest.Response, err error) *TbkDgMaterialOptionalResult {
+	return &TbkDgMaterialOptionalResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // TbkDgMaterialOptional 淘宝客-推广者-物料搜索
@@ -76,11 +80,11 @@ func NewTbkDgMaterialOptionalResult(result TbkDgMaterialOptionalResponse, body [
 func (app *App) TbkDgMaterialOptional(notMustParams ...Params) *TbkDgMaterialOptionalResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.dg.material.optional", notMustParams...)
-	params.Set("adzone_id", app.AdzoneId)
+	params.Set("adzone_id", app.adzoneId)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response TbkDgMaterialOptionalResponse
-	err = json.Unmarshal(body, &response)
-	return NewTbkDgMaterialOptionalResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewTbkDgMaterialOptionalResult(response, request.ResponseBody, request, err)
 }

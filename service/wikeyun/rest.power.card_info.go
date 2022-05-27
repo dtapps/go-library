@@ -1,10 +1,11 @@
 package wikeyun
 
-// PowerCardInfo 充值卡详情
+// PowerCardInfo 电费充值卡详情
+// https://open.wikeyun.cn/#/apiDocument/9/document/333
 func (app *App) PowerCardInfo(notMustParams ...Params) (body []byte, err error) {
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
-	body, err = app.request("https://router.wikeyun.cn/rest/Power/cardInfo", params)
-	return body, err
+	request, err := app.request("https://router.wikeyun.cn/rest/Power/cardInfo", params)
+	return request.ResponseBody, err
 }

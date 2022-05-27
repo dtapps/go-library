@@ -2,6 +2,7 @@ package pintoto
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type GetShowList struct {
@@ -15,7 +16,7 @@ type GetShowList struct {
 	Longitude float64 `json:"longitude,omitempty"` // 经度，不传则无距离排序
 }
 
-type GetShowListResult struct {
+type GetShowListResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 	Data    struct {
@@ -35,8 +36,19 @@ type GetShowListResult struct {
 	Success bool `json:"success"`
 }
 
+type GetShowListResult struct {
+	Result GetShowListResponse // 结果
+	Body   []byte              // 内容
+	Http   gorequest.Response  // 请求
+	Err    error               // 错误
+}
+
+func NewGetShowListResult(result GetShowListResponse, body []byte, http gorequest.Response, err error) *GetShowListResult {
+	return &GetShowListResult{Result: result, Body: body, Http: http, Err: err}
+}
+
 // GetShowList 包含某电影的影院 https://www.showdoc.com.cn/1154868044931571/6067372188376779
-func (app *App) GetShowList(param GetShowList) (result GetShowListResult, err error) {
+func (app *App) GetShowList(param GetShowList) *GetShowListResult {
 	// api params
 	params := map[string]interface{}{}
 	b, _ := json.Marshal(&param)
@@ -45,12 +57,9 @@ func (app *App) GetShowList(param GetShowList) (result GetShowListResult, err er
 	for k, v := range m {
 		params[k] = v
 	}
-	body, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-show-list", params)
-	if err != nil {
-		return
-	}
-	if err = json.Unmarshal(body, &result); err != nil {
-		return
-	}
-	return
+	request, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-show-list", params)
+	// 定义
+	var response GetShowListResponse
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewGetShowListResult(response, request.ResponseBody, request, err)
 }

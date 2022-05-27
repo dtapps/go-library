@@ -2,17 +2,17 @@ package wechatpayapiv3
 
 import (
 	"fmt"
-	"go.dtapp.net/library/utils/gohttp"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
 type PayTransactionsOutTradeNoCloseResult struct {
-	Body []byte          // 内容
-	Http gohttp.Response // 请求
-	Err  error           // 错误
+	Body []byte             // 内容
+	Http gorequest.Response // 请求
+	Err  error              // 错误
 }
 
-func NewPayTransactionsOutTradeNoCloseResult(body []byte, http gohttp.Response, err error) *PayTransactionsOutTradeNoCloseResult {
+func NewPayTransactionsOutTradeNoCloseResult(body []byte, http gorequest.Response, err error) *PayTransactionsOutTradeNoCloseResult {
 	return &PayTransactionsOutTradeNoCloseResult{Body: body, Http: http, Err: err}
 }
 
@@ -20,8 +20,8 @@ func NewPayTransactionsOutTradeNoCloseResult(body []byte, http gohttp.Response, 
 func (app *App) PayTransactionsOutTradeNoClose(OutTradeNo string) *PayTransactionsOutTradeNoCloseResult {
 	// 参数
 	params := NewParams()
-	params["mchid"] = app.MchId
+	params["mchid"] = app.mchId
 	// 	请求
 	request, err := app.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/pay/transactions/out-trade-no/%s/close", OutTradeNo), params, http.MethodPost, false)
-	return NewPayTransactionsOutTradeNoCloseResult(request.Body, request, err)
+	return NewPayTransactionsOutTradeNoCloseResult(request.ResponseBody, request, err)
 }

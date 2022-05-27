@@ -7,7 +7,7 @@ import (
 )
 
 // ServeHttpAuthorizerAppid 授权跳转
-func (app *App) ServeHttpAuthorizerAppid(r *http.Request) (resp CgiBinComponentApiQueryAuthResponse, agentUserId int64, pacId uint, err error) {
+func (app *App) ServeHttpAuthorizerAppid(r *http.Request) (resp CgiBinComponentApiQueryAuthResponse, agentUserId string, err error) {
 	var (
 		query = r.URL.Query()
 
@@ -15,24 +15,22 @@ func (app *App) ServeHttpAuthorizerAppid(r *http.Request) (resp CgiBinComponentA
 		expiresIn = query.Get("expires_in")
 	)
 
-	agentUserId = ToInt64(query.Get("agent_user_id"))
-
-	pacId = ToUint(query.Get("pac_id"))
+	agentUserId = query.Get("agent_user_id")
 
 	if authCode == "" {
-		return resp, agentUserId, pacId, errors.New("找不到授权码参数")
+		return resp, agentUserId, errors.New("找不到授权码参数")
 	}
 
 	if expiresIn == "" {
-		return resp, agentUserId, pacId, errors.New("找不到过期时间参数")
+		return resp, agentUserId, errors.New("找不到过期时间参数")
 	}
 
 	info := app.CgiBinComponentApiQueryAuth(authCode)
 	if info.Result.AuthorizationInfo.AuthorizerAppid == "" {
-		return resp, agentUserId, pacId, errors.New("获取失败")
+		return resp, agentUserId, errors.New("获取失败")
 	}
 
-	return info.Result, agentUserId, pacId, nil
+	return info.Result, agentUserId, nil
 }
 
 // ToFloat64 string到float64

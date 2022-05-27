@@ -2,9 +2,10 @@ package pintoto
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
-type GetCinemaListResult struct {
+type GetCinemaListResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 	Data    struct {
@@ -24,20 +25,28 @@ type GetCinemaListResult struct {
 	Success bool `json:"success"`
 }
 
+type GetCinemaListResult struct {
+	Result GetCinemaListResponse // 结果
+	Body   []byte                // 内容
+	Http   gorequest.Response    // 请求
+	Err    error                 // 错误
+}
+
+func NewGetCinemaListResult(result GetCinemaListResponse, body []byte, http gorequest.Response, err error) *GetCinemaListResult {
+	return &GetCinemaListResult{Result: result, Body: body, Http: http, Err: err}
+}
+
 // GetCinemaList 影院列表 https://www.showdoc.com.cn/1154868044931571/5866426126744792
-func (app *App) GetCinemaList(cityId int) (result GetCinemaListResult, err error) {
+func (app *App) GetCinemaList(cityId int) *GetCinemaListResult {
 	// 参数
 	param := NewParams()
 	param.Set("cityId", cityId)
 	// 转换
 	params := app.NewParamsWith(param)
 	// 请求
-	body, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-cinema-list", params)
-	if err != nil {
-		return
-	}
-	if err = json.Unmarshal(body, &result); err != nil {
-		return
-	}
-	return
+	request, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-cinema-list", params)
+	// 定义
+	var response GetCinemaListResponse
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewGetCinemaListResult(response, request.ResponseBody, request, err)
 }

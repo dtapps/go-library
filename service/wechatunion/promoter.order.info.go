@@ -3,6 +3,7 @@ package wechatunion
 import (
 	"encoding/json"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -44,17 +45,18 @@ type PromoterOrderInfoResponse struct {
 type PromoterOrderInfoResult struct {
 	Result PromoterOrderInfoResponse // 结果
 	Body   []byte                    // 内容
+	Http   gorequest.Response        // 请求
 	Err    error                     // 错误
 }
 
-func NewPromoterOrderInfoResult(result PromoterOrderInfoResponse, body []byte, err error) *PromoterOrderInfoResult {
-	return &PromoterOrderInfoResult{Result: result, Body: body, Err: err}
+func NewPromoterOrderInfoResult(result PromoterOrderInfoResponse, body []byte, http gorequest.Response, err error) *PromoterOrderInfoResult {
+	return &PromoterOrderInfoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // PromoterOrderInfo 根据订单ID查询订单详情
 // https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/order/order-info.html#_1-%E6%A0%B9%E6%8D%AE%E8%AE%A2%E5%8D%95ID%E6%9F%A5%E8%AF%A2%E8%AE%A2%E5%8D%95%E8%AF%A6%E6%83%85
 func (app *App) PromoterOrderInfo(orderId ...string) *PromoterOrderInfoResult {
-	app.AccessToken = app.GetAccessToken()
+	app.accessToken = app.GetAccessToken()
 	// 参数
 	params := app.NewParamsWith()
 	var orderIdList []any
@@ -63,9 +65,9 @@ func (app *App) PromoterOrderInfo(orderId ...string) *PromoterOrderInfoResult {
 	}
 	params.Set("orderIdList", orderIdList)
 	// 请求
-	body, err := app.request(UnionUrl+fmt.Sprintf("/promoter/order/info?access_token=%s", app.AccessToken), params, http.MethodPost)
+	request, err := app.request(UnionUrl+fmt.Sprintf("/promoter/order/info?access_token=%s", app.accessToken), params, http.MethodPost)
 	// 定义
 	var response PromoterOrderInfoResponse
-	err = json.Unmarshal(body, &response)
-	return NewPromoterOrderInfoResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewPromoterOrderInfoResult(response, request.ResponseBody, request, err)
 }

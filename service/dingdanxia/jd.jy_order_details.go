@@ -2,7 +2,7 @@ package dingdanxia
 
 import (
 	"encoding/json"
-	"go.dtapp.net/library/utils/gohttp"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -30,11 +30,11 @@ type JdJyOrderDetailsResponse struct {
 type JdJyOrderDetailsResult struct {
 	Result JdJyOrderDetailsResponse // 结果
 	Body   []byte                   // 内容
-	Http   gohttp.Response          // 请求
+	Http   gorequest.Response       // 请求
 	Err    error                    // 错误
 }
 
-func NewJdJyOrderDetailsResult(result JdJyOrderDetailsResponse, body []byte, http gohttp.Response, err error) *JdJyOrderDetailsResult {
+func NewJdJyOrderDetailsResult(result JdJyOrderDetailsResponse, body []byte, http gorequest.Response, err error) *JdJyOrderDetailsResult {
 	return &JdJyOrderDetailsResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -46,6 +46,6 @@ func (app *App) JdJyOrderDetails(notMustParams ...Params) *JdJyOrderDetailsResul
 	request, err := app.request("https://api.tbk.dingdanxia.com/jd/jy_order_details", params, http.MethodPost)
 	// 定义
 	var response JdJyOrderDetailsResponse
-	err = json.Unmarshal(request.Body, &response)
-	return NewJdJyOrderDetailsResult(response, request.Body, request, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewJdJyOrderDetailsResult(response, request.ResponseBody, request, err)
 }

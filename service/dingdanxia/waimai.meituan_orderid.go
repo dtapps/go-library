@@ -2,11 +2,11 @@ package dingdanxia
 
 import (
 	"encoding/json"
-	"go.dtapp.net/library/utils/gohttp"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
-type WaimaiMeituanOrderidResponse struct {
+type WaiMaiMeituanOrderIdResponse struct {
 	Code int    `json:"code"`
 	Msg  string `json:"msg"`
 	Data struct {
@@ -36,28 +36,28 @@ type WaimaiMeituanOrderidResponse struct {
 	} `json:"data"`
 }
 
-type WaimaiMeituanOrderidResult struct {
-	Result WaimaiMeituanOrderidResponse // 结果
+type WaiMaiMeituanOrderIdResult struct {
+	Result WaiMaiMeituanOrderIdResponse // 结果
 	Body   []byte                       // 内容
-	Http   gohttp.Response              // 请求
+	Http   gorequest.Response           // 请求
 	Err    error                        // 错误
 }
 
-func NewWaimaiMeituanOrderidResult(result WaimaiMeituanOrderidResponse, body []byte, http gohttp.Response, err error) *WaimaiMeituanOrderidResult {
-	return &WaimaiMeituanOrderidResult{Result: result, Body: body, Http: http, Err: err}
+func NewWaiMaiMeituanOrderIdResult(result WaiMaiMeituanOrderIdResponse, body []byte, http gorequest.Response, err error) *WaiMaiMeituanOrderIdResult {
+	return &WaiMaiMeituanOrderIdResult{Result: result, Body: body, Http: http, Err: err}
 }
 
-// WaimaiMeituanOrderid 美团联盟外卖/闪购/优选/酒店订单查询API（订单号版）
+// WaiMaiMeituanOrderId 美团联盟外卖/闪购/优选/酒店订单查询API（订单号版）
 // https://www.dingdanxia.com/doc/179/173
-func (app *App) WaimaiMeituanOrderid(orderid string) *WaimaiMeituanOrderidResult {
+func (app *App) WaiMaiMeituanOrderId(orderId string) *WaiMaiMeituanOrderIdResult {
 	// 参数
 	param := NewParams()
-	param.Set("orderid", orderid)
+	param.Set("order_id", orderId)
 	params := app.NewParamsWith(param)
 	// 请求
 	request, err := app.request("https://api.tbk.dingdanxia.com/waimai/meituan_orderid", params, http.MethodPost)
 	// 定义
-	var response WaimaiMeituanOrderidResponse
-	err = json.Unmarshal(request.Body, &response)
-	return NewWaimaiMeituanOrderidResult(response, request.Body, request, err)
+	var response WaiMaiMeituanOrderIdResponse
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewWaiMaiMeituanOrderIdResult(response, request.ResponseBody, request, err)
 }

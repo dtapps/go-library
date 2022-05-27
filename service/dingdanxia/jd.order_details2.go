@@ -14,6 +14,6 @@ func (app *App) JdOrderDetails2(notMustParams ...Params) *JdJyOrderDetailsResult
 	request, err := app.request("https://api.tbk.dingdanxia.com/jd/order_details2", params, http.MethodPost)
 	// 定义
 	var response JdJyOrderDetailsResponse
-	err = json.Unmarshal(request.Body, &response)
-	return NewJdJyOrderDetailsResult(response, request.Body, request, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewJdJyOrderDetailsResult(response, request.ResponseBody, request, err)
 }

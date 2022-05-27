@@ -1,7 +1,7 @@
 package wechatminiprogram
 
 import (
-	"go.dtapp.net/library/utils/gohttp"
+	"go.dtapp.net/library/utils/gorequest"
 	"log"
 	"os"
 )
@@ -11,13 +11,13 @@ type SaveImgResponse struct {
 	Name string
 }
 
-func (app *App) SaveImg(resp gohttp.Response, dir, saveName string) SaveImgResponse {
+func (app *App) SaveImg(resp gorequest.Response, dir, saveName string) SaveImgResponse {
 	// 返回是二进制图片，或者json错误
-	if resp.Header.Get("Content-Type") == "image/jpeg" || resp.Header.Get("Content-Type") == "image/png" {
+	if resp.ResponseHeader.Get("Content-Type") == "image/jpeg" || resp.ResponseHeader.Get("Content-Type") == "image/png" {
 		// 保存在output目录
 		outputFileName := saveName
 
-		if resp.Header.Get("Content-Type") == "image/jpeg" {
+		if resp.ResponseHeader.Get("Content-Type") == "image/jpeg" {
 			outputFileName = outputFileName + ".jpg"
 		} else {
 			outputFileName = outputFileName + ".png"
@@ -30,7 +30,7 @@ func (app *App) SaveImg(resp gohttp.Response, dir, saveName string) SaveImgRespo
 			os.Mkdir(dir, 0755)
 			goto here
 		}
-		f.Write(resp.Body)
+		f.Write(resp.ResponseBody)
 		f.Close()
 		return SaveImgResponse{
 			Path: dir + outputFileName,

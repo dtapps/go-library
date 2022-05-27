@@ -1,6 +1,9 @@
 package wikeyun
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type RestPowerQueryResponse struct {
 	Code string `json:"code"`
@@ -21,22 +24,25 @@ type RestPowerQueryResponse struct {
 type RestPowerQueryResult struct {
 	Result RestPowerQueryResponse // 结果
 	Body   []byte                 // 内容
+	Http   gorequest.Response     // 请求
 	Err    error                  // 错误
 }
 
-func NewRestPowerQueryResult(result RestPowerQueryResponse, body []byte, err error) *RestPowerQueryResult {
-	return &RestPowerQueryResult{Result: result, Body: body, Err: err}
+func NewRestPowerQueryResult(result RestPowerQueryResponse, body []byte, http gorequest.Response, err error) *RestPowerQueryResult {
+	return &RestPowerQueryResult{Result: result, Body: body, Http: http, Err: err}
 }
 
+// RestPowerQuery 电费订单查询
+// https://open.wikeyun.cn/#/apiDocument/9/document/313
 func (app *App) RestPowerQuery(orderNumber string) *RestPowerQueryResult {
 	// 参数
 	param := NewParams()
-	param.Set("order_number", orderNumber) // 官方订单号
+	param.Set("order_number", orderNumber) // 平台单号
 	params := app.NewParamsWith(param)
 	// 请求
-	body, err := app.request("https://router.wikeyun.cn/rest/Power/query", params)
+	request, err := app.request("https://router.wikeyun.cn/rest/Power/query", params)
 	// 定义
 	var response RestPowerQueryResponse
-	err = json.Unmarshal(body, &response)
-	return NewRestPowerQueryResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewRestPowerQueryResult(response, request.ResponseBody, request, err)
 }

@@ -3,6 +3,7 @@ package wechatopen
 import (
 	"encoding/json"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -25,21 +26,32 @@ type WxaGetTemplateListResponse struct {
 type WxaGetTemplateListResult struct {
 	Result WxaGetTemplateListResponse // 结果
 	Body   []byte                     // 内容
+	Http   gorequest.Response         // 请求
 	Err    error                      // 错误
 }
 
-func NewWxaGetTemplateListResult(result WxaGetTemplateListResponse, body []byte, err error) *WxaGetTemplateListResult {
-	return &WxaGetTemplateListResult{Result: result, Body: body, Err: err}
+func NewWxaGetTemplateListResult(result WxaGetTemplateListResponse, body []byte, http gorequest.Response, err error) *WxaGetTemplateListResult {
+	return &WxaGetTemplateListResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // WxaGetTemplateList 获取代码模板列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/gettemplatelist.html
 func (app *App) WxaGetTemplateList() *WxaGetTemplateListResult {
-	app.componentAccessToken = app.GetComponentAccessToken()
 	// 请求
-	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/gettemplatelist?access_token=%s", app.componentAccessToken), map[string]interface{}{}, http.MethodGet)
+	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/gettemplatelist?access_token=%s", app.GetComponentAccessToken()), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response WxaGetTemplateListResponse
-	err = json.Unmarshal(body, &response)
-	return NewWxaGetTemplateListResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewWxaGetTemplateListResult(response, request.ResponseBody, request, err)
+}
+
+// ErrcodeInfo 错误描述
+func (resp *WxaGetTemplateListResult) ErrcodeInfo() string {
+	switch resp.Result.Errcode {
+	case 43001:
+		return "请使用GET，不要使用post"
+	case 85064:
+		return "找不到模板"
+	}
+	return "系统繁忙"
 }

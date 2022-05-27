@@ -3,6 +3,7 @@ package ejiaofei
 import (
 	"encoding/xml"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -23,11 +24,12 @@ type ChOngZhiJkOrdersResponse struct {
 type ChOngZhiJkOrdersResult struct {
 	Result ChOngZhiJkOrdersResponse // 结果
 	Body   []byte                   // 内容
+	Http   gorequest.Response       // 请求
 	Err    error                    // 错误
 }
 
-func NewChOngZhiJkOrdersResult(result ChOngZhiJkOrdersResponse, body []byte, err error) *ChOngZhiJkOrdersResult {
-	return &ChOngZhiJkOrdersResult{Result: result, Body: body, Err: err}
+func NewChOngZhiJkOrdersResult(result ChOngZhiJkOrdersResponse, body []byte, http gorequest.Response, err error) *ChOngZhiJkOrdersResult {
+	return &ChOngZhiJkOrdersResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // ChOngZhiJkOrders 话费充值接口
@@ -43,11 +45,11 @@ func (app *App) ChOngZhiJkOrders(orderID string, face int, account string) *ChOn
 	param.Set("amount", 1)
 	params := app.NewParamsWith(param)
 	// 签名
-	app.signStr = fmt.Sprintf("userid%vpwd%vorderid%vface%vaccount%vamount1", app.UserID, app.Pwd, orderID, face, account)
+	app.signStr = fmt.Sprintf("userid%vpwd%vorderid%vface%vaccount%vamount1", app.userId, app.pwd, orderID, face, account)
 	// 请求
-	body, err := app.request("http://api.ejiaofei.net:11140/chongzhi_jkorders.do", params, http.MethodGet)
+	request, err := app.request("http://api.ejiaofei.net:11140/chongzhi_jkorders.do", params, http.MethodGet)
 	// 定义
 	var response ChOngZhiJkOrdersResponse
-	err = xml.Unmarshal(body, &response)
-	return NewChOngZhiJkOrdersResult(response, body, err)
+	err = xml.Unmarshal(request.ResponseBody, &response)
+	return NewChOngZhiJkOrdersResult(response, request.ResponseBody, request, err)
 }

@@ -1,6 +1,9 @@
 package kashangwl
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type ApiProductRechargeParamsResponse struct {
 	Code    string `json:"code"`
@@ -18,11 +21,12 @@ type ApiProductRechargeParamsResponse struct {
 type ApiProductRechargeParamsResult struct {
 	Result ApiProductRechargeParamsResponse // 结果
 	Body   []byte                           // 内容
+	Http   gorequest.Response               // 请求
 	Err    error                            // 错误
 }
 
-func NewApiProductRechargeParamsResult(result ApiProductRechargeParamsResponse, body []byte, err error) *ApiProductRechargeParamsResult {
-	return &ApiProductRechargeParamsResult{Result: result, Body: body, Err: err}
+func NewApiProductRechargeParamsResult(result ApiProductRechargeParamsResponse, body []byte, http gorequest.Response, err error) *ApiProductRechargeParamsResult {
+	return &ApiProductRechargeParamsResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // ApiProductRechargeParams 接口说明
@@ -32,9 +36,9 @@ func (app App) ApiProductRechargeParams(notMustParams ...Params) *ApiProductRech
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
-	body, err := app.request("http://www.kashangwl.com/api/product/recharge-params", params)
+	request, err := app.request("http://www.kashangwl.com/api/product/recharge-params", params)
 	// 定义
 	var response ApiProductRechargeParamsResponse
-	err = json.Unmarshal(body, &response)
-	return NewApiProductRechargeParamsResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewApiProductRechargeParamsResult(response, request.ResponseBody, request, err)
 }

@@ -5,6 +5,6 @@ func (app *App) RestOilOrderQuery(notMustParams ...Params) (body []byte, err err
 	// 参数
 	params := app.NewParamsWith(notMustParams...)
 	// 请求
-	body, err = app.request("https://router.wikeyun.cn/rest/Oil/query", params)
-	return body, err
+	request, err := app.request("https://router.wikeyun.cn/rest/Oil/query", params)
+	return request.ResponseBody, err
 }

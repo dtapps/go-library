@@ -1,9 +1,9 @@
 package ejiaofei
 
 import (
-	"encoding/json"
 	"encoding/xml"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -37,24 +37,24 @@ type GprsChOngZhiAdvanceResponse struct {
 type GprsChOngZhiAdvanceResult struct {
 	Result GprsChOngZhiAdvanceResponse // 结果
 	Body   []byte                      // 内容
+	Http   gorequest.Response          // 请求
 	Err    error                       // 错误
 }
 
-func NewGprsChOngZhiAdvanceResult(result GprsChOngZhiAdvanceResponse, body []byte, err error) *GprsChOngZhiAdvanceResult {
-	return &GprsChOngZhiAdvanceResult{Result: result, Body: body, Err: err}
+func NewGprsChOngZhiAdvanceResult(result GprsChOngZhiAdvanceResponse, body []byte, http gorequest.Response, err error) *GprsChOngZhiAdvanceResult {
+	return &GprsChOngZhiAdvanceResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // GprsChOngZhiAdvance 流量充值接口
-func (app *App) GprsChOngZhiAdvance(param GprsChOngZhiAdvanceParams) *GprsChOngZhiAdvanceResult {
+func (app *App) GprsChOngZhiAdvance(notMustParams ...Params) *GprsChOngZhiAdvanceResult {
+	// 参数
+	params := app.NewParamsWith(notMustParams...)
 	// 签名
-	app.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vgprs%varea%veffecttime%vvalidity%vtimes%v", app.UserID, app.Pwd, param.OrderID, param.Account, param.Gprs, param.Area, param.EffectTime, param.Validity, param.Times)
+	app.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vgprs%varea%veffecttime%vvalidity%vtimes%v", app.userId, app.pwd, params["orderid"], params["account"], params["gprs"], params["area"], params["effecttime"], params["validity"], params["times"])
 	// 请求
-	b, _ := json.Marshal(&param)
-	var params map[string]interface{}
-	_ = json.Unmarshal(b, &params)
-	body, err := app.request("http://api.ejiaofei.net:11140/gprsChongzhiAdvance.do", params, http.MethodGet)
+	request, err := app.request("http://api.ejiaofei.net:11140/gprsChongzhiAdvance.do", params, http.MethodGet)
 	// 定义
 	var response GprsChOngZhiAdvanceResponse
-	err = xml.Unmarshal(body, &response)
-	return NewGprsChOngZhiAdvanceResult(response, body, err)
+	err = xml.Unmarshal(request.ResponseBody, &response)
+	return NewGprsChOngZhiAdvanceResult(response, request.ResponseBody, request, err)
 }

@@ -2,6 +2,7 @@ package pintoto
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type ApiOrderCreateSoonOrder struct {
@@ -17,7 +18,7 @@ type ApiOrderCreateSoonOrder struct {
 	TestType         int    `json:"testType"`                // 仅当为调用测试环境时候，此字段有用， 可模拟秒出票结果。 200 模拟出票成功结果 201 模拟正在出票中结果 500模拟出票失败结果
 }
 
-type ApiOrderCreateSoonOrderResult struct {
+type ApiOrderCreateSoonOrderResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 	Data    struct {
@@ -29,8 +30,19 @@ type ApiOrderCreateSoonOrderResult struct {
 	Success bool `json:"success"`
 }
 
+type ApiOrderCreateSoonOrderResult struct {
+	Result ApiOrderCreateSoonOrderResponse // 结果
+	Body   []byte                          // 内容
+	Http   gorequest.Response              // 请求
+	Err    error                           // 错误
+}
+
+func NewApiOrderCreateSoonOrderResult(result ApiOrderCreateSoonOrderResponse, body []byte, http gorequest.Response, err error) *ApiOrderCreateSoonOrderResult {
+	return &ApiOrderCreateSoonOrderResult{Result: result, Body: body, Http: http, Err: err}
+}
+
 // ApiOrderCreateSoonOrder 秒出单下单 https://www.showdoc.com.cn/1154868044931571/6437295495912025
-func (app *App) ApiOrderCreateSoonOrder(param ApiOrderCreateSoonOrder) (result ApiOrderCreateSoonOrderResult, err error) {
+func (app *App) ApiOrderCreateSoonOrder(param ApiOrderCreateSoonOrder) *ApiOrderCreateSoonOrderResult {
 	// api params
 	params := map[string]interface{}{}
 	b, _ := json.Marshal(&param)
@@ -39,12 +51,9 @@ func (app *App) ApiOrderCreateSoonOrder(param ApiOrderCreateSoonOrder) (result A
 	for k, v := range m {
 		params[k] = v
 	}
-	body, err := app.request("https://movieapi2.pintoto.cn/api/order/create-soon-order", params)
-	if err != nil {
-		return
-	}
-	if err = json.Unmarshal(body, &result); err != nil {
-		return
-	}
-	return
+	request, err := app.request("https://movieapi2.pintoto.cn/api/order/create-soon-order", params)
+	// 定义
+	var response ApiOrderCreateSoonOrderResponse
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewApiOrderCreateSoonOrderResult(response, request.ResponseBody, request, err)
 }

@@ -2,6 +2,7 @@ package kashangwl
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type ApiOuterOrderResponse struct {
@@ -40,11 +41,12 @@ type ApiOuterOrderResponse struct {
 type ApiOuterOrderResult struct {
 	Result ApiOuterOrderResponse // 结果
 	Body   []byte                // 内容
+	Http   gorequest.Response    // 请求
 	Err    error                 // 错误
 }
 
-func NewApiOuterOrderResult(result ApiOuterOrderResponse, body []byte, err error) *ApiOuterOrderResult {
-	return &ApiOuterOrderResult{Result: result, Body: body, Err: err}
+func NewApiOuterOrderResult(result ApiOuterOrderResponse, body []byte, http gorequest.Response, err error) *ApiOuterOrderResult {
+	return &ApiOuterOrderResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // ApiOuterOrder 使用外部订单号获取单个订单信息
@@ -56,9 +58,9 @@ func (app App) ApiOuterOrder(orderId string) *ApiOuterOrderResult {
 	param.Set("outer_order_id", orderId)
 	params := app.NewParamsWith(param)
 	// 请求
-	body, err := app.request("http://www.kashangwl.com/api/outer-order", params)
+	request, err := app.request("http://www.kashangwl.com/api/outer-order", params)
 	// 定义
 	var response ApiOuterOrderResponse
-	err = json.Unmarshal(body, &response)
-	return NewApiOuterOrderResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewApiOuterOrderResult(response, request.ResponseBody, request, err)
 }

@@ -14,14 +14,14 @@ import (
 // ResponseServeHttpVerifyTicket 验证票据推送
 type ResponseServeHttpVerifyTicket struct {
 	XMLName               xml.Name
-	AppId                 string `xml:"AppId" json:"AppId"`                                 // 第三方平台 appid
+	AppId                 string `xml:"appId" json:"appId"`                                 // 第三方平台 appid
 	CreateTime            int64  `xml:"CreateTime" json:"CreateTime"`                       // 时间戳，单位：s
 	InfoType              string `xml:"InfoType" json:"InfoType"`                           // 固定为："component_verify_ticket"
 	ComponentVerifyTicket string `xml:"ComponentVerifyTicket" json:"ComponentVerifyTicket"` // Ticket 内容
 }
 
 type cipherRequestHttpBody struct {
-	AppId   string `xml:"AppId" json:"AppId"`     // 第三方平台 appid
+	AppId   string `xml:"appId" json:"appId"`     // 第三方平台 appid
 	Encrypt string `xml:"Encrypt" json:"Encrypt"` // 加密内容
 }
 
@@ -57,7 +57,7 @@ func (app *App) ServeHttpVerifyTicket(r *http.Request) (resp *ResponseServeHttpV
 		return resp, errors.New("未找到随机数参数")
 	}
 
-	wantSignature = Sign(app.MessageToken, timestamp, nonce)
+	wantSignature = Sign(app.messageToken, timestamp, nonce)
 	if haveSignature != wantSignature {
 		return resp, errors.New("签名错误")
 	}
@@ -96,9 +96,9 @@ func (app *App) ServeHttpVerifyTicket(r *http.Request) (resp *ResponseServeHttpV
 		return resp, errors.New(fmt.Sprintf("Encrypt 解码字符串错误：%v", err))
 	}
 
-	AesKey, err := base64.StdEncoding.DecodeString(app.MessageKey + "=")
+	AesKey, err := base64.StdEncoding.DecodeString(app.messageKey + "=")
 	if err != nil {
-		return resp, errors.New(fmt.Sprintf("MessageKey 解码字符串错误：%v", err))
+		return resp, errors.New(fmt.Sprintf("messageKey 解码字符串错误：%v", err))
 	}
 
 	msg, err := AesDecrypt(cipherData, AesKey)

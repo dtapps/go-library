@@ -2,9 +2,10 @@ package pintoto
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
-type GetHotListResult struct {
+type GetHotListResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 	Data    struct {
@@ -29,20 +30,28 @@ type GetHotListResult struct {
 	Success bool `json:"success"`
 }
 
+type GetHotListResult struct {
+	Result GetHotListResponse // 结果
+	Body   []byte             // 内容
+	Http   gorequest.Response // 请求
+	Err    error              // 错误
+}
+
+func NewGetHotListResult(result GetHotListResponse, body []byte, http gorequest.Response, err error) *GetHotListResult {
+	return &GetHotListResult{Result: result, Body: body, Http: http, Err: err}
+}
+
 // GetHotList 正在热映 https://www.showdoc.com.cn/1154868044931571/5866125707634369
-func (app *App) GetHotList(cityId int) (result GetHotListResult, err error) {
+func (app *App) GetHotList(cityId int) *GetHotListResult {
 	// 参数
 	param := NewParams()
 	param.Set("cityId", cityId)
 	// 转换
 	params := app.NewParamsWith(param)
 	// 请求
-	body, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-hot-list", params)
-	if err != nil {
-		return
-	}
-	if err = json.Unmarshal(body, &result); err != nil {
-		return
-	}
-	return
+	request, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-hot-list", params)
+	// 定义
+	var response GetHotListResponse
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewGetHotListResult(response, request.ResponseBody, request, err)
 }

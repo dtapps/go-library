@@ -3,6 +3,7 @@ package ejiaofei
 import (
 	"encoding/xml"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -16,21 +17,22 @@ type MoneyJkUserResponse struct {
 type MoneyJkUserResult struct {
 	Result MoneyJkUserResponse // 结果
 	Body   []byte              // 内容
+	Http   gorequest.Response  // 请求
 	Err    error               // 错误
 }
 
-func NewMoneyJkUserResult(result MoneyJkUserResponse, body []byte, err error) *MoneyJkUserResult {
-	return &MoneyJkUserResult{Result: result, Body: body, Err: err}
+func NewMoneyJkUserResult(result MoneyJkUserResponse, body []byte, http gorequest.Response, err error) *MoneyJkUserResult {
+	return &MoneyJkUserResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // MoneyJkUser 用户余额查询
 func (app *App) MoneyJkUser() *MoneyJkUserResult {
 	// 签名
-	app.signStr = fmt.Sprintf("userid%vpwd%v", app.UserID, app.Pwd)
+	app.signStr = fmt.Sprintf("userid%vpwd%v", app.userId, app.pwd)
 	// 请求
-	body, err := app.request("http://api.ejiaofei.net:11140/money_jkuser.do", map[string]interface{}{}, http.MethodGet)
+	request, err := app.request("http://api.ejiaofei.net:11140/money_jkuser.do", map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response MoneyJkUserResponse
-	err = xml.Unmarshal(body, &response)
-	return NewMoneyJkUserResult(response, body, err)
+	err = xml.Unmarshal(request.ResponseBody, &response)
+	return NewMoneyJkUserResult(response, request.ResponseBody, request, err)
 }

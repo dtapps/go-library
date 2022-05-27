@@ -2,6 +2,7 @@ package eastiot
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -28,20 +29,21 @@ type IotApiQueryUserPkgInfoResponse struct {
 type IotApiQueryUserPkgInfoResult struct {
 	Result IotApiQueryUserPkgInfoResponse // 结果
 	Body   []byte                         // 内容
+	Http   gorequest.Response             // 请求
 	Err    error                          // 错误
 }
 
-func NewIotApiQueryUserPkgInfoResult(result IotApiQueryUserPkgInfoResponse, body []byte, err error) *IotApiQueryUserPkgInfoResult {
-	return &IotApiQueryUserPkgInfoResult{Result: result, Body: body, Err: err}
+func NewIotApiQueryUserPkgInfoResult(result IotApiQueryUserPkgInfoResponse, body []byte, http gorequest.Response, err error) *IotApiQueryUserPkgInfoResult {
+	return &IotApiQueryUserPkgInfoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // IotApiQueryUserPkgInfo 账户可用流量包查询
 // https://www.showdoc.com.cn/916774523755909/4850094776758927
 func (app *App) IotApiQueryUserPkgInfo() *IotApiQueryUserPkgInfoResult {
 	// 请求
-	body, err := app.request("http://m2m.eastiot.net/Api/IotApi/queryUserPkgInfo", map[string]interface{}{}, http.MethodPost)
+	request, err := app.request("http://m2m.eastiot.net/Api/IotApi/queryUserPkgInfo", map[string]interface{}{}, http.MethodPost)
 	// 定义
 	var response IotApiQueryUserPkgInfoResponse
-	err = json.Unmarshal(body, &response)
-	return NewIotApiQueryUserPkgInfoResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewIotApiQueryUserPkgInfoResult(response, request.ResponseBody, request, err)
 }

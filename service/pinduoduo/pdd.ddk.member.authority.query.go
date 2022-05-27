@@ -1,6 +1,9 @@
 package pinduoduo
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type MemberAuthorityQueryResponse struct {
 	AuthorityQueryResponse struct {
@@ -12,11 +15,12 @@ type MemberAuthorityQueryResponse struct {
 type MemberAuthorityQueryResult struct {
 	Result MemberAuthorityQueryResponse // 结果
 	Body   []byte                       // 内容
+	Http   gorequest.Response           // 请求
 	Err    error                        // 错误
 }
 
-func NewMemberAuthorityQueryResult(result MemberAuthorityQueryResponse, body []byte, err error) *MemberAuthorityQueryResult {
-	return &MemberAuthorityQueryResult{Result: result, Body: body, Err: err}
+func NewMemberAuthorityQueryResult(result MemberAuthorityQueryResponse, body []byte, http gorequest.Response, err error) *MemberAuthorityQueryResult {
+	return &MemberAuthorityQueryResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // MemberAuthorityQuery 查询是否绑定备案
@@ -26,9 +30,9 @@ func (app *App) MemberAuthorityQuery(notMustParams ...Params) *MemberAuthorityQu
 	params := NewParamsWithType("pdd.ddk.member.authority.query", notMustParams...)
 	params.Set("pid", app.Pid)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response MemberAuthorityQueryResponse
-	err = json.Unmarshal(body, &response)
-	return NewMemberAuthorityQueryResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewMemberAuthorityQueryResult(response, request.ResponseBody, request, err)
 }

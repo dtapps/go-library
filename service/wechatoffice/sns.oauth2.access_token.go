@@ -3,6 +3,7 @@ package wechatoffice
 import (
 	"encoding/json"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -17,20 +18,21 @@ type SnsOauth2AccessTokenResponse struct {
 type SnsOauth2AccessTokenResult struct {
 	Result SnsOauth2AccessTokenResponse // 结果
 	Body   []byte                       // 内容
+	Http   gorequest.Response           // 请求
 	Err    error                        // 错误
 }
 
-func NewSnsOauth2AccessTokenResult(result SnsOauth2AccessTokenResponse, body []byte, err error) *SnsOauth2AccessTokenResult {
-	return &SnsOauth2AccessTokenResult{Result: result, Body: body, Err: err}
+func NewSnsOauth2AccessTokenResult(result SnsOauth2AccessTokenResponse, body []byte, http gorequest.Response, err error) *SnsOauth2AccessTokenResult {
+	return &SnsOauth2AccessTokenResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // SnsOauth2AccessToken 通过code换取网页授权access_token
 // https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html#0
 func (app *App) SnsOauth2AccessToken(code string) *SnsOauth2AccessTokenResult {
 	// 请求
-	body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code", app.AppId, app.AppSecret, code), map[string]interface{}{}, http.MethodGet)
+	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code", app.appId, app.appSecret, code), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response SnsOauth2AccessTokenResponse
-	err = json.Unmarshal(body, &response)
-	return NewSnsOauth2AccessTokenResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewSnsOauth2AccessTokenResult(response, request.ResponseBody, request, err)
 }

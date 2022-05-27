@@ -2,9 +2,10 @@ package pintoto
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
-type GetSoonListResult struct {
+type GetSoonListResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 	Data    struct {
@@ -29,20 +30,28 @@ type GetSoonListResult struct {
 	Success bool `json:"success"`
 }
 
+type GetSoonListResult struct {
+	Result GetSoonListResponse // 结果
+	Body   []byte              // 内容
+	Http   gorequest.Response  // 请求
+	Err    error               // 错误
+}
+
+func NewGetSoonListResult(result GetSoonListResponse, body []byte, http gorequest.Response, err error) *GetSoonListResult {
+	return &GetSoonListResult{Result: result, Body: body, Http: http, Err: err}
+}
+
 // GetSoonList 即将上映 https://www.showdoc.com.cn/1154868044931571/5866125707634369
-func (app *App) GetSoonList(cityId int) (result GetSoonListResult, err error) {
+func (app *App) GetSoonList(cityId int) *GetSoonListResult {
 	// 参数
 	param := NewParams()
 	param.Set("cityId", cityId)
 	// 转换
 	params := app.NewParamsWith(param)
 	// 请求
-	body, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-soon-list", params)
-	if err != nil {
-		return
-	}
-	if err = json.Unmarshal(body, &result); err != nil {
-		return
-	}
-	return
+	request, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-soon-list", params)
+	// 定义
+	var response GetSoonListResponse
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewGetSoonListResult(response, request.ResponseBody, request, err)
 }

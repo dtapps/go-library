@@ -3,7 +3,7 @@ package wechatminiprogram
 import (
 	"encoding/json"
 	"fmt"
-	"go.dtapp.net/library/utils/gohttp"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -17,11 +17,11 @@ type CgiBinTokenResponse struct {
 type CgiBinTokenResult struct {
 	Result CgiBinTokenResponse // 结果
 	Body   []byte              // 内容
-	Http   gohttp.Response     // 请求
+	Http   gorequest.Response  // 请求
 	Err    error               // 错误
 }
 
-func NewCgiBinTokenResult(result CgiBinTokenResponse, body []byte, http gohttp.Response, err error) *CgiBinTokenResult {
+func NewCgiBinTokenResult(result CgiBinTokenResponse, body []byte, http gorequest.Response, err error) *CgiBinTokenResult {
 	return &CgiBinTokenResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -30,9 +30,9 @@ func NewCgiBinTokenResult(result CgiBinTokenResponse, body []byte, http gohttp.R
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/access-token/auth.getAccessToken.html
 func (app *App) CgiBinToken() *CgiBinTokenResult {
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", app.AppId, app.AppSecret), map[string]interface{}{}, http.MethodGet)
+	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", app.appId, app.appSecret), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response CgiBinTokenResponse
-	err = json.Unmarshal(request.Body, &response)
-	return NewCgiBinTokenResult(response, request.Body, request, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewCgiBinTokenResult(response, request.ResponseBody, request, err)
 }

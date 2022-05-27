@@ -2,6 +2,7 @@ package pintoto
 
 import (
 	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type GetCityAreaResponse struct {
@@ -19,11 +20,12 @@ type GetCityAreaResponse struct {
 type GetCityAreaResult struct {
 	Result GetCityAreaResponse // 结果
 	Body   []byte              // 内容
+	Http   gorequest.Response  // 请求
 	Err    error               // 错误
 }
 
-func NewGetCityAreaResult(result GetCityAreaResponse, body []byte, err error) *GetCityAreaResult {
-	return &GetCityAreaResult{Result: result, Body: body, Err: err}
+func NewGetCityAreaResult(result GetCityAreaResponse, body []byte, http gorequest.Response, err error) *GetCityAreaResult {
+	return &GetCityAreaResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // GetCityArea 城市下区域
@@ -34,8 +36,8 @@ func (app *App) GetCityArea(cityId int) *GetCityAreaResult {
 	param.Set("cityId", cityId)
 	params := app.NewParamsWith(param)
 	// 请求
-	body, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-city-area", params)
+	request, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-city-area", params)
 	var response GetCityAreaResponse
-	err = json.Unmarshal(body, &response)
-	return NewGetCityAreaResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewGetCityAreaResult(response, request.ResponseBody, request, err)
 }

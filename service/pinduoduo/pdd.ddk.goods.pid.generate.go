@@ -1,6 +1,9 @@
 package pinduoduo
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"go.dtapp.net/library/utils/gorequest"
+)
 
 type GoodsPidGenerateResponse struct {
 	PIdGenerateResponse struct {
@@ -17,11 +20,12 @@ type GoodsPidGenerateResponse struct {
 type GoodsPidGenerateResult struct {
 	Result GoodsPidGenerateResponse // 结果
 	Body   []byte                   // 内容
+	Http   gorequest.Response       // 请求
 	Err    error                    // 错误
 }
 
-func NewGoodsPidGenerateResult(result GoodsPidGenerateResponse, body []byte, err error) *GoodsPidGenerateResult {
-	return &GoodsPidGenerateResult{Result: result, Body: body, Err: err}
+func NewGoodsPidGenerateResult(result GoodsPidGenerateResponse, body []byte, http gorequest.Response, err error) *GoodsPidGenerateResult {
+	return &GoodsPidGenerateResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // GoodsPidGenerate 创建多多进宝推广位
@@ -30,9 +34,9 @@ func (app *App) GoodsPidGenerate(notMustParams ...Params) *GoodsPidGenerateResul
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.pid.generate", notMustParams...)
 	// 请求
-	body, err := app.request(params)
+	request, err := app.request(params)
 	// 定义
 	var response GoodsPidGenerateResponse
-	err = json.Unmarshal(body, &response)
-	return NewGoodsPidGenerateResult(response, body, err)
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return NewGoodsPidGenerateResult(response, request.ResponseBody, request, err)
 }
