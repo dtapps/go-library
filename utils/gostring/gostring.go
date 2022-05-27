@@ -4,10 +4,19 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"strconv"
 	"strings"
 	"unicode/utf8"
 )
+
+// ToString 转换成string
+func ToString(value interface{}) string {
+	if value == nil {
+		return ""
+	}
+	return fmt.Sprint(value)
+}
 
 // ToFloat64 string到float64
 func ToFloat64(s string) float64 {
@@ -86,6 +95,11 @@ func TrimLastChar(s string) string {
 // Split 字符串分隔
 func Split(s string, sep string) []string {
 	return strings.Split(s, sep)
+}
+
+// Contains 判断字符串是否包含某个字符
+func Contains(s, substr string) bool {
+	return strings.Contains(s, substr)
 }
 
 func NumericalToString(value interface{}) (string, bool) {

@@ -5,6 +5,9 @@
 - decimal：增加 `Multiply` 方法
 - env：增加 `GetEnvs` 方法
 - ssh：优化
+- string：优化
+- string：增加 `ToString` 方法
+- string：增加 `Contains` 方法
 
 ## v1.0.39 / 2021-12-27
 
