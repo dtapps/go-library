@@ -1,3 +1,7 @@
+## v1.0.46 / 2022年05月27日
+
+- update mod url
+
 ## v1.0.39 / 2021-12-27
 
 - update service
