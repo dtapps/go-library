@@ -4,6 +4,7 @@ func Grouping() {
 
 }
 
+// TurnString []string 转 string
 func TurnString(ss []string) (s string) {
 	sl := len(ss)
 	for k, v := range ss {
