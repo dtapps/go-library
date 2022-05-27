@@ -449,7 +449,7 @@ golang.org/x/text/width
 # golang.org/x/time v0.0.0-20220411224347-583f2d630306
 ## explicit
 golang.org/x/time/rate
-# google.golang.org/genproto v0.0.0-20220526192754-51939a95c655
+# google.golang.org/genproto v0.0.0-20220527130721-00d5c0f3be58
 ## explicit; go 1.15
 google.golang.org/genproto/googleapis/api/annotations
 google.golang.org/genproto/googleapis/rpc/status
