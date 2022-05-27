@@ -5,7 +5,7 @@
 .vscode
 *.log
 git.sh
-gitmod.sh
+gomod.sh
 /test/
 /service/*/*_test.go
 /utils/*/*_test.go

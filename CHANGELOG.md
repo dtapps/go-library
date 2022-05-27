@@ -4,6 +4,7 @@
 - random：增加泛型
 - decimal：增加 `Multiply` 方法
 - env：增加 `GetEnvs` 方法
+- ssh：优化
 
 ## v1.0.39 / 2021-12-27
 
