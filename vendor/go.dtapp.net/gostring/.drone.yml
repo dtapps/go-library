@@ -1,0 +1,11 @@
+kind: pipeline
+type: docker
+name: clone
+
+steps:
+  - name: test-golang
+    image: golang:1.18
+    commands:
+      - go env -w GO111MODULE=on
+      - go env -w GOPROXY=https://goproxy.cn,direct
+      - go test -v ./...

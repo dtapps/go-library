@@ -1,0 +1,9 @@
+.env
+.git
+.svn
+.idea
+.vscode
+*.log
+gomod.sh
+/vendor/
+time_test.go
