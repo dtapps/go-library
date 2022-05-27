@@ -9,6 +9,7 @@
 - string：增加 `ToString` 方法
 - string：增加 `Contains` 方法
 - md5：增加 `Get16MD5EncodeToUpper` 方法
+- php：更新
 
 ## v1.0.39 / 2021-12-27
 
