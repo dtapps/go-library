@@ -1,0 +1,30 @@
+// 版本
+syntax = "proto3";
+
+// 包名
+package pb;
+
+// 别名
+option go_package = "../pb";
+
+// 定义服务
+service Task{
+  // 普通一元方法
+  rpc UnaryTask(TaskRequest) returns (TaskResponse){};
+  // 服务端推送流
+  rpc ServerStreamingTask(TaskRequest) returns (stream TaskResponse){};
+  // 客户端推送流
+  rpc ClientStreamingTask(stream TaskRequest) returns (TaskResponse){};
+  // 双向推送流
+  rpc BidirectionalStreamingTask(stream TaskRequest) returns (stream TaskResponse){};
+}
+
+// 请求消息
+message TaskRequest {
+  string message = 1;
+}
+
+// 响应消息
+message TaskResponse {
+  string message = 1;
+}
