@@ -1,8 +1,8 @@
 package pinduoduo
 
 import (
-	"go.dtapp.net/gojson"
-	"go.dtapp.net/golog"
+	"go.dtapp.net/library/utils/gojson"
+	"go.dtapp.net/library/utils/golog"
 	"go.dtapp.net/library/utils/gorequest"
 	"gorm.io/datatypes"
 )

@@ -1,8 +1,8 @@
 package wechatunion
 
 import (
-	"go.dtapp.net/golog"
-	"go.dtapp.net/goredis"
+	"go.dtapp.net/library/utils/golog"
+	"go.dtapp.net/library/utils/goredis"
 	"go.dtapp.net/library/utils/gorequest"
 	"gorm.io/gorm"
 )

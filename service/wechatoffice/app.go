@@ -1,9 +1,9 @@
 package wechatoffice
 
 import (
-	"go.dtapp.net/golog"
-	"go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/library/utils/golog"
 	"go.dtapp.net/library/utils/goredis"
+	"go.dtapp.net/library/utils/gorequest"
 	"gorm.io/gorm"
 )
 

@@ -1,9 +1,9 @@
 package wechatminiprogram
 
 import (
-	"go.dtapp.net/golog"
-	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gojson"
+	"go.dtapp.net/library/utils/golog"
+	"go.dtapp.net/library/utils/gorequest"
 	"gorm.io/datatypes"
 )
 

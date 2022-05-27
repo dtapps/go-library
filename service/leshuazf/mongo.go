@@ -1,7 +1,7 @@
 package leshuazf
 
 import (
-	"go.dtapp.net/gomongo"
+	"go.dtapp.net/library/utils/gomongo"
 	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )

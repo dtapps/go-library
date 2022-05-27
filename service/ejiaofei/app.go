@@ -2,9 +2,9 @@ package ejiaofei
 
 import (
 	"fmt"
-	"go.dtapp.net/golog"
-	"go.dtapp.net/gomongo"
+	"go.dtapp.net/library/utils/golog"
 	"go.dtapp.net/library/utils/gomd5"
+	"go.dtapp.net/library/utils/gomongo"
 	"go.dtapp.net/library/utils/gorequest"
 	"gorm.io/gorm"
 )

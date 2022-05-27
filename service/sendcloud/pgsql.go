@@ -1,15 +1,15 @@
 package sendcloud
 
 import (
-	"go.dtapp.net/golog"
-	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gojson"
+	"go.dtapp.net/library/utils/golog"
+	"go.dtapp.net/library/utils/gorequest"
 	"gorm.io/datatypes"
 )
 
 // 记录日志
 func (app *App) postgresqlLog(request gorequest.Response) {
-	app.log.Api.Record(golog.ApiPostgresqlLog{
+	app.log.Record(golog.ApiPostgresqlLog{
 		RequestTime:           request.RequestTime,                                              //【请求】时间
 		RequestUri:            request.RequestUri,                                               //【请求】链接
 		RequestUrl:            gorequest.UriParse(request.RequestUri).Url,                       //【请求】链接

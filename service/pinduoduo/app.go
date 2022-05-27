@@ -2,9 +2,9 @@ package pinduoduo
 
 import (
 	"fmt"
-	"go.dtapp.net/golog"
+	"go.dtapp.net/library/utils/golog"
 	"go.dtapp.net/library/utils/gorequest"
-	"go.dtapp.net/gostring"
+	"go.dtapp.net/library/utils/gostring"
 	"gorm.io/gorm"
 	"regexp"
 	"strconv"

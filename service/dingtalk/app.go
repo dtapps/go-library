@@ -1,7 +1,7 @@
 package dingtalk
 
 import (
-	"go.dtapp.net/golog"
+	"go.dtapp.net/library/utils/golog"
 	"go.dtapp.net/library/utils/gorequest"
 	"gorm.io/gorm"
 )
