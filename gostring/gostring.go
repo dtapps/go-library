@@ -98,8 +98,8 @@ func Split(s string, sep string) []string {
 }
 
 // Contains 判断字符串是否包含某个字符
-func Contains(s, substr string) bool {
-	return strings.Contains(s, substr)
+func Contains(s, sep string) bool {
+	return strings.Contains(s, sep)
 }
 
 func NumericalToString(value interface{}) (string, bool) {
