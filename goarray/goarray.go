@@ -18,9 +18,9 @@ func TurnString(ss []string) (s string) {
 }
 
 // RemoveDuplicateElement 去重
-func RemoveDuplicateElement(ss []string) []string {
-	result := make([]string, 0, len(ss))
-	temp := map[string]struct{}{}
+func RemoveDuplicateElement[T string | int | int16 | int32](ss []T) []T {
+	result := make([]T, 0, len(ss))
+	temp := map[T]struct{}{}
 	for _, item := range ss {
 		if _, ok := temp[item]; !ok {
 			temp[item] = struct{}{}
