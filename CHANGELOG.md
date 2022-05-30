@@ -1,6 +1,8 @@
 ## v2022-05-30
 
 - array：增加 `RemoveDuplicateElement` 去重方法
+- time：增加 `BeforeMinute` 获取n分钟前的时间方法
+- time：增加 `AfterMinute` 获取n分钟后的时间方法
 
 ## v2022-05-27
 

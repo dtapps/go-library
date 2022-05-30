@@ -49,6 +49,20 @@ func (p Pro) AfterSeconds(seconds int) Pro {
 	return p
 }
 
+// BeforeMinute 获取n分钟前的时间
+func (p Pro) BeforeMinute(seconds int) Pro {
+	st, _ := time.ParseDuration(fmt.Sprintf("-%dm", seconds))
+	p.Time = p.Time.Add(st)
+	return p
+}
+
+// AfterMinute 获取n分钟后的时间
+func (p Pro) AfterMinute(seconds int) Pro {
+	st, _ := time.ParseDuration(fmt.Sprintf("+%dm", seconds))
+	p.Time = p.Time.Add(st)
+	return p
+}
+
 // BeforeHour 获取n小时前的时间
 func (p Pro) BeforeHour(hour int) Pro {
 	st, _ := time.ParseDuration(fmt.Sprintf("-%dh", hour))
