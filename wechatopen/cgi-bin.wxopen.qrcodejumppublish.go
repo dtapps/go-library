@@ -36,3 +36,20 @@ func (app *App) CgiBinWxOpenQrCodeJumpPublish(prefix string) *CgiBinWxOpenQrCode
 	err = json.Unmarshal(request.ResponseBody, &response)
 	return NewCgiBinWxOpenQrCodeJumpPublishResult(response, request.ResponseBody, request, err)
 }
+
+// ErrcodeInfo 错误描述
+func (resp *CgiBinWxOpenQrCodeJumpPublishResult) ErrcodeInfo() string {
+	switch resp.Result.Errcode {
+	case 44990:
+		return "接口请求太快（超过5次/秒）"
+	case 85074:
+		return "小程序未发布, 小程序必须先发布代码才可以发布二维码跳转规则"
+	case 85075:
+		return "个人类型小程序无法设置二维码规则"
+	case 85095:
+		return "数据异常，请删除后重新添加"
+	case 886000:
+		return "本月发布次数达到上线（100次）"
+	}
+	return "系统繁忙"
+}
