@@ -1,4 +1,8 @@
-## v1.0.47 / 2022-05-27
+## v2022-05-30
+
+- array：增加 `RemoveDuplicateElement` 去重方法
+
+## v2022-05-27
 
 - mod：优化链接
 - random：增加泛型
