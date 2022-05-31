@@ -1,3 +1,7 @@
+## v2022-05-31
+
+- weChatOpen：增加 `WxaBusinessGetUserPhoneNumber` 方法
+
 ## v2022-05-30
 
 - array：增加 `RemoveDuplicateElement` 去重方法

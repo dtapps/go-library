@@ -6,7 +6,7 @@ require (
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.4+incompatible
 	github.com/allegro/bigcache/v3 v3.0.2
 	github.com/aws/aws-sdk-go v1.44.24
-	github.com/baidubce/bce-sdk-go v0.9.120
+	github.com/baidubce/bce-sdk-go v0.9.121
 	github.com/basgys/goxml2json v1.1.0
 	github.com/bradfitz/gomemcache v0.0.0-20220106215444-fb4bf637b56d
 	github.com/dgraph-io/ristretto v0.1.0
