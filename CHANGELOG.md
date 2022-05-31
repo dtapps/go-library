@@ -1,6 +1,7 @@
 ## v2022-05-31
 
 - weChatOpen：增加 `WxaBusinessGetUserPhoneNumber` 方法
+- log：优化
 
 ## v2022-05-30
 
