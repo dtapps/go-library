@@ -25,10 +25,11 @@ func NewWebhookSendResult(result WebhookSendResponse, body []byte, http goreques
 	return &WebhookSendResult{Result: result, Body: body, Http: http, Err: err}
 }
 
-// WebhookSend https://developer.work.weixin.qq.com/document/path/90372
-func (app *App) WebhookSend(notMustParams ...Params) *WebhookSendResult {
+// WebhookSend 发送应用消息
+// https://developer.work.weixin.qq.com/document/path/90372
+func (app *App) WebhookSend(notMustParams ...gorequest.Params) *WebhookSendResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := app.request(fmt.Sprintf("https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=%s&type=%s", app.key, "text"), params)
 	// 定义
