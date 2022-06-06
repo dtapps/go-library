@@ -7,11 +7,12 @@ import (
 
 // EtcdConfig etcd配置
 type EtcdConfig struct {
-	Endpoints   []string      // 接口 []string{"http://127.0.0.1:2379"}
-	DialTimeout time.Duration // time.Second * 5
-	LocalIP     string        // 本机IP
-	Username    string        // 用户名
-	Password    string        // 密码
+	Endpoints       []string      // 接口 []string{"http://127.0.0.1:2379"}
+	DialTimeout     time.Duration // time.Second * 5
+	LocalIP         string        // 本机IP
+	Username        string        // 用户名
+	Password        string        // 密码
+	CustomDirectory string        // 自定义目录，后面不需要/
 }
 
 // Etcd etcd
@@ -35,12 +36,28 @@ const (
 	JobWorkerDir = "/cron/workers/"
 )
 
+func getJobSaveDir(e Etcd) string {
+	if e.CustomDirectory == "" {
+		return JobSaveDir
+	} else {
+		return JobSaveDir + e.CustomDirectory + "/"
+	}
+}
+
+func getJobWorkerDir(e Etcd) string {
+	if e.CustomDirectory == "" {
+		return JobWorkerDir
+	} else {
+		return JobWorkerDir + e.CustomDirectory + "/"
+	}
+}
+
 // GetWatchKey 监听的key
 func (e Etcd) GetWatchKey() string {
-	return JobSaveDir + e.LocalIP
+	return getJobSaveDir(e) + e.LocalIP
 }
 
 // IssueWatchKey 下发的key
 func (e Etcd) IssueWatchKey(ip string) string {
-	return JobSaveDir + ip
+	return getJobSaveDir(e) + ip
 }

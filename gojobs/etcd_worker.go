@@ -31,6 +31,8 @@ func NewEtcdWorker(config *EtcdConfig) (*Etcd, error) {
 		Endpoints:   e.Endpoints,
 		DialTimeout: e.DialTimeout,
 	}
+
+	// 判断有没有配置用户信息
 	if e.Username != "" {
 		v3Config.Username = e.Username
 		v3Config.Password = e.Password
@@ -67,7 +69,7 @@ func (e Etcd) RegisterWorker() {
 
 	for {
 		// 注册路径
-		regKey = JobWorkerDir + e.LocalIP
+		regKey = getJobWorkerDir(e) + e.LocalIP
 		log.Println("租约：", regKey)
 
 		cancelFunc = nil
