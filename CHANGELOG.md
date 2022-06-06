@@ -1,3 +1,7 @@
+## v2022-06-07
+
+- jobs：优化配置
+
 ## v2022-05-31
 
 - weChatOpen：增加 `WxaBusinessGetUserPhoneNumber` 方法

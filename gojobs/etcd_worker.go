@@ -24,11 +24,19 @@ func NewEtcdWorker(config *EtcdConfig) (*Etcd, error) {
 		config.LocalIP = goip.GetOutsideIp()
 	}
 	e.LocalIP = config.LocalIP
+	e.Username = config.Username
+	e.Password = config.Password
 
-	e.Client, err = clientv3.New(clientv3.Config{
+	v3Config := clientv3.Config{
 		Endpoints:   e.Endpoints,
 		DialTimeout: e.DialTimeout,
-	})
+	}
+	if e.Username != "" {
+		v3Config.Username = e.Username
+		v3Config.Password = e.Password
+	}
+
+	e.Client, err = clientv3.New(v3Config)
 	if err != nil {
 		return nil, errors.New("连接失败：" + err.Error())
 	}

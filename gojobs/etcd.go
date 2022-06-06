@@ -10,6 +10,8 @@ type EtcdConfig struct {
 	Endpoints   []string      // 接口 []string{"http://127.0.0.1:2379"}
 	DialTimeout time.Duration // time.Second * 5
 	LocalIP     string        // 本机IP
+	Username    string        // 用户名
+	Password    string        // 密码
 }
 
 // Etcd etcd
