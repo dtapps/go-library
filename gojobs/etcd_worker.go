@@ -26,6 +26,7 @@ func NewEtcdWorker(config *EtcdConfig) (*Etcd, error) {
 	e.LocalIP = config.LocalIP
 	e.Username = config.Username
 	e.Password = config.Password
+	e.CustomDirectory = config.CustomDirectory
 
 	v3Config := clientv3.Config{
 		Endpoints:   e.Endpoints,
