@@ -66,9 +66,6 @@ func (app *App) request(url string, params map[string]interface{}) (resp goreque
 	}
 
 	// 日志
-	if app.mongo != nil && app.mongo.Db != nil {
-		go app.mongoLog(request)
-	}
 	if app.logStatus == true {
 		go app.postgresqlLog(request)
 	}
