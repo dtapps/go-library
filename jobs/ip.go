@@ -2,9 +2,11 @@ package jobs
 
 import (
 	"go.dtapp.net/library/goip"
+	"gorm.io/gorm"
 )
 
-func (app *App) RefreshIp() {
+// RefreshIp 刷新Ip
+func (app *App) RefreshIp(tx *gorm.DB) {
 	xip := goip.GetOutsideIp()
 	if app.OutsideIp == "" || app.OutsideIp == "0.0.0.0" {
 		return
@@ -12,6 +14,6 @@ func (app *App) RefreshIp() {
 	if app.OutsideIp == xip {
 		return
 	}
-	app.Db.Where("ips = ?", app.OutsideIp).Delete(&TaskIp{}) // 删除
+	tx.Where("ips = ?", app.OutsideIp).Delete(&TaskIp{}) // 删除
 	app.OutsideIp = xip
 }

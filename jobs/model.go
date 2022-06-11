@@ -1,6 +1,7 @@
 package jobs
 
 import (
+	"gorm.io/gorm"
 	"log"
 	"strings"
 )
@@ -40,32 +41,32 @@ func (m *Task) TableName() string {
 }
 
 // TaskTake 查询任务
-func (app *App) TaskTake(customId string) (result Task) {
-	app.Db.Where("custom_id = ?", customId).Where("status = ?", TASK_IN).Take(&result)
+func (app *App) TaskTake(tx *gorm.DB, customId string) (result Task) {
+	tx.Where("custom_id = ?", customId).Where("status = ?", TASK_IN).Take(&result)
 	return result
 }
 
 // TaskCustomIdTake 查询任务
-func (app *App) TaskCustomIdTake(Type, customId string) (result Task) {
-	app.Db.Where("type = ?", Type).Where("custom_id = ?", customId).Take(&result)
+func (app *App) TaskCustomIdTake(tx *gorm.DB, Type, customId string) (result Task) {
+	tx.Where("type = ?", Type).Where("custom_id = ?", customId).Take(&result)
 	return result
 }
 
 // TaskCustomIdTakeStatus 查询任务
-func (app *App) TaskCustomIdTakeStatus(Type, customId, status string) (result Task) {
-	app.Db.Where("type = ?", Type).Where("custom_id = ?", customId).Where("status = ?", status).Take(&result)
+func (app *App) TaskCustomIdTakeStatus(tx *gorm.DB, Type, customId, status string) (result Task) {
+	tx.Where("type = ?", Type).Where("custom_id = ?", customId).Where("status = ?", status).Take(&result)
 	return result
 }
 
 // TaskFind 查询任务
-func (app *App) TaskFind(frequency int64) (results []Task) {
-	app.Db.Table("task").Select("task.*").Where("task.frequency = ?", frequency).Where("task.status = ?", TASK_IN).Where("task_ip.ips = ?", app.OutsideIp).Order("task.id asc").Joins("left join task_ip on task_ip.task_type = task.type").Find(&results)
+func (app *App) TaskFind(tx *gorm.DB, frequency int64) (results []Task) {
+	tx.Table("task").Select("task.*").Where("task.frequency = ?", frequency).Where("task.status = ?", TASK_IN).Where("task_ip.ips = ?", app.OutsideIp).Order("task.id asc").Joins("left join task_ip on task_ip.task_type = task.type").Find(&results)
 	return app.taskFindCheck(results)
 }
 
 // TaskFindAll 查询任务
-func (app *App) TaskFindAll(frequency int64) (results []Task) {
-	app.Db.Where("frequency = ?", frequency).Where("status = ?", TASK_IN).Order("id asc").Find(&results)
+func (app *App) TaskFindAll(tx *gorm.DB, frequency int64) (results []Task) {
+	tx.Where("frequency = ?", frequency).Where("status = ?", TASK_IN).Order("id asc").Find(&results)
 	return results
 }
 
@@ -117,8 +118,8 @@ func (m *TaskLogRun) TableName() string {
 }
 
 // TaskLogRunTake 查询任务执行日志
-func (app *App) TaskLogRunTake(taskId uint, runId string) (result TaskLogRun) {
-	app.Db.Select("id", "os", "arch", "outside_ip", "created_at").Where("task_id = ?", taskId).Where("run_id = ?", runId).Take(&result)
+func (app *App) TaskLogRunTake(tx *gorm.DB, taskId uint, runId string) (result TaskLogRun) {
+	tx.Select("id", "os", "arch", "outside_ip", "created_at").Where("task_id = ?", taskId).Where("run_id = ?", runId).Take(&result)
 	return result
 }
 
@@ -133,31 +134,31 @@ func (m *TaskIp) TableName() string {
 	return "task_ip"
 }
 
-func (app *App) TaskIpUpdate(taskType, ips string) int64 {
+func (app *App) TaskIpUpdate(tx *gorm.DB, taskType, ips string) *gorm.DB {
 	var query TaskIp
-	app.Db.Where("task_type = ?", taskType).Where("ips = ?", ips).Take(&query)
+	tx.Where("task_type = ?", taskType).Where("ips = ?", ips).Take(&query)
 	if query.Id != 0 {
-		return query.Id
+		return tx
 	}
-	updateStatus := app.Db.Create(&TaskIp{
+	updateStatus := tx.Create(&TaskIp{
 		TaskType: taskType,
 		Ips:      ips,
 	})
 	if updateStatus.RowsAffected == 0 {
 		log.Println("任务更新失败：", updateStatus.Error)
 	}
-	return updateStatus.RowsAffected
+	return updateStatus
 }
 
 // TaskIpInit 实例任务ip
-func (app *App) TaskIpInit(ips map[string]string) bool {
+func (app *App) TaskIpInit(tx *gorm.DB, ips map[string]string) bool {
 	if app.OutsideIp == "" || app.OutsideIp == "0.0.0.0" {
 		return false
 	}
-	app.Db.Where("ips = ?", app.OutsideIp).Delete(&TaskIp{}) // 删除
+	tx.Where("ips = ?", app.OutsideIp).Delete(&TaskIp{}) // 删除
 	for k, v := range ips {
 		if v == "" {
-			app.TaskIpUpdate(k, app.OutsideIp)
+			app.TaskIpUpdate(tx, k, app.OutsideIp)
 		} else {
 			find := strings.Contains(v, ",")
 			if find == true {
@@ -165,13 +166,13 @@ func (app *App) TaskIpInit(ips map[string]string) bool {
 				parts := strings.Split(v, ",")
 				for _, vv := range parts {
 					if vv == app.OutsideIp {
-						app.TaskIpUpdate(k, app.OutsideIp)
+						app.TaskIpUpdate(tx, k, app.OutsideIp)
 					}
 				}
 			} else {
 				// 不包含
 				if v == app.OutsideIp {
-					app.TaskIpUpdate(k, app.OutsideIp)
+					app.TaskIpUpdate(tx, k, app.OutsideIp)
 				}
 			}
 		}
