@@ -29,12 +29,12 @@ func NewWxaGetAuditStatusResult(result WxaGetAuditStatusResponse, body []byte, h
 
 // WxaGetAuditStatus 查询指定发布审核单的审核状态
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_auditstatus.html
-func (app *App) WxaGetAuditStatus(auditid int64) *WxaGetAuditStatusResult {
+func (c *Client) WxaGetAuditStatus(auditid int64) *WxaGetAuditStatusResult {
 	// 参数
-	params := app.NewParamsWith()
+	params := c.NewParamsWith()
 	params.Set("auditid", auditid)
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/get_auditstatus?access_token=%s", app.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/get_auditstatus?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaGetAuditStatusResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -26,14 +26,14 @@ func NewCgiBinComponentApiStartPushTicketResult(result CgiBinComponentApiStartPu
 
 // CgiBinComponentApiStartPushTicket 启动ticket推送服务
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/component_verify_ticket_service.html
-func (app *App) CgiBinComponentApiStartPushTicket() *CgiBinComponentApiStartPushTicketResult {
+func (c *Client) CgiBinComponentApiStartPushTicket() *CgiBinComponentApiStartPushTicketResult {
 	// 参数
 	param := NewParams()
-	param["component_appid"] = app.componentAppId      // 平台型第三方平台的appid
-	param["component_secret"] = app.componentAppSecret // 平台型第三方平台的APPSECRET
-	params := app.NewParamsWith(param)
+	param["component_appid"] = c.config.ComponentAppId      // 平台型第三方平台的appid
+	param["component_secret"] = c.config.ComponentAppSecret // 平台型第三方平台的APPSECRET
+	params := c.NewParamsWith(param)
 	// 请求
-	request, err := app.request("https://api.weixin.qq.com/cgi-bin/component/api_start_push_ticket", params, http.MethodPost)
+	request, err := c.request("https://api.weixin.qq.com/cgi-bin/component/api_start_push_ticket", params, http.MethodPost)
 	// 定义
 	var response CgiBinComponentApiStartPushTicketResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

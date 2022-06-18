@@ -26,11 +26,11 @@ func NewWxaSubmitAuditResult(result WxaSubmitAuditResponse, body []byte, http go
 
 // WxaSubmitAudit 提交审核
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/submit_audit.html
-func (app *App) WxaSubmitAudit(notMustParams ...Params) *WxaSubmitAuditResult {
+func (c *Client) WxaSubmitAudit(notMustParams ...Params) *WxaSubmitAuditResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := c.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/submit_audit?access_token=%s", app.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/submit_audit?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaSubmitAuditResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

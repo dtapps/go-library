@@ -55,9 +55,9 @@ func NewCgiBinAccountGetAccountBasicInfoResult(result CgiBinAccountGetAccountBas
 
 // CgiBinAccountGetAccountBasicInfo 获取基本信息
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_Basic_Info/Mini_Program_Information_Settings.html
-func (app *App) CgiBinAccountGetAccountBasicInfo() *CgiBinAccountGetAccountBasicInfoResult {
+func (c *Client) CgiBinAccountGetAccountBasicInfo() *CgiBinAccountGetAccountBasicInfoResult {
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/account/getaccountbasicinfo?access_token=%v", app.GetAuthorizerAccessToken()), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/account/getaccountbasicinfo?access_token=%v", c.GetAuthorizerAccessToken()), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response CgiBinAccountGetAccountBasicInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

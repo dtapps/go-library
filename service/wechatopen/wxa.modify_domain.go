@@ -38,11 +38,11 @@ func NewWxaModifyDomainResult(result WxaModifyDomainResponse, body []byte, http 
 
 // WxaModifyDomain 设置服务器域名
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_Basic_Info/Server_Address_Configuration.html
-func (app *App) WxaModifyDomain(notMustParams ...Params) *WxaModifyDomainResult {
+func (c *Client) WxaModifyDomain(notMustParams ...Params) *WxaModifyDomainResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := c.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/modify_domain?access_token=%s", app.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/modify_domain?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaModifyDomainResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

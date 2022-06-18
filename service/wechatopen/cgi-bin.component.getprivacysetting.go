@@ -58,12 +58,12 @@ func NewCgiBinComponentGetPrivacySettingResult(result CgiBinComponentGetPrivacyS
 // CgiBinComponentGetPrivacySetting 查询小程序用户隐私保护指引
 // @privacyVer 1表示现网版本，即，传1则该接口返回的内容是现网版本的；2表示开发版，即，传2则该接口返回的内容是开发版本的。默认是2。
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/privacy_config/get_privacy_setting.html
-func (app *App) CgiBinComponentGetPrivacySetting(privacyVer int) *CgiBinComponentGetPrivacySettingResult {
+func (c *Client) CgiBinComponentGetPrivacySetting(privacyVer int) *CgiBinComponentGetPrivacySettingResult {
 	// 参数
 	params := NewParams()
 	params["privacy_ver"] = privacyVer
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/component/getprivacysetting?access_token=%s", app.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/component/getprivacysetting?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response CgiBinComponentGetPrivacySettingResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

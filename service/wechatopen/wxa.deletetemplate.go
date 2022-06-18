@@ -25,12 +25,12 @@ func NewWxaDeleteTemplateResult(result WxaDeleteTemplateResponse, body []byte, h
 
 // WxaDeleteTemplate 删除指定代码模板
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/deletetemplate.html
-func (app *App) WxaDeleteTemplate(templateId string) *WxaDeleteTemplateResult {
+func (c *Client) WxaDeleteTemplate(templateId string) *WxaDeleteTemplateResult {
 	// 参数
 	params := NewParams()
 	params.Set("template_id", templateId)
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/deletetemplate?access_token=%s", app.GetComponentAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/deletetemplate?access_token=%s", c.GetComponentAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaDeleteTemplateResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

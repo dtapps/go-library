@@ -25,13 +25,13 @@ func NewWxaAddToTemplateResult(result WxaAddToTemplateResponse, body []byte, htt
 
 // WxaAddToTemplate 将草稿添加到代码模板库
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/addtotemplate.html
-func (app *App) WxaAddToTemplate(draftId string, templateType int) *WxaAddToTemplateResult {
+func (c *Client) WxaAddToTemplate(draftId string, templateType int) *WxaAddToTemplateResult {
 	// 参数
 	params := NewParams()
 	params["draft_id"] = draftId
 	params["template_type"] = templateType
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/addtotemplate?access_token=%s", app.GetComponentAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/addtotemplate?access_token=%s", c.GetComponentAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaAddToTemplateResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

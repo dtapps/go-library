@@ -24,15 +24,15 @@ func NewCgiBinComponentApiComponentTokenResult(result CgiBinComponentApiComponen
 
 // CgiBinComponentApiComponentToken 令牌
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/component_access_token.html
-func (app *App) CgiBinComponentApiComponentToken() *CgiBinComponentApiComponentTokenResult {
+func (c *Client) CgiBinComponentApiComponentToken() *CgiBinComponentApiComponentTokenResult {
 	// 参数
 	param := NewParams()
-	param["component_appid"] = app.componentAppId                     // 第三方平台 appid
-	param["component_appsecret"] = app.componentAppSecret             // 第三方平台 appsecret
-	param["component_verify_ticket"] = app.GetComponentVerifyTicket() // 微信后台推送的 ticket
-	params := app.NewParamsWith(param)
+	param["component_appid"] = c.config.ComponentAppId              // 第三方平台 appid
+	param["component_appsecret"] = c.config.ComponentAppSecret      // 第三方平台 appsecret
+	param["component_verify_ticket"] = c.GetComponentVerifyTicket() // 微信后台推送的 ticket
+	params := c.NewParamsWith(param)
 	// 请求
-	request, err := app.request("https://api.weixin.qq.com/cgi-bin/component/api_component_token", params, http.MethodPost)
+	request, err := c.request("https://api.weixin.qq.com/cgi-bin/component/api_component_token", params, http.MethodPost)
 	// 定义
 	var response CgiBinComponentApiComponentTokenResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

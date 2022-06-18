@@ -25,7 +25,7 @@ func NewWxaUnbindTesterResult(result WxaUnbindTesterResponse, body []byte, http 
 
 // WxaUnbindTester 解除绑定体验者
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_AdminManagement/unbind_tester.html
-func (app *App) WxaUnbindTester(wechatid, userstr string) *WxaUnbindTesterResult {
+func (c *Client) WxaUnbindTester(wechatid, userstr string) *WxaUnbindTesterResult {
 	// 参数
 	params := NewParams()
 	if wechatid != "" {
@@ -33,7 +33,7 @@ func (app *App) WxaUnbindTester(wechatid, userstr string) *WxaUnbindTesterResult
 	}
 	params["userstr"] = userstr
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/unbind_tester?access_token=%s", app.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/unbind_tester?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaUnbindTesterResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

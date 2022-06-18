@@ -49,11 +49,11 @@ func NewWxaGetEffectiveDomainResult(result WxaGetEffectiveDomainResponse, body [
 
 // WxaGetEffectiveDomain 获取发布后生效服务器域名列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_Basic_Info/get_effective_domain.html
-func (app *App) WxaGetEffectiveDomain(notMustParams ...Params) *WxaGetEffectiveDomainResult {
+func (c *Client) WxaGetEffectiveDomain(notMustParams ...Params) *WxaGetEffectiveDomainResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := c.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/get_effective_domain?access_token=%s", app.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/get_effective_domain?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaGetEffectiveDomainResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

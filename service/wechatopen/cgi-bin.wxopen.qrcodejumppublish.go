@@ -25,12 +25,12 @@ func NewCgiBinWxOpenQrCodeJumpPublishResult(result CgiBinWxOpenQrCodeJumpPublish
 
 // CgiBinWxOpenQrCodeJumpPublish 发布已设置的二维码规则
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumppublish.html
-func (app *App) CgiBinWxOpenQrCodeJumpPublish(prefix string) *CgiBinWxOpenQrCodeJumpPublishResult {
+func (c *Client) CgiBinWxOpenQrCodeJumpPublish(prefix string) *CgiBinWxOpenQrCodeJumpPublishResult {
 	// 参数
 	params := NewParams()
 	params["prefix"] = prefix
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/wxopen/qrcodejumppublish?access_token=%s", app.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/wxopen/qrcodejumppublish?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response CgiBinWxOpenQrCodeJumpPublishResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -25,13 +25,13 @@ func NewCgiBinComponentApiCreatePreAuthCodenResult(result CgiBinComponentApiCrea
 
 // CgiBinComponentApiCreatePreAuthCoden 预授权码
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/pre_auth_code.html
-func (app *App) CgiBinComponentApiCreatePreAuthCoden() *CgiBinComponentApiCreatePreAuthCodenResult {
+func (c *Client) CgiBinComponentApiCreatePreAuthCoden() *CgiBinComponentApiCreatePreAuthCodenResult {
 	// 参数
 	param := NewParams()
-	param["component_appid"] = app.componentAppId // 第三方平台 appid
-	params := app.NewParamsWith(param)
+	param["component_appid"] = c.config.ComponentAppId // 第三方平台 appid
+	params := c.NewParamsWith(param)
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?component_access_token=%v", app.GetComponentAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?component_access_token=%v", c.GetComponentAccessToken()), params, http.MethodPost)
 	// 定义
 	var response CgiBinComponentApiCreatePreAuthCodenResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

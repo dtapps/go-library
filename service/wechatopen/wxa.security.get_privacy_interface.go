@@ -36,11 +36,11 @@ func NewWxaSecurityGetPrivacyInterfaceResult(result WxaSecurityGetPrivacyInterfa
 
 // WxaSecurityGetPrivacyInterface 获取接口列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/apply_api/get_privacy_interface.html
-func (app *App) WxaSecurityGetPrivacyInterface() *WxaSecurityGetPrivacyInterfaceResult {
+func (c *Client) WxaSecurityGetPrivacyInterface() *WxaSecurityGetPrivacyInterfaceResult {
 	// 参数
 	params := NewParams()
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/security/get_privacy_interface?access_token=%s", app.GetAuthorizerAccessToken()), params, http.MethodGet)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/security/get_privacy_interface?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodGet)
 	// 定义
 	var response WxaSecurityGetPrivacyInterfaceResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

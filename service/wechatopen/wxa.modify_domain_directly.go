@@ -25,11 +25,11 @@ func NewWxaModifyDomainDirectlyResult(result WxaModifyDomainDirectlyResponse, bo
 
 // WxaModifyDomainDirectly 快速设置小程序服务器域名
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_Basic_Info/modify_domain_directly.html
-func (app *App) WxaModifyDomainDirectly(notMustParams ...Params) *WxaModifyDomainDirectlyResult {
+func (c *Client) WxaModifyDomainDirectly(notMustParams ...Params) *WxaModifyDomainDirectlyResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := c.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/modify_domain_directly?access_token=%s", app.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/modify_domain_directly?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaModifyDomainDirectlyResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

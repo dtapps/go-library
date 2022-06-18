@@ -26,9 +26,9 @@ func NewWxaGetPageResult(result WxaGetPageResponse, body []byte, http gorequest.
 
 // WxaGetPage 获取已上传的代码的页面列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_page.html
-func (app *App) WxaGetPage() *WxaGetPageResult {
+func (c *Client) WxaGetPage() *WxaGetPageResult {
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/get_page?access_token=%s", app.GetAuthorizerAccessToken()), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/get_page?access_token=%s", c.GetAuthorizerAccessToken()), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response WxaGetPageResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

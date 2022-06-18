@@ -29,8 +29,8 @@ func NewWxaMemberAuthResult(result WxaMemberAuthResponse, body []byte, http gore
 
 // WxaMemberAuth 获取体验者列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_AdminManagement/memberauth.html
-func (app *App) WxaMemberAuth() *WxaMemberAuthResult {
-	accessToken := app.GetAuthorizerAccessToken()
+func (c *Client) WxaMemberAuth() *WxaMemberAuthResult {
+	accessToken := c.GetAuthorizerAccessToken()
 	if accessToken == "" {
 		return NewWxaMemberAuthResult(WxaMemberAuthResponse{}, nil, gorequest.Response{}, errors.New("访问令牌为空"))
 	}
@@ -38,7 +38,7 @@ func (app *App) WxaMemberAuth() *WxaMemberAuthResult {
 	params := NewParams()
 	params["action"] = "get_experiencer"
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/memberauth?access_token=%s", accessToken), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/memberauth?access_token=%s", accessToken), params, http.MethodPost)
 	// 定义
 	var response WxaMemberAuthResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

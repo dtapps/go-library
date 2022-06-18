@@ -25,12 +25,12 @@ func NewCgiBinWxOpenQrCodeJumpDeleteResult(result CgiBinWxOpenQrCodeJumpDeleteRe
 
 // CgiBinWxOpenQrCodeJumpDelete 删除已设置的二维码规则
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumpdelete.html
-func (app *App) CgiBinWxOpenQrCodeJumpDelete(prefix string) *CgiBinWxOpenQrCodeJumpDeleteResult {
+func (c *Client) CgiBinWxOpenQrCodeJumpDelete(prefix string) *CgiBinWxOpenQrCodeJumpDeleteResult {
 	// 参数
 	params := NewParams()
 	params["prefix"] = prefix
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/wxopen/qrcodejumpdelete?access_token=%s", app.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/wxopen/qrcodejumpdelete?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response CgiBinWxOpenQrCodeJumpDeleteResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

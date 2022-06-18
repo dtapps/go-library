@@ -25,11 +25,11 @@ func NewCgiBinComponentSetPrivacySettingResult(result CgiBinComponentSetPrivacyS
 
 // CgiBinComponentSetPrivacySetting 配置小程序用户隐私保护指引
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/privacy_config/set_privacy_setting.html
-func (app *App) CgiBinComponentSetPrivacySetting(notMustParams ...Params) *CgiBinComponentSetPrivacySettingResult {
+func (c *Client) CgiBinComponentSetPrivacySetting(notMustParams ...Params) *CgiBinComponentSetPrivacySettingResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := c.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/component/setprivacysetting?access_token=%s", app.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/component/setprivacysetting?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response CgiBinComponentSetPrivacySettingResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

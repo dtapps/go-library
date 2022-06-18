@@ -1,5 +1,5 @@
 package wechatopen
 
-func (app *App) GetComponentAppId() string {
-	return app.componentAppId
+func (c *Client) GetComponentAppId() string {
+	return c.config.ComponentAppId
 }

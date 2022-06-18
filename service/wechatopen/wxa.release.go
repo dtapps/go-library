@@ -25,11 +25,11 @@ func NewWxaReleaseResult(result WxaReleaseResponse, body []byte, http gorequest.
 
 // WxaRelease 发布已通过审核的小程序
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/release.html
-func (app *App) WxaRelease() *WxaReleaseResult {
+func (c *Client) WxaRelease() *WxaReleaseResult {
 	// 参数
 	params := NewParams()
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/release?access_token=%s", app.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/release?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaReleaseResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

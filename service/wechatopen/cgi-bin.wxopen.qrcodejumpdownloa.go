@@ -27,11 +27,11 @@ func NewCgiBinWxOpenQrCodeJumpDownloadResult(result CgiBinWxOpenQrCodeJumpDownlo
 
 // CgiBinWxOpenQrCodeJumpDownload 获取校验文件名称及内容
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumpdownload.html
-func (app *App) CgiBinWxOpenQrCodeJumpDownload() *CgiBinWxOpenQrCodeJumpDownloadResult {
+func (c *Client) CgiBinWxOpenQrCodeJumpDownload() *CgiBinWxOpenQrCodeJumpDownloadResult {
 	// 参数
 	params := NewParams()
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/wxopen/qrcodejumpdownload?access_token=%s", app.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/wxopen/qrcodejumpdownload?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response CgiBinWxOpenQrCodeJumpDownloadResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

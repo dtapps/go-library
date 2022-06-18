@@ -25,11 +25,11 @@ func NewWxaCommitResult(result WxaCommitResponse, body []byte, http gorequest.Re
 
 // WxaCommit 上传小程序代码并生成体验版
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/commit.html
-func (app *App) WxaCommit(notMustParams ...gorequest.Params) *WxaCommitResult {
+func (c *Client) WxaCommit(notMustParams ...gorequest.Params) *WxaCommitResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/commit?access_token=%s", app.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/commit?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaCommitResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

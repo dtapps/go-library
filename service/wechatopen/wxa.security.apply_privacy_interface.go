@@ -26,11 +26,11 @@ func NewWxaSecurityApplyPrivacyInterfaceResult(result WxaSecurityApplyPrivacyInt
 
 // WxaSecurityApplyPrivacyInterface 申请接口
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/apply_api/apply_privacy_interface.html
-func (app *App) WxaSecurityApplyPrivacyInterface(notMustParams ...Params) *WxaSecurityApplyPrivacyInterfaceResult {
+func (c *Client) WxaSecurityApplyPrivacyInterface(notMustParams ...Params) *WxaSecurityApplyPrivacyInterfaceResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := c.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/security/apply_privacy_interface?access_token=%s", app.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/security/apply_privacy_interface?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaSecurityApplyPrivacyInterfaceResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

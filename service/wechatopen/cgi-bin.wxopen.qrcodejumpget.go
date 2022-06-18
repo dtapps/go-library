@@ -36,11 +36,11 @@ func NewCgiBinWxOpenQrCodeJumpGetResult(result CgiBinWxOpenQrCodeJumpGetResponse
 
 // CgiBinWxOpenQrCodeJumpGet 获取已设置的二维码规则
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumpadd.html
-func (app *App) CgiBinWxOpenQrCodeJumpGet() *CgiBinWxOpenQrCodeJumpGetResult {
+func (c *Client) CgiBinWxOpenQrCodeJumpGet() *CgiBinWxOpenQrCodeJumpGetResult {
 	// 参数
 	params := NewParams()
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/wxopen/qrcodejumpget?access_token=%s", app.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/wxopen/qrcodejumpget?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response CgiBinWxOpenQrCodeJumpGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
