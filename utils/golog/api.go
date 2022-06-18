@@ -8,6 +8,7 @@ import (
 	"os"
 	"runtime"
 	"strings"
+	"unicode/utf8"
 )
 
 type ApiConfig struct {
@@ -75,6 +76,10 @@ func (p *Api) AutoMigrate() {
 
 // Record 记录日志
 func (p *Api) Record(content ApiPostgresqlLog) *gorm.DB {
+	if utf8.ValidString(string(content.ResponseBody)) == false {
+		log.Println("内容格式无法记录")
+		return p.db
+	}
 	content.SystemHostName = p.hostname
 	if content.SystemInsideIp == "" {
 		content.SystemInsideIp = p.insideIp
