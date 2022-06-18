@@ -25,10 +25,9 @@ func NewDebugCgiBinTicketCheckResult(result DebugCgiBinTicketCheckResponse, body
 
 // DebugCgiBinTicketCheck 判断ticket是否合法
 // https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=jsapisign
-func (app *App) DebugCgiBinTicketCheck() *DebugCgiBinTicketCheckResult {
-	app.jsapiTicket = app.GetJsapiTicket()
+func (c *Client) DebugCgiBinTicketCheck() *DebugCgiBinTicketCheckResult {
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://mp.weixin.qq.com/debug/cgi-bin/ticket/check?ticket=%s", app.jsapiTicket), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(fmt.Sprintf("https://mp.weixin.qq.com/debug/cgi-bin/ticket/check?ticket=%s", c.getJsapiTicket()), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response DebugCgiBinTicketCheckResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

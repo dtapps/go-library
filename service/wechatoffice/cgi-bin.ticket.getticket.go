@@ -27,10 +27,9 @@ func NewCgiBinTicketGetTicketResult(result CgiBinTicketGetTicketResponse, body [
 
 // CgiBinTicketGetTicket 获取api_ticket
 // https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html
-func (app *App) CgiBinTicketGetTicket(Type string) *CgiBinTicketGetTicketResult {
-	app.accessToken = app.GetAccessToken()
+func (c *Client) CgiBinTicketGetTicket(Type string) *CgiBinTicketGetTicketResult {
 	// request
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=%s", app.accessToken, Type), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=%s", c.getAccessToken(), Type), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response CgiBinTicketGetTicketResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

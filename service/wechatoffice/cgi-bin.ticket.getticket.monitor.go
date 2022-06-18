@@ -7,16 +7,16 @@ import (
 )
 
 // GetJsapiTicketMonitor 监控api_ticket
-func (app *App) GetJsapiTicketMonitor() (string, error) {
-	if app.redis.Db == nil {
+func (c *Client) GetJsapiTicketMonitor() (string, error) {
+	if c.config.RedisClient.Db == nil {
 		return "", errors.New("驱动没有初始化")
 	}
-	result := app.DebugCgiBinTicketCheck()
+	result := c.DebugCgiBinTicketCheck()
 	if result.Result.Errcode == 0 {
-		return app.jsapiTicket, nil
+		return c.config.JsapiTicket, nil
 	}
-	app.accessToken = app.GetAccessToken()
-	token := app.CgiBinTicketGetTicket("jsapi")
-	app.redis.Db.Set(context.Background(), app.getJsapiTicketCacheKeyName(), token.Result.Ticket, time.Second*7000)
+	c.config.AccessToken = c.GetAccessToken()
+	token := c.CgiBinTicketGetTicket("jsapi")
+	c.config.RedisClient.Db.Set(context.Background(), c.getJsapiTicketCacheKeyName(), token.Result.Ticket, time.Second*7000)
 	return token.Result.Ticket, nil
 }

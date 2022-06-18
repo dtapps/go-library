@@ -39,10 +39,9 @@ func NewCgiBinUserInfoResult(result CgiBinUserInfoResponse, body []byte, http go
 
 // CgiBinUserInfo 获取用户基本信息(UnionID机制)
 // https://developers.weixin.qq.com/doc/offiaccount/User_Management/Get_users_basic_information_UnionID.html#UinonId
-func (app *App) CgiBinUserInfo(openid string) *CgiBinUserInfoResult {
-	app.accessToken = app.GetAccessToken()
+func (c *Client) CgiBinUserInfo(openid string) *CgiBinUserInfoResult {
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN", app.accessToken, openid), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN", c.getAccessToken(), openid), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response CgiBinUserInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

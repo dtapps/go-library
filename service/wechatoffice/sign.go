@@ -2,7 +2,7 @@ package wechatoffice
 
 import "errors"
 
-func (app *App) pkcs7Unpaid(data []byte, blockSize int) ([]byte, error) {
+func (c *Client) pkcs7Unpaid(data []byte, blockSize int) ([]byte, error) {
 	if blockSize <= 0 {
 		return nil, errors.New("invalid block size")
 	}

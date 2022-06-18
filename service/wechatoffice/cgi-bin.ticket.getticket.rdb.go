@@ -6,18 +6,18 @@ import (
 )
 
 // GetJsapiTicket 获取api_ticket
-func (app *App) GetJsapiTicket() string {
-	if app.redis.Db == nil {
-		return app.jsapiTicket
+func (c *Client) GetJsapiTicket() string {
+	if c.config.RedisClient.Db == nil {
+		return c.config.JsapiTicket
 	}
-	newCache := app.redis.NewSimpleStringCache(app.redis.NewStringOperation(), time.Second*7000)
+	newCache := c.config.RedisClient.NewSimpleStringCache(c.config.RedisClient.NewStringOperation(), time.Second*7000)
 	newCache.DBGetter = func() string {
-		token := app.CgiBinTicketGetTicket("jsapi")
+		token := c.CgiBinTicketGetTicket("jsapi")
 		return token.Result.Ticket
 	}
-	return newCache.GetCache(app.getJsapiTicketCacheKeyName())
+	return newCache.GetCache(c.getJsapiTicketCacheKeyName())
 }
 
-func (app *App) getJsapiTicketCacheKeyName() string {
-	return fmt.Sprintf("wechat_jsapi_ticket:%v", app.appId)
+func (c *Client) getJsapiTicketCacheKeyName() string {
+	return fmt.Sprintf("wechat_jsapi_ticket:%v", c.getAppId())
 }

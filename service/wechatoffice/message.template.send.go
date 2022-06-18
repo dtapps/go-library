@@ -26,12 +26,11 @@ func NewMessageTemplateSendResult(result MessageTemplateSendResponse, body []byt
 
 // MessageTemplateSend 模板消息
 // https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Template_Message_Interface.html
-func (app *App) MessageTemplateSend(notMustParams ...Params) *MessageTemplateSendResult {
-	app.accessToken = app.GetAccessToken()
+func (c *Client) MessageTemplateSend(notMustParams ...Params) *MessageTemplateSendResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := c.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s", app.accessToken), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s", c.getAccessToken()), params, http.MethodPost)
 	// 定义
 	var response MessageTemplateSendResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

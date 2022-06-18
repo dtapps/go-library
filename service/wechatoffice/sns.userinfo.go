@@ -32,9 +32,9 @@ func NewSnsUserinfoResult(result SnsUserinfoResponse, body []byte, http goreques
 
 // SnsUserinfo 拉取用户信息(需scope为 snsapi_userinfo)
 // https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html#0
-func (app *App) SnsUserinfo(accessToken, openid string) *SnsUserinfoResult {
+func (c *Client) SnsUserinfo(accessToken, openid string) *SnsUserinfoResult {
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN", accessToken, openid), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN", accessToken, openid), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response SnsUserinfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

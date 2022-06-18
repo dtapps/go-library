@@ -26,15 +26,15 @@ func NewShareResult(result ShareResponse, err error) *ShareResult {
 	return &ShareResult{Result: result, Err: err}
 }
 
-func (app *App) Share(url string) *ShareResult {
-	app.accessToken = app.GetAccessToken()
-	app.jsapiTicket = app.GetJsapiTicket()
+func (c *Client) Share(url string) *ShareResult {
+	c.getAccessToken()
+	c.config.JsapiTicket = c.GetJsapiTicket()
 	var response ShareResponse
-	response.AppId = app.appId
+	response.AppId = c.getAppId()
 	response.NonceStr = gorandom.Alphanumeric(32)
 	response.Timestamp = time.Now().Unix()
 	response.Url = url
-	response.RawString = fmt.Sprintf("jsapi_ticket=%v&noncestr=%v&timestamp=%v&url=%v", app.jsapiTicket, response.NonceStr, response.Timestamp, response.Url)
+	response.RawString = fmt.Sprintf("jsapi_ticket=%v&noncestr=%v&timestamp=%v&url=%v", c.config.JsapiTicket, response.NonceStr, response.Timestamp, response.Url)
 	t := sha1.New()
 	_, err := io.WriteString(t, response.RawString)
 	response.Signature = fmt.Sprintf("%x", t.Sum(nil))
