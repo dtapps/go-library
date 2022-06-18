@@ -30,11 +30,11 @@ func NewGoodsPidGenerateResult(result GoodsPidGenerateResponse, body []byte, htt
 
 // GoodsPidGenerate 创建多多进宝推广位
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.pid.generate
-func (app *App) GoodsPidGenerate(notMustParams ...Params) *GoodsPidGenerateResult {
+func (c *Client) GoodsPidGenerate(notMustParams ...Params) *GoodsPidGenerateResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.pid.generate", notMustParams...)
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var response GoodsPidGenerateResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

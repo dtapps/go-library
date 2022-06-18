@@ -8,8 +8,8 @@ import (
 )
 
 // 记录日志
-func (app *App) postgresqlLog(api string, request gorequest.Response) {
-	app.log.Record(golog.ApiPostgresqlLog{
+func (c *Client) postgresqlLog(api string, request gorequest.Response) {
+	c.log.Record(golog.ApiPostgresqlLog{
 		RequestTime:           golog.TimeString{Time: request.RequestTime},                      //【请求】时间
 		RequestUri:            request.RequestUri,                                               //【请求】链接
 		RequestUrl:            gorequest.UriParse(request.RequestUri).Url,                       //【请求】链接

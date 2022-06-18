@@ -62,12 +62,12 @@ func NewCmsPromUrlGenerateResult(result CmsPromUrlGenerateResponse, body []byte,
 
 // CmsPromUrlGenerate 生成商城-频道推广链接
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.cms.prom.url.generate
-func (app *App) CmsPromUrlGenerate(notMustParams ...Params) *CmsPromUrlGenerateResult {
+func (c *Client) CmsPromUrlGenerate(notMustParams ...Params) *CmsPromUrlGenerateResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.cms.prom.url.generate", notMustParams...)
-	params.Set("p_id_list", []string{app.Pid})
+	params.Set("p_id_list", []string{c.config.Pid})
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var response CmsPromUrlGenerateResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

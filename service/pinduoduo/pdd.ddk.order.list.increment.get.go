@@ -71,11 +71,11 @@ func NewOrderListIncrementGetResult(result OrderListIncrementGetResponse, body [
 
 // OrderListIncrementGet 最后更新时间段增量同步推广订单信息
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.order.list.increment.get
-func (app *App) OrderListIncrementGet(notMustParams ...Params) *OrderListIncrementGetResult {
+func (c *Client) OrderListIncrementGet(notMustParams ...Params) *OrderListIncrementGetResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.order.list.increment.get", notMustParams...)
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var response OrderListIncrementGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

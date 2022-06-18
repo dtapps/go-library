@@ -66,12 +66,12 @@ func NewRpPromUrlGenerateResult(result RpPromUrlGenerateResponse, body []byte, h
 
 // RpPromUrlGenerate 生成营销工具推广链接
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.rp.prom.url.generate
-func (app *App) RpPromUrlGenerate(notMustParams ...Params) *RpPromUrlGenerateResult {
+func (c *Client) RpPromUrlGenerate(notMustParams ...Params) *RpPromUrlGenerateResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.rp.prom.url.generate", notMustParams...)
-	params.Set("p_id_list", []string{app.Pid})
+	params.Set("p_id_list", []string{c.config.Pid})
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var response RpPromUrlGenerateResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

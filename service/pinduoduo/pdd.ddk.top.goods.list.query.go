@@ -59,12 +59,12 @@ func NewTopGoodsListQueryResult(result TopGoodsListQueryResponse, body []byte, h
 
 // TopGoodsListQuery 多多客获取爆款排行商品接口
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.top.goods.list.query
-func (app *App) TopGoodsListQuery(notMustParams ...Params) *TopGoodsListQueryResult {
+func (c *Client) TopGoodsListQuery(notMustParams ...Params) *TopGoodsListQueryResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.top.goods.list.query", notMustParams...)
-	params.Set("p_id", app.Pid)
+	params.Set("p_id", c.config.Pid)
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var response TopGoodsListQueryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -11,33 +11,39 @@ import (
 	"strings"
 )
 
-// App 公共请求参数
-type App struct {
-	clientId     string         // POP分配给应用的client_id
-	clientSecret string         // POP分配给应用的client_secret
-	mediaId      string         // 媒体ID
-	Pid          string         // 推广位
-	pgsql        *gorm.DB       // pgsql数据库
+type ConfigClient struct {
+	ClientId     string   // POP分配给应用的client_id
+	ClientSecret string   // POP分配给应用的client_secret
+	MediaId      string   // 媒体ID
+	Pid          string   // 推广位
+	PgsqlDb      *gorm.DB // pgsql数据库
+}
+
+type Client struct {
 	client       *gorequest.App // 请求客户端
 	log          *golog.Api     // 日志服务
 	logTableName string         // 日志表名
 	logStatus    bool           // 日志状态
+	config       *ConfigClient  // 配置
 }
 
-func NewApp(clientId string, clientSecret string, mediaId string, pid string, pgsql *gorm.DB) *App {
-	app := &App{clientId: clientId, clientSecret: clientSecret, mediaId: mediaId, Pid: pid}
-	app.client = gorequest.NewHttp()
-	app.client.Uri = "https://gw-api.pinduoduo.com/api/router"
-	if pgsql != nil {
-		app.pgsql = pgsql
-		app.logStatus = true
-		app.logTableName = "pinduoduo"
-		app.log = golog.NewApi(&golog.ApiConfig{
-			Db:        pgsql,
-			TableName: app.logTableName,
+func NewClient(config *ConfigClient) *Client {
+
+	c := &Client{config: config}
+	c.config = config
+
+	c.client = gorequest.NewHttp()
+	c.client.Uri = "https://gw-api.pinduoduo.com/api/router"
+	if c.config.PgsqlDb != nil {
+		c.logStatus = true
+		c.logTableName = "pinduoduo"
+		c.log = golog.NewApi(&golog.ApiConfig{
+			Db:        c.config.PgsqlDb,
+			TableName: c.logTableName,
 		})
 	}
-	return app
+
+	return c
 }
 
 type ErrResp struct {
@@ -55,13 +61,13 @@ type CustomParametersResult struct {
 	Uid string `json:"uid"`
 }
 
-func (app *App) request(params map[string]interface{}) (resp gorequest.Response, err error) {
+func (c *Client) request(params map[string]interface{}) (resp gorequest.Response, err error) {
 
 	// 签名
-	app.Sign(params)
+	c.Sign(params)
 
 	// 创建请求
-	client := app.client
+	client := c.client
 
 	// 设置参数
 	client.SetParams(params)
@@ -73,14 +79,14 @@ func (app *App) request(params map[string]interface{}) (resp gorequest.Response,
 	}
 
 	// 日志
-	if app.logStatus == true {
-		go app.postgresqlLog(gostring.ToString(params["type"]), request)
+	if c.logStatus == true {
+		go c.postgresqlLog(gostring.ToString(params["type"]), request)
 	}
 
 	return request, err
 }
 
-func (app *App) SalesTipParseInt64(salesTip string) int64 {
+func (c *Client) SalesTipParseInt64(salesTip string) int64 {
 	parseInt, err := strconv.ParseInt(salesTip, 10, 64)
 	if err != nil {
 		salesTipStr := salesTip
@@ -103,6 +109,6 @@ func (app *App) SalesTipParseInt64(salesTip string) int64 {
 	}
 }
 
-func (app *App) CommissionIntegralToInt64(GoodsPrice, CouponProportion int64) int64 {
+func (c *Client) CommissionIntegralToInt64(GoodsPrice, CouponProportion int64) int64 {
 	return (GoodsPrice * CouponProportion) / 1000
 }

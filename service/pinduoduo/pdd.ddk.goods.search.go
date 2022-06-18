@@ -93,12 +93,12 @@ func NewGoodsSearchResult(result GoodsSearchResponse, body []byte, http goreques
 
 // GoodsSearch 多多进宝商品查询
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.search
-func (app *App) GoodsSearch(notMustParams ...Params) *GoodsSearchResult {
+func (c *Client) GoodsSearch(notMustParams ...Params) *GoodsSearchResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.search", notMustParams...)
-	params.Set("pid", app.Pid)
+	params.Set("pid", c.config.Pid)
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var response GoodsSearchResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -79,12 +79,12 @@ func NewGoodsRecommendGetResult(result GoodsRecommendGetResponse, body []byte, h
 
 // GoodsRecommendGet 多多进宝商品推荐API
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.recommend.get
-func (app *App) GoodsRecommendGet(notMustParams ...Params) *GoodsRecommendGetResult {
+func (c *Client) GoodsRecommendGet(notMustParams ...Params) *GoodsRecommendGetResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.recommend.get", notMustParams...)
-	params.Set("pid", app.Pid)
+	params.Set("pid", c.config.Pid)
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var response GoodsRecommendGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

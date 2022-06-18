@@ -29,13 +29,13 @@ func NewGoodsOptGetResult(result GoodsOptGetResponse, body []byte, http goreques
 
 // GoodsOptGet 查询商品标签列表
 // https://open.pinduoduo.com/application/document/api?id=pdd.goods.opt.get
-func (app *App) GoodsOptGet(parentOptId int) *GoodsOptGetResult {
+func (c *Client) GoodsOptGet(parentOptId int) *GoodsOptGetResult {
 	// 参数
 	param := NewParams()
 	param.Set("parent_opt_id", parentOptId)
 	params := NewParamsWithType("pdd.goods.opt.get", param)
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var response GoodsOptGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
