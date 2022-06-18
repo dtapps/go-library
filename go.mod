@@ -3,16 +3,19 @@ module go.dtapp.net/library
 go 1.18
 
 require (
+	gitee.com/chunanyong/zorm v1.5.5
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.4+incompatible
 	github.com/allegro/bigcache/v3 v3.0.2
 	github.com/aws/aws-sdk-go v1.44.37
 	github.com/baidubce/bce-sdk-go v0.9.124
 	github.com/basgys/goxml2json v1.1.0
+	github.com/beego/beego/v2 v2.0.4
 	github.com/bradfitz/gomemcache v0.0.0-20220106215444-fb4bf637b56d
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/huaweicloud/huaweicloud-sdk-go-obs v3.21.12+incompatible
+	github.com/jasonlvhit/gocron v0.0.1
 	github.com/ks3sdklib/aws-sdk-go v1.1.4
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/mvdan/xurls v1.1.0
@@ -39,6 +42,7 @@ require (
 	gorm.io/driver/mysql v1.3.4
 	gorm.io/driver/postgres v1.3.7
 	gorm.io/gorm v1.23.6
+	xorm.io/xorm v1.3.1
 )
 
 require (
@@ -63,6 +67,7 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
+	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.12.1 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
@@ -85,6 +90,8 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/saracen/go7z-fixtures v0.0.0-20190623165746-aa6b8fba1d2f // indirect
 	github.com/saracen/solidblock v0.0.0-20190426153529-45df20abab6f // indirect
+	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
+	github.com/syndtr/goleveldb v1.0.0 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	github.com/ulikunitz/xz v0.5.10 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
@@ -102,4 +109,5 @@ require (
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
+	xorm.io/builder v0.3.11 // indirect
 )
