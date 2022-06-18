@@ -15,56 +15,92 @@ const (
 // 每隔n秒执行一次
 const specSeconds = "*/%d * * * * *"
 
-// GetSpecSeconds 每隔n秒执行一次
-var GetSpecSeconds = func(n int64) string {
-	if n < 0 || n > 59 {
-		return ""
-	}
-	return fmt.Sprintf(specSeconds, n)
+// 每隔n秒执行一次
+type seconds struct {
+	n int64
 }
 
-// GetFrequencySeconds 每隔n秒执行一次
-var GetFrequencySeconds = func(n int64) int64 {
-	if n < 0 || n > 59 {
+// GetSeconds 每隔n秒执行一次
+func GetSeconds(n int64) *seconds {
+	s := seconds{}
+	s.n = n
+	return &s
+}
+
+// Spec 每隔n秒执行一次
+func (s seconds) Spec() string {
+	if s.n < 0 || s.n > 59 {
+		return ""
+	}
+	return fmt.Sprintf(specSeconds, s.n)
+}
+
+// Frequency 每隔n秒执行一次
+func (s seconds) Frequency() int64 {
+	if s.n < 0 || s.n > 59 {
 		return -1
 	}
-	return n
+	return s.n
 }
 
 // 每隔n分钟执行一次
 const specMinutes = "0 */%d * * * *"
 
-// GetSpecMinutes 每隔n分钟执行一次
-var GetSpecMinutes = func(n int64) string {
-	if n < 0 || n > 59 {
-		return ""
-	}
-	return fmt.Sprintf(specMinutes, n)
+// 每隔n分钟执行一次
+type minutes struct {
+	n int64
 }
 
-// GetFrequencyMinutes 每隔n分钟执行一次
-var GetFrequencyMinutes = func(n int64) int64 {
-	if n < 0 || n > 59 {
+// GetMinutes 每隔n分钟执行一次
+func GetMinutes(n int64) *minutes {
+	s := minutes{}
+	s.n = n
+	return &s
+}
+
+// Spec 每隔n分钟执行一次
+func (s minutes) Spec() string {
+	if s.n < 0 || s.n > 59 {
+		return ""
+	}
+	return fmt.Sprintf(specMinutes, s.n)
+}
+
+// Frequency 每隔n分钟执行一次
+func (s minutes) Frequency() int64 {
+	if s.n < 0 || s.n > 59 {
 		return -1
 	}
-	return n * 60
+	return s.n * 60
 }
 
 // 每天n点执行一次
 const specHour = "0 0 */%d * * *"
 
-// GetSpecHour 每天n点执行一次
-var GetSpecHour = func(n int64) string {
-	if n < 0 || n > 23 {
-		return ""
-	}
-	return fmt.Sprintf(specHour, n)
+// 每天n点执行一次
+type hour struct {
+	n int64
 }
 
-// GetFrequencyHour 每天n点执行一次
-var GetFrequencyHour = func(n int64) int64 {
-	if n < 0 || n > 23 {
+// GetHour 每天n点执行一次
+func GetHour(n int64) *hour {
+	s := hour{}
+	s.n = n
+	return &s
+}
+
+// Spec 每天n点执行一次
+func (s hour) Spec() string {
+	if s.n < 0 || s.n > 23 {
+		return ""
+	}
+	return fmt.Sprintf(specHour, s.n)
+}
+
+// Frequency 每天n点执行一次
+func (s hour) Frequency() int64 {
+	if s.n < 0 || s.n > 23 {
 		return -1
 	}
-	return n * 60 * 60
+	return s.n * 60 * 60
 }
