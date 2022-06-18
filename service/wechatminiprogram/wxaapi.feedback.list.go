@@ -36,13 +36,12 @@ func NewWxaApiFeedbackListResult(result WxaApiFeedbackListResponse, body []byte,
 
 // WxaApiFeedbackList 获取用户反馈列表
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/operation/operation.getFeedback.html
-func (app *App) WxaApiFeedbackList(notMustParams ...Params) *WxaApiFeedbackListResult {
-	app.accessToken = app.GetAccessToken()
+func (c *Client) WxaApiFeedbackList(notMustParams ...Params) *WxaApiFeedbackListResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
-	params.Set("access_token", app.accessToken)
+	params := c.NewParamsWith(notMustParams...)
+	params.Set("access_token", c.getAccessToken())
 	// 请求
-	request, err := app.request("https://api.weixin.qq.com/wxaapi/feedback/list", params, http.MethodGet)
+	request, err := c.request("https://api.weixin.qq.com/wxaapi/feedback/list", params, http.MethodGet)
 	// 定义
 	var response WxaApiFeedbackListResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

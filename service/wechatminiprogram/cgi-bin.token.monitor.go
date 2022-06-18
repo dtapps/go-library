@@ -6,15 +6,15 @@ import (
 	"time"
 )
 
-func (app *App) GetAccessTokenMonitor() (string, error) {
-	if app.redis.Db == nil {
+func (c *Client) GetAccessTokenMonitor() (string, error) {
+	if c.config.RedisClient.Db == nil {
 		return "", errors.New("驱动没有初始化")
 	}
-	result := app.GetCallBackIp()
+	result := c.GetCallBackIp()
 	if len(result.Result.IpList) <= 0 {
-		token := app.CgiBinToken()
-		app.redis.Db.Set(context.Background(), app.getAccessTokenCacheKeyName(), token.Result.AccessToken, time.Second*7000)
+		token := c.CgiBinToken()
+		c.config.RedisClient.Db.Set(context.Background(), c.getAccessTokenCacheKeyName(), token.Result.AccessToken, time.Second*7000)
 		return token.Result.AccessToken, nil
 	}
-	return app.accessToken, nil
+	return c.config.AccessToken, nil
 }

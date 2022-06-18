@@ -40,7 +40,7 @@ func NewUserInfoResult(result UserInfoResponse, err error) *UserInfoResult {
 }
 
 // UserInfo 解密用户信息
-func (app *App) UserInfo(param UserInfo) *UserInfoResult {
+func (c *Client) UserInfo(param UserInfo) *UserInfoResult {
 	var response UserInfoResponse
 	aesKey, err := base64.StdEncoding.DecodeString(param.SessionKey)
 	if err != nil {
@@ -60,7 +60,7 @@ func (app *App) UserInfo(param UserInfo) *UserInfoResult {
 	}
 	mode := cipher.NewCBCDecrypter(block, ivBytes)
 	mode.CryptBlocks(cipherText, cipherText)
-	cipherText, err = app.pkcs7Unpaid(cipherText, block.BlockSize())
+	cipherText, err = c.pkcs7Unpaid(cipherText, block.BlockSize())
 	if err != nil {
 		return NewUserInfoResult(response, err)
 	}
@@ -68,8 +68,8 @@ func (app *App) UserInfo(param UserInfo) *UserInfoResult {
 	if err != nil {
 		return NewUserInfoResult(response, err)
 	}
-	if response.Watermark.AppID != app.appId {
-		return NewUserInfoResult(response, errors.New("app id not match"))
+	if response.Watermark.AppID != c.getAppId() {
+		return NewUserInfoResult(response, errors.New("c id not match"))
 	}
 	return NewUserInfoResult(response, err)
 }

@@ -34,7 +34,7 @@ func NewUserPhoneResult(result UserPhoneResponse, err error) *UserPhoneResult {
 }
 
 // UserPhone 解密手机号信息
-func (app *App) UserPhone(param UserPhone) *UserPhoneResult {
+func (c *Client) UserPhone(param UserPhone) *UserPhoneResult {
 	var response UserPhoneResponse
 	aesKey, err := base64.StdEncoding.DecodeString(param.SessionKey)
 	if err != nil {
@@ -54,7 +54,7 @@ func (app *App) UserPhone(param UserPhone) *UserPhoneResult {
 	}
 	mode := cipher.NewCBCDecrypter(block, ivBytes)
 	mode.CryptBlocks(cipherText, cipherText)
-	cipherText, err = app.pkcs7Unpaid(cipherText, block.BlockSize())
+	cipherText, err = c.pkcs7Unpaid(cipherText, block.BlockSize())
 	if err != nil {
 		return NewUserPhoneResult(response, err)
 	}
@@ -62,8 +62,8 @@ func (app *App) UserPhone(param UserPhone) *UserPhoneResult {
 	if err != nil {
 		return NewUserPhoneResult(response, err)
 	}
-	if response.Watermark.AppID != app.appId {
-		return NewUserPhoneResult(response, errors.New("app id not match"))
+	if response.Watermark.AppID != c.getAppId() {
+		return NewUserPhoneResult(response, errors.New("c id not match"))
 	}
 	return NewUserPhoneResult(response, err)
 }

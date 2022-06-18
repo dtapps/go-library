@@ -8,7 +8,7 @@ import (
 )
 
 // 记录日志
-func (app *App) postgresqlLog(request gorequest.Response) {
+func (c *Client) postgresqlLog(request gorequest.Response) {
 	body := golog.ApiPostgresqlLog{}
 	body.RequestTime = golog.TimeString{Time: request.RequestTime}                         //【请求】时间
 	body.RequestUri = request.RequestUri                                                   //【请求】链接
@@ -25,5 +25,5 @@ func (app *App) postgresqlLog(request gorequest.Response) {
 	} else {
 		body.ResponseBody = request.ResponseBody //【返回】内容
 	}
-	app.log.Record(body)
+	c.log.Record(body)
 }

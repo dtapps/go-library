@@ -44,14 +44,13 @@ func NewWxaQueryUrlLinkResult(result WxaQueryUrlLinkResponse, body []byte, http 
 
 // WxaQueryUrlLink 查询小程序 url_link 配置，及长期有效 quota
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/url-link/urllink.query.html
-func (app *App) WxaQueryUrlLink(urlLink string) *WxaQueryUrlLinkResult {
-	app.accessToken = app.GetAccessToken()
+func (c *Client) WxaQueryUrlLink(urlLink string) *WxaQueryUrlLinkResult {
 	// 参数
 	param := NewParams()
 	param.Set("url_link", urlLink)
-	params := app.NewParamsWith(param)
+	params := c.NewParamsWith(param)
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/query_urllink?access_token=%s", app.accessToken), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/query_urllink?access_token=%s", c.getAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaQueryUrlLinkResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

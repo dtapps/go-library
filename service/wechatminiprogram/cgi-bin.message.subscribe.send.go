@@ -25,12 +25,11 @@ func NewSubscribeMessageSendResult(result SubscribeMessageSendResponse, body []b
 
 // SubscribeMessageSend 发送订阅消息
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/subscribe-message/subscribeMessage.send.html
-func (app *App) SubscribeMessageSend(notMustParams ...Params) *SubscribeMessageSendResult {
-	app.accessToken = app.GetAccessToken()
+func (c *Client) SubscribeMessageSend(notMustParams ...Params) *SubscribeMessageSendResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := c.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=%s", app.accessToken), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=%s", c.getAccessToken()), params, http.MethodPost)
 	// 定义
 	var response SubscribeMessageSendResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

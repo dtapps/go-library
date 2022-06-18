@@ -37,12 +37,11 @@ func NewWxaQuerySchemeResult(result WxaQuerySchemeResponse, body []byte, http go
 
 // WxaQueryScheme 查询小程序 scheme 码，及长期有效 quota
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/url-scheme/urlscheme.query.html
-func (app *App) WxaQueryScheme(notMustParams ...Params) *WxaQuerySchemeResult {
-	app.accessToken = app.GetAccessToken()
+func (c *Client) WxaQueryScheme(notMustParams ...Params) *WxaQuerySchemeResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := c.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/queryscheme?access_token=%s", app.accessToken), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/queryscheme?access_token=%s", c.getAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaQuerySchemeResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -56,12 +56,11 @@ func NewBusinessGetLiveInfoResult(result BusinessGetLiveInfoResponse, body []byt
 // BusinessGetLiveInfo 获取直播间列表
 // 调用此接口获取直播间列表及直播间信息
 // https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/industry/liveplayer/studio-api.html
-func (app *App) BusinessGetLiveInfo(notMustParams ...Params) *BusinessGetLiveInfoResult {
-	app.accessToken = app.GetAccessToken()
+func (c *Client) BusinessGetLiveInfo(notMustParams ...Params) *BusinessGetLiveInfoResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := c.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/business/getliveinfo?access_token=%s", app.accessToken), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/business/getliveinfo?access_token=%s", c.getAccessToken()), params, http.MethodPost)
 	// 定义
 	var response BusinessGetLiveInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

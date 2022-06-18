@@ -28,9 +28,9 @@ func NewSnsJsCode2sessionResult(result SnsJsCode2sessionResponse, body []byte, h
 
 // SnsJsCode2session 登录凭证校验
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html
-func (app *App) SnsJsCode2session(jsCode string) *SnsJsCode2sessionResult {
+func (c *Client) SnsJsCode2session(jsCode string) *SnsJsCode2sessionResult {
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", app.appId, app.appSecret, jsCode), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", c.getAppId(), c.getAppSecret(), jsCode), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response SnsJsCode2sessionResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
