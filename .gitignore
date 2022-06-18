@@ -4,6 +4,7 @@
 .idea
 .vscode
 *.log
-git.sh
-gomod.sh
-/*/*_test.go
+*.sh
+*_test.go
+/service/*_test.go
+/utils/*_test.go
