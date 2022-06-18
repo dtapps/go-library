@@ -57,14 +57,14 @@ func NewPromoterOrderInfoResult(result PromoterOrderInfoResponse, body []byte, h
 // https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/order/order-info.html#_1-%E6%A0%B9%E6%8D%AE%E8%AE%A2%E5%8D%95ID%E6%9F%A5%E8%AF%A2%E8%AE%A2%E5%8D%95%E8%AF%A6%E6%83%85
 func (c *Client) PromoterOrderInfo(orderId ...string) *PromoterOrderInfoResult {
 	// 参数
-	params := c.NewParamsWith()
+	params := gorequest.NewParamsWith()
 	var orderIdList []any
 	for _, v := range orderId {
 		orderIdList = append(orderIdList, v)
 	}
 	params.Set("orderIdList", orderIdList)
 	// 请求
-	request, err := c.request(UnionUrl+fmt.Sprintf("/promoter/order/info?access_token=%s", c.getAccessToken()), params, http.MethodPost)
+	request, err := c.request(apiUrl+fmt.Sprintf("/promoter/order/info?access_token=%s", c.getAccessToken()), params, http.MethodPost)
 	// 定义
 	var response PromoterOrderInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -140,11 +140,11 @@ func NewPromoterProductSelectResult(result PromoterProductSelectResponse, body [
 // 查询联盟精选商品
 // 支持开发者根据多种筛选条件获取联盟精选的商品列表及详情，筛选条件包括商品价格、商品佣金、商品累计销量、佣金比例、是否含有联盟券、配送方式、发货地区
 // https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/product/category.html#3.%E6%9F%A5%E8%AF%A2%E8%81%94%E7%9B%9F%E7%B2%BE%E9%80%89%E5%95%86%E5%93%81
-func (c *Client) PromoterProductSelect(notMustParams ...Params) *PromoterProductSelectResult {
+func (c *Client) PromoterProductSelect(notMustParams ...gorequest.Params) *PromoterProductSelectResult {
 	// 参数
-	params := c.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(UnionUrl+fmt.Sprintf("/promoter/product/select?access_token=%s", c.getAccessToken()), params, http.MethodGet)
+	request, err := c.request(apiUrl+fmt.Sprintf("/promoter/product/select?access_token=%s", c.getAccessToken()), params, http.MethodGet)
 	// 定义
 	var response PromoterProductSelectResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
