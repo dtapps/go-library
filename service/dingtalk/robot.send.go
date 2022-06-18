@@ -26,13 +26,13 @@ func NewRobotSendResult(result RobotSendResponse, body []byte, http gorequest.Re
 
 // RobotSend 自定义机器人
 // https://open.dingtalk.com/document/group/custom-robot-access
-func (app *App) RobotSend(notMustParams ...Params) *RobotSendResult {
+func (c *Client) RobotSend(notMustParams ...gorequest.Params) *RobotSendResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 时间
 	timestamp := time.Now().UnixNano() / 1e6
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://oapi.dingtalk.com/robot/send?access_token=%s&timestamp=%d&sign=%s", app.accessToken, timestamp, app.sign(timestamp)), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf("https://oapi.dingtalk.com/robot/send?access_token=%s&timestamp=%d&sign=%s", c.config.AccessToken, timestamp, c.sign(timestamp)), params, http.MethodPost)
 	// 定义
 	var response RobotSendResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
