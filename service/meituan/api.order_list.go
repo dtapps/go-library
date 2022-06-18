@@ -46,15 +46,15 @@ func NewApiOrderListResult(result ApiOrderListResponse, body []byte, http gorequ
 
 // ApiOrderList 订单列表查询接口（新版）
 // https://union.meituan.com/v2/apiDetail?id=23
-func (app *App) ApiOrderList(notMustParams ...gorequest.Params) *ApiOrderListResult {
+func (c *Client) ApiOrderList(notMustParams ...gorequest.Params) *ApiOrderListResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s
 	params["ts"] = gotime.Current().Timestamp()
-	params["appkey"] = app.appKey
-	params["sign"] = app.getSign(app.secret, params)
+	params["appkey"] = c.config.AppKey
+	params["sign"] = c.getSign(c.config.Secret, params)
 	// 请求
-	request, err := app.request("https://openapi.meituan.com/api/orderList", params, http.MethodGet)
+	request, err := c.request("https://openapi.meituan.com/api/orderList", params, http.MethodGet)
 	// 定义
 	var response ApiOrderListResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

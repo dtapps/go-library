@@ -5,7 +5,6 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
-
 	"io"
 	"sort"
 	"strconv"
@@ -13,7 +12,7 @@ import (
 
 // 签名(sign)生成逻辑（新版）
 // https://union.meituan.com/v2/apiDetail?id=27
-func (app *App) getSign(Secret string, params map[string]interface{}) string {
+func (c *Client) getSign(Secret string, params map[string]interface{}) string {
 	// 参数按照参数名的字典升序排列
 	var keys []string
 	for k := range params {
@@ -23,7 +22,7 @@ func (app *App) getSign(Secret string, params map[string]interface{}) string {
 	signStr := bytes.NewBufferString(Secret)
 	for _, k := range keys {
 		signStr.WriteString(k)
-		signStr.WriteString(app.getString(params[k]))
+		signStr.WriteString(c.getString(params[k]))
 	}
 	signStr.WriteString(Secret)
 	// md5加密
@@ -32,7 +31,7 @@ func (app *App) getSign(Secret string, params map[string]interface{}) string {
 	return hex.EncodeToString(has.Sum(nil))
 }
 
-func (app *App) getString(i interface{}) string {
+func (c *Client) getString(i interface{}) string {
 	switch v := i.(type) {
 	case string:
 		return v

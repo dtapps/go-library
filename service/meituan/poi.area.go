@@ -31,13 +31,13 @@ func NewPoiAreaResult(result PoiAreaResponse, body []byte, http gorequest.Respon
 
 // PoiArea 基础数据 - 商圈接口
 // https://openapi.meituan.com/#api-0.%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE-GetHttpsOpenapiMeituanComPoiAreaCityid1
-func (app *App) PoiArea(cityID int) *PoiAreaResult {
+func (c *Client) PoiArea(cityID int) *PoiAreaResult {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("cityid", cityID)
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := app.request("https://openapi.meituan.com/poi/area", params, http.MethodGet)
+	request, err := c.request("https://openapi.meituan.com/poi/area", params, http.MethodGet)
 	// 定义
 	var response PoiAreaResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

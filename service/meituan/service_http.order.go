@@ -37,9 +37,9 @@ type ResponseServeHttpOrder struct {
 
 // ServeHttpOrder 订单回推接口（新版）
 // https://union.meituan.com/v2/apiDetail?id=22
-func (app *App) ServeHttpOrder(c *gin.Context) (validateJson ResponseServeHttpOrder, err error) {
+func (c *Client) ServeHttpOrder(gCtx *gin.Context) (validateJson ResponseServeHttpOrder, err error) {
 	// 声明接收的变量
-	err = c.ShouldBind(&validateJson)
+	err = gCtx.ShouldBind(&validateJson)
 	return
 }
 

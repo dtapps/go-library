@@ -47,14 +47,14 @@ func NewApiOrderResult(result ApiOrderResponse, body []byte, http gorequest.Resp
 
 // ApiOrder 单订单查询接口（新版）
 // https://union.meituan.com/v2/apiDetail?id=24
-func (app *App) ApiOrder(notMustParams ...gorequest.Params) *ApiOrderResult {
+func (c *Client) ApiOrder(notMustParams ...gorequest.Params) *ApiOrderResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s
-	params["appkey"] = app.appKey
-	params["sign"] = app.getSign(app.secret, params)
+	params["appkey"] = c.config.AppKey
+	params["sign"] = c.getSign(c.config.Secret, params)
 	// 请求
-	request, err := app.request("https://openapi.meituan.com/api/order", params, http.MethodGet)
+	request, err := c.request("https://openapi.meituan.com/api/order", params, http.MethodGet)
 	// 定义
 	var response ApiOrderResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

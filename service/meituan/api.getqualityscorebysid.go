@@ -34,15 +34,15 @@ func NewApiGetQuaLitYsCoreBySidResult(result ApiGetQuaLitYsCoreBySidResponse, bo
 
 // ApiGetQuaLitYsCoreBySid 优选sid质量分&复购率查询
 // https://union.meituan.com/v2/apiDetail?id=28
-func (app *App) ApiGetQuaLitYsCoreBySid(notMustParams ...gorequest.Params) *ApiGetQuaLitYsCoreBySidResult {
+func (c *Client) ApiGetQuaLitYsCoreBySid(notMustParams ...gorequest.Params) *ApiGetQuaLitYsCoreBySidResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s
 	params["ts"] = gotime.Current().Timestamp()
-	params["appkey"] = app.appKey
-	params["sign"] = app.getSign(app.secret, params)
+	params["appkey"] = c.config.AppKey
+	params["sign"] = c.getSign(c.config.Secret, params)
 	// 请求
-	request, err := app.request("https://openapi.meituan.com/api/getqualityscorebysid", params, http.MethodGet)
+	request, err := c.request("https://openapi.meituan.com/api/getqualityscorebysid", params, http.MethodGet)
 	// 定义
 	var response ApiGetQuaLitYsCoreBySidResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
