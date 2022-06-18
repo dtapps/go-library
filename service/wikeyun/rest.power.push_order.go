@@ -27,12 +27,12 @@ func NewRestPowerPushOrderResult(result RestPowerPushOrderResponse, body []byte,
 
 // RestPowerPushOrder 电费充值API
 // https://open.wikeyun.cn/#/apiDocument/9/document/311
-func (app *App) RestPowerPushOrder(notMustParams ...Params) *RestPowerPushOrderResult {
+func (c *Client) RestPowerPushOrder(notMustParams ...Params) *RestPowerPushOrderResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
-	params.Set("store_id", app.storeId) // 店铺ID
+	params := c.NewParamsWith(notMustParams...)
+	params.Set("store_id", c.config.StoreId) // 店铺ID
 	// 请求
-	request, err := app.request("https://router.wikeyun.cn/rest/Power/pushOrder", params)
+	request, err := c.request("https://router.wikeyun.cn/rest/Power/pushOrder", params)
 	// 定义
 	var response RestPowerPushOrderResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

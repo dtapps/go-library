@@ -25,13 +25,13 @@ func NewRestPowerDelCardResult(result RestPowerDelCardResponse, body []byte, htt
 
 // RestPowerDelCard 删除电费充值卡
 // https://open.wikeyun.cn/#/apiDocument/9/document/330
-func (app *App) RestPowerDelCard(cardId string) *RestPowerDelCardResult {
+func (c *Client) RestPowerDelCard(cardId string) *RestPowerDelCardResult {
 	// 参数
 	param := NewParams()
 	param.Set("card_id", cardId)
-	params := app.NewParamsWith(param)
+	params := c.NewParamsWith(param)
 	// 请求
-	request, err := app.request("https://router.wikeyun.cn/rest/Power/delCard", params)
+	request, err := c.request("https://router.wikeyun.cn/rest/Power/delCard", params)
 	// 定义
 	var response RestPowerDelCardResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

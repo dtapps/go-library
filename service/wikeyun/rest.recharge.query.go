@@ -34,13 +34,13 @@ func NewRestRechargeQueryResult(result RestRechargeQueryResponse, body []byte, h
 
 // RestRechargeQuery 话费订单查询
 // https://open.wikeyun.cn/#/apiDocument/9/document/299
-func (app *App) RestRechargeQuery(orderNumber string) *RestRechargeQueryResult {
+func (c *Client) RestRechargeQuery(orderNumber string) *RestRechargeQueryResult {
 	// 参数
 	param := NewParams()
 	param.Set("order_number", orderNumber) // 平台订单号
-	params := app.NewParamsWith(param)
+	params := c.NewParamsWith(param)
 	// 请求
-	request, err := app.request("https://router.wikeyun.cn/rest/Recharge/query", params)
+	request, err := c.request("https://router.wikeyun.cn/rest/Recharge/query", params)
 	// 定义
 	var response RestRechargeQueryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

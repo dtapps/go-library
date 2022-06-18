@@ -29,9 +29,9 @@ func NewRestUserQueryResult(result RestUserQueryResponse, body []byte, http gore
 
 // RestUserQuery 用户信息
 // https://open.wikeyun.cn/#/apiDocument/10/document/336
-func (app *App) RestUserQuery() *RestUserQueryResult {
+func (c *Client) RestUserQuery() *RestUserQueryResult {
 	// 请求
-	request, err := app.request("https://router.wikeyun.cn/rest/User/query", map[string]interface{}{})
+	request, err := c.request("https://router.wikeyun.cn/rest/User/query", map[string]interface{}{})
 	// 定义
 	var response RestUserQueryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

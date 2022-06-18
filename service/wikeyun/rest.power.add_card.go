@@ -34,12 +34,12 @@ func NewRestPowerAddCardResult(result RestPowerAddCardResponse, body []byte, htt
 
 // RestPowerAddCard 添加电费充值卡
 // https://open.wikeyun.cn/#/apiDocument/9/document/326
-func (app *App) RestPowerAddCard(notMustParams ...Params) *RestPowerAddCardResult {
+func (c *Client) RestPowerAddCard(notMustParams ...Params) *RestPowerAddCardResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
-	params.Set("store_id", app.storeId) // 店铺ID
+	params := c.NewParamsWith(notMustParams...)
+	params.Set("store_id", c.config.StoreId) // 店铺ID
 	// 请求
-	request, err := app.request("https://router.wikeyun.cn/rest/Power/addCard", params)
+	request, err := c.request("https://router.wikeyun.cn/rest/Power/addCard", params)
 	// 定义
 	var response RestPowerAddCardResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

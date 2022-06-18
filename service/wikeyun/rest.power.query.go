@@ -34,13 +34,13 @@ func NewRestPowerQueryResult(result RestPowerQueryResponse, body []byte, http go
 
 // RestPowerQuery 电费订单查询
 // https://open.wikeyun.cn/#/apiDocument/9/document/313
-func (app *App) RestPowerQuery(orderNumber string) *RestPowerQueryResult {
+func (c *Client) RestPowerQuery(orderNumber string) *RestPowerQueryResult {
 	// 参数
 	param := NewParams()
 	param.Set("order_number", orderNumber) // 平台单号
-	params := app.NewParamsWith(param)
+	params := c.NewParamsWith(param)
 	// 请求
-	request, err := app.request("https://router.wikeyun.cn/rest/Power/query", params)
+	request, err := c.request("https://router.wikeyun.cn/rest/Power/query", params)
 	// 定义
 	var response RestPowerQueryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

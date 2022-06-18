@@ -44,13 +44,13 @@ func NewRestRechargeMobileInfoResult(result RestRechargeMobileInfoResponse, body
 
 // RestRechargeMobileInfo 查询手机归属地信息以及是否携号转网
 // https://open.wikeyun.cn/#/apiDocument/9/document/374
-func (app *App) RestRechargeMobileInfo(orderNumber string) *RestRechargeMobileInfoResult {
+func (c *Client) RestRechargeMobileInfo(orderNumber string) *RestRechargeMobileInfoResult {
 	// 参数
 	param := NewParams()
 	param.Set("order_number", orderNumber) // 平台单号
-	params := app.NewParamsWith(param)
+	params := c.NewParamsWith(param)
 	// 请求
-	request, err := app.request("https://router.wikeyun.cn/rest/Recharge/mobileInfo", params)
+	request, err := c.request("https://router.wikeyun.cn/rest/Recharge/mobileInfo", params)
 	// 定义
 	var response RestRechargeMobileInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
