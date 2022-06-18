@@ -26,10 +26,6 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.35
 	github.com/upyun/go-sdk/v3 v3.0.2
-	go.dtapp.net/dorm v1.0.5
-	go.dtapp.net/gorequest v1.0.20
-	go.dtapp.net/gostring v1.0.3
-	go.dtapp.net/gotime v1.0.2
 	go.etcd.io/etcd/api/v3 v3.5.4
 	go.etcd.io/etcd/client/v3 v3.5.4
 	go.mongodb.org/mongo-driver v1.9.1
