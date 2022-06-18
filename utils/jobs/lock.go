@@ -2,7 +2,7 @@ package jobs
 
 import (
 	"fmt"
-	"go.dtapp.net/library/utils/goredis"
+	"go.dtapp.net/library/utils/dorm"
 	"time"
 )
 
@@ -13,7 +13,7 @@ func (app *App) Lock(info Task, id any) string {
 	if judgeCache != "" {
 		return judgeCache
 	}
-	app.Redis.NewStringOperation().Set(cacheName, fmt.Sprintf("已在%v机器上锁成功", app.OutsideIp), goredis.WithExpire(time.Millisecond*time.Duration(info.Frequency)*3))
+	app.Redis.NewStringOperation().Set(cacheName, fmt.Sprintf("已在%v机器上锁成功", app.OutsideIp), dorm.WithExpire(time.Millisecond*time.Duration(info.Frequency)*3))
 	return ""
 }
 

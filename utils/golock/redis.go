@@ -1,7 +1,7 @@
 package golock
 
 import (
-	"go.dtapp.net/library/utils/goredis"
+	"go.dtapp.net/library/utils/dorm"
 	"time"
 )
 
@@ -13,10 +13,10 @@ type ConfigLockRedis struct {
 
 type LockRedis struct {
 	config ConfigLockRedis
-	db     goredis.App
+	db     *dorm.RedisClient
 }
 
-func NewLockRedis(db goredis.App) *LockRedis {
+func NewLockRedis(db *dorm.RedisClient) *LockRedis {
 	return &LockRedis{db: db}
 }
 
@@ -26,7 +26,7 @@ func (lockRedis *LockRedis) Lock() bool {
 	if judgeCache != "" {
 		return true
 	}
-	lockRedis.db.NewStringOperation().Set(lockRedis.config.Key, lockRedis.config.KeyContent, goredis.WithExpire(lockRedis.config.ExpirationTime))
+	lockRedis.db.NewStringOperation().Set(lockRedis.config.Key, lockRedis.config.KeyContent, dorm.WithExpire(lockRedis.config.ExpirationTime))
 	return true
 }
 

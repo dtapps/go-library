@@ -1,8 +1,8 @@
 package jobs
 
 import (
+	"go.dtapp.net/library/utils/dorm"
 	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/goredis"
 	"go.dtapp.net/library/utils/gotime"
 	"go.dtapp.net/library/utils/gouuid"
 	"gorm.io/gorm"
@@ -10,17 +10,17 @@ import (
 )
 
 type App struct {
-	RunVersion  int         `json:"run_version"`  // 运行版本
-	Os          string      `json:"os"`           // 系统类型
-	Arch        string      `json:"arch"`         // 系统架构
-	MaxProCs    int         `json:"max_pro_cs"`   // CPU核数
-	Version     string      `json:"version"`      // GO版本
-	MacAddrS    string      `json:"mac_addr_s"`   // Mac地址
-	InsideIp    string      `json:"inside_ip"`    // 内网ip
-	OutsideIp   string      `json:"outside_ip"`   // 外网ip
-	MainService int         `json:"main_service"` // 主要服务
-	Db          *gorm.DB    // 数据库
-	Redis       goredis.App // 缓存数据库服务
+	RunVersion  int               `json:"run_version"`  // 运行版本
+	Os          string            `json:"os"`           // 系统类型
+	Arch        string            `json:"arch"`         // 系统架构
+	MaxProCs    int               `json:"max_pro_cs"`   // CPU核数
+	Version     string            `json:"version"`      // GO版本
+	MacAddrS    string            `json:"mac_addr_s"`   // Mac地址
+	InsideIp    string            `json:"inside_ip"`    // 内网ip
+	OutsideIp   string            `json:"outside_ip"`   // 外网ip
+	MainService int               `json:"main_service"` // 主要服务
+	Db          *gorm.DB          // 数据库
+	Redis       *dorm.RedisClient // 缓存数据库服务
 }
 
 // Add 添加任务
