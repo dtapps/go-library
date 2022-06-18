@@ -55,13 +55,12 @@ func NewPromoterProductGenerateResult(result PromoterProductGenerateResponse, bo
 
 // PromoterProductGenerate 获取商品推广素材
 // https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/product/category.html#_4-%E8%8E%B7%E5%8F%96%E5%95%86%E5%93%81%E6%8E%A8%E5%B9%BF%E7%B4%A0%E6%9D%90
-func (app *App) PromoterProductGenerate(notMustParams ...Params) *PromoterProductGenerateResult {
-	app.accessToken = app.GetAccessToken()
+func (c *Client) PromoterProductGenerate(notMustParams ...Params) *PromoterProductGenerateResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
-	params.Set("pid", app.pid)
+	params := c.NewParamsWith(notMustParams...)
+	params.Set("pid", c.getPid())
 	// 请求
-	request, err := app.request(UnionUrl+fmt.Sprintf("/promoter/product/generate?access_token=%s", app.accessToken), params, http.MethodPost)
+	request, err := c.request(UnionUrl+fmt.Sprintf("/promoter/product/generate?access_token=%s", c.getAccessToken()), params, http.MethodPost)
 	// 定义
 	var response PromoterProductGenerateResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

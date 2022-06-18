@@ -25,12 +25,11 @@ func NewPromotionUpdResult(result PromotionUpdResponse, body []byte, http gorequ
 
 // PromotionUpd 编辑推广位
 // https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/promotion.html#_3-%E7%BC%96%E8%BE%91%E6%8E%A8%E5%B9%BF%E4%BD%8D
-func (app *App) PromotionUpd(notMustParams ...Params) *PromotionUpdResult {
-	app.accessToken = app.GetAccessToken()
+func (c *Client) PromotionUpd(notMustParams ...Params) *PromotionUpdResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := c.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request(UnionUrl+fmt.Sprintf("/promoter/promotion/upd?access_token%s", app.accessToken), params, http.MethodPost)
+	request, err := c.request(UnionUrl+fmt.Sprintf("/promoter/promotion/upd?access_token%s", c.getAccessToken()), params, http.MethodPost)
 	// 定义
 	var response PromotionUpdResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

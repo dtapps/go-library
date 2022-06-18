@@ -50,19 +50,19 @@ type OrderSearchResult struct {
 }
 
 // OrderSearch 根据订单支付时间、订单分佣状态拉取订单详情 https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/order/order-info.html
-func (app *App) OrderSearch(notMustParams ...Params) (result OrderSearchResult, err error) {
-	if len(app.accessToken) <= 0 {
+func (c *Client) OrderSearch(notMustParams ...Params) (result OrderSearchResult, err error) {
+	if len(c.getAccessToken()) <= 0 {
 		return result, errors.New("调用凭证异常")
 	}
 
 	// 参数
-	//params := app.NewParamsWith(notMustParams...)
+	//params := c.NewParamsWith(notMustParams...)
 
 	//if len(orderIdList) <= 0 || len(orderIdList) > 200 {
 	//	return result, errors.New("未传入 orderIdList 或 orderIdList 超过上限 200")
 	//}
 
-	//body, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/union/promoter/order/info?access_token=%s", app.accessToken), map[string]interface{}{
+	//body, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/union/promoter/order/info?access_token=%s", c.accessToken), map[string]interface{}{
 	//	"orderIdList": orderIdList,
 	//}, http.MethodPost)
 	//if err != nil {
