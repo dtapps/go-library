@@ -44,7 +44,7 @@ func (c *Client) WaiMaiMeituanOrders(notMustParams ...gorequest.Params) *WaiMaiM
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request("https://api.tbk.dingdanxia.com/waimai/meituan_orders", params, http.MethodPost)
+	request, err := c.request(apiUrl+"/waimai/meituan_orders", params, http.MethodPost)
 	// 定义
 	var response WaiMaiMeituanOrdersResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -26,11 +26,11 @@ func NewRestPowerCancelResult(result RestPowerCancelResponse, body []byte, http 
 // https://open.wikeyun.cn/#/apiDocument/9/document/323
 func (c *Client) RestPowerCancel(orderNumber string) *RestPowerCancelResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("order_number", orderNumber) // 取消的单号，多个用英文逗号隔开
-	params := c.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request("https://router.wikeyun.cn/rest/Power/cancel", params)
+	request, err := c.request(apiUrl+"/rest/Power/cancel", params)
 	// 定义
 	var response RestPowerCancelResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

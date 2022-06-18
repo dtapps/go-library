@@ -179,7 +179,7 @@ type AnalysisResult struct {
 	Err    error              // 错误
 }
 
-func NewAnalysisResult(result AnalysisResponse, body []byte, http gorequest.Response, err error) *AnalysisResult {
+func newAnalysisResult(result AnalysisResponse, body []byte, http gorequest.Response, err error) *AnalysisResult {
 	return &AnalysisResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -193,19 +193,19 @@ func (c *Client) Analysis(content string) *AnalysisResult {
 	} else if strings.Contains(content, "iesdouyin.com") {
 		url = xurls.Relaxed.FindString(content)
 	} else {
-		return NewAnalysisResult(AnalysisResponse{}, nil, gorequest.Response{}, errors.New("url为空"))
+		return newAnalysisResult(AnalysisResponse{}, nil, gorequest.Response{}, errors.New("url为空"))
 	}
 
 	// 重定向信息
 	request302, err := c.request302(url)
 	if err != nil {
-		return NewAnalysisResult(AnalysisResponse{}, nil, gorequest.Response{}, err)
+		return newAnalysisResult(AnalysisResponse{}, nil, gorequest.Response{}, err)
 	}
 
 	// 提取编号
 	itemIds := regexp.MustCompile(`\d+`).FindStringSubmatch(request302)
 	if len(itemIds) < 1 {
-		return NewAnalysisResult(AnalysisResponse{}, nil, gorequest.Response{}, errors.New("参数错误"))
+		return newAnalysisResult(AnalysisResponse{}, nil, gorequest.Response{}, errors.New("参数错误"))
 	}
 
 	// 请求
@@ -214,5 +214,5 @@ func (c *Client) Analysis(content string) *AnalysisResult {
 	// 定义
 	var response AnalysisResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewAnalysisResult(response, request.ResponseBody, request, err)
+	return newAnalysisResult(response, request.ResponseBody, request, err)
 }

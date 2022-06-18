@@ -1,10 +1,12 @@
 package wikeyun
 
+import "go.dtapp.net/library/utils/gorequest"
+
 // RestOilCardEdit 编辑充值卡
-func (c *Client) RestOilCardEdit(notMustParams ...Params) (body []byte, err error) {
+func (c *Client) RestOilCardEdit(notMustParams ...gorequest.Params) (body []byte, err error) {
 	// 参数
-	params := c.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request("https://router.wikeyun.cn/rest/Oil/editCard", params)
+	request, err := c.request(apiUrl+"/rest/Oil/editCard", params)
 	return request.ResponseBody, err
 }

@@ -55,7 +55,7 @@ func (c *Client) WaiMaiMeituanOrderId(orderId string) *WaiMaiMeituanOrderIdResul
 	param.Set("order_id", orderId)
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request("https://api.tbk.dingdanxia.com/waimai/meituan_orderid", params, http.MethodPost)
+	request, err := c.request(apiUrl+"/waimai/meituan_orderid", params, http.MethodPost)
 	// 定义
 	var response WaiMaiMeituanOrderIdResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

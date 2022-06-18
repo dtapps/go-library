@@ -43,7 +43,7 @@ func (c *Client) JdJyOrderDetails(notMustParams ...gorequest.Params) *JdJyOrderD
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request("https://api.tbk.dingdanxia.com/jd/jy_order_details", params, http.MethodPost)
+	request, err := c.request(apiUrl+"/jd/jy_order_details", params, http.MethodPost)
 	// 定义
 	var response JdJyOrderDetailsResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

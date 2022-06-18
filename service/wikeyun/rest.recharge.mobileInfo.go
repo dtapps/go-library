@@ -46,11 +46,11 @@ func NewRestRechargeMobileInfoResult(result RestRechargeMobileInfoResponse, body
 // https://open.wikeyun.cn/#/apiDocument/9/document/374
 func (c *Client) RestRechargeMobileInfo(orderNumber string) *RestRechargeMobileInfoResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("order_number", orderNumber) // 平台单号
-	params := c.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request("https://router.wikeyun.cn/rest/Recharge/mobileInfo", params)
+	request, err := c.request(apiUrl+"/rest/Recharge/mobileInfo", params)
 	// 定义
 	var response RestRechargeMobileInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

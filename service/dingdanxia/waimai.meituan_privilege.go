@@ -45,7 +45,7 @@ func (c *Client) WaiMaiMeituanPrivilege(sid string, generateWeApp, qrcode bool) 
 	param.Set("qrcode", qrcode)
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request("https://api.tbk.dingdanxia.com/waimai/meituan_privilege", params, http.MethodPost)
+	request, err := c.request(apiUrl+"/waimai/meituan_privilege", params, http.MethodPost)
 	// 定义
 	var response WaiMaiMeituanPrivilegeResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

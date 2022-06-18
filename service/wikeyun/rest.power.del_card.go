@@ -27,11 +27,11 @@ func NewRestPowerDelCardResult(result RestPowerDelCardResponse, body []byte, htt
 // https://open.wikeyun.cn/#/apiDocument/9/document/330
 func (c *Client) RestPowerDelCard(cardId string) *RestPowerDelCardResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("card_id", cardId)
-	params := c.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request("https://router.wikeyun.cn/rest/Power/delCard", params)
+	request, err := c.request(apiUrl+"/rest/Power/delCard", params)
 	// 定义
 	var response RestPowerDelCardResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

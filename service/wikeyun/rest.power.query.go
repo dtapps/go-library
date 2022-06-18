@@ -36,11 +36,11 @@ func NewRestPowerQueryResult(result RestPowerQueryResponse, body []byte, http go
 // https://open.wikeyun.cn/#/apiDocument/9/document/313
 func (c *Client) RestPowerQuery(orderNumber string) *RestPowerQueryResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("order_number", orderNumber) // 平台单号
-	params := c.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request("https://router.wikeyun.cn/rest/Power/query", params)
+	request, err := c.request(apiUrl+"/rest/Power/query", params)
 	// 定义
 	var response RestPowerQueryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

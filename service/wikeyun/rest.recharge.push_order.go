@@ -26,12 +26,12 @@ func NewRestRechargePushOrderResult(result RestRechargePushOrderResponse, body [
 
 // RestRechargePushOrder 话费充值推送
 // https://open.wikeyun.cn/#/apiDocument/9/document/298
-func (c *Client) RestRechargePushOrder(notMustParams ...Params) *RestRechargePushOrderResult {
+func (c *Client) RestRechargePushOrder(notMustParams ...gorequest.Params) *RestRechargePushOrderResult {
 	// 参数
-	params := c.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("store_id", c.config.StoreId) // 店铺ID
 	// 请求
-	request, err := c.request("https://router.wikeyun.cn/rest/Recharge/pushOrder", params)
+	request, err := c.request(apiUrl+"/rest/Recharge/pushOrder", params)
 	// 定义
 	var response RestRechargePushOrderResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
