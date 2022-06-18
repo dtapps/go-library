@@ -9,34 +9,40 @@ import (
 	"strings"
 )
 
-type App struct {
+type ConfigClient struct {
+	PgsqlDb *gorm.DB // pgsql数据库
+}
+
+type Client struct {
 	ua           string         // 用户代理
-	pgsql        *gorm.DB       // pgsql数据库
 	client       *gorequest.App // 请求客户端
 	log          *golog.Api     // 日志服务
 	logTableName string         // 日志表名
 	logStatus    bool           // 日志状态
+	config       *ConfigClient  // 配置
 }
 
-func NewApp(pgsql *gorm.DB) *App {
-	app := &App{ua: "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1"}
-	app.client = gorequest.NewHttp()
-	if pgsql != nil {
-		app.pgsql = pgsql
-		app.logStatus = true
-		app.logTableName = "douyin"
-		app.log = golog.NewApi(&golog.ApiConfig{
-			Db:        pgsql,
-			TableName: app.logTableName,
+func NewClient(config *ConfigClient) *Client {
+
+	c := &Client{config: config}
+
+	c.client = gorequest.NewHttp()
+	if c.config.PgsqlDb != nil {
+		c.logStatus = true
+		c.logTableName = "douyin"
+		c.log = golog.NewApi(&golog.ApiConfig{
+			Db:        c.config.PgsqlDb,
+			TableName: c.logTableName,
 		})
 	}
-	return app
+
+	return c
 }
 
-func (app *App) request(url string, params map[string]interface{}, method string) (resp gorequest.Response, err error) {
+func (c *Client) request(url string, params map[string]interface{}, method string) (resp gorequest.Response, err error) {
 
 	// 创建请求
-	client := app.client
+	client := c.client
 
 	// 设置请求地址
 	client.SetUri(url)
@@ -48,7 +54,7 @@ func (app *App) request(url string, params map[string]interface{}, method string
 	client.SetContentTypeJson()
 
 	// 设置用户代理
-	client.SetUserAgent(app.ua)
+	client.SetUserAgent(c.ua)
 
 	// 设置参数
 	client.SetParams(params)
@@ -60,14 +66,14 @@ func (app *App) request(url string, params map[string]interface{}, method string
 	}
 
 	// 日志
-	if app.logStatus == true {
-		go app.postgresqlLog(request)
+	if c.logStatus == true {
+		go c.postgresqlLog(request)
 	}
 
 	return request, err
 }
 
-func (app *App) request302(url string) (string, error) {
+func (c *Client) request302(url string) (string, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return "", err
@@ -90,7 +96,7 @@ func (app *App) request302(url string) (string, error) {
 	return "", nil
 }
 
-func (app *App) urlJudge(str string) string {
+func (c *Client) urlJudge(str string) string {
 	if strings.Index(str, "douyin.com") != -1 || strings.Index(str, "iesdouyin.com") != -1 {
 		return str
 	}

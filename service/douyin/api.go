@@ -184,7 +184,7 @@ func NewAnalysisResult(result AnalysisResponse, body []byte, http gorequest.Resp
 }
 
 // Analysis 抖音解析
-func (app *App) Analysis(content string) *AnalysisResult {
+func (c *Client) Analysis(content string) *AnalysisResult {
 
 	// 提取url
 	var url string
@@ -197,7 +197,7 @@ func (app *App) Analysis(content string) *AnalysisResult {
 	}
 
 	// 重定向信息
-	request302, err := app.request302(url)
+	request302, err := c.request302(url)
 	if err != nil {
 		return NewAnalysisResult(AnalysisResponse{}, nil, gorequest.Response{}, err)
 	}
@@ -209,7 +209,7 @@ func (app *App) Analysis(content string) *AnalysisResult {
 	}
 
 	// 请求
-	request, err := app.request("https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids="+itemIds[0], map[string]interface{}{}, http.MethodGet)
+	request, err := c.request("https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids="+itemIds[0], map[string]interface{}{}, http.MethodGet)
 
 	// 定义
 	var response AnalysisResponse
