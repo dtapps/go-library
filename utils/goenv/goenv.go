@@ -1,8 +1,8 @@
 package goenv
 
 import (
-	"go.dtapp.net/library/utils/gostring"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -17,7 +17,17 @@ func GetEnvDefault(key, defVal string) string {
 func GetEnvDefaultInt(key string, defVal int) int {
 	val, ok := os.LookupEnv(key)
 	if ok {
-		return gostring.ToInt(val)
+		i, _ := strconv.Atoi(val)
+		return i
+	}
+	return defVal
+}
+
+func GetEnvDefaultBool(key string, defVal bool) bool {
+	val, ok := os.LookupEnv(key)
+	if ok {
+		b, _ := strconv.ParseBool(val)
+		return b
 	}
 	return defVal
 }
