@@ -64,12 +64,12 @@ func NewPayPartnerTransactionsIdResult(result PayPartnerTransactionsIdResponse, 
 
 // PayPartnerTransactionsId 微信支付订单号查询
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_2.shtml
-func (app *App) PayPartnerTransactionsId(transactionId string) *PayPartnerTransactionsIdResult {
+func (c *Client) PayPartnerTransactionsId(transactionId string) *PayPartnerTransactionsIdResult {
 	// 参数
 	params := gorequest.NewParams()
 	// 请求
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/pay/partner/transactions/id/%s?sp_mchid=%s&sub_mchid=%s", transactionId, app.spMchId, app.subMchId), params, http.MethodGet)
+	request, err := c.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/pay/partner/transactions/id/%s?sp_mchid=%s&sub_mchid=%s", transactionId, c.config.SpMchId, c.config.SubMchId), params, http.MethodGet)
 	if err != nil {
 		return NewPayPartnerTransactionsIdResult(PayPartnerTransactionsIdResponse{}, request.ResponseBody, request, err)
 	}

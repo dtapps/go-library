@@ -22,26 +22,26 @@ type GetJsApiResult struct {
 }
 
 // GetJsApi JSAPI调起支付API https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_4.shtml
-func (app *App) GetJsApi(param GetJsApi) (result GetJsApiResult, err error) {
+func (c *Client) GetJsApi(param GetJsApi) (result GetJsApiResult, err error) {
 
 	// sign params
 	timeStamp := time.Now().Unix()
 	nonce := gorandom.Alphanumeric(32)
 
-	result.AppId = app.subAppid
+	result.AppId = c.config.SubAppid
 	result.TimeStamp = fmt.Sprintf("%v", timeStamp) // 时间戳
 	result.NonceStr = nonce                         // 随机字符串
 	result.Package = param.Package                  // 订单详情扩展字符串
 
 	// 签名
-	message := fmt.Sprintf("%s\n%s\n%s\n%s\n", app.subAppid, fmt.Sprintf("%v", timeStamp), nonce, param.Package)
+	message := fmt.Sprintf("%s\n%s\n%s\n%s\n", c.config.SubAppid, fmt.Sprintf("%v", timeStamp), nonce, param.Package)
 
-	signBytes, err := app.signPKCS1v15(message, []byte(app.mchSslKey))
+	signBytes, err := c.signPKCS1v15(message, []byte(c.config.MchSslKey))
 	if err != nil {
 		return result, err
 	}
 
-	sign := app.base64EncodeStr(signBytes)
+	sign := c.base64EncodeStr(signBytes)
 	result.PaySign = sign   // 签名
 	result.SignType = "RSA" // 签名方式
 	return result, nil

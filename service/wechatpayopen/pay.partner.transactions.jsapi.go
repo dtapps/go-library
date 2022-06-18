@@ -23,15 +23,15 @@ func NewPayPartnerTransactionsJsapiResult(result PayPartnerTransactionsJsapiResp
 
 // PayPartnerTransactionsJsapi JSAPI下单
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_1.shtml
-func (app *App) PayPartnerTransactionsJsapi(notMustParams ...gorequest.Params) *PayPartnerTransactionsJsapiResult {
+func (c *Client) PayPartnerTransactionsJsapi(notMustParams ...gorequest.Params) *PayPartnerTransactionsJsapiResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("sp_appid", app.spAppid)   // 服务商应用ID
-	params.Set("sp_mchid", app.spMchId)   // 服务商户号
-	params.Set("sub_appid", app.subAppid) // 子商户应用ID
-	params.Set("sub_mchid", app.subMchId) // 子商户号
+	params.Set("sp_appid", c.config.SpAppid)   // 服务商应用ID
+	params.Set("sp_mchid", c.config.SpMchId)   // 服务商户号
+	params.Set("sub_appid", c.config.SubAppid) // 子商户应用ID
+	params.Set("sub_mchid", c.config.SubMchId) // 子商户号
 	// 请求
-	request, err := app.request("https://api.mch.weixin.qq.com/v3/pay/partner/transactions/jsapi", params, http.MethodPost)
+	request, err := c.request("https://api.mch.weixin.qq.com/v3/pay/partner/transactions/jsapi", params, http.MethodPost)
 	if err != nil {
 		return NewPayPartnerTransactionsJsapiResult(PayPartnerTransactionsJsapiResponse{}, request.ResponseBody, request, err)
 	}

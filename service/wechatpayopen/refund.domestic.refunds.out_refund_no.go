@@ -62,11 +62,11 @@ func NewRefundDomesticRefundsOutRefundNoResult(result RefundDomesticRefundsOutRe
 
 // RefundDomesticRefundsOutRefundNo 查询单笔退款API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_9.shtml
-func (app *App) RefundDomesticRefundsOutRefundNo(outRefundNo string) *RefundDomesticRefundsOutRefundNoResult {
+func (c *Client) RefundDomesticRefundsOutRefundNo(outRefundNo string) *RefundDomesticRefundsOutRefundNoResult {
 	// 参数
 	params := gorequest.NewParams()
 	// 请求
-	request, err := app.request("https://api.mch.weixin.qq.com/v3/refund/domestic/refunds/"+outRefundNo+"?sub_mchid="+app.subMchId, params, http.MethodGet)
+	request, err := c.request("https://api.mch.weixin.qq.com/v3/refund/domestic/refunds/"+outRefundNo+"?sub_mchid="+c.config.SubMchId, params, http.MethodGet)
 	if err != nil {
 		return NewRefundDomesticRefundsOutRefundNoResult(RefundDomesticRefundsOutRefundNoResponse{}, request.ResponseBody, request, err)
 	}

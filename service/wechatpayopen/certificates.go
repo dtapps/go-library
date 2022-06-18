@@ -34,9 +34,9 @@ func NewCertificatesResult(result CertificatesResponse, body []byte, http gorequ
 
 // Certificates 获取平台证书列表
 // https://pay.weixin.qq.com/wiki/doc/apiv3/apis/wechatpay5_1.shtml
-func (app *App) Certificates() *CertificatesResult {
+func (c *Client) Certificates() *CertificatesResult {
 	// 请求
-	request, err := app.request("https://api.mch.weixin.qq.com/v3/certificates", map[string]interface{}{}, http.MethodGet)
+	request, err := c.request("https://api.mch.weixin.qq.com/v3/certificates", map[string]interface{}{}, http.MethodGet)
 	if err != nil {
 		return NewCertificatesResult(CertificatesResponse{}, request.ResponseBody, request, err)
 	}

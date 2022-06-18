@@ -19,7 +19,7 @@ import (
 )
 
 // 对消息的散列值进行数字签名
-func (app *App) signPKCS1v15(msg string, privateKey []byte) ([]byte, error) {
+func (c *Client) signPKCS1v15(msg string, privateKey []byte) ([]byte, error) {
 
 	block, _ := pem.Decode(privateKey)
 	if block == nil {
@@ -36,7 +36,7 @@ func (app *App) signPKCS1v15(msg string, privateKey []byte) ([]byte, error) {
 		return nil, errors.New("private key format error")
 	}
 
-	sign, err := rsa.SignPKCS1v15(rand.Reader, key, crypto.SHA256, app.haSha256(msg))
+	sign, err := rsa.SignPKCS1v15(rand.Reader, key, crypto.SHA256, c.haSha256(msg))
 	if err != nil {
 		return nil, errors.New("sign error")
 	}
@@ -45,12 +45,12 @@ func (app *App) signPKCS1v15(msg string, privateKey []byte) ([]byte, error) {
 }
 
 // base编码
-func (app *App) base64EncodeStr(src []byte) string {
+func (c *Client) base64EncodeStr(src []byte) string {
 	return base64.StdEncoding.EncodeToString(src)
 }
 
 // sha256加密
-func (app *App) haSha256(str string) []byte {
+func (c *Client) haSha256(str string) []byte {
 	h := sha256.New()
 	h.Write([]byte(str))
 	return h.Sum(nil)
@@ -58,7 +58,7 @@ func (app *App) haSha256(str string) []byte {
 
 // 生成身份认证信息
 // https://wechatpay-api.gitbook.io/wechatpay-api-v3/qian-ming-zhi-nan-1/qian-ming-sheng-cheng
-func (app *App) authorization(method string, paramMap map[string]interface{}, rawUrl string) (token string, err error) {
+func (c *Client) authorization(method string, paramMap map[string]interface{}, rawUrl string) (token string, err error) {
 
 	// 请求报文主体
 	var signBody string
@@ -86,7 +86,7 @@ func (app *App) authorization(method string, paramMap map[string]interface{}, ra
 	// 构造签名串
 	message := fmt.Sprintf(SignatureMessageFormat, method, canonicalUrl, timestamp, nonce, signBody)
 
-	sign, err := app.signSHA256WithRSA(message, app.getRsa([]byte(app.mchSslKey)))
+	sign, err := c.signSHA256WithRSA(message, c.getRsa([]byte(c.config.MchSslKey)))
 
 	if err != nil {
 		return token, err
@@ -94,14 +94,14 @@ func (app *App) authorization(method string, paramMap map[string]interface{}, ra
 
 	authorization := fmt.Sprintf(
 		HeaderAuthorizationFormat, getAuthorizationType(),
-		app.spMchId, nonce, timestamp, app.mchSslSerialNo, sign,
+		c.config.SpMchId, nonce, timestamp, c.config.MchSslSerialNo, sign,
 	)
 
 	return authorization, nil
 }
 
 // 报文解密
-func (app *App) decryptGCM(aesKey, nonceV, ciphertextV, additionalDataV string) ([]byte, error) {
+func (c *Client) decryptGCM(aesKey, nonceV, ciphertextV, additionalDataV string) ([]byte, error) {
 	key := []byte(aesKey)
 	nonce := []byte(nonceV)
 	additionalData := []byte(additionalDataV)
@@ -125,7 +125,7 @@ func (app *App) decryptGCM(aesKey, nonceV, ciphertextV, additionalDataV string) 
 }
 
 // 对消息的散列值进行数字签名
-func (app *App) getRsa(privateKey []byte) *rsa.PrivateKey {
+func (c *Client) getRsa(privateKey []byte) *rsa.PrivateKey {
 
 	block, _ := pem.Decode(privateKey)
 	if block == nil {
@@ -146,7 +146,7 @@ func (app *App) getRsa(privateKey []byte) *rsa.PrivateKey {
 }
 
 // 通过私钥对字符串以 SHA256WithRSA 算法生成签名信息
-func (app *App) signSHA256WithRSA(source string, privateKey *rsa.PrivateKey) (signature string, err error) {
+func (c *Client) signSHA256WithRSA(source string, privateKey *rsa.PrivateKey) (signature string, err error) {
 	if privateKey == nil {
 		return "", fmt.Errorf("private key should not be nil")
 	}

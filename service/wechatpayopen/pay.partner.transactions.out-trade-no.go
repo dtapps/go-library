@@ -67,11 +67,11 @@ func NewPayPartnerTransactionsOutTradeNoResult(result PayPartnerTransactionsOutT
 
 // PayPartnerTransactionsOutTradeNo 商户订单号查询
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_2.shtml
-func (app *App) PayPartnerTransactionsOutTradeNo(outTradeNo string) *PayPartnerTransactionsOutTradeNoResult {
+func (c *Client) PayPartnerTransactionsOutTradeNo(outTradeNo string) *PayPartnerTransactionsOutTradeNoResult {
 	// 参数
 	params := gorequest.NewParams()
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/pay/partner/transactions/out-trade-no/%s?sp_mchid=%s&sub_mchid=%s", outTradeNo, app.spMchId, app.subMchId), params, http.MethodGet)
+	request, err := c.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/pay/partner/transactions/out-trade-no/%s?sp_mchid=%s&sub_mchid=%s", outTradeNo, c.config.SpMchId, c.config.SubMchId), params, http.MethodGet)
 	if err != nil {
 		return NewPayPartnerTransactionsOutTradeNoResult(PayPartnerTransactionsOutTradeNoResponse{}, request.ResponseBody, request, err)
 	}
