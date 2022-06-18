@@ -2,7 +2,7 @@ package wechatpayapiv2
 
 import (
 	"go.dtapp.net/library/utils/gomongo"
-	gorequest2 "go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -13,8 +13,8 @@ type mongoZap struct {
 	RequestUrl            string                 `json:"request_url" bson:"request_url"`                         //【请求】链接
 	RequestApi            string                 `json:"request_api" bson:"request_api"`                         //【请求】接口
 	RequestMethod         string                 `json:"request_method" bson:"request_method"`                   //【请求】方式
-	RequestParams         gorequest2.Params      `json:"request_params" bson:"request_params"`                   //【请求】参数
-	RequestHeader         gorequest2.Headers     `json:"request_header" bson:"request_header"`                   //【请求】头部
+	RequestParams         gorequest.Params       `json:"request_params" bson:"request_params"`                   //【请求】参数
+	RequestHeader         gorequest.Headers      `json:"request_header" bson:"request_header"`                   //【请求】头部
 	ResponseHeader        http.Header            `json:"response_header" bson:"response_header"`                 //【返回】头部
 	ResponseStatusCode    int                    `json:"response_status_code" bson:"response_status_code"`       //【返回】状态码
 	ResponseBody          map[string]interface{} `json:"response_body" bson:"response_body"`                     //【返回】内容
@@ -31,12 +31,12 @@ func (m *mongoZap) TableName() string {
 	return "wechatpayapiv2"
 }
 
-func (app *App) mongoLog(request gorequest2.Response) {
+func (app *App) mongoLog(request gorequest.Response) {
 	_, _ = app.mongo.Model(&mongoZap{}).InsertOne(mongoZap{
 		RequestTime:           gomongo.BsonTime(request.RequestTime),          //【请求】时间
 		RequestUri:            request.RequestUri,                             //【请求】链接
-		RequestUrl:            gorequest2.UriParse(request.RequestUri).Url,    //【请求】链接
-		RequestApi:            gorequest2.UriParse(request.RequestUri).Path,   //【请求】接口
+		RequestUrl:            gorequest.UriParse(request.RequestUri).Url,     //【请求】链接
+		RequestApi:            gorequest.UriParse(request.RequestUri).Path,    //【请求】接口
 		RequestMethod:         request.RequestMethod,                          //【请求】方式
 		RequestParams:         request.RequestParams,                          //【请求】参数
 		RequestHeader:         request.RequestHeader,                          //【请求】头部

@@ -2,7 +2,7 @@ package meituan
 
 import (
 	"encoding/json"
-	gorequest2 "go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -19,13 +19,13 @@ type PoiAreaResponse struct {
 }
 
 type PoiAreaResult struct {
-	Result PoiAreaResponse     // 结果
-	Body   []byte              // 内容
-	Http   gorequest2.Response // 请求
-	Err    error               // 错误
+	Result PoiAreaResponse    // 结果
+	Body   []byte             // 内容
+	Http   gorequest.Response // 请求
+	Err    error              // 错误
 }
 
-func NewPoiAreaResult(result PoiAreaResponse, body []byte, http gorequest2.Response, err error) *PoiAreaResult {
+func NewPoiAreaResult(result PoiAreaResponse, body []byte, http gorequest.Response, err error) *PoiAreaResult {
 	return &PoiAreaResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -33,9 +33,9 @@ func NewPoiAreaResult(result PoiAreaResponse, body []byte, http gorequest2.Respo
 // https://openapi.meituan.com/#api-0.%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE-GetHttpsOpenapiMeituanComPoiAreaCityid1
 func (app *App) PoiArea(cityID int) *PoiAreaResult {
 	// 参数
-	param := gorequest2.NewParams()
+	param := gorequest.NewParams()
 	param.Set("cityid", cityID)
-	params := gorequest2.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
 	request, err := app.request("https://openapi.meituan.com/poi/area", params, http.MethodGet)
 	// 定义

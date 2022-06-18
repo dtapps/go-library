@@ -3,7 +3,7 @@ package wechatpayopen
 import (
 	"encoding/json"
 	"fmt"
-	gorequest2 "go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -54,11 +54,11 @@ type PayPartnerTransactionsIdResponse struct {
 type PayPartnerTransactionsIdResult struct {
 	Result PayPartnerTransactionsIdResponse // 结果
 	Body   []byte                           // 内容
-	Http   gorequest2.Response              // 请求
+	Http   gorequest.Response               // 请求
 	Err    error                            // 错误
 }
 
-func NewPayPartnerTransactionsIdResult(result PayPartnerTransactionsIdResponse, body []byte, http gorequest2.Response, err error) *PayPartnerTransactionsIdResult {
+func NewPayPartnerTransactionsIdResult(result PayPartnerTransactionsIdResponse, body []byte, http gorequest.Response, err error) *PayPartnerTransactionsIdResult {
 	return &PayPartnerTransactionsIdResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -66,7 +66,7 @@ func NewPayPartnerTransactionsIdResult(result PayPartnerTransactionsIdResponse, 
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_2.shtml
 func (app *App) PayPartnerTransactionsId(transactionId string) *PayPartnerTransactionsIdResult {
 	// 参数
-	params := gorequest2.NewParams()
+	params := gorequest.NewParams()
 	// 请求
 	// 请求
 	request, err := app.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/pay/partner/transactions/id/%s?sp_mchid=%s&sub_mchid=%s", transactionId, app.spMchId, app.subMchId), params, http.MethodGet)

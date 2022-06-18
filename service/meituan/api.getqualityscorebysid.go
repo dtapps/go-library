@@ -2,7 +2,7 @@ package meituan
 
 import (
 	"encoding/json"
-	gorequest2 "go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
 	"net/http"
 )
@@ -24,19 +24,19 @@ type ApiGetQuaLitYsCoreBySidResponse struct {
 type ApiGetQuaLitYsCoreBySidResult struct {
 	Result ApiGetQuaLitYsCoreBySidResponse // 结果
 	Body   []byte                          // 内容
-	Http   gorequest2.Response             // 请求
+	Http   gorequest.Response              // 请求
 	Err    error                           // 错误
 }
 
-func NewApiGetQuaLitYsCoreBySidResult(result ApiGetQuaLitYsCoreBySidResponse, body []byte, http gorequest2.Response, err error) *ApiGetQuaLitYsCoreBySidResult {
+func NewApiGetQuaLitYsCoreBySidResult(result ApiGetQuaLitYsCoreBySidResponse, body []byte, http gorequest.Response, err error) *ApiGetQuaLitYsCoreBySidResult {
 	return &ApiGetQuaLitYsCoreBySidResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // ApiGetQuaLitYsCoreBySid 优选sid质量分&复购率查询
 // https://union.meituan.com/v2/apiDetail?id=28
-func (app *App) ApiGetQuaLitYsCoreBySid(notMustParams ...gorequest2.Params) *ApiGetQuaLitYsCoreBySidResult {
+func (app *App) ApiGetQuaLitYsCoreBySid(notMustParams ...gorequest.Params) *ApiGetQuaLitYsCoreBySidResult {
 	// 参数
-	params := gorequest2.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s
 	params["ts"] = gotime.Current().Timestamp()
 	params["appkey"] = app.appKey

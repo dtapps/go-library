@@ -2,7 +2,7 @@ package meituan
 
 import (
 	"encoding/json"
-	gorequest2 "go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -15,11 +15,11 @@ type ApiMiniCodeResponse struct {
 type ApiMiniCodeResult struct {
 	Result ApiMiniCodeResponse // 结果
 	Body   []byte              // 内容
-	Http   gorequest2.Response // 请求
+	Http   gorequest.Response  // 请求
 	Err    error               // 错误
 }
 
-func NewApiMiniCodeResult(result ApiMiniCodeResponse, body []byte, http gorequest2.Response, err error) *ApiMiniCodeResult {
+func NewApiMiniCodeResult(result ApiMiniCodeResponse, body []byte, http gorequest.Response, err error) *ApiMiniCodeResult {
 	return &ApiMiniCodeResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -27,12 +27,12 @@ func NewApiMiniCodeResult(result ApiMiniCodeResponse, body []byte, http goreques
 // https://union.meituan.com/v2/apiDetail?id=26
 func (app *App) ApiMiniCode(actId int64, sid string) *ApiMiniCodeResult {
 	// 参数
-	param := gorequest2.NewParams()
+	param := gorequest.NewParams()
 	param.Set("appkey", app.appKey)
 	param.Set("sid", sid)
 	param.Set("actId", actId)
 	// 转换
-	params := gorequest2.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	params["sign"] = app.getSign(app.secret, params)
 	// 请求
 	request, err := app.request("https://openapi.meituan.com/api/miniCode", params, http.MethodGet)

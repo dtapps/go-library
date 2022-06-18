@@ -3,7 +3,7 @@ package wechatopen
 import (
 	"encoding/json"
 	"fmt"
-	gorequest2 "go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -24,11 +24,11 @@ type WxaBusinessGetUserPhoneNumberResponse struct {
 type WxaBusinessGetUserPhoneNumberResult struct {
 	Result WxaBusinessGetUserPhoneNumberResponse // 结果
 	Body   []byte                                // 内容
-	Http   gorequest2.Response                   // 请求
+	Http   gorequest.Response                    // 请求
 	Err    error                                 // 错误
 }
 
-func NewWxaBusinessGetUserPhoneNumberResult(result WxaBusinessGetUserPhoneNumberResponse, body []byte, http gorequest2.Response, err error) *WxaBusinessGetUserPhoneNumberResult {
+func NewWxaBusinessGetUserPhoneNumberResult(result WxaBusinessGetUserPhoneNumberResponse, body []byte, http gorequest.Response, err error) *WxaBusinessGetUserPhoneNumberResult {
 	return &WxaBusinessGetUserPhoneNumberResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -36,7 +36,7 @@ func NewWxaBusinessGetUserPhoneNumberResult(result WxaBusinessGetUserPhoneNumber
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/phonenumber/phonenumber.getPhoneNumber.html
 func (app *App) WxaBusinessGetUserPhoneNumber(code string) *WxaBusinessGetUserPhoneNumberResult {
 	// 参数
-	params := gorequest2.NewParams()
+	params := gorequest.NewParams()
 	params.Set("code", code)
 	// 请求
 	request, err := app.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=%s", app.GetAuthorizerAccessToken()), params, http.MethodPost)

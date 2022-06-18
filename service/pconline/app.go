@@ -1,8 +1,7 @@
 package pconline
 
 import (
-	"go.dtapp.net/library/golog"
-	golog2 "go.dtapp.net/library/utils/golog"
+	"go.dtapp.net/library/utils/golog"
 	"go.dtapp.net/library/utils/gomongo"
 	"go.dtapp.net/library/utils/gorequest"
 	"gorm.io/gorm"
@@ -12,7 +11,7 @@ type App struct {
 	mongo        *gomongo.Client // 日志数据库
 	pgsql        *gorm.DB        // pgsql数据库
 	client       *gorequest.App  // 请求客户端
-	log          *golog2.Api     // 日志服务
+	log          *golog.Api      // 日志服务
 	logTableName string          // 日志表名
 	logStatus    bool            // 日志状态
 }

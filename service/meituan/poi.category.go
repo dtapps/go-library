@@ -2,7 +2,7 @@ package meituan
 
 import (
 	"encoding/json"
-	gorequest2 "go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -21,11 +21,11 @@ type PoiCategoryResponse struct {
 type PoiCategoryResult struct {
 	Result PoiCategoryResponse // 结果
 	Body   []byte              // 内容
-	Http   gorequest2.Response // 请求
+	Http   gorequest.Response  // 请求
 	Err    error               // 错误
 }
 
-func NewPoiCategoryResult(result PoiCategoryResponse, body []byte, http gorequest2.Response, err error) *PoiCategoryResult {
+func NewPoiCategoryResult(result PoiCategoryResponse, body []byte, http gorequest.Response, err error) *PoiCategoryResult {
 	return &PoiCategoryResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -33,9 +33,9 @@ func NewPoiCategoryResult(result PoiCategoryResponse, body []byte, http goreques
 // https://openapi.meituan.com/#api-0.%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE-GetHttpsOpenapiMeituanComPoiDistrictCityid1
 func (app *App) PoiCategory(cityID int) *PoiCategoryResult {
 	// 参数
-	param := gorequest2.NewParams()
+	param := gorequest.NewParams()
 	param.Set("cityid", cityID)
-	params := gorequest2.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
 	request, err := app.request("https://openapi.meituan.com/poi/category", params, http.MethodGet)
 	// 定义

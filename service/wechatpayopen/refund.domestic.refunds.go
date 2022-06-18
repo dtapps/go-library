@@ -2,7 +2,7 @@ package wechatpayopen
 
 import (
 	"encoding/json"
-	gorequest2 "go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 	"time"
 )
@@ -52,19 +52,19 @@ type RefundDomesticRefundsResponse struct {
 type RefundDomesticRefundsResult struct {
 	Result RefundDomesticRefundsResponse // 结果
 	Body   []byte                        // 内容
-	Http   gorequest2.Response           // 请求
+	Http   gorequest.Response            // 请求
 	Err    error                         // 错误
 }
 
-func NewRefundDomesticRefundsResult(result RefundDomesticRefundsResponse, body []byte, http gorequest2.Response, err error) *RefundDomesticRefundsResult {
+func NewRefundDomesticRefundsResult(result RefundDomesticRefundsResponse, body []byte, http gorequest.Response, err error) *RefundDomesticRefundsResult {
 	return &RefundDomesticRefundsResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // RefundDomesticRefunds 申请退款API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_9.shtml
-func (app *App) RefundDomesticRefunds(notMustParams ...gorequest2.Params) *RefundDomesticRefundsResult {
+func (app *App) RefundDomesticRefunds(notMustParams ...gorequest.Params) *RefundDomesticRefundsResult {
 	// 参数
-	params := gorequest2.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sub_mchid", app.subMchId) // 子商户号
 	// 请求
 	request, err := app.request("https://api.mch.weixin.qq.com/v3/refund/domestic/refunds", params, http.MethodPost)

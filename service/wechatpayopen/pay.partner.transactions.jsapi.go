@@ -2,7 +2,7 @@ package wechatpayopen
 
 import (
 	"encoding/json"
-	gorequest2 "go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -13,19 +13,19 @@ type PayPartnerTransactionsJsapiResponse struct {
 type PayPartnerTransactionsJsapiResult struct {
 	Result PayPartnerTransactionsJsapiResponse // 结果
 	Body   []byte                              // 内容
-	Http   gorequest2.Response                 // 请求
+	Http   gorequest.Response                  // 请求
 	Err    error                               // 错误
 }
 
-func NewPayPartnerTransactionsJsapiResult(result PayPartnerTransactionsJsapiResponse, body []byte, http gorequest2.Response, err error) *PayPartnerTransactionsJsapiResult {
+func NewPayPartnerTransactionsJsapiResult(result PayPartnerTransactionsJsapiResponse, body []byte, http gorequest.Response, err error) *PayPartnerTransactionsJsapiResult {
 	return &PayPartnerTransactionsJsapiResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // PayPartnerTransactionsJsapi JSAPI下单
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_1.shtml
-func (app *App) PayPartnerTransactionsJsapi(notMustParams ...gorequest2.Params) *PayPartnerTransactionsJsapiResult {
+func (app *App) PayPartnerTransactionsJsapi(notMustParams ...gorequest.Params) *PayPartnerTransactionsJsapiResult {
 	// 参数
-	params := gorequest2.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sp_appid", app.spAppid)   // 服务商应用ID
 	params.Set("sp_mchid", app.spMchId)   // 服务商户号
 	params.Set("sub_appid", app.subAppid) // 子商户应用ID
