@@ -39,11 +39,11 @@ func NewJdJyOrderDetailsResult(result JdJyOrderDetailsResponse, body []byte, htt
 }
 
 // JdJyOrderDetails 【官方不维护】 京佣订单
-func (app *App) JdJyOrderDetails(notMustParams ...Params) *JdJyOrderDetailsResult {
+func (c *Client) JdJyOrderDetails(notMustParams ...gorequest.Params) *JdJyOrderDetailsResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request("https://api.tbk.dingdanxia.com/jd/jy_order_details", params, http.MethodPost)
+	request, err := c.request("https://api.tbk.dingdanxia.com/jd/jy_order_details", params, http.MethodPost)
 	// 定义
 	var response JdJyOrderDetailsResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -37,15 +37,15 @@ func NewWaiMaiMeituanPrivilegeResult(result WaiMaiMeituanPrivilegeResponse, body
 
 // WaiMaiMeituanPrivilege 美团外卖CPS推广API接口
 // https://www.dingdanxia.com/doc/174/173
-func (app *App) WaiMaiMeituanPrivilege(sid string, generateWeApp, qrcode bool) *WaiMaiMeituanPrivilegeResult {
+func (c *Client) WaiMaiMeituanPrivilege(sid string, generateWeApp, qrcode bool) *WaiMaiMeituanPrivilegeResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("sid", sid)
 	param.Set("generate_we_app", generateWeApp)
 	param.Set("qrcode", qrcode)
-	params := app.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := app.request("https://api.tbk.dingdanxia.com/waimai/meituan_privilege", params, http.MethodPost)
+	request, err := c.request("https://api.tbk.dingdanxia.com/waimai/meituan_privilege", params, http.MethodPost)
 	// 定义
 	var response WaiMaiMeituanPrivilegeResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -49,13 +49,13 @@ func NewWaiMaiMeituanOrderIdResult(result WaiMaiMeituanOrderIdResponse, body []b
 
 // WaiMaiMeituanOrderId 美团联盟外卖/闪购/优选/酒店订单查询API（订单号版）
 // https://www.dingdanxia.com/doc/179/173
-func (app *App) WaiMaiMeituanOrderId(orderId string) *WaiMaiMeituanOrderIdResult {
+func (c *Client) WaiMaiMeituanOrderId(orderId string) *WaiMaiMeituanOrderIdResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("order_id", orderId)
-	params := app.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := app.request("https://api.tbk.dingdanxia.com/waimai/meituan_orderid", params, http.MethodPost)
+	request, err := c.request("https://api.tbk.dingdanxia.com/waimai/meituan_orderid", params, http.MethodPost)
 	// 定义
 	var response WaiMaiMeituanOrderIdResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

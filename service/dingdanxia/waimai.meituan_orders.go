@@ -40,11 +40,11 @@ func NewWaiMaiMeituanOrdersResult(result WaiMaiMeituanOrdersResponse, body []byt
 
 // WaiMaiMeituanOrders 美团联盟外卖/闪购/优选/酒店订单查询API
 // https://www.dingdanxia.com/doc/176/173
-func (app *App) WaiMaiMeituanOrders(notMustParams ...Params) *WaiMaiMeituanOrdersResult {
+func (c *Client) WaiMaiMeituanOrders(notMustParams ...gorequest.Params) *WaiMaiMeituanOrdersResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request("https://api.tbk.dingdanxia.com/waimai/meituan_orders", params, http.MethodPost)
+	request, err := c.request("https://api.tbk.dingdanxia.com/waimai/meituan_orders", params, http.MethodPost)
 	// 定义
 	var response WaiMaiMeituanOrdersResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
