@@ -1,4 +1,4 @@
-package goredis
+package dorm
 
 type SimpleResult struct {
 	Result interface{}

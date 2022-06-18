@@ -1,4 +1,4 @@
-package goredis
+package dorm
 
 import (
 	"context"
@@ -11,8 +11,8 @@ type ListOperation struct {
 }
 
 // NewListOperation 列表(list)类型数据操作 https://www.tizi365.com/archives/299.html
-func (app *App) NewListOperation() *ListOperation {
-	return &ListOperation{db: app.Db, ctx: context.Background()}
+func (c *RedisClient) NewListOperation() *ListOperation {
+	return &ListOperation{db: c.Db, ctx: context.Background()}
 }
 
 // LPush 从列表左边插入数据

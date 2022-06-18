@@ -1,4 +1,4 @@
-package goredis
+package dorm
 
 type SliceResult struct {
 	Result []interface{}

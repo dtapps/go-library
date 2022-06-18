@@ -1,4 +1,4 @@
-package goredis
+package dorm
 
 import (
 	"context"
@@ -11,9 +11,9 @@ type SimpleOperation struct {
 	ctx context.Context
 }
 
-func (app *App) NewSimpleOperation() *SimpleOperation {
+func (c *RedisClient) NewSimpleOperation() *SimpleOperation {
 	return &SimpleOperation{
-		db:  app.Db,
+		db:  c.Db,
 		ctx: context.Background(),
 	}
 }

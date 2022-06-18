@@ -1,4 +1,4 @@
-package goredis
+package dorm
 
 import (
 	"log"
@@ -15,7 +15,7 @@ type SimpleInterfaceCache struct {
 }
 
 // NewSimpleInterfaceCache 构造函数
-func (app *App) NewSimpleInterfaceCache(operation *SimpleOperation, expire time.Duration) *SimpleInterfaceCache {
+func (c *RedisClient) NewSimpleInterfaceCache(operation *SimpleOperation, expire time.Duration) *SimpleInterfaceCache {
 	return &SimpleInterfaceCache{
 		Operation: operation, // 操作类
 		Expire:    expire,    // 过期时间

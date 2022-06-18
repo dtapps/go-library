@@ -1,4 +1,4 @@
-package goredis
+package dorm
 
 import (
 	"time"
@@ -14,7 +14,7 @@ type SimpleStringCache struct {
 }
 
 // NewSimpleStringCache 构造函数
-func (app *App) NewSimpleStringCache(operation *StringOperation, expire time.Duration) *SimpleStringCache {
+func (c *RedisClient) NewSimpleStringCache(operation *StringOperation, expire time.Duration) *SimpleStringCache {
 	return &SimpleStringCache{
 		Operation: operation, // 操作类
 		Expire:    expire,    // 过期时间

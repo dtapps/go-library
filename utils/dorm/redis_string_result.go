@@ -1,4 +1,4 @@
-package goredis
+package dorm
 
 type StringResult struct {
 	Result string // 结果

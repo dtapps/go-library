@@ -1,4 +1,4 @@
-package goredis
+package dorm
 
 type Iterator struct {
 	data  []interface{}

@@ -1,4 +1,4 @@
-package goredis
+package dorm
 
 import (
 	"encoding/json"
@@ -24,7 +24,7 @@ type SimpleCache struct {
 }
 
 // NewSimpleCache 构造函数
-func (app *App) NewSimpleCache(operation *StringOperation, expire time.Duration, serializer string) *SimpleCache {
+func (c *RedisClient) NewSimpleCache(operation *StringOperation, expire time.Duration, serializer string) *SimpleCache {
 	return &SimpleCache{
 		Operation:  operation,  // 操作类
 		Expire:     expire,     // 过去时间
