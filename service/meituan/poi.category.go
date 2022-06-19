@@ -25,7 +25,7 @@ type PoiCategoryResult struct {
 	Err    error               // 错误
 }
 
-func NewPoiCategoryResult(result PoiCategoryResponse, body []byte, http gorequest.Response, err error) *PoiCategoryResult {
+func newPoiCategoryResult(result PoiCategoryResponse, body []byte, http gorequest.Response, err error) *PoiCategoryResult {
 	return &PoiCategoryResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -37,9 +37,9 @@ func (c *Client) PoiCategory(cityID int) *PoiCategoryResult {
 	param.Set("cityid", cityID)
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request("https://openapi.meituan.com/poi/category", params, http.MethodGet)
+	request, err := c.request(apiUrl+"/poi/category", params, http.MethodGet)
 	// 定义
 	var response PoiCategoryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewPoiCategoryResult(response, request.ResponseBody, request, err)
+	return newPoiCategoryResult(response, request.ResponseBody, request, err)
 }

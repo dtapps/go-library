@@ -21,7 +21,7 @@ type PoiDistrictResult struct {
 	Err    error               // 错误
 }
 
-func NewPoiDistrictResult(result PoiDistrictResponse, body []byte, http gorequest.Response, err error) *PoiDistrictResult {
+func newPoiDistrictResult(result PoiDistrictResponse, body []byte, http gorequest.Response, err error) *PoiDistrictResult {
 	return &PoiDistrictResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -33,9 +33,9 @@ func (c *Client) PoiDistrict(cityID int) *PoiDistrictResult {
 	param.Set("cityid", cityID)
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request("https://openapi.meituan.com/poi/district", params, http.MethodGet)
+	request, err := c.request(apiUrl+"/poi/district", params, http.MethodGet)
 	// 定义
 	var response PoiDistrictResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewPoiDistrictResult(response, request.ResponseBody, request, err)
+	return newPoiDistrictResult(response, request.ResponseBody, request, err)
 }

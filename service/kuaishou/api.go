@@ -16,12 +16,12 @@ type AnalysisResult struct {
 	Err    error            // 错误
 }
 
-func NewAnalysisResult(result AnalysisResponse, err error) *AnalysisResult {
+func newAnalysisResult(result AnalysisResponse, err error) *AnalysisResult {
 	return &AnalysisResult{Result: result, Err: err}
 }
 
 // Analysis 快手解析
-func (app *App) Analysis(content string) *AnalysisResult {
+func (c *Client) Analysis(content string) *AnalysisResult {
 
 	// 定义
 	var response AnalysisResponse
@@ -33,24 +33,24 @@ func (app *App) Analysis(content string) *AnalysisResult {
 	} else if strings.Contains(content, "gifshow.com") {
 		url = xurls.Relaxed.FindString(content)
 	} else {
-		return NewAnalysisResult(response, errors.New("url为空"))
+		return newAnalysisResult(response, errors.New("url为空"))
 	}
 
 	// 获取重定向链接
-	result := app.GetVideoLink(url)
+	result := c.GetVideoLink(url)
 	if result.Err != nil {
-		return NewAnalysisResult(response, result.Err)
+		return newAnalysisResult(response, result.Err)
 	}
 
 	// 获取重定向内容
-	html, err := app.GetVideoHtml(result.Link, result.Cookies)
+	html, err := c.GetVideoHtml(result.Link, result.Cookies)
 	if err != nil {
-		return NewAnalysisResult(response, result.Err)
+		return newAnalysisResult(response, result.Err)
 	}
 
 	// 判断
-	imageLinks := app.ExtractImageLink(html)
-	videoLink := app.ExtractVideoLink(html)
+	imageLinks := c.ExtractImageLink(html)
+	videoLink := c.ExtractVideoLink(html)
 
 	// 0 是视频，1是图集
 	if len(imageLinks) > 0 {
@@ -60,5 +60,5 @@ func (app *App) Analysis(content string) *AnalysisResult {
 		response.VideoLink = videoLink
 	}
 
-	return NewAnalysisResult(response, err)
+	return newAnalysisResult(response, err)
 }

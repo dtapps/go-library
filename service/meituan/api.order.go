@@ -41,7 +41,7 @@ type ApiOrderResult struct {
 	Err    error              // 错误
 }
 
-func NewApiOrderResult(result ApiOrderResponse, body []byte, http gorequest.Response, err error) *ApiOrderResult {
+func newApiOrderResult(result ApiOrderResponse, body []byte, http gorequest.Response, err error) *ApiOrderResult {
 	return &ApiOrderResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -54,9 +54,9 @@ func (c *Client) ApiOrder(notMustParams ...gorequest.Params) *ApiOrderResult {
 	params["appkey"] = c.config.AppKey
 	params["sign"] = c.getSign(c.config.Secret, params)
 	// 请求
-	request, err := c.request("https://openapi.meituan.com/api/order", params, http.MethodGet)
+	request, err := c.request(apiUrl+"/api/order", params, http.MethodGet)
 	// 定义
 	var response ApiOrderResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewApiOrderResult(response, request.ResponseBody, request, err)
+	return newApiOrderResult(response, request.ResponseBody, request, err)
 }

@@ -2,7 +2,7 @@ package kuaishou
 
 import "regexp"
 
-func (app *App) ExtractImageLink(content string) []string {
+func (c *Client) ExtractImageLink(content string) []string {
 
 	//解析正则表达式，如果成功返回解释器
 	reg := regexp.MustCompile(`\{"path":"(.*?)","width":\d+,"height":\d*}`)

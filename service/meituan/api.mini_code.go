@@ -19,7 +19,7 @@ type ApiMiniCodeResult struct {
 	Err    error               // 错误
 }
 
-func NewApiMiniCodeResult(result ApiMiniCodeResponse, body []byte, http gorequest.Response, err error) *ApiMiniCodeResult {
+func newApiMiniCodeResult(result ApiMiniCodeResponse, body []byte, http gorequest.Response, err error) *ApiMiniCodeResult {
 	return &ApiMiniCodeResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -35,9 +35,9 @@ func (c *Client) ApiMiniCode(actId int64, sid string) *ApiMiniCodeResult {
 	params := gorequest.NewParamsWith(param)
 	params["sign"] = c.getSign(c.config.Secret, params)
 	// 请求
-	request, err := c.request("https://openapi.meituan.com/api/miniCode", params, http.MethodGet)
+	request, err := c.request(apiUrl+"/api/miniCode", params, http.MethodGet)
 	// 定义
 	var response ApiMiniCodeResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewApiMiniCodeResult(response, request.ResponseBody, request, err)
+	return newApiMiniCodeResult(response, request.ResponseBody, request, err)
 }

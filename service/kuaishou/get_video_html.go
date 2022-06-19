@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (app *App) GetVideoHtml(url string, cookieStr string) (string, error) {
+func (c *Client) GetVideoHtml(url string, cookieStr string) (string, error) {
 
 	client := &http.Client{}
 	request, err := http.NewRequest("GET", url, nil)

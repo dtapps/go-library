@@ -19,7 +19,7 @@ type ApiGenerateLinkResult struct {
 	Err    error                   // 错误
 }
 
-func NewApiGenerateLinkResult(result ApiGenerateLinkResponse, body []byte, http gorequest.Response, err error) *ApiGenerateLinkResult {
+func newApiGenerateLinkResult(result ApiGenerateLinkResponse, body []byte, http gorequest.Response, err error) *ApiGenerateLinkResult {
 	return &ApiGenerateLinkResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -37,9 +37,9 @@ func (c *Client) ApiGenerateLink(actId int64, sid string, linkType, shortLink in
 	params := gorequest.NewParamsWith(param)
 	params["sign"] = c.getSign(c.config.Secret, params)
 	// 请求
-	request, err := c.request("https://openapi.meituan.com/api/generateLink", params, http.MethodGet)
+	request, err := c.request(apiUrl+"/api/generateLink", params, http.MethodGet)
 	// 定义
 	var response ApiGenerateLinkResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewApiGenerateLinkResult(response, request.ResponseBody, request, err)
+	return newApiGenerateLinkResult(response, request.ResponseBody, request, err)
 }

@@ -1,19 +1,19 @@
-package meituan
+package kuaishou
 
 import (
 	"go.dtapp.net/library/utils/golog"
+	"go.dtapp.net/library/utils/gomongo"
 	"go.dtapp.net/library/utils/gorequest"
 	"gorm.io/gorm"
 )
 
 type ConfigClient struct {
-	Secret  string   // 秘钥
-	AppKey  string   // 渠道标记
-	PgsqlDb *gorm.DB // pgsql数据库
+	MongoDb *gomongo.Client // 日志数据库
+	PgsqlDb *gorm.DB        // pgsql数据库
 }
 
-// Client 美团联盟
 type Client struct {
+	ua        string
 	client    *gorequest.App   // 请求客户端
 	log       *golog.ApiClient // 日志服务
 	logStatus bool             // 日志状态
@@ -24,6 +24,8 @@ func NewClient(config *ConfigClient) (*Client, error) {
 
 	var err error
 	c := &Client{config: config}
+
+	c.ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36"
 
 	c.client = gorequest.NewHttp()
 	if c.config.PgsqlDb != nil {

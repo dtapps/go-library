@@ -28,7 +28,7 @@ type ApiGetQuaLitYsCoreBySidResult struct {
 	Err    error                           // 错误
 }
 
-func NewApiGetQuaLitYsCoreBySidResult(result ApiGetQuaLitYsCoreBySidResponse, body []byte, http gorequest.Response, err error) *ApiGetQuaLitYsCoreBySidResult {
+func newApiGetQuaLitYsCoreBySidResult(result ApiGetQuaLitYsCoreBySidResponse, body []byte, http gorequest.Response, err error) *ApiGetQuaLitYsCoreBySidResult {
 	return &ApiGetQuaLitYsCoreBySidResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -42,9 +42,9 @@ func (c *Client) ApiGetQuaLitYsCoreBySid(notMustParams ...gorequest.Params) *Api
 	params["appkey"] = c.config.AppKey
 	params["sign"] = c.getSign(c.config.Secret, params)
 	// 请求
-	request, err := c.request("https://openapi.meituan.com/api/getqualityscorebysid", params, http.MethodGet)
+	request, err := c.request(apiUrl+"/api/getqualityscorebysid", params, http.MethodGet)
 	// 定义
 	var response ApiGetQuaLitYsCoreBySidResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewApiGetQuaLitYsCoreBySidResult(response, request.ResponseBody, request, err)
+	return newApiGetQuaLitYsCoreBySidResult(response, request.ResponseBody, request, err)
 }

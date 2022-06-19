@@ -30,8 +30,8 @@ func (m *mongoZap) TableName() string {
 	return "kuaishou"
 }
 
-func (app *App) mongoLog(request gorequest.Response) {
-	_, _ = app.mongo.Model(&mongoZap{}).InsertOne(mongoZap{
+func (c *Client) mongoLog(request gorequest.Response) {
+	_, _ = c.config.MongoDb.Model(&mongoZap{}).InsertOne(mongoZap{
 		RequestTime:           gomongo.BsonTime(request.RequestTime),           //【请求】时间
 		RequestUri:            request.RequestUri,                              //【请求】链接
 		RequestUrl:            gorequest.UriParse(request.RequestUri).Url,      //【请求】链接

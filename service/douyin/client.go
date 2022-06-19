@@ -27,6 +27,8 @@ func NewClient(config *ConfigClient) (*Client, error) {
 	var err error
 	c := &Client{config: config}
 
+	c.ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1"
+
 	c.client = gorequest.NewHttp()
 	if c.config.PgsqlDb != nil {
 		c.logStatus = true

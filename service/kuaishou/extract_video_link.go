@@ -2,7 +2,7 @@ package kuaishou
 
 import "regexp"
 
-func (app *App) ExtractVideoLink(content string) string {
+func (c *Client) ExtractVideoLink(content string) string {
 
 	//解析正则表达式，如果成功返回解释器
 	reg := regexp.MustCompile(`"srcNoMark":"(.*?)"`)

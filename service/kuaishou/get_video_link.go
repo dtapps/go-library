@@ -14,7 +14,7 @@ type Response struct {
 	Err     error
 }
 
-func (app *App) GetVideoLink(url string) Response {
+func (c *Client) GetVideoLink(url string) Response {
 
 	result := Response{}
 
