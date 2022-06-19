@@ -22,17 +22,17 @@ type ApiCustomerResult struct {
 	Err    error               // 错误
 }
 
-func NewApiCustomerResult(result ApiCustomerResponse, body []byte, http gorequest.Response, err error) *ApiCustomerResult {
+func newApiCustomerResult(result ApiCustomerResponse, body []byte, http gorequest.Response, err error) *ApiCustomerResult {
 	return &ApiCustomerResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // ApiCustomer 获取商家信息
 // http://doc.cqmeihu.cn/sales/merchant-info.html
-func (app *App) ApiCustomer() *ApiCustomerResult {
+func (c *Client) ApiCustomer() *ApiCustomerResult {
 	// 请求
-	request, err := app.request("http://www.kashangwl.com/api/customer", map[string]interface{}{})
+	request, err := c.request(apiUrl+"/api/customer", map[string]interface{}{})
 	// 定义
 	var response ApiCustomerResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewApiCustomerResult(response, request.ResponseBody, request, err)
+	return newApiCustomerResult(response, request.ResponseBody, request, err)
 }

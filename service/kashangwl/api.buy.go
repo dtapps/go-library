@@ -32,19 +32,19 @@ type ApiBuyResult struct {
 	Err    error              // 错误
 }
 
-func NewApiBuyResult(result ApiBuyResponse, body []byte, http gorequest.Response, err error) *ApiBuyResult {
+func newApiBuyResult(result ApiBuyResponse, body []byte, http gorequest.Response, err error) *ApiBuyResult {
 	return &ApiBuyResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // ApiBuy 购买商品
 // http://doc.cqmeihu.cn/sales/buy.html
-func (app *App) ApiBuy(notMustParams ...Params) *ApiBuyResult {
+func (c *Client) ApiBuy(notMustParams ...gorequest.Params) *ApiBuyResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request("http://www.kashangwl.com/api/buy", params)
+	request, err := c.request(apiUrl+"/api/buy", params)
 	// 定义
 	var response ApiBuyResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewApiBuyResult(response, request.ResponseBody, request, err)
+	return newApiBuyResult(response, request.ResponseBody, request, err)
 }

@@ -45,22 +45,22 @@ type ApiOuterOrderResult struct {
 	Err    error                 // 错误
 }
 
-func NewApiOuterOrderResult(result ApiOuterOrderResponse, body []byte, http gorequest.Response, err error) *ApiOuterOrderResult {
+func newApiOuterOrderResult(result ApiOuterOrderResponse, body []byte, http gorequest.Response, err error) *ApiOuterOrderResult {
 	return &ApiOuterOrderResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // ApiOuterOrder 使用外部订单号获取单个订单信息
 // 仅能获取自己购买的订单
 // http://doc.cqmeihu.cn/sales/outer-order-info.html
-func (app App) ApiOuterOrder(orderId string) *ApiOuterOrderResult {
+func (c *Client) ApiOuterOrder(orderId string) *ApiOuterOrderResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("outer_order_id", orderId)
-	params := app.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := app.request("http://www.kashangwl.com/api/outer-order", params)
+	request, err := c.request(apiUrl+"/api/outer-order", params)
 	// 定义
 	var response ApiOuterOrderResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewApiOuterOrderResult(response, request.ResponseBody, request, err)
+	return newApiOuterOrderResult(response, request.ResponseBody, request, err)
 }

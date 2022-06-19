@@ -45,22 +45,22 @@ type ApiOrderResult struct {
 	Err    error              // 错误
 }
 
-func NewApiOrderResult(result ApiOrderResponse, body []byte, http gorequest.Response, err error) *ApiOrderResult {
+func newApiOrderResult(result ApiOrderResponse, body []byte, http gorequest.Response, err error) *ApiOrderResult {
 	return &ApiOrderResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // ApiOrder 获取单个订单信息。
 // 仅能获取自己购买的订单。
 // http://doc.cqmeihu.cn/sales/order-info.html
-func (app App) ApiOrder(orderId string) *ApiOrderResult {
+func (c *Client) ApiOrder(orderId string) *ApiOrderResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("order_id", orderId)
-	params := app.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := app.request("http://www.kashangwl.com/api/order", params)
+	request, err := c.request(apiUrl+"/api/order", params)
 	// 定义
 	var response ApiOrderResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewApiOrderResult(response, request.ResponseBody, request, err)
+	return newApiOrderResult(response, request.ResponseBody, request, err)
 }

@@ -25,20 +25,20 @@ type ApiProductRechargeParamsResult struct {
 	Err    error                            // 错误
 }
 
-func NewApiProductRechargeParamsResult(result ApiProductRechargeParamsResponse, body []byte, http gorequest.Response, err error) *ApiProductRechargeParamsResult {
+func newApiProductRechargeParamsResult(result ApiProductRechargeParamsResponse, body []byte, http gorequest.Response, err error) *ApiProductRechargeParamsResult {
 	return &ApiProductRechargeParamsResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // ApiProductRechargeParams 接口说明
 // 获取商品的充值参数（仅支持充值类商品）
 // http://doc.cqmeihu.cn/sales/ProductParams.html
-func (app App) ApiProductRechargeParams(notMustParams ...Params) *ApiProductRechargeParamsResult {
+func (c *Client) ApiProductRechargeParams(notMustParams ...gorequest.Params) *ApiProductRechargeParamsResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request("http://www.kashangwl.com/api/product/recharge-params", params)
+	request, err := c.request(apiUrl+"/api/product/recharge-params", params)
 	// 定义
 	var response ApiProductRechargeParamsResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewApiProductRechargeParamsResult(response, request.ResponseBody, request, err)
+	return newApiProductRechargeParamsResult(response, request.ResponseBody, request, err)
 }

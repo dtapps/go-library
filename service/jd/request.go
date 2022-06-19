@@ -6,7 +6,7 @@ import (
 )
 
 // 请求接口
-func (c *Client) request(params map[string]interface{}) (resp gorequest.Response, err error) {
+func (c *Client) request(params map[string]interface{}) (gorequest.Response, error) {
 
 	// 签名
 	c.Sign(params)

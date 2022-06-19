@@ -14,7 +14,7 @@ import (
 )
 
 // md5(key + 参数1名称 + 参数1值 + 参数2名称 + 参数2值...) 加密源串应为{key}customer_id1192442order_id827669582783timestamp1626845767
-func (app *App) getSign(customerKey string, params map[string]interface{}) string {
+func (c *Client) getSign(customerKey string, params map[string]interface{}) string {
 	// 参数按照参数名的字典升序排列
 	var keys []string
 	for k := range params {
@@ -34,17 +34,17 @@ func (app *App) getSign(customerKey string, params map[string]interface{}) strin
 }
 
 // 获取请求数据
-func (app *App) getRequestData(params map[string]interface{}) string {
+func (c *Client) getRequestData(params map[string]interface{}) string {
 	// 公共参数
 	args := url.Values{}
 	// 请求参数
 	for key, val := range params {
-		args.Set(key, app.getString(val))
+		args.Set(key, c.getString(val))
 	}
 	return args.Encode()
 }
 
-func (app *App) getString(i interface{}) string {
+func (c *Client) getString(i interface{}) string {
 	switch v := i.(type) {
 	case string:
 		return v

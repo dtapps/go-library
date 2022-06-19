@@ -30,20 +30,20 @@ type ApiProductResult struct {
 	Err    error              // 错误
 }
 
-func NewApiProductResult(result ApiProductResponse, body []byte, http gorequest.Response, err error) *ApiProductResult {
+func newApiProductResult(result ApiProductResponse, body []byte, http gorequest.Response, err error) *ApiProductResult {
 	return &ApiProductResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // ApiProduct 获取单个商品信息
 // http://doc.cqmeihu.cn/sales/product-info.html
-func (app App) ApiProduct(productId int64) *ApiProductResult {
+func (c *Client) ApiProduct(productId int64) *ApiProductResult {
 	// 参数
-	params := NewParams()
+	params := gorequest.NewParams()
 	params.Set("product_id", productId)
 	// 请求
-	request, err := app.request("http://www.kashangwl.com/api/product", params)
+	request, err := c.request(apiUrl+"/api/product", params)
 	// 定义
 	var response ApiProductResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewApiProductResult(response, request.ResponseBody, request, err)
+	return newApiProductResult(response, request.ResponseBody, request, err)
 }
