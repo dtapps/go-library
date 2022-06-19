@@ -32,9 +32,9 @@ func NewIpResult(result IpResponse, body []byte, http gorequest.Response, err er
 }
 
 // Ip 接口 https://whois.pconline.com.cn/
-func (app *App) Ip(ip string) *IpResult {
+func (c *Client) Ip(ip string) *IpResult {
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://whois.pconline.com.cn/ipJson.jsp?json=true&ip=%s", ip))
+	request, err := c.request(apiUrl + fmt.Sprintf("/ipJson.jsp?json=true&ip=%s", ip))
 	if err != nil {
 		return NewIpResult(IpResponse{}, request.ResponseBody, request, err)
 	}
