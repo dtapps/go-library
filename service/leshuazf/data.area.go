@@ -24,19 +24,19 @@ type DataAreaResult struct {
 	Err    error              // 错误
 }
 
-func NewDataAreaResult(result DataAreaResponse, body []byte, http gorequest.Response, err error) *DataAreaResult {
+func newDataAreaResult(result DataAreaResponse, body []byte, http gorequest.Response, err error) *DataAreaResult {
 	return &DataAreaResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // DataArea 代理商通过地区信息来查地区详细信息
 // https://www.yuque.com/leshuazf/doc/dbmxyi#YwJl7
-func (app *App) DataArea(notMustParams ...Params) *DataAreaResult {
+func (c *Client) DataArea(notMustParams ...gorequest.Params) *DataAreaResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request("data/area", params, http.MethodPost)
+	request, err := c.request("/data/area", params, http.MethodPost)
 	// 定义
 	var response DataAreaResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewDataAreaResult(response, request.ResponseBody, request, err)
+	return newDataAreaResult(response, request.ResponseBody, request, err)
 }

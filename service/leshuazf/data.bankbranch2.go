@@ -37,19 +37,19 @@ type DataBankBranch2Result struct {
 	Err    error                   // 错误
 }
 
-func NewDataBankBranch2Result(result DataBankBranch2Response, body []byte, http gorequest.Response, err error) *DataBankBranch2Result {
+func newDataBankBranch2Result(result DataBankBranch2Response, body []byte, http gorequest.Response, err error) *DataBankBranch2Result {
 	return &DataBankBranch2Result{Result: result, Body: body, Http: http, Err: err}
 }
 
 // DataBankBranch2 代理商通过联行号来查支行信息
 // https://www.yuque.com/leshuazf/doc/dbmxyi#QYl0c
-func (app *App) DataBankBranch2(notMustParams ...Params) *DataBankBranch2Result {
+func (c *Client) DataBankBranch2(notMustParams ...gorequest.Params) *DataBankBranch2Result {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request("data/bankbranch2", params, http.MethodPost)
+	request, err := c.request("/data/bankbranch2", params, http.MethodPost)
 	// 定义
 	var response DataBankBranch2Response
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewDataBankBranch2Result(response, request.ResponseBody, request, err)
+	return newDataBankBranch2Result(response, request.ResponseBody, request, err)
 }

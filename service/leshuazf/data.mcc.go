@@ -23,19 +23,19 @@ type DataMccResult struct {
 	Err    error              // 错误
 }
 
-func NewDataMccResult(result DataMccResponse, body []byte, http gorequest.Response, err error) *DataMccResult {
+func newDataMccResult(result DataMccResponse, body []byte, http gorequest.Response, err error) *DataMccResult {
 	return &DataMccResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // DataMcc 代理商通过MccCode来查商户类别明细
 // https://www.yuque.com/leshuazf/doc/dbmxyi#jRTHN
-func (app *App) DataMcc(notMustParams ...Params) *DataMccResult {
+func (c *Client) DataMcc(notMustParams ...gorequest.Params) *DataMccResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request("data/mcc", params, http.MethodPost)
+	request, err := c.request("/data/mcc", params, http.MethodPost)
 	// 定义
 	var response DataMccResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewDataMccResult(response, request.ResponseBody, request, err)
+	return newDataMccResult(response, request.ResponseBody, request, err)
 }
