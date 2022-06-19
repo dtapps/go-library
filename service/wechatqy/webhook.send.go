@@ -21,19 +21,19 @@ type WebhookSendResult struct {
 	Err    error               // 错误
 }
 
-func NewWebhookSendResult(result WebhookSendResponse, body []byte, http gorequest.Response, err error) *WebhookSendResult {
+func newWebhookSendResult(result WebhookSendResponse, body []byte, http gorequest.Response, err error) *WebhookSendResult {
 	return &WebhookSendResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // WebhookSend 发送应用消息
 // https://developer.work.weixin.qq.com/document/path/90372
-func (app *App) WebhookSend(notMustParams ...gorequest.Params) *WebhookSendResult {
+func (c *Client) WebhookSend(notMustParams ...gorequest.Params) *WebhookSendResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=%s&type=%s", app.key, "text"), params)
+	request, err := c.request(apiUrl+fmt.Sprintf("/cgi-bin/webhook/send?key=%s&type=%s", c.GetKey(), "text"), params)
 	// 定义
 	var response WebhookSendResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWebhookSendResult(response, request.ResponseBody, request, err)
+	return newWebhookSendResult(response, request.ResponseBody, request, err)
 }
