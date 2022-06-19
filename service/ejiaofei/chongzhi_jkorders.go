@@ -36,18 +36,18 @@ func NewChOngZhiJkOrdersResult(result ChOngZhiJkOrdersResponse, body []byte, htt
 // orderid 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
 // face 充值面值	以元为单位，包含10、20、30、50、100、200、300、500 移动联通电信
 // account 手机号码	需要充值的手机号码
-func (app *App) ChOngZhiJkOrders(orderID string, face int, account string) *ChOngZhiJkOrdersResult {
+func (c *Client) ChOngZhiJkOrders(orderID string, face int, account string) *ChOngZhiJkOrdersResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("orderid", orderID)
 	param.Set("face", face)
 	param.Set("account", account)
 	param.Set("amount", 1)
-	params := app.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 签名
-	app.signStr = fmt.Sprintf("userid%vpwd%vorderid%vface%vaccount%vamount1", app.userId, app.pwd, orderID, face, account)
+	c.signStr = fmt.Sprintf("userid%vpwd%vorderid%vface%vaccount%vamount1", c.getUserId(), c.getPwd(), orderID, face, account)
 	// 请求
-	request, err := app.request("http://api.ejiaofei.net:11140/chongzhi_jkorders.do", params, http.MethodGet)
+	request, err := c.request(apiUrl+"/chongzhi_jkorders.do", params, http.MethodGet)
 	// 定义
 	var response ChOngZhiJkOrdersResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)

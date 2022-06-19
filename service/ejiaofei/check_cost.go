@@ -28,15 +28,15 @@ func NewCheckCostResult(result CheckCostResponse, body []byte, http gorequest.Re
 }
 
 // CheckCost 会员订单成本价查询接口
-func (app *App) CheckCost(orderId string) *CheckCostResult {
+func (c *Client) CheckCost(orderId string) *CheckCostResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("orderid", orderId)
-	params := app.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 签名
-	app.signStr = fmt.Sprintf("userid%vpwd%vorderid%v", app.userId, app.pwd, orderId)
+	c.signStr = fmt.Sprintf("userid%vpwd%vorderid%v", c.getUserId(), c.getPwd(), orderId)
 	// 请求
-	request, err := app.request("http://api.ejiaofei.net:11140/checkCost.do", params, http.MethodGet)
+	request, err := c.request(apiUrl+"/checkCost.do", params, http.MethodGet)
 	// 定义
 	var response CheckCostResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)

@@ -34,15 +34,15 @@ func NewQueryJkOrdersResult(result QueryJkOrdersResponse, body []byte, http gore
 
 // QueryJkOrders 通用查询接口
 // orderid 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
-func (app *App) QueryJkOrders(orderId string) *QueryJkOrdersResult {
+func (c *Client) QueryJkOrders(orderId string) *QueryJkOrdersResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("orderid", orderId)
-	params := app.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 签名
-	app.signStr = fmt.Sprintf("userid%vpwd%vorderid%v", app.userId, app.pwd, orderId)
+	c.signStr = fmt.Sprintf("userid%vpwd%vorderid%v", c.getUserId(), c.getPwd(), orderId)
 	// 请求
-	request, err := app.request("http://api.ejiaofei.net:11140/query_jkorders.do", params, http.MethodGet)
+	request, err := c.request(apiUrl+"/query_jkorders.do", params, http.MethodGet)
 	// 定义
 	var response QueryJkOrdersResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)

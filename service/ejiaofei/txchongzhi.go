@@ -42,13 +42,13 @@ func NewTxChOngZhiResult(result TxChOngZhiResponse, body []byte, http gorequest.
 }
 
 // TxChOngZhi 流量充值接口
-func (app *App) TxChOngZhi(notMustParams ...Params) *TxChOngZhiResult {
+func (c *Client) TxChOngZhi(notMustParams ...gorequest.Params) *TxChOngZhiResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 签名
-	app.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vproductid%vamount%vip%vtimes%v", app.userId, app.pwd, params["orderid"], params["account"], params["productid"], params["amount"], params["ip"], params["times"])
+	c.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vproductid%vamount%vip%vtimes%v", c.getUserId(), c.getPwd(), params["orderid"], params["account"], params["productid"], params["amount"], params["ip"], params["times"])
 	// 请求
-	request, err := app.request("http://api.ejiaofei.net:11140/txchongzhi.do", params, http.MethodGet)
+	request, err := c.request(apiUrl+"/txchongzhi.do", params, http.MethodGet)
 	// 定义
 	var response TxChOngZhiResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)

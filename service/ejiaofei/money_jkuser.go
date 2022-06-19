@@ -26,11 +26,11 @@ func NewMoneyJkUserResult(result MoneyJkUserResponse, body []byte, http goreques
 }
 
 // MoneyJkUser 用户余额查询
-func (app *App) MoneyJkUser() *MoneyJkUserResult {
+func (c *Client) MoneyJkUser() *MoneyJkUserResult {
 	// 签名
-	app.signStr = fmt.Sprintf("userid%vpwd%v", app.userId, app.pwd)
+	c.signStr = fmt.Sprintf("userid%vpwd%v", c.getUserId(), c.getPwd())
 	// 请求
-	request, err := app.request("http://api.ejiaofei.net:11140/money_jkuser.do", map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(apiUrl+"/money_jkuser.do", map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response MoneyJkUserResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)

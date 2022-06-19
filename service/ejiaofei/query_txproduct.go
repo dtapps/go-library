@@ -24,11 +24,11 @@ func NewQueryTxProductResult(result QueryTxProductResponse, body []byte, http go
 }
 
 // QueryTxProduct 可充值腾讯产品查询
-func (app *App) QueryTxProduct() *QueryTxProductResult {
+func (c *Client) QueryTxProduct() *QueryTxProductResult {
 	// 签名
-	app.signStr = fmt.Sprintf("userid%vpwd%v", app.userId, app.pwd)
+	c.signStr = fmt.Sprintf("userid%vpwd%v", c.getUserId(), c.getPwd())
 	// 请求
-	request, err := app.request("http://api.ejiaofei.net:11140/queryTXproduct.do", map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(apiUrl+"/queryTXproduct.do", map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response QueryTxProductResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)

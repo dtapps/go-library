@@ -46,13 +46,13 @@ func NewGprsChOngZhiAdvanceResult(result GprsChOngZhiAdvanceResponse, body []byt
 }
 
 // GprsChOngZhiAdvance 流量充值接口
-func (app *App) GprsChOngZhiAdvance(notMustParams ...Params) *GprsChOngZhiAdvanceResult {
+func (c *Client) GprsChOngZhiAdvance(notMustParams ...gorequest.Params) *GprsChOngZhiAdvanceResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 签名
-	app.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vgprs%varea%veffecttime%vvalidity%vtimes%v", app.userId, app.pwd, params["orderid"], params["account"], params["gprs"], params["area"], params["effecttime"], params["validity"], params["times"])
+	c.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vgprs%varea%veffecttime%vvalidity%vtimes%v", c.getUserId(), c.getPwd(), params["orderid"], params["account"], params["gprs"], params["area"], params["effecttime"], params["validity"], params["times"])
 	// 请求
-	request, err := app.request("http://api.ejiaofei.net:11140/gprsChongzhiAdvance.do", params, http.MethodGet)
+	request, err := c.request(apiUrl+"/gprsChongzhiAdvance.do", params, http.MethodGet)
 	// 定义
 	var response GprsChOngZhiAdvanceResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
