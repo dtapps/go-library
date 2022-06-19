@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func (c *Client) request(url string, params map[string]interface{}, method string) (resp gorequest.Response, err error) {
+func (c *Client) request(url string, params map[string]interface{}, method string) (gorequest.Response, error) {
 
 	// 公共参数
 	params["appId"] = c.config.AppId

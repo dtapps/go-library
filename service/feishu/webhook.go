@@ -21,18 +21,18 @@ type WebhookSendResult struct {
 	Err    error               // 错误
 }
 
-func NewWebhookSendResult(result WebhookSendResponse, body []byte, http gorequest.Response, err error) *WebhookSendResult {
+func newWebhookSendResult(result WebhookSendResponse, body []byte, http gorequest.Response, err error) *WebhookSendResult {
 	return &WebhookSendResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // WebhookSend https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN
-func (app *App) WebhookSend(notMustParams ...Params) *WebhookSendResult {
+func (c *Client) WebhookSend(notMustParams ...gorequest.Params) *WebhookSendResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://open.feishu.cn/open-apis/bot/v2/hook/%s", app.key), params)
+	request, err := c.request(apiUrl+fmt.Sprintf("/open-apis/bot/v2/hook/%s", c.config.Key), params)
 	// 定义
 	var response WebhookSendResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWebhookSendResult(response, request.ResponseBody, request, err)
+	return newWebhookSendResult(response, request.ResponseBody, request, err)
 }
