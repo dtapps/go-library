@@ -28,7 +28,7 @@ type RestPowerQueryResult struct {
 	Err    error                  // 错误
 }
 
-func NewRestPowerQueryResult(result RestPowerQueryResponse, body []byte, http gorequest.Response, err error) *RestPowerQueryResult {
+func newRestPowerQueryResult(result RestPowerQueryResponse, body []byte, http gorequest.Response, err error) *RestPowerQueryResult {
 	return &RestPowerQueryResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -44,5 +44,5 @@ func (c *Client) RestPowerQuery(orderNumber string) *RestPowerQueryResult {
 	// 定义
 	var response RestPowerQueryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewRestPowerQueryResult(response, request.ResponseBody, request, err)
+	return newRestPowerQueryResult(response, request.ResponseBody, request, err)
 }

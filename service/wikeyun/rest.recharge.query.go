@@ -28,7 +28,7 @@ type RestRechargeQueryResult struct {
 	Err    error                     // 错误
 }
 
-func NewRestRechargeQueryResult(result RestRechargeQueryResponse, body []byte, http gorequest.Response, err error) *RestRechargeQueryResult {
+func newRestRechargeQueryResult(result RestRechargeQueryResponse, body []byte, http gorequest.Response, err error) *RestRechargeQueryResult {
 	return &RestRechargeQueryResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -44,5 +44,5 @@ func (c *Client) RestRechargeQuery(orderNumber string) *RestRechargeQueryResult 
 	// 定义
 	var response RestRechargeQueryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewRestRechargeQueryResult(response, request.ResponseBody, request, err)
+	return newRestRechargeQueryResult(response, request.ResponseBody, request, err)
 }

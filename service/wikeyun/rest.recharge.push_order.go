@@ -20,7 +20,7 @@ type RestRechargePushOrderResult struct {
 	Err    error                         // 错误
 }
 
-func NewRestRechargePushOrderResult(result RestRechargePushOrderResponse, body []byte, http gorequest.Response, err error) *RestRechargePushOrderResult {
+func newRestRechargePushOrderResult(result RestRechargePushOrderResponse, body []byte, http gorequest.Response, err error) *RestRechargePushOrderResult {
 	return &RestRechargePushOrderResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -35,5 +35,5 @@ func (c *Client) RestRechargePushOrder(notMustParams ...gorequest.Params) *RestR
 	// 定义
 	var response RestRechargePushOrderResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewRestRechargePushOrderResult(response, request.ResponseBody, request, err)
+	return newRestRechargePushOrderResult(response, request.ResponseBody, request, err)
 }

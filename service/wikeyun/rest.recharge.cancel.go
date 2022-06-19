@@ -18,7 +18,7 @@ type RestRechargeCancelResult struct {
 	Err    error                      // 错误
 }
 
-func NewRestRechargeCancelResult(result RestRechargeCancelResponse, body []byte, http gorequest.Response, err error) *RestRechargeCancelResult {
+func newRestRechargeCancelResult(result RestRechargeCancelResponse, body []byte, http gorequest.Response, err error) *RestRechargeCancelResult {
 	return &RestRechargeCancelResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -34,5 +34,5 @@ func (c *Client) RestRechargeCancel(orderNumber string) *RestRechargeCancelResul
 	// 定义
 	var response RestRechargeCancelResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewRestRechargeCancelResult(response, request.ResponseBody, request, err)
+	return newRestRechargeCancelResult(response, request.ResponseBody, request, err)
 }

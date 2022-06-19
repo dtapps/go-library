@@ -21,7 +21,7 @@ type RestPowerPushOrderResult struct {
 	Err    error                      // 错误
 }
 
-func NewRestPowerPushOrderResult(result RestPowerPushOrderResponse, body []byte, http gorequest.Response, err error) *RestPowerPushOrderResult {
+func newRestPowerPushOrderResult(result RestPowerPushOrderResponse, body []byte, http gorequest.Response, err error) *RestPowerPushOrderResult {
 	return &RestPowerPushOrderResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -36,5 +36,5 @@ func (c *Client) RestPowerPushOrder(notMustParams ...gorequest.Params) *RestPowe
 	// 定义
 	var response RestPowerPushOrderResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewRestPowerPushOrderResult(response, request.ResponseBody, request, err)
+	return newRestPowerPushOrderResult(response, request.ResponseBody, request, err)
 }

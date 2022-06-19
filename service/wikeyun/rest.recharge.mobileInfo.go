@@ -38,7 +38,7 @@ type RestRechargeMobileInfoResult struct {
 	Err    error                          // 错误
 }
 
-func NewRestRechargeMobileInfoResult(result RestRechargeMobileInfoResponse, body []byte, http gorequest.Response, err error) *RestRechargeMobileInfoResult {
+func newRestRechargeMobileInfoResult(result RestRechargeMobileInfoResponse, body []byte, http gorequest.Response, err error) *RestRechargeMobileInfoResult {
 	return &RestRechargeMobileInfoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -54,5 +54,5 @@ func (c *Client) RestRechargeMobileInfo(orderNumber string) *RestRechargeMobileI
 	// 定义
 	var response RestRechargeMobileInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewRestRechargeMobileInfoResult(response, request.ResponseBody, request, err)
+	return newRestRechargeMobileInfoResult(response, request.ResponseBody, request, err)
 }

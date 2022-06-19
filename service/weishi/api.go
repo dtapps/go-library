@@ -1048,12 +1048,12 @@ type AnalysisResult struct {
 	Err    error              // 错误
 }
 
-func NewAnalysisResult(result AnalysisResponse, body []byte, http gorequest.Response, err error) *AnalysisResult {
+func newAnalysisResult(result AnalysisResponse, body []byte, http gorequest.Response, err error) *AnalysisResult {
 	return &AnalysisResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // Analysis 微视解析
-func (ws *WeiShi) Analysis(content string) *AnalysisResult {
+func (c *Client) Analysis(content string) *AnalysisResult {
 
 	// 提取url
 	var url string
@@ -1062,16 +1062,16 @@ func (ws *WeiShi) Analysis(content string) *AnalysisResult {
 	} else if strings.Contains(content, "isee.weishi") {
 		url = xurls.Relaxed.FindString(content)
 	} else {
-		return NewAnalysisResult(AnalysisResponse{}, nil, gorequest.Response{}, errors.New("url为空"))
+		return newAnalysisResult(AnalysisResponse{}, nil, gorequest.Response{}, errors.New("url为空"))
 	}
 
 	// 内容匹配
 	var feedid string
 	if strings.Contains(url, "h5.weishi") {
 		// 重定向信息
-		request302, err := ws.request302(url)
+		request302, err := c.request302(url)
 		if err != nil {
-			return NewAnalysisResult(AnalysisResponse{}, nil, gorequest.Response{}, err)
+			return newAnalysisResult(AnalysisResponse{}, nil, gorequest.Response{}, err)
 		}
 
 		feedid = strings.Split(request302, "/")[3] ///share/video/6734643996347485448/?region=CN&mid=6734637731277851404&u_code=0&titleType=title&utm_source=copy_link&utm_campaign=client_share&utm_medium=android&app=aweme
@@ -1081,10 +1081,10 @@ func (ws *WeiShi) Analysis(content string) *AnalysisResult {
 		feedid = regexp.MustCompile("id=(.*?)&").FindStringSubmatch(url)[1]
 	}
 
-	request, err := ws.request("https://h5.qzone.qq.com/webapp/json/weishi/WSH5GetPlayPage?feedid=" + feedid)
+	request, err := c.request("https://h5.qzone.qq.com/webapp/json/weishi/WSH5GetPlayPage?feedid=" + feedid)
 
 	// 定义
 	var response AnalysisResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewAnalysisResult(response, request.ResponseBody, request, err)
+	return newAnalysisResult(response, request.ResponseBody, request, err)
 }

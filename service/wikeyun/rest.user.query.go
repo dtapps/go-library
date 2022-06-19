@@ -23,7 +23,7 @@ type RestUserQueryResult struct {
 	Err    error                 // 错误
 }
 
-func NewRestUserQueryResult(result RestUserQueryResponse, body []byte, http gorequest.Response, err error) *RestUserQueryResult {
+func newRestUserQueryResult(result RestUserQueryResponse, body []byte, http gorequest.Response, err error) *RestUserQueryResult {
 	return &RestUserQueryResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -35,5 +35,5 @@ func (c *Client) RestUserQuery() *RestUserQueryResult {
 	// 定义
 	var response RestUserQueryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewRestUserQueryResult(response, request.ResponseBody, request, err)
+	return newRestUserQueryResult(response, request.ResponseBody, request, err)
 }

@@ -28,7 +28,7 @@ type RestPowerAddCardResult struct {
 	Err    error                    // 错误
 }
 
-func NewRestPowerAddCardResult(result RestPowerAddCardResponse, body []byte, http gorequest.Response, err error) *RestPowerAddCardResult {
+func newRestPowerAddCardResult(result RestPowerAddCardResponse, body []byte, http gorequest.Response, err error) *RestPowerAddCardResult {
 	return &RestPowerAddCardResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -43,5 +43,5 @@ func (c *Client) RestPowerAddCard(notMustParams ...gorequest.Params) *RestPowerA
 	// 定义
 	var response RestPowerAddCardResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewRestPowerAddCardResult(response, request.ResponseBody, request, err)
+	return newRestPowerAddCardResult(response, request.ResponseBody, request, err)
 }
