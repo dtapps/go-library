@@ -39,9 +39,9 @@ func NewIotApiQueryUserPkgInfoResult(result IotApiQueryUserPkgInfoResponse, body
 
 // IotApiQueryUserPkgInfo 账户可用流量包查询
 // https://www.showdoc.com.cn/916774523755909/4850094776758927
-func (app *App) IotApiQueryUserPkgInfo() *IotApiQueryUserPkgInfoResult {
+func (c *Client) IotApiQueryUserPkgInfo() *IotApiQueryUserPkgInfoResult {
 	// 请求
-	request, err := app.request("http://m2m.eastiot.net/Api/IotApi/queryUserPkgInfo", map[string]interface{}{}, http.MethodPost)
+	request, err := c.request(apiUrl+"/Api/IotApi/queryUserPkgInfo", map[string]interface{}{}, http.MethodPost)
 	// 定义
 	var response IotApiQueryUserPkgInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -27,9 +27,9 @@ func NewIotApiQueryUserBalanceResult(result IotApiQueryUserBalanceResponse, body
 
 // IotApiQueryUserBalance 余额查询
 // https://www.showdoc.com.cn/916774523755909/4857910459512420
-func (app *App) IotApiQueryUserBalance() *IotApiQueryUserBalanceResult {
+func (c *Client) IotApiQueryUserBalance() *IotApiQueryUserBalanceResult {
 	// 请求
-	request, err := app.request("http://m2m.eastiot.net/Api/IotApi/queryUserBalance", map[string]interface{}{}, http.MethodPost)
+	request, err := c.request(apiUrl+"/Api/IotApi/queryUserBalance", map[string]interface{}{}, http.MethodPost)
 	// 定义
 	var response IotApiQueryUserBalanceResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

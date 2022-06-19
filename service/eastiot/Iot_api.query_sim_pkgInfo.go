@@ -40,14 +40,14 @@ func NewIotApiQuerySimPkgInfoResult(result IotApiQuerySimPkgInfoResponse, body [
 
 // IotApiQuerySimPkgInfo 流量卡可用流量包查询
 // https://www.showdoc.com.cn/916774523755909/4880284631482420
-func (app *App) IotApiQuerySimPkgInfo(simId string, sd int) *IotApiQuerySimPkgInfoResult {
+func (c *Client) IotApiQuerySimPkgInfo(simId string, sd int) *IotApiQuerySimPkgInfoResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("simId", simId)
 	param.Set("sd", sd)
-	params := app.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := app.request("http://m2m.eastiot.net/Api/IotApi/querySimPkgInfo", params, http.MethodPost)
+	request, err := c.request(apiUrl+"/Api/IotApi/querySimPkgInfo", params, http.MethodPost)
 	// 定义
 	var response IotApiQuerySimPkgInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

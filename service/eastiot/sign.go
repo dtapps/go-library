@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func (app *App) getSign(ApiKey string, p map[string]interface{}) string {
+func (c *Client) getSign(p map[string]interface{}) string {
 	var keys []string
 	for k := range p {
 		keys = append(keys, k)
@@ -16,13 +16,13 @@ func (app *App) getSign(ApiKey string, p map[string]interface{}) string {
 	sort.Strings(keys)
 	signStr := ""
 	for _, key := range keys {
-		signStr += fmt.Sprintf("%s=%s&", key, app.getString(p[key]))
+		signStr += fmt.Sprintf("%s=%s&", key, c.getString(p[key]))
 	}
-	signStr += fmt.Sprintf("apiKey=%s", ApiKey)
+	signStr += fmt.Sprintf("apiKey=%s", c.config.ApiKey)
 	return gomd5.ToUpper(signStr)
 }
 
-func (app *App) getString(i interface{}) string {
+func (c *Client) getString(i interface{}) string {
 	switch v := i.(type) {
 	case string:
 		return v
