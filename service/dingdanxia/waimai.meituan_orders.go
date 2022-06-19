@@ -34,7 +34,7 @@ type WaiMaiMeituanOrdersResult struct {
 	Err    error                       // 错误
 }
 
-func NewWaiMaiMeituanOrdersResult(result WaiMaiMeituanOrdersResponse, body []byte, http gorequest.Response, err error) *WaiMaiMeituanOrdersResult {
+func newWaiMaiMeituanOrdersResult(result WaiMaiMeituanOrdersResponse, body []byte, http gorequest.Response, err error) *WaiMaiMeituanOrdersResult {
 	return &WaiMaiMeituanOrdersResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -48,5 +48,5 @@ func (c *Client) WaiMaiMeituanOrders(notMustParams ...gorequest.Params) *WaiMaiM
 	// 定义
 	var response WaiMaiMeituanOrdersResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWaiMaiMeituanOrdersResult(response, request.ResponseBody, request, err)
+	return newWaiMaiMeituanOrdersResult(response, request.ResponseBody, request, err)
 }

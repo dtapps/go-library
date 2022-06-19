@@ -41,7 +41,7 @@ type GprsChOngZhiAdvanceResult struct {
 	Err    error                       // 错误
 }
 
-func NewGprsChOngZhiAdvanceResult(result GprsChOngZhiAdvanceResponse, body []byte, http gorequest.Response, err error) *GprsChOngZhiAdvanceResult {
+func newGprsChOngZhiAdvanceResult(result GprsChOngZhiAdvanceResponse, body []byte, http gorequest.Response, err error) *GprsChOngZhiAdvanceResult {
 	return &GprsChOngZhiAdvanceResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -56,5 +56,5 @@ func (c *Client) GprsChOngZhiAdvance(notMustParams ...gorequest.Params) *GprsChO
 	// 定义
 	var response GprsChOngZhiAdvanceResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return NewGprsChOngZhiAdvanceResult(response, request.ResponseBody, request, err)
+	return newGprsChOngZhiAdvanceResult(response, request.ResponseBody, request, err)
 }

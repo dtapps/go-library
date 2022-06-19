@@ -32,21 +32,21 @@ type UnionOpenCategoryGoodsGetResult struct {
 	Err      error                                   // 错误
 }
 
-func NewUnionOpenCategoryGoodsGetResult(responce UnionOpenCategoryGoodsGetResultResponse, result UnionOpenCategoryGoodsGetQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenCategoryGoodsGetResult {
+func newUnionOpenCategoryGoodsGetResult(responce UnionOpenCategoryGoodsGetResultResponse, result UnionOpenCategoryGoodsGetQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenCategoryGoodsGetResult {
 	return &UnionOpenCategoryGoodsGetResult{Responce: responce, Result: result, Body: body, Http: http, Err: err}
 }
 
 // UnionOpenCategoryGoodsGet 商品类目查询接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.category.goods.get
-func (app *App) UnionOpenCategoryGoodsGet(notMustParams ...Params) *UnionOpenCategoryGoodsGetResult {
+func (c *Client) UnionOpenCategoryGoodsGet(notMustParams ...Params) *UnionOpenCategoryGoodsGetResult {
 	// 参数
 	params := NewParamsWithType("jd.union.open.category.goods.get", notMustParams...)
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var responce UnionOpenCategoryGoodsGetResultResponse
 	var result UnionOpenCategoryGoodsGetQueryResult
 	err = json.Unmarshal(request.ResponseBody, &responce)
 	err = json.Unmarshal([]byte(responce.JdUnionOpenCategoryGoodsGetResponce.GetResult), &result)
-	return NewUnionOpenCategoryGoodsGetResult(responce, result, request.ResponseBody, request, err)
+	return newUnionOpenCategoryGoodsGetResult(responce, result, request.ResponseBody, request, err)
 }

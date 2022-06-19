@@ -28,7 +28,7 @@ type IotApiQueryOrderedPkgInfoResult struct {
 	Err    error                             // 错误
 }
 
-func NewIotApiQueryOrderedPkgInfoResult(result IotApiQueryOrderedPkgInfoResponse, body []byte, http gorequest.Response, err error) *IotApiQueryOrderedPkgInfoResult {
+func newIotApiQueryOrderedPkgInfoResult(result IotApiQueryOrderedPkgInfoResponse, body []byte, http gorequest.Response, err error) *IotApiQueryOrderedPkgInfoResult {
 	return &IotApiQueryOrderedPkgInfoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -44,5 +44,5 @@ func (c *Client) IotApiQueryOrderedPkgInfo(simId string) *IotApiQueryOrderedPkgI
 	// 定义
 	var response IotApiQueryOrderedPkgInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewIotApiQueryOrderedPkgInfoResult(response, request.ResponseBody, request, err)
+	return newIotApiQueryOrderedPkgInfoResult(response, request.ResponseBody, request, err)
 }

@@ -30,21 +30,21 @@ type UnionOpenPromotionBySubUnionIdGetResult struct {
 	Err      error                                           // 错误
 }
 
-func NewUnionOpenPromotionBySubUnionIdGetResult(responce UnionOpenPromotionBySubUnionIdGetResultResponse, result UnionOpenPromotionBySubUnionIdGetGetResult, body []byte, http gorequest.Response, err error) *UnionOpenPromotionBySubUnionIdGetResult {
+func newUnionOpenPromotionBySubUnionIdGetResult(responce UnionOpenPromotionBySubUnionIdGetResultResponse, result UnionOpenPromotionBySubUnionIdGetGetResult, body []byte, http gorequest.Response, err error) *UnionOpenPromotionBySubUnionIdGetResult {
 	return &UnionOpenPromotionBySubUnionIdGetResult{Responce: responce, Result: result, Body: body, Http: http, Err: err}
 }
 
 // UnionOpenPromotionBySubUnionIdGet 社交媒体获取推广链接接口【申请】
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.promotion.bysubunionid.get
-func (app *App) UnionOpenPromotionBySubUnionIdGet(notMustParams ...Params) *UnionOpenPromotionBySubUnionIdGetResult {
+func (c *Client) UnionOpenPromotionBySubUnionIdGet(notMustParams ...Params) *UnionOpenPromotionBySubUnionIdGetResult {
 	// 参数
 	params := NewParamsWithType("jd.union.open.promotion.bysubunionid.get", notMustParams...)
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var responce UnionOpenPromotionBySubUnionIdGetResultResponse
 	var result UnionOpenPromotionBySubUnionIdGetGetResult
 	err = json.Unmarshal(request.ResponseBody, &responce)
 	err = json.Unmarshal([]byte(responce.JdUnionOpenPromotionBySubUnionIdGetResponce.GetResult), &result)
-	return NewUnionOpenPromotionBySubUnionIdGetResult(responce, result, request.ResponseBody, request, err)
+	return newUnionOpenPromotionBySubUnionIdGetResult(responce, result, request.ResponseBody, request, err)
 }

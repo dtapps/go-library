@@ -23,7 +23,7 @@ type IotApiGetAllSimTypeResult struct {
 	Err    error                       // 错误
 }
 
-func NewIotApiGetAllSimTypeResult(result IotApiGetAllSimTypeResponse, body []byte, http gorequest.Response, err error) *IotApiGetAllSimTypeResult {
+func newIotApiGetAllSimTypeResult(result IotApiGetAllSimTypeResponse, body []byte, http gorequest.Response, err error) *IotApiGetAllSimTypeResult {
 	return &IotApiGetAllSimTypeResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -35,5 +35,5 @@ func (c *Client) IotApiGetAllSimType() *IotApiGetAllSimTypeResult {
 	// 定义
 	var response IotApiGetAllSimTypeResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewIotApiGetAllSimTypeResult(response, request.ResponseBody, request, err)
+	return newIotApiGetAllSimTypeResult(response, request.ResponseBody, request, err)
 }

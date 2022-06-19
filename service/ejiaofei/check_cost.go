@@ -23,7 +23,7 @@ type CheckCostResult struct {
 	Err    error              // 错误
 }
 
-func NewCheckCostResult(result CheckCostResponse, body []byte, http gorequest.Response, err error) *CheckCostResult {
+func newCheckCostResult(result CheckCostResponse, body []byte, http gorequest.Response, err error) *CheckCostResult {
 	return &CheckCostResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -40,5 +40,5 @@ func (c *Client) CheckCost(orderId string) *CheckCostResult {
 	// 定义
 	var response CheckCostResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return NewCheckCostResult(response, request.ResponseBody, request, err)
+	return newCheckCostResult(response, request.ResponseBody, request, err)
 }

@@ -28,7 +28,7 @@ type ChOngZhiJkOrdersResult struct {
 	Err    error                    // 错误
 }
 
-func NewChOngZhiJkOrdersResult(result ChOngZhiJkOrdersResponse, body []byte, http gorequest.Response, err error) *ChOngZhiJkOrdersResult {
+func newChOngZhiJkOrdersResult(result ChOngZhiJkOrdersResponse, body []byte, http gorequest.Response, err error) *ChOngZhiJkOrdersResult {
 	return &ChOngZhiJkOrdersResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -51,5 +51,5 @@ func (c *Client) ChOngZhiJkOrders(orderID string, face int, account string) *ChO
 	// 定义
 	var response ChOngZhiJkOrdersResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return NewChOngZhiJkOrdersResult(response, request.ResponseBody, request, err)
+	return newChOngZhiJkOrdersResult(response, request.ResponseBody, request, err)
 }

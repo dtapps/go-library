@@ -19,7 +19,7 @@ type QueryTxProductResult struct {
 	Err    error                  // 错误
 }
 
-func NewQueryTxProductResult(result QueryTxProductResponse, body []byte, http gorequest.Response, err error) *QueryTxProductResult {
+func newQueryTxProductResult(result QueryTxProductResponse, body []byte, http gorequest.Response, err error) *QueryTxProductResult {
 	return &QueryTxProductResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -32,5 +32,5 @@ func (c *Client) QueryTxProduct() *QueryTxProductResult {
 	// 定义
 	var response QueryTxProductResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return NewQueryTxProductResult(response, request.ResponseBody, request, err)
+	return newQueryTxProductResult(response, request.ResponseBody, request, err)
 }

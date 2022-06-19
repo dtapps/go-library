@@ -52,21 +52,21 @@ type UnionOpenGoodsBigfieldQueryResult struct {
 	Err      error                                     // 错误
 }
 
-func NewUnionOpenGoodsBigfieldQueryResult(responce UnionOpenGoodsBigfieldQueryResultResponse, result UnionOpenGoodsBigfieldQueryQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenGoodsBigfieldQueryResult {
+func newUnionOpenGoodsBigfieldQueryResult(responce UnionOpenGoodsBigfieldQueryResultResponse, result UnionOpenGoodsBigfieldQueryQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenGoodsBigfieldQueryResult {
 	return &UnionOpenGoodsBigfieldQueryResult{Responce: responce, Result: result, Body: body, Http: http, Err: err}
 }
 
 // UnionOpenGoodsBigfieldQuery 商品详情查询接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.goods.bigfield.query
-func (app *App) UnionOpenGoodsBigfieldQuery(notMustParams ...Params) *UnionOpenGoodsBigfieldQueryResult {
+func (c *Client) UnionOpenGoodsBigfieldQuery(notMustParams ...Params) *UnionOpenGoodsBigfieldQueryResult {
 	// 参数
 	params := NewParamsWithType("jd.union.open.goods.bigfield.query", notMustParams...)
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var responce UnionOpenGoodsBigfieldQueryResultResponse
 	var result UnionOpenGoodsBigfieldQueryQueryResult
 	err = json.Unmarshal(request.ResponseBody, &responce)
 	err = json.Unmarshal([]byte(responce.JdUnionOpenGoodsBigfieldQueryResponce.QueryResult), &result)
-	return NewUnionOpenGoodsBigfieldQueryResult(responce, result, request.ResponseBody, request, err)
+	return newUnionOpenGoodsBigfieldQueryResult(responce, result, request.ResponseBody, request, err)
 }

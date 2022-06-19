@@ -51,21 +51,21 @@ type UnionOpenGoodsPromotionGoodsInfoQueryResult struct {
 	Err      error                                               // 错误
 }
 
-func NewUnionOpenGoodsPromotionGoodsInfoQueryResult(responce UnionOpenGoodsPromotionGoodsInfoQueryResultResponse, result UnionOpenGoodsPromotionGoodsInfoQueryQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenGoodsPromotionGoodsInfoQueryResult {
+func newUnionOpenGoodsPromotionGoodsInfoQueryResult(responce UnionOpenGoodsPromotionGoodsInfoQueryResultResponse, result UnionOpenGoodsPromotionGoodsInfoQueryQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenGoodsPromotionGoodsInfoQueryResult {
 	return &UnionOpenGoodsPromotionGoodsInfoQueryResult{Responce: responce, Result: result, Body: body, Http: http, Err: err}
 }
 
 // UnionOpenGoodsPromotionGoodsInfoQuery 根据skuid查询商品信息接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.goods.promotiongoodsinfo.query
-func (app *App) UnionOpenGoodsPromotionGoodsInfoQuery(notMustParams ...Params) *UnionOpenGoodsPromotionGoodsInfoQueryResult {
+func (c *Client) UnionOpenGoodsPromotionGoodsInfoQuery(notMustParams ...Params) *UnionOpenGoodsPromotionGoodsInfoQueryResult {
 	// 参数
 	params := NewParamsWithType("jd.union.open.goods.promotiongoodsinfo.query", notMustParams...)
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var responce UnionOpenGoodsPromotionGoodsInfoQueryResultResponse
 	var result UnionOpenGoodsPromotionGoodsInfoQueryQueryResult
 	err = json.Unmarshal(request.ResponseBody, &responce)
 	err = json.Unmarshal([]byte(responce.JdUnionOpenGoodsPromotiongoodsinfoQueryResponce.QueryResult), &result)
-	return NewUnionOpenGoodsPromotionGoodsInfoQueryResult(responce, result, request.ResponseBody, request, err)
+	return newUnionOpenGoodsPromotionGoodsInfoQueryResult(responce, result, request.ResponseBody, request, err)
 }

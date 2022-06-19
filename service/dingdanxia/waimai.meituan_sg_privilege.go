@@ -30,7 +30,7 @@ type WaiMaiMeituanSgPrivilegeResult struct {
 	Err    error                            // 错误
 }
 
-func NewWaiMaiMeituanSgPrivilegeResult(result WaiMaiMeituanSgPrivilegeResponse, body []byte, http gorequest.Response, err error) *WaiMaiMeituanSgPrivilegeResult {
+func newWaiMaiMeituanSgPrivilegeResult(result WaiMaiMeituanSgPrivilegeResponse, body []byte, http gorequest.Response, err error) *WaiMaiMeituanSgPrivilegeResult {
 	return &WaiMaiMeituanSgPrivilegeResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -48,5 +48,5 @@ func (c *Client) WaiMaiMeituanSgPrivilege(sid string, generateWeApp, qrcode bool
 	// 定义
 	var response WaiMaiMeituanSgPrivilegeResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWaiMaiMeituanSgPrivilegeResult(response, request.ResponseBody, request, err)
+	return newWaiMaiMeituanSgPrivilegeResult(response, request.ResponseBody, request, err)
 }

@@ -16,5 +16,5 @@ func (c *Client) JdOrderDetails2(notMustParams ...gorequest.Params) *JdJyOrderDe
 	// 定义
 	var response JdJyOrderDetailsResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewJdJyOrderDetailsResult(response, request.ResponseBody, request, err)
+	return newJdJyOrderDetailsResult(response, request.ResponseBody, request, err)
 }

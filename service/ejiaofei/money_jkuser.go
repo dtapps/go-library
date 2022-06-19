@@ -21,7 +21,7 @@ type MoneyJkUserResult struct {
 	Err    error               // 错误
 }
 
-func NewMoneyJkUserResult(result MoneyJkUserResponse, body []byte, http gorequest.Response, err error) *MoneyJkUserResult {
+func newMoneyJkUserResult(result MoneyJkUserResponse, body []byte, http gorequest.Response, err error) *MoneyJkUserResult {
 	return &MoneyJkUserResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -34,5 +34,5 @@ func (c *Client) MoneyJkUser() *MoneyJkUserResult {
 	// 定义
 	var response MoneyJkUserResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return NewMoneyJkUserResult(response, request.ResponseBody, request, err)
+	return newMoneyJkUserResult(response, request.ResponseBody, request, err)
 }

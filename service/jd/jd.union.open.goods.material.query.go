@@ -113,21 +113,21 @@ type UnionOpenGoodsMaterialQueryResult struct {
 	Err      error                                     // 错误
 }
 
-func NewUnionOpenGoodsMaterialQueryResult(responce UnionOpenGoodsMaterialQueryResultResponse, result UnionOpenGoodsMaterialQueryQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenGoodsMaterialQueryResult {
+func newUnionOpenGoodsMaterialQueryResult(responce UnionOpenGoodsMaterialQueryResultResponse, result UnionOpenGoodsMaterialQueryQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenGoodsMaterialQueryResult {
 	return &UnionOpenGoodsMaterialQueryResult{Responce: responce, Result: result, Body: body, Http: http, Err: err}
 }
 
 // UnionOpenGoodsMaterialQuery 猜你喜欢商品推荐
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.goods.material.query
-func (app *App) UnionOpenGoodsMaterialQuery(notMustParams ...Params) *UnionOpenGoodsMaterialQueryResult {
+func (c *Client) UnionOpenGoodsMaterialQuery(notMustParams ...Params) *UnionOpenGoodsMaterialQueryResult {
 	// 参数
 	params := NewParamsWithType("jd.union.open.goods.material.query", notMustParams...)
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var responce UnionOpenGoodsMaterialQueryResultResponse
 	var result UnionOpenGoodsMaterialQueryQueryResult
 	err = json.Unmarshal(request.ResponseBody, &responce)
 	err = json.Unmarshal([]byte(responce.JdUnionOpenGoodsMaterialQueryResponce.QueryResult), &result)
-	return NewUnionOpenGoodsMaterialQueryResult(responce, result, request.ResponseBody, request, err)
+	return newUnionOpenGoodsMaterialQueryResult(responce, result, request.ResponseBody, request, err)
 }

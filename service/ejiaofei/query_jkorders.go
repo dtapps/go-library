@@ -28,7 +28,7 @@ type QueryJkOrdersResult struct {
 	Err    error                 // 错误
 }
 
-func NewQueryJkOrdersResult(result QueryJkOrdersResponse, body []byte, http gorequest.Response, err error) *QueryJkOrdersResult {
+func newQueryJkOrdersResult(result QueryJkOrdersResponse, body []byte, http gorequest.Response, err error) *QueryJkOrdersResult {
 	return &QueryJkOrdersResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -46,5 +46,5 @@ func (c *Client) QueryJkOrders(orderId string) *QueryJkOrdersResult {
 	// 定义
 	var response QueryJkOrdersResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return NewQueryJkOrdersResult(response, request.ResponseBody, request, err)
+	return newQueryJkOrdersResult(response, request.ResponseBody, request, err)
 }

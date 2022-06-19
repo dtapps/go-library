@@ -21,7 +21,7 @@ type IotApiQueryUserBalanceResult struct {
 	Err    error                          // 错误
 }
 
-func NewIotApiQueryUserBalanceResult(result IotApiQueryUserBalanceResponse, body []byte, http gorequest.Response, err error) *IotApiQueryUserBalanceResult {
+func newIotApiQueryUserBalanceResult(result IotApiQueryUserBalanceResponse, body []byte, http gorequest.Response, err error) *IotApiQueryUserBalanceResult {
 	return &IotApiQueryUserBalanceResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -33,5 +33,5 @@ func (c *Client) IotApiQueryUserBalance() *IotApiQueryUserBalanceResult {
 	// 定义
 	var response IotApiQueryUserBalanceResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewIotApiQueryUserBalanceResult(response, request.ResponseBody, request, err)
+	return newIotApiQueryUserBalanceResult(response, request.ResponseBody, request, err)
 }

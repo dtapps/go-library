@@ -33,7 +33,7 @@ type IotApiQueryUserPkgInfoResult struct {
 	Err    error                          // 错误
 }
 
-func NewIotApiQueryUserPkgInfoResult(result IotApiQueryUserPkgInfoResponse, body []byte, http gorequest.Response, err error) *IotApiQueryUserPkgInfoResult {
+func newIotApiQueryUserPkgInfoResult(result IotApiQueryUserPkgInfoResponse, body []byte, http gorequest.Response, err error) *IotApiQueryUserPkgInfoResult {
 	return &IotApiQueryUserPkgInfoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -45,5 +45,5 @@ func (c *Client) IotApiQueryUserPkgInfo() *IotApiQueryUserPkgInfoResult {
 	// 定义
 	var response IotApiQueryUserPkgInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewIotApiQueryUserPkgInfoResult(response, request.ResponseBody, request, err)
+	return newIotApiQueryUserPkgInfoResult(response, request.ResponseBody, request, err)
 }

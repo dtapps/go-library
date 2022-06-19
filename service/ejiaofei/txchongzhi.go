@@ -37,7 +37,7 @@ type TxChOngZhiResult struct {
 	Err    error              // 错误
 }
 
-func NewTxChOngZhiResult(result TxChOngZhiResponse, body []byte, http gorequest.Response, err error) *TxChOngZhiResult {
+func newTxChOngZhiResult(result TxChOngZhiResponse, body []byte, http gorequest.Response, err error) *TxChOngZhiResult {
 	return &TxChOngZhiResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -52,5 +52,5 @@ func (c *Client) TxChOngZhi(notMustParams ...gorequest.Params) *TxChOngZhiResult
 	// 定义
 	var response TxChOngZhiResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return NewTxChOngZhiResult(response, request.ResponseBody, request, err)
+	return newTxChOngZhiResult(response, request.ResponseBody, request, err)
 }

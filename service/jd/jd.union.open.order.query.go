@@ -76,21 +76,21 @@ type UnionOpenOrderQueryResult struct {
 	Err      error                             // 错误
 }
 
-func NewUnionOpenOrderQueryResult(responce UnionOpenOrderQueryResultResponse, result UnionOpenOrderQueryQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenOrderQueryResult {
+func newUnionOpenOrderQueryResult(responce UnionOpenOrderQueryResultResponse, result UnionOpenOrderQueryQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenOrderQueryResult {
 	return &UnionOpenOrderQueryResult{Responce: responce, Result: result, Body: body, Http: http, Err: err}
 }
 
 // UnionOpenOrderQuery 订单查询接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.order.query
-func (app *App) UnionOpenOrderQuery(notMustParams ...Params) *UnionOpenOrderQueryResult {
+func (c *Client) UnionOpenOrderQuery(notMustParams ...Params) *UnionOpenOrderQueryResult {
 	// 参数
 	params := NewParamsWithType("jd.union.open.order.query", notMustParams...)
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var responce UnionOpenOrderQueryResultResponse
 	var result UnionOpenOrderQueryQueryResult
 	err = json.Unmarshal(request.ResponseBody, &responce)
 	err = json.Unmarshal([]byte(responce.JdUnionOpenOrderQueryResponce.QueryResult), &result)
-	return NewUnionOpenOrderQueryResult(responce, result, request.ResponseBody, request, err)
+	return newUnionOpenOrderQueryResult(responce, result, request.ResponseBody, request, err)
 }

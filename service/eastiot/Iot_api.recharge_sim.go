@@ -18,7 +18,7 @@ type IotApiRechargeSimResult struct {
 	Err    error                     // 错误
 }
 
-func NewIotApiRechargeSimResult(result IotApiRechargeSimResponse, body []byte, http gorequest.Response, err error) *IotApiRechargeSimResult {
+func newIotApiRechargeSimResult(result IotApiRechargeSimResponse, body []byte, http gorequest.Response, err error) *IotApiRechargeSimResult {
 	return &IotApiRechargeSimResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -32,5 +32,5 @@ func (c *Client) IotApiRechargeSim(notMustParams ...gorequest.Params) *IotApiRec
 	// 定义
 	var response IotApiRechargeSimResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewIotApiRechargeSimResult(response, request.ResponseBody, request, err)
+	return newIotApiRechargeSimResult(response, request.ResponseBody, request, err)
 }

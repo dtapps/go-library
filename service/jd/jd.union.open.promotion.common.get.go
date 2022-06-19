@@ -30,21 +30,21 @@ type UnionOpenPromotionCommonGetResult struct {
 	Err      error                                     // 错误
 }
 
-func NewUnionOpenPromotionCommonGetResult(responce UnionOpenPromotionCommonGetResultResponse, result UnionOpenPromotionCommonGetGetResult, body []byte, http gorequest.Response, err error) *UnionOpenPromotionCommonGetResult {
+func newUnionOpenPromotionCommonGetResult(responce UnionOpenPromotionCommonGetResultResponse, result UnionOpenPromotionCommonGetGetResult, body []byte, http gorequest.Response, err error) *UnionOpenPromotionCommonGetResult {
 	return &UnionOpenPromotionCommonGetResult{Responce: responce, Result: result, Body: body, Http: http, Err: err}
 }
 
 // UnionOpenPromotionCommonGet 网站/APP获取推广链接接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.promotion.common.get
-func (app *App) UnionOpenPromotionCommonGet(notMustParams ...Params) *UnionOpenPromotionCommonGetResult {
+func (c *Client) UnionOpenPromotionCommonGet(notMustParams ...Params) *UnionOpenPromotionCommonGetResult {
 	// 参数
 	params := NewParamsWithType("jd.union.open.promotion.common.get", notMustParams...)
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var responce UnionOpenPromotionCommonGetResultResponse
 	var result UnionOpenPromotionCommonGetGetResult
 	err = json.Unmarshal(request.ResponseBody, &responce)
 	err = json.Unmarshal([]byte(responce.JdUnionOpenPromotionCommonGetResponce.GetResult), &result)
-	return NewUnionOpenPromotionCommonGetResult(responce, result, request.ResponseBody, request, err)
+	return newUnionOpenPromotionCommonGetResult(responce, result, request.ResponseBody, request, err)
 }

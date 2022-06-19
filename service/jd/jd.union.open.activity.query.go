@@ -55,21 +55,21 @@ type UnionOpenActivityQueryResult struct {
 	Err      error                                // 错误
 }
 
-func NewUnionOpenActivityQueryResult(responce UnionOpenActivityQueryResultResponse, result UnionOpenActivityQueryQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenActivityQueryResult {
+func newUnionOpenActivityQueryResult(responce UnionOpenActivityQueryResultResponse, result UnionOpenActivityQueryQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenActivityQueryResult {
 	return &UnionOpenActivityQueryResult{Responce: responce, Result: result, Body: body, Http: http, Err: err}
 }
 
 // UnionOpenActivityQuery 活动查询接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.activity.query
-func (app *App) UnionOpenActivityQuery(notMustParams ...Params) *UnionOpenActivityQueryResult {
+func (c *Client) UnionOpenActivityQuery(notMustParams ...Params) *UnionOpenActivityQueryResult {
 	// 参数
 	params := NewParamsWithType("jd.union.open.activity.query", notMustParams...)
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var responce UnionOpenActivityQueryResultResponse
 	var result UnionOpenActivityQueryQueryResult
 	err = json.Unmarshal(request.ResponseBody, &responce)
 	err = json.Unmarshal([]byte(responce.JdUnionOpenActivityQueryResponce.QueryResult), &result)
-	return NewUnionOpenActivityQueryResult(responce, result, request.ResponseBody, request, err)
+	return newUnionOpenActivityQueryResult(responce, result, request.ResponseBody, request, err)
 }

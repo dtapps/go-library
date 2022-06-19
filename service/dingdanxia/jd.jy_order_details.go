@@ -34,7 +34,7 @@ type JdJyOrderDetailsResult struct {
 	Err    error                    // 错误
 }
 
-func NewJdJyOrderDetailsResult(result JdJyOrderDetailsResponse, body []byte, http gorequest.Response, err error) *JdJyOrderDetailsResult {
+func newJdJyOrderDetailsResult(result JdJyOrderDetailsResponse, body []byte, http gorequest.Response, err error) *JdJyOrderDetailsResult {
 	return &JdJyOrderDetailsResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -47,5 +47,5 @@ func (c *Client) JdJyOrderDetails(notMustParams ...gorequest.Params) *JdJyOrderD
 	// 定义
 	var response JdJyOrderDetailsResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewJdJyOrderDetailsResult(response, request.ResponseBody, request, err)
+	return newJdJyOrderDetailsResult(response, request.ResponseBody, request, err)
 }
