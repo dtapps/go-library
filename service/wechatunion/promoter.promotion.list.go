@@ -27,7 +27,7 @@ type PromotionListResult struct {
 	Err    error                 // 错误
 }
 
-func NewPromotionListResult(result PromotionListResponse, body []byte, http gorequest.Response, err error) *PromotionListResult {
+func newPromotionListResult(result PromotionListResponse, body []byte, http gorequest.Response, err error) *PromotionListResult {
 	return &PromotionListResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -43,5 +43,5 @@ func (c *Client) PromotionList(start int, limit int) *PromotionListResult {
 	// 定义
 	var response PromotionListResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewPromotionListResult(response, request.ResponseBody, request, err)
+	return newPromotionListResult(response, request.ResponseBody, request, err)
 }

@@ -19,7 +19,7 @@ type PromotionUpdResult struct {
 	Err    error                // 错误
 }
 
-func NewPromotionUpdResult(result PromotionUpdResponse, body []byte, http gorequest.Response, err error) *PromotionUpdResult {
+func newPromotionUpdResult(result PromotionUpdResponse, body []byte, http gorequest.Response, err error) *PromotionUpdResult {
 	return &PromotionUpdResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -33,5 +33,5 @@ func (c *Client) PromotionUpd(notMustParams ...gorequest.Params) *PromotionUpdRe
 	// 定义
 	var response PromotionUpdResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewPromotionUpdResult(response, request.ResponseBody, request, err)
+	return newPromotionUpdResult(response, request.ResponseBody, request, err)
 }

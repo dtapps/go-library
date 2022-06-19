@@ -17,7 +17,7 @@ type GetCallBackIpResult struct {
 	Err    error                 // 错误
 }
 
-func NewGetCallBackIpResult(result GetCallBackIpResponse, byte []byte, http gorequest.Response, err error) *GetCallBackIpResult {
+func newGetCallBackIpResult(result GetCallBackIpResponse, byte []byte, http gorequest.Response, err error) *GetCallBackIpResult {
 	return &GetCallBackIpResult{Result: result, Byte: byte, Http: http, Err: err}
 }
 
@@ -30,5 +30,5 @@ func (c *Client) GetCallBackIp() *GetCallBackIpResult {
 	// 定义
 	var response GetCallBackIpResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewGetCallBackIpResult(response, request.ResponseBody, request, err)
+	return newGetCallBackIpResult(response, request.ResponseBody, request, err)
 }

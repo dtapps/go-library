@@ -21,7 +21,7 @@ type CgiBinTokenResult struct {
 	Err    error               // 错误
 }
 
-func NewCgiBinTokenResult(result CgiBinTokenResponse, byte []byte, http gorequest.Response, err error) *CgiBinTokenResult {
+func newCgiBinTokenResult(result CgiBinTokenResponse, byte []byte, http gorequest.Response, err error) *CgiBinTokenResult {
 	return &CgiBinTokenResult{Result: result, Byte: byte, Http: http, Err: err}
 }
 
@@ -34,5 +34,5 @@ func (c *Client) CgiBinToken() *CgiBinTokenResult {
 	// 定义
 	var response CgiBinTokenResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewCgiBinTokenResult(response, request.ResponseBody, request, err)
+	return newCgiBinTokenResult(response, request.ResponseBody, request, err)
 }

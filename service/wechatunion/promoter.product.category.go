@@ -23,7 +23,7 @@ type PromoterProductCategoryResult struct {
 	Err    error                           // 错误
 }
 
-func NewPromoterProductCategoryResult(result PromoterProductCategoryResponse, body []byte, http gorequest.Response, err error) *PromoterProductCategoryResult {
+func newPromoterProductCategoryResult(result PromoterProductCategoryResponse, body []byte, http gorequest.Response, err error) *PromoterProductCategoryResult {
 	return &PromoterProductCategoryResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -35,5 +35,5 @@ func (c *Client) PromoterProductCategory() *PromoterProductCategoryResult {
 	// 定义
 	var response PromoterProductCategoryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewPromoterProductCategoryResult(response, request.ResponseBody, request, err)
+	return newPromoterProductCategoryResult(response, request.ResponseBody, request, err)
 }

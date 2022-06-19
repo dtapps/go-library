@@ -19,7 +19,7 @@ type PromotionDelResult struct {
 	Err    error                // 错误
 }
 
-func NewPromotionDelResult(result PromotionDelResponse, body []byte, http gorequest.Response, err error) *PromotionDelResult {
+func newPromotionDelResult(result PromotionDelResponse, body []byte, http gorequest.Response, err error) *PromotionDelResult {
 	return &PromotionDelResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -35,5 +35,5 @@ func (c *Client) PromotionDel(promotionSourcePid, promotionSourceName string) *P
 	// 定义
 	var response PromotionDelResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewPromotionDelResult(response, request.ResponseBody, request, err)
+	return newPromotionDelResult(response, request.ResponseBody, request, err)
 }

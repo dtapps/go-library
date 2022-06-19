@@ -132,7 +132,7 @@ type PromoterProductSelectResult struct {
 	Err    error                         // 错误
 }
 
-func NewPromoterProductSelectResult(result PromoterProductSelectResponse, body []byte, http gorequest.Response, err error) *PromoterProductSelectResult {
+func newPromoterProductSelectResult(result PromoterProductSelectResponse, body []byte, http gorequest.Response, err error) *PromoterProductSelectResult {
 	return &PromoterProductSelectResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -148,5 +148,5 @@ func (c *Client) PromoterProductSelect(notMustParams ...gorequest.Params) *Promo
 	// 定义
 	var response PromoterProductSelectResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewPromoterProductSelectResult(response, request.ResponseBody, request, err)
+	return newPromoterProductSelectResult(response, request.ResponseBody, request, err)
 }

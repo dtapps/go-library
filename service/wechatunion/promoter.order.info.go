@@ -49,7 +49,7 @@ type PromoterOrderInfoResult struct {
 	Err    error                     // 错误
 }
 
-func NewPromoterOrderInfoResult(result PromoterOrderInfoResponse, body []byte, http gorequest.Response, err error) *PromoterOrderInfoResult {
+func newPromoterOrderInfoResult(result PromoterOrderInfoResponse, body []byte, http gorequest.Response, err error) *PromoterOrderInfoResult {
 	return &PromoterOrderInfoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -68,5 +68,5 @@ func (c *Client) PromoterOrderInfo(orderId ...string) *PromoterOrderInfoResult {
 	// 定义
 	var response PromoterOrderInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewPromoterOrderInfoResult(response, request.ResponseBody, request, err)
+	return newPromoterOrderInfoResult(response, request.ResponseBody, request, err)
 }

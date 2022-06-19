@@ -51,7 +51,7 @@ type PromoterOrderSearchResult struct {
 	Err    error                       // 错误
 }
 
-func NewPromoterOrderSearchResult(result PromoterOrderSearchResponse, body []byte, http gorequest.Response, err error) *PromoterOrderSearchResult {
+func newPromoterOrderSearchResult(result PromoterOrderSearchResponse, body []byte, http gorequest.Response, err error) *PromoterOrderSearchResult {
 	return &PromoterOrderSearchResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -65,5 +65,5 @@ func (c *Client) PromoterOrderSearch(notMustParams ...gorequest.Params) *Promote
 	// 定义
 	var response PromoterOrderSearchResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewPromoterOrderSearchResult(response, request.ResponseBody, request, err)
+	return newPromoterOrderSearchResult(response, request.ResponseBody, request, err)
 }
