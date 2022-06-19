@@ -56,7 +56,7 @@ type CmsPromUrlGenerateResult struct {
 	Error  CmsPromUrlGenerateError    // 错误结果
 }
 
-func NewCmsPromUrlGenerateResult(result CmsPromUrlGenerateResponse, body []byte, http gorequest.Response, err error, error CmsPromUrlGenerateError) *CmsPromUrlGenerateResult {
+func newCmsPromUrlGenerateResult(result CmsPromUrlGenerateResponse, body []byte, http gorequest.Response, err error, error CmsPromUrlGenerateError) *CmsPromUrlGenerateResult {
 	return &CmsPromUrlGenerateResult{Result: result, Body: body, Http: http, Err: err, Error: error}
 }
 
@@ -73,5 +73,5 @@ func (c *Client) CmsPromUrlGenerate(notMustParams ...Params) *CmsPromUrlGenerate
 	err = json.Unmarshal(request.ResponseBody, &response)
 	var responseError CmsPromUrlGenerateError
 	err = json.Unmarshal(request.ResponseBody, &responseError)
-	return NewCmsPromUrlGenerateResult(response, request.ResponseBody, request, err, responseError)
+	return newCmsPromUrlGenerateResult(response, request.ResponseBody, request, err, responseError)
 }

@@ -60,7 +60,7 @@ type RpPromUrlGenerateResult struct {
 	Error  RpPromUrlGenerateError    // 错误结果
 }
 
-func NewRpPromUrlGenerateResult(result RpPromUrlGenerateResponse, body []byte, http gorequest.Response, err error, error RpPromUrlGenerateError) *RpPromUrlGenerateResult {
+func newRpPromUrlGenerateResult(result RpPromUrlGenerateResponse, body []byte, http gorequest.Response, err error, error RpPromUrlGenerateError) *RpPromUrlGenerateResult {
 	return &RpPromUrlGenerateResult{Result: result, Body: body, Http: http, Err: err, Error: error}
 }
 
@@ -77,5 +77,5 @@ func (c *Client) RpPromUrlGenerate(notMustParams ...Params) *RpPromUrlGenerateRe
 	err = json.Unmarshal(request.ResponseBody, &response)
 	var responseError RpPromUrlGenerateError
 	err = json.Unmarshal(request.ResponseBody, &responseError)
-	return NewRpPromUrlGenerateResult(response, request.ResponseBody, request, err, responseError)
+	return newRpPromUrlGenerateResult(response, request.ResponseBody, request, err, responseError)
 }

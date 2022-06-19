@@ -19,7 +19,7 @@ type MemberAuthorityQueryResult struct {
 	Err    error                        // 错误
 }
 
-func NewMemberAuthorityQueryResult(result MemberAuthorityQueryResponse, body []byte, http gorequest.Response, err error) *MemberAuthorityQueryResult {
+func newMemberAuthorityQueryResult(result MemberAuthorityQueryResponse, body []byte, http gorequest.Response, err error) *MemberAuthorityQueryResult {
 	return &MemberAuthorityQueryResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -34,5 +34,5 @@ func (c *Client) MemberAuthorityQuery(notMustParams ...Params) *MemberAuthorityQ
 	// 定义
 	var response MemberAuthorityQueryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewMemberAuthorityQueryResult(response, request.ResponseBody, request, err)
+	return newMemberAuthorityQueryResult(response, request.ResponseBody, request, err)
 }

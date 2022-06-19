@@ -53,7 +53,7 @@ type TopGoodsListQueryResult struct {
 	Err    error                     // 错误
 }
 
-func NewTopGoodsListQueryResult(result TopGoodsListQueryResponse, body []byte, http gorequest.Response, err error) *TopGoodsListQueryResult {
+func newTopGoodsListQueryResult(result TopGoodsListQueryResponse, body []byte, http gorequest.Response, err error) *TopGoodsListQueryResult {
 	return &TopGoodsListQueryResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -68,5 +68,5 @@ func (c *Client) TopGoodsListQuery(notMustParams ...Params) *TopGoodsListQueryRe
 	// 定义
 	var response TopGoodsListQueryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewTopGoodsListQueryResult(response, request.ResponseBody, request, err)
+	return newTopGoodsListQueryResult(response, request.ResponseBody, request, err)
 }

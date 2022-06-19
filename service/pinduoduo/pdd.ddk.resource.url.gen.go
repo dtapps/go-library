@@ -45,7 +45,7 @@ type ResourceUrlGenResult struct {
 	Error  ResourceUrlGenError    // 错误结果
 }
 
-func NewResourceUrlGenResult(result ResourceUrlGenResponse, body []byte, http gorequest.Response, err error, error ResourceUrlGenError) *ResourceUrlGenResult {
+func newResourceUrlGenResult(result ResourceUrlGenResponse, body []byte, http gorequest.Response, err error, error ResourceUrlGenError) *ResourceUrlGenResult {
 	return &ResourceUrlGenResult{Result: result, Body: body, Http: http, Err: err, Error: error}
 }
 
@@ -62,5 +62,5 @@ func (c *Client) ResourceUrlGen(notMustParams ...Params) *ResourceUrlGenResult {
 	err = json.Unmarshal(request.ResponseBody, &response)
 	var responseError ResourceUrlGenError
 	err = json.Unmarshal(request.ResponseBody, &responseError)
-	return NewResourceUrlGenResult(response, request.ResponseBody, request, err, responseError)
+	return newResourceUrlGenResult(response, request.ResponseBody, request, err, responseError)
 }

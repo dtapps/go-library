@@ -65,7 +65,7 @@ type OrderListIncrementGetResult struct {
 	Err    error                         // 错误
 }
 
-func NewOrderListIncrementGetResult(result OrderListIncrementGetResponse, body []byte, http gorequest.Response, err error) *OrderListIncrementGetResult {
+func newOrderListIncrementGetResult(result OrderListIncrementGetResponse, body []byte, http gorequest.Response, err error) *OrderListIncrementGetResult {
 	return &OrderListIncrementGetResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -79,5 +79,5 @@ func (c *Client) OrderListIncrementGet(notMustParams ...Params) *OrderListIncrem
 	// 定义
 	var response OrderListIncrementGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewOrderListIncrementGetResult(response, request.ResponseBody, request, err)
+	return newOrderListIncrementGetResult(response, request.ResponseBody, request, err)
 }

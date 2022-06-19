@@ -24,7 +24,7 @@ type GoodsPidGenerateResult struct {
 	Err    error                    // 错误
 }
 
-func NewGoodsPidGenerateResult(result GoodsPidGenerateResponse, body []byte, http gorequest.Response, err error) *GoodsPidGenerateResult {
+func newGoodsPidGenerateResult(result GoodsPidGenerateResponse, body []byte, http gorequest.Response, err error) *GoodsPidGenerateResult {
 	return &GoodsPidGenerateResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -38,5 +38,5 @@ func (c *Client) GoodsPidGenerate(notMustParams ...Params) *GoodsPidGenerateResu
 	// 定义
 	var response GoodsPidGenerateResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewGoodsPidGenerateResult(response, request.ResponseBody, request, err)
+	return newGoodsPidGenerateResult(response, request.ResponseBody, request, err)
 }

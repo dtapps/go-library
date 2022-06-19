@@ -23,7 +23,7 @@ type GoodsCatsGetResult struct {
 	Err    error                // 错误
 }
 
-func NewGoodsCatsGetResult(result GoodsCatsGetResponse, body []byte, http gorequest.Response, err error) *GoodsCatsGetResult {
+func newGoodsCatsGetResult(result GoodsCatsGetResponse, body []byte, http gorequest.Response, err error) *GoodsCatsGetResult {
 	return &GoodsCatsGetResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -39,5 +39,5 @@ func (c *Client) GoodsCatsGet(parentOptId int) *GoodsCatsGetResult {
 	// 定义
 	var response GoodsCatsGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewGoodsCatsGetResult(response, request.ResponseBody, request, err)
+	return newGoodsCatsGetResult(response, request.ResponseBody, request, err)
 }

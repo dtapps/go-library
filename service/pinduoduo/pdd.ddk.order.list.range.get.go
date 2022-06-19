@@ -65,7 +65,7 @@ type OrderListRangeGetResult struct {
 	Err    error                     // 错误
 }
 
-func NewOrderListRangeGetResult(result OrderListRangeGetResponse, body []byte, http gorequest.Response, err error) *OrderListRangeGetResult {
+func newOrderListRangeGetResult(result OrderListRangeGetResponse, body []byte, http gorequest.Response, err error) *OrderListRangeGetResult {
 	return &OrderListRangeGetResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -79,5 +79,5 @@ func (c *Client) OrderListRangeGet(notMustParams ...Params) *OrderListRangeGetRe
 	// 定义
 	var response OrderListRangeGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewOrderListRangeGetResult(response, request.ResponseBody, request, err)
+	return newOrderListRangeGetResult(response, request.ResponseBody, request, err)
 }

@@ -91,7 +91,7 @@ type GoodsDetailResult struct {
 	Err    error               // 错误
 }
 
-func NewGoodsDetailResult(result GoodsDetailResponse, body []byte, http gorequest.Response, err error) *GoodsDetailResult {
+func newGoodsDetailResult(result GoodsDetailResponse, body []byte, http gorequest.Response, err error) *GoodsDetailResult {
 	return &GoodsDetailResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -106,5 +106,5 @@ func (c *Client) GoodsDetail(notMustParams ...Params) *GoodsDetailResult {
 	// 定义
 	var response GoodsDetailResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewGoodsDetailResult(response, request.ResponseBody, request, err)
+	return newGoodsDetailResult(response, request.ResponseBody, request, err)
 }

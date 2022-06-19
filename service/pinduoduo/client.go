@@ -20,30 +20,31 @@ type ConfigClient struct {
 }
 
 type Client struct {
-	client       *gorequest.App // 请求客户端
-	log          *golog.Api     // 日志服务
-	logTableName string         // 日志表名
-	logStatus    bool           // 日志状态
-	config       *ConfigClient  // 配置
+	client    *gorequest.App   // 请求客户端
+	log       *golog.ApiClient // 日志服务
+	logStatus bool             // 日志状态
+	config    *ConfigClient    // 配置
 }
 
-func NewClient(config *ConfigClient) *Client {
+func NewClient(config *ConfigClient) (*Client, error) {
 
+	var err error
 	c := &Client{config: config}
-	c.config = config
 
 	c.client = gorequest.NewHttp()
-	c.client.Uri = "https://gw-api.pinduoduo.com/api/router"
+	c.client.Uri = apiUrl
 	if c.config.PgsqlDb != nil {
 		c.logStatus = true
-		c.logTableName = "pinduoduo"
-		c.log = golog.NewApi(&golog.ApiConfig{
+		c.log, err = golog.NewApiClient(&golog.ConfigApiClient{
 			Db:        c.config.PgsqlDb,
-			TableName: c.logTableName,
+			TableName: logTable,
 		})
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	return c
+	return c, nil
 }
 
 type ErrResp struct {
@@ -59,31 +60,6 @@ type ErrResp struct {
 type CustomParametersResult struct {
 	Sid string `json:"sid"`
 	Uid string `json:"uid"`
-}
-
-func (c *Client) request(params map[string]interface{}) (resp gorequest.Response, err error) {
-
-	// 签名
-	c.Sign(params)
-
-	// 创建请求
-	client := c.client
-
-	// 设置参数
-	client.SetParams(params)
-
-	// 发起请求
-	request, err := client.Get()
-	if err != nil {
-		return gorequest.Response{}, err
-	}
-
-	// 日志
-	if c.logStatus == true {
-		go c.postgresqlLog(gostring.ToString(params["type"]), request)
-	}
-
-	return request, err
 }
 
 func (c *Client) SalesTipParseInt64(salesTip string) int64 {

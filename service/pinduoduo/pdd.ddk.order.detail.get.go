@@ -61,7 +61,7 @@ type OrderDetailGetResult struct {
 	Err    error                  // 错误
 }
 
-func NewOrderDetailGetResult(result OrderDetailGetResponse, body []byte, http gorequest.Response, err error) *OrderDetailGetResult {
+func newOrderDetailGetResult(result OrderDetailGetResponse, body []byte, http gorequest.Response, err error) *OrderDetailGetResult {
 	return &OrderDetailGetResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -76,5 +76,5 @@ func (c *Client) OrderDetailGet(orderSn string) *OrderDetailGetResult {
 	// 定义
 	var response OrderDetailGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewOrderDetailGetResult(response, request.ResponseBody, request, err)
+	return newOrderDetailGetResult(response, request.ResponseBody, request, err)
 }
