@@ -1,9 +1,9 @@
 package wechatpayapiv3
 
-func (app *App) SetAppId(appId string) {
-	app.appId = appId
+func (c *Client) SetAppId(appId string) {
+	c.config.AppId = appId
 }
 
-func (app *App) SetAppSecret(appSecret string) {
-	app.appSecret = appSecret
+func (c *Client) SetAppSecret(appSecret string) {
+	c.config.AppSecret = appSecret
 }

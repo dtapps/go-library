@@ -56,19 +56,19 @@ type RefundDomesticRefundsOutRefundNoResult struct {
 	Err    error                                    // 错误
 }
 
-func NewRefundDomesticRefundsOutRefundNoResult(result RefundDomesticRefundsOutRefundNoResponse, body []byte, http gorequest.Response, err error) *RefundDomesticRefundsOutRefundNoResult {
+func newRefundDomesticRefundsOutRefundNoResult(result RefundDomesticRefundsOutRefundNoResponse, body []byte, http gorequest.Response, err error) *RefundDomesticRefundsOutRefundNoResult {
 	return &RefundDomesticRefundsOutRefundNoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // RefundDomesticRefundsOutRefundNo 查询单笔退款API https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_10.shtml
-func (app *App) RefundDomesticRefundsOutRefundNo(outRefundNo string) *RefundDomesticRefundsOutRefundNoResult {
+func (c *Client) RefundDomesticRefundsOutRefundNo(outRefundNo string) *RefundDomesticRefundsOutRefundNoResult {
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/refund/domestic/refunds/%s", outRefundNo), map[string]interface{}{}, http.MethodGet, true)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/v3/refund/domestic/refunds/%s", outRefundNo), map[string]interface{}{}, http.MethodGet, true)
 	if err != nil {
-		return NewRefundDomesticRefundsOutRefundNoResult(RefundDomesticRefundsOutRefundNoResponse{}, request.ResponseBody, request, err)
+		return newRefundDomesticRefundsOutRefundNoResult(RefundDomesticRefundsOutRefundNoResponse{}, request.ResponseBody, request, err)
 	}
 	// 定义
 	var response RefundDomesticRefundsOutRefundNoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewRefundDomesticRefundsOutRefundNoResult(response, request.ResponseBody, request, err)
+	return newRefundDomesticRefundsOutRefundNoResult(response, request.ResponseBody, request, err)
 }

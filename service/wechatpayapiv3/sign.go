@@ -19,7 +19,7 @@ import (
 )
 
 // 对消息的散列值进行数字签名
-func (app *App) signPKCS1v15(msg string, privateKey []byte) ([]byte, error) {
+func (c *Client) signPKCS1v15(msg string, privateKey []byte) ([]byte, error) {
 
 	block, _ := pem.Decode(privateKey)
 	if block == nil {
@@ -33,7 +33,7 @@ func (app *App) signPKCS1v15(msg string, privateKey []byte) ([]byte, error) {
 	if ok == false {
 		return nil, errors.New("private key format error")
 	}
-	sign, err := rsa.SignPKCS1v15(rand.Reader, key, crypto.SHA256, app.haSha256(msg))
+	sign, err := rsa.SignPKCS1v15(rand.Reader, key, crypto.SHA256, c.haSha256(msg))
 	if err != nil {
 		return nil, errors.New("sign error")
 	}
@@ -41,19 +41,19 @@ func (app *App) signPKCS1v15(msg string, privateKey []byte) ([]byte, error) {
 }
 
 // base编码
-func (app *App) base64EncodeStr(src []byte) string {
+func (c *Client) base64EncodeStr(src []byte) string {
 	return base64.StdEncoding.EncodeToString(src)
 }
 
 // sha256加密
-func (app *App) haSha256(str string) []byte {
+func (c *Client) haSha256(str string) []byte {
 	h := sha256.New()
 	h.Write([]byte(str))
 	return h.Sum(nil)
 }
 
 // 生成身份认证信息
-func (app *App) authorization(method string, paramMap map[string]interface{}, rawUrl string) (token string, err error) {
+func (c *Client) authorization(method string, paramMap map[string]interface{}, rawUrl string) (token string, err error) {
 	var body string
 	if len(paramMap) != 0 {
 		paramJsonBytes, err := json.Marshal(paramMap)
@@ -71,21 +71,21 @@ func (app *App) authorization(method string, paramMap map[string]interface{}, ra
 	nonce := gorandom.Alphanumeric(32)
 	message := fmt.Sprintf("%s\n%s\n%d\n%s\n%s\n", method, canonicalUrl, timestamp, nonce, body)
 
-	signBytes, err := app.signPKCS1v15(message, []byte(app.mchSslKey))
+	signBytes, err := c.signPKCS1v15(message, []byte(c.GetMchSslKey()))
 
 	if err != nil {
 		return token, err
 	}
 
-	sign := app.base64EncodeStr(signBytes)
+	sign := c.base64EncodeStr(signBytes)
 
 	token = fmt.Sprintf("mchid=\"%s\",nonce_str=\"%s\",timestamp=\"%d\",serial_no=\"%s\",signature=\"%s\"",
-		app.mchId, nonce, timestamp, app.mchSslSerialNo, sign)
+		c.GetMchId(), nonce, timestamp, c.GetMchSslSerialNo(), sign)
 	return token, nil
 }
 
 // 报文解密
-func (app *App) decryptGCM(aesKey, nonceV, ciphertextV, additionalDataV string) ([]byte, error) {
+func (c *Client) decryptGCM(aesKey, nonceV, ciphertextV, additionalDataV string) ([]byte, error) {
 	key := []byte(aesKey)
 	nonce := []byte(nonceV)
 	additionalData := []byte(additionalDataV)

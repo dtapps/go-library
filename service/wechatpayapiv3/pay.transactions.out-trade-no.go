@@ -58,19 +58,19 @@ type PayTransactionsOutTradeNoResult struct {
 	Err    error                             // 错误
 }
 
-func NewPayTransactionsOutTradeNoResult(result PayTransactionsOutTradeNoResponse, body []byte, http gorequest.Response, err error) *PayTransactionsOutTradeNoResult {
+func newPayTransactionsOutTradeNoResult(result PayTransactionsOutTradeNoResponse, body []byte, http gorequest.Response, err error) *PayTransactionsOutTradeNoResult {
 	return &PayTransactionsOutTradeNoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // PayTransactionsOutTradeNo 商户订单号查询 https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_2.shtml
-func (app *App) PayTransactionsOutTradeNo(outTradeNo string) *PayTransactionsOutTradeNoResult {
+func (c *Client) PayTransactionsOutTradeNo(outTradeNo string) *PayTransactionsOutTradeNoResult {
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/pay/transactions/out-trade-no/%s?mchid=%s", outTradeNo, app.mchId), map[string]interface{}{}, http.MethodGet, true)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/v3/pay/transactions/out-trade-no/%s?mchid=%s", outTradeNo, c.GetMchId()), map[string]interface{}{}, http.MethodGet, true)
 	if err != nil {
-		return NewPayTransactionsOutTradeNoResult(PayTransactionsOutTradeNoResponse{}, request.ResponseBody, request, err)
+		return newPayTransactionsOutTradeNoResult(PayTransactionsOutTradeNoResponse{}, request.ResponseBody, request, err)
 	}
 	// 定义
 	var response PayTransactionsOutTradeNoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewPayTransactionsOutTradeNoResult(response, request.ResponseBody, request, err)
+	return newPayTransactionsOutTradeNoResult(response, request.ResponseBody, request, err)
 }

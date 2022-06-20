@@ -58,19 +58,19 @@ type PayTransactionsIdResult struct {
 	Err    error                     // 错误
 }
 
-func NewPayTransactionsIdResult(result PayTransactionsIdResponse, body []byte, http gorequest.Response, err error) *PayTransactionsIdResult {
+func newPayTransactionsIdResult(result PayTransactionsIdResponse, body []byte, http gorequest.Response, err error) *PayTransactionsIdResult {
 	return &PayTransactionsIdResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // PayTransactionsId 微信支付订单号查询 https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_2.shtml
-func (app *App) PayTransactionsId(transactionId string) *PayTransactionsIdResult {
+func (c *Client) PayTransactionsId(transactionId string) *PayTransactionsIdResult {
 	// 请求
-	request, err := app.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/pay/transactions/id/%s?mchid=%s", transactionId, app.mchId), map[string]interface{}{}, http.MethodGet, true)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/v3/pay/transactions/id/%s?mchid=%s", transactionId, c.GetMchId()), map[string]interface{}{}, http.MethodGet, true)
 	if err != nil {
-		return NewPayTransactionsIdResult(PayTransactionsIdResponse{}, request.ResponseBody, request, err)
+		return newPayTransactionsIdResult(PayTransactionsIdResponse{}, request.ResponseBody, request, err)
 	}
 	// 定义
 	var response PayTransactionsIdResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewPayTransactionsIdResult(response, request.ResponseBody, request, err)
+	return newPayTransactionsIdResult(response, request.ResponseBody, request, err)
 }
