@@ -21,7 +21,7 @@ type CgiBinComponentApiAuthorizerTokenResult struct {
 	authorizerAppid string                                    // 授权方 appid
 }
 
-func NewCgiBinComponentApiAuthorizerTokenResult(result CgiBinComponentApiAuthorizerTokenResponse, body []byte, http gorequest.Response, err error, authorizerAppid string) *CgiBinComponentApiAuthorizerTokenResult {
+func newCgiBinComponentApiAuthorizerTokenResult(result CgiBinComponentApiAuthorizerTokenResponse, body []byte, http gorequest.Response, err error, authorizerAppid string) *CgiBinComponentApiAuthorizerTokenResult {
 	return &CgiBinComponentApiAuthorizerTokenResult{Result: result, Body: body, Http: http, Err: err, authorizerAppid: authorizerAppid}
 }
 
@@ -29,15 +29,15 @@ func NewCgiBinComponentApiAuthorizerTokenResult(result CgiBinComponentApiAuthori
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/api_authorizer_token.html
 func (c *Client) CgiBinComponentApiAuthorizerToken(authorizerRefreshToken string) *CgiBinComponentApiAuthorizerTokenResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param["component_appid"] = c.config.ComponentAppId         // 第三方平台 appid
 	param["authorizer_appid"] = c.config.AuthorizerAppid       // 授权方 appid
 	param["authorizer_refresh_token"] = authorizerRefreshToken // 授权码, 会在授权成功时返回给第三方平台
-	params := c.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/component/api_authorizer_token?component_access_token=%v", c.GetComponentAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/component/api_authorizer_token?component_access_token=%v", c.GetComponentAccessToken()), params, http.MethodPost)
 	// 定义
 	var response CgiBinComponentApiAuthorizerTokenResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewCgiBinComponentApiAuthorizerTokenResult(response, request.ResponseBody, request, err, c.config.AuthorizerAppid)
+	return newCgiBinComponentApiAuthorizerTokenResult(response, request.ResponseBody, request, err, c.config.AuthorizerAppid)
 }

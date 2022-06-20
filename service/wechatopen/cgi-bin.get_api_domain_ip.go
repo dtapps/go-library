@@ -26,7 +26,7 @@ func NewGetCallBackIpResult(result GetCallBackIpResponse, body []byte, http gore
 // https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_the_WeChat_server_IP_address.html
 func (c *Client) CgiBinGetApiDomainIp(componentAccessToken string) *GetCallBackIpResult {
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/get_api_domain_ip?access_token=%s", componentAccessToken), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/get_api_domain_ip?access_token=%s", componentAccessToken), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response GetCallBackIpResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

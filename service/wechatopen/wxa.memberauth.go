@@ -23,7 +23,7 @@ type WxaMemberAuthResult struct {
 	Err    error                 // 错误
 }
 
-func NewWxaMemberAuthResult(result WxaMemberAuthResponse, body []byte, http gorequest.Response, err error) *WxaMemberAuthResult {
+func newWxaMemberAuthResult(result WxaMemberAuthResponse, body []byte, http gorequest.Response, err error) *WxaMemberAuthResult {
 	return &WxaMemberAuthResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -32,15 +32,15 @@ func NewWxaMemberAuthResult(result WxaMemberAuthResponse, body []byte, http gore
 func (c *Client) WxaMemberAuth() *WxaMemberAuthResult {
 	accessToken := c.GetAuthorizerAccessToken()
 	if accessToken == "" {
-		return NewWxaMemberAuthResult(WxaMemberAuthResponse{}, nil, gorequest.Response{}, errors.New("访问令牌为空"))
+		return newWxaMemberAuthResult(WxaMemberAuthResponse{}, nil, gorequest.Response{}, errors.New("访问令牌为空"))
 	}
 	// 参数
-	params := NewParams()
+	params := gorequest.NewParams()
 	params["action"] = "get_experiencer"
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/memberauth?access_token=%s", accessToken), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/memberauth?access_token=%s", accessToken), params, http.MethodPost)
 	// 定义
 	var response WxaMemberAuthResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWxaMemberAuthResult(response, request.ResponseBody, request, err)
+	return newWxaMemberAuthResult(response, request.ResponseBody, request, err)
 }

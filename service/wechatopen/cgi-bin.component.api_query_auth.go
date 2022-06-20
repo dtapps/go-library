@@ -33,7 +33,7 @@ type CgiBinComponentApiQueryAuthResult struct {
 	Err    error                               // 错误
 }
 
-func NewCgiBinComponentApiQueryAuthResult(result CgiBinComponentApiQueryAuthResponse, body []byte, http gorequest.Response, err error) *CgiBinComponentApiQueryAuthResult {
+func newCgiBinComponentApiQueryAuthResult(result CgiBinComponentApiQueryAuthResponse, body []byte, http gorequest.Response, err error) *CgiBinComponentApiQueryAuthResult {
 	return &CgiBinComponentApiQueryAuthResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -41,14 +41,14 @@ func NewCgiBinComponentApiQueryAuthResult(result CgiBinComponentApiQueryAuthResp
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/authorization_info.html
 func (c *Client) CgiBinComponentApiQueryAuth(authorizationCode string) *CgiBinComponentApiQueryAuthResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param["component_appid"] = c.config.ComponentAppId // 第三方平台 appid
 	param["authorization_code"] = authorizationCode    // 授权码, 会在授权成功时返回给第三方平台
-	params := c.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/component/api_query_auth?component_access_token=%v", c.GetComponentAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/component/api_query_auth?component_access_token=%v", c.GetComponentAccessToken()), params, http.MethodPost)
 	// 定义
 	var response CgiBinComponentApiQueryAuthResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewCgiBinComponentApiQueryAuthResult(response, request.ResponseBody, request, err)
+	return newCgiBinComponentApiQueryAuthResult(response, request.ResponseBody, request, err)
 }

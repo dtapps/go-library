@@ -27,7 +27,7 @@ type WxaGetCategoryResult struct {
 	Err    error                  // 错误
 }
 
-func NewWxaGetCategoryResult(result WxaGetCategoryResponse, body []byte, http gorequest.Response, err error) *WxaGetCategoryResult {
+func newWxaGetCategoryResult(result WxaGetCategoryResponse, body []byte, http gorequest.Response, err error) *WxaGetCategoryResult {
 	return &WxaGetCategoryResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -35,9 +35,9 @@ func NewWxaGetCategoryResult(result WxaGetCategoryResponse, body []byte, http go
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/category/get_category.html
 func (c *Client) WxaGetCategory() *WxaGetCategoryResult {
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/get_category?access_token=%s", c.GetAuthorizerAccessToken()), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/get_category?access_token=%s", c.GetAuthorizerAccessToken()), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response WxaGetCategoryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWxaGetCategoryResult(response, request.ResponseBody, request, err)
+	return newWxaGetCategoryResult(response, request.ResponseBody, request, err)
 }

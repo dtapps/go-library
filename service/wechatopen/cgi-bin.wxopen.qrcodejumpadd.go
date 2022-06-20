@@ -19,21 +19,21 @@ type CgiBinWxOpenQrCodeJumpAddResult struct {
 	Err    error                             // 错误
 }
 
-func NewCgiBinWxOpenQrCodeJumpAddResult(result CgiBinWxOpenQrCodeJumpAddResponse, body []byte, http gorequest.Response, err error) *CgiBinWxOpenQrCodeJumpAddResult {
+func newCgiBinWxOpenQrCodeJumpAddResult(result CgiBinWxOpenQrCodeJumpAddResponse, body []byte, http gorequest.Response, err error) *CgiBinWxOpenQrCodeJumpAddResult {
 	return &CgiBinWxOpenQrCodeJumpAddResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // CgiBinWxOpenQrCodeJumpAdd 增加或修改二维码规则
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumpadd.html
-func (c *Client) CgiBinWxOpenQrCodeJumpAdd(notMustParams ...Params) *CgiBinWxOpenQrCodeJumpAddResult {
+func (c *Client) CgiBinWxOpenQrCodeJumpAdd(notMustParams ...gorequest.Params) *CgiBinWxOpenQrCodeJumpAddResult {
 	// 参数
-	params := c.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/wxopen/qrcodejumpadd?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/wxopen/qrcodejumpadd?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response CgiBinWxOpenQrCodeJumpAddResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewCgiBinWxOpenQrCodeJumpAddResult(response, request.ResponseBody, request, err)
+	return newCgiBinWxOpenQrCodeJumpAddResult(response, request.ResponseBody, request, err)
 }
 
 // ErrcodeInfo 错误描述

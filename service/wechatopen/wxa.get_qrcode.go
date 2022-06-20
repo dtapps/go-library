@@ -19,7 +19,7 @@ type WxaGetQrcodeResult struct {
 	Err    error                // 错误
 }
 
-func NewWxaGetQrcodeResult(result WxaGetQrcodeResponse, body []byte, http gorequest.Response, err error) *WxaGetQrcodeResult {
+func newWxaGetQrcodeResult(result WxaGetQrcodeResponse, body []byte, http gorequest.Response, err error) *WxaGetQrcodeResult {
 	return &WxaGetQrcodeResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -27,14 +27,14 @@ func NewWxaGetQrcodeResult(result WxaGetQrcodeResponse, body []byte, http gorequ
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_qrcode.html
 func (c *Client) WxaGetQrcode(path string) *WxaGetQrcodeResult {
 	// 参数
-	params := NewParams()
+	params := gorequest.NewParams()
 	if path != "" {
 		params["path"] = path // 指定二维码扫码后直接进入指定页面并可同时带上参数）
 	}
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/get_qrcode?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodGet)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/get_qrcode?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodGet)
 	// 定义
 	var response WxaGetQrcodeResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWxaGetQrcodeResult(response, request.ResponseBody, request, err)
+	return newWxaGetQrcodeResult(response, request.ResponseBody, request, err)
 }

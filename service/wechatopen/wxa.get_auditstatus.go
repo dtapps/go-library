@@ -23,7 +23,7 @@ type WxaGetAuditStatusResult struct {
 	Err    error                     // 错误
 }
 
-func NewWxaGetAuditStatusResult(result WxaGetAuditStatusResponse, body []byte, http gorequest.Response, err error) *WxaGetAuditStatusResult {
+func newWxaGetAuditStatusResult(result WxaGetAuditStatusResponse, body []byte, http gorequest.Response, err error) *WxaGetAuditStatusResult {
 	return &WxaGetAuditStatusResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -31,14 +31,14 @@ func NewWxaGetAuditStatusResult(result WxaGetAuditStatusResponse, body []byte, h
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_auditstatus.html
 func (c *Client) WxaGetAuditStatus(auditid int64) *WxaGetAuditStatusResult {
 	// 参数
-	params := c.NewParamsWith()
+	params := gorequest.NewParams()
 	params.Set("auditid", auditid)
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/get_auditstatus?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/get_auditstatus?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaGetAuditStatusResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWxaGetAuditStatusResult(response, request.ResponseBody, request, err)
+	return newWxaGetAuditStatusResult(response, request.ResponseBody, request, err)
 }
 
 // ErrcodeInfo 错误描述

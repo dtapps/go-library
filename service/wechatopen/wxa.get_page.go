@@ -20,7 +20,7 @@ type WxaGetPageResult struct {
 	Err    error              // 错误
 }
 
-func NewWxaGetPageResult(result WxaGetPageResponse, body []byte, http gorequest.Response, err error) *WxaGetPageResult {
+func newWxaGetPageResult(result WxaGetPageResponse, body []byte, http gorequest.Response, err error) *WxaGetPageResult {
 	return &WxaGetPageResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -28,9 +28,9 @@ func NewWxaGetPageResult(result WxaGetPageResponse, body []byte, http gorequest.
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_page.html
 func (c *Client) WxaGetPage() *WxaGetPageResult {
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/get_page?access_token=%s", c.GetAuthorizerAccessToken()), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/get_page?access_token=%s", c.GetAuthorizerAccessToken()), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response WxaGetPageResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWxaGetPageResult(response, request.ResponseBody, request, err)
+	return newWxaGetPageResult(response, request.ResponseBody, request, err)
 }

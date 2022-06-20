@@ -19,7 +19,7 @@ type WxaDeleteTemplateResult struct {
 	Err    error                     // 错误
 }
 
-func NewWxaDeleteTemplateResult(result WxaDeleteTemplateResponse, body []byte, http gorequest.Response, err error) *WxaDeleteTemplateResult {
+func newWxaDeleteTemplateResult(result WxaDeleteTemplateResponse, body []byte, http gorequest.Response, err error) *WxaDeleteTemplateResult {
 	return &WxaDeleteTemplateResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -27,14 +27,14 @@ func NewWxaDeleteTemplateResult(result WxaDeleteTemplateResponse, body []byte, h
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/deletetemplate.html
 func (c *Client) WxaDeleteTemplate(templateId string) *WxaDeleteTemplateResult {
 	// 参数
-	params := NewParams()
+	params := gorequest.NewParams()
 	params.Set("template_id", templateId)
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/deletetemplate?access_token=%s", c.GetComponentAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/deletetemplate?access_token=%s", c.GetComponentAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaDeleteTemplateResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWxaDeleteTemplateResult(response, request.ResponseBody, request, err)
+	return newWxaDeleteTemplateResult(response, request.ResponseBody, request, err)
 }
 
 // ErrcodeInfo 错误描述

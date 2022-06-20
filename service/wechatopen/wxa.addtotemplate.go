@@ -19,7 +19,7 @@ type WxaAddToTemplateResult struct {
 	Err    error                    // 错误
 }
 
-func NewWxaAddToTemplateResult(result WxaAddToTemplateResponse, body []byte, http gorequest.Response, err error) *WxaAddToTemplateResult {
+func newWxaAddToTemplateResult(result WxaAddToTemplateResponse, body []byte, http gorequest.Response, err error) *WxaAddToTemplateResult {
 	return &WxaAddToTemplateResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -27,15 +27,15 @@ func NewWxaAddToTemplateResult(result WxaAddToTemplateResponse, body []byte, htt
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/addtotemplate.html
 func (c *Client) WxaAddToTemplate(draftId string, templateType int) *WxaAddToTemplateResult {
 	// 参数
-	params := NewParams()
+	params := gorequest.NewParams()
 	params["draft_id"] = draftId
 	params["template_type"] = templateType
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/addtotemplate?access_token=%s", c.GetComponentAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/addtotemplate?access_token=%s", c.GetComponentAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaAddToTemplateResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWxaAddToTemplateResult(response, request.ResponseBody, request, err)
+	return newWxaAddToTemplateResult(response, request.ResponseBody, request, err)
 }
 
 // ErrcodeInfo 错误描述

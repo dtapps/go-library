@@ -30,7 +30,7 @@ type WxaGetTemplateListResult struct {
 	Err    error                      // 错误
 }
 
-func NewWxaGetTemplateListResult(result WxaGetTemplateListResponse, body []byte, http gorequest.Response, err error) *WxaGetTemplateListResult {
+func newWxaGetTemplateListResult(result WxaGetTemplateListResponse, body []byte, http gorequest.Response, err error) *WxaGetTemplateListResult {
 	return &WxaGetTemplateListResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -38,11 +38,11 @@ func NewWxaGetTemplateListResult(result WxaGetTemplateListResponse, body []byte,
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/gettemplatelist.html
 func (c *Client) WxaGetTemplateList() *WxaGetTemplateListResult {
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/gettemplatelist?access_token=%s", c.GetComponentAccessToken()), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/gettemplatelist?access_token=%s", c.GetComponentAccessToken()), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response WxaGetTemplateListResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWxaGetTemplateListResult(response, request.ResponseBody, request, err)
+	return newWxaGetTemplateListResult(response, request.ResponseBody, request, err)
 }
 
 // ErrcodeInfo 错误描述

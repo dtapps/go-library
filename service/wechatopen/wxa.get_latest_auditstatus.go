@@ -23,7 +23,7 @@ type WxaGetLatestAuditStatusResult struct {
 	Err    error                           // 错误
 }
 
-func NewWxaGetLatestAuditStatusResult(result WxaGetLatestAuditStatusResponse, body []byte, http gorequest.Response, err error) *WxaGetLatestAuditStatusResult {
+func newWxaGetLatestAuditStatusResult(result WxaGetLatestAuditStatusResponse, body []byte, http gorequest.Response, err error) *WxaGetLatestAuditStatusResult {
 	return &WxaGetLatestAuditStatusResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -31,11 +31,11 @@ func NewWxaGetLatestAuditStatusResult(result WxaGetLatestAuditStatusResponse, bo
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_auditstatus.html
 func (c *Client) WxaGetLatestAuditStatus() *WxaGetLatestAuditStatusResult {
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/get_latest_auditstatus?access_token=%s", c.GetAuthorizerAccessToken()), map[string]interface{}{}, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/get_latest_auditstatus?access_token=%s", c.GetAuthorizerAccessToken()), map[string]interface{}{}, http.MethodPost)
 	// 定义
 	var response WxaGetLatestAuditStatusResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWxaGetLatestAuditStatusResult(response, request.ResponseBody, request, err)
+	return newWxaGetLatestAuditStatusResult(response, request.ResponseBody, request, err)
 }
 
 // ErrcodeInfo 错误描述

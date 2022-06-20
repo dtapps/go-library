@@ -18,7 +18,7 @@ type CgiBinComponentApiComponentTokenResult struct {
 	Err    error                                    // 错误
 }
 
-func NewCgiBinComponentApiComponentTokenResult(result CgiBinComponentApiComponentTokenResponse, body []byte, http gorequest.Response, err error) *CgiBinComponentApiComponentTokenResult {
+func newCgiBinComponentApiComponentTokenResult(result CgiBinComponentApiComponentTokenResponse, body []byte, http gorequest.Response, err error) *CgiBinComponentApiComponentTokenResult {
 	return &CgiBinComponentApiComponentTokenResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -26,15 +26,15 @@ func NewCgiBinComponentApiComponentTokenResult(result CgiBinComponentApiComponen
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/component_access_token.html
 func (c *Client) CgiBinComponentApiComponentToken() *CgiBinComponentApiComponentTokenResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param["component_appid"] = c.config.ComponentAppId              // 第三方平台 appid
 	param["component_appsecret"] = c.config.ComponentAppSecret      // 第三方平台 appsecret
 	param["component_verify_ticket"] = c.GetComponentVerifyTicket() // 微信后台推送的 ticket
-	params := c.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request("https://api.weixin.qq.com/cgi-bin/component/api_component_token", params, http.MethodPost)
+	request, err := c.request(apiUrl+"/cgi-bin/component/api_component_token", params, http.MethodPost)
 	// 定义
 	var response CgiBinComponentApiComponentTokenResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewCgiBinComponentApiComponentTokenResult(response, request.ResponseBody, request, err)
+	return newCgiBinComponentApiComponentTokenResult(response, request.ResponseBody, request, err)
 }

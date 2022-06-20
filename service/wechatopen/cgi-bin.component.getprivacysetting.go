@@ -51,7 +51,7 @@ type CgiBinComponentGetPrivacySettingResult struct {
 	Err    error                                    // 错误
 }
 
-func NewCgiBinComponentGetPrivacySettingResult(result CgiBinComponentGetPrivacySettingResponse, body []byte, http gorequest.Response, err error) *CgiBinComponentGetPrivacySettingResult {
+func newCgiBinComponentGetPrivacySettingResult(result CgiBinComponentGetPrivacySettingResponse, body []byte, http gorequest.Response, err error) *CgiBinComponentGetPrivacySettingResult {
 	return &CgiBinComponentGetPrivacySettingResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -60,12 +60,12 @@ func NewCgiBinComponentGetPrivacySettingResult(result CgiBinComponentGetPrivacyS
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/privacy_config/get_privacy_setting.html
 func (c *Client) CgiBinComponentGetPrivacySetting(privacyVer int) *CgiBinComponentGetPrivacySettingResult {
 	// 参数
-	params := NewParams()
+	params := gorequest.NewParams()
 	params["privacy_ver"] = privacyVer
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/component/getprivacysetting?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/component/getprivacysetting?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response CgiBinComponentGetPrivacySettingResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewCgiBinComponentGetPrivacySettingResult(response, request.ResponseBody, request, err)
+	return newCgiBinComponentGetPrivacySettingResult(response, request.ResponseBody, request, err)
 }

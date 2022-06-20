@@ -19,7 +19,7 @@ type WxaCommitResult struct {
 	Err    error              // 错误
 }
 
-func NewWxaCommitResult(result WxaCommitResponse, body []byte, http gorequest.Response, err error) *WxaCommitResult {
+func newWxaCommitResult(result WxaCommitResponse, body []byte, http gorequest.Response, err error) *WxaCommitResult {
 	return &WxaCommitResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -29,11 +29,11 @@ func (c *Client) WxaCommit(notMustParams ...gorequest.Params) *WxaCommitResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/commit?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/commit?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaCommitResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWxaCommitResult(response, request.ResponseBody, request, err)
+	return newWxaCommitResult(response, request.ResponseBody, request, err)
 }
 
 // ErrcodeInfo 错误描述

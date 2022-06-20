@@ -20,7 +20,7 @@ type WxaBindTesterResult struct {
 	Err    error                 // 错误
 }
 
-func NewWxaBindTesterResult(result WxaBindTesterResponse, body []byte, http gorequest.Response, err error) *WxaBindTesterResult {
+func newWxaBindTesterResult(result WxaBindTesterResponse, body []byte, http gorequest.Response, err error) *WxaBindTesterResult {
 	return &WxaBindTesterResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -28,14 +28,14 @@ func NewWxaBindTesterResult(result WxaBindTesterResponse, body []byte, http gore
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_AdminManagement/Admin.html
 func (c *Client) WxaBindTester(wechatid string) *WxaBindTesterResult {
 	// 参数
-	params := NewParams()
+	params := gorequest.NewParams()
 	params["wechatid"] = wechatid
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/bind_tester?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/bind_tester?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaBindTesterResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWxaBindTesterResult(response, request.ResponseBody, request, err)
+	return newWxaBindTesterResult(response, request.ResponseBody, request, err)
 }
 
 // ErrcodeInfo 错误描述

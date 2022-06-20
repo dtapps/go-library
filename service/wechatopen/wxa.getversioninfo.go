@@ -30,7 +30,7 @@ type WxaGetVersionInfoResult struct {
 	Err    error                     // 错误
 }
 
-func NewWxaGetVersionInfoResult(result WxaGetVersionInfoResponse, body []byte, http gorequest.Response, err error) *WxaGetVersionInfoResult {
+func newWxaGetVersionInfoResult(result WxaGetVersionInfoResponse, body []byte, http gorequest.Response, err error) *WxaGetVersionInfoResult {
 	return &WxaGetVersionInfoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -39,12 +39,12 @@ func NewWxaGetVersionInfoResult(result WxaGetVersionInfoResponse, body []byte, h
 func (c *Client) WxaGetVersionInfo() *WxaGetVersionInfoResult {
 	accessToken := c.GetAuthorizerAccessToken()
 	if accessToken == "" {
-		return NewWxaGetVersionInfoResult(WxaGetVersionInfoResponse{}, nil, gorequest.Response{}, errors.New("访问令牌为空"))
+		return newWxaGetVersionInfoResult(WxaGetVersionInfoResponse{}, nil, gorequest.Response{}, errors.New("访问令牌为空"))
 	}
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/getversioninfo?access_token=%s", accessToken), map[string]interface{}{}, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/getversioninfo?access_token=%s", accessToken), map[string]interface{}{}, http.MethodPost)
 	// 定义
 	var response WxaGetVersionInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWxaGetVersionInfoResult(response, request.ResponseBody, request, err)
+	return newWxaGetVersionInfoResult(response, request.ResponseBody, request, err)
 }

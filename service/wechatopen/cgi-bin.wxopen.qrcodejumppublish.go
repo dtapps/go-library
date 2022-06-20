@@ -19,7 +19,7 @@ type CgiBinWxOpenQrCodeJumpPublishResult struct {
 	Err    error                                 // 错误
 }
 
-func NewCgiBinWxOpenQrCodeJumpPublishResult(result CgiBinWxOpenQrCodeJumpPublishResponse, body []byte, http gorequest.Response, err error) *CgiBinWxOpenQrCodeJumpPublishResult {
+func newCgiBinWxOpenQrCodeJumpPublishResult(result CgiBinWxOpenQrCodeJumpPublishResponse, body []byte, http gorequest.Response, err error) *CgiBinWxOpenQrCodeJumpPublishResult {
 	return &CgiBinWxOpenQrCodeJumpPublishResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -27,14 +27,14 @@ func NewCgiBinWxOpenQrCodeJumpPublishResult(result CgiBinWxOpenQrCodeJumpPublish
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumppublish.html
 func (c *Client) CgiBinWxOpenQrCodeJumpPublish(prefix string) *CgiBinWxOpenQrCodeJumpPublishResult {
 	// 参数
-	params := NewParams()
+	params := gorequest.NewParams()
 	params["prefix"] = prefix
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/wxopen/qrcodejumppublish?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/wxopen/qrcodejumppublish?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response CgiBinWxOpenQrCodeJumpPublishResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewCgiBinWxOpenQrCodeJumpPublishResult(response, request.ResponseBody, request, err)
+	return newCgiBinWxOpenQrCodeJumpPublishResult(response, request.ResponseBody, request, err)
 }
 
 // ErrcodeInfo 错误描述

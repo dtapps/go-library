@@ -24,7 +24,7 @@ type SnsComponentJsCode2sessionResult struct {
 	Err    error                              // 错误
 }
 
-func NewSnsComponentJsCode2sessionResult(result SnsComponentJsCode2sessionResponse, body []byte, http gorequest.Response, err error) *SnsComponentJsCode2sessionResult {
+func newSnsComponentJsCode2sessionResult(result SnsComponentJsCode2sessionResponse, body []byte, http gorequest.Response, err error) *SnsComponentJsCode2sessionResult {
 	return &SnsComponentJsCode2sessionResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -32,18 +32,18 @@ func NewSnsComponentJsCode2sessionResult(result SnsComponentJsCode2sessionRespon
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/others/WeChat_login.html
 func (c *Client) SnsComponentJsCode2session(jsCode string) *SnsComponentJsCode2sessionResult {
 	// 参数
-	params := NewParams()
+	params := gorequest.NewParams()
 	params["appid"] = c.config.AuthorizerAppid                     // 小程序的 appId
 	params["js_code"] = jsCode                                     // wx.login 获取的 code
 	params["grant_type"] = "authorization_code"                    // 填 authorization_code
 	params["component_appid"] = c.config.ComponentAppId            // 第三方平台 appid
 	params["component_access_token"] = c.GetComponentAccessToken() // 第三方平台的component_access_token
 	// 请求
-	request, err := c.request("https://api.weixin.qq.com/sns/component/jscode2session", params, http.MethodGet)
+	request, err := c.request(apiUrl+"/sns/component/jscode2session", params, http.MethodGet)
 	// 定义
 	var response SnsComponentJsCode2sessionResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewSnsComponentJsCode2sessionResult(response, request.ResponseBody, request, err)
+	return newSnsComponentJsCode2sessionResult(response, request.ResponseBody, request, err)
 }
 
 type UserInfo struct {
@@ -71,7 +71,7 @@ type UserInfoResult struct {
 	Err    error            // 错误
 }
 
-func NewUserInfoResult(result UserInfoResponse, err error) *UserInfoResult {
+func newUserInfoResult(result UserInfoResponse, err error) *UserInfoResult {
 	return &UserInfoResult{Result: result, Err: err}
 }
 
@@ -80,31 +80,31 @@ func (r *SnsComponentJsCode2sessionResult) UserInfo(param UserInfo) *UserInfoRes
 	var response UserInfoResponse
 	aesKey, err := base64.StdEncoding.DecodeString(r.Result.SessionKey)
 	if err != nil {
-		return NewUserInfoResult(response, err)
+		return newUserInfoResult(response, err)
 	}
 	cipherText, err := base64.StdEncoding.DecodeString(param.EncryptedData)
 	if err != nil {
-		return NewUserInfoResult(response, err)
+		return newUserInfoResult(response, err)
 	}
 	ivBytes, err := base64.StdEncoding.DecodeString(param.Iv)
 	if err != nil {
-		return NewUserInfoResult(response, err)
+		return newUserInfoResult(response, err)
 	}
 	block, err := aes.NewCipher(aesKey)
 	if err != nil {
-		return NewUserInfoResult(response, err)
+		return newUserInfoResult(response, err)
 	}
 	mode := cipher.NewCBCDecrypter(block, ivBytes)
 	mode.CryptBlocks(cipherText, cipherText)
 	cipherText, err = r.pkcs7Unpaid(cipherText, block.BlockSize())
 	if err != nil {
-		return NewUserInfoResult(response, err)
+		return newUserInfoResult(response, err)
 	}
 	err = json.Unmarshal(cipherText, &response)
 	if err != nil {
-		return NewUserInfoResult(response, err)
+		return newUserInfoResult(response, err)
 	}
-	return NewUserInfoResult(response, err)
+	return newUserInfoResult(response, err)
 }
 
 func (u *UserInfoResponse) UserInfoAvatarUrlReal() string {

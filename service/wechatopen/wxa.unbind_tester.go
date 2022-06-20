@@ -19,7 +19,7 @@ type WxaUnbindTesterResult struct {
 	Err    error                   // 错误
 }
 
-func NewWxaUnbindTesterResult(result WxaUnbindTesterResponse, body []byte, http gorequest.Response, err error) *WxaUnbindTesterResult {
+func newWxaUnbindTesterResult(result WxaUnbindTesterResponse, body []byte, http gorequest.Response, err error) *WxaUnbindTesterResult {
 	return &WxaUnbindTesterResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -27,15 +27,15 @@ func NewWxaUnbindTesterResult(result WxaUnbindTesterResponse, body []byte, http 
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_AdminManagement/unbind_tester.html
 func (c *Client) WxaUnbindTester(wechatid, userstr string) *WxaUnbindTesterResult {
 	// 参数
-	params := NewParams()
+	params := gorequest.NewParams()
 	if wechatid != "" {
 		params["wechatid"] = wechatid
 	}
 	params["userstr"] = userstr
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/unbind_tester?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/unbind_tester?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaUnbindTesterResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWxaUnbindTesterResult(response, request.ResponseBody, request, err)
+	return newWxaUnbindTesterResult(response, request.ResponseBody, request, err)
 }

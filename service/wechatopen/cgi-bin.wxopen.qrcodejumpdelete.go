@@ -19,7 +19,7 @@ type CgiBinWxOpenQrCodeJumpDeleteResult struct {
 	Err    error                                // 错误
 }
 
-func NewCgiBinWxOpenQrCodeJumpDeleteResult(result CgiBinWxOpenQrCodeJumpDeleteResponse, body []byte, http gorequest.Response, err error) *CgiBinWxOpenQrCodeJumpDeleteResult {
+func newCgiBinWxOpenQrCodeJumpDeleteResult(result CgiBinWxOpenQrCodeJumpDeleteResponse, body []byte, http gorequest.Response, err error) *CgiBinWxOpenQrCodeJumpDeleteResult {
 	return &CgiBinWxOpenQrCodeJumpDeleteResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -27,12 +27,12 @@ func NewCgiBinWxOpenQrCodeJumpDeleteResult(result CgiBinWxOpenQrCodeJumpDeleteRe
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumpdelete.html
 func (c *Client) CgiBinWxOpenQrCodeJumpDelete(prefix string) *CgiBinWxOpenQrCodeJumpDeleteResult {
 	// 参数
-	params := NewParams()
+	params := gorequest.NewParams()
 	params["prefix"] = prefix
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/wxopen/qrcodejumpdelete?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/wxopen/qrcodejumpdelete?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response CgiBinWxOpenQrCodeJumpDeleteResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewCgiBinWxOpenQrCodeJumpDeleteResult(response, request.ResponseBody, request, err)
+	return newCgiBinWxOpenQrCodeJumpDeleteResult(response, request.ResponseBody, request, err)
 }

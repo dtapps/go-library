@@ -43,19 +43,19 @@ type WxaGetEffectiveDomainResult struct {
 	Err    error                         // 错误
 }
 
-func NewWxaGetEffectiveDomainResult(result WxaGetEffectiveDomainResponse, body []byte, http gorequest.Response, err error) *WxaGetEffectiveDomainResult {
+func newWxaGetEffectiveDomainResult(result WxaGetEffectiveDomainResponse, body []byte, http gorequest.Response, err error) *WxaGetEffectiveDomainResult {
 	return &WxaGetEffectiveDomainResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // WxaGetEffectiveDomain 获取发布后生效服务器域名列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_Basic_Info/get_effective_domain.html
-func (c *Client) WxaGetEffectiveDomain(notMustParams ...Params) *WxaGetEffectiveDomainResult {
+func (c *Client) WxaGetEffectiveDomain(notMustParams ...gorequest.Params) *WxaGetEffectiveDomainResult {
 	// 参数
-	params := c.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/get_effective_domain?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/get_effective_domain?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaGetEffectiveDomainResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWxaGetEffectiveDomainResult(response, request.ResponseBody, request, err)
+	return newWxaGetEffectiveDomainResult(response, request.ResponseBody, request, err)
 }

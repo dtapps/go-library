@@ -19,7 +19,7 @@ type CgiBinComponentApiCreatePreAuthCodenResult struct {
 	Err    error                                        // 错误
 }
 
-func NewCgiBinComponentApiCreatePreAuthCodenResult(result CgiBinComponentApiCreatePreAuthCodenResponse, body []byte, http gorequest.Response, err error) *CgiBinComponentApiCreatePreAuthCodenResult {
+func newCgiBinComponentApiCreatePreAuthCodenResult(result CgiBinComponentApiCreatePreAuthCodenResponse, body []byte, http gorequest.Response, err error) *CgiBinComponentApiCreatePreAuthCodenResult {
 	return &CgiBinComponentApiCreatePreAuthCodenResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -27,13 +27,13 @@ func NewCgiBinComponentApiCreatePreAuthCodenResult(result CgiBinComponentApiCrea
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/pre_auth_code.html
 func (c *Client) CgiBinComponentApiCreatePreAuthCoden() *CgiBinComponentApiCreatePreAuthCodenResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param["component_appid"] = c.config.ComponentAppId // 第三方平台 appid
-	params := c.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?component_access_token=%v", c.GetComponentAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/component/api_create_preauthcode?component_access_token=%v", c.GetComponentAccessToken()), params, http.MethodPost)
 	// 定义
 	var response CgiBinComponentApiCreatePreAuthCodenResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewCgiBinComponentApiCreatePreAuthCodenResult(response, request.ResponseBody, request, err)
+	return newCgiBinComponentApiCreatePreAuthCodenResult(response, request.ResponseBody, request, err)
 }

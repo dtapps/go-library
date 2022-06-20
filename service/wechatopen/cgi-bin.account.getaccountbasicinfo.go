@@ -49,7 +49,7 @@ type CgiBinAccountGetAccountBasicInfoResult struct {
 	Err    error                                    // 错误
 }
 
-func NewCgiBinAccountGetAccountBasicInfoResult(result CgiBinAccountGetAccountBasicInfoResponse, body []byte, http gorequest.Response, err error) *CgiBinAccountGetAccountBasicInfoResult {
+func newCgiBinAccountGetAccountBasicInfoResult(result CgiBinAccountGetAccountBasicInfoResponse, body []byte, http gorequest.Response, err error) *CgiBinAccountGetAccountBasicInfoResult {
 	return &CgiBinAccountGetAccountBasicInfoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -57,9 +57,9 @@ func NewCgiBinAccountGetAccountBasicInfoResult(result CgiBinAccountGetAccountBas
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_Basic_Info/Mini_Program_Information_Settings.html
 func (c *Client) CgiBinAccountGetAccountBasicInfo() *CgiBinAccountGetAccountBasicInfoResult {
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/account/getaccountbasicinfo?access_token=%v", c.GetAuthorizerAccessToken()), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/account/getaccountbasicinfo?access_token=%v", c.GetAuthorizerAccessToken()), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response CgiBinAccountGetAccountBasicInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewCgiBinAccountGetAccountBasicInfoResult(response, request.ResponseBody, request, err)
+	return newCgiBinAccountGetAccountBasicInfoResult(response, request.ResponseBody, request, err)
 }

@@ -19,7 +19,7 @@ type WxaReleaseResult struct {
 	Err    error              // 错误
 }
 
-func NewWxaReleaseResult(result WxaReleaseResponse, body []byte, http gorequest.Response, err error) *WxaReleaseResult {
+func newWxaReleaseResult(result WxaReleaseResponse, body []byte, http gorequest.Response, err error) *WxaReleaseResult {
 	return &WxaReleaseResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -27,13 +27,13 @@ func NewWxaReleaseResult(result WxaReleaseResponse, body []byte, http gorequest.
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/release.html
 func (c *Client) WxaRelease() *WxaReleaseResult {
 	// 参数
-	params := NewParams()
+	params := gorequest.NewParams()
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/release?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/release?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaReleaseResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWxaReleaseResult(response, request.ResponseBody, request, err)
+	return newWxaReleaseResult(response, request.ResponseBody, request, err)
 }
 
 // ErrcodeInfo 错误描述
