@@ -58,7 +58,7 @@ type PayPartnerTransactionsIdResult struct {
 	Err    error                            // 错误
 }
 
-func NewPayPartnerTransactionsIdResult(result PayPartnerTransactionsIdResponse, body []byte, http gorequest.Response, err error) *PayPartnerTransactionsIdResult {
+func newPayPartnerTransactionsIdResult(result PayPartnerTransactionsIdResponse, body []byte, http gorequest.Response, err error) *PayPartnerTransactionsIdResult {
 	return &PayPartnerTransactionsIdResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -69,12 +69,12 @@ func (c *Client) PayPartnerTransactionsId(transactionId string) *PayPartnerTrans
 	params := gorequest.NewParams()
 	// 请求
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/pay/partner/transactions/id/%s?sp_mchid=%s&sub_mchid=%s", transactionId, c.config.SpMchId, c.config.SubMchId), params, http.MethodGet)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/v3/pay/partner/transactions/id/%s?sp_mchid=%s&sub_mchid=%s", transactionId, c.config.SpMchId, c.config.SubMchId), params, http.MethodGet)
 	if err != nil {
-		return NewPayPartnerTransactionsIdResult(PayPartnerTransactionsIdResponse{}, request.ResponseBody, request, err)
+		return newPayPartnerTransactionsIdResult(PayPartnerTransactionsIdResponse{}, request.ResponseBody, request, err)
 	}
 	// 定义
 	var response PayPartnerTransactionsIdResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewPayPartnerTransactionsIdResult(response, request.ResponseBody, request, err)
+	return newPayPartnerTransactionsIdResult(response, request.ResponseBody, request, err)
 }

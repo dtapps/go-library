@@ -28,7 +28,7 @@ type CertificatesResult struct {
 	Err    error                // 错误
 }
 
-func NewCertificatesResult(result CertificatesResponse, body []byte, http gorequest.Response, err error) *CertificatesResult {
+func newCertificatesResult(result CertificatesResponse, body []byte, http gorequest.Response, err error) *CertificatesResult {
 	return &CertificatesResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -36,12 +36,12 @@ func NewCertificatesResult(result CertificatesResponse, body []byte, http gorequ
 // https://pay.weixin.qq.com/wiki/doc/apiv3/apis/wechatpay5_1.shtml
 func (c *Client) Certificates() *CertificatesResult {
 	// 请求
-	request, err := c.request("https://api.mch.weixin.qq.com/v3/certificates", map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(apiUrl+"/v3/certificates", map[string]interface{}{}, http.MethodGet)
 	if err != nil {
-		return NewCertificatesResult(CertificatesResponse{}, request.ResponseBody, request, err)
+		return newCertificatesResult(CertificatesResponse{}, request.ResponseBody, request, err)
 	}
 	// 定义
 	var response CertificatesResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewCertificatesResult(response, request.ResponseBody, request, err)
+	return newCertificatesResult(response, request.ResponseBody, request, err)
 }

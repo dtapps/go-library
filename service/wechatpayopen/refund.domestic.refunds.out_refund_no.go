@@ -56,7 +56,7 @@ type RefundDomesticRefundsOutRefundNoResult struct {
 	Err    error                                    // 错误
 }
 
-func NewRefundDomesticRefundsOutRefundNoResult(result RefundDomesticRefundsOutRefundNoResponse, body []byte, http gorequest.Response, err error) *RefundDomesticRefundsOutRefundNoResult {
+func newRefundDomesticRefundsOutRefundNoResult(result RefundDomesticRefundsOutRefundNoResponse, body []byte, http gorequest.Response, err error) *RefundDomesticRefundsOutRefundNoResult {
 	return &RefundDomesticRefundsOutRefundNoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -66,12 +66,12 @@ func (c *Client) RefundDomesticRefundsOutRefundNo(outRefundNo string) *RefundDom
 	// 参数
 	params := gorequest.NewParams()
 	// 请求
-	request, err := c.request("https://api.mch.weixin.qq.com/v3/refund/domestic/refunds/"+outRefundNo+"?sub_mchid="+c.config.SubMchId, params, http.MethodGet)
+	request, err := c.request(apiUrl+"/v3/refund/domestic/refunds/"+outRefundNo+"?sub_mchid="+c.config.SubMchId, params, http.MethodGet)
 	if err != nil {
-		return NewRefundDomesticRefundsOutRefundNoResult(RefundDomesticRefundsOutRefundNoResponse{}, request.ResponseBody, request, err)
+		return newRefundDomesticRefundsOutRefundNoResult(RefundDomesticRefundsOutRefundNoResponse{}, request.ResponseBody, request, err)
 	}
 	// 定义
 	var response RefundDomesticRefundsOutRefundNoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewRefundDomesticRefundsOutRefundNoResult(response, request.ResponseBody, request, err)
+	return newRefundDomesticRefundsOutRefundNoResult(response, request.ResponseBody, request, err)
 }

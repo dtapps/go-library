@@ -12,7 +12,7 @@ type PayPartnerTransactionsOutTradeNoCloseResult struct {
 	Err  error              // 错误
 }
 
-func NewPayPartnerTransactionsOutTradeNoCloseResult(body []byte, http gorequest.Response, err error) *PayPartnerTransactionsOutTradeNoCloseResult {
+func newPayPartnerTransactionsOutTradeNoCloseResult(body []byte, http gorequest.Response, err error) *PayPartnerTransactionsOutTradeNoCloseResult {
 	return &PayPartnerTransactionsOutTradeNoCloseResult{Body: body, Http: http, Err: err}
 }
 
@@ -24,9 +24,9 @@ func (c *Client) PayPartnerTransactionsOutTradeNoClose(outTradeNo string) *PayPa
 	params.Set("sp_mchid", c.config.SpMchId)   // 服务商户号
 	params.Set("sub_mchid", c.config.SubMchId) // 子商户号
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.mch.weixin.qq.com/v3/pay/partner/transactions/out-trade-no/%s/close", outTradeNo), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/v3/pay/partner/transactions/out-trade-no/%s/close", outTradeNo), params, http.MethodPost)
 	if err != nil {
-		return NewPayPartnerTransactionsOutTradeNoCloseResult(request.ResponseBody, request, err)
+		return newPayPartnerTransactionsOutTradeNoCloseResult(request.ResponseBody, request, err)
 	}
-	return NewPayPartnerTransactionsOutTradeNoCloseResult(request.ResponseBody, request, err)
+	return newPayPartnerTransactionsOutTradeNoCloseResult(request.ResponseBody, request, err)
 }
