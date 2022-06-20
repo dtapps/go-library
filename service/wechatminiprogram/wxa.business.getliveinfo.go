@@ -49,20 +49,20 @@ type BusinessGetLiveInfoResult struct {
 	Err    error                       // 错误
 }
 
-func NewBusinessGetLiveInfoResult(result BusinessGetLiveInfoResponse, body []byte, http gorequest.Response, err error) *BusinessGetLiveInfoResult {
+func newBusinessGetLiveInfoResult(result BusinessGetLiveInfoResponse, body []byte, http gorequest.Response, err error) *BusinessGetLiveInfoResult {
 	return &BusinessGetLiveInfoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // BusinessGetLiveInfo 获取直播间列表
 // 调用此接口获取直播间列表及直播间信息
 // https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/industry/liveplayer/studio-api.html
-func (c *Client) BusinessGetLiveInfo(notMustParams ...Params) *BusinessGetLiveInfoResult {
+func (c *Client) BusinessGetLiveInfo(notMustParams ...gorequest.Params) *BusinessGetLiveInfoResult {
 	// 参数
-	params := c.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/business/getliveinfo?access_token=%s", c.getAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/business/getliveinfo?access_token=%s", c.getAccessToken()), params, http.MethodPost)
 	// 定义
 	var response BusinessGetLiveInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewBusinessGetLiveInfoResult(response, request.ResponseBody, request, err)
+	return newBusinessGetLiveInfoResult(response, request.ResponseBody, request, err)
 }

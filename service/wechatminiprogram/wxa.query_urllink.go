@@ -38,7 +38,7 @@ type WxaQueryUrlLinkResult struct {
 	Err    error                   // 错误
 }
 
-func NewWxaQueryUrlLinkResult(result WxaQueryUrlLinkResponse, body []byte, http gorequest.Response, err error) *WxaQueryUrlLinkResult {
+func newWxaQueryUrlLinkResult(result WxaQueryUrlLinkResponse, body []byte, http gorequest.Response, err error) *WxaQueryUrlLinkResult {
 	return &WxaQueryUrlLinkResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -46,13 +46,13 @@ func NewWxaQueryUrlLinkResult(result WxaQueryUrlLinkResponse, body []byte, http 
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/url-link/urllink.query.html
 func (c *Client) WxaQueryUrlLink(urlLink string) *WxaQueryUrlLinkResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("url_link", urlLink)
-	params := c.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/query_urllink?access_token=%s", c.getAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/query_urllink?access_token=%s", c.getAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaQueryUrlLinkResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWxaQueryUrlLinkResult(response, request.ResponseBody, request, err)
+	return newWxaQueryUrlLinkResult(response, request.ResponseBody, request, err)
 }

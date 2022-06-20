@@ -21,7 +21,7 @@ type CgiBinTokenResult struct {
 	Err    error               // 错误
 }
 
-func NewCgiBinTokenResult(result CgiBinTokenResponse, body []byte, http gorequest.Response, err error) *CgiBinTokenResult {
+func newCgiBinTokenResult(result CgiBinTokenResponse, body []byte, http gorequest.Response, err error) *CgiBinTokenResult {
 	return &CgiBinTokenResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -30,9 +30,9 @@ func NewCgiBinTokenResult(result CgiBinTokenResponse, body []byte, http goreques
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/access-token/auth.getAccessToken.html
 func (c *Client) CgiBinToken() *CgiBinTokenResult {
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", c.getAppId(), c.getAppSecret()), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", c.getAppId(), c.getAppSecret()), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response CgiBinTokenResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewCgiBinTokenResult(response, request.ResponseBody, request, err)
+	return newCgiBinTokenResult(response, request.ResponseBody, request, err)
 }

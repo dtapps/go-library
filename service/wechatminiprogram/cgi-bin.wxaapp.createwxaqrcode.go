@@ -21,19 +21,19 @@ type CgiBinWxaAppCreateWxaQrCodeResult struct {
 	Err    error                               // 错误
 }
 
-func NewCgiBinWxaAppCreateWxaQrCodeResult(result CgiBinWxaAppCreateWxaQrCodeResponse, body []byte, http gorequest.Response, err error) *CgiBinWxaAppCreateWxaQrCodeResult {
+func newCgiBinWxaAppCreateWxaQrCodeResult(result CgiBinWxaAppCreateWxaQrCodeResponse, body []byte, http gorequest.Response, err error) *CgiBinWxaAppCreateWxaQrCodeResult {
 	return &CgiBinWxaAppCreateWxaQrCodeResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // CgiBinWxaAppCreateWxaQrCode 获取小程序二维码，适用于需要的码数量较少的业务场景。通过该接口生成的小程序码，永久有效，有数量限制
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.createQRCode.html
-func (c *Client) CgiBinWxaAppCreateWxaQrCode(notMustParams ...Params) *CgiBinWxaAppCreateWxaQrCodeResult {
+func (c *Client) CgiBinWxaAppCreateWxaQrCode(notMustParams ...gorequest.Params) *CgiBinWxaAppCreateWxaQrCodeResult {
 	// 参数
-	params := c.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token=%s", c.getAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/wxaapp/createwxaqrcode?access_token=%s", c.getAccessToken()), params, http.MethodPost)
 	// 定义
 	var response CgiBinWxaAppCreateWxaQrCodeResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewCgiBinWxaAppCreateWxaQrCodeResult(response, request.ResponseBody, request, err)
+	return newCgiBinWxaAppCreateWxaQrCodeResult(response, request.ResponseBody, request, err)
 }

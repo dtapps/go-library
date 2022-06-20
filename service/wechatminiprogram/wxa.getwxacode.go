@@ -24,21 +24,21 @@ type WxaGetWxaCodeResult struct {
 	Err    error                 // 错误
 }
 
-func NewWxaGetWxaCodeResult(result WxaGetWxaCodeResponse, body []byte, http gorequest.Response, err error) *WxaGetWxaCodeResult {
+func newWxaGetWxaCodeResult(result WxaGetWxaCodeResponse, body []byte, http gorequest.Response, err error) *WxaGetWxaCodeResult {
 	return &WxaGetWxaCodeResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // WxaGetWxaCode 获取小程序码，适用于需要的码数量较少的业务场景。通过该接口生成的小程序码，永久有效，有数量限制
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.get.html
-func (c *Client) WxaGetWxaCode(notMustParams ...Params) *WxaGetWxaCodeResult {
+func (c *Client) WxaGetWxaCode(notMustParams ...gorequest.Params) *WxaGetWxaCodeResult {
 	// 参数
-	params := c.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/getwxacode?access_token=%s", c.getAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/getwxacode?access_token=%s", c.getAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaGetWxaCodeResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWxaGetWxaCodeResult(response, request.ResponseBody, request, err)
+	return newWxaGetWxaCodeResult(response, request.ResponseBody, request, err)
 }
 
 // ErrcodeInfo 错误描述

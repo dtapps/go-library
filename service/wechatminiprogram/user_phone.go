@@ -29,7 +29,7 @@ type UserPhoneResult struct {
 	Err    error             // 错误
 }
 
-func NewUserPhoneResult(result UserPhoneResponse, err error) *UserPhoneResult {
+func newUserPhoneResult(result UserPhoneResponse, err error) *UserPhoneResult {
 	return &UserPhoneResult{Result: result, Err: err}
 }
 
@@ -38,32 +38,32 @@ func (c *Client) UserPhone(param UserPhone) *UserPhoneResult {
 	var response UserPhoneResponse
 	aesKey, err := base64.StdEncoding.DecodeString(param.SessionKey)
 	if err != nil {
-		return NewUserPhoneResult(response, err)
+		return newUserPhoneResult(response, err)
 	}
 	cipherText, err := base64.StdEncoding.DecodeString(param.EncryptedData)
 	if err != nil {
-		return NewUserPhoneResult(response, err)
+		return newUserPhoneResult(response, err)
 	}
 	ivBytes, err := base64.StdEncoding.DecodeString(param.Iv)
 	if err != nil {
-		return NewUserPhoneResult(response, err)
+		return newUserPhoneResult(response, err)
 	}
 	block, err := aes.NewCipher(aesKey)
 	if err != nil {
-		return NewUserPhoneResult(response, err)
+		return newUserPhoneResult(response, err)
 	}
 	mode := cipher.NewCBCDecrypter(block, ivBytes)
 	mode.CryptBlocks(cipherText, cipherText)
 	cipherText, err = c.pkcs7Unpaid(cipherText, block.BlockSize())
 	if err != nil {
-		return NewUserPhoneResult(response, err)
+		return newUserPhoneResult(response, err)
 	}
 	err = json.Unmarshal(cipherText, &response)
 	if err != nil {
-		return NewUserPhoneResult(response, err)
+		return newUserPhoneResult(response, err)
 	}
 	if response.Watermark.AppID != c.getAppId() {
-		return NewUserPhoneResult(response, errors.New("c id not match"))
+		return newUserPhoneResult(response, errors.New("c id not match"))
 	}
-	return NewUserPhoneResult(response, err)
+	return newUserPhoneResult(response, err)
 }

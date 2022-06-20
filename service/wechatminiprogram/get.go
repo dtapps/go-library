@@ -12,3 +12,7 @@ func (c *Client) getAccessToken() string {
 	c.config.AccessToken = c.GetAccessToken()
 	return c.config.AccessToken
 }
+
+func (c *Client) GetAppId() string {
+	return c.config.AppId
+}

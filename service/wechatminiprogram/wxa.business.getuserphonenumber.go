@@ -28,7 +28,7 @@ type WxaBusinessGetUserPhoneNumberResult struct {
 	Err    error                                 // 错误
 }
 
-func NewWxaBusinessGetUserPhoneNumberResult(result WxaBusinessGetUserPhoneNumberResponse, body []byte, http gorequest.Response, err error) *WxaBusinessGetUserPhoneNumberResult {
+func newWxaBusinessGetUserPhoneNumberResult(result WxaBusinessGetUserPhoneNumberResponse, body []byte, http gorequest.Response, err error) *WxaBusinessGetUserPhoneNumberResult {
 	return &WxaBusinessGetUserPhoneNumberResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -36,13 +36,13 @@ func NewWxaBusinessGetUserPhoneNumberResult(result WxaBusinessGetUserPhoneNumber
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/phonenumber/phonenumber.getPhoneNumber.html
 func (c *Client) WxaBusinessGetUserPhoneNumber(code string) *WxaBusinessGetUserPhoneNumberResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("code", code)
-	params := c.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=%s", c.getAccessToken()), params, http.MethodPost)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/business/getuserphonenumber?access_token=%s", c.getAccessToken()), params, http.MethodPost)
 	// 定义
 	var response WxaBusinessGetUserPhoneNumberResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewWxaBusinessGetUserPhoneNumberResult(response, request.ResponseBody, request, err)
+	return newWxaBusinessGetUserPhoneNumberResult(response, request.ResponseBody, request, err)
 }

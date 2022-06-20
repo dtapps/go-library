@@ -35,7 +35,7 @@ type UserInfoResult struct {
 	Err    error            // 错误
 }
 
-func NewUserInfoResult(result UserInfoResponse, err error) *UserInfoResult {
+func newUserInfoResult(result UserInfoResponse, err error) *UserInfoResult {
 	return &UserInfoResult{Result: result, Err: err}
 }
 
@@ -44,34 +44,34 @@ func (c *Client) UserInfo(param UserInfo) *UserInfoResult {
 	var response UserInfoResponse
 	aesKey, err := base64.StdEncoding.DecodeString(param.SessionKey)
 	if err != nil {
-		return NewUserInfoResult(response, err)
+		return newUserInfoResult(response, err)
 	}
 	cipherText, err := base64.StdEncoding.DecodeString(param.EncryptedData)
 	if err != nil {
-		return NewUserInfoResult(response, err)
+		return newUserInfoResult(response, err)
 	}
 	ivBytes, err := base64.StdEncoding.DecodeString(param.Iv)
 	if err != nil {
-		return NewUserInfoResult(response, err)
+		return newUserInfoResult(response, err)
 	}
 	block, err := aes.NewCipher(aesKey)
 	if err != nil {
-		return NewUserInfoResult(response, err)
+		return newUserInfoResult(response, err)
 	}
 	mode := cipher.NewCBCDecrypter(block, ivBytes)
 	mode.CryptBlocks(cipherText, cipherText)
 	cipherText, err = c.pkcs7Unpaid(cipherText, block.BlockSize())
 	if err != nil {
-		return NewUserInfoResult(response, err)
+		return newUserInfoResult(response, err)
 	}
 	err = json.Unmarshal(cipherText, &response)
 	if err != nil {
-		return NewUserInfoResult(response, err)
+		return newUserInfoResult(response, err)
 	}
 	if response.Watermark.AppID != c.getAppId() {
-		return NewUserInfoResult(response, errors.New("c id not match"))
+		return newUserInfoResult(response, errors.New("c id not match"))
 	}
-	return NewUserInfoResult(response, err)
+	return newUserInfoResult(response, err)
 }
 
 func (u *UserInfoResponse) UserInfoAvatarUrlReal() string {
