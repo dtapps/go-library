@@ -1,17 +1,17 @@
 package sendcloud
 
 import (
+	"go.dtapp.net/library/utils/dorm"
 	"go.dtapp.net/library/utils/golog"
-	"go.dtapp.net/library/utils/gomongo"
 	"go.dtapp.net/library/utils/gorequest"
 	"gorm.io/gorm"
 )
 
 type ConfigClient struct {
-	ApiUser string          // API_USER
-	ApiKey  string          // API_KEY
-	MongoDb *gomongo.Client // 日志数据库
-	PgsqlDb *gorm.DB        // pgsql数据库
+	ApiUser string            // API_USER
+	ApiKey  string            // API_KEY
+	MongoDb *dorm.MongoClient // 日志数据库
+	PgsqlDb *gorm.DB          // pgsql数据库
 }
 
 type Client struct {

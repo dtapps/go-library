@@ -1,8 +1,8 @@
 package leshuazf
 
 import (
+	"go.dtapp.net/library/utils/dorm"
 	"go.dtapp.net/library/utils/golog"
-	"go.dtapp.net/library/utils/gomongo"
 	"go.dtapp.net/library/utils/gorequest"
 	"gorm.io/gorm"
 )
@@ -11,8 +11,8 @@ type ConfigClient struct {
 	AgentId     string // 服务商编号，由乐刷分配的接入方唯一标识，明文传输。
 	Environment string //  环境
 	KeyAgent    string
-	MongoDb     *gomongo.Client // 日志数据库
-	PgsqlDb     *gorm.DB        // pgsql数据库
+	MongoDb     *dorm.MongoClient // 日志数据库
+	PgsqlDb     *gorm.DB          // pgsql数据库
 }
 
 // Client 乐刷

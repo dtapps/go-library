@@ -1,8 +1,8 @@
 package eastiot
 
 import (
+	"go.dtapp.net/library/utils/dorm"
 	"go.dtapp.net/library/utils/golog"
-	"go.dtapp.net/library/utils/gomongo"
 	"go.dtapp.net/library/utils/gorequest"
 	"gorm.io/gorm"
 )
@@ -10,8 +10,8 @@ import (
 type ConfigClient struct {
 	AppId   string
 	ApiKey  string
-	Mongo   *gomongo.Client // 日志数据库
-	PgsqlDb *gorm.DB        // pgsql数据库
+	Mongo   *dorm.MongoClient // 日志数据库
+	PgsqlDb *gorm.DB          // pgsql数据库
 }
 
 type Client struct {

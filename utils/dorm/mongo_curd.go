@@ -1,4 +1,4 @@
-package gomongo
+package dorm
 
 import (
 	"context"
@@ -9,26 +9,26 @@ import (
 )
 
 // Database 设置库名
-func (c *Client) Database(database string) *Client {
-	c.DatabaseName = database
+func (c *MongoClient) Database(databaseName string) *MongoClient {
+	c.setDatabaseName(databaseName)
 	return c
 }
 
 // Collection 设置表名
-func (c *Client) Collection(collection string) *Client {
-	c.collectionName = collection
+func (c *MongoClient) Collection(collectionName string) *MongoClient {
+	c.setCollectionName(collectionName)
 	return c
 }
 
 // Model 传入模型自动获取库名和表名
-func (c *Client) Model(value interface{}) *Client {
+func (c *MongoClient) Model(value interface{}) *MongoClient {
 	// https://studygolang.com/articles/896
 	val := reflect.ValueOf(value)
 	if methodValue := val.MethodByName("Database"); methodValue.IsValid() {
-		c.DatabaseName = methodValue.Call(nil)[0].String()
+		c.setDatabaseName(methodValue.Call(nil)[0].String())
 	}
 	if methodValue := val.MethodByName("TableName"); methodValue.IsValid() {
-		c.collectionName = methodValue.Call(nil)[0].String()
+		c.setCollectionName(methodValue.Call(nil)[0].String())
 	}
 	return c
 }
@@ -40,8 +40,8 @@ type CreateResult struct {
 }
 
 // Create 创建数据
-func (c *Client) Create(values ...interface{}) (CreateResult, error) {
-	collection := c.db.Database(c.DatabaseName).Collection(c.collectionName)
+func (c *MongoClient) Create(values ...interface{}) (CreateResult, error) {
+	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
 
 	const (
 		insertTypeOne  = "one"
@@ -95,7 +95,7 @@ type queryFilter struct {
 }
 
 // Where 条件
-func (c *Client) Where(key string, value interface{}) *Client {
+func (c *MongoClient) Where(key string, value interface{}) *MongoClient {
 	log.Println("key", key)
 	log.Println("value", value)
 	c.filterArr = append(c.filterArr, queryFilter{key, value})
@@ -110,13 +110,13 @@ type QueryResult struct {
 }
 
 // First 获取第一条记录（主键升序）
-func (c *Client) First() *QueryResult {
+func (c *MongoClient) First() *QueryResult {
 	return &QueryResult{}
 }
 
 // Take 获取一条记录，没有指定排序字段
-func (c *Client) Take(v interface{}) *QueryResult {
-	collection := c.db.Database(c.DatabaseName).Collection(c.collectionName)
+func (c *MongoClient) Take(v interface{}) *QueryResult {
+	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
 	//log.Printf("c.filterArr：%s\n", c.filterArr)
 	//log.Printf("c.filterArr：%v\n", c.filterArr)
 	//log.Printf("c.filterArr：%+v\n", c.filterArr)
@@ -128,13 +128,13 @@ func (c *Client) Take(v interface{}) *QueryResult {
 }
 
 // Last 获取最后一条记录（主键降序）
-func (c *Client) Last() *QueryResult {
+func (c *MongoClient) Last() *QueryResult {
 	return &QueryResult{}
 }
 
 // Find 获取多条记录
-func (c *Client) Find(v interface{}) *QueryResult {
-	collection := c.db.Database(c.DatabaseName).Collection(c.collectionName)
+func (c *MongoClient) Find(v interface{}) *QueryResult {
+	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
 	log.Printf("c.filterArr：%s\n", c.filterArr)
 	log.Printf("c.filterArr：%v\n", c.filterArr)
 	log.Printf("c.filterArr：%+v\n", c.filterArr)

@@ -1,4 +1,4 @@
-package gomongo
+package dorm
 
 import (
 	"go.dtapp.net/library/utils/gotime"

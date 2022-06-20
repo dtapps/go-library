@@ -4,23 +4,27 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type ConfigMongoClient struct {
-	Dns string // 地址
+	Dns          string // 地址
+	DatabaseName string // 库名
 }
 
 type MongoClient struct {
-	Db     *mongo.Client      // 驱动
-	config *ConfigMongoClient // 配置
+	Db             *mongo.Client      // 驱动
+	config         *ConfigMongoClient // 配置
+	collectionName string             // 表名
+	filterArr      []queryFilter      // 查询条件数组
+	filter         bson.D             // 查询条件
 }
 
 func NewMongoClient(config *ConfigMongoClient) (*MongoClient, error) {
 
-	c := &MongoClient{}
-	c.config = config
+	c := &MongoClient{config: config}
 
 	// 连接到MongoDB
 	db, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(c.config.Dns))
@@ -35,10 +39,6 @@ func NewMongoClient(config *ConfigMongoClient) (*MongoClient, error) {
 	}
 
 	return c, nil
-}
-
-func (c *MongoClient) GetDb() *mongo.Client {
-	return c.Db
 }
 
 // Close 关闭

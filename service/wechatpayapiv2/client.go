@@ -1,8 +1,8 @@
 package wechatpayapiv2
 
 import (
+	"go.dtapp.net/library/utils/dorm"
 	"go.dtapp.net/library/utils/golog"
-	"go.dtapp.net/library/utils/gomongo"
 	"go.dtapp.net/library/utils/gorequest"
 	"gorm.io/gorm"
 )
@@ -14,8 +14,8 @@ type ConfigClient struct {
 	MchKey     string // 私钥
 	CertString string
 	KeyString  string
-	MongoDb    *gomongo.Client // 日志数据库
-	PgsqlDb    *gorm.DB        // pgsql数据库
+	MongoDb    *dorm.MongoClient // 日志数据库
+	PgsqlDb    *gorm.DB          // pgsql数据库
 }
 
 // Client 微信支付服务

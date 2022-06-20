@@ -1,8 +1,8 @@
 package pintoto
 
 import (
+	"go.dtapp.net/library/utils/dorm"
 	"go.dtapp.net/library/utils/golog"
-	"go.dtapp.net/library/utils/gomongo"
 	"go.dtapp.net/library/utils/gorequest"
 	"gorm.io/gorm"
 	"math"
@@ -12,8 +12,8 @@ import (
 type ConfigClient struct {
 	AppKey    string
 	AppSecret string
-	MongoDb   *gomongo.Client // 日志数据库
-	PgsqlDb   *gorm.DB        // pgsql数据库
+	MongoDb   *dorm.MongoClient // 日志数据库
+	PgsqlDb   *gorm.DB          // pgsql数据库
 }
 
 // Client 电影票服务

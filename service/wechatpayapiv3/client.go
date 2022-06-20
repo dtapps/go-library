@@ -1,22 +1,22 @@
 package wechatpayapiv3
 
 import (
+	"go.dtapp.net/library/utils/dorm"
 	"go.dtapp.net/library/utils/golog"
-	"go.dtapp.net/library/utils/gomongo"
 	"go.dtapp.net/library/utils/gorequest"
 	"gorm.io/gorm"
 )
 
 type ConfigClient struct {
-	AppId          string          // 小程序或者公众号唯一凭证
-	AppSecret      string          // 小程序或者公众号唯一凭证密钥
-	MchId          string          // 微信支付的商户id
-	AesKey         string          // 私钥
-	ApiV3          string          // API v3密钥
-	MchSslSerialNo string          // pem 证书号
-	MchSslKey      string          // pem key 内容
-	MongoDb        *gomongo.Client // 日志数据库
-	PgsqlDb        *gorm.DB        // pgsql数据库
+	AppId          string            // 小程序或者公众号唯一凭证
+	AppSecret      string            // 小程序或者公众号唯一凭证密钥
+	MchId          string            // 微信支付的商户id
+	AesKey         string            // 私钥
+	ApiV3          string            // API v3密钥
+	MchSslSerialNo string            // pem 证书号
+	MchSslKey      string            // pem key 内容
+	MongoDb        *dorm.MongoClient // 日志数据库
+	PgsqlDb        *gorm.DB          // pgsql数据库
 }
 
 // Client 微信支付直连商户

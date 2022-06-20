@@ -1,4 +1,4 @@
-package gomongo
+package dorm
 
 import (
 	"encoding/json"
