@@ -26,7 +26,7 @@ type SnsUserinfoResult struct {
 	Err    error               // 错误
 }
 
-func NewSnsUserinfoResult(result SnsUserinfoResponse, body []byte, http gorequest.Response, err error) *SnsUserinfoResult {
+func newSnsUserinfoResult(result SnsUserinfoResponse, body []byte, http gorequest.Response, err error) *SnsUserinfoResult {
 	return &SnsUserinfoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -34,9 +34,9 @@ func NewSnsUserinfoResult(result SnsUserinfoResponse, body []byte, http goreques
 // https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html#0
 func (c *Client) SnsUserinfo(accessToken, openid string) *SnsUserinfoResult {
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN", accessToken, openid), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN", accessToken, openid), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response SnsUserinfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewSnsUserinfoResult(response, request.ResponseBody, request, err)
+	return newSnsUserinfoResult(response, request.ResponseBody, request, err)
 }

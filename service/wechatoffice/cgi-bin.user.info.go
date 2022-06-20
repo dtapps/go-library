@@ -33,7 +33,7 @@ type CgiBinUserInfoResult struct {
 	Err    error                  // 错误
 }
 
-func NewCgiBinUserInfoResult(result CgiBinUserInfoResponse, body []byte, http gorequest.Response, err error) *CgiBinUserInfoResult {
+func newCgiBinUserInfoResult(result CgiBinUserInfoResponse, body []byte, http gorequest.Response, err error) *CgiBinUserInfoResult {
 	return &CgiBinUserInfoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -41,9 +41,9 @@ func NewCgiBinUserInfoResult(result CgiBinUserInfoResponse, body []byte, http go
 // https://developers.weixin.qq.com/doc/offiaccount/User_Management/Get_users_basic_information_UnionID.html#UinonId
 func (c *Client) CgiBinUserInfo(openid string) *CgiBinUserInfoResult {
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN", c.getAccessToken(), openid), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN", c.getAccessToken(), openid), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response CgiBinUserInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewCgiBinUserInfoResult(response, request.ResponseBody, request, err)
+	return newCgiBinUserInfoResult(response, request.ResponseBody, request, err)
 }

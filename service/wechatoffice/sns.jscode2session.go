@@ -22,15 +22,15 @@ type SnsJsCode2sessionResult struct {
 	Err    error                     // 错误
 }
 
-func NewSnsJsCode2sessionResult(result SnsJsCode2sessionResponse, body []byte, http gorequest.Response, err error) *SnsJsCode2sessionResult {
+func newSnsJsCode2sessionResult(result SnsJsCode2sessionResponse, body []byte, http gorequest.Response, err error) *SnsJsCode2sessionResult {
 	return &SnsJsCode2sessionResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 func (c *Client) SnsJsCode2session(jsCode string) *SnsJsCode2sessionResult {
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", c.getAppId(), c.getAppSecret(), jsCode), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", c.getAppId(), c.getAppSecret(), jsCode), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response SnsJsCode2sessionResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewSnsJsCode2sessionResult(response, request.ResponseBody, request, err)
+	return newSnsJsCode2sessionResult(response, request.ResponseBody, request, err)
 }

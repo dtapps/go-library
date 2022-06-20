@@ -22,7 +22,7 @@ type SnsOauth2AccessTokenResult struct {
 	Err    error                        // 错误
 }
 
-func NewSnsOauth2AccessTokenResult(result SnsOauth2AccessTokenResponse, body []byte, http gorequest.Response, err error) *SnsOauth2AccessTokenResult {
+func newSnsOauth2AccessTokenResult(result SnsOauth2AccessTokenResponse, body []byte, http gorequest.Response, err error) *SnsOauth2AccessTokenResult {
 	return &SnsOauth2AccessTokenResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -30,9 +30,9 @@ func NewSnsOauth2AccessTokenResult(result SnsOauth2AccessTokenResponse, body []b
 // https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html#0
 func (c *Client) SnsOauth2AccessToken(code string) *SnsOauth2AccessTokenResult {
 	// 请求
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code", c.getAppId(), c.getAppSecret(), code), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code", c.getAppId(), c.getAppSecret(), code), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response SnsOauth2AccessTokenResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewSnsOauth2AccessTokenResult(response, request.ResponseBody, request, err)
+	return newSnsOauth2AccessTokenResult(response, request.ResponseBody, request, err)
 }

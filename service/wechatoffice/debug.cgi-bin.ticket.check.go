@@ -19,7 +19,7 @@ type DebugCgiBinTicketCheckResult struct {
 	Err    error                          // 错误
 }
 
-func NewDebugCgiBinTicketCheckResult(result DebugCgiBinTicketCheckResponse, body []byte, http gorequest.Response, err error) *DebugCgiBinTicketCheckResult {
+func newDebugCgiBinTicketCheckResult(result DebugCgiBinTicketCheckResponse, body []byte, http gorequest.Response, err error) *DebugCgiBinTicketCheckResult {
 	return &DebugCgiBinTicketCheckResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -31,5 +31,5 @@ func (c *Client) DebugCgiBinTicketCheck() *DebugCgiBinTicketCheckResult {
 	// 定义
 	var response DebugCgiBinTicketCheckResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewDebugCgiBinTicketCheckResult(response, request.ResponseBody, request, err)
+	return newDebugCgiBinTicketCheckResult(response, request.ResponseBody, request, err)
 }

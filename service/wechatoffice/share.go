@@ -22,7 +22,7 @@ type ShareResult struct {
 	Err    error         // 错误
 }
 
-func NewShareResult(result ShareResponse, err error) *ShareResult {
+func newShareResult(result ShareResponse, err error) *ShareResult {
 	return &ShareResult{Result: result, Err: err}
 }
 
@@ -38,5 +38,5 @@ func (c *Client) Share(url string) *ShareResult {
 	t := sha1.New()
 	_, err := io.WriteString(t, response.RawString)
 	response.Signature = fmt.Sprintf("%x", t.Sum(nil))
-	return NewShareResult(response, err)
+	return newShareResult(response, err)
 }

@@ -21,7 +21,7 @@ type CgiBinTicketGetTicketResult struct {
 	Err    error                         // 错误
 }
 
-func NewCgiBinTicketGetTicketResult(result CgiBinTicketGetTicketResponse, body []byte, http gorequest.Response, err error) *CgiBinTicketGetTicketResult {
+func newCgiBinTicketGetTicketResult(result CgiBinTicketGetTicketResponse, body []byte, http gorequest.Response, err error) *CgiBinTicketGetTicketResult {
 	return &CgiBinTicketGetTicketResult{Result: result, Body: body, Http: http, Err: err}
 }
 
@@ -29,9 +29,9 @@ func NewCgiBinTicketGetTicketResult(result CgiBinTicketGetTicketResponse, body [
 // https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html
 func (c *Client) CgiBinTicketGetTicket(Type string) *CgiBinTicketGetTicketResult {
 	// request
-	request, err := c.request(fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=%s", c.getAccessToken(), Type), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/ticket/getticket?access_token=%s&type=%s", c.getAccessToken(), Type), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response CgiBinTicketGetTicketResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewCgiBinTicketGetTicketResult(response, request.ResponseBody, request, err)
+	return newCgiBinTicketGetTicketResult(response, request.ResponseBody, request, err)
 }
