@@ -1,6 +1,7 @@
 package golog
 
 import (
+	"errors"
 	"go.dtapp.net/library/utils/goip"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
@@ -11,13 +12,13 @@ import (
 	"unicode/utf8"
 )
 
-type ApiConfig struct {
+type ConfigApiClient struct {
 	Db        *gorm.DB // 驱动
 	TableName string   // 表名
 }
 
-// Api 接口
-type Api struct {
+// ApiClient 接口
+type ApiClient struct {
 	db        *gorm.DB // pgsql数据库
 	tableName string   // 日志表名
 	insideIp  string   // 内网ip
@@ -25,25 +26,30 @@ type Api struct {
 	goVersion string   // go版本
 }
 
-// NewApi 创建接口实例化
-func NewApi(config *ApiConfig) *Api {
-	app := &Api{}
+// NewApiClient 创建接口实例化
+func NewApiClient(config *ConfigApiClient) (*ApiClient, error) {
+
+	c := &ApiClient{}
 	if config.Db == nil {
-		panic("驱动不正常")
+		return nil, errors.New("驱动不正常")
 	}
 	if config.TableName == "" {
-		panic("表名不能为空")
+		return nil, errors.New("表名不能为空")
 	}
 	hostname, _ := os.Hostname()
 
-	app.db = config.Db
-	app.tableName = config.TableName
-	app.hostname = hostname
-	app.insideIp = goip.GetInsideIp()
-	app.goVersion = strings.TrimPrefix(runtime.Version(), "go")
+	c.db = config.Db
+	c.tableName = config.TableName
+	c.hostname = hostname
+	c.insideIp = goip.GetInsideIp()
+	c.goVersion = strings.TrimPrefix(runtime.Version(), "go")
 
-	app.AutoMigrate()
-	return app
+	err := c.db.Table(c.tableName).AutoMigrate(&ApiPostgresqlLog{})
+	if err != nil {
+		return nil, errors.New("创建表失败：" + err.Error())
+	}
+
+	return c, nil
 }
 
 // ApiPostgresqlLog 结构体
@@ -66,33 +72,21 @@ type ApiPostgresqlLog struct {
 	GoVersion             string         `gorm:"type:text" json:"go_version"`                //【程序】Go版本
 }
 
-// AutoMigrate 自动迁移
-func (p *Api) AutoMigrate() {
-	err := p.db.Table(p.tableName).AutoMigrate(&ApiPostgresqlLog{})
-	if err != nil {
-		panic("创建表失败：" + err.Error())
-	}
-}
-
 // Record 记录日志
-func (p *Api) Record(content ApiPostgresqlLog) *gorm.DB {
+func (c *ApiClient) Record(content ApiPostgresqlLog) *gorm.DB {
 	if utf8.ValidString(string(content.ResponseBody)) == false {
 		log.Println("内容格式无法记录")
-		return p.db
+		content.ResponseBody = datatypes.JSON("")
 	}
-	content.SystemHostName = p.hostname
+	content.SystemHostName = c.hostname
 	if content.SystemInsideIp == "" {
-		content.SystemInsideIp = p.insideIp
+		content.SystemInsideIp = c.insideIp
 	}
-	content.GoVersion = p.goVersion
-	resp := p.db.Table(p.tableName).Create(&content)
-	if resp.RowsAffected == 0 {
-		log.Println("Api：", resp.Error)
-	}
-	return resp
+	content.GoVersion = c.goVersion
+	return c.db.Table(c.tableName).Create(&content)
 }
 
 // Query 查询
-func (p *Api) Query() *gorm.DB {
-	return p.db.Table(p.tableName)
+func (c *ApiClient) Query() *gorm.DB {
+	return c.db.Table(c.tableName)
 }

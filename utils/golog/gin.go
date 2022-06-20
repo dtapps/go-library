@@ -1,22 +1,22 @@
 package golog
 
 import (
+	"errors"
 	"go.dtapp.net/library/utils/goip"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
-	"log"
 	"os"
 	"runtime"
 	"strings"
 )
 
-type GinConfig struct {
+type ConfigGinClient struct {
 	Db        *gorm.DB // 驱动
 	TableName string   // 表名
 }
 
-// Gin 框架
-type Gin struct {
+// GinClient 框架
+type GinClient struct {
 	db        *gorm.DB // pgsql数据库
 	tableName string   // 日志表名
 	insideIp  string   // 内网ip
@@ -24,25 +24,30 @@ type Gin struct {
 	goVersion string   // go版本
 }
 
-// NewGin 创建框架实例化
-func NewGin(config *GinConfig) *Gin {
-	app := &Gin{}
+// NewGinClient 创建框架实例化
+func NewGinClient(config *ConfigGinClient) (*GinClient, error) {
+
+	c := &GinClient{}
 	if config.Db == nil {
-		panic("驱动不正常")
+		return nil, errors.New("驱动不正常")
 	}
 	if config.TableName == "" {
-		panic("表名不能为空")
+		return nil, errors.New("表名不能为空")
 	}
 	hostname, _ := os.Hostname()
 
-	app.db = config.Db
-	app.tableName = config.TableName
-	app.hostname = hostname
-	app.insideIp = goip.GetInsideIp()
-	app.goVersion = strings.TrimPrefix(runtime.Version(), "go")
+	c.db = config.Db
+	c.tableName = config.TableName
+	c.hostname = hostname
+	c.insideIp = goip.GetInsideIp()
+	c.goVersion = strings.TrimPrefix(runtime.Version(), "go")
 
-	app.AutoMigrate()
-	return app
+	err := c.db.Table(c.tableName).AutoMigrate(&GinPostgresqlLog{})
+	if err != nil {
+		return nil, errors.New("创建表失败：" + err.Error())
+	}
+
+	return c, nil
 }
 
 // GinPostgresqlLog 结构体
@@ -76,29 +81,17 @@ type GinPostgresqlLog struct {
 	GoVersion         string         `gorm:"type:text" json:"go_version"`           //【程序】Go版本
 }
 
-// AutoMigrate 自动迁移
-func (p *Gin) AutoMigrate() {
-	err := p.db.Table(p.tableName).AutoMigrate(&GinPostgresqlLog{})
-	if err != nil {
-		panic("创建表失败：" + err.Error())
-	}
-}
-
 // Record 记录日志
-func (p *Gin) Record(content GinPostgresqlLog) *gorm.DB {
-	content.SystemHostName = p.hostname
+func (c *GinClient) Record(content GinPostgresqlLog) *gorm.DB {
+	content.SystemHostName = c.hostname
 	if content.SystemInsideIp == "" {
-		content.SystemInsideIp = p.insideIp
+		content.SystemInsideIp = c.insideIp
 	}
-	content.GoVersion = p.goVersion
-	resp := p.db.Table(p.tableName).Create(&content)
-	if resp.RowsAffected == 0 {
-		log.Println("Gin：", resp.Error)
-	}
-	return resp
+	content.GoVersion = c.goVersion
+	return c.db.Table(c.tableName).Create(&content)
 }
 
 // Query 查询
-func (p *Gin) Query() *gorm.DB {
-	return p.db.Table(p.tableName)
+func (c *GinClient) Query() *gorm.DB {
+	return c.db.Table(c.tableName)
 }
