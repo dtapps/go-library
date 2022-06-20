@@ -29,19 +29,19 @@ type TbkShopGetResult struct {
 	Err    error              // 错误
 }
 
-func NewTbkShopGetResult(result TbkShopGetResponse, body []byte, http gorequest.Response, err error) *TbkShopGetResult {
+func newTbkShopGetResult(result TbkShopGetResponse, body []byte, http gorequest.Response, err error) *TbkShopGetResult {
 	return &TbkShopGetResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // TbkShopGet 淘宝客-推广者-店铺搜索
 // https://open.taobao.com/api.htm?docId=24521&docType=2
-func (app *App) TbkShopGet(notMustParams ...Params) *TbkShopGetResult {
+func (c *Client) TbkShopGet(notMustParams ...Params) *TbkShopGetResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.shop.get", notMustParams...)
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var response TbkShopGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewTbkShopGetResult(response, request.ResponseBody, request, err)
+	return newTbkShopGetResult(response, request.ResponseBody, request, err)
 }

@@ -52,19 +52,19 @@ type TbkItemInfoGetResult struct {
 	Err    error                  // 错误
 }
 
-func NewTbkItemInfoGetResult(result TbkItemInfoGetResponse, body []byte, http gorequest.Response, err error) *TbkItemInfoGetResult {
+func newTbkItemInfoGetResult(result TbkItemInfoGetResponse, body []byte, http gorequest.Response, err error) *TbkItemInfoGetResult {
 	return &TbkItemInfoGetResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // TbkItemInfoGet 淘宝客-公用-淘宝客商品详情查询(简版)
 // https://open.taobao.com/api.htm?docId=24518&docType=2&source=search
-func (app *App) TbkItemInfoGet(notMustParams ...Params) *TbkItemInfoGetResult {
+func (c *Client) TbkItemInfoGet(notMustParams ...Params) *TbkItemInfoGetResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.item.info.get", notMustParams...)
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var response TbkItemInfoGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewTbkItemInfoGetResult(response, request.ResponseBody, request, err)
+	return newTbkItemInfoGetResult(response, request.ResponseBody, request, err)
 }

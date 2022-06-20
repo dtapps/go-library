@@ -2,7 +2,7 @@ package sendcloud
 
 import "go.dtapp.net/library/utils/gorequest"
 
-func (c *Client) request(url string, params map[string]interface{}, method string) (resp gorequest.Response, err error) {
+func (c *Client) request(url string, params map[string]interface{}, method string) (gorequest.Response, error) {
 	// 公共参数
 	//params["userid"] = c.userId
 	//params["pwd"] = c.pwd

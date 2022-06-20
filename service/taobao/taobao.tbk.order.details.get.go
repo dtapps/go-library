@@ -76,19 +76,19 @@ type TbkOrderDetailsGetResult struct {
 	Err    error                      // 错误
 }
 
-func NewTbkOrderDetailsGetResult(result TbkOrderDetailsGetResponse, body []byte, http gorequest.Response, err error) *TbkOrderDetailsGetResult {
+func newTbkOrderDetailsGetResult(result TbkOrderDetailsGetResponse, body []byte, http gorequest.Response, err error) *TbkOrderDetailsGetResult {
 	return &TbkOrderDetailsGetResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // TbkOrderDetailsGet 淘宝客-推广者-所有订单查询
 // https://open.taobao.com/api.htm?docId=43328&docType=2&scopeId=16175
-func (app *App) TbkOrderDetailsGet(notMustParams ...Params) *TbkOrderDetailsGetResult {
+func (c *Client) TbkOrderDetailsGet(notMustParams ...Params) *TbkOrderDetailsGetResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.order.details.get", notMustParams...)
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var response TbkOrderDetailsGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewTbkOrderDetailsGetResult(response, request.ResponseBody, request, err)
+	return newTbkOrderDetailsGetResult(response, request.ResponseBody, request, err)
 }

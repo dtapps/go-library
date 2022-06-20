@@ -52,19 +52,19 @@ type TbkCouponGetResult struct {
 	Err    error                // 错误
 }
 
-func NewTbkCouponGetResult(result TbkCouponGetResponse, body []byte, http gorequest.Response, err error) *TbkCouponGetResult {
+func newTbkCouponGetResult(result TbkCouponGetResponse, body []byte, http gorequest.Response, err error) *TbkCouponGetResult {
 	return &TbkCouponGetResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // TbkCouponGet 淘宝客-公用-阿里妈妈推广券详情查询
 // https://open.taobao.com/api.htm?docId=31106&docType=2
-func (app *App) TbkCouponGet(notMustParams ...Params) *TbkCouponGetResult {
+func (c *Client) TbkCouponGet(notMustParams ...Params) *TbkCouponGetResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.coupon.get", notMustParams...)
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var response TbkCouponGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewTbkCouponGetResult(response, request.ResponseBody, request, err)
+	return newTbkCouponGetResult(response, request.ResponseBody, request, err)
 }

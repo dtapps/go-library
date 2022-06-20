@@ -25,19 +25,19 @@ type TbkSpreadGetResult struct {
 	Err    error                // 错误
 }
 
-func NewTbkSpreadGetResult(result TbkSpreadGetResponse, body []byte, http gorequest.Response, err error) *TbkSpreadGetResult {
+func newTbkSpreadGetResult(result TbkSpreadGetResponse, body []byte, http gorequest.Response, err error) *TbkSpreadGetResult {
 	return &TbkSpreadGetResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // TbkSpreadGet 淘宝客-公用-长链转短链
 // https://open.taobao.com/api.htm?docId=27832&docType=2&source=search
-func (app *App) TbkSpreadGet(notMustParams ...Params) *TbkSpreadGetResult {
+func (c *Client) TbkSpreadGet(notMustParams ...Params) *TbkSpreadGetResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.spread.get", notMustParams...)
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var response TbkSpreadGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewTbkSpreadGetResult(response, request.ResponseBody, request, err)
+	return newTbkSpreadGetResult(response, request.ResponseBody, request, err)
 }

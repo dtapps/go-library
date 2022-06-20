@@ -71,20 +71,20 @@ type TbkDgMaterialOptionalResult struct {
 	Err    error                         // 错误
 }
 
-func NewTbkDgMaterialOptionalResult(result TbkDgMaterialOptionalResponse, body []byte, http gorequest.Response, err error) *TbkDgMaterialOptionalResult {
+func newTbkDgMaterialOptionalResult(result TbkDgMaterialOptionalResponse, body []byte, http gorequest.Response, err error) *TbkDgMaterialOptionalResult {
 	return &TbkDgMaterialOptionalResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // TbkDgMaterialOptional 淘宝客-推广者-物料搜索
 // https://open.taobao.com/api.htm?docId=35896&docType=2&source=search
-func (app *App) TbkDgMaterialOptional(notMustParams ...Params) *TbkDgMaterialOptionalResult {
+func (c *Client) TbkDgMaterialOptional(notMustParams ...Params) *TbkDgMaterialOptionalResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.dg.material.optional", notMustParams...)
-	params.Set("adzone_id", app.adzoneId)
+	params.Set("adzone_id", c.GetAdzoneId())
 	// 请求
-	request, err := app.request(params)
+	request, err := c.request(params)
 	// 定义
 	var response TbkDgMaterialOptionalResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewTbkDgMaterialOptionalResult(response, request.ResponseBody, request, err)
+	return newTbkDgMaterialOptionalResult(response, request.ResponseBody, request, err)
 }
