@@ -16,8 +16,6 @@ import (
 	"time"
 )
 
-var userAgentFormat = "DtApp-Request/%s GO/%s"
-
 // Response 返回内容
 type Response struct {
 	RequestUri            string      //【请求】链接
@@ -46,13 +44,6 @@ type App struct {
 	debug           bool             // 是否开启调试模式
 	p12Cert         *tls.Certificate // p12证书内容
 }
-
-// 定义
-var (
-	httpParamsModeJson = "JSON"
-	httpParamsModeXml  = "XML"
-	httpParamsModeForm = "FORM"
-)
 
 // NewHttp 实例化
 func NewHttp() *App {
