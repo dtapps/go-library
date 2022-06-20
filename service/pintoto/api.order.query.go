@@ -40,20 +40,20 @@ type ApiOrderQueryResult struct {
 	Err    error                 // 错误
 }
 
-func NewApiOrderQueryResult(result ApiOrderQueryResponse, body []byte, http gorequest.Response, err error) *ApiOrderQueryResult {
+func newApiOrderQueryResult(result ApiOrderQueryResponse, body []byte, http gorequest.Response, err error) *ApiOrderQueryResult {
 	return &ApiOrderQueryResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // ApiOrderQuery 订单查询 https://www.showdoc.com.cn/1154868044931571/5965244588489845
-func (app *App) ApiOrderQuery(thirdOrderId string) *ApiOrderQueryResult {
+func (c *Client) ApiOrderQuery(thirdOrderId string) *ApiOrderQueryResult {
 	// 测试
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("thirdOrderId", thirdOrderId)
-	params := app.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := app.request("https://movieapi2.pintoto.cn/api/order/query", params)
+	request, err := c.request(apiUrl+"/api/order/query", params)
 	// 定义
 	var response ApiOrderQueryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewApiOrderQueryResult(response, request.ResponseBody, request, err)
+	return newApiOrderQueryResult(response, request.ResponseBody, request, err)
 }

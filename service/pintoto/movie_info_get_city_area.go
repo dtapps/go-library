@@ -24,20 +24,20 @@ type GetCityAreaResult struct {
 	Err    error               // 错误
 }
 
-func NewGetCityAreaResult(result GetCityAreaResponse, body []byte, http gorequest.Response, err error) *GetCityAreaResult {
+func newGetCityAreaResult(result GetCityAreaResponse, body []byte, http gorequest.Response, err error) *GetCityAreaResult {
 	return &GetCityAreaResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // GetCityArea 城市下区域
 // https://www.showdoc.com.cn/1154868044931571/6243539682553126
-func (app *App) GetCityArea(cityId int) *GetCityAreaResult {
+func (c *Client) GetCityArea(cityId int) *GetCityAreaResult {
 	// 测试
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("cityId", cityId)
-	params := app.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-city-area", params)
+	request, err := c.request(apiUrl+"/movieapi/movie-info/get-city-area", params)
 	var response GetCityAreaResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewGetCityAreaResult(response, request.ResponseBody, request, err)
+	return newGetCityAreaResult(response, request.ResponseBody, request, err)
 }

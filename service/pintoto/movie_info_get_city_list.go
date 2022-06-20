@@ -27,15 +27,15 @@ type GetCityListResult struct {
 	Err    error               // 错误
 }
 
-func NewGetCityListResult(result GetCityListResponse, body []byte, http gorequest.Response, err error) *GetCityListResult {
+func newGetCityListResult(result GetCityListResponse, body []byte, http gorequest.Response, err error) *GetCityListResult {
 	return &GetCityListResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // GetCityList 城市列表
 // https://www.showdoc.com.cn/1154868044931571/5865562425538244
-func (app *App) GetCityList() *GetCityListResult {
-	request, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-city-list", map[string]interface{}{})
+func (c *Client) GetCityList() *GetCityListResult {
+	request, err := c.request(apiUrl+"/movieapi/movie-info/get-city-list", map[string]interface{}{})
 	var response GetCityListResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewGetCityListResult(response, request.ResponseBody, request, err)
+	return newGetCityListResult(response, request.ResponseBody, request, err)
 }

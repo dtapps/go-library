@@ -18,18 +18,18 @@ type ApiOrderCreateResult struct {
 	Err    error                  // 错误
 }
 
-func NewApiOrderCreateResult(result ApiOrderCreateResponse, body []byte, http gorequest.Response, err error) *ApiOrderCreateResult {
+func newApiOrderCreateResult(result ApiOrderCreateResponse, body []byte, http gorequest.Response, err error) *ApiOrderCreateResult {
 	return &ApiOrderCreateResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // ApiOrderCreate 下单api https://www.showdoc.com.cn/1154868044931571/5891022916496848
-func (app *App) ApiOrderCreate(notMustParams ...Params) *ApiOrderCreateResult {
+func (c *Client) ApiOrderCreate(notMustParams ...gorequest.Params) *ApiOrderCreateResult {
 	// 参数
-	params := app.NewParamsWith(notMustParams...)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := app.request("https://movieapi2.pintoto.cn/api/order/create", params)
+	request, err := c.request(apiUrl+"/api/order/create", params)
 	// 定义
 	var response ApiOrderCreateResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewApiOrderCreateResult(response, request.ResponseBody, request, err)
+	return newApiOrderCreateResult(response, request.ResponseBody, request, err)
 }

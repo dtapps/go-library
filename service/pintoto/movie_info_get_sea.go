@@ -38,21 +38,21 @@ type GetSeatResult struct {
 	Err    error              // 错误
 }
 
-func NewGetSeatResult(result GetSeatResponse, body []byte, http gorequest.Response, err error) *GetSeatResult {
+func newGetSeatResult(result GetSeatResponse, body []byte, http gorequest.Response, err error) *GetSeatResult {
 	return &GetSeatResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // GetSeat 座位 https://www.showdoc.com.cn/1154868044931571/5866824368760475
-func (app *App) GetSeat(showId string) *GetSeatResult {
+func (c *Client) GetSeat(showId string) *GetSeatResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("showId", showId)
 	// 转换
-	params := app.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-seat", params)
+	request, err := c.request(apiUrl+"/movieapi/movie-info/get-seat", params)
 	// 定义
 	var response GetSeatResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewGetSeatResult(response, request.ResponseBody, request, err)
+	return newGetSeatResult(response, request.ResponseBody, request, err)
 }

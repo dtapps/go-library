@@ -41,21 +41,21 @@ type GetScheduleListResult struct {
 	Err    error                   // 错误
 }
 
-func NewGetScheduleListResult(result GetScheduleListResponse, body []byte, http gorequest.Response, err error) *GetScheduleListResult {
+func newGetScheduleListResult(result GetScheduleListResponse, body []byte, http gorequest.Response, err error) *GetScheduleListResult {
 	return &GetScheduleListResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // GetScheduleList 场次排期 https://www.showdoc.com.cn/1154868044931571/5866708808899217
-func (app *App) GetScheduleList(cinemaId int) *GetScheduleListResult {
+func (c *Client) GetScheduleList(cinemaId int) *GetScheduleListResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("cinemaId", cinemaId)
 	// 转换
-	params := app.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-schedule-list", params)
+	request, err := c.request(apiUrl+"/movieapi/movie-info/get-schedule-list", params)
 	// 定义
 	var response GetScheduleListResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewGetScheduleListResult(response, request.ResponseBody, request, err)
+	return newGetScheduleListResult(response, request.ResponseBody, request, err)
 }

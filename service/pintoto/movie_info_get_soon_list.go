@@ -37,21 +37,21 @@ type GetSoonListResult struct {
 	Err    error               // 错误
 }
 
-func NewGetSoonListResult(result GetSoonListResponse, body []byte, http gorequest.Response, err error) *GetSoonListResult {
+func newGetSoonListResult(result GetSoonListResponse, body []byte, http gorequest.Response, err error) *GetSoonListResult {
 	return &GetSoonListResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // GetSoonList 即将上映 https://www.showdoc.com.cn/1154868044931571/5866125707634369
-func (app *App) GetSoonList(cityId int) *GetSoonListResult {
+func (c *Client) GetSoonList(cityId int) *GetSoonListResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("cityId", cityId)
 	// 转换
-	params := app.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-soon-list", params)
+	request, err := c.request(apiUrl+"/movieapi/movie-info/get-soon-list", params)
 	// 定义
 	var response GetSoonListResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewGetSoonListResult(response, request.ResponseBody, request, err)
+	return newGetSoonListResult(response, request.ResponseBody, request, err)
 }

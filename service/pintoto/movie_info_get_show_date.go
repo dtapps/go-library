@@ -21,22 +21,22 @@ type GetShowDateResult struct {
 	Err    error               // 错误
 }
 
-func NewGetShowDateResult(result GetShowDateResponse, body []byte, http gorequest.Response, err error) *GetShowDateResult {
+func newGetShowDateResult(result GetShowDateResponse, body []byte, http gorequest.Response, err error) *GetShowDateResult {
 	return &GetShowDateResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // GetShowDate 包含某电影的日期 https://www.showdoc.com.cn/1154868044931571/6091788579441818
-func (app *App) GetShowDate(cityId, filmId int) *GetShowDateResult {
+func (c *Client) GetShowDate(cityId, filmId int) *GetShowDateResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("cityId", cityId)
 	param.Set("filmId", filmId)
 	// 转换
-	params := app.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-show-date", params)
+	request, err := c.request(apiUrl+"/movieapi/movie-info/get-show-date", params)
 	// 定义
 	var response GetShowDateResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewGetShowDateResult(response, request.ResponseBody, request, err)
+	return newGetShowDateResult(response, request.ResponseBody, request, err)
 }

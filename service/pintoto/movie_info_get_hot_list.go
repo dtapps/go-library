@@ -37,21 +37,21 @@ type GetHotListResult struct {
 	Err    error              // 错误
 }
 
-func NewGetHotListResult(result GetHotListResponse, body []byte, http gorequest.Response, err error) *GetHotListResult {
+func newGetHotListResult(result GetHotListResponse, body []byte, http gorequest.Response, err error) *GetHotListResult {
 	return &GetHotListResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // GetHotList 正在热映 https://www.showdoc.com.cn/1154868044931571/5866125707634369
-func (app *App) GetHotList(cityId int) *GetHotListResult {
+func (c *Client) GetHotList(cityId int) *GetHotListResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("cityId", cityId)
 	// 转换
-	params := app.NewParamsWith(param)
+	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-hot-list", params)
+	request, err := c.request(apiUrl+"/movieapi/movie-info/get-hot-list", params)
 	// 定义
 	var response GetHotListResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewGetHotListResult(response, request.ResponseBody, request, err)
+	return newGetHotListResult(response, request.ResponseBody, request, err)
 }

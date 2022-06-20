@@ -43,12 +43,12 @@ type GetShowListResult struct {
 	Err    error               // 错误
 }
 
-func NewGetShowListResult(result GetShowListResponse, body []byte, http gorequest.Response, err error) *GetShowListResult {
+func newGetShowListResult(result GetShowListResponse, body []byte, http gorequest.Response, err error) *GetShowListResult {
 	return &GetShowListResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // GetShowList 包含某电影的影院 https://www.showdoc.com.cn/1154868044931571/6067372188376779
-func (app *App) GetShowList(param GetShowList) *GetShowListResult {
+func (c *Client) GetShowList(param GetShowList) *GetShowListResult {
 	// api params
 	params := map[string]interface{}{}
 	b, _ := json.Marshal(&param)
@@ -57,9 +57,9 @@ func (app *App) GetShowList(param GetShowList) *GetShowListResult {
 	for k, v := range m {
 		params[k] = v
 	}
-	request, err := app.request("https://movieapi2.pintoto.cn/movieapi/movie-info/get-show-list", params)
+	request, err := c.request(apiUrl+"/movieapi/movie-info/get-show-list", params)
 	// 定义
 	var response GetShowListResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return NewGetShowListResult(response, request.ResponseBody, request, err)
+	return newGetShowListResult(response, request.ResponseBody, request, err)
 }

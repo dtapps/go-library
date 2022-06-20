@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-func (app *App) getSign(appSecret string, p map[string]interface{}) string {
+func (c *Client) getSign(appSecret string, p map[string]interface{}) string {
 	var keys []string
 	for k := range p {
 		keys = append(keys, k)
@@ -17,7 +17,7 @@ func (app *App) getSign(appSecret string, p map[string]interface{}) string {
 	sort.Strings(keys)
 	signStr := ""
 	for _, key := range keys {
-		signStr += fmt.Sprintf("%s=%s&", key, app.getString(p[key]))
+		signStr += fmt.Sprintf("%s=%s&", key, c.getString(p[key]))
 	}
 	signStr += fmt.Sprintf("appSecret=%s", appSecret)
 	// md5加密
@@ -26,7 +26,7 @@ func (app *App) getSign(appSecret string, p map[string]interface{}) string {
 	return fmt.Sprintf("%x", has)
 }
 
-func (app *App) getString(i interface{}) string {
+func (c *Client) getString(i interface{}) string {
 	switch v := i.(type) {
 	case string:
 		return v
@@ -41,12 +41,12 @@ func (app *App) getString(i interface{}) string {
 }
 
 // 获取请求数据
-func (app *App) getRequestData(params map[string]interface{}) string {
+func (c *Client) getRequestData(params map[string]interface{}) string {
 	// 公共参数
 	args := url.Values{}
 	// 请求参数
 	for key, val := range params {
-		args.Set(key, app.getString(val))
+		args.Set(key, c.getString(val))
 	}
 	return args.Encode()
 }
