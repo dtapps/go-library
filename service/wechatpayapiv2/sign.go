@@ -9,7 +9,7 @@ import (
 )
 
 // 支付字符串拼接
-func (app *App) getSortString(m map[string]interface{}) string {
+func (c *Client) getSortString(m map[string]interface{}) string {
 	var buf bytes.Buffer
 	keys := make([]string, 0, len(m))
 	for k := range m {
@@ -32,14 +32,14 @@ func (app *App) getSortString(m map[string]interface{}) string {
 }
 
 // 获取签名
-func (app *App) getMd5Sign(paramMap map[string]interface{}) string {
-	sortString := app.getSortString(paramMap)
-	sign := gomd5.Md5(sortString + "&key=" + app.mchKey)
+func (c *Client) getMd5Sign(paramMap map[string]interface{}) string {
+	sortString := c.getSortString(paramMap)
+	sign := gomd5.Md5(sortString + "&key=" + c.GetMchKey())
 	return strings.ToUpper(sign)
 }
 
 // 验证签名
-func (app *App) checkMd5Sign(rspMap map[string]interface{}, sign string) bool {
-	calculateSign := app.getMd5Sign(rspMap)
+func (c *Client) checkMd5Sign(rspMap map[string]interface{}, sign string) bool {
+	calculateSign := c.getMd5Sign(rspMap)
 	return calculateSign == sign
 }

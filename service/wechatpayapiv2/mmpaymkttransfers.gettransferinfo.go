@@ -33,27 +33,27 @@ type TransfersQueryResult struct {
 	Err    error                  // 错误
 }
 
-func NewTransfersQueryResult(result TransfersQueryResponse, body []byte, http gorequest.Response, err error) *TransfersQueryResult {
+func newTransfersQueryResult(result TransfersQueryResponse, body []byte, http gorequest.Response, err error) *TransfersQueryResult {
 	return &TransfersQueryResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // TransfersQuery
 // 付款到零钱 - 查询付款
 // https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_3
-func (app *App) TransfersQuery(partnerTradeNo string) *TransfersQueryResult {
-	cert, err := app.P12ToPem()
+func (c *Client) TransfersQuery(partnerTradeNo string) *TransfersQueryResult {
+	cert, err := c.P12ToPem()
 	// 参数
 	params := NewParams()
-	params.Set("appid", app.appId)
-	params.Set("mch_id", app.mchId)
+	params.Set("appid", c.GetAppId())
+	params.Set("mch_id", c.GetMchId())
 	params.Set("nonce_str", gorandom.Alphanumeric(32))
 	params.Set("partner_trade_no", partnerTradeNo)
 	// 签名
-	params.Set("sign", app.getMd5Sign(params))
+	params.Set("sign", c.getMd5Sign(params))
 	// 	请求
-	request, err := app.request("https://api.mch.weixin.qq.com/mmpaymkttransfers/gettransferinfo", params, cert)
+	request, err := c.request(apiUrl+"/mmpaymkttransfers/gettransferinfo", params, cert)
 	// 定义
 	var response TransfersQueryResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return NewTransfersQueryResult(response, request.ResponseBody, request, err)
+	return newTransfersQueryResult(response, request.ResponseBody, request, err)
 }

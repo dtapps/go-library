@@ -28,19 +28,19 @@ type TransfersResult struct {
 	Err    error              // 错误
 }
 
-func NewTransfersResult(result TransfersResponse, body []byte, http gorequest.Response, err error) *TransfersResult {
+func newTransfersResult(result TransfersResponse, body []byte, http gorequest.Response, err error) *TransfersResult {
 	return &TransfersResult{Result: result, Body: body, Http: http, Err: err}
 }
 
 // Transfers
 // 付款到零钱 - 付款
 // https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_2
-func (app *App) Transfers(partnerTradeNo, openid string, amount int64, desc string) *TransfersResult {
-	cert, err := app.P12ToPem()
+func (c *Client) Transfers(partnerTradeNo, openid string, amount int64, desc string) *TransfersResult {
+	cert, err := c.P12ToPem()
 	// 参数
 	params := NewParams()
-	params.Set("mch_appid", app.appId)
-	params.Set("mchid", app.mchId)
+	params.Set("mch_appid", c.GetAppId())
+	params.Set("mchid", c.GetMchId())
 	params.Set("nonce_str", gorandom.Alphanumeric(32))
 	params.Set("partner_trade_no", partnerTradeNo)
 	params.Set("openid", openid)
@@ -48,11 +48,11 @@ func (app *App) Transfers(partnerTradeNo, openid string, amount int64, desc stri
 	params.Set("amount", amount)
 	params.Set("desc", desc)
 	// 签名
-	params.Set("sign", app.getMd5Sign(params))
+	params.Set("sign", c.getMd5Sign(params))
 	// 	请求
-	request, err := app.request("https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers", params, cert)
+	request, err := c.request(apiUrl+"/mmpaymkttransfers/promotion/transfers", params, cert)
 	// 定义
 	var response TransfersResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return NewTransfersResult(response, request.ResponseBody, request, err)
+	return newTransfersResult(response, request.ResponseBody, request, err)
 }

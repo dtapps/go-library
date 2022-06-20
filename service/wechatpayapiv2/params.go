@@ -15,7 +15,7 @@ func NewParams() Params {
 	return p
 }
 
-func (app *App) NewParamsWith(params ...Params) Params {
+func (c *Client) NewParamsWith(params ...Params) Params {
 	p := make(Params)
 	for _, v := range params {
 		p.SetParams(v)
