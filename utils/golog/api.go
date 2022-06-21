@@ -35,11 +35,17 @@ func NewApiClient(attrs ...*OperationAttr) (*ApiClient, error) {
 
 	c := &ApiClient{}
 	for _, attr := range attrs {
-		log.Println(attr)
-		c.gormClient = attr.gormClient
-		c.mongoCollectionClient = attr.mongoCollectionClient
-		c.config.logType = attr.logType
-		c.config.tableName = attr.tableName
+		if attr.gormClient != nil {
+			c.gormClient = attr.gormClient
+			c.config.logType = attr.logType
+		}
+		if attr.mongoCollectionClient != nil {
+			c.mongoCollectionClient = attr.mongoCollectionClient
+			c.config.logType = attr.logType
+		}
+		if attr.tableName != "" {
+			c.config.tableName = attr.tableName
+		}
 	}
 
 	switch c.config.logType {
