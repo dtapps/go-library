@@ -3,9 +3,9 @@ package golog
 import (
 	"context"
 	"errors"
-	"github.com/siddontang/go/bson"
 	"go.dtapp.net/library/utils/dorm"
 	"go.dtapp.net/library/utils/goip"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 	"log"
@@ -19,7 +19,7 @@ import (
 type ApiClient struct {
 	gormClient            *gorm.DB          // 驱动
 	mongoCollectionClient *dorm.MongoClient // 驱动(温馨提示：需要已选择库)
-	config                *struct {
+	config                struct {
 		logType   string // 日志类型
 		tableName string // 表名
 		insideIp  string // 内网ip
@@ -29,10 +29,13 @@ type ApiClient struct {
 }
 
 // NewApiClient 创建接口实例化
+// WithGormClient && WithTableName
+// WithMongoCollectionClient && WithTableName
 func NewApiClient(attrs ...*OperationAttr) (*ApiClient, error) {
 
 	c := &ApiClient{}
 	for _, attr := range attrs {
+		log.Println(attr)
 		c.gormClient = attr.gormClient
 		c.mongoCollectionClient = attr.mongoCollectionClient
 		c.config.logType = attr.logType
@@ -111,7 +114,7 @@ func (c *ApiClient) MongoRecord(mongoLog ApiMongoLog) error {
 	}
 	mongoLog.GoVersion = c.config.goVersion
 
-	mongoLog.LogId = bson.NewObjectId()
+	mongoLog.LogId = primitive.NewObjectID()
 
 	_, err := c.mongoCollectionClient.InsertOne(context.Background(), mongoLog)
 	return err

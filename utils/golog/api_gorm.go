@@ -4,7 +4,7 @@ import "gorm.io/datatypes"
 
 // ApiPostgresqlLog 结构体
 type ApiPostgresqlLog struct {
-	LogId                 uint           `gorm:"primaryKey" json:"log_id"`                             //【记录】编号
+	LogId                 uint           `gorm:"primaryKey" json:"log_id,omitempty"`                   //【记录】编号
 	RequestTime           TimeString     `gorm:"index" json:"request_time,omitempty"`                  //【请求】时间
 	RequestUri            string         `gorm:"type:text" json:"request_uri,omitempty"`               //【请求】链接
 	RequestUrl            string         `gorm:"type:text" json:"request_url,omitempty"`               //【请求】链接

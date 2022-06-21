@@ -8,3 +8,4 @@
 *_test.go
 /service/*_test.go
 /utils/*_test.go
+*.text

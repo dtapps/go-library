@@ -1,13 +1,13 @@
 package golog
 
 import (
-	"github.com/siddontang/go/bson"
 	"go.dtapp.net/library/utils/dorm"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // ApiMongoLog 结构体
 type ApiMongoLog struct {
-	LogId                 bson.ObjectId          `json:"log_id" bson:"log_id"`                                                       //【记录】编号
+	LogId                 primitive.ObjectID     `json:"log_id,omitempty" bson:"_id,omitempty"`                                      //【记录】编号
 	RequestTime           dorm.BsonTime          `json:"request_time,omitempty" bson:"request_time,omitempty"`                       //【请求】时间
 	RequestUri            string                 `json:"request_uri,omitempty" bson:"request_uri,omitempty"`                         //【请求】链接
 	RequestUrl            string                 `json:"request_url,omitempty" bson:"request_url,omitempty"`                         //【请求】链接

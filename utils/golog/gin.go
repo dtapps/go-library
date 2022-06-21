@@ -3,9 +3,9 @@ package golog
 import (
 	"context"
 	"errors"
-	"github.com/siddontang/go/bson"
 	"go.dtapp.net/library/utils/dorm"
 	"go.dtapp.net/library/utils/goip"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"gorm.io/gorm"
 	"os"
 	"runtime"
@@ -16,7 +16,7 @@ import (
 type GinClient struct {
 	gormClient            *gorm.DB          // 驱动
 	mongoCollectionClient *dorm.MongoClient // 驱动(温馨提示：需要已选择库)
-	config                *struct {
+	config                struct {
 		logType   string // 日志类型
 		tableName string // 表名
 		insideIp  string // 内网ip
@@ -103,7 +103,7 @@ func (c *GinClient) MongoRecord(mongoLog GinMongoLog) error {
 	}
 	mongoLog.GoVersion = c.config.goVersion
 
-	mongoLog.LogId = bson.NewObjectId()
+	mongoLog.LogId = primitive.NewObjectID()
 
 	_, err := c.mongoCollectionClient.InsertOne(context.Background(), mongoLog)
 	return err
