@@ -8,31 +8,31 @@ import (
 )
 
 // InsertOne 插入单个文档
-func (c *MongoClient) InsertOne(ctx context.Context, document interface{}, opts ...*options.InsertOneOptions) (result *mongo.InsertOneResult, err error) {
+func (c *MongoClient) InsertOne(document interface{}) (result *mongo.InsertOneResult, err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	result, err = collection.InsertOne(ctx, document, opts...)
+	result, err = collection.InsertOne(context.TODO(), document)
 	return result, err
 }
 
 // InsertMany 插入多个文档
-func (c *MongoClient) InsertMany(ctx context.Context, documents []interface{}, opts ...*options.InsertManyOptions) (result *mongo.InsertManyResult, err error) {
+func (c *MongoClient) InsertMany(documents []interface{}) (result *mongo.InsertManyResult, err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	result, err = collection.InsertMany(ctx, documents, opts...)
+	result, err = collection.InsertMany(context.TODO(), documents)
 	return result, err
 }
 
 // Delete 删除文档
-func (c *MongoClient) Delete(ctx context.Context, filter interface{}, opts ...*options.DeleteOptions) (int64, error) {
+func (c *MongoClient) Delete(filter interface{}) (int64, error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	count, err := collection.DeleteOne(ctx, filter, opts...)
+	count, err := collection.DeleteOne(context.TODO(), filter)
 	return count.DeletedCount, err
 }
 
 // DeleteMany 删除多个文档
-func (c *MongoClient) DeleteMany(ctx context.Context, key string, value interface{}) (int64, error) {
+func (c *MongoClient) DeleteMany(key string, value interface{}) (int64, error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
 	filter := bson.D{{key, value}}
-	count, err := collection.DeleteMany(ctx, filter)
+	count, err := collection.DeleteMany(context.TODO(), filter)
 	return count.DeletedCount, err
 }
 
@@ -41,9 +41,9 @@ func (c *MongoClient) DeleteMany(ctx context.Context, key string, value interfac
 // 字段增加值 inc($inc)
 // 从数组中增加一个元素 push($push)
 // 从数组中删除一个元素 pull($pull)
-func (c *MongoClient) UpdateOne(ctx context.Context, filter interface{}, update interface{}, opts ...*options.UpdateOptions) (int64, error) {
+func (c *MongoClient) UpdateOne(filter interface{}, update interface{}) (int64, error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	result, err := collection.UpdateOne(ctx, filter, update, opts...)
+	result, err := collection.UpdateOne(context.TODO(), filter, update)
 	return result.UpsertedCount, err
 }
 
@@ -52,82 +52,82 @@ func (c *MongoClient) UpdateOne(ctx context.Context, filter interface{}, update 
 // 字段增加值 inc($inc)
 // 从数组中增加一个元素 push($push)
 // 从数组中删除一个元素 pull($pull)
-func (c *MongoClient) UpdateMany(ctx context.Context, filter interface{}, update interface{}, opts ...*options.UpdateOptions) (int64, error) {
+func (c *MongoClient) UpdateMany(filter interface{}, update interface{}) (int64, error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	result, err := collection.UpdateMany(ctx, filter, update, opts...)
+	result, err := collection.UpdateMany(context.TODO(), filter, update)
 	return result.UpsertedCount, err
 }
 
 // Find 查询
-//func (c *MongoClient) Find(filter interface{}, opts ...*options.FindOptions) (result *mongo.Cursor, err error) {
+//func (c *MongoClient) Find(filter interface{}) (result *mongo.Cursor, err error) {
 //	collection := c.Db.Database(c.DatabaseName).Collection(c.collectionName)
-//	result, err = collection.Find(context.TODO(), filter, opts...)
+//	result, err = collection.Find(context.TODO(), filter)
 //	return result, err
 //}
 
 // FindOne 查询单个文档
-func (c *MongoClient) FindOne(ctx context.Context, filter interface{}, opts ...*options.FindOneOptions) (result *mongo.SingleResult) {
+func (c *MongoClient) FindOne(filter interface{}) (result *mongo.SingleResult) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	result = collection.FindOne(ctx, filter, opts...)
+	result = collection.FindOne(context.TODO(), filter)
 	return result
 }
 
 // FindMany 查询多个文档
-func (c *MongoClient) FindMany(ctx context.Context, filter interface{}, opts ...*options.FindOptions) (result *mongo.Cursor, err error) {
+func (c *MongoClient) FindMany(filter interface{}) (result *mongo.Cursor, err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	result, err = collection.Find(ctx, filter, opts...)
+	result, err = collection.Find(context.TODO(), filter)
 	return result, err
 }
 
 // FindManyByFilters 多条件查询
-func (c *MongoClient) FindManyByFilters(ctx context.Context, filter interface{}) (result *mongo.Cursor, err error) {
+func (c *MongoClient) FindManyByFilters(filter interface{}) (result *mongo.Cursor, err error) {
 	collection, err := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName).Clone()
-	result, err = collection.Find(ctx, bson.M{"$and": filter})
+	result, err = collection.Find(context.TODO(), bson.M{"$and": filter})
 	return result, err
 }
 
 // FindManyByFiltersSort 多条件查询支持排序
-func (c *MongoClient) FindManyByFiltersSort(ctx context.Context, filter interface{}, Sort interface{}) (result *mongo.Cursor, err error) {
+func (c *MongoClient) FindManyByFiltersSort(filter interface{}, Sort interface{}) (result *mongo.Cursor, err error) {
 	collection, err := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName).Clone()
 	findOptions := options.Find()
 	findOptions.SetSort(Sort)
-	result, err = collection.Find(ctx, filter, findOptions)
+	result, err = collection.Find(context.TODO(), filter, findOptions)
 	return result, err
 }
 
 // FindCollection 查询集合文档
-func (c *MongoClient) FindCollection(ctx context.Context, Limit int64) (result *mongo.Cursor, err error) {
+func (c *MongoClient) FindCollection(Limit int64) (result *mongo.Cursor, err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
 	findOptions := options.Find()
 	findOptions.SetLimit(Limit)
-	result, err = collection.Find(ctx, bson.D{{}}, findOptions)
+	result, err = collection.Find(context.TODO(), bson.D{{}}, findOptions)
 	return result, err
 }
 
 // FindCollectionSort 查询集合文档支持排序
-func (c *MongoClient) FindCollectionSort(ctx context.Context, Sort interface{}, Limit int64) (result *mongo.Cursor, err error) {
+func (c *MongoClient) FindCollectionSort(Sort interface{}, Limit int64) (result *mongo.Cursor, err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
 	findOptions := options.Find()
 	findOptions.SetSort(Sort)
 	findOptions.SetLimit(Limit)
-	result, err = collection.Find(ctx, bson.D{{}}, findOptions)
+	result, err = collection.Find(context.TODO(), bson.D{{}}, findOptions)
 	return result, err
 }
 
 // FindManyCollectionSort 查询集合文档支持排序支持条件
-func (c *MongoClient) FindManyCollectionSort(ctx context.Context, filter interface{}, Sort interface{}) (result *mongo.Cursor, err error) {
+func (c *MongoClient) FindManyCollectionSort(filter interface{}, Sort interface{}) (result *mongo.Cursor, err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
 	findOptions := options.Find()
 	findOptions.SetSort(Sort)
-	result, err = collection.Find(ctx, filter, findOptions)
+	result, err = collection.Find(context.TODO(), filter, findOptions)
 	return result, err
 }
 
 // CollectionCount 查询集合里有多少数据
-func (c *MongoClient) CollectionCount(ctx context.Context) (name string, size int64) {
+func (c *MongoClient) CollectionCount() (name string, size int64) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
 	name = collection.Name()
-	size, _ = collection.EstimatedDocumentCount(ctx)
+	size, _ = collection.EstimatedDocumentCount(context.TODO())
 	return name, size
 }
 
@@ -135,25 +135,25 @@ func (c *MongoClient) CollectionCount(ctx context.Context) (name string, size in
 // Skip 跳过
 // Limit 读取数量
 // sort 1 ，-1 . 1 为升序 ， -1 为降序
-func (c *MongoClient) CollectionDocuments(ctx context.Context, Skip, Limit int64, sort int, key string, value interface{}) (result *mongo.Cursor, err error) {
+func (c *MongoClient) CollectionDocuments(Skip, Limit int64, sort int, key string, value interface{}) (result *mongo.Cursor, err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
 	SORT := bson.D{{"_id", sort}}
 	filter := bson.D{{key, value}}
 	findOptions := options.Find().SetSort(SORT).SetLimit(Limit).SetSkip(Skip)
-	result, err = collection.Find(ctx, filter, findOptions)
+	result, err = collection.Find(context.TODO(), filter, findOptions)
 	return result, err
 }
 
 // AggregateByFiltersSort 统计分析
-func (c *MongoClient) AggregateByFiltersSort(ctx context.Context, pipeline interface{}, opts ...*options.AggregateOptions) (result *mongo.Cursor, err error) {
+func (c *MongoClient) AggregateByFiltersSort(pipeline interface{}) (result *mongo.Cursor, err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	result, err = collection.Aggregate(ctx, pipeline, opts...)
+	result, err = collection.Aggregate(context.TODO(), pipeline)
 	return result, err
 }
 
 // CountDocumentsByFilters 统计数量
-func (c *MongoClient) CountDocumentsByFilters(ctx context.Context, filter interface{}) (count int64, err error) {
+func (c *MongoClient) CountDocumentsByFilters(filter interface{}) (count int64, err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	count, err = collection.CountDocuments(ctx, filter)
+	count, err = collection.CountDocuments(context.TODO(), filter)
 	return count, err
 }
