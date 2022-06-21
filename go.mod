@@ -23,6 +23,7 @@ require (
 	github.com/nilorg/sdk v0.0.0-20220617065147-3001fb840741
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/qiniu/go-sdk/v7 v7.13.0
+	github.com/qiniu/qmgo v1.1.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/saracen/go7z v0.0.0-20191010121135-9c09b6bd7fda
 	github.com/shopspring/decimal v1.3.1
@@ -38,6 +39,7 @@ require (
 	google.golang.org/grpc v1.47.0
 	google.golang.org/protobuf v1.28.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
+	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
 	gorm.io/datatypes v1.0.6
 	gorm.io/driver/mysql v1.3.4
 	gorm.io/driver/postgres v1.3.7
