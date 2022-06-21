@@ -25,5 +25,5 @@ func (c *Client) postgresqlLog(request gorequest.Response) {
 	} else {
 		body.ResponseBody = request.ResponseBody //【返回】内容
 	}
-	c.log.Record(body)
+	c.log.GormRecord(body)
 }

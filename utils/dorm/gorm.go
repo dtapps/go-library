@@ -26,15 +26,13 @@ type GormClient struct {
 
 func NewGormMysqlClient(config *ConfigGormClient) (*GormClient, error) {
 
-	c := &GormClient{}
-	c.config = config
+	var err error
+	c := &GormClient{config: config}
 
 	// 判断路径
 	if c.config.LogUrl == "" {
 		logsUrl = "/logs/mysql"
 	}
-
-	var err error
 
 	if c.config.Log == true {
 		c.Db, err = gorm.Open(mysql.Open(c.config.Dns), &gorm.Config{

@@ -11,6 +11,7 @@ import (
 
 type ConfigMongoClient struct {
 	Dns          string // 地址
+	Opts         *options.ClientOptions
 	DatabaseName string // 库名
 }
 
@@ -24,16 +25,24 @@ type MongoClient struct {
 
 func NewMongoClient(config *ConfigMongoClient) (*MongoClient, error) {
 
+	var err error
 	c := &MongoClient{config: config}
 
 	// 连接到MongoDB
-	db, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(c.config.Dns))
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("连接失败：%v", err))
+	if c.config.Dns != "" {
+		c.Db, err = mongo.Connect(context.Background(), options.Client().ApplyURI(c.config.Dns))
+		if err != nil {
+			return nil, errors.New(fmt.Sprintf("连接失败：%v", err))
+		}
+	} else {
+		c.Db, err = mongo.Connect(context.Background(), c.config.Opts)
+		if err != nil {
+			return nil, errors.New(fmt.Sprintf("连接失败：%v", err))
+		}
 	}
 
 	// 检查连接
-	err = db.Ping(context.TODO(), nil)
+	err = c.Db.Ping(context.TODO(), nil)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("检查连接失败：%v", err))
 	}
