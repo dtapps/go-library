@@ -57,6 +57,12 @@ func NewClient(config *ConfigClient) (*Client, error) {
 	return c, nil
 }
 
+func (c *Client) ConfigPid(pid string) *Client {
+	n := c
+	n.config.Pid = pid
+	return n
+}
+
 type ErrResp struct {
 	ErrorResponse struct {
 		ErrorMsg  string      `json:"error_msg"`
