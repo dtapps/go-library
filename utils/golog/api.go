@@ -1,7 +1,6 @@
 package golog
 
 import (
-	"context"
 	"errors"
 	"go.dtapp.net/library/utils/dorm"
 	"go.dtapp.net/library/utils/goip"
@@ -122,7 +121,7 @@ func (c *ApiClient) MongoRecord(mongoLog ApiMongoLog) error {
 
 	mongoLog.LogId = primitive.NewObjectID()
 
-	_, err := c.mongoCollectionClient.InsertOne(context.Background(), mongoLog)
+	_, err := c.mongoCollectionClient.InsertOne(mongoLog)
 	return err
 }
 
