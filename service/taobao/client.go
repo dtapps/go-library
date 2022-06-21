@@ -2,6 +2,7 @@ package taobao
 
 import (
 	"fmt"
+	"go.dtapp.net/library/utils/dorm"
 	"go.dtapp.net/library/utils/golog"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gostring"
@@ -11,17 +12,17 @@ import (
 )
 
 type ConfigClient struct {
-	AppKey    string   // 应用Key
-	AppSecret string   // 密钥
-	AdzoneId  int64    // mm_xxx_xxx_xxx的第三位
-	PgsqlDb   *gorm.DB // pgsql数据库
+	AppKey    string            // 应用Key
+	AppSecret string            // 密钥
+	AdzoneId  int64             // mm_xxx_xxx_xxx的第三位
+	MongoDb   *dorm.MongoClient // 日志数据库
+	PgsqlDb   *gorm.DB          // 日志数据库
 }
 
 type Client struct {
-	client    *gorequest.App   // 请求客户端
-	log       *golog.ApiClient // 日志服务
-	logStatus bool             // 日志状态
-	config    *ConfigClient    // 配置
+	client *gorequest.App   // 请求客户端
+	log    *golog.ApiClient // 日志服务
+	config *ConfigClient    // 配置
 }
 
 func NewClient(config *ConfigClient) (*Client, error) {
@@ -31,12 +32,21 @@ func NewClient(config *ConfigClient) (*Client, error) {
 
 	c.client = gorequest.NewHttp()
 	c.client.Uri = apiUrl
+
 	if c.config.PgsqlDb != nil {
-		c.logStatus = true
-		c.log, err = golog.NewApiClient(&golog.ConfigApiClient{
-			Db:        c.config.PgsqlDb,
-			TableName: logTable,
-		})
+		c.log, err = golog.NewApiClient(
+			golog.WithGormClient(c.config.PgsqlDb),
+			golog.WithTableName(logTable),
+		)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if c.config.MongoDb != nil {
+		c.log, err = golog.NewApiClient(
+			golog.WithMongoCollectionClient(c.config.MongoDb),
+			golog.WithTableName(logTable),
+		)
 		if err != nil {
 			return nil, err
 		}

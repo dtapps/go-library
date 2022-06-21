@@ -1,6 +1,7 @@
 package wikeyun
 
 import (
+	"go.dtapp.net/library/utils/dorm"
 	"go.dtapp.net/library/utils/goip"
 	"go.dtapp.net/library/utils/golog"
 	"go.dtapp.net/library/utils/gorequest"
@@ -8,18 +9,18 @@ import (
 )
 
 type ConfigClient struct {
-	StoreId   int      // 店铺ID
-	AppKey    int      // key
-	AppSecret string   // secret
-	PgsqlDb   *gorm.DB // pgsql数据库
+	StoreId   int               // 店铺ID
+	AppKey    int               // key
+	AppSecret string            // secret
+	MongoDb   *dorm.MongoClient // 日志数据库
+	PgsqlDb   *gorm.DB          // 日志数据库
 }
 
 type Client struct {
-	client    *gorequest.App   // 请求客户端
-	clientIp  string           // Ip
-	log       *golog.ApiClient // 日志服务
-	logStatus bool             // 日志状态
-	config    *ConfigClient
+	client   *gorequest.App   // 请求客户端
+	clientIp string           // Ip
+	log      *golog.ApiClient // 日志服务
+	config   *ConfigClient
 }
 
 func NewClient(config *ConfigClient) (*Client, error) {
@@ -28,16 +29,26 @@ func NewClient(config *ConfigClient) (*Client, error) {
 	c := &Client{config: config}
 
 	c.client = gorequest.NewHttp()
+
 	if c.config.PgsqlDb != nil {
-		c.logStatus = true
-		c.log, err = golog.NewApiClient(&golog.ConfigApiClient{
-			Db:        c.config.PgsqlDb,
-			TableName: logTable,
-		})
+		c.log, err = golog.NewApiClient(
+			golog.WithGormClient(c.config.PgsqlDb),
+			golog.WithTableName(logTable),
+		)
 		if err != nil {
 			return nil, err
 		}
 	}
+	if c.config.MongoDb != nil {
+		c.log, err = golog.NewApiClient(
+			golog.WithMongoCollectionClient(c.config.MongoDb),
+			golog.WithTableName(logTable),
+		)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	xip := goip.GetOutsideIp()
 	if xip != "" && xip != "0.0.0.0" {
 		c.clientIp = xip

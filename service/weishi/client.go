@@ -2,6 +2,7 @@ package weishi
 
 import (
 	"errors"
+	"go.dtapp.net/library/utils/dorm"
 	"go.dtapp.net/library/utils/golog"
 	"go.dtapp.net/library/utils/gorequest"
 	"gorm.io/gorm"
@@ -10,15 +11,15 @@ import (
 )
 
 type ConfigClient struct {
-	PgsqlDb *gorm.DB // pgsql数据库
+	MongoDb *dorm.MongoClient // 日志数据库
+	PgsqlDb *gorm.DB          // 日志数据库
 }
 
 type Client struct {
-	ua        string           // 用户代理
-	client    *gorequest.App   // 请求客户端
-	log       *golog.ApiClient // 日志服务
-	logStatus bool             // 日志状态
-	config    *ConfigClient    // 配置
+	ua     string           // 用户代理
+	client *gorequest.App   // 请求客户端
+	log    *golog.ApiClient // 日志服务
+	config *ConfigClient    // 配置
 }
 
 func NewClient(config *ConfigClient) (*Client, error) {
@@ -29,12 +30,21 @@ func NewClient(config *ConfigClient) (*Client, error) {
 	c.ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1"
 
 	c.client = gorequest.NewHttp()
+
 	if c.config.PgsqlDb != nil {
-		c.logStatus = true
-		c.log, err = golog.NewApiClient(&golog.ConfigApiClient{
-			Db:        c.config.PgsqlDb,
-			TableName: logTable,
-		})
+		c.log, err = golog.NewApiClient(
+			golog.WithGormClient(c.config.PgsqlDb),
+			golog.WithTableName(logTable),
+		)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if c.config.MongoDb != nil {
+		c.log, err = golog.NewApiClient(
+			golog.WithMongoCollectionClient(c.config.MongoDb),
+			golog.WithTableName(logTable),
+		)
 		if err != nil {
 			return nil, err
 		}
