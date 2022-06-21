@@ -23,8 +23,11 @@ func (c *Client) request(params map[string]interface{}) (gorequest.Response, err
 	}
 
 	// 日志
-	if c.logStatus == true {
+	if c.config.PgsqlDb != nil {
 		go c.postgresqlLog(gostring.ToString(params["method"]), request)
+	}
+	if c.config.MongoDb != nil {
+		go c.mongoLog(gostring.ToString(params["method"]), request)
 	}
 
 	return request, err

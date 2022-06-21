@@ -17,11 +17,11 @@ func (c *Client) request(url string) (gorequest.Response, error) {
 	}
 
 	// 日志
+	if c.config.PgsqlDb != nil {
+		go c.postgresqlLog(request)
+	}
 	if c.config.MongoDb != nil {
 		go c.mongoLog(request)
-	}
-	if c.logStatus == true {
-		go c.postgresqlLog(request)
 	}
 
 	return request, err

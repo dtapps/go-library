@@ -37,8 +37,11 @@ func (c *Client) request(url string, params map[string]interface{}, method strin
 	}
 
 	// 日志
-	if c.logStatus == true {
+	if c.config.PgsqlDb != nil {
 		go c.postgresqlLog(request)
+	}
+	if c.config.MongoDb != nil {
+		go c.mongoLog(request)
 	}
 
 	return request, err
