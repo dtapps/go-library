@@ -2,152 +2,219 @@ package dorm
 
 import (
 	"context"
-	"errors"
 	"go.mongodb.org/mongo-driver/bson"
-	"log"
-	"reflect"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// Database 设置库名
-func (c *MongoClient) Database(databaseName string) *MongoClient {
-	c.setDatabaseName(databaseName)
-	return c
+type InsertOneResult struct {
+	InsertedID interface{} // 插入的编号
 }
 
-// Collection 设置表名
-func (c *MongoClient) Collection(collectionName string) *MongoClient {
-	c.setCollectionName(collectionName)
-	return c
-}
-
-// Model 传入模型自动获取库名和表名
-func (c *MongoClient) Model(value interface{}) *MongoClient {
-	// https://studygolang.com/articles/896
-	val := reflect.ValueOf(value)
-	if methodValue := val.MethodByName("Database"); methodValue.IsValid() {
-		c.setDatabaseName(methodValue.Call(nil)[0].String())
-	}
-	if methodValue := val.MethodByName("TableName"); methodValue.IsValid() {
-		c.setCollectionName(methodValue.Call(nil)[0].String())
-	}
-	return c
-}
-
-// CreateResult 返回查询结果
-type CreateResult struct {
-	InsertedID  interface{}   // 创建一条记录的ID
-	InsertedIDs []interface{} // 创建多条记录的ID
-}
-
-// Create 创建数据
-func (c *MongoClient) Create(values ...interface{}) (CreateResult, error) {
+// InsertOne 插入一个文档
+func (c *MongoClient) InsertOne(document interface{}) (result *InsertOneResult, err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-
-	const (
-		insertTypeOne  = "one"
-		insertTypeMany = "many"
-	)
-
-	var (
-		insertType     string
-		insertDataOne  interface{}
-		insertDataMany []interface{}
-	)
-
-	for _, value := range values {
-		switch v := value.(type) {
-		case map[string]interface{}:
-		case []map[string]interface{}:
-		case map[string]string:
-		case []map[string]string:
-		default:
-			sliceValue := reflect.Indirect(reflect.ValueOf(value))
-			if sliceValue.Kind() == reflect.Slice {
-				insertType = insertTypeMany
-				size := sliceValue.Len()
-				for i := 0; i < size; i++ {
-					sv := sliceValue.Index(i)                          // 取出第i个元素
-					elemValue := sv.Interface()                        // 原始数据
-					insertDataMany = append(insertDataMany, elemValue) // 加入到数组中
-				}
-			} else {
-				insertType = insertTypeOne
-				insertDataOne = v
-			}
-		}
-	}
-
-	if insertType == insertTypeOne {
-		result, err := collection.InsertOne(context.TODO(), insertDataOne)
-		return CreateResult{InsertedID: result.InsertedID}, err
-	} else if insertType == insertTypeMany {
-		result, err := collection.InsertMany(context.TODO(), insertDataMany)
-		return CreateResult{InsertedIDs: result.InsertedIDs}, err
-	} else {
-		return CreateResult{}, errors.New("values is empty")
-	}
+	res, err := collection.InsertOne(context.TODO(), document)
+	return &InsertOneResult{InsertedID: res.InsertedID}, err
 }
 
-// 查询条件
-type queryFilter struct {
-	Key   string
-	Value interface{}
+type InsertManyResult struct {
+	InsertedIDs []interface{} // 插入的编号列表
 }
 
-// Where 条件
-func (c *MongoClient) Where(key string, value interface{}) *MongoClient {
-	log.Println("key", key)
-	log.Println("value", value)
-	c.filterArr = append(c.filterArr, queryFilter{key, value})
-	c.filter = bson.D{{key, value}}
-	return c
-}
-
-// QueryResult 返回查询结果
-type QueryResult struct {
-	RowsAffected int   // 返回找到的记录数
-	Error        error // 错误信息
-}
-
-// First 获取第一条记录（主键升序）
-func (c *MongoClient) First() *QueryResult {
-	return &QueryResult{}
-}
-
-// Take 获取一条记录，没有指定排序字段
-func (c *MongoClient) Take(v interface{}) *QueryResult {
+// InsertMany 插入多个文档
+func (c *MongoClient) InsertMany(documents []interface{}) (result *InsertManyResult, err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	//log.Printf("c.filterArr：%s\n", c.filterArr)
-	//log.Printf("c.filterArr：%v\n", c.filterArr)
-	//log.Printf("c.filterArr：%+v\n", c.filterArr)
-	//log.Printf("c.filter：%s\n", c.filter)
-	//log.Printf("c.filter：%v\n", c.filter)
-	//log.Printf("c.filter：%+v\n", c.filter)
-	err := collection.FindOne(context.TODO(), c.filter).Decode(v)
-	return &QueryResult{1, err}
+	res, err := collection.InsertMany(context.TODO(), documents)
+	return &InsertManyResult{InsertedIDs: res.InsertedIDs}, err
 }
 
-// Last 获取最后一条记录（主键降序）
-func (c *MongoClient) Last() *QueryResult {
-	return &QueryResult{}
-}
-
-// Find 获取多条记录
-func (c *MongoClient) Find(v interface{}) *QueryResult {
+// Delete 删除文档
+func (c *MongoClient) Delete(filter interface{}) error {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	log.Printf("c.filterArr：%s\n", c.filterArr)
-	log.Printf("c.filterArr：%v\n", c.filterArr)
-	log.Printf("c.filterArr：%+v\n", c.filterArr)
-	log.Printf("c.filter：%s\n", c.filter)
-	log.Printf("c.filter：%v\n", c.filter)
-	log.Printf("c.filter：%+v\n", c.filter)
-	cursor, err := collection.Find(context.TODO(), c.filter)
-	if err != nil {
-		return &QueryResult{0, err}
+	_, err := collection.DeleteOne(context.TODO(), filter)
+	return err
+}
+
+// DeleteId 删除文档
+func (c *MongoClient) DeleteId(id interface{}) error {
+	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
+	_, err := collection.DeleteOne(context.TODO(), bson.M{"_id": id})
+	return err
+}
+
+type DeleteResult struct {
+	DeletedCount int64 // 删除的数量
+}
+
+// DeleteMany 删除多个文档
+func (c *MongoClient) DeleteMany(filter interface{}) (result *DeleteResult, err error) {
+	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
+	res, err := collection.DeleteMany(context.TODO(), filter)
+	return &DeleteResult{DeletedCount: res.DeletedCount}, err
+}
+
+// UpdateOne 更新单个文档
+// 修改字段的值($set)
+// 字段增加值 inc($inc)
+// 从数组中增加一个元素 push($push)
+// 从数组中删除一个元素 pull($pull)
+func (c *MongoClient) UpdateOne(filter interface{}, update interface{}) error {
+	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
+	_, err := collection.UpdateOne(context.TODO(), filter, update)
+	return err
+}
+
+// UpdateId 更新单个文档
+// 修改字段的值($set)
+// 字段增加值 inc($inc)
+// 从数组中增加一个元素 push($push)
+// 从数组中删除一个元素 pull($pull)
+func (c *MongoClient) UpdateId(id interface{}, update interface{}) error {
+	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
+	_, err := collection.UpdateOne(context.TODO(), bson.M{"_id": id}, update)
+	return err
+}
+
+type UpdateResult struct {
+	MatchedCount  int64       // The number of documents matched by the filter.
+	ModifiedCount int64       // The number of documents modified by the operation.
+	UpsertedCount int64       // The number of documents upserted by the operation.
+	UpsertedID    interface{} // The _id field of the upserted document, or nil if no upsert was done.
+}
+
+// UpdateMany 更新多个文档
+// 修改字段的值($set)
+// 字段增加值 inc($inc)
+// 从数组中增加一个元素 push($push)
+// 从数组中删除一个元素 pull($pull)
+func (c *MongoClient) UpdateMany(filter interface{}, update interface{}) (result *UpdateResult, err error) {
+	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
+	res, err := collection.UpdateMany(context.TODO(), filter, update)
+	return &UpdateResult{
+		MatchedCount:  res.MatchedCount,
+		ModifiedCount: res.ModifiedCount,
+		UpsertedCount: res.UpsertedCount,
+		UpsertedID:    res.UpsertedID,
+	}, err
+}
+
+type FindResultI interface {
+	Many(result interface{}) error
+}
+
+// Find 查询
+func (c *MongoClient) Find(filter interface{}) FindResultI {
+	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
+	res, err := collection.Find(context.TODO(), filter)
+	return &FindResult{
+		cursor: res,
+		err:    err,
 	}
+}
 
-	// 结果遍历和赋值
-	err = cursor.All(context.TODO(), v)
+type FindOneResultI interface {
+	One(result interface{}) error
+}
 
-	return &QueryResult{cursor.RemainingBatchLength(), err}
+// FindOne 查询单个文档
+func (c *MongoClient) FindOne(filter interface{}) FindOneResultI {
+	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
+	res := collection.FindOne(context.TODO(), filter)
+	return &FindOneResult{
+		singleResult: res,
+	}
+}
+
+type FindManyResultI interface {
+	Many(result interface{}) error
+}
+
+// FindMany 查询多个文档
+func (c *MongoClient) FindMany(filter interface{}) FindManyResultI {
+	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
+	res, err := collection.Find(context.TODO(), filter)
+	return &FindManyResult{
+		cursor: res,
+		err:    err,
+	}
+}
+
+// FindManyByFilters 多条件查询
+func (c *MongoClient) FindManyByFilters(filter interface{}) (result *mongo.Cursor, err error) {
+	collection, err := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName).Clone()
+	result, err = collection.Find(context.TODO(), bson.M{"$and": filter})
+	return result, err
+}
+
+// FindManyByFiltersSort 多条件查询支持排序
+func (c *MongoClient) FindManyByFiltersSort(filter interface{}, Sort interface{}) (result *mongo.Cursor, err error) {
+	collection, err := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName).Clone()
+	findOptions := options.Find()
+	findOptions.SetSort(Sort)
+	result, err = collection.Find(context.TODO(), filter, findOptions)
+	return result, err
+}
+
+// FindCollection 查询集合文档
+func (c *MongoClient) FindCollection(Limit int64) (result *mongo.Cursor, err error) {
+	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
+	findOptions := options.Find()
+	findOptions.SetLimit(Limit)
+	result, err = collection.Find(context.TODO(), bson.D{{}}, findOptions)
+	return result, err
+}
+
+// FindCollectionSort 查询集合文档支持排序
+func (c *MongoClient) FindCollectionSort(Sort interface{}, Limit int64) (result *mongo.Cursor, err error) {
+	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
+	findOptions := options.Find()
+	findOptions.SetSort(Sort)
+	findOptions.SetLimit(Limit)
+	result, err = collection.Find(context.TODO(), bson.D{{}}, findOptions)
+	return result, err
+}
+
+// FindManyCollectionSort 查询集合文档支持排序支持条件
+func (c *MongoClient) FindManyCollectionSort(filter interface{}, Sort interface{}) (result *mongo.Cursor, err error) {
+	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
+	findOptions := options.Find()
+	findOptions.SetSort(Sort)
+	result, err = collection.Find(context.TODO(), filter, findOptions)
+	return result, err
+}
+
+// CollectionCount 查询集合里有多少数据
+func (c *MongoClient) CollectionCount() (name string, size int64) {
+	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
+	name = collection.Name()
+	size, _ = collection.EstimatedDocumentCount(context.TODO())
+	return name, size
+}
+
+// CollectionDocuments 按选项查询集合
+// Skip 跳过
+// Limit 读取数量
+// sort 1 ，-1 . 1 为升序 ， -1 为降序
+func (c *MongoClient) CollectionDocuments(Skip, Limit int64, sort int, key string, value interface{}) (result *mongo.Cursor, err error) {
+	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
+	SORT := bson.D{{"_id", sort}}
+	filter := bson.D{{key, value}}
+	findOptions := options.Find().SetSort(SORT).SetLimit(Limit).SetSkip(Skip)
+	result, err = collection.Find(context.TODO(), filter, findOptions)
+	return result, err
+}
+
+// AggregateByFiltersSort 统计分析
+func (c *MongoClient) AggregateByFiltersSort(pipeline interface{}) (result *mongo.Cursor, err error) {
+	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
+	result, err = collection.Aggregate(context.TODO(), pipeline)
+	return result, err
+}
+
+// CountDocumentsByFilters 统计数量
+func (c *MongoClient) CountDocumentsByFilters(filter interface{}) (count int64, err error) {
+	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
+	count, err = collection.CountDocuments(context.TODO(), filter)
+	return count, err
 }

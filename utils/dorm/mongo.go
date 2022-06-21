@@ -21,15 +21,18 @@ type ConfigMongoClient struct {
 type MongoClient struct {
 	Db             *mongo.Client      // 驱动
 	config         *ConfigMongoClient // 配置
+	databaseName   string             // 库名
 	collectionName string             // 表名
-	filterArr      []queryFilter      // 查询条件数组
-	filter         bson.D             // 查询条件
+	//filterArr      []queryFilter      // 查询条件数组
+	filter bson.D // 查询条件
 }
 
 func NewMongoClient(config *ConfigMongoClient) (*MongoClient, error) {
 
 	var err error
 	c := &MongoClient{config: config}
+
+	c.databaseName = c.config.DatabaseName
 
 	// 连接到MongoDB
 	if c.config.Dns != "" {
@@ -74,7 +77,10 @@ func NewMongoClientOfQmgo(config *ConfigMongoClient) (*MongoClient, error) {
 		return nil, errors.New(fmt.Sprintf("连接失败：%v", err))
 	}
 	log.Println(client)
-
+	db := client.Database("class")
+	coll := db.Collection("user")
+	log.Println(coll)
+	//coll.Find().One()
 	// 检查连接
 	err = c.Db.Ping(context.TODO(), nil)
 	if err != nil {
