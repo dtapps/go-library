@@ -1,10 +1,10 @@
 package wechatoffice
 
-func (c *Client) getAppId() string {
+func (c *Client) GetAppId() string {
 	return c.config.AppId
 }
 
-func (c *Client) getAppSecret() string {
+func (c *Client) GetAppSecret() string {
 	return c.config.AppSecret
 }
 

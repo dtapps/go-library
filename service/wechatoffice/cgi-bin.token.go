@@ -30,7 +30,7 @@ func newCgiBinTokenResult(result CgiBinTokenResponse, body []byte, http goreques
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/access-token/auth.getAccessToken.html
 func (c *Client) CgiBinToken() *CgiBinTokenResult {
 	// request
-	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", c.getAppId(), c.getAppSecret()), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", c.GetAppId(), c.GetAppSecret()), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response CgiBinTokenResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

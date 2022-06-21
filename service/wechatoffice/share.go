@@ -30,7 +30,7 @@ func (c *Client) Share(url string) *ShareResult {
 	c.getAccessToken()
 	c.config.JsapiTicket = c.GetJsapiTicket()
 	var response ShareResponse
-	response.AppId = c.getAppId()
+	response.AppId = c.GetAppId()
 	response.NonceStr = gorandom.Alphanumeric(32)
 	response.Timestamp = time.Now().Unix()
 	response.Url = url

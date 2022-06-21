@@ -19,5 +19,5 @@ func (c *Client) GetJsapiTicket() string {
 }
 
 func (c *Client) getJsapiTicketCacheKeyName() string {
-	return fmt.Sprintf("wechat_jsapi_ticket:%v", c.getAppId())
+	return fmt.Sprintf("wechat_jsapi_ticket:%v", c.GetAppId())
 }

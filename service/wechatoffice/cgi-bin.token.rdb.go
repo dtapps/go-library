@@ -18,5 +18,5 @@ func (c *Client) GetAccessToken() string {
 }
 
 func (c *Client) getAccessTokenCacheKeyName() string {
-	return fmt.Sprintf("wechat_access_token:%v", c.getAppId())
+	return fmt.Sprintf("wechat_access_token:%v", c.GetAppId())
 }
