@@ -122,6 +122,7 @@ func (c *ApiClient) MongoRecord(mongoLog ApiMongoLog) error {
 	mongoLog.LogId = primitive.NewObjectID()
 
 	_, err := c.mongoCollectionClient.InsertOne(mongoLog)
+	log.Printf("api.mongoRecord：%s\n", err)
 	return err
 }
 

@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"gorm.io/gorm"
 	"io/ioutil"
+	"log"
 	"net"
 	"os"
 	"runtime"
@@ -254,6 +255,7 @@ func (c *GinClient) mongoRecord(mongoLog GinMongoLog) error {
 	mongoLog.LogId = primitive.NewObjectID()
 
 	_, err := c.mongoCollectionClient.InsertOne(mongoLog)
+	log.Printf("gin.mongoRecord：%s\n", err)
 	return err
 }
 
