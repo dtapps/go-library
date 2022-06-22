@@ -73,8 +73,6 @@ func NewApiClient(attrs ...*OperationAttr) (*ApiClient, error) {
 			return nil, errors.New("表名不能为空")
 		}
 
-		c.mongoCollectionClient = c.mongoCollectionClient.Collection(c.config.tableName)
-
 	default:
 		return nil, errors.New("驱动为空")
 	}
@@ -121,12 +119,12 @@ func (c *ApiClient) MongoRecord(mongoLog ApiMongoLog) error {
 
 	mongoLog.LogId = primitive.NewObjectID()
 
-	_, err := c.mongoCollectionClient.InsertOne(mongoLog)
+	_, err := c.mongoCollectionClient.Collection(c.config.tableName).InsertOne(mongoLog)
 	log.Printf("api.mongoRecord：%s\n", err)
 	return err
 }
 
 // MongoQuery 查询
 func (c *ApiClient) MongoQuery() *dorm.MongoClient {
-	return c.mongoCollectionClient
+	return c.mongoCollectionClient.Collection(c.config.tableName)
 }

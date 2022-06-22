@@ -25,7 +25,7 @@ func WithGormClient(client *gorm.DB) *OperationAttr {
 	return &OperationAttr{gormClient: client, logType: logTypeGorm}
 }
 
-// WithMongoCollectionClient 数据库驱动(温馨提示：需要已选择库和表)
+// WithMongoCollectionClient 数据库驱动(温馨提示：需要已选择库)
 func WithMongoCollectionClient(client *dorm.MongoClient) *OperationAttr {
 	return &OperationAttr{mongoCollectionClient: client, logType: logTypeMongo}
 }

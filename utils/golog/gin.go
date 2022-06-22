@@ -23,7 +23,7 @@ import (
 // GinClient 框架
 type GinClient struct {
 	gormClient            *gorm.DB          // 驱动
-	mongoCollectionClient *dorm.MongoClient // 驱动(温馨提示：需要已选择库和表)
+	mongoCollectionClient *dorm.MongoClient // 驱动(温馨提示：需要已选择库)
 	ipService             *goip.Client      // ip服务
 	config                struct {
 		logType   string // 日志类型
@@ -77,7 +77,9 @@ func NewGinClient(attrs ...*OperationAttr) (*GinClient, error) {
 			return nil, errors.New("驱动不能为空")
 		}
 
-		c.mongoCollectionClient = c.mongoCollectionClient.Collection(c.config.tableName)
+		if c.config.tableName == "" {
+			return nil, errors.New("表名不能为空")
+		}
 
 	default:
 		return nil, errors.New("驱动为空")
@@ -254,12 +256,12 @@ func (c *GinClient) mongoRecord(mongoLog GinMongoLog) error {
 
 	mongoLog.LogId = primitive.NewObjectID()
 
-	_, err := c.mongoCollectionClient.InsertOne(mongoLog)
+	_, err := c.mongoCollectionClient.Collection(c.config.tableName).InsertOne(mongoLog)
 	log.Printf("gin.mongoRecord：%s\n", err)
 	return err
 }
 
 // MongoQuery 查询
 func (c *GinClient) MongoQuery() *dorm.MongoClient {
-	return c.mongoCollectionClient
+	return c.mongoCollectionClient.Collection(c.config.tableName)
 }
