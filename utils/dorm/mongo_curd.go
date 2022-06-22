@@ -7,27 +7,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type InsertOneResult struct {
-	InsertedID interface{} // 插入的编号
-}
-
 // InsertOne 插入一个文档
-func (c *MongoClient) InsertOne(document interface{}) (result *InsertOneResult, err error) {
+func (c *MongoClient) InsertOne(document interface{}) (result *mongo.InsertOneResult, err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	res, err := collection.InsertOne(context.TODO(), document)
-	result = &InsertOneResult{InsertedID: res.InsertedID}
+	result, err = collection.InsertOne(context.TODO(), document)
 	return
 }
 
-type InsertManyResult struct {
-	InsertedIDs []interface{} // 插入的编号列表
-}
-
 // InsertMany 插入多个文档
-func (c *MongoClient) InsertMany(documents []interface{}) (result *InsertManyResult, err error) {
+func (c *MongoClient) InsertMany(documents []interface{}) (result *mongo.InsertManyResult, err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	res, err := collection.InsertMany(context.TODO(), documents)
-	result = &InsertManyResult{InsertedIDs: res.InsertedIDs}
+	result, err = collection.InsertMany(context.TODO(), documents)
 	return
 }
 
@@ -45,15 +35,10 @@ func (c *MongoClient) DeleteId(id interface{}) (err error) {
 	return
 }
 
-type DeleteResult struct {
-	DeletedCount int64 // 删除的数量
-}
-
 // DeleteMany 删除多个文档
-func (c *MongoClient) DeleteMany(filter interface{}) (result *DeleteResult, err error) {
+func (c *MongoClient) DeleteMany(filter interface{}) (result *mongo.DeleteResult, err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	res, err := collection.DeleteMany(context.TODO(), filter)
-	result = &DeleteResult{DeletedCount: res.DeletedCount}
+	result, err = collection.DeleteMany(context.TODO(), filter)
 	return
 }
 
@@ -79,27 +64,14 @@ func (c *MongoClient) UpdateId(id interface{}, update interface{}) (err error) {
 	return
 }
 
-type UpdateResult struct {
-	MatchedCount  int64       // The number of documents matched by the filter.
-	ModifiedCount int64       // The number of documents modified by the operation.
-	UpsertedCount int64       // The number of documents upserted by the operation.
-	UpsertedID    interface{} // The _id field of the upserted document, or nil if no upsert was done.
-}
-
 // UpdateMany 更新多个文档
 // 修改字段的值($set)
 // 字段增加值 inc($inc)
 // 从数组中增加一个元素 push($push)
 // 从数组中删除一个元素 pull($pull)
-func (c *MongoClient) UpdateMany(filter interface{}, update interface{}) (result *UpdateResult, err error) {
+func (c *MongoClient) UpdateMany(filter interface{}, update interface{}) (result *mongo.UpdateResult, err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	res, err := collection.UpdateMany(context.TODO(), filter, update)
-	result = &UpdateResult{
-		MatchedCount:  res.MatchedCount,
-		ModifiedCount: res.ModifiedCount,
-		UpsertedCount: res.UpsertedCount,
-		UpsertedID:    res.UpsertedID,
-	}
+	result, err = collection.UpdateMany(context.TODO(), filter, update)
 	return
 }
 

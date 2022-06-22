@@ -8,18 +8,16 @@ import (
 )
 
 // InsertOne 插入一个文档
-func (ms *MongoTransaction) InsertOne(document interface{}) (result *InsertOneResult, err error) {
+func (ms *MongoTransaction) InsertOne(document interface{}) (result *mongo.InsertOneResult, err error) {
 	collection := ms.db.Database(ms.getDatabaseName()).Collection(ms.collectionName)
-	res, err := collection.InsertOne(ms.Session, document)
-	result = &InsertOneResult{InsertedID: res.InsertedID}
+	result, err = collection.InsertOne(ms.Session, document)
 	return
 }
 
 // InsertMany 插入多个文档
-func (ms *MongoTransaction) InsertMany(documents []interface{}) (result *InsertManyResult, err error) {
+func (ms *MongoTransaction) InsertMany(documents []interface{}) (result *mongo.InsertManyResult, err error) {
 	collection := ms.db.Database(ms.getDatabaseName()).Collection(ms.collectionName)
-	res, err := collection.InsertMany(ms.Session, documents)
-	result = &InsertManyResult{InsertedIDs: res.InsertedIDs}
+	result, err = collection.InsertMany(ms.Session, documents)
 	return
 }
 
@@ -38,11 +36,10 @@ func (ms *MongoTransaction) DeleteId(id interface{}) (err error) {
 }
 
 // DeleteMany 删除多个文档
-func (ms *MongoTransaction) DeleteMany(key string, value interface{}) (result *DeleteResult, err error) {
+func (ms *MongoTransaction) DeleteMany(key string, value interface{}) (result *mongo.DeleteResult, err error) {
 	collection := ms.db.Database(ms.getDatabaseName()).Collection(ms.collectionName)
 	filter := bson.D{{key, value}}
-	res, err := collection.DeleteMany(ms.Session, filter)
-	result = &DeleteResult{DeletedCount: res.DeletedCount}
+	result, err = collection.DeleteMany(ms.Session, filter)
 	return
 }
 
@@ -73,15 +70,9 @@ func (ms *MongoTransaction) UpdateId(id interface{}, update interface{}) (err er
 // 字段增加值 inc($inc)
 // 从数组中增加一个元素 push($push)
 // 从数组中删除一个元素 pull($pull)
-func (ms *MongoTransaction) UpdateMany(filter interface{}, update interface{}) (result *UpdateResult, err error) {
+func (ms *MongoTransaction) UpdateMany(filter interface{}, update interface{}) (result *mongo.UpdateResult, err error) {
 	collection := ms.db.Database(ms.getDatabaseName()).Collection(ms.collectionName)
-	res, err := collection.UpdateMany(ms.Session, filter, update)
-	result = &UpdateResult{
-		MatchedCount:  res.MatchedCount,
-		ModifiedCount: res.ModifiedCount,
-		UpsertedCount: res.UpsertedCount,
-		UpsertedID:    res.UpsertedID,
-	}
+	result, err = collection.UpdateMany(ms.Session, filter, update)
 	return
 }
 
