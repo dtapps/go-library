@@ -2,6 +2,7 @@ package golog
 
 import (
 	"go.dtapp.net/library/utils/dorm"
+	"go.dtapp.net/library/utils/gorequest"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -23,4 +24,22 @@ type ApiMongoLog struct {
 	SystemHostName        string                 `json:"system_host_name,omitempty" bson:"system_host_name,omitempty"`               //【系统】主机名
 	SystemInsideIp        string                 `json:"system_inside_ip,omitempty" bson:"system_inside_ip,omitempty"`               //【系统】内网ip
 	GoVersion             string                 `json:"go_version,omitempty" bson:"go_version,omitempty"`                           //【程序】Go版本
+}
+
+// MongoMiddleware 中间件
+func (c *ApiClient) MongoMiddleware(request gorequest.Response) {
+	c.MongoRecord(ApiMongoLog{
+		RequestTime:           dorm.BsonTime(request.RequestTime),          //【请求】时间
+		RequestUri:            request.RequestUri,                          //【请求】链接
+		RequestUrl:            gorequest.UriParse(request.RequestUri).Url,  //【请求】链接
+		RequestApi:            gorequest.UriParse(request.RequestUri).Path, //【请求】接口
+		RequestMethod:         request.RequestMethod,                       //【请求】方式
+		RequestParams:         request.RequestParams,                       //【请求】参数
+		RequestHeader:         request.RequestHeader,                       //【请求】头部
+		ResponseHeader:        request.ResponseHeader,                      //【返回】头部
+		ResponseStatusCode:    request.ResponseStatusCode,                  //【返回】状态码
+		ResponseBody:          request.ResponseBody,                        //【返回】内容
+		ResponseContentLength: request.ResponseContentLength,               //【返回】大小
+		ResponseTime:          dorm.BsonTime(request.ResponseTime),         //【返回】时间
+	})
 }
