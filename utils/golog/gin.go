@@ -22,7 +22,7 @@ import (
 // GinClient 框架
 type GinClient struct {
 	gormClient            *gorm.DB          // 驱动
-	mongoCollectionClient *dorm.MongoClient // 驱动(温馨提示：需要已选择库)
+	mongoCollectionClient *dorm.MongoClient // 驱动(温馨提示：需要已选择库和表)
 	config                struct {
 		logType   string // 日志类型
 		tableName string // 表名

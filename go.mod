@@ -6,7 +6,7 @@ require (
 	gitee.com/chunanyong/zorm v1.5.5
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.4+incompatible
 	github.com/allegro/bigcache/v3 v3.0.2
-	github.com/aws/aws-sdk-go v1.44.38
+	github.com/aws/aws-sdk-go v1.44.39
 	github.com/baidubce/bce-sdk-go v0.9.124
 	github.com/basgys/goxml2json v1.1.0
 	github.com/beego/beego/v2 v2.0.4
@@ -103,11 +103,11 @@ require (
 	go.etcd.io/etcd/client/pkg/v3 v3.5.4 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
-	golang.org/x/net v0.0.0-20220617184016-355a448f1bc9 // indirect
+	golang.org/x/net v0.0.0-20220621193019-9d032be2e588 // indirect
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
 	golang.org/x/sys v0.0.0-20220615213510-4f61da869c0c // indirect
 	golang.org/x/time v0.0.0-20220609170525-579cf78fd858 // indirect
-	google.golang.org/genproto v0.0.0-20220617124728-180714bec0ad // indirect
+	google.golang.org/genproto v0.0.0-20220621134657-43db42f103f7 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
