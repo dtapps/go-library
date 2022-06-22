@@ -23,6 +23,7 @@ import (
 type GinClient struct {
 	gormClient            *gorm.DB          // 驱动
 	mongoCollectionClient *dorm.MongoClient // 驱动(温馨提示：需要已选择库和表)
+	ipService             *goip.Client      // ip服务
 	config                struct {
 		logType   string // 日志类型
 		tableName string // 表名
@@ -47,6 +48,9 @@ func NewGinClient(attrs ...*OperationAttr) (*GinClient, error) {
 		}
 		if attr.tableName != "" {
 			c.config.tableName = attr.tableName
+		}
+		if attr.ipService != nil {
+			c.ipService = attr.ipService
 		}
 	}
 
@@ -124,7 +128,7 @@ func (w bodyLogWriter) WriteString(s string) (int, error) {
 }
 
 // MongoMiddleware 中间件
-func (c *GinClient) MongoMiddleware(ipService *goip.Client) gin.HandlerFunc {
+func (c *GinClient) MongoMiddleware() gin.HandlerFunc {
 	return func(ginCtx *gin.Context) {
 
 		// 开始时间
@@ -160,20 +164,22 @@ func (c *GinClient) MongoMiddleware(ipService *goip.Client) gin.HandlerFunc {
 			}
 
 			requestClientIpCountry, requestClientIpRegion, requestClientIpProvince, requestClientIpCity, requestClientIpIsp := "", "", "", "", ""
-			if net.ParseIP(ginCtx.ClientIP()).To4() != nil {
-				// 判断是不是IPV4
-				_, info := ipService.Ipv4(ginCtx.ClientIP())
-				requestClientIpCountry = info.Country
-				requestClientIpRegion = info.Region
-				requestClientIpProvince = info.Province
-				requestClientIpCity = info.City
-				requestClientIpIsp = info.ISP
-			} else if net.ParseIP(ginCtx.ClientIP()).To16() != nil {
-				// 判断是不是IPV6
-				info := ipService.Ipv6(ginCtx.ClientIP())
-				requestClientIpCountry = info.Country
-				requestClientIpProvince = info.Province
-				requestClientIpCity = info.City
+			if c.ipService != nil {
+				if net.ParseIP(ginCtx.ClientIP()).To4() != nil {
+					// 判断是不是IPV4
+					_, info := c.ipService.Ipv4(ginCtx.ClientIP())
+					requestClientIpCountry = info.Country
+					requestClientIpRegion = info.Region
+					requestClientIpProvince = info.Province
+					requestClientIpCity = info.City
+					requestClientIpIsp = info.ISP
+				} else if net.ParseIP(ginCtx.ClientIP()).To16() != nil {
+					// 判断是不是IPV6
+					info := c.ipService.Ipv6(ginCtx.ClientIP())
+					requestClientIpCountry = info.Country
+					requestClientIpProvince = info.Province
+					requestClientIpCity = info.City
+				}
 			}
 
 			// 记录
