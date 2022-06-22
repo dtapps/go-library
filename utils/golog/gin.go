@@ -13,7 +13,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"gorm.io/gorm"
 	"io/ioutil"
-	"log"
 	"net"
 	"os"
 	"runtime"
@@ -211,7 +210,7 @@ func (c *GinClient) MongoMiddleware() gin.HandlerFunc {
 						RequestHeader:     ginCtx.Request.Header,                                            //【请求】请求头
 						ResponseTime:      dorm.BsonTime(gotime.Current().Time),                             //【返回】时间
 						ResponseCode:      responseCode,                                                     //【返回】状态码
-						ResponseData:      responseBody,                                                     //【返回】数据
+						ResponseData:      c.jsonUnmarshal(responseBody),                                    //【返回】数据
 						CostTime:          endTime - startTime,                                              //【系统】花费时间
 					})
 				} else {
@@ -236,13 +235,18 @@ func (c *GinClient) MongoMiddleware() gin.HandlerFunc {
 						RequestHeader:     ginCtx.Request.Header,                                            //【请求】请求头
 						ResponseTime:      dorm.BsonTime(gotime.Current().Time),                             //【返回】时间
 						ResponseCode:      responseCode,                                                     //【返回】状态码
-						ResponseData:      responseBody,                                                     //【返回】数据
+						ResponseData:      c.jsonUnmarshal(responseBody),                                    //【返回】数据
 						CostTime:          endTime - startTime,                                              //【系统】花费时间
 					})
 				}
 			}
 		}()
 	}
+}
+
+func (c *GinClient) jsonUnmarshal(data string) (result interface{}) {
+	_ = json.Unmarshal([]byte(data), &result)
+	return
 }
 
 // 记录日志
@@ -257,7 +261,7 @@ func (c *GinClient) mongoRecord(mongoLog GinMongoLog) error {
 	mongoLog.LogId = primitive.NewObjectID()
 
 	_, err := c.mongoCollectionClient.Collection(c.config.tableName).InsertOne(mongoLog)
-	log.Printf("gin.mongoRecord：%s\n", err)
+
 	return err
 }
 
