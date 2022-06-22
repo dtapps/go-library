@@ -76,10 +76,6 @@ func NewGinClient(attrs ...*OperationAttr) (*GinClient, error) {
 			return nil, errors.New("驱动不能为空")
 		}
 
-		if c.config.tableName == "" {
-			return nil, errors.New("表名不能为空")
-		}
-
 		c.mongoCollectionClient = c.mongoCollectionClient.Collection(c.config.tableName)
 
 	default:
