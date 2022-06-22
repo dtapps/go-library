@@ -11,28 +11,30 @@ import (
 func (ms *MongoTransaction) InsertOne(document interface{}) (result *InsertOneResult, err error) {
 	collection := ms.db.Database(ms.getDatabaseName()).Collection(ms.collectionName)
 	res, err := collection.InsertOne(ms.Session, document)
-	return &InsertOneResult{InsertedID: res.InsertedID}, err
+	result = &InsertOneResult{InsertedID: res.InsertedID}
+	return
 }
 
 // InsertMany 插入多个文档
 func (ms *MongoTransaction) InsertMany(documents []interface{}) (result *InsertManyResult, err error) {
 	collection := ms.db.Database(ms.getDatabaseName()).Collection(ms.collectionName)
 	res, err := collection.InsertMany(ms.Session, documents)
-	return &InsertManyResult{InsertedIDs: res.InsertedIDs}, err
+	result = &InsertManyResult{InsertedIDs: res.InsertedIDs}
+	return
 }
 
 // Delete 删除文档
-func (ms *MongoTransaction) Delete(filter interface{}) error {
+func (ms *MongoTransaction) Delete(filter interface{}) (err error) {
 	collection := ms.db.Database(ms.getDatabaseName()).Collection(ms.collectionName)
-	_, err := collection.DeleteOne(ms.Session, filter)
-	return err
+	_, err = collection.DeleteOne(ms.Session, filter)
+	return
 }
 
 // DeleteId 删除文档
-func (ms *MongoTransaction) DeleteId(id interface{}) error {
+func (ms *MongoTransaction) DeleteId(id interface{}) (err error) {
 	collection := ms.db.Database(ms.getDatabaseName()).Collection(ms.collectionName)
-	_, err := collection.DeleteOne(ms.Session, bson.M{"_id": id})
-	return err
+	_, err = collection.DeleteOne(ms.Session, bson.M{"_id": id})
+	return
 }
 
 // DeleteMany 删除多个文档
@@ -40,7 +42,8 @@ func (ms *MongoTransaction) DeleteMany(key string, value interface{}) (result *D
 	collection := ms.db.Database(ms.getDatabaseName()).Collection(ms.collectionName)
 	filter := bson.D{{key, value}}
 	res, err := collection.DeleteMany(ms.Session, filter)
-	return &DeleteResult{DeletedCount: res.DeletedCount}, err
+	result = &DeleteResult{DeletedCount: res.DeletedCount}
+	return
 }
 
 // UpdateOne 更新单个文档
@@ -48,10 +51,10 @@ func (ms *MongoTransaction) DeleteMany(key string, value interface{}) (result *D
 // 字段增加值 inc($inc)
 // 从数组中增加一个元素 push($push)
 // 从数组中删除一个元素 pull($pull)
-func (ms *MongoTransaction) UpdateOne(filter interface{}, update interface{}) error {
+func (ms *MongoTransaction) UpdateOne(filter interface{}, update interface{}) (err error) {
 	collection := ms.db.Database(ms.getDatabaseName()).Collection(ms.collectionName)
-	_, err := collection.UpdateOne(ms.Session, filter, update)
-	return err
+	_, err = collection.UpdateOne(ms.Session, filter, update)
+	return
 }
 
 // UpdateId 更新单个文档
@@ -59,10 +62,10 @@ func (ms *MongoTransaction) UpdateOne(filter interface{}, update interface{}) er
 // 字段增加值 inc($inc)
 // 从数组中增加一个元素 push($push)
 // 从数组中删除一个元素 pull($pull)
-func (ms *MongoTransaction) UpdateId(id interface{}, update interface{}) error {
+func (ms *MongoTransaction) UpdateId(id interface{}, update interface{}) (err error) {
 	collection := ms.db.Database(ms.getDatabaseName()).Collection(ms.collectionName)
-	_, err := collection.UpdateOne(context.TODO(), bson.M{"_id": id}, update)
-	return err
+	_, err = collection.UpdateOne(context.TODO(), bson.M{"_id": id}, update)
+	return
 }
 
 // UpdateMany 更新多个文档
@@ -73,12 +76,13 @@ func (ms *MongoTransaction) UpdateId(id interface{}, update interface{}) error {
 func (ms *MongoTransaction) UpdateMany(filter interface{}, update interface{}) (result *UpdateResult, err error) {
 	collection := ms.db.Database(ms.getDatabaseName()).Collection(ms.collectionName)
 	res, err := collection.UpdateMany(ms.Session, filter, update)
-	return &UpdateResult{
+	result = &UpdateResult{
 		MatchedCount:  res.MatchedCount,
 		ModifiedCount: res.ModifiedCount,
 		UpsertedCount: res.UpsertedCount,
 		UpsertedID:    res.UpsertedID,
-	}, err
+	}
+	return
 }
 
 // Find 查询

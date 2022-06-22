@@ -15,7 +15,8 @@ type InsertOneResult struct {
 func (c *MongoClient) InsertOne(document interface{}) (result *InsertOneResult, err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
 	res, err := collection.InsertOne(context.TODO(), document)
-	return &InsertOneResult{InsertedID: res.InsertedID}, err
+	result = &InsertOneResult{InsertedID: res.InsertedID}
+	return
 }
 
 type InsertManyResult struct {
@@ -26,21 +27,22 @@ type InsertManyResult struct {
 func (c *MongoClient) InsertMany(documents []interface{}) (result *InsertManyResult, err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
 	res, err := collection.InsertMany(context.TODO(), documents)
-	return &InsertManyResult{InsertedIDs: res.InsertedIDs}, err
+	result = &InsertManyResult{InsertedIDs: res.InsertedIDs}
+	return
 }
 
 // Delete 删除文档
-func (c *MongoClient) Delete(filter interface{}) error {
+func (c *MongoClient) Delete(filter interface{}) (err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	_, err := collection.DeleteOne(context.TODO(), filter)
-	return err
+	_, err = collection.DeleteOne(context.TODO(), filter)
+	return
 }
 
 // DeleteId 删除文档
-func (c *MongoClient) DeleteId(id interface{}) error {
+func (c *MongoClient) DeleteId(id interface{}) (err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	_, err := collection.DeleteOne(context.TODO(), bson.M{"_id": id})
-	return err
+	_, err = collection.DeleteOne(context.TODO(), bson.M{"_id": id})
+	return
 }
 
 type DeleteResult struct {
@@ -51,7 +53,8 @@ type DeleteResult struct {
 func (c *MongoClient) DeleteMany(filter interface{}) (result *DeleteResult, err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
 	res, err := collection.DeleteMany(context.TODO(), filter)
-	return &DeleteResult{DeletedCount: res.DeletedCount}, err
+	result = &DeleteResult{DeletedCount: res.DeletedCount}
+	return
 }
 
 // UpdateOne 更新单个文档
@@ -59,10 +62,10 @@ func (c *MongoClient) DeleteMany(filter interface{}) (result *DeleteResult, err 
 // 字段增加值 inc($inc)
 // 从数组中增加一个元素 push($push)
 // 从数组中删除一个元素 pull($pull)
-func (c *MongoClient) UpdateOne(filter interface{}, update interface{}) error {
+func (c *MongoClient) UpdateOne(filter interface{}, update interface{}) (err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	_, err := collection.UpdateOne(context.TODO(), filter, update)
-	return err
+	_, err = collection.UpdateOne(context.TODO(), filter, update)
+	return
 }
 
 // UpdateId 更新单个文档
@@ -70,10 +73,10 @@ func (c *MongoClient) UpdateOne(filter interface{}, update interface{}) error {
 // 字段增加值 inc($inc)
 // 从数组中增加一个元素 push($push)
 // 从数组中删除一个元素 pull($pull)
-func (c *MongoClient) UpdateId(id interface{}, update interface{}) error {
+func (c *MongoClient) UpdateId(id interface{}, update interface{}) (err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	_, err := collection.UpdateOne(context.TODO(), bson.M{"_id": id}, update)
-	return err
+	_, err = collection.UpdateOne(context.TODO(), bson.M{"_id": id}, update)
+	return
 }
 
 type UpdateResult struct {
@@ -91,12 +94,13 @@ type UpdateResult struct {
 func (c *MongoClient) UpdateMany(filter interface{}, update interface{}) (result *UpdateResult, err error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
 	res, err := collection.UpdateMany(context.TODO(), filter, update)
-	return &UpdateResult{
+	result = &UpdateResult{
 		MatchedCount:  res.MatchedCount,
 		ModifiedCount: res.ModifiedCount,
 		UpsertedCount: res.UpsertedCount,
 		UpsertedID:    res.UpsertedID,
-	}, err
+	}
+	return
 }
 
 type FindResultI interface {
