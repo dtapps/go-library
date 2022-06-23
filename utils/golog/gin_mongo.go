@@ -131,7 +131,7 @@ func (c *GinClient) MongoMiddleware() gin.HandlerFunc {
 				if len(jsonBody) > 0 {
 					c.mongoRecord(ginMongoLog{
 						TraceId:           ginCtx.MustGet("trace_id").(string),                              //【系统】链编号
-						RequestTime:       gotime.SetCurrent(requestTime).Timestamp(),                       //【请求】时间
+						RequestTime:       gotime.SetCurrent(requestTime).Timestamp,                         //【请求】时间
 						RequestUri:        host + ginCtx.Request.RequestURI,                                 //【请求】请求链接
 						RequestUrl:        ginCtx.Request.RequestURI,                                        //【请求】请求链接
 						RequestApi:        gorequest.UriFilterExcludeQueryString(ginCtx.Request.RequestURI), //【请求】请求接口
@@ -148,7 +148,7 @@ func (c *GinClient) MongoMiddleware() gin.HandlerFunc {
 						RequestIpCity:     requestClientIpCity,                                              //【请求】请求客户端城市
 						RequestIpIsp:      requestClientIpIsp,                                               //【请求】请求客户端运营商
 						RequestHeader:     ginCtx.Request.Header,                                            //【请求】请求头
-						ResponseTime:      gotime.SetCurrent(gotime.Current().Time).Timestamp(),             //【返回】时间
+						ResponseTime:      gotime.SetCurrent(gotime.Current().Time).Timestamp,               //【返回】时间
 						ResponseCode:      responseCode,                                                     //【返回】状态码
 						ResponseData:      c.jsonUnmarshal(responseBody),                                    //【返回】数据
 						CostTime:          endTime - startTime,                                              //【系统】花费时间
@@ -156,7 +156,7 @@ func (c *GinClient) MongoMiddleware() gin.HandlerFunc {
 				} else {
 					c.mongoRecord(ginMongoLog{
 						TraceId:           ginCtx.MustGet("trace_id").(string),                              //【系统】链编号
-						RequestTime:       gotime.SetCurrent(requestTime).Timestamp(),                       //【请求】时间
+						RequestTime:       gotime.SetCurrent(requestTime).Timestamp,                         //【请求】时间
 						RequestUri:        host + ginCtx.Request.RequestURI,                                 //【请求】请求链接
 						RequestUrl:        ginCtx.Request.RequestURI,                                        //【请求】请求链接
 						RequestApi:        gorequest.UriFilterExcludeQueryString(ginCtx.Request.RequestURI), //【请求】请求接口
@@ -173,7 +173,7 @@ func (c *GinClient) MongoMiddleware() gin.HandlerFunc {
 						RequestIpCity:     requestClientIpCity,                                              //【请求】请求客户端城市
 						RequestIpIsp:      requestClientIpIsp,                                               //【请求】请求客户端运营商
 						RequestHeader:     ginCtx.Request.Header,                                            //【请求】请求头
-						ResponseTime:      gotime.SetCurrent(gotime.Current().Time).Timestamp(),             //【返回】时间
+						ResponseTime:      gotime.SetCurrent(gotime.Current().Time).Timestamp,               //【返回】时间
 						ResponseCode:      responseCode,                                                     //【返回】状态码
 						ResponseData:      c.jsonUnmarshal(responseBody),                                    //【返回】数据
 						CostTime:          endTime - startTime,                                              //【系统】花费时间
