@@ -22,7 +22,6 @@ func Current() Pro {
 		p.Time = time.Now().In(p.loc)
 	}
 
-	p.Timestamp = p.Time.Unix()
 	return p
 }
 
@@ -32,8 +31,6 @@ func SetCurrent(sTime time.Time) Pro {
 	p := NewPro()
 
 	p.Time = sTime
-
-	p.Timestamp = p.Time.Unix()
 
 	return p
 }
@@ -72,8 +69,6 @@ func SetCurrentParse(str string) Pro {
 
 	p.Time = location
 
-	p.Timestamp = p.Time.Unix()
-
 	return p
 }
 
@@ -84,9 +79,12 @@ func SetCurrentUnix(ts int64) Pro {
 
 	p.Time = time.Unix(ts, 0)
 
-	p.Timestamp = p.Time.Unix()
-
 	return p
+}
+
+// Timestamp 今天此刻时间戳
+func (p Pro) Timestamp() int64 {
+	return p.Time.Unix()
 }
 
 // Now 今天此刻

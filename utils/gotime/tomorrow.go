@@ -15,6 +15,5 @@ func Tomorrow() Pro {
 		p.Time = time.Now().In(location).AddDate(0, 0, +1)
 	}
 
-	p.Timestamp = p.Time.Unix()
 	return p
 }

@@ -23,10 +23,9 @@ const (
 
 // Pro 结构体
 type Pro struct {
-	Time      time.Time
-	Timestamp int64 // Unix
-	loc       *time.Location
-	Error     error
+	Time  time.Time
+	loc   *time.Location
+	Error error
 }
 
 // NewPro 初始化结构体
