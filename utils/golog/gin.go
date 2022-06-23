@@ -79,7 +79,7 @@ func NewGinClient(attrs ...*OperationAttr) (*GinClient, error) {
 			return nil, errors.New("没有设置驱动")
 		}
 
-		if c.config.tableName == "" {
+		if c.config.databaseName == "" {
 			return nil, errors.New("没有设置库名")
 		}
 
