@@ -4,7 +4,6 @@ import (
 	"go.dtapp.net/library/utils/dorm"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"log"
 )
 
 // 模型结构体
@@ -38,14 +37,14 @@ func (c *ApiClient) mongoRecord(mongoLog apiMongoLog) error {
 
 	mongoLog.LogId = primitive.NewObjectID()
 
-	_, err := c.mongoCollectionClient.Collection(c.config.tableName).InsertOne(mongoLog)
-	log.Printf("api.mongoRecord：%s\n", err)
+	_, err := c.mongoClient.Database(c.config.databaseName).Collection(c.config.collectionName).InsertOne(mongoLog)
+
 	return err
 }
 
 // MongoQuery 查询
 func (c *ApiClient) MongoQuery() *dorm.MongoClient {
-	return c.mongoCollectionClient.Collection(c.config.tableName)
+	return c.mongoClient.Database(c.config.databaseName).Collection(c.config.collectionName)
 }
 
 // MongoMiddleware 中间件

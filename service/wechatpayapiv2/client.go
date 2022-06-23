@@ -8,14 +8,15 @@ import (
 )
 
 type ConfigClient struct {
-	AppId      string // 小程序或者公众号唯一凭证
-	AppSecret  string // 小程序或者公众号唯一凭证密钥
-	MchId      string // 微信支付的商户id
-	MchKey     string // 私钥
-	CertString string
-	KeyString  string
-	MongoDb    *dorm.MongoClient // 日志数据库
-	PgsqlDb    *gorm.DB          // 日志数据库
+	AppId        string // 小程序或者公众号唯一凭证
+	AppSecret    string // 小程序或者公众号唯一凭证密钥
+	MchId        string // 微信支付的商户id
+	MchKey       string // 私钥
+	CertString   string
+	KeyString    string
+	MongoDb      *dorm.MongoClient // 日志数据库
+	PgsqlDb      *gorm.DB          // 日志数据库
+	DatabaseName string            // 库名
 }
 
 // Client 微信支付服务
@@ -43,8 +44,9 @@ func NewClient(config *ConfigClient) (*Client, error) {
 	}
 	if c.config.MongoDb != nil {
 		c.log, err = golog.NewApiClient(
-			golog.WithMongoCollectionClient(c.config.MongoDb),
-			golog.WithTableName(logTable),
+			golog.WithMongoClient(c.config.MongoDb),
+			golog.WithDatabaseName(c.config.DatabaseName),
+			golog.WithCollectionName(logTable),
 		)
 		if err != nil {
 			return nil, err

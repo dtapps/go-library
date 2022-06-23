@@ -8,11 +8,12 @@ import (
 )
 
 type ConfigClient struct {
-	AgentId     string // 服务商编号，由乐刷分配的接入方唯一标识，明文传输。
-	Environment string //  环境
-	KeyAgent    string
-	MongoDb     *dorm.MongoClient // 日志数据库
-	PgsqlDb     *gorm.DB          // 日志数据库
+	AgentId      string // 服务商编号，由乐刷分配的接入方唯一标识，明文传输。
+	Environment  string //  环境
+	KeyAgent     string
+	MongoDb      *dorm.MongoClient // 日志数据库
+	PgsqlDb      *gorm.DB          // 日志数据库
+	DatabaseName string            // 库名
 }
 
 // Client 乐刷
@@ -40,8 +41,9 @@ func NewClient(config *ConfigClient) (*Client, error) {
 	}
 	if c.config.MongoDb != nil {
 		c.log, err = golog.NewApiClient(
-			golog.WithMongoCollectionClient(c.config.MongoDb),
-			golog.WithTableName(logTable),
+			golog.WithMongoClient(c.config.MongoDb),
+			golog.WithDatabaseName(c.config.DatabaseName),
+			golog.WithCollectionName(logTable),
 		)
 		if err != nil {
 			return nil, err

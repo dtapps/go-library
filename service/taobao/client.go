@@ -12,11 +12,12 @@ import (
 )
 
 type ConfigClient struct {
-	AppKey    string            // 应用Key
-	AppSecret string            // 密钥
-	AdzoneId  int64             // mm_xxx_xxx_xxx的第三位
-	MongoDb   *dorm.MongoClient // 日志数据库
-	PgsqlDb   *gorm.DB          // 日志数据库
+	AppKey       string            // 应用Key
+	AppSecret    string            // 密钥
+	AdzoneId     int64             // mm_xxx_xxx_xxx的第三位
+	MongoDb      *dorm.MongoClient // 日志数据库
+	PgsqlDb      *gorm.DB          // 日志数据库
+	DatabaseName string            // 库名
 }
 
 type Client struct {
@@ -44,8 +45,9 @@ func NewClient(config *ConfigClient) (*Client, error) {
 	}
 	if c.config.MongoDb != nil {
 		c.log, err = golog.NewApiClient(
-			golog.WithMongoCollectionClient(c.config.MongoDb),
-			golog.WithTableName(logTable),
+			golog.WithMongoClient(c.config.MongoDb),
+			golog.WithDatabaseName(c.config.DatabaseName),
+			golog.WithCollectionName(logTable),
 		)
 		if err != nil {
 			return nil, err

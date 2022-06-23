@@ -55,14 +55,14 @@ func (c *GinClient) mongoRecord(mongoLog ginMongoLog) error {
 
 	mongoLog.LogId = primitive.NewObjectID()
 
-	_, err := c.mongoCollectionClient.Collection(c.config.tableName).InsertOne(mongoLog)
+	_, err := c.mongoClient.Database(c.config.databaseName).Collection(c.config.collectionName).InsertOne(mongoLog)
 
 	return err
 }
 
 // MongoQuery 查询
 func (c *GinClient) MongoQuery() *dorm.MongoClient {
-	return c.mongoCollectionClient.Collection(c.config.tableName)
+	return c.mongoClient.Database(c.config.databaseName).Collection(c.config.collectionName)
 }
 
 // MongoMiddleware 中间件
@@ -121,7 +121,7 @@ func (c *GinClient) MongoMiddleware() gin.HandlerFunc {
 			}
 
 			// 记录
-			if c.mongoCollectionClient != nil {
+			if c.mongoClient != nil {
 				host := ""
 				if ginCtx.Request.TLS == nil {
 					host = "http://" + ginCtx.Request.Host

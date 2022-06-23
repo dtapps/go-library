@@ -13,29 +13,41 @@ const (
 
 // OperationAttr 操作属性
 type OperationAttr struct {
-	gormClient            *gorm.DB          // 驱动
-	mongoCollectionClient *dorm.MongoClient // 驱动
-	logType               string            // 类型
-	tableName             string            // 表名
-	ipService             *goip.Client      // ip服务
+	gormClient     *gorm.DB          // 数据库驱动
+	mongoClient    *dorm.MongoClient // 数据库驱动
+	ipService      *goip.Client      // ip服务
+	logType        string            // 类型
+	tableName      string            // 表名
+	databaseName   string            // 库名
+	collectionName string            // 表名
 }
 
-// WithGormClient 数据库驱动
+// WithGormClient 设置数据库驱动
 func WithGormClient(client *gorm.DB) *OperationAttr {
 	return &OperationAttr{gormClient: client, logType: logTypeGorm}
 }
 
-// WithMongoCollectionClient 数据库驱动(温馨提示：需要已选择库)
-func WithMongoCollectionClient(client *dorm.MongoClient) *OperationAttr {
-	return &OperationAttr{mongoCollectionClient: client, logType: logTypeMongo}
+// WithMongoClient 设置数据库驱动
+func WithMongoClient(client *dorm.MongoClient) *OperationAttr {
+	return &OperationAttr{mongoClient: client, logType: logTypeMongo}
 }
 
-// WithTableName 表名
+// WithTableName 设置表名
 func WithTableName(tableName string) *OperationAttr {
 	return &OperationAttr{tableName: tableName}
 }
 
-// WithIpService ip服务
+// WithDatabaseName 设置库名
+func WithDatabaseName(databaseName string) *OperationAttr {
+	return &OperationAttr{databaseName: databaseName}
+}
+
+// WithCollectionName 设置表名
+func WithCollectionName(collectionName string) *OperationAttr {
+	return &OperationAttr{collectionName: collectionName}
+}
+
+// WithIpService 设置ip服务
 func WithIpService(ipService *goip.Client) *OperationAttr {
 	return &OperationAttr{ipService: ipService}
 }

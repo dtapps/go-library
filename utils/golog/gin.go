@@ -14,19 +14,23 @@ import (
 
 // GinClient 框架
 type GinClient struct {
-	gormClient            *gorm.DB          // 驱动
-	mongoCollectionClient *dorm.MongoClient // 驱动(温馨提示：需要已选择库)
-	ipService             *goip.Client      // ip服务
-	config                struct {
-		logType   string // 日志类型
-		tableName string // 表名
-		insideIp  string // 内网ip
-		hostname  string // 主机名
-		goVersion string // go版本
+	gormClient  *gorm.DB          // 数据库驱动
+	mongoClient *dorm.MongoClient // 数据库驱动
+	ipService   *goip.Client      // ip服务
+	config      struct {
+		logType        string // 日志类型
+		tableName      string // 表名
+		databaseName   string // 库名
+		collectionName string // 表名
+		insideIp       string // 内网ip
+		hostname       string // 主机名
+		goVersion      string // go版本
 	} // 配置
 }
 
 // NewGinClient 创建框架实例化
+// WithGormClient && WithTableName
+// WithMongoCollectionClient && WithDatabaseName && WithCollectionName
 func NewGinClient(attrs ...*OperationAttr) (*GinClient, error) {
 
 	c := &GinClient{}
@@ -35,12 +39,18 @@ func NewGinClient(attrs ...*OperationAttr) (*GinClient, error) {
 			c.gormClient = attr.gormClient
 			c.config.logType = attr.logType
 		}
-		if attr.mongoCollectionClient != nil {
-			c.mongoCollectionClient = attr.mongoCollectionClient
+		if attr.mongoClient != nil {
+			c.mongoClient = attr.mongoClient
 			c.config.logType = attr.logType
 		}
 		if attr.tableName != "" {
 			c.config.tableName = attr.tableName
+		}
+		if attr.databaseName != "" {
+			c.config.databaseName = attr.databaseName
+		}
+		if attr.collectionName != "" {
+			c.config.collectionName = attr.collectionName
 		}
 		if attr.ipService != nil {
 			c.ipService = attr.ipService
@@ -51,11 +61,11 @@ func NewGinClient(attrs ...*OperationAttr) (*GinClient, error) {
 	case logTypeGorm:
 
 		if c.gormClient == nil {
-			return nil, errors.New("驱动不能为空")
+			return nil, errors.New("没有设置驱动")
 		}
 
 		if c.config.tableName == "" {
-			return nil, errors.New("表名不能为空")
+			return nil, errors.New("没有设置表名")
 		}
 
 		err := c.gormClient.Table(c.config.tableName).AutoMigrate(&apiPostgresqlLog{})
@@ -65,12 +75,16 @@ func NewGinClient(attrs ...*OperationAttr) (*GinClient, error) {
 
 	case logTypeMongo:
 
-		if c.mongoCollectionClient.Db == nil {
-			return nil, errors.New("驱动不能为空")
+		if c.mongoClient.Db == nil {
+			return nil, errors.New("没有设置驱动")
 		}
 
 		if c.config.tableName == "" {
-			return nil, errors.New("表名不能为空")
+			return nil, errors.New("没有设置库名")
+		}
+
+		if c.config.collectionName == "" {
+			return nil, errors.New("没有设置表名")
 		}
 
 	default:
