@@ -38,10 +38,10 @@ func (c *Client) request(url string, params map[string]interface{}, method strin
 
 	// 日志
 	if c.config.PgsqlDb != nil {
-		go c.postgresqlLog(request)
+		go c.log.GormMiddleware(request)
 	}
 	if c.config.MongoDb != nil {
-		go c.mongoLog(request)
+		go c.log.MongoMiddleware(request)
 	}
 
 	return request, err

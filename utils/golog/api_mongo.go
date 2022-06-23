@@ -4,10 +4,11 @@ import (
 	"go.dtapp.net/library/utils/dorm"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"log"
 )
 
-// ApiMongoLog 结构体
-type ApiMongoLog struct {
+// 模型结构体
+type apiMongoLog struct {
 	LogId                 primitive.ObjectID     `json:"log_id,omitempty" bson:"_id,omitempty"`                                      //【记录】编号
 	RequestTime           dorm.BsonTime          `json:"request_time,omitempty" bson:"request_time,omitempty"`                       //【请求】时间
 	RequestUri            string                 `json:"request_uri,omitempty" bson:"request_uri,omitempty"`                         //【请求】链接
@@ -26,9 +27,30 @@ type ApiMongoLog struct {
 	GoVersion             string                 `json:"go_version,omitempty" bson:"go_version,omitempty"`                           //【程序】Go版本
 }
 
+// 记录日志
+func (c *ApiClient) mongoRecord(mongoLog apiMongoLog) error {
+
+	mongoLog.SystemHostName = c.config.hostname
+	if mongoLog.SystemInsideIp == "" {
+		mongoLog.SystemInsideIp = c.config.insideIp
+	}
+	mongoLog.GoVersion = c.config.goVersion
+
+	mongoLog.LogId = primitive.NewObjectID()
+
+	_, err := c.mongoCollectionClient.Collection(c.config.tableName).InsertOne(mongoLog)
+	log.Printf("api.mongoRecord：%s\n", err)
+	return err
+}
+
+// MongoQuery 查询
+func (c *ApiClient) MongoQuery() *dorm.MongoClient {
+	return c.mongoCollectionClient.Collection(c.config.tableName)
+}
+
 // MongoMiddleware 中间件
 func (c *ApiClient) MongoMiddleware(request gorequest.Response) {
-	c.MongoRecord(ApiMongoLog{
+	c.mongoRecord(apiMongoLog{
 		RequestTime:           dorm.BsonTime(request.RequestTime),          //【请求】时间
 		RequestUri:            request.RequestUri,                          //【请求】链接
 		RequestUrl:            gorequest.UriParse(request.RequestUri).Url,  //【请求】链接
@@ -41,5 +63,41 @@ func (c *ApiClient) MongoMiddleware(request gorequest.Response) {
 		ResponseBody:          request.ResponseBody,                        //【返回】内容
 		ResponseContentLength: request.ResponseContentLength,               //【返回】大小
 		ResponseTime:          dorm.BsonTime(request.ResponseTime),         //【返回】时间
+	})
+}
+
+// MongoMiddlewareXml 中间件
+func (c *ApiClient) MongoMiddlewareXml(request gorequest.Response) {
+	c.mongoRecord(apiMongoLog{
+		RequestTime:           dorm.BsonTime(request.RequestTime),          //【请求】时间
+		RequestUri:            request.RequestUri,                          //【请求】链接
+		RequestUrl:            gorequest.UriParse(request.RequestUri).Url,  //【请求】链接
+		RequestApi:            gorequest.UriParse(request.RequestUri).Path, //【请求】接口
+		RequestMethod:         request.RequestMethod,                       //【请求】方式
+		RequestParams:         request.RequestParams,                       //【请求】参数
+		RequestHeader:         request.RequestHeader,                       //【请求】头部
+		ResponseHeader:        request.ResponseHeader,                      //【返回】头部
+		ResponseStatusCode:    request.ResponseStatusCode,                  //【返回】状态码
+		ResponseBody:          dorm.XmlDecodeNoError(request.ResponseBody), //【返回】内容
+		ResponseContentLength: request.ResponseContentLength,               //【返回】大小
+		ResponseTime:          dorm.BsonTime(request.ResponseTime),         //【返回】时间
+	})
+}
+
+// MongoMiddlewareCustom 中间件
+func (c *ApiClient) MongoMiddlewareCustom(api string, request gorequest.Response) {
+	c.mongoRecord(apiMongoLog{
+		RequestTime:           dorm.BsonTime(request.RequestTime),         //【请求】时间
+		RequestUri:            request.RequestUri,                         //【请求】链接
+		RequestUrl:            gorequest.UriParse(request.RequestUri).Url, //【请求】链接
+		RequestApi:            api,                                        //【请求】接口
+		RequestMethod:         request.RequestMethod,                      //【请求】方式
+		RequestParams:         request.RequestParams,                      //【请求】参数
+		RequestHeader:         request.RequestHeader,                      //【请求】头部
+		ResponseHeader:        request.ResponseHeader,                     //【返回】头部
+		ResponseStatusCode:    request.ResponseStatusCode,                 //【返回】状态码
+		ResponseBody:          request.ResponseBody,                       //【返回】内容
+		ResponseContentLength: request.ResponseContentLength,              //【返回】大小
+		ResponseTime:          dorm.BsonTime(request.ResponseTime),        //【返回】时间
 	})
 }

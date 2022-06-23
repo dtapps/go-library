@@ -47,5 +47,12 @@ func NewClient(config *ConfigClient) (*Client, error) {
 		}
 	}
 
+	//if c.config.PgsqlDb != nil {
+	//	go c.log.GormMiddleware(request)
+	//}
+	//if c.config.MongoDb != nil {
+	//	go c.log.MongoMiddleware(request)
+	//}
+
 	return c, nil
 }
