@@ -41,6 +41,9 @@ func (j *JobsGorm) GetEtcdIssueAddress(server *Etcd, v jobs_gorm_model.Task) (ad
 
 // 随机返回一个
 func (j *JobsGorm) random(min, max int) int {
+	if max-min <= 0 {
+		return 0
+	}
 	rand.Seed(time.Now().Unix())
 	return rand.Intn(max-min) + min
 }
