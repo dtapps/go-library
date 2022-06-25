@@ -45,6 +45,9 @@ func NewGormMysqlClient(config *ConfigGormClient) (*GormClient, error) {
 					Colorful:                  false,       // 禁用彩色打印
 				},
 			),
+			NowFunc: func() time.Time {
+				return time.Now().Local()
+			},
 		})
 	} else {
 		c.Db, err = gorm.Open(mysql.Open(c.config.Dns), &gorm.Config{})
@@ -89,6 +92,9 @@ func NewGormPostgresClient(config *ConfigGormClient) (*GormClient, error) {
 					Colorful:                  false,       // 禁用彩色打印
 				},
 			),
+			NowFunc: func() time.Time {
+				return time.Now().Local()
+			},
 		})
 	} else {
 		c.Db, err = gorm.Open(postgres.Open(c.config.Dns), &gorm.Config{})
