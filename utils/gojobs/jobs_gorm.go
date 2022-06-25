@@ -16,13 +16,6 @@ import (
 
 // ConfigJobsGorm 配置
 type ConfigJobsGorm struct {
-	MainService int               // 主要服务
-	Db          *gorm.DB          // 数据库
-	Redis       *dorm.RedisClient // 缓存数据库服务
-}
-
-// JobsGorm Gorm数据库驱动
-type JobsGorm struct {
 	runVersion  string            // 运行版本
 	os          string            // 系统类型
 	arch        string            // 系统架构
@@ -30,42 +23,55 @@ type JobsGorm struct {
 	version     string            // GO版本
 	macAddrS    string            // Mac地址
 	insideIp    string            // 内网ip
-	outsideIp   string            // 外网ip
-	mainService int               // 主要服务
-	db          *gorm.DB          // 数据库
-	redis       *dorm.RedisClient // 缓存数据库服务
+	OutsideIp   string            // 外网ip
+	MainService int               // 主要服务
+	Db          *gorm.DB          // 数据库
+	Redis       *dorm.RedisClient // 缓存数据库服务
+}
+
+// JobsGorm Gorm数据库驱动
+type JobsGorm struct {
+	db     *gorm.DB          // 数据库
+	redis  *dorm.RedisClient // 缓存数据库服务
+	config *ConfigJobsGorm   // 配置
 }
 
 // NewJobsGorm 初始化
-func NewJobsGorm(config *ConfigJobsGorm) *JobsGorm {
+func NewJobsGorm(config *ConfigJobsGorm) (*JobsGorm, error) {
 
-	var (
-		j = &JobsGorm{}
-	)
+	c := &JobsGorm{config: config}
 
-	j.runVersion = go_library.Version()
-	j.os = runtime.GOOS
-	j.arch = runtime.GOARCH
-	j.maxProCs = runtime.GOMAXPROCS(0)
-	j.version = runtime.Version()
-	j.macAddrS = goarray.TurnString(goip.GetMacAddr())
-	j.insideIp = goip.GetInsideIp()
-	j.outsideIp = goip.GetOutsideIp()
-	j.mainService = config.MainService
-	j.db = config.Db
-	j.redis = config.Redis
+	c.config.runVersion = go_library.Version()
+	c.config.os = runtime.GOOS
+	c.config.arch = runtime.GOARCH
+	c.config.maxProCs = runtime.GOMAXPROCS(0)
+	c.config.version = runtime.Version()
+	c.config.macAddrS = goarray.TurnString(goip.GetMacAddr())
+	c.config.insideIp = goip.GetInsideIp()
 
-	err := j.db.AutoMigrate(
+	if c.config.OutsideIp == "" {
+		return nil, errors.New("需要配置当前的IP")
+	}
+
+	if c.config.Db == nil {
+		return nil, errors.New("需要配置数据库驱动")
+	}
+
+	if c.config.Redis == nil {
+		return nil, errors.New("需要配置缓存驱动")
+	}
+
+	err := c.db.AutoMigrate(
 		&jobs_gorm_model.Task{},
 		&jobs_gorm_model.TaskLog{},
 		&jobs_gorm_model.TaskLogRun{},
 		&jobs_gorm_model.TaskIp{},
 	)
 	if err != nil {
-		panic(errors.New(fmt.Sprintf("创建任务模型失败：%v\n", err)))
+		return nil, errors.New(fmt.Sprintf("创建任务模型失败：%v\n", err))
 	}
 
-	return j
+	return c, nil
 }
 
 func (j *JobsGorm) GetDb() *gorm.DB {
@@ -83,7 +89,7 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 		TaskId:     info.Id,
 		StatusCode: status,
 		Desc:       desc,
-		Version:    j.runVersion,
+		Version:    j.config.runVersion,
 	})
 	if statusCreate.RowsAffected == 0 {
 		log.Println("statusCreate", statusCreate.Error)
@@ -108,7 +114,7 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 				StatusDesc: "执行成功",
 				Number:     info.Number + 1,
 				RunId:      gouuid.GetUuId(),
-				UpdatedIp:  j.outsideIp,
+				UpdatedIp:  j.config.OutsideIp,
 				Result:     desc,
 			})
 		if statusEdit.RowsAffected == 0 {
@@ -123,7 +129,7 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 				Status:     TASK_SUCCESS,
 				StatusDesc: "结束执行",
 				Number:     info.Number + 1,
-				UpdatedIp:  j.outsideIp,
+				UpdatedIp:  j.config.OutsideIp,
 				Result:     desc,
 			})
 		if statusEdit.RowsAffected == 0 {
@@ -138,7 +144,7 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 				StatusDesc: "执行失败",
 				Number:     info.Number + 1,
 				RunId:      gouuid.GetUuId(),
-				UpdatedIp:  j.outsideIp,
+				UpdatedIp:  j.config.OutsideIp,
 				Result:     desc,
 			})
 		if statusEdit.RowsAffected == 0 {
@@ -165,13 +171,13 @@ func (j *JobsGorm) RunAddLog(id uint, runId string) *gorm.DB {
 	return j.db.Create(&jobs_gorm_model.TaskLogRun{
 		TaskId:     id,
 		RunId:      runId,
-		InsideIp:   j.insideIp,
-		OutsideIp:  j.outsideIp,
-		Os:         j.os,
-		Arch:       j.arch,
-		Gomaxprocs: j.maxProCs,
-		GoVersion:  j.version,
-		MacAddrs:   j.macAddrS,
+		InsideIp:   j.config.insideIp,
+		OutsideIp:  j.config.OutsideIp,
+		Os:         j.config.os,
+		Arch:       j.config.arch,
+		Gomaxprocs: j.config.maxProCs,
+		GoVersion:  j.config.version,
+		MacAddrs:   j.config.macAddrS,
 	})
 }
 
@@ -197,9 +203,9 @@ func (j *JobsGorm) CreateInCustomId(config *ConfigCreateInCustomId) error {
 		CustomId:       config.CustomId,
 		CustomSequence: config.CustomSequence,
 		Type:           config.Type,
-		CreatedIp:      j.outsideIp,
+		CreatedIp:      j.config.OutsideIp,
 		SpecifyIp:      config.SpecifyIp,
-		UpdatedIp:      j.outsideIp,
+		UpdatedIp:      j.config.OutsideIp,
 	})
 	if createStatus.RowsAffected == 0 {
 		return errors.New(fmt.Sprintf("创建[%s@%s]任务失败：%s", config.CustomId, config.Type, createStatus.Error))
@@ -233,9 +239,9 @@ func (j *JobsGorm) CreateInCustomIdOnly(config *ConfigCreateInCustomIdOnly) erro
 		CustomId:       config.CustomId,
 		CustomSequence: config.CustomSequence,
 		Type:           config.Type,
-		CreatedIp:      j.outsideIp,
+		CreatedIp:      j.config.OutsideIp,
 		SpecifyIp:      config.SpecifyIp,
-		UpdatedIp:      j.outsideIp,
+		UpdatedIp:      j.config.OutsideIp,
 	})
 	if createStatus.RowsAffected == 0 {
 		return errors.New(fmt.Sprintf("创建[%s@%s]任务失败：%s", config.CustomId, config.Type, createStatus.Error))
@@ -267,9 +273,9 @@ func (j *JobsGorm) CreateInCustomIdMaxNumber(config *ConfigCreateInCustomIdMaxNu
 		CustomId:       config.CustomId,
 		CustomSequence: config.CustomSequence,
 		Type:           config.Type,
-		CreatedIp:      j.outsideIp,
+		CreatedIp:      j.config.OutsideIp,
 		SpecifyIp:      config.SpecifyIp,
-		UpdatedIp:      j.outsideIp,
+		UpdatedIp:      j.config.OutsideIp,
 	})
 	if createStatus.RowsAffected == 0 {
 		return errors.New(fmt.Sprintf("创建[%s@%s]任务失败：%s", config.CustomId, config.Type, createStatus.Error))
@@ -305,9 +311,9 @@ func (j *JobsGorm) CreateInCustomIdMaxNumberOnly(config *ConfigCreateInCustomIdM
 		CustomId:       config.CustomId,
 		CustomSequence: config.CustomSequence,
 		Type:           config.Type,
-		CreatedIp:      j.outsideIp,
+		CreatedIp:      j.config.OutsideIp,
 		SpecifyIp:      config.SpecifyIp,
-		UpdatedIp:      j.outsideIp,
+		UpdatedIp:      j.config.OutsideIp,
 	})
 	if createStatus.RowsAffected == 0 {
 		return errors.New(fmt.Sprintf("创建[%s@%s]任务失败：%s", config.CustomId, config.Type, createStatus.Error))
