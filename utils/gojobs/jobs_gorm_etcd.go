@@ -40,7 +40,12 @@ func (j *JobsGorm) GetEtcdIssueAddress(server *Etcd, v jobs_gorm_model.Task) (ad
 		}
 	}
 	// 随机返回一个
-	return fmt.Sprintf("%s/%d", server.IssueWatchKey(workers[j.random(0, len(workers))]), v.Id), err
+	zxIp := workers[j.random(0, len(workers))]
+	if zxIp == "" {
+		return address, errors.New("获取执行的客户端异常")
+	}
+	address = fmt.Sprintf("%s/%d", server.IssueWatchKey(zxIp), v.Id)
+	return address, err
 }
 
 // 随机返回一个
