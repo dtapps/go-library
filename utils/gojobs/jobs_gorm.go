@@ -27,6 +27,7 @@ type ConfigJobsGorm struct {
 	MainService int               // 主要服务
 	Db          *gorm.DB          // 数据库
 	Redis       *dorm.RedisClient // 缓存数据库服务
+	Debug       bool              // 是否开启调测
 }
 
 // JobsGorm Gorm数据库驱动
@@ -71,6 +72,10 @@ func NewJobsGorm(config *ConfigJobsGorm) (*JobsGorm, error) {
 	)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("创建任务模型失败：%v\n", err))
+	}
+
+	if c.config.Debug == true {
+		log.Printf("jobs：%+v\n", c)
 	}
 
 	return c, nil
