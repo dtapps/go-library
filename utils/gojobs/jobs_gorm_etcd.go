@@ -27,7 +27,7 @@ func (j *JobsGorm) GetEtcdIssueAddress(server *Etcd, v jobs_gorm_model.Task) (ad
 	if err != nil {
 		return address, errors.New(fmt.Sprintf("获取在线客户端列表失败：%s", err.Error()))
 	}
-	if len(workers) < 0 {
+	if len(workers) <= 0 {
 		return address, errors.New("没有客户端在线")
 	}
 	// 判断是否指定某ip执行
