@@ -53,11 +53,13 @@ func NewJobsGorm(config *ConfigJobsGorm) (*JobsGorm, error) {
 		return nil, errors.New("需要配置当前的IP")
 	}
 
-	if c.config.Db == nil {
+	c.db = c.config.Db
+	if c.db == nil {
 		return nil, errors.New("需要配置数据库驱动")
 	}
 
-	if c.config.Redis == nil {
+	c.redis = c.config.Redis
+	if c.redis == nil {
 		return nil, errors.New("需要配置缓存驱动")
 	}
 
