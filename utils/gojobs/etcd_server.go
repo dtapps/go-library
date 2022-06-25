@@ -60,8 +60,9 @@ func (e Etcd) ListWorkers() (workerArr []string, err error) {
 	workerArr = make([]string, 0)
 
 	// 获取目录下所有Kv
-	if getResp, err = e.Kv.Get(context.TODO(), getJobWorkerDir(e), clientv3.WithPrefix()); err != nil {
-		return
+	getResp, err = e.Kv.Get(context.TODO(), getJobWorkerDir(e), clientv3.WithPrefix())
+	if err != nil {
+		return workerArr, err
 	}
 
 	// 解析每个节点的IP
@@ -70,7 +71,7 @@ func (e Etcd) ListWorkers() (workerArr []string, err error) {
 		workerIP = e.ExtractWorkerIP(string(kv.Key))
 		workerArr = append(workerArr, workerIP)
 	}
-	return
+	return workerArr, err
 }
 
 // ExtractWorkerIP 提取worker的IP
