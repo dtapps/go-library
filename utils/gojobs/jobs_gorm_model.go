@@ -2,7 +2,6 @@ package gojobs
 
 import (
 	"go.dtapp.net/library/utils/gojobs/jobs_gorm_model"
-	"go.dtapp.net/library/utils/gotime"
 	"gorm.io/gorm"
 	"log"
 	"strings"
@@ -133,10 +132,9 @@ func (j *JobsGorm) EditTask(tx *gorm.DB, id uint) *gorm.DB {
 // UpdateFrequency 更新任务频率
 func (j *JobsGorm) UpdateFrequency(tx *gorm.DB, id uint, frequency int64) *gorm.DB {
 	return j.EditTask(tx, id).
-		Select("frequency", "updated_at").
+		Select("frequency").
 		Updates(jobs_gorm_model.Task{
 			Frequency: frequency,
-			UpdatedAt: gotime.Current().Format(),
 		})
 }
 

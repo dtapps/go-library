@@ -11,7 +11,7 @@ import (
 func (j *JobsGorm) CheckManyTask(tx *gorm.DB, vs []jobs_gorm_model.Task) {
 	if len(vs) > 0 {
 		for _, v := range vs {
-			diffInSecondWithAbs := gotime.Current().DiffInSecondWithAbs(gotime.SetCurrentParse(v.UpdatedAt).Time)
+			diffInSecondWithAbs := gotime.Current().DiffInSecondWithAbs(gotime.SetCurrent(v.UpdatedAt).Time)
 			if diffInSecondWithAbs >= v.Frequency*3 {
 				log.Printf("每隔%v秒任务：%v相差%v秒\n", v.Frequency, v.Id, diffInSecondWithAbs)
 				statusDelete := tx.Where("task_id = ?", v.Id).Where("run_id = ?", v.RunId).Delete(&jobs_gorm_model.TaskLogRun{})
@@ -25,7 +25,7 @@ func (j *JobsGorm) CheckManyTask(tx *gorm.DB, vs []jobs_gorm_model.Task) {
 
 // CheckSingleTask 单任务检查
 func (j *JobsGorm) CheckSingleTask(tx *gorm.DB, v jobs_gorm_model.Task) {
-	diffInSecondWithAbs := gotime.Current().DiffInSecondWithAbs(gotime.SetCurrentParse(v.UpdatedAt).Time)
+	diffInSecondWithAbs := gotime.Current().DiffInSecondWithAbs(gotime.SetCurrent(v.UpdatedAt).Time)
 	if diffInSecondWithAbs >= v.Frequency*3 {
 		log.Printf("每隔%v秒任务：%v相差%v秒\n", v.Frequency, v.Id, diffInSecondWithAbs)
 		statusDelete := tx.Where("task_id = ?", v.Id).Where("run_id = ?", v.RunId).Delete(&jobs_gorm_model.TaskLogRun{})

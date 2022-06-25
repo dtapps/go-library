@@ -3,12 +3,11 @@ package gojobs
 import (
 	"errors"
 	"fmt"
-	go_library "go.dtapp.net/library"
+	"go.dtapp.net/library"
 	"go.dtapp.net/library/utils/dorm"
 	"go.dtapp.net/library/utils/goarray"
 	"go.dtapp.net/library/utils/goip"
 	"go.dtapp.net/library/utils/gojobs/jobs_gorm_model"
-	"go.dtapp.net/library/utils/gotime"
 	"go.dtapp.net/library/utils/gouuid"
 	"gorm.io/gorm"
 	"log"
@@ -85,17 +84,15 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 		StatusCode: status,
 		Desc:       desc,
 		Version:    j.runVersion,
-		CreatedAt:  gotime.Current().Format(),
 	})
 	if statusCreate.RowsAffected == 0 {
 		log.Println("statusCreate", statusCreate.Error)
 	}
 	if status == 0 {
 		statusEdit := j.EditTask(j.db, info.Id).
-			Select("run_id", "updated_at").
+			Select("run_id").
 			Updates(jobs_gorm_model.Task{
-				RunId:     gouuid.GetUuId(),
-				UpdatedAt: gotime.Current().Format(),
+				RunId: gouuid.GetUuId(),
 			})
 		if statusEdit.RowsAffected == 0 {
 			log.Println("statusEdit", statusEdit.Error)
@@ -106,13 +103,12 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 	if status == CodeSuccess {
 		// 执行成功
 		statusEdit := j.EditTask(j.db, info.Id).
-			Select("status_desc", "number", "run_id", "updated_ip", "updated_at", "result").
+			Select("status_desc", "number", "run_id", "updated_ip", "result").
 			Updates(jobs_gorm_model.Task{
 				StatusDesc: "执行成功",
 				Number:     info.Number + 1,
 				RunId:      gouuid.GetUuId(),
 				UpdatedIp:  j.outsideIp,
-				UpdatedAt:  gotime.Current().Format(),
 				Result:     desc,
 			})
 		if statusEdit.RowsAffected == 0 {
@@ -122,13 +118,12 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 	if status == CodeEnd {
 		// 执行成功、提前结束
 		statusEdit := j.EditTask(j.db, info.Id).
-			Select("status", "status_desc", "number", "updated_ip", "updated_at", "result").
+			Select("status", "status_desc", "number", "updated_ip", "result").
 			Updates(jobs_gorm_model.Task{
 				Status:     TASK_SUCCESS,
 				StatusDesc: "结束执行",
 				Number:     info.Number + 1,
 				UpdatedIp:  j.outsideIp,
-				UpdatedAt:  gotime.Current().Format(),
 				Result:     desc,
 			})
 		if statusEdit.RowsAffected == 0 {
@@ -138,13 +133,12 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 	if status == CodeError {
 		// 执行失败
 		statusEdit := j.EditTask(j.db, info.Id).
-			Select("status_desc", "number", "run_id", "updated_ip", "updated_at", "result").
+			Select("status_desc", "number", "run_id", "updated_ip", "result").
 			Updates(jobs_gorm_model.Task{
 				StatusDesc: "执行失败",
 				Number:     info.Number + 1,
 				RunId:      gouuid.GetUuId(),
 				UpdatedIp:  j.outsideIp,
-				UpdatedAt:  gotime.Current().Format(),
 				Result:     desc,
 			})
 		if statusEdit.RowsAffected == 0 {
@@ -155,10 +149,9 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 		if info.Number+1 >= info.MaxNumber {
 			// 关闭执行
 			statusEdit := j.EditTask(j.db, info.Id).
-				Select("status", "updated_at").
+				Select("status").
 				Updates(jobs_gorm_model.Task{
-					Status:    TASK_TIMEOUT,
-					UpdatedAt: gotime.Current().Format(),
+					Status: TASK_TIMEOUT,
 				})
 			if statusEdit.RowsAffected == 0 {
 				log.Println("statusEdit", statusEdit.Error)
@@ -179,7 +172,6 @@ func (j *JobsGorm) RunAddLog(id uint, runId string) *gorm.DB {
 		Gomaxprocs: j.maxProCs,
 		GoVersion:  j.version,
 		MacAddrs:   j.macAddrS,
-		CreatedAt:  gotime.Current().Format(),
 	})
 }
 
@@ -208,8 +200,6 @@ func (j *JobsGorm) CreateInCustomId(config *ConfigCreateInCustomId) error {
 		CreatedIp:      j.outsideIp,
 		SpecifyIp:      config.SpecifyIp,
 		UpdatedIp:      j.outsideIp,
-		CreatedAt:      gotime.Current().Format(),
-		UpdatedAt:      gotime.Current().Format(),
 	})
 	if createStatus.RowsAffected == 0 {
 		return errors.New(fmt.Sprintf("创建[%s@%s]任务失败：%s", config.CustomId, config.Type, createStatus.Error))
@@ -246,8 +236,6 @@ func (j *JobsGorm) CreateInCustomIdOnly(config *ConfigCreateInCustomIdOnly) erro
 		CreatedIp:      j.outsideIp,
 		SpecifyIp:      config.SpecifyIp,
 		UpdatedIp:      j.outsideIp,
-		CreatedAt:      gotime.Current().Format(),
-		UpdatedAt:      gotime.Current().Format(),
 	})
 	if createStatus.RowsAffected == 0 {
 		return errors.New(fmt.Sprintf("创建[%s@%s]任务失败：%s", config.CustomId, config.Type, createStatus.Error))
@@ -282,8 +270,6 @@ func (j *JobsGorm) CreateInCustomIdMaxNumber(config *ConfigCreateInCustomIdMaxNu
 		CreatedIp:      j.outsideIp,
 		SpecifyIp:      config.SpecifyIp,
 		UpdatedIp:      j.outsideIp,
-		CreatedAt:      gotime.Current().Format(),
-		UpdatedAt:      gotime.Current().Format(),
 	})
 	if createStatus.RowsAffected == 0 {
 		return errors.New(fmt.Sprintf("创建[%s@%s]任务失败：%s", config.CustomId, config.Type, createStatus.Error))
@@ -322,8 +308,6 @@ func (j *JobsGorm) CreateInCustomIdMaxNumberOnly(config *ConfigCreateInCustomIdM
 		CreatedIp:      j.outsideIp,
 		SpecifyIp:      config.SpecifyIp,
 		UpdatedIp:      j.outsideIp,
-		CreatedAt:      gotime.Current().Format(),
-		UpdatedAt:      gotime.Current().Format(),
 	})
 	if createStatus.RowsAffected == 0 {
 		return errors.New(fmt.Sprintf("创建[%s@%s]任务失败：%s", config.CustomId, config.Type, createStatus.Error))

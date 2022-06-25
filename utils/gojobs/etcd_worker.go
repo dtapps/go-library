@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"go.dtapp.net/library/utils/goip"
 	"go.etcd.io/etcd/client/v3"
 	"log"
 	"time"
@@ -21,7 +20,7 @@ func NewEtcdWorker(config *EtcdConfig) (*Etcd, error) {
 	e.Endpoints = config.Endpoints
 	e.DialTimeout = config.DialTimeout
 	if config.LocalIP == "" {
-		config.LocalIP = goip.GetOutsideIp()
+		return nil, errors.New("需要配置客户端的ip地址，唯一性~！")
 	}
 	e.LocalIP = config.LocalIP
 	e.Username = config.Username

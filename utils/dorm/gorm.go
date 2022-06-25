@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"go.dtapp.net/library/utils/gotime"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -46,7 +47,7 @@ func NewGormMysqlClient(config *ConfigGormClient) (*GormClient, error) {
 				},
 			),
 			NowFunc: func() time.Time {
-				return time.Now().Local()
+				return gotime.Current().Now().Local()
 			},
 		})
 	} else {
@@ -93,7 +94,7 @@ func NewGormPostgresClient(config *ConfigGormClient) (*GormClient, error) {
 				},
 			),
 			NowFunc: func() time.Time {
-				return time.Now().Local()
+				return gotime.Current().Now().Local()
 			},
 		})
 	} else {
