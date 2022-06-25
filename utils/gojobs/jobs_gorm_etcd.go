@@ -22,7 +22,7 @@ func (j *JobsGorm) GetEtcdIssueAddress(server *Etcd, v jobs_gorm_model.Task) (ad
 	}
 	workers, err := server.ListWorkers()
 	if j.config.Debug == true {
-		log.Printf("客户端列表：%+v\n", workers)
+		log.Printf("客户端列表：%+v %v\n", workers, len(workers))
 	}
 	if err != nil {
 		return address, errors.New(fmt.Sprintf("获取在线客户端列表失败：%s", err.Error()))
