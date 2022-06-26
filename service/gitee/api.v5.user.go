@@ -3,11 +3,12 @@ package gitee
 import (
 	"encoding/json"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
+	"net/http"
 	"time"
 )
 
-// UserResult 返回参数
-type UserResult struct {
+type ApiV5UserResponse struct {
 	Id                int64     `json:"id"`
 	Login             string    `json:"login"`
 	Name              string    `json:"name"`
@@ -38,16 +39,26 @@ type UserResult struct {
 	Email             string    `json:"email"`
 }
 
-// User 获取授权用户的资料 https://gitee.com/api/v5/swagger#/getV5User
-func (app *App) User() (result UserResult, err error) {
-	// request
-	body, err := app.request(fmt.Sprintf("https://gitee.com/api/v5/user?access_token=%s", app.AccessToken), map[string]interface{}{}, "GET")
+type ApiV5UserResult struct {
+	Result ApiV5UserResponse  // 结果
+	Body   []byte             // 内容
+	Http   gorequest.Response // 请求
+	Err    error              // 错误
+}
 
-	if err != nil {
-		return
-	}
-	if err = json.Unmarshal(body, &result); err != nil {
-		return
-	}
-	return
+func newApiV5UserResult(result ApiV5UserResponse, body []byte, http gorequest.Response, err error) *ApiV5UserResult {
+	return &ApiV5UserResult{Result: result, Body: body, Http: http, Err: err}
+}
+
+// ApiV5User 获取授权用户的资料
+// https://gitee.com/api/v5/swagger#/getV5User
+func (c *Client) ApiV5User(accessToken string) *ApiV5UserResult {
+	// 参数
+	params := gorequest.NewParamsWith()
+	// 请求
+	request, err := c.request(apiUrl+fmt.Sprintf("/api/v5/user?access_token=%s", accessToken), params, http.MethodGet)
+	// 定义
+	var response ApiV5UserResponse
+	err = json.Unmarshal(request.ResponseBody, &response)
+	return newApiV5UserResult(response, request.ResponseBody, request, err)
 }

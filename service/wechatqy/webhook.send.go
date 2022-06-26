@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"go.dtapp.net/library/utils/gorequest"
+	"net/http"
 )
 
 type WebhookSendResponse struct {
@@ -31,7 +32,7 @@ func (c *Client) WebhookSend(notMustParams ...gorequest.Params) *WebhookSendResu
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(apiUrl+fmt.Sprintf("/cgi-bin/webhook/send?key=%s&type=%s", c.GetKey(), "text"), params)
+	request, err := c.request(apiUrl+fmt.Sprintf("/cgi-bin/webhook/send?key=%s&type=%s", c.GetKey(), "text"), params, http.MethodPost)
 	// 定义
 	var response WebhookSendResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

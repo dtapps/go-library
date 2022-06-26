@@ -1,8 +1,9 @@
-package wechatqy
+package gitee
 
 import "go.dtapp.net/library/utils/gorequest"
 
 func (c *Client) request(url string, params map[string]interface{}, method string) (gorequest.Response, error) {
+
 	// 创建请求
 	client := c.client
 
@@ -12,7 +13,7 @@ func (c *Client) request(url string, params map[string]interface{}, method strin
 	// 设置方式
 	client.SetMethod(method)
 
-	// 设置FORM格式
+	// 设置格式
 	client.SetContentTypeJson()
 
 	// 设置参数
@@ -27,9 +28,6 @@ func (c *Client) request(url string, params map[string]interface{}, method strin
 	// 日志
 	if c.config.PgsqlDb != nil {
 		go c.log.GormMiddleware(request)
-	}
-	if c.config.MongoDb != nil {
-		go c.log.MongoMiddleware(request)
 	}
 
 	return request, err

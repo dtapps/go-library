@@ -1,21 +1,16 @@
-package wechatqy
+package gitee
 
 import (
-	"go.dtapp.net/library/utils/dorm"
 	"go.dtapp.net/library/utils/golog"
 	"go.dtapp.net/library/utils/gorequest"
 	"gorm.io/gorm"
 )
 
 type ConfigClient struct {
-	AppID        string
-	AgentID      int
-	Secret       string
+	ClientID     string
+	ClientSecret string
 	RedirectUri  string
-	Key          string            // key
-	MongoDb      *dorm.MongoClient // 日志数据库
-	PgsqlDb      *gorm.DB          // 日志数据库
-	DatabaseName string            // 库名
+	PgsqlDb      *gorm.DB // 日志数据库
 }
 
 type Client struct {
@@ -35,16 +30,6 @@ func NewClient(config *ConfigClient) (*Client, error) {
 		c.log, err = golog.NewApiClient(
 			golog.WithGormClient(c.config.PgsqlDb),
 			golog.WithTableName(logTable),
-		)
-		if err != nil {
-			return nil, err
-		}
-	}
-	if c.config.MongoDb != nil {
-		c.log, err = golog.NewApiClient(
-			golog.WithMongoClient(c.config.MongoDb),
-			golog.WithDatabaseName(c.config.DatabaseName),
-			golog.WithCollectionName(logTable),
 		)
 		if err != nil {
 			return nil, err
