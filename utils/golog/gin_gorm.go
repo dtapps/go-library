@@ -149,7 +149,7 @@ func (c *GinClient) GormMiddleware() gin.HandlerFunc {
 						RequestHeader:     datatypes.JSON(gojson.JsonEncodeNoError(ginCtx.Request.Header)),      //【请求】请求头
 						ResponseTime:      gotime.Current().Time,                                                //【返回】时间
 						ResponseCode:      responseCode,                                                         //【返回】状态码
-						ResponseData:      datatypes.JSON(gojson.JsonEncodeNoError(responseBody)),               //【返回】数据
+						ResponseData:      datatypes.JSON(responseBody),                                         //【返回】数据
 						CostTime:          endTime - startTime,                                                  //【系统】花费时间
 					})
 				} else {
@@ -174,7 +174,7 @@ func (c *GinClient) GormMiddleware() gin.HandlerFunc {
 						RequestHeader:     datatypes.JSON(gojson.JsonEncodeNoError(ginCtx.Request.Header)),      //【请求】请求头
 						ResponseTime:      gotime.Current().Time,                                                //【返回】时间
 						ResponseCode:      responseCode,                                                         //【返回】状态码
-						ResponseData:      datatypes.JSON(gojson.JsonEncodeNoError(responseBody)),               //【返回】数据
+						ResponseData:      datatypes.JSON(responseBody),                                         //【返回】数据
 						CostTime:          endTime - startTime,                                                  //【系统】花费时间
 					})
 				}
