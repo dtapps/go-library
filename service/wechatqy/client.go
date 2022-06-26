@@ -8,8 +8,8 @@ import (
 )
 
 type ConfigClient struct {
-	AppID        string
-	AgentID      int
+	AppId        string
+	AgentId      int
 	Secret       string
 	RedirectUri  string
 	Key          string            // key

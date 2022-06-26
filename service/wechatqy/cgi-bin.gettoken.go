@@ -31,7 +31,7 @@ func (c *Client) CgiBinGetToken(notMustParams ...gorequest.Params) *CgiBinGetTok
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(apiUrl+fmt.Sprintf("/cgi-bin/gettoken?corpid=%s&corpsecret=%s", c.config.AppID, c.config.Secret), params, http.MethodGet)
+	request, err := c.request(apiUrl+fmt.Sprintf("/cgi-bin/gettoken?corpid=%s&corpsecret=%s", c.GetAppId(), c.GetSecret()), params, http.MethodGet)
 	// 定义
 	var response CgiBinGetTokenResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
