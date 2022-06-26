@@ -80,13 +80,9 @@ type FindResultI interface {
 }
 
 // Find 查询
-func (c *MongoClient) Find(filter interface{}) FindResultI {
+func (c *MongoClient) Find(filter interface{}) (*mongo.Cursor, error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	res, err := collection.Find(context.TODO(), filter)
-	return &FindResult{
-		cursor: res,
-		err:    err,
-	}
+	return collection.Find(context.TODO(), filter)
 }
 
 type FindOneResultI interface {
@@ -94,12 +90,9 @@ type FindOneResultI interface {
 }
 
 // FindOne 查询单个文档
-func (c *MongoClient) FindOne(filter interface{}) FindOneResultI {
+func (c *MongoClient) FindOne(filter interface{}) *mongo.SingleResult {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	res := collection.FindOne(context.TODO(), filter)
-	return &FindOneResult{
-		singleResult: res,
-	}
+	return collection.FindOne(context.TODO(), filter)
 }
 
 type FindManyResultI interface {
@@ -107,13 +100,9 @@ type FindManyResultI interface {
 }
 
 // FindMany 查询多个文档
-func (c *MongoClient) FindMany(filter interface{}) FindManyResultI {
+func (c *MongoClient) FindMany(filter interface{}) (*mongo.Cursor, error) {
 	collection := c.Db.Database(c.getDatabaseName()).Collection(c.collectionName)
-	res, err := collection.Find(context.TODO(), filter)
-	return &FindManyResult{
-		cursor: res,
-		err:    err,
-	}
+	return collection.Find(context.TODO(), filter)
 }
 
 // FindManyByFilters 多条件查询

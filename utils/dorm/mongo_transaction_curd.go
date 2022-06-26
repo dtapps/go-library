@@ -77,32 +77,21 @@ func (ms *MongoTransaction) UpdateMany(filter interface{}, update interface{}) (
 }
 
 // Find 查询
-func (ms *MongoTransaction) Find(filter interface{}) FindResultI {
+func (ms *MongoTransaction) Find(filter interface{}) (*mongo.Cursor, error) {
 	collection := ms.db.Database(ms.getDatabaseName()).Collection(ms.collectionName)
-	res, err := collection.Find(ms.Session, filter)
-	return &FindResult{
-		cursor: res,
-		err:    err,
-	}
+	return collection.Find(ms.Session, filter)
 }
 
 // FindOne 查询单个文档
-func (ms *MongoTransaction) FindOne(filter interface{}) FindOneResultI {
+func (ms *MongoTransaction) FindOne(filter interface{}) *mongo.SingleResult {
 	collection := ms.db.Database(ms.getDatabaseName()).Collection(ms.collectionName)
-	res := collection.FindOne(ms.Session, filter)
-	return &FindOneResult{
-		singleResult: res,
-	}
+	return collection.FindOne(ms.Session, filter)
 }
 
 // FindMany 查询多个文档
-func (ms *MongoTransaction) FindMany(filter interface{}) FindManyResultI {
+func (ms *MongoTransaction) FindMany(filter interface{}) (*mongo.Cursor, error) {
 	collection := ms.db.Database(ms.getDatabaseName()).Collection(ms.collectionName)
-	res, err := collection.Find(ms.Session, filter)
-	return &FindManyResult{
-		cursor: res,
-		err:    err,
-	}
+	return collection.Find(ms.Session, filter)
 }
 
 // FindManyByFilters 多条件查询
