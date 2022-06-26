@@ -3,7 +3,7 @@ package gojobs
 import (
 	"context"
 	"go.dtapp.net/library/utils/gojobs/pb"
-	"go.dtapp.net/library/utils/gouuid"
+	"go.dtapp.net/library/utils/only"
 	"google.golang.org/grpc"
 )
 
@@ -52,7 +52,7 @@ func NewWorker(config *WorkerConfig) *Worker {
 // SubscribeCron 订阅服务
 func (w *Worker) SubscribeCron() pb.PubSub_SubscribeClient {
 	stream, err := w.Pub.Subscribe(context.Background(), &pb.SubscribeRequest{
-		Id:    gouuid.GetUuId(),
+		Id:    only.GetUuId(),
 		Value: prefix,
 		Ip:    w.ClientIp,
 	})
@@ -65,7 +65,7 @@ func (w *Worker) SubscribeCron() pb.PubSub_SubscribeClient {
 // StartCron 启动任务
 func (w *Worker) StartCron() pb.PubSub_SubscribeClient {
 	stream, err := w.Pub.Subscribe(context.Background(), &pb.SubscribeRequest{
-		Id:    gouuid.GetUuId(),
+		Id:    only.GetUuId(),
 		Value: prefixSprintf(w.ClientIp),
 		Ip:    w.ClientIp,
 	})

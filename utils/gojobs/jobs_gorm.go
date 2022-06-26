@@ -8,7 +8,7 @@ import (
 	"go.dtapp.net/library/utils/goarray"
 	"go.dtapp.net/library/utils/goip"
 	"go.dtapp.net/library/utils/gojobs/jobs_gorm_model"
-	"go.dtapp.net/library/utils/gouuid"
+	"go.dtapp.net/library/utils/only"
 	"gorm.io/gorm"
 	"log"
 	"runtime"
@@ -105,7 +105,7 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 		statusEdit := j.EditTask(j.db, info.Id).
 			Select("run_id").
 			Updates(jobs_gorm_model.Task{
-				RunId: gouuid.GetUuId(),
+				RunId: only.GetUuId(),
 			})
 		if statusEdit.RowsAffected == 0 {
 			log.Println("statusEdit", statusEdit.Error)
@@ -120,7 +120,7 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 			Updates(jobs_gorm_model.Task{
 				StatusDesc: "执行成功",
 				Number:     info.Number + 1,
-				RunId:      gouuid.GetUuId(),
+				RunId:      only.GetUuId(),
 				UpdatedIp:  j.config.OutsideIp,
 				Result:     desc,
 			})
@@ -150,7 +150,7 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 			Updates(jobs_gorm_model.Task{
 				StatusDesc: "执行失败",
 				Number:     info.Number + 1,
-				RunId:      gouuid.GetUuId(),
+				RunId:      only.GetUuId(),
 				UpdatedIp:  j.config.OutsideIp,
 				Result:     desc,
 			})
@@ -206,7 +206,7 @@ func (j *JobsGorm) CreateInCustomId(config *ConfigCreateInCustomId) error {
 		Params:         config.Params,
 		StatusDesc:     "首次添加任务",
 		Frequency:      config.Frequency,
-		RunId:          gouuid.GetUuId(),
+		RunId:          only.GetUuId(),
 		CustomId:       config.CustomId,
 		CustomSequence: config.CustomSequence,
 		Type:           config.Type,
@@ -242,7 +242,7 @@ func (j *JobsGorm) CreateInCustomIdOnly(config *ConfigCreateInCustomIdOnly) erro
 		Params:         config.Params,
 		StatusDesc:     "首次添加任务",
 		Frequency:      config.Frequency,
-		RunId:          gouuid.GetUuId(),
+		RunId:          only.GetUuId(),
 		CustomId:       config.CustomId,
 		CustomSequence: config.CustomSequence,
 		Type:           config.Type,
@@ -276,7 +276,7 @@ func (j *JobsGorm) CreateInCustomIdMaxNumber(config *ConfigCreateInCustomIdMaxNu
 		StatusDesc:     "首次添加任务",
 		Frequency:      config.Frequency,
 		MaxNumber:      config.MaxNumber,
-		RunId:          gouuid.GetUuId(),
+		RunId:          only.GetUuId(),
 		CustomId:       config.CustomId,
 		CustomSequence: config.CustomSequence,
 		Type:           config.Type,
@@ -314,7 +314,7 @@ func (j *JobsGorm) CreateInCustomIdMaxNumberOnly(config *ConfigCreateInCustomIdM
 		StatusDesc:     "首次添加任务",
 		Frequency:      config.Frequency,
 		MaxNumber:      config.MaxNumber,
-		RunId:          gouuid.GetUuId(),
+		RunId:          only.GetUuId(),
 		CustomId:       config.CustomId,
 		CustomSequence: config.CustomSequence,
 		Type:           config.Type,

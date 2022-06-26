@@ -4,7 +4,7 @@ import (
 	"go.dtapp.net/library/utils/dorm"
 	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gotime"
-	"go.dtapp.net/library/utils/gouuid"
+	"go.dtapp.net/library/utils/only"
 	"gorm.io/gorm"
 	"log"
 )
@@ -30,7 +30,7 @@ func (app *App) Add(tx *gorm.DB, Type string, params interface{}, frequency int6
 		Params:     gojson.JsonEncodeNoError(params),
 		StatusDesc: "首次添加任务",
 		Frequency:  frequency,
-		RunId:      gouuid.GetUuId(),
+		RunId:      only.GetUuId(),
 		Type:       Type,
 		CreatedIp:  app.OutsideIp,
 		UpdatedIp:  app.OutsideIp,
@@ -50,7 +50,7 @@ func (app *App) AddCustomId(tx *gorm.DB, Type string, params interface{}, freque
 		Params:     gojson.JsonEncodeNoError(params),
 		StatusDesc: "首次添加任务",
 		Frequency:  frequency,
-		RunId:      gouuid.GetUuId(),
+		RunId:      only.GetUuId(),
 		CustomId:   customId,
 		Type:       Type,
 		CreatedIp:  app.OutsideIp,
@@ -72,7 +72,7 @@ func (app *App) AddCustomIdMaxNumber(tx *gorm.DB, Type string, params interface{
 		StatusDesc: "首次添加任务",
 		Frequency:  frequency,
 		MaxNumber:  maxNumber,
-		RunId:      gouuid.GetUuId(),
+		RunId:      only.GetUuId(),
 		CustomId:   customId,
 		Type:       Type,
 		CreatedIp:  app.OutsideIp,
@@ -184,7 +184,7 @@ func (app *App) AddInOrderCustomIdObservationClone(tx *gorm.DB, Type string, cus
 		Updates(Task{
 			Status:     TASK_SUCCESS,
 			StatusDesc: "已完成，停止观察",
-			RunId:      gouuid.GetUuId(),
+			RunId:      only.GetUuId(),
 			UpdatedIp:  app.OutsideIp,
 			UpdatedAt:  gotime.Current().Format(),
 		})
@@ -198,7 +198,7 @@ func (app *App) AddInOrderCustomIdObservationClone(tx *gorm.DB, Type string, cus
 func (app *App) AddIn(tx *gorm.DB, param TaskParams, params interface{}) *gorm.DB {
 	param.Status = TASK_IN
 	param.StatusDesc = "首次添加任务"
-	param.RunId = gouuid.GetUuId()
+	param.RunId = only.GetUuId()
 	param.Params = gojson.JsonEncodeNoError(params)
 	param.CreatedIp = app.OutsideIp
 	param.UpdatedIp = app.OutsideIp
@@ -226,7 +226,7 @@ func (app *App) AddWaitNewServiceNext(tx *gorm.DB, param TaskParams, params inte
 func (app *App) AddWait(tx *gorm.DB, param TaskParams, params interface{}) *gorm.DB {
 	param.Status = TASK_WAIT
 	param.StatusDesc = "首次添加任务"
-	param.RunId = gouuid.GetUuId()
+	param.RunId = only.GetUuId()
 	param.Params = gojson.JsonEncodeNoError(params)
 	param.CreatedIp = app.OutsideIp
 	param.UpdatedIp = app.OutsideIp
@@ -294,7 +294,7 @@ func (app *App) Run(tx *gorm.DB, info Task, status int, desc string) {
 	}
 	if status == 0 {
 		statusEdit := app.Edit(tx, info.Id).Select("run_id").Updates(Task{
-			RunId: gouuid.GetUuId(),
+			RunId: only.GetUuId(),
 		})
 		if statusEdit.RowsAffected == 0 {
 			log.Println("statusEdit", statusEdit.Error)
@@ -307,7 +307,7 @@ func (app *App) Run(tx *gorm.DB, info Task, status int, desc string) {
 		statusEdit := app.Edit(tx, info.Id).Select("status_desc", "number", "run_id", "updated_ip", "updated_at", "result").Updates(Task{
 			StatusDesc: "执行成功",
 			Number:     info.Number + 1,
-			RunId:      gouuid.GetUuId(),
+			RunId:      only.GetUuId(),
 			UpdatedIp:  app.OutsideIp,
 			UpdatedAt:  gotime.Current().Format(),
 			Result:     desc,
@@ -335,7 +335,7 @@ func (app *App) Run(tx *gorm.DB, info Task, status int, desc string) {
 		statusEdit := app.Edit(tx, info.Id).Select("status_desc", "number", "run_id", "updated_ip", "updated_at", "result").Updates(Task{
 			StatusDesc: "执行失败",
 			Number:     info.Number + 1,
-			RunId:      gouuid.GetUuId(),
+			RunId:      only.GetUuId(),
 			UpdatedIp:  app.OutsideIp,
 			UpdatedAt:  gotime.Current().Format(),
 			Result:     desc,

@@ -1,4 +1,4 @@
-package gouuid
+package only
 
 import (
 	"crypto/rand"
@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// GetUuId 获取唯一ID
+// GetUuId 由 32 个十六进制数字组成，以 6 个组显示，由连字符 - 分隔
 func GetUuId() string {
 	unix32bits := uint32(time.Now().UTC().Unix())
 	buff := make([]byte, 12)
