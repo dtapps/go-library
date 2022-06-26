@@ -68,7 +68,7 @@ func NewGinClient(attrs ...*OperationAttr) (*GinClient, error) {
 			return nil, errors.New("没有设置表名")
 		}
 
-		err := c.gormClient.Table(c.config.tableName).AutoMigrate(&apiPostgresqlLog{})
+		err := c.gormClient.Table(c.config.tableName).AutoMigrate(&ginPostgresqlLog{})
 		if err != nil {
 			return nil, errors.New("创建表失败：" + err.Error())
 		}
