@@ -1,46 +1,67 @@
 package golock
 
 import (
-	"go.dtapp.net/library/utils/dorm"
+	"context"
+	"errors"
+	"github.com/go-redis/redis/v8"
 	"time"
 )
 
-type ConfigLockRedis struct {
-	Key            string
-	KeyContent     string
-	ExpirationTime time.Duration
-}
-
 type LockRedis struct {
-	config ConfigLockRedis
-	db     *dorm.RedisClient
+	redisClient *redis.Client // 驱动
 }
 
-func NewLockRedis(db *dorm.RedisClient) *LockRedis {
-	return &LockRedis{db: db}
+func NewLockRedis(redisClient *redis.Client) *LockRedis {
+	return &LockRedis{redisClient: redisClient}
 }
 
 // Lock 上锁
-func (lockRedis *LockRedis) Lock() bool {
-	judgeCache := lockRedis.db.NewStringOperation().Get(lockRedis.config.Key).UnwrapOr("")
-	if judgeCache != "" {
-		return true
+// key 锁名
+// val 锁内容
+// ttl 锁过期时间
+func (r *LockRedis) Lock(key string, val string, ttl int64) (string, error) {
+	if ttl <= 0 {
+		return "", errors.New("长期请使用 LockForever 方法")
 	}
-	lockRedis.db.NewStringOperation().Set(lockRedis.config.Key, lockRedis.config.KeyContent, dorm.WithExpire(lockRedis.config.ExpirationTime))
-	return true
+	// 1、获取
+	get, err := r.redisClient.Get(context.Background(), key).Result()
+	if err != nil {
+		return "", errors.New("获取异常")
+	}
+	if get != "" {
+		return "", errors.New("上锁失败，已存在")
+	}
+	// 2、设置
+	err = r.redisClient.Set(context.Background(), key, val, time.Duration(ttl)).Err()
+	if err != nil {
+		return "", errors.New("上锁失败")
+	}
+	return val, nil
 }
 
-// Unlock Lock 解锁
-func (lockRedis *LockRedis) Unlock() {
-	lockRedis.db.NewStringOperation().Del(lockRedis.config.Key)
+// Unlock 解锁
+// key 锁名
+func (r *LockRedis) Unlock(key string) error {
+	_, err := r.redisClient.Del(context.Background(), key).Result()
+	return err
 }
 
 // LockForever 永远上锁
-func (lockRedis *LockRedis) LockForever() bool {
-	judgeCache := lockRedis.db.NewStringOperation().Get(lockRedis.config.Key).UnwrapOr("")
-	if judgeCache != "" {
-		return true
+// key 锁名
+// val 锁内容
+func (r *LockRedis) LockForever(key string, val string) (string, error) {
+	// 1、获取
+	get, err := r.redisClient.Get(context.Background(), key).Result()
+	if err != nil {
+		return "", errors.New("获取异常")
 	}
-	lockRedis.db.NewStringOperation().Set(lockRedis.config.Key, lockRedis.config.KeyContent)
-	return true
+	if get != "" {
+		return "", errors.New("上锁失败，已存在")
+	}
+	// 2、设置
+	err = r.redisClient.Set(context.Background(), key, val, 0).Err()
+	if err != nil {
+		return "", errors.New("上锁失败")
+	}
+	return val, nil
 }
