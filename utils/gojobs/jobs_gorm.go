@@ -41,7 +41,8 @@ type JobsGorm struct {
 }
 
 // NewJobsGorm 初始化
-// WithGormClient
+// WithGormClient && WithRedisClient && WithLockPrefix
+// WithGormClient && WithEtcdClient && WithLockPrefix
 func NewJobsGorm(attrs ...*OperationAttr) (*JobsGorm, error) {
 
 	c := &JobsGorm{}
