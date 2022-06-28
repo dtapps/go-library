@@ -20,6 +20,7 @@ type OperationAttr struct {
 	lockPrefix  string           // 锁Key前缀
 	ipService   *goip.Client     // ip服务
 	lockType    string           // 锁驱动类型
+	outsideIp   string           // 外网ip
 }
 
 // WithGormClient 设置数据库驱动
@@ -42,6 +43,11 @@ func WithEtcdClient(etcdClient *clientv3.Client) *OperationAttr {
 // etcd：fmt.Sprintf("cron/lock/%v/%v", info.Type, id)
 func WithLockPrefix(lockPrefix string) *OperationAttr {
 	return &OperationAttr{lockPrefix: lockPrefix}
+}
+
+// WithOutsideIp 设置外网ip
+func WithOutsideIp(outsideIp string) *OperationAttr {
+	return &OperationAttr{outsideIp: outsideIp}
 }
 
 // WithIpService 设置ip服务

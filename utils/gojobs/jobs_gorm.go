@@ -62,6 +62,17 @@ func NewJobsGorm(attrs ...*OperationAttr) (*JobsGorm, error) {
 		if attr.lockPrefix != "" {
 			c.config.lockPrefix = attr.lockPrefix
 		}
+		if attr.outsideIp != "" {
+			c.config.outsideIp = attr.outsideIp
+		}
+	}
+
+	if c.config.outsideIp == "" {
+		return nil, errors.New("需要配置当前的IP")
+	}
+
+	if c.db.gormClient == nil {
+		return nil, errors.New("需要配置数据库驱动")
 	}
 
 	c.config.runVersion = go_library.Version()
@@ -71,14 +82,6 @@ func NewJobsGorm(attrs ...*OperationAttr) (*JobsGorm, error) {
 	c.config.version = runtime.Version()
 	c.config.macAddrS = goarray.TurnString(goip.GetMacAddr())
 	c.config.insideIp = goip.GetInsideIp()
-
-	if c.config.outsideIp == "" {
-		return nil, errors.New("需要配置当前的IP")
-	}
-
-	if c.db.gormClient == nil {
-		return nil, errors.New("需要配置数据库驱动")
-	}
 
 	switch c.config.lockType {
 	case lockTypeRedis:
