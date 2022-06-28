@@ -86,12 +86,12 @@ func NewJobsGorm(attrs ...*OperationAttr) (*JobsGorm, error) {
 	switch c.config.lockType {
 	case lockTypeRedis:
 		if c.db.redisClient == nil {
-			return nil, errors.New("需要配置缓存驱动")
+			return nil, errors.New("需要配REDIS驱动")
 		}
 		c.service.lockRedisClient = golock.NewLockRedis(c.db.redisClient)
 	case lockTypeEtcd:
 		if c.db.etcdClient == nil {
-			return nil, errors.New("需要配置缓存驱动")
+			return nil, errors.New("需要配置ETCD驱动")
 		}
 		c.service.lockEtcdClient = golock.NewLockEtcd(c.db.etcdClient)
 	default:
