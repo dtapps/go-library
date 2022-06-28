@@ -52,12 +52,12 @@ func NewJobsGorm(attrs ...*OperationAttr) (*JobsGorm, error) {
 			c.service.gormClient = attr.gormClient
 		}
 		if attr.redisClient != nil {
-			c.config.lockType = attr.lockType
 			c.db.redisClient = attr.redisClient
+			c.config.lockType = attr.lockType
 		}
 		if attr.etcdClient != nil {
-			c.config.lockType = attr.lockType
 			c.db.etcdClient = attr.etcdClient
+			c.config.lockType = attr.lockType
 		}
 		if attr.lockPrefix != "" {
 			c.config.lockPrefix = attr.lockPrefix
