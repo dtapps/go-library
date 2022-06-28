@@ -99,7 +99,8 @@ func NewJobsGorm(attrs ...*OperationAttr) (*JobsGorm, error) {
 		c.service.lockEtcdClient = golock.NewLockEtcd(c.db.etcdClient)
 
 	default:
-		return nil, errors.New("驱动为空")
+		// 添加任务端不需要
+		// return nil, errors.New("驱动为空")
 	}
 
 	err := c.service.gormClient.AutoMigrate(
