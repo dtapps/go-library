@@ -9,15 +9,34 @@ import (
 
 // GenerateId 生成18一编号
 func GenerateId(customId string) string {
-	one, err := generateIdOne(customId)
+	currentTime := gotime.Current().Format()
+	one, err := generateIdOne(customId, currentTime)
 	if err == nil {
 		return one
 	}
-	two, err := generateIdTwo(customId)
+	two, err := generateIdTwo(customId, currentTime)
 	if err == nil {
 		return two
 	}
-	three, err := generateIdThree(customId)
+	three, err := generateIdThree(customId, currentTime)
+	if err == nil {
+		return three
+	}
+	four, err := generateIdFour(customId)
+	return four
+}
+
+// GenerateIdAndTime 生成18一编号
+func GenerateIdAndTime(customId, customTime string) string {
+	one, err := generateIdOne(customId, customTime)
+	if err == nil {
+		return one
+	}
+	two, err := generateIdTwo(customId, customTime)
+	if err == nil {
+		return two
+	}
+	three, err := generateIdThree(customId, customTime)
 	if err == nil {
 		return three
 	}
@@ -26,7 +45,7 @@ func GenerateId(customId string) string {
 }
 
 // 生成18位时间[年月日时分]唯一编号
-func generateIdOne(customId string) (string, error) {
+func generateIdOne(customId, setTime string) (string, error) {
 
 	var (
 		randomLength   = 4             // 随机数据长度
@@ -49,11 +68,11 @@ func generateIdOne(customId string) (string, error) {
 	} else if randomLength < 3 {
 		return "", errors.New("自定义的数据过长")
 	}
-	return fmt.Sprintf("%v%s%s", customId, gotime.Current().SetFormat(dateFormat), gorandom.Numeric(randomLength)), nil
+	return fmt.Sprintf("%v%s%s", customId, gotime.SetCurrentParse(setTime).SetFormat(dateFormat), gorandom.Numeric(randomLength)), nil
 }
 
 // 生成18位时间[年月日时]唯一编号
-func generateIdTwo(customId string) (string, error) {
+func generateIdTwo(customId, setTime string) (string, error) {
 
 	var (
 		randomLength   = 4             // 随机数据长度
@@ -76,11 +95,11 @@ func generateIdTwo(customId string) (string, error) {
 	} else if randomLength < 3 {
 		return "", errors.New("自定义的数据过长")
 	}
-	return fmt.Sprintf("%v%s%s", customId, gotime.Current().SetFormat(dateFormat), gorandom.Numeric(randomLength)), nil
+	return fmt.Sprintf("%v%s%s", customId, gotime.SetCurrentParse(setTime).SetFormat(dateFormat), gorandom.Numeric(randomLength)), nil
 }
 
 // 生成18位时间[年月日]唯一编号
-func generateIdThree(customId string) (string, error) {
+func generateIdThree(customId, setTime string) (string, error) {
 
 	var (
 		randomLength   = 4             // 随机数据长度
@@ -103,7 +122,7 @@ func generateIdThree(customId string) (string, error) {
 	} else if randomLength < 3 {
 		return "", errors.New("自定义的数据过长")
 	}
-	return fmt.Sprintf("%v%s%s", customId, gotime.Current().SetFormat(dateFormat), gorandom.Numeric(randomLength)), nil
+	return fmt.Sprintf("%v%s%s", customId, gotime.SetCurrentParse(setTime).SetFormat(dateFormat), gorandom.Numeric(randomLength)), nil
 }
 
 // 生成18位随机唯一编号
