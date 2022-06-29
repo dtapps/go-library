@@ -1,5 +1,5 @@
 package go_library
 
 func Version() string {
-	return "v2022-06-18"
+	return "v2022-06-29"
 }
