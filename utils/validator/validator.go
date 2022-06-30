@@ -27,16 +27,16 @@ func NewValidator(local string) (*Validator, error) {
 	if v.validate, ok = binding.Validator.Engine().(*validator.Validate); ok {
 
 		v.validate.RegisterTagNameFunc(func(field reflect.StructField) string {
-			// 自定义名称
-			validateName := field.Tag.Get("validate_name")
-			if validateName == "-" {
+			// 参数名称
+			paramsName := field.Tag.Get("params_name")
+			if paramsName == "-" {
 				// 将大写的User替换为json中定义的tag标签 -- "LoginForm.user": "user长度不能超过10个字符"
 				oldName := strings.SplitN(field.Tag.Get("json"), ",", 2)[0]
 				if oldName == "-" {
 					return ""
 				}
 			}
-			return validateName
+			return paramsName
 		})
 
 		zhT := zh.New() // 中文
