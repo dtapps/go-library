@@ -127,6 +127,7 @@ github.com/gin-gonic/gin/render
 ## explicit; go 1.13
 github.com/go-playground/locales
 github.com/go-playground/locales/currency
+github.com/go-playground/locales/en
 github.com/go-playground/locales/zh
 # github.com/go-playground/universal-translator v0.18.0
 ## explicit; go 1.13
@@ -134,6 +135,7 @@ github.com/go-playground/universal-translator
 # github.com/go-playground/validator/v10 v10.11.0
 ## explicit; go 1.13
 github.com/go-playground/validator/v10
+github.com/go-playground/validator/v10/translations/en
 github.com/go-playground/validator/v10/translations/zh
 # github.com/go-redis/redis/v8 v8.11.5
 ## explicit; go 1.17
