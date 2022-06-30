@@ -8,6 +8,8 @@ import (
 	"github.com/go-playground/validator/v10"
 	enTranslations "github.com/go-playground/validator/v10/translations/en"
 	chTranslations "github.com/go-playground/validator/v10/translations/zh"
+	"reflect"
+	"strings"
 )
 
 type Validator struct {
@@ -23,6 +25,19 @@ func NewValidator(local string) (*Validator, error) {
 	// 获取gin的校验器
 	var ok bool
 	if v.validate, ok = binding.Validator.Engine().(*validator.Validate); ok {
+
+		v.validate.RegisterTagNameFunc(func(field reflect.StructField) string {
+			// 自定义名称
+			validateName := field.Tag.Get("validate_name")
+			if validateName == "-" {
+				// 将大写的User替换为json中定义的tag标签 -- "LoginForm.user": "user长度不能超过10个字符"
+				oldName := strings.SplitN(field.Tag.Get("json"), ",", 2)[0]
+				if oldName == "-" {
+					return ""
+				}
+			}
+			return validateName
+		})
 
 		zhT := zh.New() // 中文
 		enT := en.New() // 英文
