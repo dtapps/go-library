@@ -9,12 +9,12 @@ type ApiProductRechargeParamsResponse struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
 	Data    struct {
-		RechargeAccountLabel string `json:"recharge_account_label"`
+		RechargeAccountLabel string `json:"recharge_account_label"` // 充值账号类型名称
 		RechargeParams       []struct {
 			Name    string `json:"name"`
 			Type    string `json:"type"`
 			Options string `json:"options"`
-		} `json:"recharge_params"`
+		} `json:"recharge_params"` // 	充值参数
 	} `json:"data"`
 }
 
@@ -32,9 +32,10 @@ func newApiProductRechargeParamsResult(result ApiProductRechargeParamsResponse, 
 // ApiProductRechargeParams 接口说明
 // 获取商品的充值参数（仅支持充值类商品）
 // http://doc.cqmeihu.cn/sales/ProductParams.html
-func (c *Client) ApiProductRechargeParams(notMustParams ...gorequest.Params) *ApiProductRechargeParamsResult {
+func (c *Client) ApiProductRechargeParams(productId int64) *ApiProductRechargeParamsResult {
 	// 参数
-	params := gorequest.NewParamsWith(notMustParams...)
+	params := gorequest.NewParams()
+	params.Set("product_id", productId)
 	// 请求
 	request, err := c.request(apiUrl+"/api/product/recharge-params", params)
 	// 定义
