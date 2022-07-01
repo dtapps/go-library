@@ -104,3 +104,63 @@ func (s hour) Frequency() int64 {
 	}
 	return s.n * 60 * 60
 }
+
+// 每隔n小时执行一次
+const specHourInterval = "0 0 %s * * *"
+
+// 每隔n小时执行一次
+type hourInterval struct {
+	n int64
+}
+
+// GetHourInterval 每隔n小时执行一次
+func GetHourInterval(n int64) *hourInterval {
+	s := hourInterval{}
+	s.n = n
+	return &s
+}
+
+// Spec 每隔n小时执行一次
+func (s hourInterval) Spec() string {
+
+	if s.n < 0 || s.n > 23 {
+		return ""
+	}
+
+	// 循环出最近24次执行时间
+	var sl []int64
+	var i int64
+	i = 0
+	for {
+		if i > 23 {
+			break
+		}
+		sl = append(sl, s.n*i)
+		i++
+	}
+
+	// TODO 可以合并两个
+
+	// 过滤数据
+	str := ""
+	for _, v := range sl {
+		if v > 23 {
+			continue
+		}
+		str = fmt.Sprintf("%s,%v", str, v)
+	}
+
+	if len(str) <= 0 {
+		return ""
+	}
+
+	return fmt.Sprintf(specHourInterval, str[1:])
+}
+
+// Frequency 每隔n小时执行一次
+func (s hourInterval) Frequency() int64 {
+	if s.n < 0 || s.n > 23 {
+		return -1
+	}
+	return s.n * 60 * 60
+}
