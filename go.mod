@@ -6,7 +6,7 @@ require (
 	gitee.com/chunanyong/zorm v1.5.5
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.4+incompatible
 	github.com/allegro/bigcache/v3 v3.0.2
-	github.com/aws/aws-sdk-go v1.44.46
+	github.com/aws/aws-sdk-go v1.44.47
 	github.com/baidubce/bce-sdk-go v0.9.126
 	github.com/basgys/goxml2json v1.1.0
 	github.com/beego/beego/v2 v2.0.4
@@ -43,10 +43,10 @@ require (
 	google.golang.org/protobuf v1.28.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
-	gorm.io/datatypes v1.0.6
+	gorm.io/datatypes v1.0.7
 	gorm.io/driver/mysql v1.3.4
 	gorm.io/driver/postgres v1.3.7
-	gorm.io/gorm v1.23.6
+	gorm.io/gorm v1.23.7
 	xorm.io/xorm v1.3.1
 )
 
@@ -105,7 +105,7 @@ require (
 	go.uber.org/multierr v1.8.0 // indirect
 	golang.org/x/net v0.0.0-20220630215102-69896b714898 // indirect
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
-	golang.org/x/sys v0.0.0-20220627191245-f75cf1eec38b // indirect
+	golang.org/x/sys v0.0.0-20220702020025-31831981b65f // indirect
 	golang.org/x/time v0.0.0-20220609170525-579cf78fd858 // indirect
 	google.golang.org/genproto v0.0.0-20220630174209-ad1d48641aa7 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
