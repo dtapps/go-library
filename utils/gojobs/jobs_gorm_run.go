@@ -117,10 +117,14 @@ type ConfigCreateInCustomId struct {
 	CustomSequence int64    // 自定义顺序
 	Type           string   // 类型
 	SpecifyIp      string   // 指定外网IP
+	CurrentIp      string   // 当前ip
 }
 
 // CreateInCustomId 创建正在运行任务
 func (j *JobsGorm) CreateInCustomId(config *ConfigCreateInCustomId) error {
+	if config.CurrentIp == "" {
+		config.CurrentIp = j.config.outsideIp
+	}
 	createStatus := config.Tx.Create(&jobs_gorm_model.Task{
 		Status:         TASK_IN,
 		Params:         config.Params,
@@ -130,9 +134,9 @@ func (j *JobsGorm) CreateInCustomId(config *ConfigCreateInCustomId) error {
 		CustomId:       config.CustomId,
 		CustomSequence: config.CustomSequence,
 		Type:           config.Type,
-		CreatedIp:      j.config.outsideIp,
+		CreatedIp:      config.CurrentIp,
 		SpecifyIp:      config.SpecifyIp,
-		UpdatedIp:      j.config.outsideIp,
+		UpdatedIp:      config.CurrentIp,
 	})
 	if createStatus.RowsAffected == 0 {
 		return errors.New(fmt.Sprintf("创建[%s@%s]任务失败：%s", config.CustomId, config.Type, createStatus.Error))
@@ -149,6 +153,7 @@ type ConfigCreateInCustomIdOnly struct {
 	CustomSequence int64    // 自定义顺序
 	Type           string   // 类型
 	SpecifyIp      string   // 指定外网IP
+	CurrentIp      string   // 当前ip
 }
 
 // CreateInCustomIdOnly 创建正在运行唯一任务
@@ -156,6 +161,9 @@ func (j *JobsGorm) CreateInCustomIdOnly(config *ConfigCreateInCustomIdOnly) erro
 	query := j.TaskTypeTakeIn(config.Tx, config.CustomId, config.Type)
 	if query.Id != 0 {
 		return errors.New(fmt.Sprintf("%d:[%s@%s]任务已存在", query.Id, config.CustomId, config.Type))
+	}
+	if config.CurrentIp == "" {
+		config.CurrentIp = j.config.outsideIp
 	}
 	createStatus := config.Tx.Create(&jobs_gorm_model.Task{
 		Status:         TASK_IN,
@@ -166,9 +174,9 @@ func (j *JobsGorm) CreateInCustomIdOnly(config *ConfigCreateInCustomIdOnly) erro
 		CustomId:       config.CustomId,
 		CustomSequence: config.CustomSequence,
 		Type:           config.Type,
-		CreatedIp:      j.config.outsideIp,
+		CreatedIp:      config.CurrentIp,
 		SpecifyIp:      config.SpecifyIp,
-		UpdatedIp:      j.config.outsideIp,
+		UpdatedIp:      config.CurrentIp,
 	})
 	if createStatus.RowsAffected == 0 {
 		return errors.New(fmt.Sprintf("创建[%s@%s]任务失败：%s", config.CustomId, config.Type, createStatus.Error))
@@ -186,10 +194,14 @@ type ConfigCreateInCustomIdMaxNumber struct {
 	CustomSequence int64    // 自定义顺序
 	Type           string   // 类型
 	SpecifyIp      string   // 指定外网IP
+	CurrentIp      string   // 当前ip
 }
 
 // CreateInCustomIdMaxNumber 创建正在运行任务并限制数量
 func (j *JobsGorm) CreateInCustomIdMaxNumber(config *ConfigCreateInCustomIdMaxNumber) error {
+	if config.CurrentIp == "" {
+		config.CurrentIp = j.config.outsideIp
+	}
 	createStatus := config.Tx.Create(&jobs_gorm_model.Task{
 		Status:         TASK_IN,
 		Params:         config.Params,
@@ -200,9 +212,9 @@ func (j *JobsGorm) CreateInCustomIdMaxNumber(config *ConfigCreateInCustomIdMaxNu
 		CustomId:       config.CustomId,
 		CustomSequence: config.CustomSequence,
 		Type:           config.Type,
-		CreatedIp:      j.config.outsideIp,
+		CreatedIp:      config.CurrentIp,
 		SpecifyIp:      config.SpecifyIp,
-		UpdatedIp:      j.config.outsideIp,
+		UpdatedIp:      config.CurrentIp,
 	})
 	if createStatus.RowsAffected == 0 {
 		return errors.New(fmt.Sprintf("创建[%s@%s]任务失败：%s", config.CustomId, config.Type, createStatus.Error))
@@ -220,6 +232,7 @@ type ConfigCreateInCustomIdMaxNumberOnly struct {
 	CustomSequence int64    // 自定义顺序
 	Type           string   // 类型
 	SpecifyIp      string   // 指定外网IP
+	CurrentIp      string   // 当前ip
 }
 
 // CreateInCustomIdMaxNumberOnly 创建正在运行唯一任务并限制数量
@@ -227,6 +240,9 @@ func (j *JobsGorm) CreateInCustomIdMaxNumberOnly(config *ConfigCreateInCustomIdM
 	query := j.TaskTypeTakeIn(config.Tx, config.CustomId, config.Type)
 	if query.Id != 0 {
 		return errors.New(fmt.Sprintf("%d:[%s@%s]任务已存在", query.Id, config.CustomId, config.Type))
+	}
+	if config.CurrentIp == "" {
+		config.CurrentIp = j.config.outsideIp
 	}
 	createStatus := config.Tx.Create(&jobs_gorm_model.Task{
 		Status:         TASK_IN,
@@ -238,9 +254,9 @@ func (j *JobsGorm) CreateInCustomIdMaxNumberOnly(config *ConfigCreateInCustomIdM
 		CustomId:       config.CustomId,
 		CustomSequence: config.CustomSequence,
 		Type:           config.Type,
-		CreatedIp:      j.config.outsideIp,
+		CreatedIp:      config.CurrentIp,
 		SpecifyIp:      config.SpecifyIp,
-		UpdatedIp:      j.config.outsideIp,
+		UpdatedIp:      config.CurrentIp,
 	})
 	if createStatus.RowsAffected == 0 {
 		return errors.New(fmt.Sprintf("创建[%s@%s]任务失败：%s", config.CustomId, config.Type, createStatus.Error))
