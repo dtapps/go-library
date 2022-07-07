@@ -6,7 +6,7 @@ require (
 	gitee.com/chunanyong/zorm v1.5.5
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.4+incompatible
 	github.com/allegro/bigcache/v3 v3.0.2
-	github.com/aws/aws-sdk-go v1.44.48
+	github.com/aws/aws-sdk-go v1.44.49
 	github.com/baidubce/bce-sdk-go v0.9.127
 	github.com/basgys/goxml2json v1.1.0
 	github.com/beego/beego/v2 v2.0.4
@@ -26,7 +26,7 @@ require (
 	github.com/nilorg/sdk v0.0.0-20220617065147-3001fb840741
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/qiniu/go-sdk/v7 v7.13.0
-	github.com/qiniu/qmgo v1.1.0
+	github.com/qiniu/qmgo v1.1.1
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/saracen/go7z v0.0.0-20191010121135-9c09b6bd7fda
 	github.com/shopspring/decimal v1.3.1
@@ -103,11 +103,11 @@ require (
 	go.etcd.io/etcd/client/pkg/v3 v3.5.4 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
-	golang.org/x/net v0.0.0-20220630215102-69896b714898 // indirect
+	golang.org/x/net v0.0.0-20220706163947-c90051bbdb60 // indirect
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
 	golang.org/x/sys v0.0.0-20220704084225-05e143d24a9e // indirect
 	golang.org/x/time v0.0.0-20220609170525-579cf78fd858 // indirect
-	google.golang.org/genproto v0.0.0-20220630174209-ad1d48641aa7 // indirect
+	google.golang.org/genproto v0.0.0-20220706185917-7780775163c4 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
