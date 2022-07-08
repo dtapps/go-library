@@ -65,3 +65,7 @@ func getAuthorizationType() string {
 func algorithm() string {
 	return "SHA256-RSA2048"
 }
+
+const (
+	CodeSuccess = "SUCCESS"
+)
