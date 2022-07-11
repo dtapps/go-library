@@ -9,16 +9,18 @@ import (
 )
 
 // GetEtcdIssueAddress 获取ETCD下发地址
-func (j *JobsGorm) GetEtcdIssueAddress(server *Etcd, v jobs_gorm_model.Task) (address string, err error) {
+func (j *JobsGorm) GetEtcdIssueAddress(server *Etcd, v *jobs_gorm_model.Task) (address string, err error) {
 	var (
-		currentIp       = ""
-		appointIpStatus = false
+		currentIp       = ""    // 当前Ip
+		appointIpStatus = false // 指定Ip状态
 	)
+
 	// 赋值ip
 	if v.SpecifyIp != "" {
 		currentIp = v.SpecifyIp
 		appointIpStatus = true
 	}
+
 	workers, err := server.ListWorkers()
 	if err != nil {
 		return address, errors.New(fmt.Sprintf("获取在线客户端列表失败：%s", err.Error()))
@@ -26,6 +28,7 @@ func (j *JobsGorm) GetEtcdIssueAddress(server *Etcd, v jobs_gorm_model.Task) (ad
 	if len(workers) <= 0 {
 		return address, errors.New("没有客户端在线")
 	}
+
 	// 判断是否指定某ip执行
 	if len(workers) == 1 {
 		if appointIpStatus == true {
@@ -35,6 +38,7 @@ func (j *JobsGorm) GetEtcdIssueAddress(server *Etcd, v jobs_gorm_model.Task) (ad
 			return address, errors.New("执行的客户端不在线")
 		}
 	}
+
 	// 随机返回一个
 	zxIp := workers[j.random(0, len(workers))]
 	if zxIp == "" {

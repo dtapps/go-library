@@ -12,30 +12,30 @@ import (
 // Run 运行
 func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 	// 请求函数记录
-	statusCreate := j.service.gormClient.Create(&jobs_gorm_model.TaskLog{
+	err := j.service.gormClient.Create(&jobs_gorm_model.TaskLog{
 		TaskId:     info.Id,
 		StatusCode: status,
 		Desc:       desc,
 		Version:    j.config.runVersion,
-	})
-	if statusCreate.RowsAffected == 0 {
-		log.Println("statusCreate", statusCreate.Error)
+	}).Error
+	if err != nil {
+		log.Println("statusCreate", err.Error())
 	}
 	if status == 0 {
-		statusEdit := j.EditTask(j.service.gormClient, info.Id).
+		err = j.EditTask(j.service.gormClient, info.Id).
 			Select("run_id").
 			Updates(jobs_gorm_model.Task{
 				RunId: only.GetUuId(),
-			})
-		if statusEdit.RowsAffected == 0 {
-			log.Println("statusEdit", statusEdit.Error)
+			}).Error
+		if err != nil {
+			log.Println("statusEdit", err.Error())
 		}
 		return
 	}
 	// 任务
 	if status == CodeSuccess {
 		// 执行成功
-		statusEdit := j.EditTask(j.service.gormClient, info.Id).
+		err = j.EditTask(j.service.gormClient, info.Id).
 			Select("status_desc", "number", "run_id", "updated_ip", "result").
 			Updates(jobs_gorm_model.Task{
 				StatusDesc: "执行成功",
@@ -43,14 +43,14 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 				RunId:      only.GetUuId(),
 				UpdatedIp:  j.config.outsideIp,
 				Result:     desc,
-			})
-		if statusEdit.RowsAffected == 0 {
-			log.Println("statusEdit", statusEdit.Error)
+			}).Error
+		if err != nil {
+			log.Println("statusEdit", err.Error())
 		}
 	}
 	if status == CodeEnd {
 		// 执行成功、提前结束
-		statusEdit := j.EditTask(j.service.gormClient, info.Id).
+		err = j.EditTask(j.service.gormClient, info.Id).
 			Select("status", "status_desc", "number", "updated_ip", "result").
 			Updates(jobs_gorm_model.Task{
 				Status:     TASK_SUCCESS,
@@ -58,14 +58,14 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 				Number:     info.Number + 1,
 				UpdatedIp:  j.config.outsideIp,
 				Result:     desc,
-			})
-		if statusEdit.RowsAffected == 0 {
-			log.Println("statusEdit", statusEdit.Error)
+			}).Error
+		if err != nil {
+			log.Println("statusEdit", err.Error())
 		}
 	}
 	if status == CodeError {
 		// 执行失败
-		statusEdit := j.EditTask(j.service.gormClient, info.Id).
+		err = j.EditTask(j.service.gormClient, info.Id).
 			Select("status_desc", "number", "run_id", "updated_ip", "result").
 			Updates(jobs_gorm_model.Task{
 				StatusDesc: "执行失败",
@@ -73,28 +73,28 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 				RunId:      only.GetUuId(),
 				UpdatedIp:  j.config.outsideIp,
 				Result:     desc,
-			})
-		if statusEdit.RowsAffected == 0 {
-			log.Println("statusEdit", statusEdit.Error)
+			}).Error
+		if err != nil {
+			log.Println("statusEdit", err.Error())
 		}
 	}
 	if info.MaxNumber != 0 {
 		if info.Number+1 >= info.MaxNumber {
 			// 关闭执行
-			statusEdit := j.EditTask(j.service.gormClient, info.Id).
+			err = j.EditTask(j.service.gormClient, info.Id).
 				Select("status").
 				Updates(jobs_gorm_model.Task{
 					Status: TASK_TIMEOUT,
-				})
-			if statusEdit.RowsAffected == 0 {
-				log.Println("statusEdit", statusEdit.Error)
+				}).Error
+			if err != nil {
+				log.Println("statusEdit", err.Error())
 			}
 		}
 	}
 }
 
 // RunAddLog 任务执行日志
-func (j *JobsGorm) RunAddLog(id uint, runId string) *gorm.DB {
+func (j *JobsGorm) RunAddLog(id uint, runId string) error {
 	return j.service.gormClient.Create(&jobs_gorm_model.TaskLogRun{
 		TaskId:     id,
 		RunId:      runId,
@@ -105,7 +105,7 @@ func (j *JobsGorm) RunAddLog(id uint, runId string) *gorm.DB {
 		Gomaxprocs: j.config.maxProCs,
 		GoVersion:  j.config.version,
 		MacAddrs:   j.config.macAddrS,
-	})
+	}).Error
 }
 
 // ConfigCreateInCustomId 创建正在运行任务
@@ -125,7 +125,7 @@ func (j *JobsGorm) CreateInCustomId(config *ConfigCreateInCustomId) error {
 	if config.CurrentIp == "" {
 		config.CurrentIp = j.config.outsideIp
 	}
-	createStatus := config.Tx.Create(&jobs_gorm_model.Task{
+	err := config.Tx.Create(&jobs_gorm_model.Task{
 		Status:         TASK_IN,
 		Params:         config.Params,
 		StatusDesc:     "首次添加任务",
@@ -137,9 +137,9 @@ func (j *JobsGorm) CreateInCustomId(config *ConfigCreateInCustomId) error {
 		CreatedIp:      config.CurrentIp,
 		SpecifyIp:      config.SpecifyIp,
 		UpdatedIp:      config.CurrentIp,
-	})
-	if createStatus.RowsAffected == 0 {
-		return errors.New(fmt.Sprintf("创建[%s@%s]任务失败：%s", config.CustomId, config.Type, createStatus.Error))
+	}).Error
+	if err != nil {
+		return errors.New(fmt.Sprintf("创建[%s@%s]任务失败：%s", config.CustomId, config.Type, err.Error()))
 	}
 	return nil
 }
@@ -165,7 +165,7 @@ func (j *JobsGorm) CreateInCustomIdOnly(config *ConfigCreateInCustomIdOnly) erro
 	if config.CurrentIp == "" {
 		config.CurrentIp = j.config.outsideIp
 	}
-	createStatus := config.Tx.Create(&jobs_gorm_model.Task{
+	err := config.Tx.Create(&jobs_gorm_model.Task{
 		Status:         TASK_IN,
 		Params:         config.Params,
 		StatusDesc:     "首次添加任务",
@@ -177,9 +177,9 @@ func (j *JobsGorm) CreateInCustomIdOnly(config *ConfigCreateInCustomIdOnly) erro
 		CreatedIp:      config.CurrentIp,
 		SpecifyIp:      config.SpecifyIp,
 		UpdatedIp:      config.CurrentIp,
-	})
-	if createStatus.RowsAffected == 0 {
-		return errors.New(fmt.Sprintf("创建[%s@%s]任务失败：%s", config.CustomId, config.Type, createStatus.Error))
+	}).Error
+	if err != nil {
+		return errors.New(fmt.Sprintf("创建[%s@%s]任务失败：%s", config.CustomId, config.Type, err.Error()))
 	}
 	return nil
 }
@@ -202,7 +202,7 @@ func (j *JobsGorm) CreateInCustomIdMaxNumber(config *ConfigCreateInCustomIdMaxNu
 	if config.CurrentIp == "" {
 		config.CurrentIp = j.config.outsideIp
 	}
-	createStatus := config.Tx.Create(&jobs_gorm_model.Task{
+	err := config.Tx.Create(&jobs_gorm_model.Task{
 		Status:         TASK_IN,
 		Params:         config.Params,
 		StatusDesc:     "首次添加任务",
@@ -215,9 +215,9 @@ func (j *JobsGorm) CreateInCustomIdMaxNumber(config *ConfigCreateInCustomIdMaxNu
 		CreatedIp:      config.CurrentIp,
 		SpecifyIp:      config.SpecifyIp,
 		UpdatedIp:      config.CurrentIp,
-	})
-	if createStatus.RowsAffected == 0 {
-		return errors.New(fmt.Sprintf("创建[%s@%s]任务失败：%s", config.CustomId, config.Type, createStatus.Error))
+	}).Error
+	if err != nil {
+		return errors.New(fmt.Sprintf("创建[%s@%s]任务失败：%s", config.CustomId, config.Type, err.Error()))
 	}
 	return nil
 }
@@ -244,7 +244,7 @@ func (j *JobsGorm) CreateInCustomIdMaxNumberOnly(config *ConfigCreateInCustomIdM
 	if config.CurrentIp == "" {
 		config.CurrentIp = j.config.outsideIp
 	}
-	createStatus := config.Tx.Create(&jobs_gorm_model.Task{
+	err := config.Tx.Create(&jobs_gorm_model.Task{
 		Status:         TASK_IN,
 		Params:         config.Params,
 		StatusDesc:     "首次添加任务",
@@ -257,9 +257,9 @@ func (j *JobsGorm) CreateInCustomIdMaxNumberOnly(config *ConfigCreateInCustomIdM
 		CreatedIp:      config.CurrentIp,
 		SpecifyIp:      config.SpecifyIp,
 		UpdatedIp:      config.CurrentIp,
-	})
-	if createStatus.RowsAffected == 0 {
-		return errors.New(fmt.Sprintf("创建[%s@%s]任务失败：%s", config.CustomId, config.Type, createStatus.Error))
+	}).Error
+	if err != nil {
+		return errors.New(fmt.Sprintf("创建[%s@%s]任务失败：%s", config.CustomId, config.Type, err.Error()))
 	}
 	return nil
 }
