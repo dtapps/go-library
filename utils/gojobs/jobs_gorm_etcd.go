@@ -29,23 +29,35 @@ func (j *JobsGorm) GetEtcdIssueAddress(server *Etcd, v *jobs_gorm_model.Task) (a
 		return address, errors.New("没有客户端在线")
 	}
 
-	// 判断是否指定某ip执行
+	// 只有一个客户端在线
 	if len(workers) == 1 {
 		if appointIpStatus == true {
+			// 判断是否指定某ip执行
 			if currentIp == workers[0] {
 				return fmt.Sprintf("%s/%d", server.IssueWatchKey(v.SpecifyIp), v.Id), nil
 			}
 			return address, errors.New("执行的客户端不在线")
 		}
+		return fmt.Sprintf("%s/%d", server.IssueWatchKey(workers[0]), v.Id), nil
 	}
 
-	// 随机返回一个
-	zxIp := workers[j.random(0, len(workers))]
-	if zxIp == "" {
-		return address, errors.New("获取执行的客户端异常")
+	// 优先处理指定某ip执行
+	if appointIpStatus == true {
+		for _, wv := range workers {
+			if currentIp == wv {
+				return fmt.Sprintf("%s/%d", server.IssueWatchKey(wv), v.Id), nil
+			}
+		}
+		return address, errors.New("执行的客户端不在线")
+	} else {
+		// 随机返回一个
+		zxIp := workers[j.random(0, len(workers))]
+		if zxIp == "" {
+			return address, errors.New("获取执行的客户端异常")
+		}
+		address = fmt.Sprintf("%s/%d", server.IssueWatchKey(zxIp), v.Id)
+		return address, err
 	}
-	address = fmt.Sprintf("%s/%d", server.IssueWatchKey(zxIp), v.Id)
-	return address, err
 }
 
 // 随机返回一个
