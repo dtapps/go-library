@@ -321,6 +321,9 @@ github.com/qiniu/qmgo/validator
 # github.com/robfig/cron/v3 v3.0.1
 ## explicit; go 1.12
 github.com/robfig/cron/v3
+# github.com/rs/xid v1.4.0
+## explicit; go 1.12
+github.com/rs/xid
 # github.com/saracen/go7z v0.0.0-20191010121135-9c09b6bd7fda
 ## explicit
 github.com/saracen/go7z

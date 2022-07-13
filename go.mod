@@ -28,6 +28,7 @@ require (
 	github.com/qiniu/go-sdk/v7 v7.13.0
 	github.com/qiniu/qmgo v1.1.1
 	github.com/robfig/cron/v3 v3.0.1
+	github.com/rs/xid v1.4.0
 	github.com/saracen/go7z v0.0.0-20191010121135-9c09b6bd7fda
 	github.com/shopspring/decimal v1.3.1
 	github.com/sirupsen/logrus v1.8.1
