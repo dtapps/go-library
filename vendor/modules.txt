@@ -1,4 +1,4 @@
-# gitee.com/chunanyong/zorm v1.5.5
+# gitee.com/chunanyong/zorm v1.5.6
 ## explicit; go 1.13
 gitee.com/chunanyong/zorm
 gitee.com/chunanyong/zorm/decimal
@@ -9,7 +9,7 @@ github.com/aliyun/aliyun-oss-go-sdk/oss
 ## explicit; go 1.16
 github.com/allegro/bigcache/v3
 github.com/allegro/bigcache/v3/queue
-# github.com/aws/aws-sdk-go v1.44.51
+# github.com/aws/aws-sdk-go v1.44.53
 ## explicit; go 1.11
 github.com/aws/aws-sdk-go/aws
 github.com/aws/aws-sdk-go/aws/arn
@@ -481,7 +481,7 @@ golang.org/x/net/trace
 ## explicit
 golang.org/x/sync/errgroup
 golang.org/x/sync/singleflight
-# golang.org/x/sys v0.0.0-20220708085239-5a0f0661e09d
+# golang.org/x/sys v0.0.0-20220712014510-0a85c31ab51e
 ## explicit; go 1.17
 golang.org/x/sys/cpu
 golang.org/x/sys/internal/unsafeheader
@@ -516,11 +516,11 @@ golang.org/x/text/width
 # golang.org/x/time v0.0.0-20220609170525-579cf78fd858
 ## explicit
 golang.org/x/time/rate
-# google.golang.org/genproto v0.0.0-20220708155623-50e5f4832e73
+# google.golang.org/genproto v0.0.0-20220712132514-bdd2acd4974d
 ## explicit; go 1.15
 google.golang.org/genproto/googleapis/api/annotations
 google.golang.org/genproto/googleapis/rpc/status
-# google.golang.org/grpc v1.47.0
+# google.golang.org/grpc v1.48.0
 ## explicit; go 1.14
 google.golang.org/grpc
 google.golang.org/grpc/attributes
@@ -641,7 +641,7 @@ gorm.io/gorm/logger
 gorm.io/gorm/migrator
 gorm.io/gorm/schema
 gorm.io/gorm/utils
-# xorm.io/builder v0.3.11
+# xorm.io/builder v0.3.12
 ## explicit; go 1.11
 xorm.io/builder
 # xorm.io/xorm v1.3.1
