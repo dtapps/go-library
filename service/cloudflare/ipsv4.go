@@ -19,7 +19,7 @@ func newIpsV4Result(result IpsV4Response, body []byte, http gorequest.Response, 
 	return &IpsV4Result{Result: result, Body: body, Http: http, Err: err}
 }
 
-// IpsV4 ipv1
+// IpsV4 ipv4
 // https://www.cloudflare.com/ips-v4
 func (c *Client) IpsV4() *IpsV4Result {
 	// 参数

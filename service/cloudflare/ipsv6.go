@@ -19,7 +19,7 @@ func newIpsV6Result(result IpsV6Response, body []byte, http gorequest.Response, 
 	return &IpsV6Result{Result: result, Body: body, Http: http, Err: err}
 }
 
-// IpsV6 ipv1
+// IpsV6 ipv6
 // https://www.cloudflare.com/ips-v6
 func (c *Client) IpsV6() *IpsV6Result {
 	// 参数
