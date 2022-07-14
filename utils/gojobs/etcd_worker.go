@@ -27,6 +27,8 @@ func NewEtcdWorker(config *EtcdConfig) (*Etcd, error) {
 	e.Password = config.Password
 	e.CustomDirectory = config.CustomDirectory
 
+	e.Debug = config.Debug
+
 	v3Config := clientv3.Config{
 		Endpoints:   e.Endpoints,
 		DialTimeout: e.DialTimeout,
@@ -70,21 +72,27 @@ func (e Etcd) RegisterWorker() {
 	for {
 		// 注册路径
 		regKey = getJobWorkerDir(e) + e.LocalIP
-		log.Println("租约：", regKey)
+		if e.Debug == true {
+			log.Println("租约：", regKey)
+		}
 
 		cancelFunc = nil
 
 		// 申请一个10秒的租约
 		leaseGrantResp, err = e.Lease.Grant(context.TODO(), 10)
 		if err != nil {
-			log.Println("申请一个10秒的租约失败", err)
+			if e.Debug == true {
+				log.Println("申请一个10秒的租约失败", err)
+			}
 			goto RETRY
 		}
 
 		// 自动永久续租
 		keepAliveChan, err = e.Lease.KeepAlive(context.TODO(), leaseGrantResp.ID)
 		if err != nil {
-			log.Println("自动永久续租失败", err)
+			if e.Debug == true {
+				log.Println("自动永久续租失败", err)
+			}
 			goto RETRY
 		}
 
@@ -93,7 +101,9 @@ func (e Etcd) RegisterWorker() {
 		// 注册到etcd
 		_, err = e.Kv.Put(cancelCtx, regKey, "", clientv3.WithLease(leaseGrantResp.ID))
 		if err != nil {
-			log.Println(fmt.Sprintf(" %s 服务注册失败:%s", regKey, err))
+			if e.Debug == true {
+				log.Println(fmt.Sprintf(" %s 服务注册失败:%s", regKey, err))
+			}
 			goto RETRY
 		}
 
@@ -102,16 +112,22 @@ func (e Etcd) RegisterWorker() {
 			select {
 			case keepAliveResp = <-keepAliveChan:
 				if keepAliveResp == nil {
-					log.Println("续租失败")
+					if e.Debug == true {
+						log.Println("续租失败")
+					}
 					goto RETRY
 				} else {
-					log.Println("收到自动续租应答:", leaseGrantResp.ID)
+					if e.Debug == true {
+						log.Println("收到自动续租应答:", leaseGrantResp.ID)
+					}
 				}
 			}
 		}
 
 	RETRY:
-		log.Println("异常 RETRY ", regKey)
+		if e.Debug == true {
+			log.Println("异常 RETRY ", regKey)
+		}
 		time.Sleep(1 * time.Second)
 		if cancelFunc != nil {
 			cancelFunc()

@@ -13,6 +13,7 @@ type EtcdConfig struct {
 	Username        string        // 用户名
 	Password        string        // 密码
 	CustomDirectory string        // 自定义目录，后面不需要/
+	Debug           bool          // 是否打印
 }
 
 // Etcd etcd

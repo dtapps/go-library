@@ -23,6 +23,8 @@ func NewEtcdServer(config *EtcdConfig) (*Etcd, error) {
 	e.Password = config.Password
 	e.CustomDirectory = config.CustomDirectory
 
+	e.Debug = config.Debug
+
 	v3Config := clientv3.Config{
 		Endpoints:   e.Endpoints,
 		DialTimeout: e.DialTimeout,
