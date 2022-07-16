@@ -1,3 +1,10 @@
+# gitee.com/chunanyong/dm v1.8.5
+## explicit; go 1.13
+gitee.com/chunanyong/dm
+gitee.com/chunanyong/dm/i18n
+gitee.com/chunanyong/dm/parser
+gitee.com/chunanyong/dm/security
+gitee.com/chunanyong/dm/util
 # gitee.com/chunanyong/zorm v1.5.6
 ## explicit; go 1.13
 gitee.com/chunanyong/zorm
@@ -84,6 +91,9 @@ github.com/beego/beego/v2/core/logs
 github.com/beego/beego/v2/core/utils
 # github.com/bitly/go-simplejson v0.5.0
 ## explicit
+# github.com/bmizerany/pq v0.0.0-20131128184720-da2b95e392c1
+## explicit
+github.com/bmizerany/pq
 # github.com/bradfitz/gomemcache v0.0.0-20220106215444-fb4bf637b56d
 ## explicit; go 1.12
 github.com/bradfitz/gomemcache/memcache
@@ -136,6 +146,12 @@ github.com/glebarez/go-sqlite
 # github.com/glebarez/sqlite v1.4.6
 ## explicit; go 1.16
 github.com/glebarez/sqlite
+# github.com/go-logfmt/logfmt v0.5.1
+## explicit; go 1.17
+github.com/go-logfmt/logfmt
+# github.com/go-logr/logr v1.2.3
+## explicit; go 1.16
+github.com/go-logr/logr
 # github.com/go-playground/locales v0.14.0
 ## explicit; go 1.13
 github.com/go-playground/locales
@@ -177,6 +193,17 @@ github.com/goccy/go-json/internal/encoder/vm_color_indent
 github.com/goccy/go-json/internal/encoder/vm_indent
 github.com/goccy/go-json/internal/errors
 github.com/goccy/go-json/internal/runtime
+# github.com/godror/godror v0.33.3
+## explicit; go 1.15
+github.com/godror/godror
+github.com/godror/godror/dsn
+github.com/godror/godror/odpi/embed
+github.com/godror/godror/odpi/include
+github.com/godror/godror/odpi/src
+# github.com/godror/knownpb v0.1.0
+## explicit; go 1.17
+github.com/godror/knownpb/internal
+github.com/godror/knownpb/timestamppb
 # github.com/gogo/protobuf v1.3.2
 ## explicit; go 1.15
 github.com/gogo/protobuf/gogoproto
@@ -290,6 +317,9 @@ github.com/leodido/go-urn
 github.com/lib/pq
 github.com/lib/pq/oid
 github.com/lib/pq/scram
+# github.com/mailru/go-clickhouse/v2 v2.0.0
+## explicit; go 1.11
+github.com/mailru/go-clickhouse/v2
 # github.com/mattn/go-isatty v0.0.14
 ## explicit; go 1.12
 github.com/mattn/go-isatty
@@ -530,6 +560,7 @@ golang.org/x/text/cases
 golang.org/x/text/encoding
 golang.org/x/text/encoding/charmap
 golang.org/x/text/encoding/htmlindex
+golang.org/x/text/encoding/ianaindex
 golang.org/x/text/encoding/internal
 golang.org/x/text/encoding/internal/identifier
 golang.org/x/text/encoding/japanese
@@ -537,12 +568,19 @@ golang.org/x/text/encoding/korean
 golang.org/x/text/encoding/simplifiedchinese
 golang.org/x/text/encoding/traditionalchinese
 golang.org/x/text/encoding/unicode
+golang.org/x/text/feature/plural
 golang.org/x/text/internal
+golang.org/x/text/internal/catmsg
+golang.org/x/text/internal/format
 golang.org/x/text/internal/language
 golang.org/x/text/internal/language/compact
+golang.org/x/text/internal/number
+golang.org/x/text/internal/stringset
 golang.org/x/text/internal/tag
 golang.org/x/text/internal/utf8internal
 golang.org/x/text/language
+golang.org/x/text/message
+golang.org/x/text/message/catalog
 golang.org/x/text/runes
 golang.org/x/text/secure/bidirule
 golang.org/x/text/secure/precis

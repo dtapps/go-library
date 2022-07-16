@@ -3,6 +3,7 @@ module go.dtapp.net/library
 go 1.18
 
 require (
+	gitee.com/chunanyong/dm v1.8.5
 	gitee.com/chunanyong/zorm v1.5.6
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.4+incompatible
 	github.com/allegro/bigcache/v3 v3.0.2
@@ -10,6 +11,7 @@ require (
 	github.com/baidubce/bce-sdk-go v0.9.129
 	github.com/basgys/goxml2json v1.1.0
 	github.com/beego/beego/v2 v2.0.4
+	github.com/bmizerany/pq v0.0.0-20131128184720-da2b95e392c1
 	github.com/bradfitz/gomemcache v0.0.0-20220106215444-fb4bf637b56d
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/gin-gonic/gin v1.8.1
@@ -19,10 +21,12 @@ require (
 	github.com/go-playground/validator/v10 v10.11.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-sql-driver/mysql v1.6.0
+	github.com/godror/godror v0.33.3
 	github.com/huaweicloud/huaweicloud-sdk-go-obs v3.21.12+incompatible
 	github.com/jasonlvhit/gocron v0.0.1
 	github.com/ks3sdklib/aws-sdk-go v1.1.6
 	github.com/lib/pq v1.10.5
+	github.com/mailru/go-clickhouse/v2 v2.0.0
 	github.com/mattn/go-sqlite3 v1.14.12
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/mvdan/xurls v1.1.0
@@ -70,8 +74,11 @@ require (
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/glebarez/go-sqlite v1.17.3 // indirect
+	github.com/go-logfmt/logfmt v0.5.1 // indirect
+	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/goccy/go-json v0.9.8 // indirect
+	github.com/godror/knownpb v0.1.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 // indirect
 	github.com/golang-sql/sqlexp v0.0.0-20170517235910-f1bb20e5a188 // indirect

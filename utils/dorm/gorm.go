@@ -15,6 +15,8 @@ type ConfigGormClient struct {
 	LogUrl string // 日志路径
 }
 
+// GormClient
+// https://gorm.io/
 type GormClient struct {
 	Db     *gorm.DB          // 驱动
 	config *ConfigGormClient // 配置
