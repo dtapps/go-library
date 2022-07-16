@@ -43,6 +43,7 @@ require (
 	github.com/shopspring/decimal v1.3.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.35
+	github.com/upper/db/v4 v4.5.4
 	github.com/upyun/go-sdk/v3 v3.0.2
 	go.etcd.io/etcd/api/v3 v3.5.4
 	go.etcd.io/etcd/client/v3 v3.5.4
@@ -75,6 +76,7 @@ require (
 	github.com/denisenkom/go-mssqldb v0.12.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
+	github.com/edsrzf/mmap-go v1.0.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/glebarez/go-sqlite v1.17.3 // indirect
 	github.com/go-logfmt/logfmt v0.5.1 // indirect
@@ -136,9 +138,20 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	modernc.org/b v1.0.2 // indirect
+	modernc.org/db v1.0.3 // indirect
+	modernc.org/file v1.0.3 // indirect
+	modernc.org/fileutil v1.0.0 // indirect
+	modernc.org/golex v1.0.1 // indirect
+	modernc.org/internal v1.0.2 // indirect
 	modernc.org/libc v1.16.8 // indirect
+	modernc.org/lldb v1.0.2 // indirect
 	modernc.org/mathutil v1.4.1 // indirect
 	modernc.org/memory v1.1.1 // indirect
+	modernc.org/ql v1.4.0 // indirect
+	modernc.org/sortutil v1.1.0 // indirect
 	modernc.org/sqlite v1.17.3 // indirect
+	modernc.org/strutil v1.1.1 // indirect
+	modernc.org/zappy v1.0.3 // indirect
 	xorm.io/builder v0.3.12 // indirect
 )

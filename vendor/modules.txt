@@ -140,6 +140,9 @@ github.com/dgryski/go-rendezvous
 # github.com/dustin/go-humanize v1.0.0
 ## explicit
 github.com/dustin/go-humanize
+# github.com/edsrzf/mmap-go v1.0.0
+## explicit
+github.com/edsrzf/mmap-go
 # github.com/gin-contrib/sse v0.1.0
 ## explicit; go 1.12
 github.com/gin-contrib/sse
@@ -455,6 +458,25 @@ github.com/ugorji/go/codec
 github.com/ulikunitz/xz/internal/hash
 github.com/ulikunitz/xz/internal/xlog
 github.com/ulikunitz/xz/lzma
+# github.com/upper/db/v4 v4.5.4
+## explicit; go 1.15
+github.com/upper/db/v4
+github.com/upper/db/v4/adapter/cockroachdb
+github.com/upper/db/v4/adapter/mongo
+github.com/upper/db/v4/adapter/mssql
+github.com/upper/db/v4/adapter/mysql
+github.com/upper/db/v4/adapter/postgresql
+github.com/upper/db/v4/adapter/ql
+github.com/upper/db/v4/adapter/sqlite
+github.com/upper/db/v4/internal/adapter
+github.com/upper/db/v4/internal/cache
+github.com/upper/db/v4/internal/cache/hashstructure
+github.com/upper/db/v4/internal/immutable
+github.com/upper/db/v4/internal/reflectx
+github.com/upper/db/v4/internal/sqladapter
+github.com/upper/db/v4/internal/sqladapter/compat
+github.com/upper/db/v4/internal/sqladapter/exql
+github.com/upper/db/v4/internal/sqlbuilder
 # github.com/upyun/go-sdk/v3 v3.0.2
 ## explicit; go 1.13
 github.com/upyun/go-sdk/v3/upyun
@@ -749,6 +771,26 @@ gorm.io/gorm/logger
 gorm.io/gorm/migrator
 gorm.io/gorm/schema
 gorm.io/gorm/utils
+# modernc.org/b v1.0.2
+## explicit; go 1.15
+modernc.org/b
+# modernc.org/db v1.0.3
+## explicit; go 1.15
+modernc.org/db
+# modernc.org/file v1.0.3
+## explicit; go 1.15
+modernc.org/file
+# modernc.org/fileutil v1.0.0
+## explicit
+modernc.org/fileutil
+# modernc.org/golex v1.0.1
+## explicit
+modernc.org/golex/lex
+# modernc.org/internal v1.0.2
+## explicit; go 1.16
+modernc.org/internal/buffer
+modernc.org/internal/file
+modernc.org/internal/slice
 # modernc.org/libc v1.16.8
 ## explicit; go 1.16
 modernc.org/libc
@@ -777,15 +819,32 @@ modernc.org/libc/utime
 modernc.org/libc/uuid
 modernc.org/libc/uuid/uuid
 modernc.org/libc/wctype
+# modernc.org/lldb v1.0.2
+## explicit; go 1.15
+modernc.org/lldb
 # modernc.org/mathutil v1.4.1
 ## explicit; go 1.13
 modernc.org/mathutil
 # modernc.org/memory v1.1.1
 ## explicit; go 1.16
 modernc.org/memory
+# modernc.org/ql v1.4.0
+## explicit; go 1.15
+modernc.org/ql
+modernc.org/ql/driver
+modernc.org/ql/vendored/github.com/camlistore/go4/lock
+# modernc.org/sortutil v1.1.0
+## explicit; go 1.13
+modernc.org/sortutil
 # modernc.org/sqlite v1.17.3
 ## explicit; go 1.16
 modernc.org/sqlite/lib
+# modernc.org/strutil v1.1.1
+## explicit; go 1.15
+modernc.org/strutil
+# modernc.org/zappy v1.0.3
+## explicit; go 1.15
+modernc.org/zappy
 # xorm.io/builder v0.3.12
 ## explicit; go 1.11
 xorm.io/builder
