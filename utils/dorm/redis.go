@@ -15,6 +15,8 @@ type ConfigRedisClient struct {
 	PoolSize int    // 连接池大小
 }
 
+// RedisClient
+// https://redis.uptrace.dev/
 type RedisClient struct {
 	Db     *redis.Client      // 驱动
 	config *ConfigRedisClient // 配置

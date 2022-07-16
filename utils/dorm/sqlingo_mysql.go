@@ -3,6 +3,7 @@ package dorm
 import (
 	"errors"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/lqs/sqlingo"
 )
 
