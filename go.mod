@@ -14,6 +14,7 @@ require (
 	github.com/beego/beego/v2 v2.0.4
 	github.com/bmizerany/pq v0.0.0-20131128184720-da2b95e392c1
 	github.com/bradfitz/gomemcache v0.0.0-20220106215444-fb4bf637b56d
+	github.com/daodao97/fly v0.0.0-20220716071342-fd98e4b05d96
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/glebarez/sqlite v1.4.6
@@ -31,8 +32,9 @@ require (
 	github.com/ks3sdklib/aws-sdk-go v1.1.6
 	github.com/lesismal/sqlw v0.0.0-20220710073239-bd797c43fef9
 	github.com/lib/pq v1.10.5
+	github.com/lqs/sqlingo v0.11.1
 	github.com/mailru/go-clickhouse/v2 v2.0.0
-	github.com/mattn/go-sqlite3 v1.14.13
+	github.com/mattn/go-sqlite3 v2.0.3+incompatible
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/mvdan/xurls v1.1.0
 	github.com/natefinch/lumberjack v2.0.0+incompatible
@@ -80,6 +82,7 @@ require (
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/edsrzf/mmap-go v1.0.0 // indirect
+	github.com/fatih/color v1.13.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/glebarez/go-sqlite v1.17.3 // indirect
 	github.com/go-logfmt/logfmt v0.5.1 // indirect
@@ -111,6 +114,7 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.15.8 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
+	github.com/mattn/go-colorable v0.1.9 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
@@ -123,6 +127,7 @@ require (
 	github.com/saracen/solidblock v0.0.0-20190426153529-45df20abab6f // indirect
 	github.com/serenize/snaker v0.0.0-20201027110005-a7ad2135616e // indirect
 	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
+	github.com/spf13/cast v1.5.0 // indirect
 	github.com/stretchr/testify v1.8.0 // indirect
 	github.com/syndtr/goleveldb v1.0.0 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
@@ -158,5 +163,6 @@ require (
 	modernc.org/sqlite v1.17.3 // indirect
 	modernc.org/strutil v1.1.1 // indirect
 	modernc.org/zappy v1.0.3 // indirect
+	muzzammil.xyz/jsonc v1.0.0 // indirect
 	xorm.io/builder v0.3.12 // indirect
 )

@@ -116,6 +116,12 @@ github.com/coreos/go-semver/semver
 # github.com/coreos/go-systemd/v22 v22.3.2
 ## explicit; go 1.12
 github.com/coreos/go-systemd/v22/journal
+# github.com/daodao97/fly v0.0.0-20220716071342-fd98e4b05d96
+## explicit; go 1.17
+github.com/daodao97/fly
+github.com/daodao97/fly/interval/hook
+github.com/daodao97/fly/interval/util
+github.com/daodao97/fly/interval/xtype
 # github.com/davecgh/go-spew v1.1.1
 ## explicit
 github.com/davecgh/go-spew/spew
@@ -143,6 +149,9 @@ github.com/dustin/go-humanize
 # github.com/edsrzf/mmap-go v1.0.0
 ## explicit
 github.com/edsrzf/mmap-go
+# github.com/fatih/color v1.13.0
+## explicit; go 1.13
+github.com/fatih/color
 # github.com/gin-contrib/sse v0.1.0
 ## explicit; go 1.12
 github.com/gin-contrib/sse
@@ -350,14 +359,20 @@ github.com/lesismal/sqlw
 github.com/lib/pq
 github.com/lib/pq/oid
 github.com/lib/pq/scram
+# github.com/lqs/sqlingo v0.11.1
+## explicit
+github.com/lqs/sqlingo
 # github.com/mailru/go-clickhouse/v2 v2.0.0
 ## explicit; go 1.11
 github.com/mailru/go-clickhouse/v2
+# github.com/mattn/go-colorable v0.1.9
+## explicit; go 1.13
+github.com/mattn/go-colorable
 # github.com/mattn/go-isatty v0.0.14
 ## explicit; go 1.12
 github.com/mattn/go-isatty
-# github.com/mattn/go-sqlite3 v1.14.13
-## explicit; go 1.12
+# github.com/mattn/go-sqlite3 v2.0.3+incompatible
+## explicit
 github.com/mattn/go-sqlite3
 # github.com/mitchellh/mapstructure v1.5.0
 ## explicit; go 1.14
@@ -445,6 +460,9 @@ github.com/shopspring/decimal
 # github.com/sirupsen/logrus v1.8.1
 ## explicit; go 1.13
 github.com/sirupsen/logrus
+# github.com/spf13/cast v1.5.0
+## explicit; go 1.18
+github.com/spf13/cast
 # github.com/stretchr/testify v1.8.0
 ## explicit; go 1.13
 github.com/stretchr/testify/assert
@@ -861,6 +879,9 @@ modernc.org/strutil
 # modernc.org/zappy v1.0.3
 ## explicit; go 1.15
 modernc.org/zappy
+# muzzammil.xyz/jsonc v1.0.0
+## explicit
+muzzammil.xyz/jsonc
 # xorm.io/builder v0.3.12
 ## explicit; go 1.11
 xorm.io/builder
