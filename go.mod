@@ -29,6 +29,7 @@ require (
 	github.com/jasonlvhit/gocron v0.0.1
 	github.com/kamva/mgm/v3 v3.4.1
 	github.com/ks3sdklib/aws-sdk-go v1.1.6
+	github.com/lesismal/sqlw v0.0.0-20220710073239-bd797c43fef9
 	github.com/lib/pq v1.10.5
 	github.com/mailru/go-clickhouse/v2 v2.0.0
 	github.com/mattn/go-sqlite3 v1.14.13
