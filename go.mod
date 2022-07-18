@@ -23,10 +23,12 @@ require (
 	github.com/go-playground/universal-translator v0.18.0
 	github.com/go-playground/validator/v10 v10.11.0
 	github.com/go-redis/redis/v8 v8.11.5
+	github.com/go-redis/redis/v9 v9.0.0-beta.1
 	github.com/go-rel/mysql v0.8.0
 	github.com/go-rel/rel v0.38.0
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/godror/godror v0.33.3
+	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/huaweicloud/huaweicloud-sdk-go-obs v3.21.12+incompatible
 	github.com/jasonlvhit/gocron v0.0.1
 	github.com/kamva/mgm/v3 v3.4.1
