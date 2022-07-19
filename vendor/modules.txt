@@ -204,6 +204,8 @@ github.com/emicklei/go-restful/log
 # github.com/fatih/color v1.13.0
 ## explicit; go 1.13
 github.com/fatih/color
+# github.com/fsnotify/fsnotify v1.5.1
+## explicit; go 1.13
 # github.com/gin-contrib/sse v0.1.0
 ## explicit; go 1.12
 github.com/gin-contrib/sse
@@ -511,33 +513,6 @@ github.com/mvdan/xurls
 # github.com/natefinch/lumberjack v2.0.0+incompatible
 ## explicit
 github.com/natefinch/lumberjack
-# github.com/neo4j/neo4j-go-driver/v4 v4.4.3
-## explicit; go 1.16
-github.com/neo4j/neo4j-go-driver/v4/neo4j
-github.com/neo4j/neo4j-go-driver/v4/neo4j/db
-github.com/neo4j/neo4j-go-driver/v4/neo4j/dbtype
-github.com/neo4j/neo4j-go-driver/v4/neo4j/internal/bolt
-github.com/neo4j/neo4j-go-driver/v4/neo4j/internal/connector
-github.com/neo4j/neo4j-go-driver/v4/neo4j/internal/packstream
-github.com/neo4j/neo4j-go-driver/v4/neo4j/internal/pool
-github.com/neo4j/neo4j-go-driver/v4/neo4j/internal/racingio
-github.com/neo4j/neo4j-go-driver/v4/neo4j/internal/retry
-github.com/neo4j/neo4j-go-driver/v4/neo4j/internal/router
-github.com/neo4j/neo4j-go-driver/v4/neo4j/log
-# github.com/neo4j/neo4j-go-driver/v5 v5.0.0-preview
-## explicit; go 1.17
-github.com/neo4j/neo4j-go-driver/v5/neo4j
-github.com/neo4j/neo4j-go-driver/v5/neo4j/db
-github.com/neo4j/neo4j-go-driver/v5/neo4j/dbtype
-github.com/neo4j/neo4j-go-driver/v5/neo4j/internal/bolt
-github.com/neo4j/neo4j-go-driver/v5/neo4j/internal/connector
-github.com/neo4j/neo4j-go-driver/v5/neo4j/internal/db
-github.com/neo4j/neo4j-go-driver/v5/neo4j/internal/packstream
-github.com/neo4j/neo4j-go-driver/v5/neo4j/internal/pool
-github.com/neo4j/neo4j-go-driver/v5/neo4j/internal/racingio
-github.com/neo4j/neo4j-go-driver/v5/neo4j/internal/retry
-github.com/neo4j/neo4j-go-driver/v5/neo4j/internal/router
-github.com/neo4j/neo4j-go-driver/v5/neo4j/log
 # github.com/nilorg/sdk v0.0.0-20220617065147-3001fb840741
 ## explicit; go 1.12
 github.com/nilorg/sdk/convert

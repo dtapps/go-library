@@ -43,8 +43,6 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/mvdan/xurls v1.1.0
 	github.com/natefinch/lumberjack v2.0.0+incompatible
-	github.com/neo4j/neo4j-go-driver/v4 v4.4.3
-	github.com/neo4j/neo4j-go-driver/v5 v5.0.0-preview
 	github.com/nilorg/sdk v0.0.0-20220617065147-3001fb840741
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/qiniu/go-sdk/v7 v7.13.0
@@ -107,6 +105,7 @@ require (
 	github.com/edsrzf/mmap-go v1.0.0 // indirect
 	github.com/emicklei/go-restful v2.9.5+incompatible // indirect
 	github.com/fatih/color v1.13.0 // indirect
+	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/glebarez/go-sqlite v1.17.3 // indirect
 	github.com/go-logfmt/logfmt v0.5.1 // indirect
