@@ -4,7 +4,7 @@ A simple go db library
 
 - data hook, Easy transition db data
 - sql builder, Not need handwritten SQL
-- hasOne/hasMany, Convenient access to associated data
+- hasOne/hasMany, Convenient get linked data
 - validator, Flexible verification policies
 - extensible, Easy extend custom hook/sql/validator
 - cacheEnable, Support for custom cache implementations
@@ -71,13 +71,13 @@ func main() {
 }
 
 type User struct {
-    ID        int64    `json:"id"`
-    Name      string   `json:"name"`
-    Status    int64    `json:"status"`
-    Profile   *Profile `json:"profile"`
-    IsDeleted int      `json:"is_deleted"`
-    RoleIds   []int    `json:"role_ids"`
-    Score     int      `json:"score"`
+    ID        int64    `db:"id"`
+    Name      string   `db:"name"`
+    Status    int64    `db:"status"`
+    Profile   *Profile `db:"profile"`
+    IsDeleted int      `db:"is_deleted"`
+    RoleIds   []int    `db:"role_ids"`
+    Score     int      `db:"score"`
 }
 
 type Profile struct {

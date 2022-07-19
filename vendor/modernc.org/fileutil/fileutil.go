@@ -6,8 +6,10 @@
 package fileutil // import "modernc.org/fileutil"
 
 import (
+	"bufio"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -222,4 +224,137 @@ func nextInfix() string {
 	rand = r
 	randmu.Unlock()
 	return strconv.Itoa(int(1e9 + r%1e9))[1:]
+}
+
+// CopyFile copies src in fsys, to dest in the OS file system, preserving
+// permissions and times where/when possible. If canOverwrite is not nil, it is
+// consulted whether a destination file can be overwritten. If canOverwrite is
+// nil then destination is overwritten if permissions allow that, otherwise the
+// function fails.
+func CopyFile(fsys fs.FS, dst, src string, canOverwrite func(fn string, fi os.FileInfo) bool) (n int64, rerr error) {
+	dstDir := filepath.Dir(dst)
+	di, err := os.Stat(dstDir)
+	switch {
+	case err != nil:
+		if !os.IsNotExist(err) {
+			return 0, err
+		}
+
+		if err := os.MkdirAll(dstDir, 0770); err != nil {
+			return 0, err
+		}
+	case err == nil:
+		if !di.IsDir() {
+			return 0, fmt.Errorf("cannot create directory, file exists: %s", dst)
+		}
+	}
+
+	s, err := fsys.Open(src)
+	if err != nil {
+		return 0, err
+	}
+
+	defer s.Close()
+
+	si, err := s.Stat()
+	if err != nil {
+		return 0, err
+	}
+
+	if si.IsDir() {
+		return 0, fmt.Errorf("cannot copy a directory: %s", src)
+	}
+
+	di, err = os.Stat(dst)
+	switch {
+	case err != nil && !os.IsNotExist(err):
+		return 0, err
+	case err == nil:
+		if di.IsDir() {
+			return 0, fmt.Errorf("cannot overwite a directory: %s", dst)
+		}
+
+		if canOverwrite != nil && !canOverwrite(dst, di) {
+			return 0, fmt.Errorf("cannot overwite: %s", dst)
+		}
+	}
+
+	r := bufio.NewReader(s)
+	d, err := os.Create(dst)
+
+	defer func() {
+		if err := d.Close(); err != nil && rerr == nil {
+			rerr = err
+			return
+		}
+
+		if err := os.Chmod(dst, si.Mode()); err != nil && rerr == nil {
+			rerr = err
+			return
+		}
+
+		if err := os.Chtimes(dst, si.ModTime(), si.ModTime()); err != nil && rerr == nil {
+			rerr = err
+			return
+		}
+	}()
+
+	w := bufio.NewWriter(d)
+
+	defer func() {
+		if err := w.Flush(); err != nil && rerr == nil {
+			rerr = err
+		}
+	}()
+
+	return io.Copy(w, r)
+}
+
+// CopyDir recursively copies src in fsys to dest in the OS file system,
+// preserving permissions and times where/when possible. If canOverwrite is not
+// nil, it is consulted whether a destination file can be overwritten. If
+// canOverwrite is nil then destination is overwritten if permissions allow
+// that, otherwise the function fails.
+func CopyDir(fsys fs.FS, dst, src string, canOverwrite func(fn string, fi os.FileInfo) bool) (files int, bytes int64, rerr error) {
+	s, err := fsys.Open(src)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	si, err := s.Stat()
+	if err != nil {
+		return 0, 0, err
+	}
+
+	if err := s.Close(); err != nil {
+		return 0, 0, err
+	}
+
+	if !si.IsDir() {
+		return 0, 0, fmt.Errorf("cannot copy a file: %s", src)
+	}
+
+	return files, bytes, fs.WalkDir(fsys, src, func(path string, info fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		rel, err := filepath.Rel(src, path)
+		if err != nil {
+			return err
+		}
+
+		if info.IsDir() {
+			return os.MkdirAll(filepath.Join(dst, rel), 0770)
+		}
+
+		n, err := CopyFile(fsys, filepath.Join(dst, rel), path, canOverwrite)
+		if err != nil {
+			return err
+		}
+
+		files++
+		bytes += n
+		return nil
+	})
 }

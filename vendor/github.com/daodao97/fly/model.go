@@ -28,12 +28,13 @@ type model struct {
 	fakeDelKey      string
 	primaryKey      string
 	columnHook      map[string]HookData
-	columnValidator []Validator
+	columnValidator []Valid
 	hasOne          []HasOpts
 	hasMany         []HasOpts
 	options         *Options
 	client          *sql.DB
 	saveZero        bool
+	enableValidator bool
 	err             error
 }
 
@@ -56,6 +57,7 @@ func New(table string, baseOpt ...With) *model {
 	if m.client == nil {
 		m.client, m.err = db(m.connection)
 	}
+	m.enableValidator = true
 	return m
 }
 
@@ -163,14 +165,11 @@ func (m *model) Insert(record interface{}) (lastId int64, err error) {
 		return 0, err
 	}
 
-	for _, v := range m.columnValidator {
-		for _, h := range v.Handle {
-			ok, err := h(m, _record, _record[v.Field])
+	if m.enableValidator {
+		for _, v := range m.columnValidator {
+			err = v(NewValidOpt(withRow(_record), WithModel(m)))
 			if err != nil {
 				return 0, err
-			}
-			if !ok {
-				return 0, errors.New("ValidateHandle err " + v.Msg)
 			}
 		}
 	}
@@ -220,14 +219,11 @@ func (m *model) Update(record interface{}, opt ...Option) (ok bool, err error) {
 		return false, errors.New("empty record to update")
 	}
 
-	for _, v := range m.columnValidator {
-		for _, h := range v.Handle {
-			ok, err := h(m, _record, _record[v.Field])
+	if m.enableValidator {
+		for _, v := range m.columnValidator {
+			err = v(NewValidOpt(withRow(_record), WithModel(m)))
 			if err != nil {
 				return false, err
-			}
-			if !ok {
-				return false, errors.New("ValidateHandle err " + v.Msg)
 			}
 		}
 	}
@@ -262,6 +258,10 @@ func (m *model) Delete(opt ...Option) (ok bool, err error) {
 
 	opt = append(opt, table(m.table))
 	if m.fakeDelKey != "" {
+		m.enableValidator = false
+		defer func() {
+			m.enableValidator = true
+		}()
 		return m.Update(map[string]interface{}{m.fakeDelKey: 1}, opt...)
 	}
 

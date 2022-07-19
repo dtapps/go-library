@@ -1,59 +1,146 @@
 package fly
 
 import (
+	"fmt"
+
+	"github.com/pkg/errors"
+
 	"github.com/daodao97/fly/interval/xtype"
 )
 
-type Validator struct {
-	Field  string
-	Msg    string
-	Handle []ValidateHandle
+type Valid = func(v *ValidInfo) error
+
+type ValidInfo struct {
+	Field string
+	Row   map[string]interface{}
+	Model Model
+	Label string
+	Msg   string
 }
 
-type ValidateHandle = func(m Model, row map[string]interface{}, val interface{}) (ok bool, err error)
+func mergeOpt(v1, v2 *ValidInfo) *ValidInfo {
+	if v2.Row != nil {
+		v1.Row = v2.Row
+	}
+	if v2.Model != nil {
+		v1.Model = v2.Model
+	}
+	if v2.Field != "" {
+		v1.Field = v2.Field
+	}
+	if v2.Label != "" {
+		v1.Label = v2.Label
+	}
+	if v2.Msg != "" {
+		v1.Msg = v2.Msg
+	}
+	return v1
+}
 
-type ValidateHandleMaker = func(field string) ValidateHandle
+func ValidWrap(valid Valid, v1 *ValidInfo) Valid {
+	return func(v *ValidInfo) error {
+		return valid(mergeOpt(v, v1))
+	}
+}
 
-// Required field value must exist and not zero
-func Required(field string) ValidateHandle {
-	return func(m Model, row map[string]interface{}, val interface{}) (ok bool, err error) {
-		v, ok := row[field]
+type ValidOpt = func(*ValidInfo)
+
+func WithMsg(msg string) ValidOpt {
+	return func(v *ValidInfo) {
+		v.Msg = msg
+	}
+}
+
+func withField(field string) ValidOpt {
+	return func(v *ValidInfo) {
+		v.Field = field
+	}
+}
+
+func WithLabel(label string) ValidOpt {
+	return func(v *ValidInfo) {
+		v.Label = label
+	}
+}
+
+func withRow(row map[string]interface{}) ValidOpt {
+	return func(v *ValidInfo) {
+		v.Row = row
+	}
+}
+
+func WithModel(m Model) ValidOpt {
+	return func(v *ValidInfo) {
+		v.Model = m
+	}
+}
+
+func ExtendValidOpt(v *ValidInfo, opt ...ValidOpt) *ValidInfo {
+	for _, o := range opt {
+		o(v)
+	}
+	return v
+}
+
+func NewValidOpt(opt ...ValidOpt) *ValidInfo {
+	v := &ValidInfo{}
+	for _, o := range opt {
+		o(v)
+	}
+	return v
+}
+
+func msg(msg1, msg2 string) string {
+	if msg2 != "" {
+		return msg2
+	}
+	return msg1
+}
+
+func Required(opt ...ValidOpt) Valid {
+	v1 := NewValidOpt(opt...)
+	return ValidWrap(func(v *ValidInfo) error {
+		val, ok := v.Row[v.Field]
 		if !ok {
-			return false, nil
+			return errors.New(msg(fmt.Sprintf("%s not found", v.Field), v.Msg))
 		}
-		return xtype.Bool(v), nil
-	}
+		if !xtype.Bool(val) {
+			return errors.New(msg(fmt.Sprintf("%s value is zero value", v.Field), v.Msg))
+		}
+		return nil
+	}, v1)
 }
 
-// IfRequired if field1 is existed, then field2 must exist and not zero
-func IfRequired(field1 string) ValidateHandleMaker {
-	return func(field string) ValidateHandle {
-		return func(m Model, row map[string]interface{}, val interface{}) (ok bool, err error) {
-			h := Required(field1)
-			ok, err = h(m, row, row[field1])
-			if err != nil {
-				return false, err
-			}
-			if !ok {
-				return true, nil
-			}
-			h = Required(field)
-			return h(m, row, row[field])
+func IfRequired(ifField string, opt ...ValidOpt) Valid {
+	v1 := NewValidOpt(opt...)
+	return ValidWrap(func(v *ValidInfo) error {
+		if err := Required()(NewValidOpt(withField(ifField), withRow(v.Row), WithModel(v.Model))); err != nil {
+			return nil
 		}
-	}
+
+		return Required()(NewValidOpt(
+			withField(v.Field),
+			withRow(v.Row),
+			WithModel(v.Model),
+			WithMsg(msg(fmt.Sprintf("当 %s 存在时 %s 是必须的", ifField, v.Field), v.Msg)),
+		))
+	}, v1)
 }
 
-// Unique field value must unique in current table
-func Unique(field string) ValidateHandle {
-	return func(m Model, row map[string]interface{}, val interface{}) (ok bool, err error) {
-		opts := []Option{WhereEq(field, val)}
-		if id, ok := row[m.PrimaryKey()]; ok {
-			opts = append(opts, WhereNotEq(m.PrimaryKey(), id))
+func Unique(opt ...ValidOpt) Valid {
+	v1 := NewValidOpt(opt...)
+	return ValidWrap(func(v *ValidInfo) error {
+		opts := []Option{WhereEq(v.Field, v.Row[v.Field])}
+		if id, ok := v.Row[v.Model.PrimaryKey()]; ok {
+			opts = append(opts, WhereNotEq(v.Model.PrimaryKey(), id))
 		}
-		count, err := m.Count(opts...)
+		count, err := v.Model.Count(opts...)
 		if err != nil {
-			return false, err
+			return err
 		}
-		return count == 0, nil
-	}
+		if count != 0 {
+			return errors.New(msg("Duplicate data", v.Msg))
+		}
+		return nil
+	}, v1)
 }

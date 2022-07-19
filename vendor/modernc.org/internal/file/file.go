@@ -23,7 +23,7 @@ const copyBufSize = 1 << 20 // 1 MB.
 var (
 	_ Interface = (*mem)(nil)
 	_ Interface = (*file)(nil)
-	_ Interface = (*windowsFile)(nil)
+	_ Interface = (*noMmapFile)(nil)
 
 	_ os.FileInfo = stat{}
 
@@ -52,22 +52,23 @@ type Interface interface {
 //
 // Windows expert needed to fix this.
 func Open(f *os.File) (Interface, error) {
-	if runtime.GOOS == "windows" {
-		return newWindowsFile(f)
+	switch runtime.GOOS {
+	case "openbsd", "windows":
+		return newNoMmapFile(f)
 	}
 
 	return newFile(f, 1<<30, 20)
 }
 
-type windowsFile struct {
+type noMmapFile struct {
 	*os.File
 }
 
-func newWindowsFile(f *os.File) (Interface, error) {
-	return &windowsFile{f}, nil
+func newNoMmapFile(f *os.File) (Interface, error) {
+	return &noMmapFile{f}, nil
 }
 
-func (f *windowsFile) WriteTo(w io.Writer) (n int64, err error) {
+func (f *noMmapFile) WriteTo(w io.Writer) (n int64, err error) {
 	return writeTo(f, w)
 }
 

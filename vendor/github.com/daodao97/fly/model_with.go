@@ -43,23 +43,21 @@ func ColumnHook(columnHook ...Hook) With {
 }
 
 // ColumnValidator while validate data by validator when create or update event
-func ColumnValidator(validator ...Validator) With {
+func ColumnValidator(validator ...[]Valid) With {
 	return func(b *model) {
 		if b.columnValidator == nil {
-			b.columnValidator = make([]Validator, 0, len(validator))
+			b.columnValidator = make([]Valid, 0, len(validator))
 		}
-		b.columnValidator = append(b.columnValidator, validator...)
+		for _, v := range validator {
+			b.columnValidator = append(b.columnValidator, v...)
+		}
 	}
 }
 
-func Validate(field, msg string, handle ...ValidateHandleMaker) (v Validator) {
-	v.Field = field
-	v.Msg = msg
-	v.Handle = make([]ValidateHandle, 0, len(handle))
-	for _, h := range handle {
-		v.Handle = append(v.Handle, h(field))
+func Validate(field string, vf ...Valid) (v []Valid) {
+	for _, each := range vf {
+		v = append(v, ValidWrap(each, NewValidOpt(withField(field))))
 	}
-
 	return v
 }
 

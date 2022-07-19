@@ -1,6 +1,7 @@
 package fly
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -54,6 +55,7 @@ func (m *model) hasOneData(rows []Row, opt HasOpts) ([]Row, error) {
 	}
 
 	if len(localKeys) == 0 {
+		_ = logger.Log(LevelDebug, "hasOneData empty localKeys", fmt.Sprintf("%+v", opt))
 		return rows, nil
 	}
 
@@ -98,6 +100,7 @@ func (m *model) hasManyData(rows []Row, opt HasOpts) ([]Row, error) {
 	}
 
 	if len(localKeys) == 0 {
+		_ = logger.Log(LevelDebug, "hasManyData empty localKeys", fmt.Sprintf("%+v", opt))
 		return rows, nil
 	}
 
