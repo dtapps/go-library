@@ -4,12 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/qiniu/qmgo"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"gopkg.in/mgo.v2"
-	"log"
 )
 
 type ConfigMongoClient struct {
@@ -63,50 +60,4 @@ func (c *MongoClient) Close() error {
 		return errors.New(fmt.Sprintf("关闭失败：%v", err))
 	}
 	return nil
-}
-
-func NewMongoClientOfQmgo(config *ConfigMongoClient) (*MongoClient, error) {
-
-	var err error
-	c := &MongoClient{config: config}
-
-	// 连接到MongoDB
-	ctx := context.Background()
-	client, err := qmgo.NewClient(ctx, &qmgo.Config{Uri: "mongodb://localhost:27017"})
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("连接失败：%v", err))
-	}
-	log.Println(client)
-	db := client.Database("class")
-	coll := db.Collection("user")
-	log.Println(coll)
-	//coll.Find().One()
-	// 检查连接
-	err = c.Db.Ping(context.TODO(), nil)
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("检查连接失败：%v", err))
-	}
-
-	return c, nil
-}
-
-func NewMongoClientOfMgo(config *ConfigMongoClient) (*MongoClient, error) {
-
-	var err error
-	c := &MongoClient{config: config}
-
-	// 连接到MongoDB
-	client, err := mgo.Dial("localhost:27017")
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("连接失败：%v", err))
-	}
-	log.Println(client)
-
-	// 检查连接
-	err = c.Db.Ping(context.TODO(), nil)
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("检查连接失败：%v", err))
-	}
-
-	return c, nil
 }
