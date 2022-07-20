@@ -3,7 +3,6 @@ module go.dtapp.net/library
 go 1.18
 
 require (
-	entgo.io/ent v0.11.1
 	gitee.com/chunanyong/dm v1.8.5
 	gitee.com/chunanyong/zorm v1.5.6
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.4+incompatible
