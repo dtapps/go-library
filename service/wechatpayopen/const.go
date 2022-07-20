@@ -69,3 +69,8 @@ func algorithm() string {
 const (
 	CodeSuccess = "SUCCESS"
 )
+
+type ApiError struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
