@@ -2,7 +2,7 @@ package jobs
 
 import (
 	"fmt"
-	"go.dtapp.net/library/utils/dorm"
+	"github.com/dtapps/go-library/utils/dorm"
 	"time"
 )
 

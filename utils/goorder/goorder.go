@@ -2,8 +2,8 @@ package goorder
 
 import (
 	"fmt"
-	"go.dtapp.net/library/utils/gorandom"
-	"go.dtapp.net/library/utils/gotime"
+	"github.com/dtapps/go-library/utils/gorandom"
+	"github.com/dtapps/go-library/utils/gotime"
 )
 
 // GenerateOrDate 生成订单号

@@ -3,7 +3,7 @@ package wechatoffice
 import (
 	"crypto/sha1"
 	"fmt"
-	"go.dtapp.net/library/utils/gorandom"
+	"github.com/dtapps/go-library/utils/gorandom"
 	"io"
 	"time"
 )

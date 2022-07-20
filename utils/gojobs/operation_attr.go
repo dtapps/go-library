@@ -1,8 +1,8 @@
 package gojobs
 
 import (
+	"github.com/dtapps/go-library/utils/goip"
 	"github.com/go-redis/redis/v8"
-	"go.dtapp.net/library/utils/goip"
 	"go.etcd.io/etcd/client/v3"
 	"gorm.io/gorm"
 )

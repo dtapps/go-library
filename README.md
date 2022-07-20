@@ -5,18 +5,18 @@
 📦 Golang 扩展包
 
 [comment]: <> (go)
-[![godoc](https://pkg.go.dev/badge/go.dtapp.net/library?status.svg)](https://pkg.go.dev/go.dtapp.net/library)
-[![goproxy.cn](https://goproxy.cn/stats/go.dtapp.net/library/badges/download-count.svg)](https://goproxy.cn/stats/go.dtapp.net/library)
-[![goreportcard.com](https://goreportcard.com/badge/go.dtapp.net/library)](https://goreportcard.com/report/go.dtapp.net/library)
-[![deps.dev](https://img.shields.io/badge/deps-go-red.svg)](https://deps.dev/go/go.dtapp.net/library)
+[![godoc](https://pkg.go.dev/badge/github.com/dtapps/go-library?status.svg)](https://pkg.go.dev/github.com/dtapps/go-library)
+[![goproxy.cn](https://goproxy.cn/stats/github.com/dtapps/go-library/badges/download-count.svg)](https://goproxy.cn/stats/github.com/dtapps/go-library)
+[![goreportcard.com](https://goreportcard.com/badge/github.com/dtapps/go-library)](https://goreportcard.com/report/github.com/dtapps/go-library)
+[![deps.dev](https://img.shields.io/badge/deps-go-red.svg)](https://deps.dev/go/github.com/dtapps/go-library)
 
 #### 安装使用
 
 ```go
-go get -v -u go.dtapp.net/library
+go get -v -u github.com/dtapps/go-library
 
 import (
-    "go.dtapp.net/library"
+    "github.com/dtapps/go-library"
 )
 ```
 
@@ -28,7 +28,7 @@ import (
 
 ```go
 import (
-	"go.dtapp.net/library/utils/gotime"
+	"github.com/dtapps/go-library/utils/gotime"
 )
 
 gotime.Current().Now()
@@ -47,6 +47,6 @@ gotime.Current().TimestampWithMillisecond()
 
 ## 🔑 License
 
-[MIT](https://go.dtapp.net/library/blob/master/LICENSE)
+[MIT](https://github.com/dtapps/go-library/blob/master/LICENSE)
 
 Copyright (c) 2018 茂名聚合科技有限公司

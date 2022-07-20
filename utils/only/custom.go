@@ -3,8 +3,8 @@ package only
 import (
 	"errors"
 	"fmt"
-	"go.dtapp.net/library/utils/gorandom"
-	"go.dtapp.net/library/utils/gotime"
+	"github.com/dtapps/go-library/utils/gorandom"
+	"github.com/dtapps/go-library/utils/gotime"
 )
 
 // GenerateId 生成18一编号

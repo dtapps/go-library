@@ -1,8 +1,8 @@
 package jd
 
 import (
-	"go.dtapp.net/library/utils/gorequest"
-	"go.dtapp.net/library/utils/gostring"
+	"github.com/dtapps/go-library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/gostring"
 )
 
 // 请求接口

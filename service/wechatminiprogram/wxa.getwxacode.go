@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"go.dtapp.net/library/utils/gorequest"
-	"go.dtapp.net/library/utils/gostorage"
+	"github.com/dtapps/go-library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/gostorage"
 	"net/http"
 )
 

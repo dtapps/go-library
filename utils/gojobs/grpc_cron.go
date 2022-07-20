@@ -2,7 +2,7 @@ package gojobs
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojobs/pb"
+	"github.com/dtapps/go-library/utils/gojobs/pb"
 	"google.golang.org/grpc"
 	"log"
 )

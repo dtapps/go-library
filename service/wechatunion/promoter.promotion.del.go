@@ -3,7 +3,7 @@ package wechatunion
 import (
 	"encoding/json"
 	"fmt"
-	"go.dtapp.net/library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
 

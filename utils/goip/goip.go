@@ -1,9 +1,9 @@
 package goip
 
 import (
-	"go.dtapp.net/library/utils/goip/ip2region"
-	"go.dtapp.net/library/utils/goip/v4"
-	"go.dtapp.net/library/utils/goip/v6"
+	"github.com/dtapps/go-library/utils/goip/ip2region"
+	"github.com/dtapps/go-library/utils/goip/v4"
+	"github.com/dtapps/go-library/utils/goip/v6"
 	"log"
 	"strings"
 )

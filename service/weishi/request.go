@@ -1,6 +1,6 @@
 package weishi
 
-import "go.dtapp.net/library/utils/gorequest"
+import "github.com/dtapps/go-library/utils/gorequest"
 
 func (c *Client) request(url string) (gorequest.Response, error) {
 

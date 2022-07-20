@@ -6,7 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"go.dtapp.net/library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 	"strings"
 )

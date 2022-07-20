@@ -2,7 +2,7 @@ package wechatpayapiv2
 
 import (
 	"crypto/tls"
-	"go.dtapp.net/library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/gorequest"
 )
 
 func (c *Client) request(url string, params map[string]interface{}, cert *tls.Certificate) (gorequest.Response, error) {

@@ -2,8 +2,8 @@ package meituan
 
 import (
 	"encoding/json"
-	"go.dtapp.net/library/utils/gorequest"
-	"go.dtapp.net/library/utils/gotime"
+	"github.com/dtapps/go-library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/gotime"
 	"net/http"
 )
 

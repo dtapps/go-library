@@ -3,7 +3,7 @@ package gojobs
 import (
 	"errors"
 	"fmt"
-	"go.dtapp.net/library/utils/gojobs/jobs_gorm_model"
+	"github.com/dtapps/go-library/utils/gojobs/jobs_gorm_model"
 )
 
 // Lock 上锁

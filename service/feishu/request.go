@@ -1,6 +1,6 @@
 package feishu
 
-import "go.dtapp.net/library/utils/gorequest"
+import "github.com/dtapps/go-library/utils/gorequest"
 
 func (c *Client) request(url string, params map[string]interface{}) (gorequest.Response, error) {
 

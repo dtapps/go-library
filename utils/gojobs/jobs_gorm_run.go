@@ -3,8 +3,8 @@ package gojobs
 import (
 	"errors"
 	"fmt"
-	"go.dtapp.net/library/utils/gojobs/jobs_gorm_model"
-	"go.dtapp.net/library/utils/only"
+	"github.com/dtapps/go-library/utils/gojobs/jobs_gorm_model"
+	"github.com/dtapps/go-library/utils/only"
 	"gorm.io/gorm"
 	"log"
 )

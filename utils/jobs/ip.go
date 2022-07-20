@@ -1,7 +1,7 @@
 package jobs
 
 import (
-	"go.dtapp.net/library/utils/goip"
+	"github.com/dtapps/go-library/utils/goip"
 	"gorm.io/gorm"
 )
 

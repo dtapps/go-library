@@ -1,6 +1,6 @@
 package wikeyun
 
-import "go.dtapp.net/library/utils/gorequest"
+import "github.com/dtapps/go-library/utils/gorequest"
 
 // PowerCardInfo 电费充值卡详情
 // https://open.wikeyun.cn/#/apiDocument/9/document/333

@@ -2,8 +2,8 @@ package ejiaofei
 
 import (
 	"fmt"
-	"go.dtapp.net/library/utils/gomd5"
-	"go.dtapp.net/library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/gomd5"
+	"github.com/dtapps/go-library/utils/gorequest"
 )
 
 func (c *Client) request(url string, params map[string]interface{}, method string) (gorequest.Response, error) {

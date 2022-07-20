@@ -1,7 +1,7 @@
 package dorm
 
 import (
-	"go.dtapp.net/library/utils/gotime"
+	"github.com/dtapps/go-library/utils/gotime"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/bsontype"
 	"time"

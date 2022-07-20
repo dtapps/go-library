@@ -3,7 +3,7 @@ package dorm
 import (
 	"errors"
 	"fmt"
-	"go.dtapp.net/library/utils/gotime"
+	"github.com/dtapps/go-library/utils/gotime"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

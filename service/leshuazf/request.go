@@ -1,9 +1,9 @@
 package leshuazf
 
 import (
-	"go.dtapp.net/library/utils/gorandom"
-	"go.dtapp.net/library/utils/gorequest"
-	"go.dtapp.net/library/utils/gotime"
+	"github.com/dtapps/go-library/utils/gorandom"
+	"github.com/dtapps/go-library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/gotime"
 )
 
 func (c *Client) request(url string, params map[string]interface{}, method string) (gorequest.Response, error) {

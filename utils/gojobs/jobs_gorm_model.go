@@ -1,7 +1,7 @@
 package gojobs
 
 import (
-	"go.dtapp.net/library/utils/gojobs/jobs_gorm_model"
+	"github.com/dtapps/go-library/utils/gojobs/jobs_gorm_model"
 	"gorm.io/gorm"
 	"log"
 	"strings"

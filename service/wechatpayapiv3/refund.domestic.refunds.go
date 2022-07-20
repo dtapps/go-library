@@ -2,7 +2,7 @@ package wechatpayapiv3
 
 import (
 	"encoding/json"
-	"go.dtapp.net/library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
 

@@ -1,7 +1,7 @@
 package gophp
 
 import (
-	"go.dtapp.net/library/utils/gophp/serialize"
+	"github.com/dtapps/go-library/utils/gophp/serialize"
 	"strconv"
 	"strings"
 	"unicode"

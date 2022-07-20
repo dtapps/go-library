@@ -2,7 +2,7 @@ package gobase64
 
 import (
 	"encoding/base64"
-	"go.dtapp.net/library/utils/gophp"
+	"github.com/dtapps/go-library/utils/gophp"
 )
 
 // Encode base64编码

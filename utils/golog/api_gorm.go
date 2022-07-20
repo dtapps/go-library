@@ -1,9 +1,9 @@
 package golog
 
 import (
-	"go.dtapp.net/library/utils/dorm"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/dorm"
+	"github.com/dtapps/go-library/utils/gojson"
+	"github.com/dtapps/go-library/utils/gorequest"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 	"log"

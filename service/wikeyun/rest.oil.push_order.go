@@ -1,6 +1,6 @@
 package wikeyun
 
-import "go.dtapp.net/library/utils/gorequest"
+import "github.com/dtapps/go-library/utils/gorequest"
 
 // RestOilOrderPush 充值下单
 func (c *Client) RestOilOrderPush(notMustParams ...gorequest.Params) (body []byte, err error) {

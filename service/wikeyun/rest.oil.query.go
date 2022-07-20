@@ -1,6 +1,6 @@
 package wikeyun
 
-import "go.dtapp.net/library/utils/gorequest"
+import "github.com/dtapps/go-library/utils/gorequest"
 
 // RestOilOrderQuery 订单查询
 func (c *Client) RestOilOrderQuery(notMustParams ...gorequest.Params) (body []byte, err error) {

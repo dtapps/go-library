@@ -1,10 +1,10 @@
 package jobs
 
 import (
-	"go.dtapp.net/library/utils/dorm"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gotime"
-	"go.dtapp.net/library/utils/only"
+	"github.com/dtapps/go-library/utils/dorm"
+	"github.com/dtapps/go-library/utils/gojson"
+	"github.com/dtapps/go-library/utils/gotime"
+	"github.com/dtapps/go-library/utils/only"
 	"gorm.io/gorm"
 	"log"
 )

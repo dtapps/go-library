@@ -1,8 +1,8 @@
 package gojobs
 
 import (
-	"go.dtapp.net/library/utils/gojobs/jobs_gorm_model"
-	"go.dtapp.net/library/utils/gotime"
+	"github.com/dtapps/go-library/utils/gojobs/jobs_gorm_model"
+	"github.com/dtapps/go-library/utils/gotime"
 	"gorm.io/gorm"
 	"log"
 )

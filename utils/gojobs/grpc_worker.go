@@ -2,8 +2,8 @@ package gojobs
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojobs/pb"
-	"go.dtapp.net/library/utils/only"
+	"github.com/dtapps/go-library/utils/gojobs/pb"
+	"github.com/dtapps/go-library/utils/only"
 	"google.golang.org/grpc"
 )
 

@@ -2,9 +2,9 @@ package douyin
 
 import (
 	"errors"
-	"go.dtapp.net/library/utils/dorm"
-	"go.dtapp.net/library/utils/golog"
-	"go.dtapp.net/library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/dorm"
+	"github.com/dtapps/go-library/utils/golog"
+	"github.com/dtapps/go-library/utils/gorequest"
 	"gorm.io/gorm"
 	"net/http"
 	"strings"

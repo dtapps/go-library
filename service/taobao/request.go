@@ -1,8 +1,8 @@
 package taobao
 
 import (
-	"go.dtapp.net/library/utils/gorequest"
-	"go.dtapp.net/library/utils/gostring"
+	"github.com/dtapps/go-library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/gostring"
 )
 
 func (c *Client) request(params map[string]interface{}) (gorequest.Response, error) {

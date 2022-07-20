@@ -2,7 +2,7 @@ package pb
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojobs/pubsub"
+	"github.com/dtapps/go-library/utils/gojobs/pubsub"
 	"log"
 	"strings"
 	"time"

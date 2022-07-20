@@ -2,7 +2,7 @@ package kashangwl
 
 import (
 	"encoding/json"
-	"go.dtapp.net/library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/gorequest"
 )
 
 type ApiProductRechargeParamsResponse struct {

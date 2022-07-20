@@ -1,6 +1,6 @@
 package wikeyun
 
-import "go.dtapp.net/library/utils/gorequest"
+import "github.com/dtapps/go-library/utils/gorequest"
 
 // RestOilCardInfo 油卡详情
 func (c *Client) RestOilCardInfo(notMustParams ...gorequest.Params) (body []byte, err error) {

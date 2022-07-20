@@ -2,7 +2,7 @@ package gojobs
 
 import (
 	"fmt"
-	"go.dtapp.net/library/utils/goip"
+	"github.com/dtapps/go-library/utils/goip"
 )
 
 var ip string

@@ -1,6 +1,6 @@
 package wechatoffice
 
-import "go.dtapp.net/library/utils/gorequest"
+import "github.com/dtapps/go-library/utils/gorequest"
 
 // 请求接口
 func (c *Client) request(url string, params map[string]interface{}, method string) (gorequest.Response, error) {

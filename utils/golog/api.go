@@ -2,8 +2,8 @@ package golog
 
 import (
 	"errors"
-	"go.dtapp.net/library/utils/dorm"
-	"go.dtapp.net/library/utils/goip"
+	"github.com/dtapps/go-library/utils/dorm"
+	"github.com/dtapps/go-library/utils/goip"
 	"gorm.io/gorm"
 	"os"
 	"runtime"

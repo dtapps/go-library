@@ -1,7 +1,7 @@
 package jobs
 
 import (
-	"go.dtapp.net/library/utils/gotime"
+	"github.com/dtapps/go-library/utils/gotime"
 	"gorm.io/gorm"
 	"log"
 )

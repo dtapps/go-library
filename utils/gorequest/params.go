@@ -2,7 +2,7 @@ package gorequest
 
 import (
 	"encoding/json"
-	"go.dtapp.net/library/utils/gostring"
+	"github.com/dtapps/go-library/utils/gostring"
 	"log"
 )
 

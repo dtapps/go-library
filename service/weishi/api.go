@@ -3,8 +3,8 @@ package weishi
 import (
 	"encoding/json"
 	"errors"
+	"github.com/dtapps/go-library/utils/gorequest"
 	"github.com/mvdan/xurls"
-	"go.dtapp.net/library/utils/gorequest"
 	"regexp"
 	"strings"
 )

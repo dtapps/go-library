@@ -4,7 +4,7 @@ import (
 	"database/sql/driver"
 	"errors"
 	"fmt"
-	"go.dtapp.net/library/utils/gotime"
+	"github.com/dtapps/go-library/utils/gotime"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 	"time"

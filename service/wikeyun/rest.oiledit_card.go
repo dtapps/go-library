@@ -1,6 +1,6 @@
 package wikeyun
 
-import "go.dtapp.net/library/utils/gorequest"
+import "github.com/dtapps/go-library/utils/gorequest"
 
 // RestOilCardEdit 编辑充值卡
 func (c *Client) RestOilCardEdit(notMustParams ...gorequest.Params) (body []byte, err error) {

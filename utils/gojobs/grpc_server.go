@@ -2,8 +2,8 @@ package gojobs
 
 import (
 	"errors"
-	"go.dtapp.net/library/utils/gojobs/pb"
-	"go.dtapp.net/library/utils/gojobs/pubsub"
+	"github.com/dtapps/go-library/utils/gojobs/pb"
+	"github.com/dtapps/go-library/utils/gojobs/pubsub"
 	"google.golang.org/grpc"
 	"log"
 	"net"
