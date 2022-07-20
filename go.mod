@@ -14,7 +14,6 @@ require (
 	github.com/beego/beego/v2 v2.0.4
 	github.com/bmizerany/pq v0.0.0-20131128184720-da2b95e392c1
 	github.com/bradfitz/gomemcache v0.0.0-20220106215444-fb4bf637b56d
-	github.com/daodao97/fly v0.0.0-20220718020319-cee8ed04d19a
 	github.com/denisenkom/go-mssqldb v0.12.2
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/docker/docker v20.10.17+incompatible
@@ -26,8 +25,6 @@ require (
 	github.com/go-playground/validator/v10 v10.11.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-redis/redis/v9 v9.0.0-beta.1
-	github.com/go-rel/mysql v0.8.0
-	github.com/go-rel/rel v0.38.0
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/godror/godror v0.33.3
 	github.com/gomodule/redigo v2.0.0+incompatible
@@ -35,9 +32,7 @@ require (
 	github.com/jasonlvhit/gocron v0.0.1
 	github.com/kamva/mgm/v3 v3.4.1
 	github.com/ks3sdklib/aws-sdk-go v1.1.6
-	github.com/lesismal/sqlw v0.0.0-20220710073239-bd797c43fef9
 	github.com/lib/pq v1.10.6
-	github.com/lqs/sqlingo v0.11.1
 	github.com/mailru/go-clickhouse/v2 v2.0.0
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible
 	github.com/mitchellh/mapstructure v1.5.0
@@ -100,7 +95,6 @@ require (
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/edsrzf/mmap-go v1.1.0 // indirect
 	github.com/emicklei/go-restful/v3 v3.8.0 // indirect
-	github.com/fatih/color v1.13.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/glebarez/go-sqlite v1.17.3 // indirect
@@ -109,7 +103,6 @@ require (
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.20.0 // indirect
 	github.com/go-openapi/swag v0.21.1 // indirect
-	github.com/go-rel/sql v0.11.0 // indirect
 	github.com/goccy/go-json v0.9.10 // indirect
 	github.com/godror/knownpb v0.1.0 // indirect
 	github.com/gofrs/uuid v4.2.0+incompatible // indirect
@@ -142,7 +135,6 @@ require (
 	github.com/klauspost/compress v1.15.8 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/moby/term v0.0.0-20210619224110-3f7ff695adc6 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -159,9 +151,7 @@ require (
 	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
 	github.com/saracen/go7z-fixtures v0.0.0-20190623165746-aa6b8fba1d2f // indirect
 	github.com/saracen/solidblock v0.0.0-20190426153529-45df20abab6f // indirect
-	github.com/serenize/snaker v0.0.0-20201027110005-a7ad2135616e // indirect
 	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
-	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/testify v1.8.0 // indirect
 	github.com/syndtr/goleveldb v1.0.0 // indirect
@@ -219,7 +209,6 @@ require (
 	modernc.org/strutil v1.1.2 // indirect
 	modernc.org/token v1.0.0 // indirect
 	modernc.org/zappy v1.0.5 // indirect
-	muzzammil.xyz/jsonc v1.0.0 // indirect
 	sigs.k8s.io/json v0.0.0-20220713155537-f223a00ba0e2 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.1 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect

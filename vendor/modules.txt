@@ -120,12 +120,6 @@ github.com/coreos/go-semver/semver
 # github.com/coreos/go-systemd/v22 v22.3.2
 ## explicit; go 1.12
 github.com/coreos/go-systemd/v22/journal
-# github.com/daodao97/fly v0.0.0-20220718020319-cee8ed04d19a
-## explicit; go 1.17
-github.com/daodao97/fly
-github.com/daodao97/fly/interval/hook
-github.com/daodao97/fly/interval/util
-github.com/daodao97/fly/interval/xtype
 # github.com/davecgh/go-spew v1.1.1
 ## explicit
 github.com/davecgh/go-spew/spew
@@ -192,9 +186,6 @@ github.com/edsrzf/mmap-go
 ## explicit; go 1.13
 github.com/emicklei/go-restful/v3
 github.com/emicklei/go-restful/v3/log
-# github.com/fatih/color v1.13.0
-## explicit; go 1.13
-github.com/fatih/color
 # github.com/fsnotify/fsnotify v1.5.4
 ## explicit; go 1.16
 # github.com/gin-contrib/sse v0.1.0
@@ -263,16 +254,6 @@ github.com/go-redis/redis/v9/internal/pool
 github.com/go-redis/redis/v9/internal/proto
 github.com/go-redis/redis/v9/internal/rand
 github.com/go-redis/redis/v9/internal/util
-# github.com/go-rel/mysql v0.8.0
-## explicit; go 1.17
-github.com/go-rel/mysql
-# github.com/go-rel/rel v0.38.0
-## explicit; go 1.15
-github.com/go-rel/rel
-# github.com/go-rel/sql v0.11.0
-## explicit; go 1.16
-github.com/go-rel/sql
-github.com/go-rel/sql/builder
 # github.com/go-sql-driver/mysql v1.6.0
 ## explicit; go 1.10
 github.com/go-sql-driver/mysql
@@ -440,17 +421,11 @@ github.com/ks3sdklib/aws-sdk-go/service/s3
 # github.com/leodido/go-urn v1.2.1
 ## explicit; go 1.13
 github.com/leodido/go-urn
-# github.com/lesismal/sqlw v0.0.0-20220710073239-bd797c43fef9
-## explicit; go 1.16
-github.com/lesismal/sqlw
 # github.com/lib/pq v1.10.6
 ## explicit; go 1.13
 github.com/lib/pq
 github.com/lib/pq/oid
 github.com/lib/pq/scram
-# github.com/lqs/sqlingo v0.11.1
-## explicit
-github.com/lqs/sqlingo
 # github.com/mailru/easyjson v0.7.7
 ## explicit; go 1.12
 github.com/mailru/easyjson/buffer
@@ -459,9 +434,6 @@ github.com/mailru/easyjson/jwriter
 # github.com/mailru/go-clickhouse/v2 v2.0.0
 ## explicit; go 1.11
 github.com/mailru/go-clickhouse/v2
-# github.com/mattn/go-colorable v0.1.12
-## explicit; go 1.13
-github.com/mattn/go-colorable
 # github.com/mattn/go-isatty v0.0.14
 ## explicit; go 1.12
 github.com/mattn/go-isatty
@@ -559,9 +531,6 @@ github.com/saracen/go7z/headers
 # github.com/saracen/solidblock v0.0.0-20190426153529-45df20abab6f
 ## explicit
 github.com/saracen/solidblock
-# github.com/serenize/snaker v0.0.0-20201027110005-a7ad2135616e
-## explicit
-github.com/serenize/snaker
 # github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18
 ## explicit
 github.com/shiena/ansicolor
@@ -571,9 +540,6 @@ github.com/shopspring/decimal
 # github.com/sirupsen/logrus v1.9.0
 ## explicit; go 1.13
 github.com/sirupsen/logrus
-# github.com/spf13/cast v1.5.0
-## explicit; go 1.18
-github.com/spf13/cast
 # github.com/spf13/pflag v1.0.5
 ## explicit; go 1.12
 github.com/spf13/pflag
@@ -1328,9 +1294,6 @@ modernc.org/token
 # modernc.org/zappy v1.0.5
 ## explicit; go 1.16
 modernc.org/zappy
-# muzzammil.xyz/jsonc v1.0.0
-## explicit
-muzzammil.xyz/jsonc
 # sigs.k8s.io/json v0.0.0-20220713155537-f223a00ba0e2
 ## explicit; go 1.18
 sigs.k8s.io/json
