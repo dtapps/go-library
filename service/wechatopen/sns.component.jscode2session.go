@@ -108,7 +108,11 @@ func (r *SnsComponentJsCode2sessionResult) UserInfo(param UserInfo) *UserInfoRes
 }
 
 func (u *UserInfoResponse) UserInfoAvatarUrlReal() string {
-	return strings.Replace(u.AvatarUrl, "/132", "/0", -1)
+	return UserInfoAvatarUrlReal(u.AvatarUrl)
+}
+
+func UserInfoAvatarUrlReal(avatarUrl string) string {
+	return strings.Replace(avatarUrl, "/132", "/0", -1)
 }
 
 func (r *SnsComponentJsCode2sessionResult) pkcs7Unpaid(data []byte, blockSize int) ([]byte, error) {
