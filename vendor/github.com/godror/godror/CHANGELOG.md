@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [v0.34.0]
+### Added
+- ObjectType.AttributeNames() returns the attribute names in DB order.
+- PoolStats has a DBStats method to convert it to sql.DBStats.
+- By embedding godror.ObjectTypeName and setting the field tag with `"godror:,type=my_pkg.type"` you can use structs in place of Oracle objects in ExecStmt.
+
 ## [v0.33.0]
 ### Changed
 - SetLogger accept github.com/go-logr/logr.Logger

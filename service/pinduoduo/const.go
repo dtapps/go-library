@@ -1,7 +1,7 @@
 package pinduoduo
 
 const (
-	apiUrl = "https://whois.pconline.com.cn"
+	apiUrl = "https://gw-api.pinduoduo.com/api/router"
 )
 
 const (
