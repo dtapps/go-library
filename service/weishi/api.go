@@ -1,6 +1,7 @@
 package weishi
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -1053,7 +1054,7 @@ func newAnalysisResult(result AnalysisResponse, body []byte, http gorequest.Resp
 }
 
 // Analysis 微视解析
-func (c *Client) Analysis(content string) *AnalysisResult {
+func (c *Client) Analysis(ctx context.Context, content string) *AnalysisResult {
 
 	// 提取url
 	var url string
@@ -1081,7 +1082,7 @@ func (c *Client) Analysis(content string) *AnalysisResult {
 		feedid = regexp.MustCompile("id=(.*?)&").FindStringSubmatch(url)[1]
 	}
 
-	request, err := c.request("https://h5.qzone.qq.com/webapp/json/weishi/WSH5GetPlayPage?feedid=" + feedid)
+	request, err := c.request(ctx, "https://h5.qzone.qq.com/webapp/json/weishi/WSH5GetPlayPage?feedid="+feedid)
 
 	// 定义
 	var response AnalysisResponse

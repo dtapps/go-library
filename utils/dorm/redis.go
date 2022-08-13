@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/go-redis/redis/v8"
+	"github.com/go-redis/redis/v9"
 	"time"
 )
 
@@ -46,8 +46,4 @@ func NewRedisClient(config *ConfigRedisClient) (*RedisClient, error) {
 	}
 
 	return c, nil
-}
-
-func (c *RedisClient) GetDb() *redis.Client {
-	return c.Db
 }

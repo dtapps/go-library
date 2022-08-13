@@ -1,6 +1,7 @@
 package kashangwl
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -28,9 +29,9 @@ func newApiCustomerResult(result ApiCustomerResponse, body []byte, http goreques
 
 // ApiCustomer 获取商家信息
 // http://doc.cqmeihu.cn/sales/merchant-info.html
-func (c *Client) ApiCustomer() *ApiCustomerResult {
+func (c *Client) ApiCustomer(ctx context.Context) *ApiCustomerResult {
 	// 请求
-	request, err := c.request(apiUrl+"/api/customer", map[string]interface{}{})
+	request, err := c.request(ctx, apiUrl+"/api/customer", map[string]interface{}{})
 	// 定义
 	var response ApiCustomerResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

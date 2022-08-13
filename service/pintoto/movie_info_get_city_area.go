@@ -1,6 +1,7 @@
 package pintoto
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -30,13 +31,13 @@ func newGetCityAreaResult(result GetCityAreaResponse, body []byte, http goreques
 
 // GetCityArea 城市下区域
 // https://www.showdoc.com.cn/1154868044931571/6243539682553126
-func (c *Client) GetCityArea(cityId int) *GetCityAreaResult {
+func (c *Client) GetCityArea(ctx context.Context, cityId int) *GetCityAreaResult {
 	// 测试
 	param := gorequest.NewParams()
 	param.Set("cityId", cityId)
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(apiUrl+"/movieapi/movie-info/get-city-area", params)
+	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-city-area", params)
 	var response GetCityAreaResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
 	return newGetCityAreaResult(response, request.ResponseBody, request, err)

@@ -3,9 +3,11 @@ package golog
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/dtapps/go-library"
 	"github.com/dtapps/go-library/utils/dorm"
-	"github.com/dtapps/go-library/utils/gorequest"
 	"github.com/dtapps/go-library/utils/gotime"
+	"github.com/dtapps/go-library/utils/gotrace_id"
+	"github.com/dtapps/go-library/utils/gourl"
 	"github.com/dtapps/go-library/utils/goxml"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -42,6 +44,7 @@ type ginMongoLog struct {
 	SystemHostName    string             `json:"system_host_name,omitempty" bson:"system_host_name,omitempty"`       //【系统】主机名
 	SystemInsideIp    string             `json:"system_inside_ip,omitempty" bson:"system_inside_ip,omitempty"`       //【系统】内网ip
 	GoVersion         string             `json:"go_version,omitempty" bson:"go_version,omitempty"`                   //【程序】Go版本
+	SdkVersion        string             `json:"sdk_version,omitempty" bson:"sdk_version,omitempty"`                 //【程序】Sdk版本
 }
 
 // 记录日志
@@ -52,6 +55,8 @@ func (c *GinClient) mongoRecord(mongoLog ginMongoLog) error {
 		mongoLog.SystemInsideIp = c.config.insideIp
 	}
 	mongoLog.GoVersion = c.config.goVersion
+
+	mongoLog.SdkVersion = go_library.Version()
 
 	mongoLog.LogId = primitive.NewObjectID()
 
@@ -75,6 +80,7 @@ func (c *GinClient) MongoMiddleware() gin.HandlerFunc {
 
 		// 获取
 		data, _ := ioutil.ReadAll(ginCtx.Request.Body)
+
 		// 复用
 		ginCtx.Request.Body = ioutil.NopCloser(bytes.NewBuffer(data))
 
@@ -130,53 +136,53 @@ func (c *GinClient) MongoMiddleware() gin.HandlerFunc {
 				}
 				if len(jsonBody) > 0 {
 					c.mongoRecord(ginMongoLog{
-						TraceId:           ginCtx.MustGet("trace_id").(string),                              //【系统】链编号
-						RequestTime:       gotime.SetCurrent(requestTime).Timestamp(),                       //【请求】时间
-						RequestUri:        host + ginCtx.Request.RequestURI,                                 //【请求】请求链接
-						RequestUrl:        ginCtx.Request.RequestURI,                                        //【请求】请求链接
-						RequestApi:        gorequest.UriFilterExcludeQueryString(ginCtx.Request.RequestURI), //【请求】请求接口
-						RequestMethod:     ginCtx.Request.Method,                                            //【请求】请求方式
-						RequestProto:      ginCtx.Request.Proto,                                             //【请求】请求协议
-						RequestUa:         ginCtx.Request.UserAgent(),                                       //【请求】请求UA
-						RequestReferer:    ginCtx.Request.Referer(),                                         //【请求】请求referer
-						RequestBody:       jsonBody,                                                         //【请求】请求主体
-						RequestUrlQuery:   ginCtx.Request.URL.Query(),                                       //【请求】请求URL参数
-						RequestIp:         ginCtx.ClientIP(),                                                //【请求】请求客户端Ip
-						RequestIpCountry:  requestClientIpCountry,                                           //【请求】请求客户端城市
-						RequestIpRegion:   requestClientIpRegion,                                            //【请求】请求客户端区域
-						RequestIpProvince: requestClientIpProvince,                                          //【请求】请求客户端省份
-						RequestIpCity:     requestClientIpCity,                                              //【请求】请求客户端城市
-						RequestIpIsp:      requestClientIpIsp,                                               //【请求】请求客户端运营商
-						RequestHeader:     ginCtx.Request.Header,                                            //【请求】请求头
-						ResponseTime:      gotime.SetCurrent(gotime.Current().Time).Timestamp(),             //【返回】时间
-						ResponseCode:      responseCode,                                                     //【返回】状态码
-						ResponseData:      c.jsonUnmarshal(responseBody),                                    //【返回】数据
-						CostTime:          endTime - startTime,                                              //【系统】花费时间
+						TraceId:           gotrace_id.GetGinTraceId(ginCtx),                             //【系统】链编号
+						RequestTime:       gotime.SetCurrent(requestTime).Timestamp(),                   //【请求】时间
+						RequestUri:        host + ginCtx.Request.RequestURI,                             //【请求】请求链接
+						RequestUrl:        ginCtx.Request.RequestURI,                                    //【请求】请求链接
+						RequestApi:        gourl.UriFilterExcludeQueryString(ginCtx.Request.RequestURI), //【请求】请求接口
+						RequestMethod:     ginCtx.Request.Method,                                        //【请求】请求方式
+						RequestProto:      ginCtx.Request.Proto,                                         //【请求】请求协议
+						RequestUa:         ginCtx.Request.UserAgent(),                                   //【请求】请求UA
+						RequestReferer:    ginCtx.Request.Referer(),                                     //【请求】请求referer
+						RequestBody:       jsonBody,                                                     //【请求】请求主体
+						RequestUrlQuery:   ginCtx.Request.URL.Query(),                                   //【请求】请求URL参数
+						RequestIp:         ginCtx.ClientIP(),                                            //【请求】请求客户端Ip
+						RequestIpCountry:  requestClientIpCountry,                                       //【请求】请求客户端城市
+						RequestIpRegion:   requestClientIpRegion,                                        //【请求】请求客户端区域
+						RequestIpProvince: requestClientIpProvince,                                      //【请求】请求客户端省份
+						RequestIpCity:     requestClientIpCity,                                          //【请求】请求客户端城市
+						RequestIpIsp:      requestClientIpIsp,                                           //【请求】请求客户端运营商
+						RequestHeader:     ginCtx.Request.Header,                                        //【请求】请求头
+						ResponseTime:      gotime.SetCurrent(gotime.Current().Time).Timestamp(),         //【返回】时间
+						ResponseCode:      responseCode,                                                 //【返回】状态码
+						ResponseData:      c.jsonUnmarshal(responseBody),                                //【返回】数据
+						CostTime:          endTime - startTime,                                          //【系统】花费时间
 					})
 				} else {
 					c.mongoRecord(ginMongoLog{
-						TraceId:           ginCtx.MustGet("trace_id").(string),                              //【系统】链编号
-						RequestTime:       gotime.SetCurrent(requestTime).Timestamp(),                       //【请求】时间
-						RequestUri:        host + ginCtx.Request.RequestURI,                                 //【请求】请求链接
-						RequestUrl:        ginCtx.Request.RequestURI,                                        //【请求】请求链接
-						RequestApi:        gorequest.UriFilterExcludeQueryString(ginCtx.Request.RequestURI), //【请求】请求接口
-						RequestMethod:     ginCtx.Request.Method,                                            //【请求】请求方式
-						RequestProto:      ginCtx.Request.Proto,                                             //【请求】请求协议
-						RequestUa:         ginCtx.Request.UserAgent(),                                       //【请求】请求UA
-						RequestReferer:    ginCtx.Request.Referer(),                                         //【请求】请求referer
-						RequestBody:       xmlBody,                                                          //【请求】请求主体
-						RequestUrlQuery:   ginCtx.Request.URL.Query(),                                       //【请求】请求URL参数
-						RequestIp:         ginCtx.ClientIP(),                                                //【请求】请求客户端Ip
-						RequestIpCountry:  requestClientIpCountry,                                           //【请求】请求客户端城市
-						RequestIpRegion:   requestClientIpRegion,                                            //【请求】请求客户端区域
-						RequestIpProvince: requestClientIpProvince,                                          //【请求】请求客户端省份
-						RequestIpCity:     requestClientIpCity,                                              //【请求】请求客户端城市
-						RequestIpIsp:      requestClientIpIsp,                                               //【请求】请求客户端运营商
-						RequestHeader:     ginCtx.Request.Header,                                            //【请求】请求头
-						ResponseTime:      gotime.SetCurrent(gotime.Current().Time).Timestamp(),             //【返回】时间
-						ResponseCode:      responseCode,                                                     //【返回】状态码
-						ResponseData:      c.jsonUnmarshal(responseBody),                                    //【返回】数据
-						CostTime:          endTime - startTime,                                              //【系统】花费时间
+						TraceId:           gotrace_id.GetGinTraceId(ginCtx),                             //【系统】链编号
+						RequestTime:       gotime.SetCurrent(requestTime).Timestamp(),                   //【请求】时间
+						RequestUri:        host + ginCtx.Request.RequestURI,                             //【请求】请求链接
+						RequestUrl:        ginCtx.Request.RequestURI,                                    //【请求】请求链接
+						RequestApi:        gourl.UriFilterExcludeQueryString(ginCtx.Request.RequestURI), //【请求】请求接口
+						RequestMethod:     ginCtx.Request.Method,                                        //【请求】请求方式
+						RequestProto:      ginCtx.Request.Proto,                                         //【请求】请求协议
+						RequestUa:         ginCtx.Request.UserAgent(),                                   //【请求】请求UA
+						RequestReferer:    ginCtx.Request.Referer(),                                     //【请求】请求referer
+						RequestBody:       xmlBody,                                                      //【请求】请求主体
+						RequestUrlQuery:   ginCtx.Request.URL.Query(),                                   //【请求】请求URL参数
+						RequestIp:         ginCtx.ClientIP(),                                            //【请求】请求客户端Ip
+						RequestIpCountry:  requestClientIpCountry,                                       //【请求】请求客户端城市
+						RequestIpRegion:   requestClientIpRegion,                                        //【请求】请求客户端区域
+						RequestIpProvince: requestClientIpProvince,                                      //【请求】请求客户端省份
+						RequestIpCity:     requestClientIpCity,                                          //【请求】请求客户端城市
+						RequestIpIsp:      requestClientIpIsp,                                           //【请求】请求客户端运营商
+						RequestHeader:     ginCtx.Request.Header,                                        //【请求】请求头
+						ResponseTime:      gotime.SetCurrent(gotime.Current().Time).Timestamp(),         //【返回】时间
+						ResponseCode:      responseCode,                                                 //【返回】状态码
+						ResponseData:      c.jsonUnmarshal(responseBody),                                //【返回】数据
+						CostTime:          endTime - startTime,                                          //【系统】花费时间
 					})
 				}
 			}

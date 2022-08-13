@@ -19,6 +19,7 @@ type Task struct {
 	CustomId       string         `gorm:"index;comment:自定义编号" json:"custom_id"`          // 自定义编号
 	CustomSequence int64          `gorm:"index;comment:自定义顺序" json:"custom_sequence"`    // 自定义顺序
 	Type           string         `gorm:"index;comment:类型" json:"type"`                  // 类型
+	TypeName       string         `gorm:"comment:类型名称" json:"type_name"`                 // 类型名称
 	CreatedIp      string         `gorm:"comment:创建外网IP" json:"created_ip"`              // 创建外网IP
 	SpecifyIp      string         `gorm:"index;comment:指定外网IP" json:"specify_ip"`        // 指定外网IP
 	UpdatedIp      string         `gorm:"comment:更新外网IP" json:"updated_ip"`              // 更新外网IP

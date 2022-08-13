@@ -1,6 +1,7 @@
 package wechatpayapiv3
 
 import (
+	"context"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorandom"
 	"time"
@@ -22,7 +23,7 @@ type GetJsApiResult struct {
 }
 
 // GetJsApi JSAPI调起支付API https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_4.shtml
-func (c *Client) GetJsApi(param GetJsApi) (result GetJsApiResult, err error) {
+func (c *Client) GetJsApi(ctx context.Context, param GetJsApi) (result GetJsApiResult, err error) {
 
 	// sign params
 	timeStamp := time.Now().Unix()

@@ -1,6 +1,7 @@
 package wechatpayapiv3
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -60,11 +61,11 @@ func newRefundDomesticRefundsResult(result RefundDomesticRefundsResponse, body [
 }
 
 // RefundDomesticRefunds 申请退款API https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter6_1_26.shtml
-func (c *Client) RefundDomesticRefunds(notMustParams ...gorequest.Params) *RefundDomesticRefundsResult {
+func (c *Client) RefundDomesticRefunds(ctx context.Context, notMustParams ...gorequest.Params) *RefundDomesticRefundsResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(apiUrl+"/v3/refund/domestic/refunds", params, http.MethodPost, false)
+	request, err := c.request(ctx, apiUrl+"/v3/refund/domestic/refunds", params, http.MethodPost, false)
 	if err != nil {
 		return newRefundDomesticRefundsResult(RefundDomesticRefundsResponse{}, request.ResponseBody, request, err)
 	}

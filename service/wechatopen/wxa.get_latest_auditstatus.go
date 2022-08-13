@@ -1,6 +1,7 @@
 package wechatopen
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -29,9 +30,9 @@ func newWxaGetLatestAuditStatusResult(result WxaGetLatestAuditStatusResponse, bo
 
 // WxaGetLatestAuditStatus 查询最新一次提交的审核状态
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_auditstatus.html
-func (c *Client) WxaGetLatestAuditStatus() *WxaGetLatestAuditStatusResult {
+func (c *Client) WxaGetLatestAuditStatus(ctx context.Context) *WxaGetLatestAuditStatusResult {
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/get_latest_auditstatus?access_token=%s", c.GetAuthorizerAccessToken()), map[string]interface{}{}, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/get_latest_auditstatus?access_token=%s", c.GetAuthorizerAccessToken(ctx)), map[string]interface{}{}, http.MethodPost)
 	// 定义
 	var response WxaGetLatestAuditStatusResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

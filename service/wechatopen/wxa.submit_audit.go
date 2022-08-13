@@ -1,6 +1,7 @@
 package wechatopen
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -26,11 +27,11 @@ func newWxaSubmitAuditResult(result WxaSubmitAuditResponse, body []byte, http go
 
 // WxaSubmitAudit 提交审核
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/submit_audit.html
-func (c *Client) WxaSubmitAudit(notMustParams ...gorequest.Params) *WxaSubmitAuditResult {
+func (c *Client) WxaSubmitAudit(ctx context.Context, notMustParams ...gorequest.Params) *WxaSubmitAuditResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/submit_audit?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/submit_audit?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response WxaSubmitAuditResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

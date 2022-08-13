@@ -1,6 +1,7 @@
 package taobao
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -58,11 +59,11 @@ func newTbkCouponGetResult(result TbkCouponGetResponse, body []byte, http gorequ
 
 // TbkCouponGet 淘宝客-公用-阿里妈妈推广券详情查询
 // https://open.taobao.com/api.htm?docId=31106&docType=2
-func (c *Client) TbkCouponGet(notMustParams ...Params) *TbkCouponGetResult {
+func (c *Client) TbkCouponGet(ctx context.Context, notMustParams ...Params) *TbkCouponGetResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.coupon.get", notMustParams...)
 	// 请求
-	request, err := c.request(params)
+	request, err := c.request(ctx, params)
 	// 定义
 	var response TbkCouponGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

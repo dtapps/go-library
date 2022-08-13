@@ -1,6 +1,7 @@
 package meituan
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -25,7 +26,7 @@ func newApiGenerateLinkResult(result ApiGenerateLinkResponse, body []byte, http 
 
 // ApiGenerateLink 自助取链接口（新版）
 // https://union.meituan.com/v2/apiDetail?id=25
-func (c *Client) ApiGenerateLink(actId int64, sid string, linkType, shortLink int) *ApiGenerateLinkResult {
+func (c *Client) ApiGenerateLink(ctx context.Context, actId int64, sid string, linkType, shortLink int) *ApiGenerateLinkResult {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("actId", actId)            // 活动id，可以在联盟活动列表中查看获取
@@ -37,7 +38,7 @@ func (c *Client) ApiGenerateLink(actId int64, sid string, linkType, shortLink in
 	params := gorequest.NewParamsWith(param)
 	params["sign"] = c.getSign(c.config.Secret, params)
 	// 请求
-	request, err := c.request(apiUrl+"/api/generateLink", params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/api/generateLink", params, http.MethodGet)
 	// 定义
 	var response ApiGenerateLinkResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

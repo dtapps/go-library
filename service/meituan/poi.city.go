@@ -1,6 +1,7 @@
 package meituan
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -28,9 +29,9 @@ func newPoiCityResult(result PoiCityResponse, body []byte, http gorequest.Respon
 
 // PoiCity 基础数据 - 开放城市接口
 // https://openapi.meituan.com/#api-0.%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE-GetHttpsOpenapiMeituanComPoiCity
-func (c *Client) PoiCity() *PoiCityResult {
+func (c *Client) PoiCity(ctx context.Context) *PoiCityResult {
 	// 请求
-	request, err := c.request(apiUrl+"/poi/city", map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/poi/city", map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response PoiCityResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

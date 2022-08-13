@@ -1,6 +1,7 @@
 package taobao
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -58,11 +59,11 @@ func newTbkItemInfoGetResult(result TbkItemInfoGetResponse, body []byte, http go
 
 // TbkItemInfoGet 淘宝客-公用-淘宝客商品详情查询(简版)
 // https://open.taobao.com/api.htm?docId=24518&docType=2&source=search
-func (c *Client) TbkItemInfoGet(notMustParams ...Params) *TbkItemInfoGetResult {
+func (c *Client) TbkItemInfoGet(ctx context.Context, notMustParams ...Params) *TbkItemInfoGetResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.item.info.get", notMustParams...)
 	// 请求
-	request, err := c.request(params)
+	request, err := c.request(ctx, params)
 	// 定义
 	var response TbkItemInfoGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

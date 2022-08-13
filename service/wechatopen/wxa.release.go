@@ -1,6 +1,7 @@
 package wechatopen
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -25,11 +26,11 @@ func newWxaReleaseResult(result WxaReleaseResponse, body []byte, http gorequest.
 
 // WxaRelease 发布已通过审核的小程序
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/release.html
-func (c *Client) WxaRelease() *WxaReleaseResult {
+func (c *Client) WxaRelease(ctx context.Context) *WxaReleaseResult {
 	// 参数
 	params := gorequest.NewParams()
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/release?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/release?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response WxaReleaseResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -1,6 +1,7 @@
 package douyin
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -184,7 +185,7 @@ func newAnalysisResult(result AnalysisResponse, body []byte, http gorequest.Resp
 }
 
 // Analysis 抖音解析
-func (c *Client) Analysis(content string) *AnalysisResult {
+func (c *Client) Analysis(ctx context.Context, content string) *AnalysisResult {
 
 	// 提取url
 	var url string
@@ -209,7 +210,7 @@ func (c *Client) Analysis(content string) *AnalysisResult {
 	}
 
 	// 请求
-	request, err := c.request("https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids="+itemIds[0], map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(ctx, "https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids="+itemIds[0], map[string]interface{}{}, http.MethodGet)
 
 	// 定义
 	var response AnalysisResponse

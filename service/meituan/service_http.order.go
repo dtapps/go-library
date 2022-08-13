@@ -1,6 +1,7 @@
 package meituan
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -37,7 +38,7 @@ type ResponseServeHttpOrder struct {
 
 // ServeHttpOrder 订单回推接口（新版）
 // https://union.meituan.com/v2/apiDetail?id=22
-func (c *Client) ServeHttpOrder(gCtx *gin.Context) (validateJson ResponseServeHttpOrder, err error) {
+func (c *Client) ServeHttpOrder(ctx context.Context, gCtx *gin.Context) (validateJson ResponseServeHttpOrder, err error) {
 	// 声明接收的变量
 	err = gCtx.ShouldBind(&validateJson)
 	return

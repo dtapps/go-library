@@ -1,6 +1,7 @@
 package wechatopen
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -25,12 +26,12 @@ func newWxaDeleteTemplateResult(result WxaDeleteTemplateResponse, body []byte, h
 
 // WxaDeleteTemplate 删除指定代码模板
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/deletetemplate.html
-func (c *Client) WxaDeleteTemplate(templateId string) *WxaDeleteTemplateResult {
+func (c *Client) WxaDeleteTemplate(ctx context.Context, templateId string) *WxaDeleteTemplateResult {
 	// 参数
 	params := gorequest.NewParams()
 	params.Set("template_id", templateId)
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/deletetemplate?access_token=%s", c.GetComponentAccessToken()), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/deletetemplate?access_token=%s", c.GetComponentAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response WxaDeleteTemplateResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

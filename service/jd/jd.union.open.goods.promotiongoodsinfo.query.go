@@ -1,6 +1,7 @@
 package jd
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -57,11 +58,11 @@ func newUnionOpenGoodsPromotionGoodsInfoQueryResult(responce UnionOpenGoodsPromo
 
 // UnionOpenGoodsPromotionGoodsInfoQuery 根据skuid查询商品信息接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.goods.promotiongoodsinfo.query
-func (c *Client) UnionOpenGoodsPromotionGoodsInfoQuery(notMustParams ...Params) *UnionOpenGoodsPromotionGoodsInfoQueryResult {
+func (c *Client) UnionOpenGoodsPromotionGoodsInfoQuery(ctx context.Context, notMustParams ...Params) *UnionOpenGoodsPromotionGoodsInfoQueryResult {
 	// 参数
 	params := NewParamsWithType("jd.union.open.goods.promotiongoodsinfo.query", notMustParams...)
 	// 请求
-	request, err := c.request(params)
+	request, err := c.request(ctx, params)
 	// 定义
 	var responce UnionOpenGoodsPromotionGoodsInfoQueryResultResponse
 	var result UnionOpenGoodsPromotionGoodsInfoQueryQueryResult

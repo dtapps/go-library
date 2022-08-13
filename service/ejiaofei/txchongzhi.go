@@ -1,6 +1,7 @@
 package ejiaofei
 
 import (
+	"context"
 	"encoding/xml"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -42,13 +43,13 @@ func newTxChOngZhiResult(result TxChOngZhiResponse, body []byte, http gorequest.
 }
 
 // TxChOngZhi 流量充值接口
-func (c *Client) TxChOngZhi(notMustParams ...gorequest.Params) *TxChOngZhiResult {
+func (c *Client) TxChOngZhi(ctx context.Context, notMustParams ...gorequest.Params) *TxChOngZhiResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 签名
 	c.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vproductid%vamount%vip%vtimes%v", c.getUserId(), c.getPwd(), params["orderid"], params["account"], params["productid"], params["amount"], params["ip"], params["times"])
 	// 请求
-	request, err := c.request(apiUrl+"/txchongzhi.do", params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/txchongzhi.do", params, http.MethodGet)
 	// 定义
 	var response TxChOngZhiResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)

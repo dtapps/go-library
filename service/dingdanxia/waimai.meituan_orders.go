@@ -1,6 +1,7 @@
 package dingdanxia
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -40,11 +41,11 @@ func newWaiMaiMeituanOrdersResult(result WaiMaiMeituanOrdersResponse, body []byt
 
 // WaiMaiMeituanOrders 美团联盟外卖/闪购/优选/酒店订单查询API
 // https://www.dingdanxia.com/doc/176/173
-func (c *Client) WaiMaiMeituanOrders(notMustParams ...gorequest.Params) *WaiMaiMeituanOrdersResult {
+func (c *Client) WaiMaiMeituanOrders(ctx context.Context, notMustParams ...gorequest.Params) *WaiMaiMeituanOrdersResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(apiUrl+"/waimai/meituan_orders", params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/waimai/meituan_orders", params, http.MethodPost)
 	// 定义
 	var response WaiMaiMeituanOrdersResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

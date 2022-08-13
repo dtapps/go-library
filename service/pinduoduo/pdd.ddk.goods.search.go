@@ -1,6 +1,7 @@
 package pinduoduo
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -93,12 +94,12 @@ func newGoodsSearchResult(result GoodsSearchResponse, body []byte, http goreques
 
 // GoodsSearch 多多进宝商品查询
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.search
-func (c *Client) GoodsSearch(notMustParams ...Params) *GoodsSearchResult {
+func (c *Client) GoodsSearch(ctx context.Context, notMustParams ...Params) *GoodsSearchResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.search", notMustParams...)
 	params.Set("pid", c.config.Pid)
 	// 请求
-	request, err := c.request(params)
+	request, err := c.request(ctx, params)
 	// 定义
 	var response GoodsSearchResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

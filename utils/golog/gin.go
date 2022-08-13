@@ -2,6 +2,7 @@ package golog
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"github.com/dtapps/go-library/utils/dorm"
@@ -94,7 +95,7 @@ func NewGinClient(attrs ...*OperationAttr) (*GinClient, error) {
 	hostname, _ := os.Hostname()
 
 	c.config.hostname = hostname
-	c.config.insideIp = goip.GetInsideIp()
+	c.config.insideIp = goip.GetInsideIp(context.Background())
 	c.config.goVersion = runtime.Version()
 
 	return c, nil

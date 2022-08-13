@@ -1,6 +1,7 @@
 package eastiot
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -27,9 +28,9 @@ func newIotApiQueryUserBalanceResult(result IotApiQueryUserBalanceResponse, body
 
 // IotApiQueryUserBalance 余额查询
 // https://www.showdoc.com.cn/916774523755909/4857910459512420
-func (c *Client) IotApiQueryUserBalance() *IotApiQueryUserBalanceResult {
+func (c *Client) IotApiQueryUserBalance(ctx context.Context) *IotApiQueryUserBalanceResult {
 	// 请求
-	request, err := c.request(apiUrl+"/Api/IotApi/queryUserBalance", map[string]interface{}{}, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/Api/IotApi/queryUserBalance", map[string]interface{}{}, http.MethodPost)
 	// 定义
 	var response IotApiQueryUserBalanceResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

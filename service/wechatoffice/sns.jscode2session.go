@@ -1,6 +1,7 @@
 package wechatoffice
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -26,9 +27,9 @@ func newSnsJsCode2sessionResult(result SnsJsCode2sessionResponse, body []byte, h
 	return &SnsJsCode2sessionResult{Result: result, Body: body, Http: http, Err: err}
 }
 
-func (c *Client) SnsJsCode2session(jsCode string) *SnsJsCode2sessionResult {
+func (c *Client) SnsJsCode2session(ctx context.Context, jsCode string) *SnsJsCode2sessionResult {
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", c.GetAppId(), c.GetAppSecret(), jsCode), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", c.GetAppId(), c.GetAppSecret(), jsCode), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response SnsJsCode2sessionResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -1,6 +1,7 @@
 package wechatminiprogram
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -27,11 +28,11 @@ func newCgiBinWxaAppCreateWxaQrCodeResult(result CgiBinWxaAppCreateWxaQrCodeResp
 
 // CgiBinWxaAppCreateWxaQrCode 获取小程序二维码，适用于需要的码数量较少的业务场景。通过该接口生成的小程序码，永久有效，有数量限制
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.createQRCode.html
-func (c *Client) CgiBinWxaAppCreateWxaQrCode(notMustParams ...gorequest.Params) *CgiBinWxaAppCreateWxaQrCodeResult {
+func (c *Client) CgiBinWxaAppCreateWxaQrCode(ctx context.Context, notMustParams ...gorequest.Params) *CgiBinWxaAppCreateWxaQrCodeResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/wxaapp/createwxaqrcode?access_token=%s", c.getAccessToken()), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/wxaapp/createwxaqrcode?access_token=%s", c.getAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response CgiBinWxaAppCreateWxaQrCodeResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

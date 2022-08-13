@@ -1,6 +1,7 @@
 package wikeyun
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -10,13 +11,14 @@ type RestRechargeQueryResponse struct {
 	Msg  string `json:"msg"`
 	Time string `json:"time"`
 	Data struct {
-		OrderNumber    string `json:"order_number"`
-		OrderNo        string `json:"order_no"`
-		Mobile         string `json:"mobile"`
-		Amount         int    `json:"amount"`
-		CostPrice      string `json:"cost_price"`
+		Id             uint   `json:"id"`
 		Fanli          string `json:"fanli"`
+		Amount         int64  `json:"amount"`
+		Mobile         string `json:"mobile"`
 		Status         int    `json:"status"`
+		OrderNo        string `json:"order_no"`
+		CostPrice      string `json:"cost_price"`
+		OrderNumber    string `json:"order_number"`
 		OrgOrderNumber string `json:"org_order_number"`
 	} `json:"data"`
 }
@@ -34,13 +36,13 @@ func newRestRechargeQueryResult(result RestRechargeQueryResponse, body []byte, h
 
 // RestRechargeQuery 话费订单查询
 // https://open.wikeyun.cn/#/apiDocument/9/document/299
-func (c *Client) RestRechargeQuery(orderNumber string) *RestRechargeQueryResult {
+func (c *Client) RestRechargeQuery(ctx context.Context, orderNumber string) *RestRechargeQueryResult {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("order_number", orderNumber) // 平台订单号
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(apiUrl+"/rest/Recharge/query", params)
+	request, err := c.request(ctx, apiUrl+"/rest/Recharge/query", params)
 	// 定义
 	var response RestRechargeQueryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

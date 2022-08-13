@@ -1,6 +1,7 @@
 package pinduoduo
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -66,12 +67,12 @@ func newRpPromUrlGenerateResult(result RpPromUrlGenerateResponse, body []byte, h
 
 // RpPromUrlGenerate 生成营销工具推广链接
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.rp.prom.url.generate
-func (c *Client) RpPromUrlGenerate(notMustParams ...Params) *RpPromUrlGenerateResult {
+func (c *Client) RpPromUrlGenerate(ctx context.Context, notMustParams ...Params) *RpPromUrlGenerateResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.rp.prom.url.generate", notMustParams...)
 	params.Set("p_id_list", []string{c.config.Pid})
 	// 请求
-	request, err := c.request(params)
+	request, err := c.request(ctx, params)
 	// 定义
 	var response RpPromUrlGenerateResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

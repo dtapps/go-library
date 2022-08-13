@@ -1,6 +1,7 @@
 package eastiot
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -39,9 +40,9 @@ func newIotApiQueryUserPkgInfoResult(result IotApiQueryUserPkgInfoResponse, body
 
 // IotApiQueryUserPkgInfo 账户可用流量包查询
 // https://www.showdoc.com.cn/916774523755909/4850094776758927
-func (c *Client) IotApiQueryUserPkgInfo() *IotApiQueryUserPkgInfoResult {
+func (c *Client) IotApiQueryUserPkgInfo(ctx context.Context) *IotApiQueryUserPkgInfoResult {
 	// 请求
-	request, err := c.request(apiUrl+"/Api/IotApi/queryUserPkgInfo", map[string]interface{}{}, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/Api/IotApi/queryUserPkgInfo", map[string]interface{}{}, http.MethodPost)
 	// 定义
 	var response IotApiQueryUserPkgInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

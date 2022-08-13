@@ -1,6 +1,7 @@
 package wechatopen
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -36,9 +37,9 @@ func newWxaGetTemplateListResult(result WxaGetTemplateListResponse, body []byte,
 
 // WxaGetTemplateList 获取代码模板列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/gettemplatelist.html
-func (c *Client) WxaGetTemplateList() *WxaGetTemplateListResult {
+func (c *Client) WxaGetTemplateList(ctx context.Context) *WxaGetTemplateListResult {
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/gettemplatelist?access_token=%s", c.GetComponentAccessToken()), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/gettemplatelist?access_token=%s", c.GetComponentAccessToken(ctx)), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response WxaGetTemplateListResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

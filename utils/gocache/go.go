@@ -13,17 +13,15 @@ type GoConfig struct {
 
 // Go https://github.com/patrickmn/go-cache
 type Go struct {
-	GoConfig
-	db *cache.Cache // 驱动
+	config *GoConfig
+	db     *cache.Cache // 驱动
 }
 
 // NewGo 实例化
 func NewGo(config *GoConfig) *Go {
-	app := &Go{}
-	app.DefaultExpiration = config.DefaultExpiration
-	app.DefaultClear = config.DefaultClear
-	app.db = cache.New(app.DefaultExpiration, app.DefaultClear)
-	return app
+	c := &Go{config: config}
+	c.db = cache.New(c.config.DefaultExpiration, c.config.DefaultClear)
+	return c
 }
 
 // Set 插入数据 并设置过期时间
@@ -38,5 +36,5 @@ func (c *Go) Get(key string) (interface{}, bool) {
 
 // SetDefault 插入数据 并设置为默认过期时间
 func (c *Go) SetDefault(key string, value interface{}) {
-	c.db.Set(key, value, c.DefaultExpiration)
+	c.db.Set(key, value, c.config.DefaultExpiration)
 }

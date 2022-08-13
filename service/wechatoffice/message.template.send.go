@@ -1,6 +1,7 @@
 package wechatoffice
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -26,11 +27,11 @@ func newMessageTemplateSendResult(result MessageTemplateSendResponse, body []byt
 
 // MessageTemplateSend 模板消息
 // https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Template_Message_Interface.html
-func (c *Client) MessageTemplateSend(notMustParams ...gorequest.Params) *MessageTemplateSendResult {
+func (c *Client) MessageTemplateSend(ctx context.Context, notMustParams ...gorequest.Params) *MessageTemplateSendResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/message/template/send?access_token=%s", c.getAccessToken()), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/message/template/send?access_token=%s", c.getAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response MessageTemplateSendResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -1,6 +1,7 @@
 package wechatpayopen
 
 import (
+	"context"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -18,13 +19,13 @@ func newPayPartnerTransactionsOutTradeNoCloseResult(body []byte, http gorequest.
 
 // PayPartnerTransactionsOutTradeNoClose 关闭订单API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_3.shtml
-func (c *Client) PayPartnerTransactionsOutTradeNoClose(outTradeNo string) *PayPartnerTransactionsOutTradeNoCloseResult {
+func (c *Client) PayPartnerTransactionsOutTradeNoClose(ctx context.Context, outTradeNo string) *PayPartnerTransactionsOutTradeNoCloseResult {
 	// 参数
 	params := gorequest.NewParams()
 	params.Set("sp_mchid", c.config.SpMchId)   // 服务商户号
 	params.Set("sub_mchid", c.config.SubMchId) // 子商户号
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/v3/pay/partner/transactions/out-trade-no/%s/close", outTradeNo), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/pay/partner/transactions/out-trade-no/%s/close", outTradeNo), params, http.MethodPost)
 	if err != nil {
 		return newPayPartnerTransactionsOutTradeNoCloseResult(request.ResponseBody, request, err)
 	}

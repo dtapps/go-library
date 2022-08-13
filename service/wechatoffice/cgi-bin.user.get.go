@@ -1,6 +1,7 @@
 package wechatoffice
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -29,9 +30,9 @@ func newCgiBinUserGetResult(result CgiBinUserGetResponse, body []byte, http gore
 
 // CgiBinUserGet 获取用户列表
 // https://developers.weixin.qq.com/doc/offiaccount/User_Management/Getting_a_User_List.html
-func (c *Client) CgiBinUserGet(nextOpenid string) *CgiBinUserGetResult {
+func (c *Client) CgiBinUserGet(ctx context.Context, nextOpenid string) *CgiBinUserGetResult {
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/user/get?access_token=%s&next_openid=%s", c.getAccessToken(), nextOpenid), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/user/get?access_token=%s&next_openid=%s", c.getAccessToken(ctx), nextOpenid), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response CgiBinUserGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

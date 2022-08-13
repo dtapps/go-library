@@ -1,6 +1,7 @@
 package wechatopen
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -36,13 +37,13 @@ func newWxaGetVersionInfoResult(result WxaGetVersionInfoResponse, body []byte, h
 
 // WxaGetVersionInfo 查询小程序版本信息
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_versioninfo.html
-func (c *Client) WxaGetVersionInfo() *WxaGetVersionInfoResult {
-	accessToken := c.GetAuthorizerAccessToken()
+func (c *Client) WxaGetVersionInfo(ctx context.Context) *WxaGetVersionInfoResult {
+	accessToken := c.GetAuthorizerAccessToken(ctx)
 	if accessToken == "" {
 		return newWxaGetVersionInfoResult(WxaGetVersionInfoResponse{}, nil, gorequest.Response{}, errors.New("访问令牌为空"))
 	}
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/getversioninfo?access_token=%s", accessToken), map[string]interface{}{}, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/getversioninfo?access_token=%s", accessToken), map[string]interface{}{}, http.MethodPost)
 	// 定义
 	var response WxaGetVersionInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

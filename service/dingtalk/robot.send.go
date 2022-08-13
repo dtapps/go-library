@@ -1,6 +1,7 @@
 package dingtalk
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -26,13 +27,13 @@ func newRobotSendResult(result RobotSendResponse, body []byte, http gorequest.Re
 
 // RobotSend 自定义机器人
 // https://open.dingtalk.com/document/group/custom-robot-access
-func (c *Client) RobotSend(notMustParams ...gorequest.Params) *RobotSendResult {
+func (c *Client) RobotSend(ctx context.Context, notMustParams ...gorequest.Params) *RobotSendResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 时间
 	timestamp := time.Now().UnixNano() / 1e6
 	// 请求
-	request, err := c.request(apiUrl+fmt.Sprintf("/robot/send?access_token=%s&timestamp=%d&sign=%s", c.config.AccessToken, timestamp, c.sign(timestamp)), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/robot/send?access_token=%s&timestamp=%d&sign=%s", c.config.AccessToken, timestamp, c.sign(timestamp)), params, http.MethodPost)
 	// 定义
 	var response RobotSendResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

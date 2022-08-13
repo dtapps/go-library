@@ -1,6 +1,7 @@
 package wechatopen
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -29,8 +30,8 @@ func newWxaMemberAuthResult(result WxaMemberAuthResponse, body []byte, http gore
 
 // WxaMemberAuth 获取体验者列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_AdminManagement/memberauth.html
-func (c *Client) WxaMemberAuth() *WxaMemberAuthResult {
-	accessToken := c.GetAuthorizerAccessToken()
+func (c *Client) WxaMemberAuth(ctx context.Context) *WxaMemberAuthResult {
+	accessToken := c.GetAuthorizerAccessToken(ctx)
 	if accessToken == "" {
 		return newWxaMemberAuthResult(WxaMemberAuthResponse{}, nil, gorequest.Response{}, errors.New("访问令牌为空"))
 	}
@@ -38,7 +39,7 @@ func (c *Client) WxaMemberAuth() *WxaMemberAuthResult {
 	params := gorequest.NewParams()
 	params["action"] = "get_experiencer"
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/memberauth?access_token=%s", accessToken), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/memberauth?access_token=%s", accessToken), params, http.MethodPost)
 	// 定义
 	var response WxaMemberAuthResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

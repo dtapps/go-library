@@ -1,6 +1,7 @@
 package ejiaofei
 
 import (
+	"context"
 	"encoding/xml"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -24,11 +25,11 @@ func newQueryTxProductResult(result QueryTxProductResponse, body []byte, http go
 }
 
 // QueryTxProduct 可充值腾讯产品查询
-func (c *Client) QueryTxProduct() *QueryTxProductResult {
+func (c *Client) QueryTxProduct(ctx context.Context) *QueryTxProductResult {
 	// 签名
 	c.signStr = fmt.Sprintf("userid%vpwd%v", c.getUserId(), c.getPwd())
 	// 请求
-	request, err := c.request(apiUrl+"/queryTXproduct.do", map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/queryTXproduct.do", map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response QueryTxProductResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)

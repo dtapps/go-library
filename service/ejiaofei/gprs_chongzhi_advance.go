@@ -1,6 +1,7 @@
 package ejiaofei
 
 import (
+	"context"
 	"encoding/xml"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -46,13 +47,13 @@ func newGprsChOngZhiAdvanceResult(result GprsChOngZhiAdvanceResponse, body []byt
 }
 
 // GprsChOngZhiAdvance 流量充值接口
-func (c *Client) GprsChOngZhiAdvance(notMustParams ...gorequest.Params) *GprsChOngZhiAdvanceResult {
+func (c *Client) GprsChOngZhiAdvance(ctx context.Context, notMustParams ...gorequest.Params) *GprsChOngZhiAdvanceResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 签名
 	c.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vgprs%varea%veffecttime%vvalidity%vtimes%v", c.getUserId(), c.getPwd(), params["orderid"], params["account"], params["gprs"], params["area"], params["effecttime"], params["validity"], params["times"])
 	// 请求
-	request, err := c.request(apiUrl+"/gprsChongzhiAdvance.do", params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/gprsChongzhiAdvance.do", params, http.MethodGet)
 	// 定义
 	var response GprsChOngZhiAdvanceResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)

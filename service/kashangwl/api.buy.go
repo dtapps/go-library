@@ -1,6 +1,7 @@
 package kashangwl
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -17,11 +18,11 @@ type ApiBuyResponse struct {
 		Cards        []struct {
 			CardNo       string `json:"card_no"`
 			CardPassword string `json:"card_password"`
-		} `json:"cards,omitempty"` // 	卡密（仅当订单成功并且商品类型为卡密时返回此数据）
+		} `json:"cards,omitempty"` // 卡密（仅当订单成功并且商品类型为卡密时返回此数据）
 		Tickets []struct {
 			No     string `json:"no"`
 			Ticket string `json:"ticket"`
-		} `json:"tickets,omitempty"` // 	卡券（仅当订单成功并且商品类型为卡券时返回此数据）
+		} `json:"tickets,omitempty"` // 卡券（仅当订单成功并且商品类型为卡券时返回此数据）
 	} `json:"data"`
 }
 
@@ -38,11 +39,11 @@ func newApiBuyResult(result ApiBuyResponse, body []byte, http gorequest.Response
 
 // ApiBuy 购买商品
 // http://doc.cqmeihu.cn/sales/buy.html
-func (c *Client) ApiBuy(notMustParams ...gorequest.Params) *ApiBuyResult {
+func (c *Client) ApiBuy(ctx context.Context, notMustParams ...gorequest.Params) *ApiBuyResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(apiUrl+"/api/buy", params)
+	request, err := c.request(ctx, apiUrl+"/api/buy", params)
 	// 定义
 	var response ApiBuyResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -15,7 +15,7 @@ type SimpleInterfaceCache struct {
 }
 
 // NewSimpleInterfaceCache 构造函数
-func (c *RedisClient) NewSimpleInterfaceCache(operation *SimpleOperation, expire time.Duration) *SimpleInterfaceCache {
+func (r *RedisClient) NewSimpleInterfaceCache(operation *SimpleOperation, expire time.Duration) *SimpleInterfaceCache {
 	return &SimpleInterfaceCache{
 		Operation: operation, // 操作类
 		Expire:    expire,    // 过期时间

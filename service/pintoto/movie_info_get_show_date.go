@@ -1,6 +1,7 @@
 package pintoto
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -26,7 +27,7 @@ func newGetShowDateResult(result GetShowDateResponse, body []byte, http goreques
 }
 
 // GetShowDate 包含某电影的日期 https://www.showdoc.com.cn/1154868044931571/6091788579441818
-func (c *Client) GetShowDate(cityId, filmId int) *GetShowDateResult {
+func (c *Client) GetShowDate(ctx context.Context, cityId, filmId int) *GetShowDateResult {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("cityId", cityId)
@@ -34,7 +35,7 @@ func (c *Client) GetShowDate(cityId, filmId int) *GetShowDateResult {
 	// 转换
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(apiUrl+"/movieapi/movie-info/get-show-date", params)
+	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-show-date", params)
 	// 定义
 	var response GetShowDateResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

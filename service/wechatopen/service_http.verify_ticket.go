@@ -1,6 +1,7 @@
 package wechatopen
 
 import (
+	"context"
 	"encoding/base64"
 	"encoding/xml"
 	"errors"
@@ -26,7 +27,7 @@ type cipherRequestHttpBody struct {
 }
 
 // ServeHttpVerifyTicket 验证票据推送
-func (c *Client) ServeHttpVerifyTicket(r *http.Request) (resp *ResponseServeHttpVerifyTicket, err error) {
+func (c *Client) ServeHttpVerifyTicket(ctx context.Context, r *http.Request) (resp *ResponseServeHttpVerifyTicket, err error) {
 	var (
 		query = r.URL.Query()
 

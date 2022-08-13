@@ -1,6 +1,7 @@
 package pinduoduo
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -59,12 +60,12 @@ func newTopGoodsListQueryResult(result TopGoodsListQueryResponse, body []byte, h
 
 // TopGoodsListQuery 多多客获取爆款排行商品接口
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.top.goods.list.query
-func (c *Client) TopGoodsListQuery(notMustParams ...Params) *TopGoodsListQueryResult {
+func (c *Client) TopGoodsListQuery(ctx context.Context, notMustParams ...Params) *TopGoodsListQueryResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.top.goods.list.query", notMustParams...)
 	params.Set("p_id", c.config.Pid)
 	// 请求
-	request, err := c.request(params)
+	request, err := c.request(ctx, params)
 	// 定义
 	var response TopGoodsListQueryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

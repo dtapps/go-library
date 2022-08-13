@@ -1,6 +1,7 @@
 package pintoto
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -43,14 +44,14 @@ func newGetSeatResult(result GetSeatResponse, body []byte, http gorequest.Respon
 }
 
 // GetSeat 座位 https://www.showdoc.com.cn/1154868044931571/5866824368760475
-func (c *Client) GetSeat(showId string) *GetSeatResult {
+func (c *Client) GetSeat(ctx context.Context, showId string) *GetSeatResult {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("showId", showId)
 	// 转换
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(apiUrl+"/movieapi/movie-info/get-seat", params)
+	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-seat", params)
 	// 定义
 	var response GetSeatResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

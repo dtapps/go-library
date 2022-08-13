@@ -1,6 +1,7 @@
 package pinduoduo
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -79,12 +80,12 @@ func newGoodsRecommendGetResult(result GoodsRecommendGetResponse, body []byte, h
 
 // GoodsRecommendGet 多多进宝商品推荐API
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.recommend.get
-func (c *Client) GoodsRecommendGet(notMustParams ...Params) *GoodsRecommendGetResult {
+func (c *Client) GoodsRecommendGet(ctx context.Context, notMustParams ...Params) *GoodsRecommendGetResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.recommend.get", notMustParams...)
 	params.Set("pid", c.config.Pid)
 	// 请求
-	request, err := c.request(params)
+	request, err := c.request(ctx, params)
 	// 定义
 	var response GoodsRecommendGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

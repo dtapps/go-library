@@ -1,6 +1,7 @@
 package wechatpayopen
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -24,7 +25,7 @@ func newPayPartnerTransactionsJsapiResult(result PayPartnerTransactionsJsapiResp
 
 // PayPartnerTransactionsJsapi JSAPI下单
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_1.shtml
-func (c *Client) PayPartnerTransactionsJsapi(notMustParams ...gorequest.Params) *PayPartnerTransactionsJsapiResult {
+func (c *Client) PayPartnerTransactionsJsapi(ctx context.Context, notMustParams ...gorequest.Params) *PayPartnerTransactionsJsapiResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sp_appid", c.config.SpAppid)   // 服务商应用ID
@@ -32,7 +33,7 @@ func (c *Client) PayPartnerTransactionsJsapi(notMustParams ...gorequest.Params) 
 	params.Set("sub_appid", c.config.SubAppid) // 子商户应用ID
 	params.Set("sub_mchid", c.config.SubMchId) // 子商户号
 	// 请求
-	request, err := c.request(apiUrl+"/v3/pay/partner/transactions/jsapi", params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/v3/pay/partner/transactions/jsapi", params, http.MethodPost)
 	if err != nil {
 		return newPayPartnerTransactionsJsapiResult(PayPartnerTransactionsJsapiResponse{}, request.ResponseBody, request, err, ApiError{})
 	}

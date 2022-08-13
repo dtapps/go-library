@@ -1,11 +1,13 @@
 package wechatpayapiv2
 
 import (
+	"context"
 	"crypto/tls"
+	"github.com/dtapps/go-library"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
-func (c *Client) request(url string, params map[string]interface{}, cert *tls.Certificate) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, params map[string]interface{}, cert *tls.Certificate) (gorequest.Response, error) {
 
 	// 创建请求
 	client := c.client
@@ -23,17 +25,17 @@ func (c *Client) request(url string, params map[string]interface{}, cert *tls.Ce
 	client.SetP12Cert(cert)
 
 	// 发起请求
-	request, err := client.Post()
+	request, err := client.Post(ctx)
 	if err != nil {
 		return gorequest.Response{}, err
 	}
 
 	// 日志
 	if c.config.PgsqlDb != nil {
-		go c.log.GormMiddlewareXml(request)
+		go c.log.GormMiddlewareXml(ctx, request, go_library.Version())
 	}
 	if c.config.MongoDb != nil {
-		go c.log.MongoMiddlewareXml(request)
+		go c.log.MongoMiddlewareXml(ctx, request, go_library.Version())
 	}
 
 	return request, err

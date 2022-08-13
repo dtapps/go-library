@@ -10,9 +10,20 @@ import (
 )
 
 type ConfigGormClient struct {
-	Dns    string // 地址
-	Log    bool   // 日志
-	LogUrl string // 日志路径
+	Dns string // 地址
+	Log struct {
+		Status        bool   // 状态
+		Path          string // 路径
+		Slow          int64  // 慢SQL阈值
+		Level         string // 级别
+		NotFoundError bool   // 忽略ErrRecordNotFound（记录未找到）错误
+		Colorful      bool   // 禁用彩色打印
+	} // 日志
+	Conn struct {
+		SetMaxIdle         int   // 设置空闲连接池中连接的最大数量
+		SetMaxOpen         int   // 设置打开数据库连接的最大数量
+		SetConnMaxLifetime int64 // 设置了连接可复用的最大时间
+	} // 连接
 }
 
 // GormClient
@@ -20,10 +31,6 @@ type ConfigGormClient struct {
 type GormClient struct {
 	Db     *gorm.DB          // 驱动
 	config *ConfigGormClient // 配置
-}
-
-func (c *GormClient) GetDb() *gorm.DB {
-	return c.Db
 }
 
 type writer struct{}

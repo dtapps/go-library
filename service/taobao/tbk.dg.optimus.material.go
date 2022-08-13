@@ -1,6 +1,7 @@
 package taobao
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -61,12 +62,12 @@ func newTbkDgOptimusMaterialResult(result TbkDgOptimusMaterialResponse, body []b
 
 // TbkDgOptimusMaterial 淘宝客-推广者-物料精选
 // https://open.taobao.com/api.htm?spm=a219a.7386797.0.0.5d67669aIeQeVI&source=search&docId=33947&docType=2
-func (c *Client) TbkDgOptimusMaterial(notMustParams ...Params) *TbkDgOptimusMaterialResult {
+func (c *Client) TbkDgOptimusMaterial(ctx context.Context, notMustParams ...Params) *TbkDgOptimusMaterialResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.dg.optimus.material", notMustParams...)
 	params.Set("adzone_id", c.GetAdzoneId())
 	// 请求
-	request, err := c.request(params)
+	request, err := c.request(ctx, params)
 	// 定义
 	var response TbkDgOptimusMaterialResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

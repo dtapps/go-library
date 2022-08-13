@@ -1,6 +1,7 @@
 package wechatopen
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -25,11 +26,11 @@ func newWxaCommitResult(result WxaCommitResponse, body []byte, http gorequest.Re
 
 // WxaCommit 上传小程序代码并生成体验版
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/commit.html
-func (c *Client) WxaCommit(notMustParams ...gorequest.Params) *WxaCommitResult {
+func (c *Client) WxaCommit(ctx context.Context, notMustParams ...gorequest.Params) *WxaCommitResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/commit?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/commit?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response WxaCommitResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

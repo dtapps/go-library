@@ -1,6 +1,7 @@
 package wechatminiprogram
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -25,11 +26,11 @@ func newSubscribeMessageSendResult(result SubscribeMessageSendResponse, body []b
 
 // SubscribeMessageSend 发送订阅消息
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/subscribe-message/subscribeMessage.send.html
-func (c *Client) SubscribeMessageSend(notMustParams ...gorequest.Params) *SubscribeMessageSendResult {
+func (c *Client) SubscribeMessageSend(ctx context.Context, notMustParams ...gorequest.Params) *SubscribeMessageSendResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/message/subscribe/send?access_token=%s", c.getAccessToken()), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/message/subscribe/send?access_token=%s", c.getAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response SubscribeMessageSendResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

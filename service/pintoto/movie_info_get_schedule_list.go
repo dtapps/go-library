@@ -1,6 +1,7 @@
 package pintoto
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -46,14 +47,14 @@ func newGetScheduleListResult(result GetScheduleListResponse, body []byte, http 
 }
 
 // GetScheduleList 场次排期 https://www.showdoc.com.cn/1154868044931571/5866708808899217
-func (c *Client) GetScheduleList(cinemaId int) *GetScheduleListResult {
+func (c *Client) GetScheduleList(ctx context.Context, cinemaId int) *GetScheduleListResult {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("cinemaId", cinemaId)
 	// 转换
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(apiUrl+"/movieapi/movie-info/get-schedule-list", params)
+	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-schedule-list", params)
 	// 定义
 	var response GetScheduleListResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -1,6 +1,7 @@
 package jd
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -122,11 +123,11 @@ func newUnionOpenGoodsJIngFenQueryResult(responce UnionOpenGoodsJIngFenQueryResu
 
 // UnionOpenGoodsJIngFenQuery 京粉精选商品查询接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.goods.jingfen.query
-func (c *Client) UnionOpenGoodsJIngFenQuery(notMustParams ...Params) *UnionOpenGoodsJIngFenQueryResult {
+func (c *Client) UnionOpenGoodsJIngFenQuery(ctx context.Context, notMustParams ...Params) *UnionOpenGoodsJIngFenQueryResult {
 	// 参数
 	params := NewParamsWithType("jd.union.open.goods.jingfen.query", notMustParams...)
 	// 请求
-	request, err := c.request(params)
+	request, err := c.request(ctx, params)
 	// 定义
 	var responce UnionOpenGoodsJIngFenQueryResultResponse
 	var result UnionOpenGoodsJIngFenQueryQueryResult

@@ -1,11 +1,13 @@
 package pinduoduo
 
 import (
+	"context"
+	"github.com/dtapps/go-library"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"github.com/dtapps/go-library/utils/gostring"
 )
 
-func (c *Client) request(params map[string]interface{}) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, params map[string]interface{}) (gorequest.Response, error) {
 
 	// 签名
 	c.Sign(params)
@@ -17,17 +19,17 @@ func (c *Client) request(params map[string]interface{}) (gorequest.Response, err
 	client.SetParams(params)
 
 	// 发起请求
-	request, err := client.Get()
+	request, err := client.Get(ctx)
 	if err != nil {
 		return gorequest.Response{}, err
 	}
 
 	// 日志
 	if c.config.PgsqlDb != nil {
-		go c.log.GormMiddlewareCustom(gostring.ToString(params["type"]), request)
+		go c.log.GormMiddlewareCustom(ctx, gostring.ToString(params["type"]), request, go_library.Version())
 	}
 	if c.config.MongoDb != nil {
-		go c.log.MongoMiddlewareCustom(gostring.ToString(params["type"]), request)
+		go c.log.MongoMiddlewareCustom(ctx, gostring.ToString(params["type"]), request, go_library.Version())
 	}
 
 	return request, err

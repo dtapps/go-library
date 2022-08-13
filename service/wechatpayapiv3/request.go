@@ -1,11 +1,13 @@
 package wechatpayapiv3
 
 import (
+	"context"
+	"github.com/dtapps/go-library"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
 
-func (c *Client) request(url string, params map[string]interface{}, method string, commonParams bool) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, params map[string]interface{}, method string, commonParams bool) (gorequest.Response, error) {
 
 	// 公共参数
 	if method == http.MethodPost {
@@ -45,17 +47,17 @@ func (c *Client) request(url string, params map[string]interface{}, method strin
 	}
 
 	// 发起请求
-	request, err := client.Request()
+	request, err := client.Request(ctx)
 	if err != nil {
 		return gorequest.Response{}, err
 	}
 
 	// 日志
 	if c.config.PgsqlDb != nil {
-		go c.log.GormMiddleware(request)
+		go c.log.GormMiddleware(ctx, request, go_library.Version())
 	}
 	if c.config.MongoDb != nil {
-		go c.log.MongoMiddleware(request)
+		go c.log.MongoMiddleware(ctx, request, go_library.Version())
 	}
 
 	return request, err

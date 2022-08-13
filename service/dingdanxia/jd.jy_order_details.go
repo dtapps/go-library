@@ -1,6 +1,7 @@
 package dingdanxia
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -39,11 +40,11 @@ func newJdJyOrderDetailsResult(result JdJyOrderDetailsResponse, body []byte, htt
 }
 
 // JdJyOrderDetails 【官方不维护】 京佣订单
-func (c *Client) JdJyOrderDetails(notMustParams ...gorequest.Params) *JdJyOrderDetailsResult {
+func (c *Client) JdJyOrderDetails(ctx context.Context, notMustParams ...gorequest.Params) *JdJyOrderDetailsResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(apiUrl+"/jd/jy_order_details", params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/jd/jy_order_details", params, http.MethodPost)
 	// 定义
 	var response JdJyOrderDetailsResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

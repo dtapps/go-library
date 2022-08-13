@@ -1,6 +1,7 @@
 package pinduoduo
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -25,12 +26,12 @@ func newMemberAuthorityQueryResult(result MemberAuthorityQueryResponse, body []b
 
 // MemberAuthorityQuery 查询是否绑定备案
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.search
-func (c *Client) MemberAuthorityQuery(notMustParams ...Params) *MemberAuthorityQueryResult {
+func (c *Client) MemberAuthorityQuery(ctx context.Context, notMustParams ...Params) *MemberAuthorityQueryResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.member.authority.query", notMustParams...)
 	params.Set("pid", c.config.Pid)
 	// 请求
-	request, err := c.request(params)
+	request, err := c.request(ctx, params)
 	// 定义
 	var response MemberAuthorityQueryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

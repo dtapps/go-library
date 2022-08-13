@@ -1,6 +1,7 @@
 package kuaishou
 
 import (
+	"context"
 	"errors"
 	"github.com/mvdan/xurls"
 	"strings"
@@ -21,7 +22,7 @@ func newAnalysisResult(result AnalysisResponse, err error) *AnalysisResult {
 }
 
 // Analysis 快手解析
-func (c *Client) Analysis(content string) *AnalysisResult {
+func (c *Client) Analysis(ctx context.Context, content string) *AnalysisResult {
 
 	// 定义
 	var response AnalysisResponse

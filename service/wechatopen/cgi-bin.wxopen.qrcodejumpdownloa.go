@@ -1,6 +1,7 @@
 package wechatopen
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -27,11 +28,11 @@ func newCgiBinWxOpenQrCodeJumpDownloadResult(result CgiBinWxOpenQrCodeJumpDownlo
 
 // CgiBinWxOpenQrCodeJumpDownload 获取校验文件名称及内容
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumpdownload.html
-func (c *Client) CgiBinWxOpenQrCodeJumpDownload() *CgiBinWxOpenQrCodeJumpDownloadResult {
+func (c *Client) CgiBinWxOpenQrCodeJumpDownload(ctx context.Context) *CgiBinWxOpenQrCodeJumpDownloadResult {
 	// 参数
 	params := gorequest.NewParams()
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/wxopen/qrcodejumpdownload?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/wxopen/qrcodejumpdownload?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response CgiBinWxOpenQrCodeJumpDownloadResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

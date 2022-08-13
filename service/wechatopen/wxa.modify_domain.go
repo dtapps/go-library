@@ -1,6 +1,7 @@
 package wechatopen
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -38,11 +39,11 @@ func newWxaModifyDomainResult(result WxaModifyDomainResponse, body []byte, http 
 
 // WxaModifyDomain 设置服务器域名
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_Basic_Info/Server_Address_Configuration.html
-func (c *Client) WxaModifyDomain(notMustParams ...gorequest.Params) *WxaModifyDomainResult {
+func (c *Client) WxaModifyDomain(ctx context.Context, notMustParams ...gorequest.Params) *WxaModifyDomainResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/modify_domain?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/modify_domain?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response WxaModifyDomainResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

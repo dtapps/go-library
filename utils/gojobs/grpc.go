@@ -1,6 +1,7 @@
 package gojobs
 
 import (
+	"context"
 	"fmt"
 	"github.com/dtapps/go-library/utils/goip"
 )
@@ -8,7 +9,7 @@ import (
 var ip string
 
 func configIp() {
-	ip = goip.GetOutsideIp()
+	ip = goip.GetOutsideIp(context.Background())
 }
 
 const prefix = "cron:"

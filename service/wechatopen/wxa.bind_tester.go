@@ -1,6 +1,7 @@
 package wechatopen
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -26,12 +27,12 @@ func newWxaBindTesterResult(result WxaBindTesterResponse, body []byte, http gore
 
 // WxaBindTester 绑定微信用户为体验者
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_AdminManagement/Admin.html
-func (c *Client) WxaBindTester(wechatid string) *WxaBindTesterResult {
+func (c *Client) WxaBindTester(ctx context.Context, wechatid string) *WxaBindTesterResult {
 	// 参数
 	params := gorequest.NewParams()
 	params["wechatid"] = wechatid
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/bind_tester?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/bind_tester?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response WxaBindTesterResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

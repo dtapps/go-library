@@ -1,6 +1,7 @@
 package eastiot
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -29,9 +30,9 @@ func newIotApiGetAllSimTypeResult(result IotApiGetAllSimTypeResponse, body []byt
 
 // IotApiGetAllSimType 卡类型列表查询
 // https://www.showdoc.com.cn/916774523755909/4858492092033167
-func (c *Client) IotApiGetAllSimType() *IotApiGetAllSimTypeResult {
+func (c *Client) IotApiGetAllSimType(ctx context.Context) *IotApiGetAllSimTypeResult {
 	// 请求
-	request, err := c.request(apiUrl+"/Api/IotApi/getAllSimType", map[string]interface{}{}, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/Api/IotApi/getAllSimType", map[string]interface{}{}, http.MethodPost)
 	// 定义
 	var response IotApiGetAllSimTypeResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

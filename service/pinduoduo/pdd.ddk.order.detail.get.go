@@ -1,6 +1,7 @@
 package pinduoduo
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -66,13 +67,13 @@ func newOrderDetailGetResult(result OrderDetailGetResponse, body []byte, http go
 }
 
 // OrderDetailGet 多多进宝商品查询 https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.order.detail.get
-func (c *Client) OrderDetailGet(orderSn string) *OrderDetailGetResult {
+func (c *Client) OrderDetailGet(ctx context.Context, orderSn string) *OrderDetailGetResult {
 	// 参数
 	param := NewParams()
 	param.Set("order_sn", orderSn)
 	params := NewParamsWithType("pdd.ddk.order.detail.get", param)
 	// 请求
-	request, err := c.request(params)
+	request, err := c.request(ctx, params)
 	// 定义
 	var response OrderDetailGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

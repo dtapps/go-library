@@ -1,6 +1,7 @@
 package ejiaofei
 
 import (
+	"context"
 	"encoding/xml"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -36,7 +37,7 @@ func newChOngZhiJkOrdersResult(result ChOngZhiJkOrdersResponse, body []byte, htt
 // orderid 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
 // face 充值面值	以元为单位，包含10、20、30、50、100、200、300、500 移动联通电信
 // account 手机号码	需要充值的手机号码
-func (c *Client) ChOngZhiJkOrders(orderID string, face int, account string) *ChOngZhiJkOrdersResult {
+func (c *Client) ChOngZhiJkOrders(ctx context.Context, orderID string, face int, account string) *ChOngZhiJkOrdersResult {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("orderid", orderID)
@@ -47,7 +48,7 @@ func (c *Client) ChOngZhiJkOrders(orderID string, face int, account string) *ChO
 	// 签名
 	c.signStr = fmt.Sprintf("userid%vpwd%vorderid%vface%vaccount%vamount1", c.getUserId(), c.getPwd(), orderID, face, account)
 	// 请求
-	request, err := c.request(apiUrl+"/chongzhi_jkorders.do", params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/chongzhi_jkorders.do", params, http.MethodGet)
 	// 定义
 	var response ChOngZhiJkOrdersResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)

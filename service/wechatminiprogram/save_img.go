@@ -1,6 +1,7 @@
 package wechatminiprogram
 
 import (
+	"context"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"log"
 	"os"
@@ -11,7 +12,7 @@ type SaveImgResponse struct {
 	Name string
 }
 
-func (c *Client) SaveImg(resp gorequest.Response, dir, saveName string) SaveImgResponse {
+func (c *Client) SaveImg(ctx context.Context, resp gorequest.Response, dir, saveName string) SaveImgResponse {
 	// 返回是二进制图片，或者json错误
 	if resp.ResponseHeader.Get("Content-Type") == "image/jpeg" || resp.ResponseHeader.Get("Content-Type") == "image/png" {
 		// 保存在output目录

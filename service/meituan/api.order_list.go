@@ -1,6 +1,7 @@
 package meituan
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"github.com/dtapps/go-library/utils/gotime"
@@ -46,7 +47,7 @@ func newApiOrderListResult(result ApiOrderListResponse, body []byte, http gorequ
 
 // ApiOrderList 订单列表查询接口（新版）
 // https://union.meituan.com/v2/apiDetail?id=23
-func (c *Client) ApiOrderList(notMustParams ...gorequest.Params) *ApiOrderListResult {
+func (c *Client) ApiOrderList(ctx context.Context, notMustParams ...gorequest.Params) *ApiOrderListResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s
@@ -54,7 +55,7 @@ func (c *Client) ApiOrderList(notMustParams ...gorequest.Params) *ApiOrderListRe
 	params["appkey"] = c.config.AppKey
 	params["sign"] = c.getSign(c.config.Secret, params)
 	// 请求
-	request, err := c.request(apiUrl+"/api/orderList", params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/api/orderList", params, http.MethodGet)
 	// 定义
 	var response ApiOrderListResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

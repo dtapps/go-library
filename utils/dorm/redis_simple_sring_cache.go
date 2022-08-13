@@ -14,7 +14,7 @@ type SimpleStringCache struct {
 }
 
 // NewSimpleStringCache 构造函数
-func (c *RedisClient) NewSimpleStringCache(operation *StringOperation, expire time.Duration) *SimpleStringCache {
+func (r *RedisClient) NewSimpleStringCache(operation *StringOperation, expire time.Duration) *SimpleStringCache {
 	return &SimpleStringCache{
 		Operation: operation, // 操作类
 		Expire:    expire,    // 过期时间

@@ -1,6 +1,7 @@
 package eastiot
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -24,11 +25,11 @@ func newIotApiRechargeSimResult(result IotApiRechargeSimResponse, body []byte, h
 
 // IotApiRechargeSim 单卡流量充值
 // https://www.showdoc.com.cn/916774523755909/4880284631482420
-func (c *Client) IotApiRechargeSim(notMustParams ...gorequest.Params) *IotApiRechargeSimResult {
+func (c *Client) IotApiRechargeSim(ctx context.Context, notMustParams ...gorequest.Params) *IotApiRechargeSimResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(apiUrl+"/Api/IotApi/rechargeSim", params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/Api/IotApi/rechargeSim", params, http.MethodPost)
 	// 定义
 	var response IotApiRechargeSimResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

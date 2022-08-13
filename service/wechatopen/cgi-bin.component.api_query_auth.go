@@ -1,6 +1,7 @@
 package wechatopen
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -39,14 +40,14 @@ func newCgiBinComponentApiQueryAuthResult(result CgiBinComponentApiQueryAuthResp
 
 // CgiBinComponentApiQueryAuth 使用授权码获取授权信息
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/authorization_info.html
-func (c *Client) CgiBinComponentApiQueryAuth(authorizationCode string) *CgiBinComponentApiQueryAuthResult {
+func (c *Client) CgiBinComponentApiQueryAuth(ctx context.Context, authorizationCode string) *CgiBinComponentApiQueryAuthResult {
 	// 参数
 	param := gorequest.NewParams()
 	param["component_appid"] = c.config.ComponentAppId // 第三方平台 appid
 	param["authorization_code"] = authorizationCode    // 授权码, 会在授权成功时返回给第三方平台
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/component/api_query_auth?component_access_token=%v", c.GetComponentAccessToken()), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/component/api_query_auth?component_access_token=%v", c.GetComponentAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response CgiBinComponentApiQueryAuthResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

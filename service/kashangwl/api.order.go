@@ -1,6 +1,7 @@
 package kashangwl
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -52,13 +53,13 @@ func newApiOrderResult(result ApiOrderResponse, body []byte, http gorequest.Resp
 // ApiOrder 获取单个订单信息。
 // 仅能获取自己购买的订单。
 // http://doc.cqmeihu.cn/sales/order-info.html
-func (c *Client) ApiOrder(orderId string) *ApiOrderResult {
+func (c *Client) ApiOrder(ctx context.Context, orderId string) *ApiOrderResult {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("order_id", orderId)
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(apiUrl+"/api/order", params)
+	request, err := c.request(ctx, apiUrl+"/api/order", params)
 	// 定义
 	var response ApiOrderResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -1,6 +1,7 @@
 package wechatoffice
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -39,9 +40,9 @@ func newCgiBinUserInfoResult(result CgiBinUserInfoResponse, body []byte, http go
 
 // CgiBinUserInfo 获取用户基本信息(UnionID机制)
 // https://developers.weixin.qq.com/doc/offiaccount/User_Management/Get_users_basic_information_UnionID.html#UinonId
-func (c *Client) CgiBinUserInfo(openid string) *CgiBinUserInfoResult {
+func (c *Client) CgiBinUserInfo(ctx context.Context, openid string) *CgiBinUserInfoResult {
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN", c.getAccessToken(), openid), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN", c.getAccessToken(ctx), openid), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response CgiBinUserInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

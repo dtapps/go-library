@@ -1,6 +1,7 @@
 package wechatminiprogram
 
 import (
+	"context"
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/base64"
@@ -34,7 +35,7 @@ func newUserPhoneResult(result UserPhoneResponse, err error) *UserPhoneResult {
 }
 
 // UserPhone 解密手机号信息
-func (c *Client) UserPhone(param UserPhone) *UserPhoneResult {
+func (c *Client) UserPhone(ctx context.Context, param UserPhone) *UserPhoneResult {
 	var response UserPhoneResponse
 	aesKey, err := base64.StdEncoding.DecodeString(param.SessionKey)
 	if err != nil {

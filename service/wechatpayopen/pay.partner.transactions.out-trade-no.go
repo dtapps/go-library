@@ -1,6 +1,7 @@
 package wechatpayopen
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -68,11 +69,11 @@ func newPayPartnerTransactionsOutTradeNoResult(result PayPartnerTransactionsOutT
 
 // PayPartnerTransactionsOutTradeNo 商户订单号查询
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_2.shtml
-func (c *Client) PayPartnerTransactionsOutTradeNo(outTradeNo string) *PayPartnerTransactionsOutTradeNoResult {
+func (c *Client) PayPartnerTransactionsOutTradeNo(ctx context.Context, outTradeNo string) *PayPartnerTransactionsOutTradeNoResult {
 	// 参数
 	params := gorequest.NewParams()
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/v3/pay/partner/transactions/out-trade-no/%s?sp_mchid=%s&sub_mchid=%s", outTradeNo, c.config.SpMchId, c.config.SubMchId), params, http.MethodGet)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/pay/partner/transactions/out-trade-no/%s?sp_mchid=%s&sub_mchid=%s", outTradeNo, c.config.SpMchId, c.config.SubMchId), params, http.MethodGet)
 	if err != nil {
 		return newPayPartnerTransactionsOutTradeNoResult(PayPartnerTransactionsOutTradeNoResponse{}, request.ResponseBody, request, err, ApiError{})
 	}

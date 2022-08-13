@@ -14,16 +14,15 @@ type BigConfig struct {
 
 // Big https://github.com/allegro/bigcache
 type Big struct {
-	BigConfig
-	db *bigcache.BigCache // 驱动
+	config *BigConfig
+	db     *bigcache.BigCache // 驱动
 }
 
 // NewBig 实例化
 func NewBig(config *BigConfig) *Big {
-	app := &Big{}
-	app.DefaultExpiration = config.DefaultExpiration
-	app.db, _ = bigcache.NewBigCache(bigcache.DefaultConfig(app.DefaultExpiration))
-	return app
+	c := &Big{config: config}
+	c.db, _ = bigcache.NewBigCache(bigcache.DefaultConfig(c.config.DefaultExpiration))
+	return c
 }
 
 // Set 插入数据 将只显示给定结构的导出字段 序列化并存储

@@ -1,6 +1,7 @@
 package wechatpayapiv3
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -63,11 +64,11 @@ func newMerchantServiceComplaintsV2Result(result MerchantServiceComplaintsV2Resp
 
 // MerchantServiceComplaintsV2 查询投诉单列表API
 // https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter10_2_11.shtml
-func (c *Client) MerchantServiceComplaintsV2(notMustParams ...gorequest.Params) *MerchantServiceComplaintsV2Result {
+func (c *Client) MerchantServiceComplaintsV2(ctx context.Context, notMustParams ...gorequest.Params) *MerchantServiceComplaintsV2Result {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(apiUrl+"/v3/merchant-service/complaints-v2", params, http.MethodGet, false)
+	request, err := c.request(ctx, apiUrl+"/v3/merchant-service/complaints-v2", params, http.MethodGet, false)
 	if err != nil {
 		return newMerchantServiceComplaintsV2Result(MerchantServiceComplaintsV2Response{}, request.ResponseBody, request, err)
 	}

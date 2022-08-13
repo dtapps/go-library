@@ -1,6 +1,7 @@
 package wechatpayopen
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -27,11 +28,11 @@ func newMerchantFundDayEndBalanceResult(result MerchantFundDayEndBalanceResponse
 // accountType 账户类型 BASIC：基本账户 OPERATION：运营账户 FEES：手续费账户
 // date 日期 示例值：2019-08-17
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_7_4.shtml
-func (c *Client) MerchantFundDayEndBalance(accountType, date string) *MerchantFundDayEndBalanceResult {
+func (c *Client) MerchantFundDayEndBalance(ctx context.Context, accountType, date string) *MerchantFundDayEndBalanceResult {
 	// 参数
 	params := gorequest.NewParams()
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/v3/merchant/fund/dayendbalance/%s?date=%s", accountType, date), params, http.MethodGet)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/merchant/fund/dayendbalance/%s?date=%s", accountType, date), params, http.MethodGet)
 	if err != nil {
 		return newMerchantFundDayEndBalanceResult(MerchantFundDayEndBalanceResponse{}, request.ResponseBody, request, err)
 	}

@@ -1,6 +1,7 @@
 package pinduoduo
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -71,11 +72,11 @@ func newOrderListRangeGetResult(result OrderListRangeGetResponse, body []byte, h
 
 // OrderListRangeGet 用时间段查询推广订单接口
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.order.list.range.get
-func (c *Client) OrderListRangeGet(notMustParams ...Params) *OrderListRangeGetResult {
+func (c *Client) OrderListRangeGet(ctx context.Context, notMustParams ...Params) *OrderListRangeGetResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.order.list.range.get", notMustParams...)
 	// 请求
-	request, err := c.request(params)
+	request, err := c.request(ctx, params)
 	// 定义
 	var response OrderListRangeGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -9,11 +9,8 @@ import (
 
 // Current 获取当前的时间
 func Current() Pro {
-
 	p := NewPro()
-
 	p.loc, p.Error = time.LoadLocation("Asia/Shanghai")
-
 	if p.Error != nil {
 		// Docker部署golang应用时时区问题 https://www.ddhigh.com/2018/03/01/golang-docker-timezone.html
 		log.Printf("【gotime】时区错误：%v\n", p.Error)
@@ -21,17 +18,13 @@ func Current() Pro {
 	} else {
 		p.Time = time.Now().In(p.loc)
 	}
-
 	return p
 }
 
 // SetCurrent 设置当前的时间
 func SetCurrent(sTime time.Time) Pro {
-
 	p := NewPro()
-
 	p.Time = sTime
-
 	return p
 }
 
@@ -43,19 +36,15 @@ func SetCurrentParse(str string) Pro {
 	p.loc, p.Error = time.LoadLocation("Asia/Shanghai")
 
 	layout := DateTimeFormat
-
 	if str == "" || str == "0" || str == "0000-00-00 00:00:00" || str == "0000-00-00" || str == "00:00:00" {
 		return p
 	}
-
 	if len(str) == 10 && strings.Count(str, "-") == 2 {
 		layout = DateFormat
 	}
-
 	if strings.Index(str, "T") == 10 {
 		layout = RFC3339Format
 	}
-
 	if _, err := strconv.ParseInt(str, 10, 64); err == nil {
 		switch len(str) {
 		case 8:
@@ -64,27 +53,17 @@ func SetCurrentParse(str string) Pro {
 			layout = ShortDateTimeFormat
 		}
 	}
-
 	location, _ := time.ParseInLocation(layout, str, p.loc)
 
 	p.Time = location
-
 	return p
 }
 
 // SetCurrentUnix 设置当前的时间 Unix时间戳
 func SetCurrentUnix(ts int64) Pro {
-
 	p := NewPro()
-
 	p.Time = time.Unix(ts, 0)
-
 	return p
-}
-
-// Timestamp 今天此刻时间戳
-func (p Pro) Timestamp() int64 {
-	return p.Time.Unix()
 }
 
 // Now 今天此刻
@@ -105,6 +84,11 @@ func (p Pro) ToDateFormat() string {
 // ToTimeFormat 今天此刻时间
 func (p Pro) ToTimeFormat() string {
 	return p.Time.Format(TimeFormat)
+}
+
+// Timestamp 今天此刻时间戳
+func (p Pro) Timestamp() int64 {
+	return p.Time.Unix()
 }
 
 // TimestampWithSecond 今天此刻时间戳

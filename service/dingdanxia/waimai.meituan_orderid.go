@@ -1,6 +1,7 @@
 package dingdanxia
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -49,13 +50,13 @@ func newWaiMaiMeituanOrderIdResult(result WaiMaiMeituanOrderIdResponse, body []b
 
 // WaiMaiMeituanOrderId 美团联盟外卖/闪购/优选/酒店订单查询API（订单号版）
 // https://www.dingdanxia.com/doc/179/173
-func (c *Client) WaiMaiMeituanOrderId(orderId string) *WaiMaiMeituanOrderIdResult {
+func (c *Client) WaiMaiMeituanOrderId(ctx context.Context, orderId string) *WaiMaiMeituanOrderIdResult {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("order_id", orderId)
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(apiUrl+"/waimai/meituan_orderid", params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/waimai/meituan_orderid", params, http.MethodPost)
 	// 定义
 	var response WaiMaiMeituanOrderIdResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

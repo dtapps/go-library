@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gojobs/jobs_gorm_model"
-	"github.com/dtapps/go-library/utils/only"
+	"github.com/dtapps/go-library/utils/gostring"
 	"gorm.io/gorm"
 	"log"
 )
@@ -12,7 +12,7 @@ import (
 // Run 运行
 func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 	// 请求函数记录
-	err := j.service.gormClient.Create(&jobs_gorm_model.TaskLog{
+	err := j.gormClient.Db.Create(&jobs_gorm_model.TaskLog{
 		TaskId:     info.Id,
 		StatusCode: status,
 		Desc:       desc,
@@ -22,10 +22,10 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 		log.Println("statusCreate", err.Error())
 	}
 	if status == 0 {
-		err = j.EditTask(j.service.gormClient, info.Id).
+		err = j.EditTask(j.gormClient.Db, info.Id).
 			Select("run_id").
 			Updates(jobs_gorm_model.Task{
-				RunId: only.GetUuId(),
+				RunId: gostring.GetUuId(),
 			}).Error
 		if err != nil {
 			log.Println("statusEdit", err.Error())
@@ -35,12 +35,12 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 	// 任务
 	if status == CodeSuccess {
 		// 执行成功
-		err = j.EditTask(j.service.gormClient, info.Id).
+		err = j.EditTask(j.gormClient.Db, info.Id).
 			Select("status_desc", "number", "run_id", "updated_ip", "result").
 			Updates(jobs_gorm_model.Task{
 				StatusDesc: "执行成功",
 				Number:     info.Number + 1,
-				RunId:      only.GetUuId(),
+				RunId:      gostring.GetUuId(),
 				UpdatedIp:  j.config.outsideIp,
 				Result:     desc,
 			}).Error
@@ -50,7 +50,7 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 	}
 	if status == CodeEnd {
 		// 执行成功、提前结束
-		err = j.EditTask(j.service.gormClient, info.Id).
+		err = j.EditTask(j.gormClient.Db, info.Id).
 			Select("status", "status_desc", "number", "updated_ip", "result").
 			Updates(jobs_gorm_model.Task{
 				Status:     TASK_SUCCESS,
@@ -65,12 +65,12 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 	}
 	if status == CodeError {
 		// 执行失败
-		err = j.EditTask(j.service.gormClient, info.Id).
+		err = j.EditTask(j.gormClient.Db, info.Id).
 			Select("status_desc", "number", "run_id", "updated_ip", "result").
 			Updates(jobs_gorm_model.Task{
 				StatusDesc: "执行失败",
 				Number:     info.Number + 1,
-				RunId:      only.GetUuId(),
+				RunId:      gostring.GetUuId(),
 				UpdatedIp:  j.config.outsideIp,
 				Result:     desc,
 			}).Error
@@ -81,7 +81,7 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 	if info.MaxNumber != 0 {
 		if info.Number+1 >= info.MaxNumber {
 			// 关闭执行
-			err = j.EditTask(j.service.gormClient, info.Id).
+			err = j.EditTask(j.gormClient.Db, info.Id).
 				Select("status").
 				Updates(jobs_gorm_model.Task{
 					Status: TASK_TIMEOUT,
@@ -95,7 +95,7 @@ func (j *JobsGorm) Run(info jobs_gorm_model.Task, status int, desc string) {
 
 // RunAddLog 任务执行日志
 func (j *JobsGorm) RunAddLog(id uint, runId string) error {
-	return j.service.gormClient.Create(&jobs_gorm_model.TaskLogRun{
+	return j.gormClient.Db.Create(&jobs_gorm_model.TaskLogRun{
 		TaskId:     id,
 		RunId:      runId,
 		InsideIp:   j.config.insideIp,
@@ -116,6 +116,7 @@ type ConfigCreateInCustomId struct {
 	CustomId       string   // 自定义编号
 	CustomSequence int64    // 自定义顺序
 	Type           string   // 类型
+	TypeName       string   // 类型名称
 	SpecifyIp      string   // 指定外网IP
 	CurrentIp      string   // 当前ip
 }
@@ -130,10 +131,11 @@ func (j *JobsGorm) CreateInCustomId(config *ConfigCreateInCustomId) error {
 		Params:         config.Params,
 		StatusDesc:     "首次添加任务",
 		Frequency:      config.Frequency,
-		RunId:          only.GetUuId(),
+		RunId:          gostring.GetUuId(),
 		CustomId:       config.CustomId,
 		CustomSequence: config.CustomSequence,
 		Type:           config.Type,
+		TypeName:       config.TypeName,
 		CreatedIp:      config.CurrentIp,
 		SpecifyIp:      config.SpecifyIp,
 		UpdatedIp:      config.CurrentIp,
@@ -152,6 +154,7 @@ type ConfigCreateInCustomIdOnly struct {
 	CustomId       string   // 自定义编号
 	CustomSequence int64    // 自定义顺序
 	Type           string   // 类型
+	TypeName       string   // 类型名称
 	SpecifyIp      string   // 指定外网IP
 	CurrentIp      string   // 当前ip
 }
@@ -170,10 +173,11 @@ func (j *JobsGorm) CreateInCustomIdOnly(config *ConfigCreateInCustomIdOnly) erro
 		Params:         config.Params,
 		StatusDesc:     "首次添加任务",
 		Frequency:      config.Frequency,
-		RunId:          only.GetUuId(),
+		RunId:          gostring.GetUuId(),
 		CustomId:       config.CustomId,
 		CustomSequence: config.CustomSequence,
 		Type:           config.Type,
+		TypeName:       config.TypeName,
 		CreatedIp:      config.CurrentIp,
 		SpecifyIp:      config.SpecifyIp,
 		UpdatedIp:      config.CurrentIp,
@@ -193,6 +197,7 @@ type ConfigCreateInCustomIdMaxNumber struct {
 	CustomId       string   // 自定义编号
 	CustomSequence int64    // 自定义顺序
 	Type           string   // 类型
+	TypeName       string   // 类型名称
 	SpecifyIp      string   // 指定外网IP
 	CurrentIp      string   // 当前ip
 }
@@ -208,10 +213,11 @@ func (j *JobsGorm) CreateInCustomIdMaxNumber(config *ConfigCreateInCustomIdMaxNu
 		StatusDesc:     "首次添加任务",
 		Frequency:      config.Frequency,
 		MaxNumber:      config.MaxNumber,
-		RunId:          only.GetUuId(),
+		RunId:          gostring.GetUuId(),
 		CustomId:       config.CustomId,
 		CustomSequence: config.CustomSequence,
 		Type:           config.Type,
+		TypeName:       config.TypeName,
 		CreatedIp:      config.CurrentIp,
 		SpecifyIp:      config.SpecifyIp,
 		UpdatedIp:      config.CurrentIp,
@@ -231,6 +237,7 @@ type ConfigCreateInCustomIdMaxNumberOnly struct {
 	CustomId       string   // 自定义编号
 	CustomSequence int64    // 自定义顺序
 	Type           string   // 类型
+	TypeName       string   // 类型名称
 	SpecifyIp      string   // 指定外网IP
 	CurrentIp      string   // 当前ip
 }
@@ -250,10 +257,11 @@ func (j *JobsGorm) CreateInCustomIdMaxNumberOnly(config *ConfigCreateInCustomIdM
 		StatusDesc:     "首次添加任务",
 		Frequency:      config.Frequency,
 		MaxNumber:      config.MaxNumber,
-		RunId:          only.GetUuId(),
+		RunId:          gostring.GetUuId(),
 		CustomId:       config.CustomId,
 		CustomSequence: config.CustomSequence,
 		Type:           config.Type,
+		TypeName:       config.TypeName,
 		CreatedIp:      config.CurrentIp,
 		SpecifyIp:      config.SpecifyIp,
 		UpdatedIp:      config.CurrentIp,

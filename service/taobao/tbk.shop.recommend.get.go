@@ -1,6 +1,7 @@
 package taobao
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -33,11 +34,11 @@ func newTbkShopRecommendGetResult(result TbkShopRecommendGetResponse, body []byt
 
 // TbkShopRecommendGet 淘宝客-公用-店铺关联推荐
 // https://open.taobao.com/api.htm?docId=24522&docType=2
-func (c *Client) TbkShopRecommendGet(notMustParams ...Params) *TbkShopRecommendGetResult {
+func (c *Client) TbkShopRecommendGet(ctx context.Context, notMustParams ...Params) *TbkShopRecommendGetResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.shop.recommend.get", notMustParams...)
 	// 请求
-	request, err := c.request(params)
+	request, err := c.request(ctx, params)
 	// 定义
 	var response TbkShopRecommendGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -11,17 +11,16 @@ type GoCacheConfig struct {
 
 // GoCache https://github.com/patrickmn/go-cache
 type GoCache struct {
-	GoCacheConfig
+	config          *GoCacheConfig
 	db              *Go              // 驱动
 	GetterInterface GttInterfaceFunc // 不存在的操作
 }
 
 // NewCache 实例化
 func (c *Go) NewCache(config *GoCacheConfig) *GoCache {
-	app := &GoCache{}
-	app.expiration = config.expiration
-	app.db = c
-	return app
+	cc := &GoCache{config: config}
+	cc.db = c
+	return cc
 }
 
 // GetInterface 缓存操作
@@ -35,7 +34,7 @@ func (gc *GoCache) GetInterface(key string) (ret interface{}) {
 	ret, found := gc.db.Get(key)
 
 	if found == false {
-		gc.db.Set(key, f(), gc.expiration)
+		gc.db.Set(key, f(), gc.config.expiration)
 		ret, _ = gc.db.Get(key)
 	}
 

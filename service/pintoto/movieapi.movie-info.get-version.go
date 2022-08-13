@@ -1,6 +1,7 @@
 package pintoto
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -24,8 +25,8 @@ func newGetVersionResult(result GetVersionResponse, body []byte, http gorequest.
 }
 
 // GetVersion 获取同步版本号 https://www.showdoc.com.cn/1154868044931571/6566701084841699
-func (c *Client) GetVersion() *GetVersionResult {
-	request, err := c.request(apiUrl+"/movieapi/movie-info/get-version", map[string]interface{}{})
+func (c *Client) GetVersion(ctx context.Context) *GetVersionResult {
+	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-version", map[string]interface{}{})
 	// 定义
 	var response GetVersionResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

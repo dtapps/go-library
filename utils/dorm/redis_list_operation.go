@@ -2,7 +2,7 @@ package dorm
 
 import (
 	"context"
-	"github.com/go-redis/redis/v8"
+	"github.com/go-redis/redis/v9"
 )
 
 type ListOperation struct {
@@ -11,8 +11,8 @@ type ListOperation struct {
 }
 
 // NewListOperation 列表(list)类型数据操作 https://www.tizi365.com/archives/299.html
-func (c *RedisClient) NewListOperation() *ListOperation {
-	return &ListOperation{db: c.Db, ctx: context.Background()}
+func (r *RedisClient) NewListOperation() *ListOperation {
+	return &ListOperation{db: r.Db, ctx: context.Background()}
 }
 
 // LPush 从列表左边插入数据

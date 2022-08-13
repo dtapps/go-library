@@ -10,7 +10,7 @@ import (
 // 解析 X-Real-IP 和 X-Forwarded-For 以便于反向代理（nginx 或 haproxy）可以正常工作。
 func ClientIp(r *http.Request) string {
 
-	// cloudflare
+	// CloudFlare
 	CfConnectingIp := strings.TrimSpace(r.Header.Get("Cf-Connecting-Ip"))
 	if CfConnectingIp != "" {
 		return CfConnectingIp

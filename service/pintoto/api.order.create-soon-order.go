@@ -1,6 +1,7 @@
 package pintoto
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -42,7 +43,7 @@ func newApiOrderCreateSoonOrderResult(result ApiOrderCreateSoonOrderResponse, bo
 }
 
 // ApiOrderCreateSoonOrder 秒出单下单 https://www.showdoc.com.cn/1154868044931571/6437295495912025
-func (c *Client) ApiOrderCreateSoonOrder(param ApiOrderCreateSoonOrder) *ApiOrderCreateSoonOrderResult {
+func (c *Client) ApiOrderCreateSoonOrder(ctx context.Context, param ApiOrderCreateSoonOrder) *ApiOrderCreateSoonOrderResult {
 	// api params
 	params := map[string]interface{}{}
 	b, _ := json.Marshal(&param)
@@ -51,7 +52,7 @@ func (c *Client) ApiOrderCreateSoonOrder(param ApiOrderCreateSoonOrder) *ApiOrde
 	for k, v := range m {
 		params[k] = v
 	}
-	request, err := c.request(apiUrl+"/api/order/create-soon-order", params)
+	request, err := c.request(ctx, apiUrl+"/api/order/create-soon-order", params)
 	// 定义
 	var response ApiOrderCreateSoonOrderResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

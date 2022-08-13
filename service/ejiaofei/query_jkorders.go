@@ -1,6 +1,7 @@
 package ejiaofei
 
 import (
+	"context"
 	"encoding/xml"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -34,7 +35,7 @@ func newQueryJkOrdersResult(result QueryJkOrdersResponse, body []byte, http gore
 
 // QueryJkOrders 通用查询接口
 // orderid 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
-func (c *Client) QueryJkOrders(orderId string) *QueryJkOrdersResult {
+func (c *Client) QueryJkOrders(ctx context.Context, orderId string) *QueryJkOrdersResult {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("orderid", orderId)
@@ -42,7 +43,7 @@ func (c *Client) QueryJkOrders(orderId string) *QueryJkOrdersResult {
 	// 签名
 	c.signStr = fmt.Sprintf("userid%vpwd%vorderid%v", c.getUserId(), c.getPwd(), orderId)
 	// 请求
-	request, err := c.request(apiUrl+"/query_jkorders.do", params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/query_jkorders.do", params, http.MethodGet)
 	// 定义
 	var response QueryJkOrdersResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)

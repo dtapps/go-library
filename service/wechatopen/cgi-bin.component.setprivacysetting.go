@@ -1,6 +1,7 @@
 package wechatopen
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -25,11 +26,11 @@ func newCgiBinComponentSetPrivacySettingResult(result CgiBinComponentSetPrivacyS
 
 // CgiBinComponentSetPrivacySetting 配置小程序用户隐私保护指引
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/privacy_config/set_privacy_setting.html
-func (c *Client) CgiBinComponentSetPrivacySetting(notMustParams ...gorequest.Params) *CgiBinComponentSetPrivacySettingResult {
+func (c *Client) CgiBinComponentSetPrivacySetting(ctx context.Context, notMustParams ...gorequest.Params) *CgiBinComponentSetPrivacySettingResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/component/setprivacysetting?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/component/setprivacysetting?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response CgiBinComponentSetPrivacySettingResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

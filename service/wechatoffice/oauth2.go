@@ -1,13 +1,14 @@
 package wechatoffice
 
 import (
+	"context"
 	"fmt"
 	"net/url"
 )
 
 // Oauth2 用户同意授权，获取code
 // https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html#0
-func (c *Client) Oauth2(redirectUri, state string) string {
+func (c *Client) Oauth2(ctx context.Context, redirectUri, state string) string {
 	param := url.Values{}
 	param.Add("appid", c.GetAppId())       // 公众号的唯一标识
 	param.Add("redirect_uri", redirectUri) // 授权后重定向的回调链接地址， 请使用 urlEncode 对链接进行处理

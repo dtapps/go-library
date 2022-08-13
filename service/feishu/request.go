@@ -1,8 +1,12 @@
 package feishu
 
-import "github.com/dtapps/go-library/utils/gorequest"
+import (
+	"context"
+	"github.com/dtapps/go-library"
+	"github.com/dtapps/go-library/utils/gorequest"
+)
 
-func (c *Client) request(url string, params map[string]interface{}) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, params map[string]interface{}) (gorequest.Response, error) {
 
 	// 创建请求
 	client := c.client
@@ -17,17 +21,17 @@ func (c *Client) request(url string, params map[string]interface{}) (gorequest.R
 	client.SetParams(params)
 
 	// 发起请求
-	request, err := client.Post()
+	request, err := client.Post(ctx)
 	if err != nil {
 		return gorequest.Response{}, err
 	}
 
 	// 日志
 	if c.config.PgsqlDb != nil {
-		go c.log.GormMiddleware(request)
+		go c.log.GormMiddleware(ctx, request, go_library.Version())
 	}
 	if c.config.MongoDb != nil {
-		go c.log.MongoMiddleware(request)
+		go c.log.MongoMiddleware(ctx, request, go_library.Version())
 	}
 
 	return request, err

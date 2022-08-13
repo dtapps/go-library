@@ -12,26 +12,25 @@ type RedisCacheConfig struct {
 
 // RedisCache https://github.com/go-redis/redis
 type RedisCache struct {
-	RedisCacheConfig
-	db              *Redis           // 驱动
+	config          *RedisCacheConfig
+	operation       *Redis           // 操作
 	GetterString    GttStringFunc    // 不存在的操作
 	GetterInterface GttInterfaceFunc // 不存在的操作
 }
 
 // NewCache 实例化
 func (r *Redis) NewCache(config *RedisCacheConfig) *RedisCache {
-	app := &RedisCache{}
-	app.expiration = config.expiration
-	app.db = r
-	return app
+	c := &RedisCache{config: config}
+	c.operation = r
+	return c
 }
 
 // NewCacheDefaultExpiration 实例化
 func (r *Redis) NewCacheDefaultExpiration() *RedisCache {
-	app := &RedisCache{}
-	app.expiration = r.DefaultExpiration
-	app.db = r
-	return app
+	c := &RedisCache{}
+	c.config.expiration = r.config.DefaultExpiration
+	c.operation = r
+	return c
 }
 
 // GetString 缓存操作
@@ -42,10 +41,10 @@ func (rc *RedisCache) GetString(key string) (ret string) {
 	}
 
 	// 如果不存在，则调用GetterString
-	ret, err := rc.db.Get(key)
+	ret, err := rc.operation.Get(key)
 	if err != nil {
-		rc.db.Set(key, f(), rc.expiration)
-		ret, _ = rc.db.Get(key)
+		rc.operation.Set(key, f(), rc.config.expiration)
+		ret, _ = rc.operation.Get(key)
 	}
 
 	return
@@ -60,11 +59,11 @@ func (rc *RedisCache) GetInterface(key string, result interface{}) {
 	}
 
 	// 如果不存在，则调用GetterInterface
-	ret, err := rc.db.Get(key)
+	ret, err := rc.operation.Get(key)
 
 	if err != nil {
-		rc.db.Set(key, f(), rc.expiration)
-		ret, _ = rc.db.Get(key)
+		rc.operation.Set(key, f(), rc.config.expiration)
+		ret, _ = rc.operation.Get(key)
 	}
 
 	err = json.Unmarshal([]byte(ret), result)

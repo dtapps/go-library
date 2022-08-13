@@ -1,6 +1,7 @@
 package jd
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -36,11 +37,11 @@ func newUnionOpenPromotionBySubUnionIdGetResult(responce UnionOpenPromotionBySub
 
 // UnionOpenPromotionBySubUnionIdGet 社交媒体获取推广链接接口【申请】
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.promotion.bysubunionid.get
-func (c *Client) UnionOpenPromotionBySubUnionIdGet(notMustParams ...Params) *UnionOpenPromotionBySubUnionIdGetResult {
+func (c *Client) UnionOpenPromotionBySubUnionIdGet(ctx context.Context, notMustParams ...Params) *UnionOpenPromotionBySubUnionIdGetResult {
 	// 参数
 	params := NewParamsWithType("jd.union.open.promotion.bysubunionid.get", notMustParams...)
 	// 请求
-	request, err := c.request(params)
+	request, err := c.request(ctx, params)
 	// 定义
 	var responce UnionOpenPromotionBySubUnionIdGetResultResponse
 	var result UnionOpenPromotionBySubUnionIdGetGetResult

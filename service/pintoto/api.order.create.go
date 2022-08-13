@@ -1,6 +1,7 @@
 package pintoto
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -23,11 +24,11 @@ func newApiOrderCreateResult(result ApiOrderCreateResponse, body []byte, http go
 }
 
 // ApiOrderCreate 下单api https://www.showdoc.com.cn/1154868044931571/5891022916496848
-func (c *Client) ApiOrderCreate(notMustParams ...gorequest.Params) *ApiOrderCreateResult {
+func (c *Client) ApiOrderCreate(ctx context.Context, notMustParams ...gorequest.Params) *ApiOrderCreateResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(apiUrl+"/api/order/create", params)
+	request, err := c.request(ctx, apiUrl+"/api/order/create", params)
 	// 定义
 	var response ApiOrderCreateResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

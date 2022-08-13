@@ -1,6 +1,7 @@
 package kashangwl
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -32,12 +33,12 @@ func newApiProductRechargeParamsResult(result ApiProductRechargeParamsResponse, 
 // ApiProductRechargeParams 接口说明
 // 获取商品的充值参数（仅支持充值类商品）
 // http://doc.cqmeihu.cn/sales/ProductParams.html
-func (c *Client) ApiProductRechargeParams(productId int64) *ApiProductRechargeParamsResult {
+func (c *Client) ApiProductRechargeParams(ctx context.Context, productId int64) *ApiProductRechargeParamsResult {
 	// 参数
 	params := gorequest.NewParams()
 	params.Set("product_id", productId)
 	// 请求
-	request, err := c.request(apiUrl+"/api/product/recharge-params", params)
+	request, err := c.request(ctx, apiUrl+"/api/product/recharge-params", params)
 	// 定义
 	var response ApiProductRechargeParamsResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

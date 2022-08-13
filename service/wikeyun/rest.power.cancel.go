@@ -1,6 +1,7 @@
 package wikeyun
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -24,13 +25,13 @@ func newRestPowerCancelResult(result RestPowerCancelResponse, body []byte, http 
 
 // RestPowerCancel 电费订单取消
 // https://open.wikeyun.cn/#/apiDocument/9/document/323
-func (c *Client) RestPowerCancel(orderNumber string) *RestPowerCancelResult {
+func (c *Client) RestPowerCancel(ctx context.Context, orderNumber string) *RestPowerCancelResult {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("order_number", orderNumber) // 取消的单号，多个用英文逗号隔开
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(apiUrl+"/rest/Power/cancel", params)
+	request, err := c.request(ctx, apiUrl+"/rest/Power/cancel", params)
 	// 定义
 	var response RestPowerCancelResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

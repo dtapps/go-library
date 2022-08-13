@@ -1,6 +1,7 @@
 package ejiaofei
 
 import (
+	"context"
 	"encoding/xml"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -28,7 +29,7 @@ func newCheckCostResult(result CheckCostResponse, body []byte, http gorequest.Re
 }
 
 // CheckCost 会员订单成本价查询接口
-func (c *Client) CheckCost(orderId string) *CheckCostResult {
+func (c *Client) CheckCost(ctx context.Context, orderId string) *CheckCostResult {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("orderid", orderId)
@@ -36,7 +37,7 @@ func (c *Client) CheckCost(orderId string) *CheckCostResult {
 	// 签名
 	c.signStr = fmt.Sprintf("userid%vpwd%vorderid%v", c.getUserId(), c.getPwd(), orderId)
 	// 请求
-	request, err := c.request(apiUrl+"/checkCost.do", params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/checkCost.do", params, http.MethodGet)
 	// 定义
 	var response CheckCostResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)

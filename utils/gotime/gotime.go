@@ -36,42 +36,42 @@ func NewPro() Pro {
 }
 
 // BeforeSeconds 获取n秒前的时间
-func (p Pro) BeforeSeconds(seconds int) Pro {
+func (p Pro) BeforeSeconds(seconds int64) Pro {
 	st, _ := time.ParseDuration(fmt.Sprintf("-%ds", seconds))
 	p.Time = p.Time.Add(st)
 	return p
 }
 
 // AfterSeconds 获取n秒后的时间
-func (p Pro) AfterSeconds(seconds int) Pro {
+func (p Pro) AfterSeconds(seconds int64) Pro {
 	st, _ := time.ParseDuration(fmt.Sprintf("+%ds", seconds))
 	p.Time = p.Time.Add(st)
 	return p
 }
 
 // BeforeMinute 获取n分钟前的时间
-func (p Pro) BeforeMinute(seconds int) Pro {
+func (p Pro) BeforeMinute(seconds int64) Pro {
 	st, _ := time.ParseDuration(fmt.Sprintf("-%dm", seconds))
 	p.Time = p.Time.Add(st)
 	return p
 }
 
 // AfterMinute 获取n分钟后的时间
-func (p Pro) AfterMinute(seconds int) Pro {
+func (p Pro) AfterMinute(seconds int64) Pro {
 	st, _ := time.ParseDuration(fmt.Sprintf("+%dm", seconds))
 	p.Time = p.Time.Add(st)
 	return p
 }
 
 // BeforeHour 获取n小时前的时间
-func (p Pro) BeforeHour(hour int) Pro {
+func (p Pro) BeforeHour(hour int64) Pro {
 	st, _ := time.ParseDuration(fmt.Sprintf("-%dh", hour))
 	p.Time = p.Time.Add(st)
 	return p
 }
 
 // AfterHour 获取n小时后的时间
-func (p Pro) AfterHour(hour int) Pro {
+func (p Pro) AfterHour(hour int64) Pro {
 	st, _ := time.ParseDuration(fmt.Sprintf("+%dh", hour))
 	p.Time = p.Time.Add(st)
 	return p
@@ -95,11 +95,11 @@ func (p Pro) SetFormat(layout string) string {
 }
 
 // Month 获取当前月
-func (p Pro) Month() int {
+func (p Pro) Month() int64 {
 	return p.MonthOfYear()
 }
 
 // MonthOfYear 获取本年的第几月
-func (p Pro) MonthOfYear() int {
-	return int(p.Time.In(p.loc).Month())
+func (p Pro) MonthOfYear() int64 {
+	return int64(p.Time.In(p.loc).Month())
 }

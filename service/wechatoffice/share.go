@@ -1,6 +1,7 @@
 package wechatoffice
 
 import (
+	"context"
 	"crypto/sha1"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorandom"
@@ -26,9 +27,9 @@ func newShareResult(result ShareResponse, err error) *ShareResult {
 	return &ShareResult{Result: result, Err: err}
 }
 
-func (c *Client) Share(url string) *ShareResult {
-	c.getAccessToken()
-	c.config.JsapiTicket = c.GetJsapiTicket()
+func (c *Client) Share(ctx context.Context, url string) *ShareResult {
+	c.getAccessToken(ctx)
+	c.config.JsapiTicket = c.GetJsapiTicket(ctx)
 	var response ShareResponse
 	response.AppId = c.GetAppId()
 	response.NonceStr = gorandom.Alphanumeric(32)

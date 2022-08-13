@@ -1,6 +1,7 @@
 package pintoto
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -45,13 +46,13 @@ func newApiOrderQueryResult(result ApiOrderQueryResponse, body []byte, http gore
 }
 
 // ApiOrderQuery 订单查询 https://www.showdoc.com.cn/1154868044931571/5965244588489845
-func (c *Client) ApiOrderQuery(thirdOrderId string) *ApiOrderQueryResult {
+func (c *Client) ApiOrderQuery(ctx context.Context, thirdOrderId string) *ApiOrderQueryResult {
 	// 测试
 	param := gorequest.NewParams()
 	param.Set("thirdOrderId", thirdOrderId)
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(apiUrl+"/api/order/query", params)
+	request, err := c.request(ctx, apiUrl+"/api/order/query", params)
 	// 定义
 	var response ApiOrderQueryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -1,6 +1,7 @@
 package wikeyun
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -44,13 +45,13 @@ func newRestRechargeMobileInfoResult(result RestRechargeMobileInfoResponse, body
 
 // RestRechargeMobileInfo 查询手机归属地信息以及是否携号转网
 // https://open.wikeyun.cn/#/apiDocument/9/document/374
-func (c *Client) RestRechargeMobileInfo(orderNumber string) *RestRechargeMobileInfoResult {
+func (c *Client) RestRechargeMobileInfo(ctx context.Context, orderNumber string) *RestRechargeMobileInfoResult {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("order_number", orderNumber) // 平台单号
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(apiUrl+"/rest/Recharge/mobileInfo", params)
+	request, err := c.request(ctx, apiUrl+"/rest/Recharge/mobileInfo", params)
 	// 定义
 	var response RestRechargeMobileInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -1,6 +1,7 @@
 package meituan
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -25,7 +26,7 @@ func newApiMiniCodeResult(result ApiMiniCodeResponse, body []byte, http goreques
 
 // ApiMiniCode 小程序生成二维码（新版）
 // https://union.meituan.com/v2/apiDetail?id=26
-func (c *Client) ApiMiniCode(actId int64, sid string) *ApiMiniCodeResult {
+func (c *Client) ApiMiniCode(ctx context.Context, actId int64, sid string) *ApiMiniCodeResult {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("appkey", c.config.AppKey)
@@ -35,7 +36,7 @@ func (c *Client) ApiMiniCode(actId int64, sid string) *ApiMiniCodeResult {
 	params := gorequest.NewParamsWith(param)
 	params["sign"] = c.getSign(c.config.Secret, params)
 	// 请求
-	request, err := c.request(apiUrl+"/api/miniCode", params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/api/miniCode", params, http.MethodGet)
 	// 定义
 	var response ApiMiniCodeResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

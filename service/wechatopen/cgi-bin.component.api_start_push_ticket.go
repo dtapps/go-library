@@ -1,6 +1,7 @@
 package wechatopen
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -26,14 +27,14 @@ func newCgiBinComponentApiStartPushTicketResult(result CgiBinComponentApiStartPu
 
 // CgiBinComponentApiStartPushTicket 启动ticket推送服务
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/component_verify_ticket_service.html
-func (c *Client) CgiBinComponentApiStartPushTicket() *CgiBinComponentApiStartPushTicketResult {
+func (c *Client) CgiBinComponentApiStartPushTicket(ctx context.Context) *CgiBinComponentApiStartPushTicketResult {
 	// 参数
 	param := gorequest.NewParams()
 	param["component_appid"] = c.config.ComponentAppId      // 平台型第三方平台的appid
 	param["component_secret"] = c.config.ComponentAppSecret // 平台型第三方平台的APPSECRET
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(apiUrl+"/cgi-bin/component/api_start_push_ticket", params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/api_start_push_ticket", params, http.MethodPost)
 	// 定义
 	var response CgiBinComponentApiStartPushTicketResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

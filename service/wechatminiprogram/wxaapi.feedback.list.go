@@ -1,6 +1,7 @@
 package wechatminiprogram
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -36,12 +37,12 @@ func newWxaApiFeedbackListResult(result WxaApiFeedbackListResponse, body []byte,
 
 // WxaApiFeedbackList 获取用户反馈列表
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/operation/operation.getFeedback.html
-func (c *Client) WxaApiFeedbackList(notMustParams ...gorequest.Params) *WxaApiFeedbackListResult {
+func (c *Client) WxaApiFeedbackList(ctx context.Context, notMustParams ...gorequest.Params) *WxaApiFeedbackListResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("access_token", c.getAccessToken())
+	params.Set("access_token", c.getAccessToken(ctx))
 	// 请求
-	request, err := c.request(apiUrl+"/wxaapi/feedback/list", params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/wxaapi/feedback/list", params, http.MethodGet)
 	// 定义
 	var response WxaApiFeedbackListResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

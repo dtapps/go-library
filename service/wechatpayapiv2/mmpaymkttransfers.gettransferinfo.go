@@ -1,6 +1,7 @@
 package wechatpayapiv2
 
 import (
+	"context"
 	"encoding/xml"
 	"github.com/dtapps/go-library/utils/gorandom"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -40,7 +41,7 @@ func newTransfersQueryResult(result TransfersQueryResponse, body []byte, http go
 // TransfersQuery
 // 付款到零钱 - 查询付款
 // https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_3
-func (c *Client) TransfersQuery(partnerTradeNo string) *TransfersQueryResult {
+func (c *Client) TransfersQuery(ctx context.Context, partnerTradeNo string) *TransfersQueryResult {
 	cert, err := c.P12ToPem()
 	// 参数
 	params := NewParams()
@@ -51,7 +52,7 @@ func (c *Client) TransfersQuery(partnerTradeNo string) *TransfersQueryResult {
 	// 签名
 	params.Set("sign", c.getMd5Sign(params))
 	// 	请求
-	request, err := c.request(apiUrl+"/mmpaymkttransfers/gettransferinfo", params, cert)
+	request, err := c.request(ctx, apiUrl+"/mmpaymkttransfers/gettransferinfo", params, cert)
 	// 定义
 	var response TransfersQueryResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)

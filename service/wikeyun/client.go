@@ -1,6 +1,7 @@
 package wikeyun
 
 import (
+	"context"
 	"github.com/dtapps/go-library/utils/dorm"
 	"github.com/dtapps/go-library/utils/goip"
 	"github.com/dtapps/go-library/utils/golog"
@@ -51,7 +52,7 @@ func NewClient(config *ConfigClient) (*Client, error) {
 		}
 	}
 
-	xip := goip.GetOutsideIp()
+	xip := goip.GetOutsideIp(context.Background())
 	if xip != "" && xip != "0.0.0.0" {
 		c.clientIp = xip
 	}

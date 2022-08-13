@@ -1,6 +1,7 @@
 package wechatopen
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -25,13 +26,13 @@ func newCgiBinComponentApiCreatePreAuthCodenResult(result CgiBinComponentApiCrea
 
 // CgiBinComponentApiCreatePreAuthCoden 预授权码
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/pre_auth_code.html
-func (c *Client) CgiBinComponentApiCreatePreAuthCoden() *CgiBinComponentApiCreatePreAuthCodenResult {
+func (c *Client) CgiBinComponentApiCreatePreAuthCoden(ctx context.Context) *CgiBinComponentApiCreatePreAuthCodenResult {
 	// 参数
 	param := gorequest.NewParams()
 	param["component_appid"] = c.config.ComponentAppId // 第三方平台 appid
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/component/api_create_preauthcode?component_access_token=%v", c.GetComponentAccessToken()), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/component/api_create_preauthcode?component_access_token=%v", c.GetComponentAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response CgiBinComponentApiCreatePreAuthCodenResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

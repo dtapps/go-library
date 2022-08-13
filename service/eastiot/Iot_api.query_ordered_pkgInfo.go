@@ -1,6 +1,7 @@
 package eastiot
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -34,13 +35,13 @@ func newIotApiQueryOrderedPkgInfoResult(result IotApiQueryOrderedPkgInfoResponse
 
 // IotApiQueryOrderedPkgInfo 查询流量卡已订购流量包
 // https://www.showdoc.com.cn/916774523755909/5092045889939625
-func (c *Client) IotApiQueryOrderedPkgInfo(simId string) *IotApiQueryOrderedPkgInfoResult {
+func (c *Client) IotApiQueryOrderedPkgInfo(ctx context.Context, simId string) *IotApiQueryOrderedPkgInfoResult {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("simId", simId)
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(apiUrl+"/Api/IotApi/queryOrderedPkgInfo", params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/Api/IotApi/queryOrderedPkgInfo", params, http.MethodPost)
 	// 定义
 	var response IotApiQueryOrderedPkgInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -1,6 +1,7 @@
 package wechatpayapiv3
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -63,9 +64,9 @@ func newPayTransactionsIdResult(result PayTransactionsIdResponse, body []byte, h
 }
 
 // PayTransactionsId 微信支付订单号查询 https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_2.shtml
-func (c *Client) PayTransactionsId(transactionId string) *PayTransactionsIdResult {
+func (c *Client) PayTransactionsId(ctx context.Context, transactionId string) *PayTransactionsIdResult {
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/v3/pay/transactions/id/%s?mchid=%s", transactionId, c.GetMchId()), map[string]interface{}{}, http.MethodGet, true)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/pay/transactions/id/%s?mchid=%s", transactionId, c.GetMchId()), map[string]interface{}{}, http.MethodGet, true)
 	if err != nil {
 		return newPayTransactionsIdResult(PayTransactionsIdResponse{}, request.ResponseBody, request, err)
 	}

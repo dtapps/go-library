@@ -1,6 +1,7 @@
 package golog
 
 import (
+	"context"
 	"errors"
 	"github.com/dtapps/go-library/utils/dorm"
 	"github.com/dtapps/go-library/utils/goip"
@@ -87,7 +88,7 @@ func NewApiClient(attrs ...*OperationAttr) (*ApiClient, error) {
 	hostname, _ := os.Hostname()
 
 	c.config.hostname = hostname
-	c.config.insideIp = goip.GetInsideIp()
+	c.config.insideIp = goip.GetInsideIp(context.Background())
 	c.config.goVersion = runtime.Version()
 
 	return c, nil

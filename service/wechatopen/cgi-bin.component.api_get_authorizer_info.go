@@ -1,6 +1,7 @@
 package wechatopen
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -83,14 +84,14 @@ func newCgiBinComponentApiGetAuthorizerInfoResult(result CgiBinComponentApiGetAu
 
 // CgiBinComponentApiGetAuthorizerInfo 获取授权帐号详情
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/api_get_authorizer_info.html
-func (c *Client) CgiBinComponentApiGetAuthorizerInfo() *CgiBinComponentApiGetAuthorizerInfoResult {
+func (c *Client) CgiBinComponentApiGetAuthorizerInfo(ctx context.Context) *CgiBinComponentApiGetAuthorizerInfoResult {
 	// 参数
 	param := gorequest.NewParams()
 	param["component_appid"] = c.config.ComponentAppId   // 第三方平台 appid
 	param["authorizer_appid"] = c.config.AuthorizerAppid // 授权方 appid
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/component/api_get_authorizer_info?component_access_token=%v", c.GetComponentAccessToken()), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/component/api_get_authorizer_info?component_access_token=%v", c.GetComponentAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response CgiBinComponentApiGetAuthorizerInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

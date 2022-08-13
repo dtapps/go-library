@@ -1,6 +1,7 @@
 package pinduoduo
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -30,11 +31,11 @@ func newGoodsPidGenerateResult(result GoodsPidGenerateResponse, body []byte, htt
 
 // GoodsPidGenerate 创建多多进宝推广位
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.pid.generate
-func (c *Client) GoodsPidGenerate(notMustParams ...Params) *GoodsPidGenerateResult {
+func (c *Client) GoodsPidGenerate(ctx context.Context, notMustParams ...Params) *GoodsPidGenerateResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.pid.generate", notMustParams...)
 	// 请求
-	request, err := c.request(params)
+	request, err := c.request(ctx, params)
 	// 定义
 	var response GoodsPidGenerateResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

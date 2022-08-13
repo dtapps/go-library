@@ -1,6 +1,7 @@
 package pintoto
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -42,14 +43,14 @@ func newGetSoonListResult(result GetSoonListResponse, body []byte, http goreques
 }
 
 // GetSoonList 即将上映 https://www.showdoc.com.cn/1154868044931571/5866125707634369
-func (c *Client) GetSoonList(cityId int) *GetSoonListResult {
+func (c *Client) GetSoonList(ctx context.Context, cityId int) *GetSoonListResult {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("cityId", cityId)
 	// 转换
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(apiUrl+"/movieapi/movie-info/get-soon-list", params)
+	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-soon-list", params)
 	// 定义
 	var response GetSoonListResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -1,6 +1,7 @@
 package pintoto
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -48,7 +49,7 @@ func newGetShowListResult(result GetShowListResponse, body []byte, http goreques
 }
 
 // GetShowList 包含某电影的影院 https://www.showdoc.com.cn/1154868044931571/6067372188376779
-func (c *Client) GetShowList(param GetShowList) *GetShowListResult {
+func (c *Client) GetShowList(ctx context.Context, param GetShowList) *GetShowListResult {
 	// api params
 	params := map[string]interface{}{}
 	b, _ := json.Marshal(&param)
@@ -57,7 +58,7 @@ func (c *Client) GetShowList(param GetShowList) *GetShowListResult {
 	for k, v := range m {
 		params[k] = v
 	}
-	request, err := c.request(apiUrl+"/movieapi/movie-info/get-show-list", params)
+	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-show-list", params)
 	// 定义
 	var response GetShowListResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

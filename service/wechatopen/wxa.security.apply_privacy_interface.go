@@ -1,6 +1,7 @@
 package wechatopen
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -26,11 +27,11 @@ func newWxaSecurityApplyPrivacyInterfaceResult(result WxaSecurityApplyPrivacyInt
 
 // WxaSecurityApplyPrivacyInterface 申请接口
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/apply_api/apply_privacy_interface.html
-func (c *Client) WxaSecurityApplyPrivacyInterface(notMustParams ...gorequest.Params) *WxaSecurityApplyPrivacyInterfaceResult {
+func (c *Client) WxaSecurityApplyPrivacyInterface(ctx context.Context, notMustParams ...gorequest.Params) *WxaSecurityApplyPrivacyInterfaceResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/security/apply_privacy_interface?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/security/apply_privacy_interface?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response WxaSecurityApplyPrivacyInterfaceResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

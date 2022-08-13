@@ -1,6 +1,7 @@
 package kashangwl
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -17,7 +18,7 @@ type ApiProductResponse struct {
 		SuperiorCommissionsRate int     `json:"superior_commissions_rate"` // 上级佣金比例
 		Type                    int     `json:"type"`                      // 商品类型（1：充值，2：卡密，3：卡券，4：人工）
 		SupplyState             int     `json:"supply_state"`              // 库存状态（1：充足，2：断货）
-		StockState              int     `json:"stock_state"`               // 	状态（1：上架，2：维护，3：下架）
+		StockState              int     `json:"stock_state"`               // 状态（1：上架，2：维护，3：下架）
 		BanStartAt              string  `json:"ban_start_at"`              // 禁售开始时间
 		BanEndAt                string  `json:"ban_end_at"`                // 禁售结束时间
 	} `json:"data"`
@@ -36,12 +37,12 @@ func newApiProductResult(result ApiProductResponse, body []byte, http gorequest.
 
 // ApiProduct 获取单个商品信息
 // http://doc.cqmeihu.cn/sales/product-info.html
-func (c *Client) ApiProduct(productId int64) *ApiProductResult {
+func (c *Client) ApiProduct(ctx context.Context, productId int64) *ApiProductResult {
 	// 参数
 	params := gorequest.NewParams()
 	params.Set("product_id", productId)
 	// 请求
-	request, err := c.request(apiUrl+"/api/product", params)
+	request, err := c.request(ctx, apiUrl+"/api/product", params)
 	// 定义
 	var response ApiProductResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

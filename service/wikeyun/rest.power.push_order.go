@@ -1,6 +1,7 @@
 package wikeyun
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -27,12 +28,12 @@ func newRestPowerPushOrderResult(result RestPowerPushOrderResponse, body []byte,
 
 // RestPowerPushOrder 电费充值API
 // https://open.wikeyun.cn/#/apiDocument/9/document/311
-func (c *Client) RestPowerPushOrder(notMustParams ...gorequest.Params) *RestPowerPushOrderResult {
+func (c *Client) RestPowerPushOrder(ctx context.Context, notMustParams ...gorequest.Params) *RestPowerPushOrderResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("store_id", c.config.StoreId) // 店铺ID
 	// 请求
-	request, err := c.request(apiUrl+"/rest/Power/pushOrder", params)
+	request, err := c.request(ctx, apiUrl+"/rest/Power/pushOrder", params)
 	// 定义
 	var response RestPowerPushOrderResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

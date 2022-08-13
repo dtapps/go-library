@@ -1,6 +1,7 @@
 package jd
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -38,11 +39,11 @@ func newUnionOpenCategoryGoodsGetResult(responce UnionOpenCategoryGoodsGetResult
 
 // UnionOpenCategoryGoodsGet 商品类目查询接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.category.goods.get
-func (c *Client) UnionOpenCategoryGoodsGet(notMustParams ...Params) *UnionOpenCategoryGoodsGetResult {
+func (c *Client) UnionOpenCategoryGoodsGet(ctx context.Context, notMustParams ...Params) *UnionOpenCategoryGoodsGetResult {
 	// 参数
 	params := NewParamsWithType("jd.union.open.category.goods.get", notMustParams...)
 	// 请求
-	request, err := c.request(params)
+	request, err := c.request(ctx, params)
 	// 定义
 	var responce UnionOpenCategoryGoodsGetResultResponse
 	var result UnionOpenCategoryGoodsGetQueryResult

@@ -1,6 +1,7 @@
 package wechatoffice
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -27,9 +28,9 @@ func newCgiBinTicketGetTicketResult(result CgiBinTicketGetTicketResponse, body [
 
 // CgiBinTicketGetTicket 获取api_ticket
 // https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html
-func (c *Client) CgiBinTicketGetTicket(Type string) *CgiBinTicketGetTicketResult {
+func (c *Client) CgiBinTicketGetTicket(ctx context.Context, Type string) *CgiBinTicketGetTicketResult {
 	// request
-	request, err := c.request(fmt.Sprintf(apiUrl+"/cgi-bin/ticket/getticket?access_token=%s&type=%s", c.getAccessToken(), Type), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/ticket/getticket?access_token=%s&type=%s", c.getAccessToken(ctx), Type), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response CgiBinTicketGetTicketResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

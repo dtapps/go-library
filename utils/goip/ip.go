@@ -1,13 +1,14 @@
 package goip
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net"
 )
 
 // GetInsideIp 内网ip
-func GetInsideIp() string {
+func GetInsideIp(ctx context.Context) string {
 	conn, err := net.Dial("udp", "8.8.8.8:80")
 	if err != nil {
 		panic(err)
@@ -19,7 +20,7 @@ func GetInsideIp() string {
 }
 
 // Ips 获取全部网卡的全部IP
-func Ips() (map[string]string, error) {
+func Ips(ctx context.Context) (map[string]string, error) {
 
 	ips := make(map[string]string)
 
@@ -53,11 +54,11 @@ var respGetOutsideIp struct {
 }
 
 // GetOutsideIp 外网ip
-func GetOutsideIp() (ip string) {
+func GetOutsideIp(ctx context.Context) (ip string) {
 	ip = "0.0.0.0"
 	get := gorequest.NewHttp()
 	get.SetUri("https://api.dtapp.net/ip")
-	response, err := get.Get()
+	response, err := get.Get(ctx)
 	if err != nil {
 		return
 	}
@@ -73,7 +74,7 @@ func GetOutsideIp() (ip string) {
 }
 
 // GetMacAddr 获取Mac地址
-func GetMacAddr() (arrays []string) {
+func GetMacAddr(ctx context.Context) (arrays []string) {
 	netInterfaces, err := net.Interfaces()
 	if err != nil {
 		return arrays

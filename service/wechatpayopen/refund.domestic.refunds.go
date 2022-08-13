@@ -1,6 +1,7 @@
 package wechatpayopen
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -62,12 +63,12 @@ func newRefundDomesticRefundsResult(result RefundDomesticRefundsResponse, body [
 
 // RefundDomesticRefunds 申请退款API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_9.shtml
-func (c *Client) RefundDomesticRefunds(notMustParams ...gorequest.Params) *RefundDomesticRefundsResult {
+func (c *Client) RefundDomesticRefunds(ctx context.Context, notMustParams ...gorequest.Params) *RefundDomesticRefundsResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sub_mchid", c.config.SubMchId) // 子商户号
 	// 请求
-	request, err := c.request(apiUrl+"/v3/refund/domestic/refunds", params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/v3/refund/domestic/refunds", params, http.MethodPost)
 	if err != nil {
 		return newRefundDomesticRefundsResult(RefundDomesticRefundsResponse{}, request.ResponseBody, request, err)
 	}

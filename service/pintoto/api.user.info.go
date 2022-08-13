@@ -1,6 +1,7 @@
 package pintoto
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -29,8 +30,8 @@ func newApiUserInfoResult(result ApiUserInfoResponse, body []byte, http goreques
 }
 
 // ApiUserInfo 账号信息查询 https://www.showdoc.com.cn/1154868044931571/6269224958928211
-func (c *Client) ApiUserInfo() *ApiUserInfoResult {
-	request, err := c.request(apiUrl+"/api/user/info", map[string]interface{}{})
+func (c *Client) ApiUserInfo(ctx context.Context) *ApiUserInfoResult {
+	request, err := c.request(ctx, apiUrl+"/api/user/info", map[string]interface{}{})
 	// 定义
 	var response ApiUserInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -1,6 +1,7 @@
 package wechatqy
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -29,11 +30,11 @@ func newCgiBinUserGetUserInfoResult(result CgiBinUserGetUserInfoResponse, body [
 
 // CgiBinUserGetUserInfo 获取访问用户身份
 // https://open.work.weixin.qq.com/api/doc/90000/90135/91023
-func (c *Client) CgiBinUserGetUserInfo(code, accessToken string) *CgiBinUserGetUserInfoResult {
+func (c *Client) CgiBinUserGetUserInfo(ctx context.Context, code, accessToken string) *CgiBinUserGetUserInfoResult {
 	// 参数
 	params := gorequest.NewParamsWith()
 	// 请求
-	request, err := c.request(apiUrl+fmt.Sprintf("/cgi-bin/user/getuserinfo?access_token=%s&code=%s", accessToken, code), params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/cgi-bin/user/getuserinfo?access_token=%s&code=%s", accessToken, code), params, http.MethodGet)
 	// 定义
 	var response CgiBinUserGetUserInfoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -1,6 +1,7 @@
 package wikeyun
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -25,13 +26,13 @@ func newRestPowerDelCardResult(result RestPowerDelCardResponse, body []byte, htt
 
 // RestPowerDelCard 删除电费充值卡
 // https://open.wikeyun.cn/#/apiDocument/9/document/330
-func (c *Client) RestPowerDelCard(cardId string) *RestPowerDelCardResult {
+func (c *Client) RestPowerDelCard(ctx context.Context, cardId string) *RestPowerDelCardResult {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("card_id", cardId)
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(apiUrl+"/rest/Power/delCard", params)
+	request, err := c.request(ctx, apiUrl+"/rest/Power/delCard", params)
 	// 定义
 	var response RestPowerDelCardResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -1,6 +1,7 @@
 package wechatopen
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -29,12 +30,12 @@ func newWxaGetAuditStatusResult(result WxaGetAuditStatusResponse, body []byte, h
 
 // WxaGetAuditStatus 查询指定发布审核单的审核状态
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_auditstatus.html
-func (c *Client) WxaGetAuditStatus(auditid int64) *WxaGetAuditStatusResult {
+func (c *Client) WxaGetAuditStatus(ctx context.Context, auditid int64) *WxaGetAuditStatusResult {
 	// 参数
 	params := gorequest.NewParams()
 	params.Set("auditid", auditid)
 	// 请求
-	request, err := c.request(fmt.Sprintf(apiUrl+"/wxa/get_auditstatus?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/get_auditstatus?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response WxaGetAuditStatusResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

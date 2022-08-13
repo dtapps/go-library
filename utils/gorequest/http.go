@@ -2,11 +2,14 @@ package gorequest
 
 import (
 	"bytes"
+	"context"
 	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gostring"
 	"github.com/dtapps/go-library/utils/gotime"
+	"github.com/dtapps/go-library/utils/gotrace_id"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -132,32 +135,32 @@ func (app *App) SetP12Cert(content *tls.Certificate) {
 }
 
 // Get 发起GET请求
-func (app *App) Get(uri ...string) (httpResponse Response, err error) {
+func (app *App) Get(ctx context.Context, uri ...string) (httpResponse Response, err error) {
 	if len(uri) == 1 {
 		app.Uri = uri[0]
 	}
 	// 设置请求方法
 	app.httpMethod = http.MethodGet
-	return request(app)
+	return request(app, ctx)
 }
 
 // Post 发起POST请求
-func (app *App) Post(uri ...string) (httpResponse Response, err error) {
+func (app *App) Post(ctx context.Context, uri ...string) (httpResponse Response, err error) {
 	if len(uri) == 1 {
 		app.Uri = uri[0]
 	}
 	// 设置请求方法
 	app.httpMethod = http.MethodPost
-	return request(app)
+	return request(app, ctx)
 }
 
 // Request 发起请求
-func (app *App) Request() (httpResponse Response, err error) {
-	return request(app)
+func (app *App) Request(ctx context.Context) (httpResponse Response, err error) {
+	return request(app, ctx)
 }
 
 // 请求接口
-func request(app *App) (httpResponse Response, err error) {
+func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 
 	// 赋值
 	httpResponse.RequestTime = gotime.Current().Time
@@ -190,7 +193,10 @@ func request(app *App) (httpResponse Response, err error) {
 		}
 	}
 
+	// SDK版本
 	httpResponse.RequestHeader.Set("Sdk-User-Agent", fmt.Sprintf(userAgentFormat, runtime.GOOS, runtime.Version()))
+
+	// 请求类型
 	switch app.httpContentType {
 	case httpParamsModeJson:
 		httpResponse.RequestHeader.Set("Content-Type", "application/json")
@@ -199,6 +205,13 @@ func request(app *App) (httpResponse Response, err error) {
 	case httpParamsModeXml:
 		httpResponse.RequestHeader.Set("Content-Type", "text/xml")
 	}
+
+	// 跟踪编号
+	traceId := gotrace_id.GetTraceIdContext(ctx)
+	if traceId == "" {
+		traceId = gostring.GetUuId()
+	}
+	httpResponse.RequestHeader.Set("X-Request-Id", traceId)
 
 	// 请求内容
 	var reqBody io.Reader

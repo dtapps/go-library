@@ -1,6 +1,7 @@
 package wechatunion
 
 import (
+	"context"
 	"errors"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -51,8 +52,8 @@ type OrderSearchResult struct {
 }
 
 // OrderSearch 根据订单支付时间、订单分佣状态拉取订单详情 https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/order/order-info.html
-func (c *Client) OrderSearch(notMustParams ...gorequest.Params) (result OrderSearchResult, err error) {
-	if len(c.getAccessToken()) <= 0 {
+func (c *Client) OrderSearch(ctx context.Context, notMustParams ...gorequest.Params) (result OrderSearchResult, err error) {
+	if len(c.getAccessToken(ctx)) <= 0 {
 		return result, errors.New("调用凭证异常")
 	}
 

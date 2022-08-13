@@ -1,6 +1,7 @@
 package pintoto
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -42,14 +43,14 @@ func newGetHotListResult(result GetHotListResponse, body []byte, http gorequest.
 }
 
 // GetHotList 正在热映 https://www.showdoc.com.cn/1154868044931571/5866125707634369
-func (c *Client) GetHotList(cityId int) *GetHotListResult {
+func (c *Client) GetHotList(ctx context.Context, cityId int) *GetHotListResult {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("cityId", cityId)
 	// 转换
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(apiUrl+"/movieapi/movie-info/get-hot-list", params)
+	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-hot-list", params)
 	// 定义
 	var response GetHotListResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

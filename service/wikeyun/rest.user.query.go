@@ -1,6 +1,7 @@
 package wikeyun
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -29,9 +30,9 @@ func newRestUserQueryResult(result RestUserQueryResponse, body []byte, http gore
 
 // RestUserQuery 用户信息
 // https://open.wikeyun.cn/#/apiDocument/10/document/336
-func (c *Client) RestUserQuery() *RestUserQueryResult {
+func (c *Client) RestUserQuery(ctx context.Context) *RestUserQueryResult {
 	// 请求
-	request, err := c.request(apiUrl+"/rest/User/query", map[string]interface{}{})
+	request, err := c.request(ctx, apiUrl+"/rest/User/query", map[string]interface{}{})
 	// 定义
 	var response RestUserQueryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

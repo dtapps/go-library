@@ -1,6 +1,7 @@
 package wikeyun
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -10,13 +11,14 @@ type RestPowerQueryResponse struct {
 	Msg  string `json:"msg"`
 	Time string `json:"time"`
 	Data struct {
-		OrderNumber   string `json:"order_number"`
-		OrderNo       string `json:"order_no"`
-		CardId        string `json:"card_id"`
-		Amount        int    `json:"amount"`
-		CostPrice     string `json:"cost_price"`
+		Id            uint   `json:"id"`
 		Fanli         string `json:"fanli"`
+		Amount        int64  `json:"amount"`
 		Status        int    `json:"status"`
+		CardId        string `json:"card_id"`
+		OrderNo       string `json:"order_no"`
+		CostPrice     string `json:"cost_price"`
+		OrderNumber   string `json:"order_number"`
 		ArrivedAmount int64  `json:"arrived_amount"`
 	} `json:"data"`
 }
@@ -34,13 +36,13 @@ func newRestPowerQueryResult(result RestPowerQueryResponse, body []byte, http go
 
 // RestPowerQuery 电费订单查询
 // https://open.wikeyun.cn/#/apiDocument/9/document/313
-func (c *Client) RestPowerQuery(orderNumber string) *RestPowerQueryResult {
+func (c *Client) RestPowerQuery(ctx context.Context, orderNumber string) *RestPowerQueryResult {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("order_number", orderNumber) // 平台单号
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(apiUrl+"/rest/Power/query", params)
+	request, err := c.request(ctx, apiUrl+"/rest/Power/query", params)
 	// 定义
 	var response RestPowerQueryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

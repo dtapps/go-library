@@ -15,7 +15,7 @@ type SimpleJsonCache struct {
 }
 
 // NewSimpleJsonCache 构造函数
-func (c *RedisClient) NewSimpleJsonCache(operation *StringOperation, expire time.Duration) *SimpleJsonCache {
+func (r *RedisClient) NewSimpleJsonCache(operation *StringOperation, expire time.Duration) *SimpleJsonCache {
 	return &SimpleJsonCache{
 		Operation: operation, // 操作类
 		Expire:    expire,    // 过期时间

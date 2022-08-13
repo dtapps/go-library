@@ -1,6 +1,7 @@
 package pinduoduo
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -29,13 +30,13 @@ func newGoodsCatsGetResult(result GoodsCatsGetResponse, body []byte, http gorequ
 
 // GoodsCatsGet 商品标准类目接口
 // https://open.pinduoduo.com/application/document/api?id=pdd.goods.cats.get
-func (c *Client) GoodsCatsGet(parentOptId int) *GoodsCatsGetResult {
+func (c *Client) GoodsCatsGet(ctx context.Context, parentOptId int) *GoodsCatsGetResult {
 	// 参数
 	param := NewParams()
 	param.Set("parent_cat_id", parentOptId)
 	params := NewParamsWithType("pdd.goods.cats.get", param)
 	// 请求
-	request, err := c.request(params)
+	request, err := c.request(ctx, params)
 	// 定义
 	var response GoodsCatsGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
