@@ -8,18 +8,26 @@ import (
 )
 
 // CustomTraceIdContext 自定义设置跟踪编号上下文
-func CustomTraceIdContext() context.Context {
-	return context.WithValue(context.Background(), "trace_id", gostring.GetUuId())
+func CustomTraceIdContext(ctx context.Context) context.Context {
+	return context.WithValue(ctx, "trace_id", gostring.GetUuId())
+}
+
+// SetCustomTraceId 自定义设置跟踪编号上下文
+func SetCustomTraceId(ctx context.Context, traceId string) context.Context {
+	return context.WithValue(ctx, "trace_id", traceId)
 }
 
 // SetGinTraceIdContext 设置跟踪编号上下文
-func SetGinTraceIdContext(c *gin.Context) context.Context {
-	return context.WithValue(context.Background(), "trace_id", GetGinTraceId(c))
+func SetGinTraceIdContext(ctx context.Context, c *gin.Context) context.Context {
+	return context.WithValue(ctx, "trace_id", GetGinTraceId(c))
 }
 
 // GetTraceIdContext 通过上下文获取跟踪编号
 func GetTraceIdContext(ctx context.Context) string {
-	traceId := fmt.Sprintf("%v", ctx.Value("trace_id"))
+	traceId := fmt.Sprintf("%s", ctx.Value("trace_id"))
+	if traceId == Nil {
+		return ""
+	}
 	if len(traceId) <= 0 {
 		return ""
 	}
