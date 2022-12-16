@@ -41,8 +41,8 @@ gotime.Current().TimestampWithMillisecond()
 
 `go-library` 基于 JetBrains 公司旗下的 GoLand 集成开发环境中进行开发。
 
-<a href="https://www.jetbrains.com/?from=kubeadm-ha" target="_blank">
-<img src="https://raw.githubusercontent.com/panjf2000/illustrations/master/jetbrains/jetbrains-variant-4.png" width="250" align="middle"/>
+<a href="https://www.jetbrains.com/?from=go-library" target="_blank">
+<img src="https://user-images.githubusercontent.com/16093106/208018478-27f4911e-9543-4799-a595-8fe4a91b182b.png" width="250" align="middle"/>
 </a>
 
 ## 🔑 License
