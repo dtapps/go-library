@@ -7,7 +7,7 @@ import (
 	"github.com/uptrace/bun/driver/pgdriver"
 )
 
-func NewBunPgsqlClient(config *ConfigBunClient) (*BunClient, error) {
+func NewBunPgsqlClient(config *BunClientConfig) (*BunClient, error) {
 
 	c := &BunClient{config: config}
 

@@ -7,7 +7,7 @@ import (
 	"xorm.io/xorm"
 )
 
-func NewXormMysqlClient(config *ConfigXormClient) (*XormClient, error) {
+func NewXormMysqlClient(config *XormClientConfigXorm) (*XormClient, error) {
 
 	var err error
 	c := &XormClient{config: config}

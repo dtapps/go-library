@@ -4,13 +4,13 @@ import (
 	"xorm.io/xorm"
 )
 
-type ConfigXormClient struct {
+type XormClientConfigXorm struct {
 	Dns string // 地址
 }
 
 // XormClient
 // https://xorm.io/
 type XormClient struct {
-	Db     *xorm.Engine      // 驱动
-	config *ConfigXormClient // 配置
+	Db     *xorm.Engine          // 驱动
+	config *XormClientConfigXorm // 配置
 }

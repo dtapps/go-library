@@ -1,6 +1,7 @@
 package dorm
 
 import (
+	"context"
 	"encoding/json"
 	"time"
 )
@@ -33,12 +34,12 @@ func (r *RedisClient) NewSimpleCache(operation *StringOperation, expire time.Dur
 }
 
 // SetCache 设置缓存
-func (c *SimpleCache) SetCache(key string, value interface{}) {
-	c.Operation.Set(key, value, WithExpire(c.Expire)).Unwrap()
+func (c *SimpleCache) SetCache(ctx context.Context, key string, value interface{}) {
+	c.Operation.Set(ctx, key, value, WithExpire(c.Expire)).Unwrap()
 }
 
 // GetCache 获取缓存
-func (c *SimpleCache) GetCache(key string) (ret interface{}) {
+func (c *SimpleCache) GetCache(ctx context.Context, key string) (ret interface{}) {
 	if c.Serializer == SerializerJson {
 		f := func() string {
 			obj := c.JsonGetter()
@@ -48,14 +49,14 @@ func (c *SimpleCache) GetCache(key string) (ret interface{}) {
 			}
 			return string(b)
 		}
-		ret = c.Operation.Get(key).UnwrapOrElse(f)
-		c.SetCache(key, ret)
+		ret = c.Operation.Get(ctx, key).UnwrapOrElse(f)
+		c.SetCache(ctx, key, ret)
 	} else if c.Serializer == SerializerString {
 		f := func() string {
 			return c.DBGetter()
 		}
-		ret = c.Operation.Get(key).UnwrapOrElse(f)
-		c.SetCache(key, ret)
+		ret = c.Operation.Get(ctx, key).UnwrapOrElse(f)
+		c.SetCache(ctx, key, ret)
 	}
 	return
 }

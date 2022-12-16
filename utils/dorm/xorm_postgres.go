@@ -7,7 +7,7 @@ import (
 	"xorm.io/xorm"
 )
 
-func NewXormPostgresClient(config *ConfigXormClient) (*XormClient, error) {
+func NewXormPostgresClient(config *XormClientConfigXorm) (*XormClient, error) {
 
 	var err error
 	c := &XormClient{config: config}

@@ -9,7 +9,7 @@ import (
 	"github.com/uptrace/bun/dialect/mysqldialect"
 )
 
-func NewBunMysqlClient(config *ConfigBunClient) (*BunClient, error) {
+func NewBunMysqlClient(config *BunClientConfig) (*BunClient, error) {
 
 	var err error
 	c := &BunClient{config: config}

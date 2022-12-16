@@ -62,8 +62,21 @@ func (r *RedisClient) Del(ctx context.Context, keys ...string) *redis.IntCmd {
 	return r.Db.Del(ctx, keys...)
 }
 
-// Keys 按前缀获取所有 key
-func (r *RedisClient) Keys(ctx context.Context, prefix string) *redis.SliceCmd {
+// Keys 按前缀获取所有key名
+func (r *RedisClient) Keys(ctx context.Context, prefix string) []string {
+	values, _ := r.Db.Keys(ctx, prefix).Result()
+	keys := make([]string, 0, len(values))
+	if len(values) <= 0 {
+		return keys
+	}
+	for _, value := range values {
+		keys = append(keys, value)
+	}
+	return keys
+}
+
+// KeysValue 按前缀获取所有key值
+func (r *RedisClient) KeysValue(ctx context.Context, prefix string) *redis.SliceCmd {
 	values, _ := r.Db.Keys(ctx, prefix).Result()
 	if len(values) <= 0 {
 		return &redis.SliceCmd{}

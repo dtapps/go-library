@@ -1,6 +1,7 @@
 package dorm
 
 import (
+	"context"
 	"time"
 )
 
@@ -22,16 +23,16 @@ func (r *RedisClient) NewSimpleStringCache(operation *StringOperation, expire ti
 }
 
 // SetCache 设置缓存
-func (c *SimpleStringCache) SetCache(key string, value string) {
-	c.Operation.Set(key, value, WithExpire(c.Expire)).Unwrap()
+func (c *SimpleStringCache) SetCache(ctx context.Context, key string, value string) {
+	c.Operation.Set(ctx, key, value, WithExpire(c.Expire)).Unwrap()
 }
 
 // GetCache 获取缓存
-func (c *SimpleStringCache) GetCache(key string) (ret string) {
+func (c *SimpleStringCache) GetCache(ctx context.Context, key string) (ret string) {
 	f := func() string {
 		return c.DBGetter()
 	}
-	ret = c.Operation.Get(key).UnwrapOrElse(f)
-	c.SetCache(key, ret)
+	ret = c.Operation.Get(ctx, key).UnwrapOrElse(f)
+	c.SetCache(ctx, key, ret)
 	return
 }

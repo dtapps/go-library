@@ -1,6 +1,7 @@
 package dorm
 
 import (
+	"context"
 	"encoding/json"
 	"time"
 )
@@ -23,12 +24,12 @@ func (r *RedisClient) NewSimpleJsonCache(operation *StringOperation, expire time
 }
 
 // SetCache 设置缓存
-func (c *SimpleJsonCache) SetCache(key string, value interface{}) {
-	c.Operation.Set(key, value, WithExpire(c.Expire)).Unwrap()
+func (c *SimpleJsonCache) SetCache(ctx context.Context, key string, value interface{}) {
+	c.Operation.Set(ctx, key, value, WithExpire(c.Expire)).Unwrap()
 }
 
 // GetCache 获取缓存
-func (c *SimpleJsonCache) GetCache(key string) (ret interface{}) {
+func (c *SimpleJsonCache) GetCache(ctx context.Context, key string) (ret interface{}) {
 	f := func() string {
 		obj := c.DBGetter()
 		b, err := json.Marshal(obj)
@@ -37,7 +38,7 @@ func (c *SimpleJsonCache) GetCache(key string) (ret interface{}) {
 		}
 		return string(b)
 	}
-	ret = c.Operation.Get(key).UnwrapOrElse(f)
-	c.SetCache(key, ret)
+	ret = c.Operation.Get(ctx, key).UnwrapOrElse(f)
+	c.SetCache(ctx, key, ret)
 	return
 }

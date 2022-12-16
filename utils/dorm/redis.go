@@ -8,21 +8,25 @@ import (
 	"time"
 )
 
-type ConfigRedisClient struct {
-	Addr     string // 地址
-	Password string // 密码
-	DB       int    // 数据库
-	PoolSize int    // 连接池大小
+// RedisClientFun *RedisClient 驱动
+type RedisClientFun func() *RedisClient
+
+type RedisClientConfig struct {
+	Addr        string        // 地址
+	Password    string        // 密码
+	DB          int           // 数据库
+	PoolSize    int           // 连接池大小
+	ReadTimeout time.Duration // 读取超时
 }
 
 // RedisClient
 // https://redis.uptrace.dev/
 type RedisClient struct {
 	Db     *redis.Client      // 驱动
-	config *ConfigRedisClient // 配置
+	config *RedisClientConfig // 配置
 }
 
-func NewRedisClient(config *ConfigRedisClient) (*RedisClient, error) {
+func NewRedisClient(config *RedisClientConfig) (*RedisClient, error) {
 
 	c := &RedisClient{}
 	c.config = config
@@ -31,10 +35,11 @@ func NewRedisClient(config *ConfigRedisClient) (*RedisClient, error) {
 	}
 
 	c.Db = redis.NewClient(&redis.Options{
-		Addr:     c.config.Addr,     // 地址
-		Password: c.config.Password, // 密码
-		DB:       c.config.DB,       // 数据库
-		PoolSize: c.config.PoolSize, // 连接池大小
+		Addr:        c.config.Addr,        // 地址
+		Password:    c.config.Password,    // 密码
+		DB:          c.config.DB,          // 数据库
+		PoolSize:    c.config.PoolSize,    // 连接池大小
+		ReadTimeout: c.config.ReadTimeout, // 读取超时
 	})
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

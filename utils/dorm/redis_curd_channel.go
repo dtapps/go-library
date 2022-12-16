@@ -26,6 +26,6 @@ func (r *RedisClient) PubSubChannels(ctx context.Context, pattern string) *redis
 }
 
 // PubSubNumSub 查询指定的channel有多少个订阅者
-func (r *RedisClient) PubSubNumSub(ctx context.Context, channels ...string) *redis.StringIntMapCmd {
+func (r *RedisClient) PubSubNumSub(ctx context.Context, channels ...string) *redis.MapStringIntCmd {
 	return r.Db.PubSubNumSub(ctx, channels...)
 }

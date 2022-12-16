@@ -9,28 +9,29 @@ import (
 	"time"
 )
 
-type ConfigGormClient struct {
-	Dns string // 地址
-	Log struct {
-		Status        bool   // 状态
-		Path          string // 路径
-		Slow          int64  // 慢SQL阈值
-		Level         string // 级别
-		NotFoundError bool   // 忽略ErrRecordNotFound（记录未找到）错误
-		Colorful      bool   // 禁用彩色打印
-	} // 日志
-	Conn struct {
-		SetMaxIdle         int   // 设置空闲连接池中连接的最大数量
-		SetMaxOpen         int   // 设置打开数据库连接的最大数量
-		SetConnMaxLifetime int64 // 设置了连接可复用的最大时间
-	} // 连接
+// GormClientFun *GormClient 驱动
+type GormClientFun func() *GormClient
+
+// GormClientTableFun *GormClient 驱动
+// string 表名
+type GormClientTableFun func() (*GormClient, string)
+
+type GormClientConfig struct {
+	Dns                    string // 地址
+	LogStatus              bool   // 日志 - 状态
+	LogPath                string // 日志 - 路径
+	LogSlow                int64  // 日志 - 慢SQL阈值
+	LogLevel               string // 日志 - 级别
+	ConnSetMaxIdle         int    // 连接 - 设置空闲连接池中连接的最大数量
+	ConnSetMaxOpen         int    // 连接 - 设置打开数据库连接的最大数量
+	ConnSetConnMaxLifetime int64  // 连接 - 设置了连接可复用的最大时间
 }
 
 // GormClient
 // https://gorm.io/
 type GormClient struct {
 	Db     *gorm.DB          // 驱动
-	config *ConfigGormClient // 配置
+	config *GormClientConfig // 配置
 }
 
 type writer struct{}

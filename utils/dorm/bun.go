@@ -4,7 +4,7 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type ConfigBunClient struct {
+type BunClientConfig struct {
 	Dns string // 地址
 }
 
@@ -12,5 +12,5 @@ type ConfigBunClient struct {
 // https://bun.uptrace.dev/
 type BunClient struct {
 	Db     *bun.DB          // 驱动
-	config *ConfigBunClient // 配置
+	config *BunClientConfig // 配置
 }
