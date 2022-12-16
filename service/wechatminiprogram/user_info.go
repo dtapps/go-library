@@ -69,7 +69,7 @@ func (c *Client) UserInfo(ctx context.Context, param UserInfo) *UserInfoResult {
 	if err != nil {
 		return newUserInfoResult(response, err)
 	}
-	if response.Watermark.AppID != c.getAppId() {
+	if response.Watermark.AppID != c.GetAppId() {
 		return newUserInfoResult(response, errors.New("c id not match"))
 	}
 	return newUserInfoResult(response, err)

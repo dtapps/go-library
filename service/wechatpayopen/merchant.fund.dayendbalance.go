@@ -14,14 +14,15 @@ type MerchantFundDayEndBalanceResponse struct {
 }
 
 type MerchantFundDayEndBalanceResult struct {
-	Result MerchantFundDayEndBalanceResponse // 结果
-	Body   []byte                            // 内容
-	Http   gorequest.Response                // 请求
-	Err    error                             // 错误
+	Result   MerchantFundDayEndBalanceResponse // 结果
+	Body     []byte                            // 内容
+	Http     gorequest.Response                // 请求
+	Err      error                             // 错误
+	ApiError ApiError                          // 接口错误
 }
 
-func newMerchantFundDayEndBalanceResult(result MerchantFundDayEndBalanceResponse, body []byte, http gorequest.Response, err error) *MerchantFundDayEndBalanceResult {
-	return &MerchantFundDayEndBalanceResult{Result: result, Body: body, Http: http, Err: err}
+func newMerchantFundDayEndBalanceResult(result MerchantFundDayEndBalanceResponse, body []byte, http gorequest.Response, err error, apiError ApiError) *MerchantFundDayEndBalanceResult {
+	return &MerchantFundDayEndBalanceResult{Result: result, Body: body, Http: http, Err: err, ApiError: apiError}
 }
 
 // MerchantFundDayEndBalance 查询电商平台账户日终余额API
@@ -34,10 +35,13 @@ func (c *Client) MerchantFundDayEndBalance(ctx context.Context, accountType, dat
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/merchant/fund/dayendbalance/%s?date=%s", accountType, date), params, http.MethodGet)
 	if err != nil {
-		return newMerchantFundDayEndBalanceResult(MerchantFundDayEndBalanceResponse{}, request.ResponseBody, request, err)
+		return newMerchantFundDayEndBalanceResult(MerchantFundDayEndBalanceResponse{}, request.ResponseBody, request, err, ApiError{})
 	}
 	// 定义
 	var response MerchantFundDayEndBalanceResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return newMerchantFundDayEndBalanceResult(response, request.ResponseBody, request, err)
+	// 错误
+	var apiError ApiError
+	err = json.Unmarshal(request.ResponseBody, &apiError)
+	return newMerchantFundDayEndBalanceResult(response, request.ResponseBody, request, err, apiError)
 }

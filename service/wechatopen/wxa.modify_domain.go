@@ -30,24 +30,34 @@ type WxaModifyDomainResult struct {
 	Result WxaModifyDomainResponse // 结果
 	Body   []byte                  // 内容
 	Http   gorequest.Response      // 请求
-	Err    error                   // 错误
 }
 
-func newWxaModifyDomainResult(result WxaModifyDomainResponse, body []byte, http gorequest.Response, err error) *WxaModifyDomainResult {
-	return &WxaModifyDomainResult{Result: result, Body: body, Http: http, Err: err}
+func newWxaModifyDomainResult(result WxaModifyDomainResponse, body []byte, http gorequest.Response) *WxaModifyDomainResult {
+	return &WxaModifyDomainResult{Result: result, Body: body, Http: http}
 }
 
-// WxaModifyDomain 设置服务器域名
-// https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_Basic_Info/Server_Address_Configuration.html
-func (c *Client) WxaModifyDomain(ctx context.Context, notMustParams ...gorequest.Params) *WxaModifyDomainResult {
+// WxaModifyDomain 配置小程序服务器域名
+// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/modifyServerDomain.html
+func (c *Client) WxaModifyDomain(ctx context.Context, notMustParams ...gorequest.Params) (*WxaModifyDomainResult, error) {
+	// 检查
+	err := c.checkComponentIsConfig()
+	if err != nil {
+		return nil, err
+	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/modify_domain?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	if err != nil {
+		return nil, err
+	}
 	// 定义
 	var response WxaModifyDomainResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return newWxaModifyDomainResult(response, request.ResponseBody, request, err)
+	if err != nil {
+		return nil, err
+	}
+	return newWxaModifyDomainResult(response, request.ResponseBody, request), nil
 }
 
 // ErrcodeInfo 错误描述

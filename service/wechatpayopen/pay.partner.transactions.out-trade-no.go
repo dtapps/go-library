@@ -73,7 +73,7 @@ func (c *Client) PayPartnerTransactionsOutTradeNo(ctx context.Context, outTradeN
 	// 参数
 	params := gorequest.NewParams()
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/pay/partner/transactions/out-trade-no/%s?sp_mchid=%s&sub_mchid=%s", outTradeNo, c.config.SpMchId, c.config.SubMchId), params, http.MethodGet)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/pay/partner/transactions/out-trade-no/%s?sp_mchid=%s&sub_mchid=%s", outTradeNo, c.GetSpMchId(), c.GetSubMchId()), params, http.MethodGet)
 	if err != nil {
 		return newPayPartnerTransactionsOutTradeNoResult(PayPartnerTransactionsOutTradeNoResponse{}, request.ResponseBody, request, err, ApiError{})
 	}

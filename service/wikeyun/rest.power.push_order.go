@@ -31,7 +31,7 @@ func newRestPowerPushOrderResult(result RestPowerPushOrderResponse, body []byte,
 func (c *Client) RestPowerPushOrder(ctx context.Context, notMustParams ...gorequest.Params) *RestPowerPushOrderResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("store_id", c.config.StoreId) // 店铺ID
+	params.Set("store_id", c.GetStoreId()) // 店铺ID
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/rest/Power/pushOrder", params)
 	// 定义

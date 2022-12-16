@@ -29,15 +29,15 @@ func (c *Client) GetJsApi(ctx context.Context, param GetJsApi) (result GetJsApiR
 	timeStamp := time.Now().Unix()
 	nonce := gorandom.Alphanumeric(32)
 
-	result.AppId = c.config.SubAppid
+	result.AppId = c.GetSubAppid()
 	result.TimeStamp = fmt.Sprintf("%v", timeStamp) // 时间戳
 	result.NonceStr = nonce                         // 随机字符串
 	result.Package = param.Package                  // 订单详情扩展字符串
 
 	// 签名
-	message := fmt.Sprintf("%s\n%s\n%s\n%s\n", c.config.SubAppid, fmt.Sprintf("%v", timeStamp), nonce, param.Package)
+	message := fmt.Sprintf("%s\n%s\n%s\n%s\n", c.GetSubAppid(), fmt.Sprintf("%v", timeStamp), nonce, param.Package)
 
-	signBytes, err := c.signPKCS1v15(message, []byte(c.config.MchSslKey))
+	signBytes, err := c.signPKCS1v15(message, []byte(c.GetMchSslKey()))
 	if err != nil {
 		return result, err
 	}

@@ -28,10 +28,10 @@ func newPayPartnerTransactionsH5Result(result PayPartnerTransactionsH5Response, 
 func (c *Client) PayPartnerTransactionsH5(ctx context.Context, notMustParams ...gorequest.Params) *PayPartnerTransactionsH5Result {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("sp_appid", c.config.SpAppid)   // 服务商应用ID
-	params.Set("sp_mchid", c.config.SpMchId)   // 服务商户号
-	params.Set("sub_appid", c.config.SubAppid) // 子商户应用ID
-	params.Set("sub_mchid", c.config.SubMchId) // 子商户号
+	params.Set("sp_appid", c.GetSpAppid())   // 服务商应用ID
+	params.Set("sp_mchid", c.GetSpMchId())   // 服务商户号
+	params.Set("sub_appid", c.GetSubAppid()) // 子商户应用ID
+	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/pay/partner/transactions/h5", params, http.MethodPost)
 	if err != nil {

@@ -53,14 +53,15 @@ type PayPartnerTransactionsIdResponse struct {
 }
 
 type PayPartnerTransactionsIdResult struct {
-	Result PayPartnerTransactionsIdResponse // 结果
-	Body   []byte                           // 内容
-	Http   gorequest.Response               // 请求
-	Err    error                            // 错误
+	Result   PayPartnerTransactionsIdResponse // 结果
+	Body     []byte                           // 内容
+	Http     gorequest.Response               // 请求
+	Err      error                            // 错误
+	ApiError ApiError                         // 接口错误
 }
 
-func newPayPartnerTransactionsIdResult(result PayPartnerTransactionsIdResponse, body []byte, http gorequest.Response, err error) *PayPartnerTransactionsIdResult {
-	return &PayPartnerTransactionsIdResult{Result: result, Body: body, Http: http, Err: err}
+func newPayPartnerTransactionsIdResult(result PayPartnerTransactionsIdResponse, body []byte, http gorequest.Response, err error, apiError ApiError) *PayPartnerTransactionsIdResult {
+	return &PayPartnerTransactionsIdResult{Result: result, Body: body, Http: http, Err: err, ApiError: apiError}
 }
 
 // PayPartnerTransactionsId 微信支付订单号查询
@@ -69,12 +70,15 @@ func (c *Client) PayPartnerTransactionsId(ctx context.Context, transactionId str
 	// 参数
 	params := gorequest.NewParams()
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/pay/partner/transactions/id/%s?sp_mchid=%s&sub_mchid=%s", transactionId, c.config.SpMchId, c.config.SubMchId), params, http.MethodGet)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/pay/partner/transactions/id/%s?sp_mchid=%s&sub_mchid=%s", transactionId, c.GetSpMchId(), c.GetSubMchId()), params, http.MethodGet)
 	if err != nil {
-		return newPayPartnerTransactionsIdResult(PayPartnerTransactionsIdResponse{}, request.ResponseBody, request, err)
+		return newPayPartnerTransactionsIdResult(PayPartnerTransactionsIdResponse{}, request.ResponseBody, request, err, ApiError{})
 	}
 	// 定义
 	var response PayPartnerTransactionsIdResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return newPayPartnerTransactionsIdResult(response, request.ResponseBody, request, err)
+	// 错误
+	var apiError ApiError
+	err = json.Unmarshal(request.ResponseBody, &apiError)
+	return newPayPartnerTransactionsIdResult(response, request.ResponseBody, request, err, apiError)
 }

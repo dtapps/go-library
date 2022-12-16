@@ -20,7 +20,7 @@ type GetSoonListResponse struct {
 			Pic          string      `json:"pic"`          // 海报URL地址
 			FilmTypes    string      `json:"filmTypes"`    // 影片类型
 			LikeNum      int         `json:"likeNum"`      // 想看人数
-			Duration     int         `json:"duration"`     // 时长，分钟
+			Duration     int64       `json:"duration"`     // 时长，分钟
 			Cast         string      `json:"cast"`         // 主演
 			FilmId       int         `json:"filmId"`       // 影片id
 			Grade        interface{} `json:"grade"`        // 评分

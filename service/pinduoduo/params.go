@@ -27,18 +27,18 @@ func NewParamsWithType(_type string, params ...Params) Params {
 }
 
 func (c *Client) Sign(p Params) {
-	p["client_id"] = c.config.ClientId
+	p["client_id"] = c.GetClientId()
 	// 排序所有的 key
 	var keys []string
 	for key := range p {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
-	signStr := c.config.ClientSecret
+	signStr := c.GetClientSecret()
 	for _, key := range keys {
 		signStr += key + getString(p[key])
 	}
-	signStr += c.config.ClientSecret
+	signStr += c.GetClientSecret()
 	p["sign"] = createSign(signStr)
 }
 

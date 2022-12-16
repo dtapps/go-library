@@ -17,24 +17,38 @@ type WxaCommitResult struct {
 	Result WxaCommitResponse  // 结果
 	Body   []byte             // 内容
 	Http   gorequest.Response // 请求
-	Err    error              // 错误
 }
 
-func newWxaCommitResult(result WxaCommitResponse, body []byte, http gorequest.Response, err error) *WxaCommitResult {
-	return &WxaCommitResult{Result: result, Body: body, Http: http, Err: err}
+func newWxaCommitResult(result WxaCommitResponse, body []byte, http gorequest.Response) *WxaCommitResult {
+	return &WxaCommitResult{Result: result, Body: body, Http: http}
 }
 
 // WxaCommit 上传小程序代码并生成体验版
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/commit.html
-func (c *Client) WxaCommit(ctx context.Context, notMustParams ...gorequest.Params) *WxaCommitResult {
+func (c *Client) WxaCommit(ctx context.Context, notMustParams ...gorequest.Params) (*WxaCommitResult, error) {
+	// 检查
+	err := c.checkComponentIsConfig()
+	if err != nil {
+		return nil, err
+	}
+	err = c.checkAuthorizerIsConfig()
+	if err != nil {
+		return nil, err
+	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/commit?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	if err != nil {
+		return nil, err
+	}
 	// 定义
 	var response WxaCommitResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return newWxaCommitResult(response, request.ResponseBody, request, err)
+	if err != nil {
+		return nil, err
+	}
+	return newWxaCommitResult(response, request.ResponseBody, request), nil
 }
 
 // ErrcodeInfo 错误描述

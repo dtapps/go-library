@@ -24,7 +24,7 @@ type TbkDgOptimusMaterialResponse struct {
 				CouponTotalCount     int    `json:"coupon_total_count"`
 				CpaRewardType        string `json:"cpa_reward_type"`
 				ItemDescription      string `json:"item_description"`
-				ItemId               int64  `json:"item_id"`
+				ItemId               string `json:"item_id"`
 				JhsPriceUspList      string `json:"jhs_price_usp_list"`
 				LevelOneCategoryId   int64  `json:"level_one_category_id"`
 				LevelOneCategoryName string `json:"level_one_category_name"`
@@ -45,7 +45,8 @@ type TbkDgOptimusMaterialResponse struct {
 				ZkFinalPrice string `json:"zk_final_price"`
 			} `json:"map_data"`
 		} `json:"result_list"`
-		RequestId string `json:"request_id"`
+		RequestId  string `json:"request_id"`
+		TotalCount int64  `json:"total_count,omitempty"`
 	} `json:"tbk_dg_optimus_material_response"`
 }
 
@@ -61,7 +62,7 @@ func newTbkDgOptimusMaterialResult(result TbkDgOptimusMaterialResponse, body []b
 }
 
 // TbkDgOptimusMaterial 淘宝客-推广者-物料精选
-// https://open.taobao.com/api.htm?spm=a219a.7386797.0.0.5d67669aIeQeVI&source=search&docId=33947&docType=2
+// https://open.taobao.com/api.htm?docId=33947&docType=2&source=search
 func (c *Client) TbkDgOptimusMaterial(ctx context.Context, notMustParams ...Params) *TbkDgOptimusMaterialResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.dg.optimus.material", notMustParams...)

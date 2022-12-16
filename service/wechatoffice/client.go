@@ -4,61 +4,57 @@ import (
 	"github.com/dtapps/go-library/utils/dorm"
 	"github.com/dtapps/go-library/utils/golog"
 	"github.com/dtapps/go-library/utils/gorequest"
-	"gorm.io/gorm"
 )
 
-type ConfigClient struct {
-	AppId        string            // 小程序唯一凭证，即 appId
-	AppSecret    string            // 小程序唯一凭证密钥，即 appSecret
-	AccessToken  string            // 接口调用凭证
-	JsapiTicket  string            // 签名凭证
-	RedisClient  *dorm.RedisClient // 缓存数据库
-	TokenDb      *gorm.DB          // 令牌数据库
-	MongoDb      *dorm.MongoClient // 日志数据库
-	PgsqlDb      *gorm.DB          // 日志数据库
-	DatabaseName string            // 库名
+// 缓存前缀
+// wechat_office:wechat_access_token:
+// wechat_office:wechat_jsapi_ticket:
+type redisCachePrefixFun func() (wechatAccessToken, wechatJsapiTicket string)
+
+// ClientConfig 实例配置
+type ClientConfig struct {
+	AppId               string              // 小程序唯一凭证，即 appId
+	AppSecret           string              // 小程序唯一凭证密钥，即 appSecret
+	RedisClient         *dorm.RedisClient   // 缓存数据库
+	RedisCachePrefixFun redisCachePrefixFun // 缓存前缀
 }
 
-// Client 微信公众号服务
+// Client 实例
 type Client struct {
-	client *gorequest.App   // 请求客户端
-	log    *golog.ApiClient // 日志服务
-	config *ConfigClient    // 配置
+	requestClient *gorequest.App // 请求服务
+	config        struct {
+		appId       string // 小程序唯一凭证，即 appId
+		appSecret   string // 小程序唯一凭证密钥，即 appSecret
+		accessToken string // 接口调用凭证
+		jsapiTicket string // 签名凭证
+	}
+	cache struct {
+		redisClient             *dorm.RedisClient // 缓存数据库
+		wechatAccessTokenPrefix string            // AccessToken
+		wechatJsapiTicketPrefix string            // JsapiTicket
+	}
+	log struct {
+		status bool             // 状态
+		client *golog.ApiClient // 日志服务
+	}
 }
 
-func NewClient(config *ConfigClient) (*Client, error) {
+// NewClient 创建实例化
+func NewClient(config *ClientConfig) (*Client, error) {
 
-	var err error
-	c := &Client{config: config}
+	c := &Client{}
 
-	c.client = gorequest.NewHttp()
+	c.config.appId = config.AppId
+	c.config.appSecret = config.AppSecret
 
-	if c.config.PgsqlDb != nil {
-		c.log, err = golog.NewApiClient(
-			golog.WithGormClient(c.config.PgsqlDb),
-			golog.WithTableName(logTable),
-		)
-		if err != nil {
-			return nil, err
-		}
-	}
-	if c.config.MongoDb != nil {
-		c.log, err = golog.NewApiClient(
-			golog.WithMongoClient(c.config.MongoDb),
-			golog.WithDatabaseName(c.config.DatabaseName),
-			golog.WithCollectionName(logTable),
-		)
-		if err != nil {
-			return nil, err
-		}
+	c.requestClient = gorequest.NewHttp()
+
+	c.cache.redisClient = config.RedisClient
+
+	c.cache.wechatAccessTokenPrefix, c.cache.wechatJsapiTicketPrefix = config.RedisCachePrefixFun()
+	if c.cache.wechatAccessTokenPrefix == "" || c.cache.wechatJsapiTicketPrefix == "" {
+		return nil, redisCachePrefixNoConfig
 	}
 
 	return c, nil
-}
-
-// ConfigApp 配置
-func (c *Client) ConfigApp(appId, appSecret string) *Client {
-	c.config.AppId = appId
-	c.config.AppSecret = appSecret
-	return c
 }

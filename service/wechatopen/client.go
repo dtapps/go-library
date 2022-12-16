@@ -4,72 +4,72 @@ import (
 	"github.com/dtapps/go-library/utils/dorm"
 	"github.com/dtapps/go-library/utils/golog"
 	"github.com/dtapps/go-library/utils/gorequest"
-	"gorm.io/gorm"
 )
 
-type ConfigClient struct {
-	ComponentAccessToken   string // 第三方平台 access_token
-	ComponentVerifyTicket  string // 微信后台推送的 ticket
-	PreAuthCode            string // 预授权码
-	AuthorizerAccessToken  string // 接口调用令牌
-	AuthorizerRefreshToken string // 刷新令牌
-	AuthorizerAppid        string // 授权方 appid
-	ComponentAppId         string // 第三方平台 appid
-	ComponentAppSecret     string // 第三方平台 app_secret
-	MessageToken           string
-	MessageKey             string
-	RedisClient            *dorm.RedisClient // 缓存数据库
-	MongoDb                *dorm.MongoClient // 日志数据库
-	PgsqlDb                *gorm.DB          // 日志数据库
-	DatabaseName           string            // 库名
+// 缓存前缀
+// wechat_open:component_verify_ticket:
+// wechat_open:component_access_token:
+// wechat_open:authorizer_access_token:
+// wechat_open:pre_auth_code:
+type redisCachePrefixFun func() (componentVerifyTicket, componentAccessToken, authorizerAccessToken, preAuthCode string)
+
+// ClientConfig 实例配置
+type ClientConfig struct {
+	AuthorizerAppid     string // 授权方 appid
+	ComponentAppId      string // 第三方平台 appid
+	ComponentAppSecret  string // 第三方平台 app_secret
+	MessageToken        string
+	MessageKey          string
+	RedisClient         *dorm.RedisClient   // 缓存数据库
+	RedisCachePrefixFun redisCachePrefixFun // 缓存前缀
 }
 
-// Client 微信公众号服务
+// Client 实例
 type Client struct {
-	client *gorequest.App   // 请求客户端
-	log    *golog.ApiClient // 日志服务
-	config *ConfigClient    // 配置
+	requestClient *gorequest.App // 请求服务
+	config        struct {
+		componentAccessToken   string // 第三方平台 access_token
+		componentVerifyTicket  string // 微信后台推送的 ticket
+		preAuthCode            string // 预授权码
+		authorizerAccessToken  string // 接口调用令牌
+		authorizerRefreshToken string // 刷新令牌
+		authorizerAppid        string // 授权方 appid
+		componentAppId         string // 第三方平台appid
+		componentAppSecret     string // 第三方平台app_secret
+		messageToken           string
+		messageKey             string
+	}
+	cache struct {
+		redisClient                 *dorm.RedisClient // 缓存数据库
+		componentVerifyTicketPrefix string
+		componentAccessTokenPrefix  string
+		authorizerAccessTokenPrefix string
+		preAuthCodePrefix           string
+	}
+	log struct {
+		status bool             // 状态
+		client *golog.ApiClient // 日志服务
+	}
 }
 
-func NewClient(config *ConfigClient) (*Client, error) {
+// NewClient 创建实例化
+func NewClient(config *ClientConfig) (*Client, error) {
 
-	var err error
-	c := &Client{config: config}
+	c := &Client{}
 
-	c.client = gorequest.NewHttp()
+	c.config.componentAppId = config.ComponentAppId
+	c.config.componentAppSecret = config.ComponentAppSecret
+	c.config.messageToken = config.MessageToken
+	c.config.messageKey = config.MessageKey
 
-	if c.config.PgsqlDb != nil {
-		c.log, err = golog.NewApiClient(
-			golog.WithGormClient(c.config.PgsqlDb),
-			golog.WithTableName(logTable),
-		)
-		if err != nil {
-			return nil, err
-		}
-	}
-	if c.config.MongoDb != nil {
-		c.log, err = golog.NewApiClient(
-			golog.WithMongoClient(c.config.MongoDb),
-			golog.WithDatabaseName(c.config.DatabaseName),
-			golog.WithCollectionName(logTable),
-		)
-		if err != nil {
-			return nil, err
-		}
+	c.requestClient = gorequest.NewHttp()
+
+	c.cache.redisClient = config.RedisClient
+
+	c.cache.componentVerifyTicketPrefix, c.cache.componentAccessTokenPrefix, c.cache.authorizerAccessTokenPrefix, c.cache.preAuthCodePrefix = config.RedisCachePrefixFun()
+	if c.cache.componentVerifyTicketPrefix == "" || c.cache.componentAccessTokenPrefix == "" || c.cache.authorizerAccessTokenPrefix == "" || c.cache.preAuthCodePrefix == "" {
+		return nil, redisCachePrefixNoConfig
 	}
 
 	return c, nil
-}
-
-// ConfigComponent 配置
-func (c *Client) ConfigComponent(componentAppId, componentAppSecret string) *Client {
-	c.config.ComponentAppId = componentAppId
-	c.config.ComponentAppSecret = componentAppSecret
-	return c
-}
-
-// ConfigAuthorizer 配置第三方
-func (c *Client) ConfigAuthorizer(authorizerAppid string) *Client {
-	c.config.AuthorizerAppid = authorizerAppid
-	return c
 }

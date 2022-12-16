@@ -5,5 +5,5 @@ const (
 )
 
 const (
-	logTable = "wechatopen"
+	LogTable = "wechatopen"
 )

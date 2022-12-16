@@ -1,13 +1,19 @@
 package ejiaofei
 
-func (c *Client) getUserId() string {
-	return c.config.UserId
+import "github.com/dtapps/go-library/utils/golog"
+
+func (c *Client) GetUserId() string {
+	return c.config.userId
 }
 
-func (c *Client) getPwd() string {
-	return c.config.Pwd
+func (c *Client) GetPwd() string {
+	return c.config.pwd
 }
 
-func (c *Client) getKey() string {
-	return c.config.Key
+func (c *Client) GetKey() string {
+	return c.config.key
+}
+
+func (c *Client) GetLog() *golog.ApiClient {
+	return c.log.client
 }

@@ -16,7 +16,7 @@ type GetScheduleListResponse struct {
 			NetPrice        int    `json:"netPrice"`        // 参考价，单位：分
 			Language        string `json:"language"`        // 语言
 			ShowDate        string `json:"showDate"`        //
-			Duration        int    `json:"duration"`        // 时长,分钟
+			Duration        int64  `json:"duration"`        // 时长,分钟
 			ShowId          string `json:"showId"`          // 场次标识
 			StopSellTime    string `json:"stopSellTime"`    // 停售时间
 			CinemaId        int    `json:"cinemaId"`        // 影院id

@@ -10,7 +10,7 @@ type ApiBuyResponse struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
 	Data    struct {
-		OrderID      int64  `json:"order_id"`      // 订单号
+		OrderId      string `json:"order_id"`      // 订单号
 		ProductPrice string `json:"product_price"` // 商品价格
 		TotalPrice   string `json:"total_price"`   // 总支付价格
 		RechargeUrl  string `json:"recharge_url"`  // 卡密充值网址

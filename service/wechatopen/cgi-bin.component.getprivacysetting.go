@@ -49,24 +49,38 @@ type CgiBinComponentGetPrivacySettingResult struct {
 	Result CgiBinComponentGetPrivacySettingResponse // 结果
 	Body   []byte                                   // 内容
 	Http   gorequest.Response                       // 请求
-	Err    error                                    // 错误
 }
 
-func newCgiBinComponentGetPrivacySettingResult(result CgiBinComponentGetPrivacySettingResponse, body []byte, http gorequest.Response, err error) *CgiBinComponentGetPrivacySettingResult {
-	return &CgiBinComponentGetPrivacySettingResult{Result: result, Body: body, Http: http, Err: err}
+func newCgiBinComponentGetPrivacySettingResult(result CgiBinComponentGetPrivacySettingResponse, body []byte, http gorequest.Response) *CgiBinComponentGetPrivacySettingResult {
+	return &CgiBinComponentGetPrivacySettingResult{Result: result, Body: body, Http: http}
 }
 
 // CgiBinComponentGetPrivacySetting 查询小程序用户隐私保护指引
 // @privacyVer 1表示现网版本，即，传1则该接口返回的内容是现网版本的；2表示开发版，即，传2则该接口返回的内容是开发版本的。默认是2。
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/privacy_config/get_privacy_setting.html
-func (c *Client) CgiBinComponentGetPrivacySetting(ctx context.Context, privacyVer int) *CgiBinComponentGetPrivacySettingResult {
+func (c *Client) CgiBinComponentGetPrivacySetting(ctx context.Context, privacyVer int) (*CgiBinComponentGetPrivacySettingResult, error) {
+	// 检查
+	err := c.checkComponentIsConfig()
+	if err != nil {
+		return nil, err
+	}
+	err = c.checkAuthorizerIsConfig()
+	if err != nil {
+		return nil, err
+	}
 	// 参数
 	params := gorequest.NewParams()
 	params["privacy_ver"] = privacyVer
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/component/getprivacysetting?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	if err != nil {
+		return nil, err
+	}
 	// 定义
 	var response CgiBinComponentGetPrivacySettingResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return newCgiBinComponentGetPrivacySettingResult(response, request.ResponseBody, request, err)
+	if err != nil {
+		return nil, err
+	}
+	return newCgiBinComponentGetPrivacySettingResult(response, request.ResponseBody, request), nil
 }

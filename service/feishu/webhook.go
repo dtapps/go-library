@@ -31,7 +31,7 @@ func (c *Client) WebhookSend(ctx context.Context, notMustParams ...gorequest.Par
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/open-apis/bot/v2/hook/%s", c.config.Key), params)
+	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/open-apis/bot/v2/hook/%s", c.GetKey()), params)
 	// 定义
 	var response WebhookSendResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -30,7 +30,7 @@ func newRestRechargePushOrderResult(result RestRechargePushOrderResponse, body [
 func (c *Client) RestRechargePushOrder(ctx context.Context, notMustParams ...gorequest.Params) *RestRechargePushOrderResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("store_id", c.config.StoreId) // 店铺ID
+	params.Set("store_id", c.GetStoreId()) // 店铺ID
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/rest/Recharge/pushOrder", params)
 	// 定义

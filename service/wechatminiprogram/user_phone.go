@@ -63,7 +63,7 @@ func (c *Client) UserPhone(ctx context.Context, param UserPhone) *UserPhoneResul
 	if err != nil {
 		return newUserPhoneResult(response, err)
 	}
-	if response.Watermark.AppID != c.getAppId() {
+	if response.Watermark.AppID != c.GetAppId() {
 		return newUserPhoneResult(response, errors.New("c id not match"))
 	}
 	return newUserPhoneResult(response, err)

@@ -46,7 +46,7 @@ func (c *Client) ChOngZhiJkOrders(ctx context.Context, orderID string, face int,
 	param.Set("amount", 1)
 	params := gorequest.NewParamsWith(param)
 	// 签名
-	c.signStr = fmt.Sprintf("userid%vpwd%vorderid%vface%vaccount%vamount1", c.getUserId(), c.getPwd(), orderID, face, account)
+	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%vface%vaccount%vamount1", c.GetUserId(), c.GetPwd(), orderID, face, account)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/chongzhi_jkorders.do", params, http.MethodGet)
 	// 定义

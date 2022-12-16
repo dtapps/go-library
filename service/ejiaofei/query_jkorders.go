@@ -41,7 +41,7 @@ func (c *Client) QueryJkOrders(ctx context.Context, orderId string) *QueryJkOrde
 	param.Set("orderid", orderId)
 	params := gorequest.NewParamsWith(param)
 	// 签名
-	c.signStr = fmt.Sprintf("userid%vpwd%vorderid%v", c.getUserId(), c.getPwd(), orderId)
+	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%v", c.GetUserId(), c.GetPwd(), orderId)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/query_jkorders.do", params, http.MethodGet)
 	// 定义

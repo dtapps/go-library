@@ -28,22 +28,36 @@ type CgiBinWxOpenQrCodeJumpGetResult struct {
 	Result CgiBinWxOpenQrCodeJumpGetResponse // 结果
 	Body   []byte                            // 内容
 	Http   gorequest.Response                // 请求
-	Err    error                             // 错误
 }
 
-func newCgiBinWxOpenQrCodeJumpGetResult(result CgiBinWxOpenQrCodeJumpGetResponse, body []byte, http gorequest.Response, err error) *CgiBinWxOpenQrCodeJumpGetResult {
-	return &CgiBinWxOpenQrCodeJumpGetResult{Result: result, Body: body, Http: http, Err: err}
+func newCgiBinWxOpenQrCodeJumpGetResult(result CgiBinWxOpenQrCodeJumpGetResponse, body []byte, http gorequest.Response) *CgiBinWxOpenQrCodeJumpGetResult {
+	return &CgiBinWxOpenQrCodeJumpGetResult{Result: result, Body: body, Http: http}
 }
 
 // CgiBinWxOpenQrCodeJumpGet 获取已设置的二维码规则
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumpadd.html
-func (c *Client) CgiBinWxOpenQrCodeJumpGet(ctx context.Context) *CgiBinWxOpenQrCodeJumpGetResult {
+func (c *Client) CgiBinWxOpenQrCodeJumpGet(ctx context.Context) (*CgiBinWxOpenQrCodeJumpGetResult, error) {
+	// 检查
+	err := c.checkComponentIsConfig()
+	if err != nil {
+		return nil, err
+	}
+	err = c.checkAuthorizerIsConfig()
+	if err != nil {
+		return nil, err
+	}
 	// 参数
 	params := gorequest.NewParams()
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/wxopen/qrcodejumpget?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	if err != nil {
+		return nil, err
+	}
 	// 定义
 	var response CgiBinWxOpenQrCodeJumpGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return newCgiBinWxOpenQrCodeJumpGetResult(response, request.ResponseBody, request, err)
+	if err != nil {
+		return nil, err
+	}
+	return newCgiBinWxOpenQrCodeJumpGetResult(response, request.ResponseBody, request), nil
 }

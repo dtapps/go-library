@@ -9,7 +9,7 @@ import (
 func (c *Client) request(ctx context.Context, url string, params map[string]interface{}, method string) (gorequest.Response, error) {
 
 	// 创建请求
-	client := c.client
+	client := c.requestClient
 
 	// 设置请求地址
 	client.SetUri(url)
@@ -30,11 +30,8 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	}
 
 	// 日志
-	if c.config.PgsqlDb != nil {
-		go c.log.GormMiddleware(ctx, request, go_library.Version())
-	}
-	if c.config.MongoDb != nil {
-		go c.log.MongoMiddleware(ctx, request, go_library.Version())
+	if c.log.status {
+		go c.log.client.Middleware(ctx, request, go_library.Version())
 	}
 
 	return request, err

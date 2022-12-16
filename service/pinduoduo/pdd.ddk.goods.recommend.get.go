@@ -83,7 +83,7 @@ func newGoodsRecommendGetResult(result GoodsRecommendGetResponse, body []byte, h
 func (c *Client) GoodsRecommendGet(ctx context.Context, notMustParams ...Params) *GoodsRecommendGetResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.recommend.get", notMustParams...)
-	params.Set("pid", c.config.Pid)
+	params.Set("pid", c.GetPid())
 	// 请求
 	request, err := c.request(ctx, params)
 	// 定义

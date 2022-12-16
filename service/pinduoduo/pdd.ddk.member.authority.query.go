@@ -29,7 +29,7 @@ func newMemberAuthorityQueryResult(result MemberAuthorityQueryResponse, body []b
 func (c *Client) MemberAuthorityQuery(ctx context.Context, notMustParams ...Params) *MemberAuthorityQueryResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.member.authority.query", notMustParams...)
-	params.Set("pid", c.config.Pid)
+	params.Set("pid", c.GetPid())
 	// 请求
 	request, err := c.request(ctx, params)
 	// 定义

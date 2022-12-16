@@ -2,23 +2,22 @@ package wechatoffice
 
 import (
 	"context"
-	"fmt"
 	"time"
 )
 
 // GetJsapiTicket 获取api_ticket
 func (c *Client) GetJsapiTicket(ctx context.Context) string {
-	if c.config.RedisClient.Db == nil {
-		return c.config.JsapiTicket
+	if c.cache.redisClient.Db == nil {
+		return c.config.jsapiTicket
 	}
-	newCache := c.config.RedisClient.NewSimpleStringCache(c.config.RedisClient.NewStringOperation(), time.Second*7000)
+	newCache := c.cache.redisClient.NewSimpleStringCache(c.cache.redisClient.NewStringOperation(), time.Second*7000)
 	newCache.DBGetter = func() string {
 		token := c.CgiBinTicketGetTicket(ctx, "jsapi")
 		return token.Result.Ticket
 	}
-	return newCache.GetCache(c.getJsapiTicketCacheKeyName())
+	return newCache.GetCache(ctx, c.getJsapiTicketCacheKeyName())
 }
 
 func (c *Client) getJsapiTicketCacheKeyName() string {
-	return fmt.Sprintf("wechat_jsapi_ticket:%v", c.GetAppId())
+	return c.cache.wechatJsapiTicketPrefix + c.GetAppId()
 }

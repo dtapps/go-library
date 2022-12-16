@@ -20,6 +20,7 @@ type RestPowerQueryResponse struct {
 		CostPrice     string `json:"cost_price"`
 		OrderNumber   string `json:"order_number"`
 		ArrivedAmount int64  `json:"arrived_amount"`
+		Reason        string `json:"reason"`
 	} `json:"data"`
 }
 

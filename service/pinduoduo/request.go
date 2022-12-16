@@ -2,9 +2,9 @@ package pinduoduo
 
 import (
 	"context"
+	"fmt"
 	"github.com/dtapps/go-library"
 	"github.com/dtapps/go-library/utils/gorequest"
-	"github.com/dtapps/go-library/utils/gostring"
 )
 
 func (c *Client) request(ctx context.Context, params map[string]interface{}) (gorequest.Response, error) {
@@ -13,7 +13,7 @@ func (c *Client) request(ctx context.Context, params map[string]interface{}) (go
 	c.Sign(params)
 
 	// 创建请求
-	client := c.client
+	client := c.requestClient
 
 	// 设置参数
 	client.SetParams(params)
@@ -25,11 +25,8 @@ func (c *Client) request(ctx context.Context, params map[string]interface{}) (go
 	}
 
 	// 日志
-	if c.config.PgsqlDb != nil {
-		go c.log.GormMiddlewareCustom(ctx, gostring.ToString(params["type"]), request, go_library.Version())
-	}
-	if c.config.MongoDb != nil {
-		go c.log.MongoMiddlewareCustom(ctx, gostring.ToString(params["type"]), request, go_library.Version())
+	if c.log.status {
+		go c.log.client.MiddlewareCustom(ctx, fmt.Sprintf("%s", params["type"]), request, go_library.Version())
 	}
 
 	return request, err

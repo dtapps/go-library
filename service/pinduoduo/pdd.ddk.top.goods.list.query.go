@@ -63,7 +63,7 @@ func newTopGoodsListQueryResult(result TopGoodsListQueryResponse, body []byte, h
 func (c *Client) TopGoodsListQuery(ctx context.Context, notMustParams ...Params) *TopGoodsListQueryResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.top.goods.list.query", notMustParams...)
-	params.Set("p_id", c.config.Pid)
+	params.Set("p_id", c.GetPid())
 	// 请求
 	request, err := c.request(ctx, params)
 	// 定义

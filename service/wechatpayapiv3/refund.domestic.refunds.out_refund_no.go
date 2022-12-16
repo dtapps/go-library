@@ -61,7 +61,8 @@ func newRefundDomesticRefundsOutRefundNoResult(result RefundDomesticRefundsOutRe
 	return &RefundDomesticRefundsOutRefundNoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
-// RefundDomesticRefundsOutRefundNo 查询单笔退款API https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_10.shtml
+// RefundDomesticRefundsOutRefundNo 查询单笔退款API
+// https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_10.shtml
 func (c *Client) RefundDomesticRefundsOutRefundNo(ctx context.Context, outRefundNo string) *RefundDomesticRefundsOutRefundNoResult {
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/refund/domestic/refunds/%s", outRefundNo), map[string]interface{}{}, http.MethodGet, true)

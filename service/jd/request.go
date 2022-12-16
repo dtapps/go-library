@@ -2,9 +2,9 @@ package jd
 
 import (
 	"context"
+	"fmt"
 	"github.com/dtapps/go-library"
 	"github.com/dtapps/go-library/utils/gorequest"
-	"github.com/dtapps/go-library/utils/gostring"
 )
 
 // 请求接口
@@ -14,7 +14,7 @@ func (c *Client) request(ctx context.Context, params map[string]interface{}) (go
 	c.Sign(params)
 
 	// 创建请求
-	client := c.client
+	client := c.requestClient
 
 	// 设置格式
 	client.SetContentTypeForm()
@@ -28,12 +28,9 @@ func (c *Client) request(ctx context.Context, params map[string]interface{}) (go
 		return gorequest.Response{}, err
 	}
 
-	// 日志
-	if c.config.PgsqlDb != nil {
-		go c.log.GormMiddlewareCustom(ctx, gostring.ToString(params["method"]), request, go_library.Version())
-	}
-	if c.config.MongoDb != nil {
-		go c.log.MongoMiddlewareCustom(ctx, gostring.ToString(params["method"]), request, go_library.Version())
+	// 记录日志
+	if c.log.status {
+		go c.log.client.MiddlewareCustom(ctx, fmt.Sprintf("%s", params["method"]), request, go_library.Version())
 	}
 
 	return request, err

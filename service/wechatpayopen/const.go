@@ -1,36 +1,14 @@
 package wechatpayopen
 
-import "time"
-
 // 微信支付 API 地址
 const (
 	apiUrl                   = "https://api.mch.weixin.qq.com"
 	WechatPayAPIServerBackup = "https://api2.mch.weixin.qq.com" // 微信支付 API 备份地址
 )
 
+// SDK 相关信息
 const (
-	logTable = "wechatpayopen"
-)
-
-const (
-	UserAgentFormat = "WechatPay-Go/%s (%s) GO/%s" // UserAgent中的信息
-)
-
-// HTTP 请求报文 Header 相关常量
-const (
-	Authorization = "Authorization"  // Header 中的 Authorization 字段
-	Accept        = "Accept"         // Header 中的 Accept 字段
-	ContentType   = "Content-Type"   // Header 中的 ContentType 字段
-	ContentLength = "Content-Length" // Header 中的 ContentLength 字段
-	UserAgent     = "User-Agent"     // Header 中的 UserAgent 字段
-)
-
-// 常用 ContentType
-const (
-	ApplicationJSON = "application/json"
-	ImageJPG        = "image/jpg"
-	ImagePNG        = "image/png"
-	VideoMP4        = "video/mp4"
+	LogTable = "wechatpayopen"
 )
 
 // 请求报文签名相关常量
@@ -38,21 +16,6 @@ const (
 	SignatureMessageFormat = "%s\n%s\n%d\n%s\n%s\n" // 数字签名原文格式
 	// HeaderAuthorizationFormat 请求头中的 Authorization 拼接格式
 	HeaderAuthorizationFormat = "%s mchid=\"%s\",nonce_str=\"%s\",timestamp=\"%d\",serial_no=\"%s\",signature=\"%s\""
-)
-
-// HTTP 应答报文 Header 相关常量
-const (
-	WechatPayTimestamp = "Wechatpay-Timestamp" // 微信支付回包时间戳
-	WechatPayNonce     = "Wechatpay-Nonce"     // 微信支付回包随机字符串
-	WechatPaySignature = "Wechatpay-Signature" // 微信支付回包签名信息
-	WechatPaySerial    = "Wechatpay-Serial"    // 微信支付回包平台序列号
-	RequestID          = "Request-Id"          // 微信支付回包请求ID
-)
-
-// 时间相关常量
-const (
-	FiveMinute     = 5 * 60           // 回包校验最长时间（秒）
-	DefaultTimeout = 30 * time.Second // HTTP 请求默认超时时间
 )
 
 func getAuthorizationType() string {
@@ -64,11 +27,26 @@ func algorithm() string {
 	return "SHA256-RSA2048"
 }
 
+// 接口状态
 const (
-	CodeSuccess = "SUCCESS"
+	CodeSUCCESS    = "SUCCESS"    // 支付成功 退款成功
+	CodeREFUND     = "REFUND"     // 转入退款
+	CodeNOTPAY     = "NOTPAY"     // 未支付
+	CodeCLOSED     = "CLOSED"     // 已关闭 退款关闭
+	CodeREVOKED    = "REVOKED"    // 已撤销
+	CodeUSERPAYING = "USERPAYING" // 用户支付中
+	CodePAYERROR   = "PAYERROR"   // 支付失败
+	CodePROCESSING = "PROCESSING" // 退款处理中
+	CodeABNORMAL   = "ABNORMAL"   // 退款异常
 )
 
 type ApiError struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
 }
+
+const (
+	MERCHANT_ID         = "MERCHANT_ID"
+	PERSONAL_OPENID     = "PERSONAL_OPENID"
+	PERSONAL_SUB_OPENID = "PERSONAL_SUB_OPENID"
+)

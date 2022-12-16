@@ -25,20 +25,36 @@ type WxaGetCategoryResult struct {
 	Result WxaGetCategoryResponse // 结果
 	Body   []byte                 // 内容
 	Http   gorequest.Response     // 请求
-	Err    error                  // 错误
 }
 
-func newWxaGetCategoryResult(result WxaGetCategoryResponse, body []byte, http gorequest.Response, err error) *WxaGetCategoryResult {
-	return &WxaGetCategoryResult{Result: result, Body: body, Http: http, Err: err}
+func newWxaGetCategoryResult(result WxaGetCategoryResponse, body []byte, http gorequest.Response) *WxaGetCategoryResult {
+	return &WxaGetCategoryResult{Result: result, Body: body, Http: http}
 }
 
 // WxaGetCategory 获取审核时可填写的类目信息
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/category/get_category.html
-func (c *Client) WxaGetCategory(ctx context.Context) *WxaGetCategoryResult {
+func (c *Client) WxaGetCategory(ctx context.Context) (*WxaGetCategoryResult, error) {
+	// 检查
+	err := c.checkComponentIsConfig()
+	if err != nil {
+		return nil, err
+	}
+	err = c.checkAuthorizerIsConfig()
+	if err != nil {
+		return nil, err
+	}
+	// 参数
+	params := gorequest.NewParams()
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/get_category?access_token=%s", c.GetAuthorizerAccessToken(ctx)), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/get_category?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodGet)
+	if err != nil {
+		return nil, err
+	}
 	// 定义
 	var response WxaGetCategoryResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return newWxaGetCategoryResult(response, request.ResponseBody, request, err)
+	if err != nil {
+		return nil, err
+	}
+	return newWxaGetCategoryResult(response, request.ResponseBody, request), nil
 }

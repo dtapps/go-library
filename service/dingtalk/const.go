@@ -5,5 +5,5 @@ const (
 )
 
 const (
-	logTable = "dingtalk"
+	LogTable = "dingtalk"
 )

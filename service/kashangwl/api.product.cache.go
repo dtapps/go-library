@@ -12,12 +12,11 @@ type ApiProductCacheResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 	Data    struct {
-		GoodsId            string  `json:"goods_id"`
-		ApiGoodsId         int     `json:"api_goods_id"`
-		GoodsName          string  `json:"goods_name"`
-		ClassificationName string  `json:"classification_name"`
-		GoodsPrice         float64 `json:"goods_price"`
-		PurchaseTips       string  `json:"purchase_tips"`
+		GoodsId      uint    `json:"goods_id"`
+		ApiGoodsId   int64   `json:"api_goods_id"`
+		GoodsName    string  `json:"goods_name"`
+		GoodsPrice   float64 `json:"goods_price"`
+		PurchaseTips string  `json:"purchase_tips"`
 	} `json:"data"`
 	Time    int    `json:"time"`
 	TraceId string `json:"trace_id"`
@@ -38,8 +37,10 @@ func newApiProductCacheResult(result ApiProductCacheResponse, body []byte, http 
 func (c *Client) ApiProductCache(ctx context.Context, productId int64) *ApiProductCacheResult {
 	// 参数
 	params := gorequest.NewParams()
+	params.Set("customer_id", c.GetCustomerId())
+	params.Set("product_id", productId)
 	// 请求
-	request, err := c.requestCache(ctx, fmt.Sprintf("%s/%d/goods_info/%d", apiUrlCache, c.GetCustomerId(), productId), params, http.MethodGet)
+	request, err := c.requestCache(ctx, fmt.Sprintf("%s/goods_info", apiUrlCache), params, http.MethodGet)
 	// 定义
 	var response ApiProductCacheResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

@@ -32,7 +32,7 @@ func (c *Client) EcommerceFundEndDayBalance(ctx context.Context, date string) *E
 	// 参数
 	params := gorequest.NewParams()
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/ecommerce/fund/enddaybalance/%s?date=%s", c.config.SubMchId, date), params, http.MethodGet)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/ecommerce/fund/enddaybalance/%s?date=%s", c.GetSubMchId(), date), params, http.MethodGet)
 	if err != nil {
 		return newEcommerceFundEndDayBalanceResult(EcommerceFundEndDayBalanceResponse{}, request.ResponseBody, request, err)
 	}

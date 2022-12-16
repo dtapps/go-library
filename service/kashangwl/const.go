@@ -14,5 +14,5 @@ const (
 )
 
 const (
-	logTable = "kashangwl"
+	LogTable = "kashangwl"
 )

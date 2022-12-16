@@ -33,7 +33,7 @@ func (c *Client) EcommerceFundBalance(ctx context.Context, accountType string) *
 	// 参数
 	params := gorequest.NewParams()
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/ecommerce/fund/balance/%s?account_type=%s", c.config.SubMchId, accountType), params, http.MethodGet)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/ecommerce/fund/balance/%s?account_type=%s", c.GetSubMchId(), accountType), params, http.MethodGet)
 	if err != nil {
 		return newEcommerceFundBalanceResult(EcommerceFundBalanceResponse{}, request.ResponseBody, request, err)
 	}

@@ -9,32 +9,55 @@ import (
 )
 
 type WxaModifyDomainDirectlyResponse struct {
-	Errcode int    `json:"errcode"` // 错误码
-	Errmsg  string `json:"errmsg"`  // 错误信息
+	Errcode                int      `json:"errcode"`                 // 错误码
+	Errmsg                 string   `json:"errmsg"`                  // 错误信息
+	Requestdomain          []string `json:"requestdomain"`           // request 合法域名
+	Wsrequestdomain        []string `json:"wsrequestdomain"`         // socket 合法域名
+	Uploaddomain           []string `json:"uploaddomain"`            // uploadFile 合法域名
+	Downloaddomain         []string `json:"downloaddomain"`          // downloadFile 合法域名
+	Udpdomain              []string `json:"udpdomain"`               // udp 合法域名
+	Tcpdomain              []string `json:"tcpdomain"`               // tcp 合法域名
+	InvalidRequestdomain   []string `json:"invalid_requestdomain"`   // request 不合法域名
+	InvalidWsrequestdomain []string `json:"invalid_wsrequestdomain"` // socket 不合法域名
+	InvalidUploaddomain    []string `json:"invalid_uploaddomain"`    // uploadFile 不合法域名
+	InvalidDownloaddomain  []string `json:"invalid_downloaddomain"`  // downloadFile 不合法域名
+	InvalidUdpdomain       []string `json:"invalid_udpdomain"`       // udp 不合法域名
+	InvalidTcpdomain       []string `json:"invalid_tcpdomain"`       // tcp 不合法域名
+	NoIcpDomain            []string `json:"no_icp_domain"`           // 没有经过icp备案的域名
 }
 
 type WxaModifyDomainDirectlyResult struct {
 	Result WxaModifyDomainDirectlyResponse // 结果
 	Body   []byte                          // 内容
 	Http   gorequest.Response              // 请求
-	Err    error                           // 错误
 }
 
-func newWxaModifyDomainDirectlyResult(result WxaModifyDomainDirectlyResponse, body []byte, http gorequest.Response, err error) *WxaModifyDomainDirectlyResult {
-	return &WxaModifyDomainDirectlyResult{Result: result, Body: body, Http: http, Err: err}
+func newWxaModifyDomainDirectlyResult(result WxaModifyDomainDirectlyResponse, body []byte, http gorequest.Response) *WxaModifyDomainDirectlyResult {
+	return &WxaModifyDomainDirectlyResult{Result: result, Body: body, Http: http}
 }
 
-// WxaModifyDomainDirectly 快速设置小程序服务器域名
-// https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_Basic_Info/modify_domain_directly.html
-func (c *Client) WxaModifyDomainDirectly(ctx context.Context, notMustParams ...gorequest.Params) *WxaModifyDomainDirectlyResult {
+// WxaModifyDomainDirectly 快速配置小程序服务器域名
+// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/modifyServerDomainDirectly.html
+func (c *Client) WxaModifyDomainDirectly(ctx context.Context, notMustParams ...gorequest.Params) (*WxaModifyDomainDirectlyResult, error) {
+	// 检查
+	err := c.checkComponentIsConfig()
+	if err != nil {
+		return nil, err
+	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/modify_domain_directly?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	if err != nil {
+		return nil, err
+	}
 	// 定义
 	var response WxaModifyDomainDirectlyResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return newWxaModifyDomainDirectlyResult(response, request.ResponseBody, request, err)
+	if err != nil {
+		return nil, err
+	}
+	return newWxaModifyDomainDirectlyResult(response, request.ResponseBody, request), nil
 }
 
 // ErrcodeInfo 错误描述

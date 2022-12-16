@@ -29,12 +29,12 @@ func newApiMiniCodeResult(result ApiMiniCodeResponse, body []byte, http goreques
 func (c *Client) ApiMiniCode(ctx context.Context, actId int64, sid string) *ApiMiniCodeResult {
 	// 参数
 	param := gorequest.NewParams()
-	param.Set("appkey", c.config.AppKey)
+	param.Set("appkey", c.GetAppKey())
 	param.Set("sid", sid)
 	param.Set("actId", actId)
 	// 转换
 	params := gorequest.NewParamsWith(param)
-	params["sign"] = c.getSign(c.config.Secret, params)
+	params["sign"] = c.getSign(c.GetSecret(), params)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/api/miniCode", params, http.MethodGet)
 	// 定义

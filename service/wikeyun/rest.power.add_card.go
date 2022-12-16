@@ -38,7 +38,7 @@ func newRestPowerAddCardResult(result RestPowerAddCardResponse, body []byte, htt
 func (c *Client) RestPowerAddCard(ctx context.Context, notMustParams ...gorequest.Params) *RestPowerAddCardResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("store_id", c.config.StoreId) // 店铺ID
+	params.Set("store_id", c.GetStoreId()) // 店铺ID
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/rest/Power/addCard", params)
 	// 定义

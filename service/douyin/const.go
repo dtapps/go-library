@@ -1,5 +1,5 @@
 package douyin
 
 const (
-	logTable = "douyin"
+	LogTable = "douyin"
 )

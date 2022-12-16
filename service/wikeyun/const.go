@@ -9,5 +9,5 @@ const (
 )
 
 const (
-	logTable = "wikeyun"
+	LogTable = "wikeyun"
 )

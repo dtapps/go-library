@@ -1,60 +1,34 @@
 package kuaishou
 
 import (
-	"github.com/dtapps/go-library/utils/dorm"
 	"github.com/dtapps/go-library/utils/golog"
 	"github.com/dtapps/go-library/utils/gorequest"
-	"gorm.io/gorm"
 )
 
-type ConfigClient struct {
-	MongoDb      *dorm.MongoClient // 日志数据库
-	PgsqlDb      *gorm.DB          // 日志数据库
-	DatabaseName string            // 库名
+// ClientConfig 实例配置
+type ClientConfig struct {
 }
 
+// Client 实例
 type Client struct {
-	ua     string
-	client *gorequest.App   // 请求客户端
-	log    *golog.ApiClient // 日志服务
-	config *ConfigClient    // 配置
+	requestClient *gorequest.App // 请求服务
+	config        struct {
+		ua string // 用户代理
+	}
+	log struct {
+		status bool             // 状态
+		client *golog.ApiClient // 日志服务
+	}
 }
 
-func NewClient(config *ConfigClient) (*Client, error) {
+// NewClient 创建实例化
+func NewClient(config *ClientConfig) (*Client, error) {
 
-	var err error
-	c := &Client{config: config}
+	c := &Client{}
 
-	c.ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36"
+	c.config.ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36"
 
-	c.client = gorequest.NewHttp()
-
-	if c.config.PgsqlDb != nil {
-		c.log, err = golog.NewApiClient(
-			golog.WithGormClient(c.config.PgsqlDb),
-			golog.WithTableName(logTable),
-		)
-		if err != nil {
-			return nil, err
-		}
-	}
-	if c.config.MongoDb != nil {
-		c.log, err = golog.NewApiClient(
-			golog.WithMongoClient(c.config.MongoDb),
-			golog.WithDatabaseName(c.config.DatabaseName),
-			golog.WithCollectionName(logTable),
-		)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	//if c.config.PgsqlDb != nil {
-	//	go c.log.GormMiddleware(request)
-	//}
-	//if c.config.MongoDb != nil {
-	//	go c.log.MongoMiddleware(request)
-	//}
+	c.requestClient = gorequest.NewHttp()
 
 	return c, nil
 }

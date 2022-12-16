@@ -19,24 +19,42 @@ type WxaGetWxaCodeUnLimitResult struct {
 	Result WxaGetWxaCodeUnLimitResponse // 结果
 	Body   []byte                       // 内容
 	Http   gorequest.Response           // 请求
-	Err    error                        // 错误
 }
 
-func newWxaGetWxaCodeUnLimitResult(result WxaGetWxaCodeUnLimitResponse, body []byte, http gorequest.Response, err error) *WxaGetWxaCodeUnLimitResult {
-	return &WxaGetWxaCodeUnLimitResult{Result: result, Body: body, Http: http, Err: err}
+func newWxaGetWxaCodeUnLimitResult(result WxaGetWxaCodeUnLimitResponse, body []byte, http gorequest.Response) *WxaGetWxaCodeUnLimitResult {
+	return &WxaGetWxaCodeUnLimitResult{Result: result, Body: body, Http: http}
 }
 
 // WxaGetWxaCodeUnLimit 获取小程序码，适用于需要的码数量极多的业务场景。通过该接口生成的小程序码，永久有效，数量暂无限制
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.getUnlimited.html
-func (c *Client) WxaGetWxaCodeUnLimit(ctx context.Context, notMustParams ...gorequest.Params) *WxaGetWxaCodeUnLimitResult {
+func (c *Client) WxaGetWxaCodeUnLimit(ctx context.Context, notMustParams ...gorequest.Params) (*WxaGetWxaCodeUnLimitResult, error) {
+	// 检查
+	err := c.checkComponentIsConfig()
+	if err != nil {
+		return nil, err
+	}
+	err = c.checkAuthorizerIsConfig()
+	if err != nil {
+		return nil, err
+	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/getwxacodeunlimit?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	if err != nil {
+		return nil, err
+	}
 	// 定义
 	var response WxaGetWxaCodeUnLimitResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
-	return newWxaGetWxaCodeUnLimitResult(response, request.ResponseBody, request, err)
+	// 判断内容是否为图片
+	if request.HeaderIsImg() {
+	} else {
+		err = json.Unmarshal(request.ResponseBody, &response)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return newWxaGetWxaCodeUnLimitResult(response, request.ResponseBody, request), nil
 }
 
 // ErrcodeInfo 错误描述

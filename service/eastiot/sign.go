@@ -18,7 +18,7 @@ func (c *Client) getSign(p map[string]interface{}) string {
 	for _, key := range keys {
 		signStr += fmt.Sprintf("%s=%s&", key, c.getString(p[key]))
 	}
-	signStr += fmt.Sprintf("apiKey=%s", c.config.ApiKey)
+	signStr += fmt.Sprintf("apiKey=%s", c.GetApiKey())
 	return gomd5.ToUpper(signStr)
 }
 

@@ -59,7 +59,7 @@ func newPromoterProductGenerateResult(result PromoterProductGenerateResponse, bo
 func (c *Client) PromoterProductGenerate(ctx context.Context, notMustParams ...gorequest.Params) *PromoterProductGenerateResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("pid", c.getPid())
+	params.Set("pid", c.GetPid())
 	// 请求
 	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/promoter/product/generate?access_token=%s", c.getAccessToken(ctx)), params, http.MethodPost)
 	// 定义

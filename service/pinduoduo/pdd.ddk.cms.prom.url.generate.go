@@ -66,7 +66,7 @@ func newCmsPromUrlGenerateResult(result CmsPromUrlGenerateResponse, body []byte,
 func (c *Client) CmsPromUrlGenerate(ctx context.Context, notMustParams ...Params) *CmsPromUrlGenerateResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.cms.prom.url.generate", notMustParams...)
-	params.Set("p_id_list", []string{c.config.Pid})
+	params.Set("p_id_list", []string{c.GetPid()})
 	// 请求
 	request, err := c.request(ctx, params)
 	// 定义

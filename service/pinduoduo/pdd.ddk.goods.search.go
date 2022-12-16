@@ -97,7 +97,7 @@ func newGoodsSearchResult(result GoodsSearchResponse, body []byte, http goreques
 func (c *Client) GoodsSearch(ctx context.Context, notMustParams ...Params) *GoodsSearchResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.search", notMustParams...)
-	params.Set("pid", c.config.Pid)
+	params.Set("pid", c.GetPid())
 	// 请求
 	request, err := c.request(ctx, params)
 	// 定义

@@ -5,5 +5,5 @@ const (
 )
 
 const (
-	logTable = "wechatpayapiv2"
+	LogTable = "wechatpayapiv2"
 )

@@ -29,7 +29,7 @@ func newMoneyJkUserResult(result MoneyJkUserResponse, body []byte, http goreques
 // MoneyJkUser 用户余额查询
 func (c *Client) MoneyJkUser(ctx context.Context) *MoneyJkUserResult {
 	// 签名
-	c.signStr = fmt.Sprintf("userid%vpwd%v", c.getUserId(), c.getPwd())
+	c.config.signStr = fmt.Sprintf("userid%vpwd%v", c.GetUserId(), c.GetPwd())
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/money_jkuser.do", map[string]interface{}{}, http.MethodGet)
 	// 定义

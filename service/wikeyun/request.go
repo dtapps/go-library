@@ -14,16 +14,19 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	sign := c.sign(params)
 
 	// 创建请求
-	client := c.client
+	client := c.requestClient
 
 	// 设置请求地址
-	client.SetUri(fmt.Sprintf("%s?app_key=%d&timestamp=%s&client=%s&format=%s&v=%s&sign=%s", url, c.config.AppKey, sign.Timestamp, sign.Client, sign.Format, sign.V, sign.Sign))
+	client.SetUri(fmt.Sprintf("%s?app_key=%d&timestamp=%s&client=%s&format=%s&v=%s&sign=%s", url, c.GetAppKey(), sign.Timestamp, sign.Client, sign.Format, sign.V, sign.Sign))
 
 	// 设置FORM格式
 	client.SetContentTypeForm()
 
 	// 设置参数
 	client.SetParams(params)
+
+	// 传入SDk版本
+	client.AfferentSdkUserVersion(go_library.Version())
 
 	// 发起请求
 	request, err := client.Post(ctx)
@@ -32,11 +35,8 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	}
 
 	// 日志
-	if c.config.PgsqlDb != nil {
-		go c.log.GormMiddleware(ctx, request, go_library.Version())
-	}
-	if c.config.MongoDb != nil {
-		go c.log.MongoMiddleware(ctx, request, go_library.Version())
+	if c.log.status {
+		go c.log.client.Middleware(ctx, request, go_library.Version())
 	}
 
 	return request, err

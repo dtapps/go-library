@@ -1,5 +1,5 @@
 package weishi
 
 const (
-	logTable = "weishi"
+	LogTable = "weishi"
 )

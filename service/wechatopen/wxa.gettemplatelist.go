@@ -28,22 +28,34 @@ type WxaGetTemplateListResult struct {
 	Result WxaGetTemplateListResponse // 结果
 	Body   []byte                     // 内容
 	Http   gorequest.Response         // 请求
-	Err    error                      // 错误
 }
 
-func newWxaGetTemplateListResult(result WxaGetTemplateListResponse, body []byte, http gorequest.Response, err error) *WxaGetTemplateListResult {
-	return &WxaGetTemplateListResult{Result: result, Body: body, Http: http, Err: err}
+func newWxaGetTemplateListResult(result WxaGetTemplateListResponse, body []byte, http gorequest.Response) *WxaGetTemplateListResult {
+	return &WxaGetTemplateListResult{Result: result, Body: body, Http: http}
 }
 
 // WxaGetTemplateList 获取代码模板列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/gettemplatelist.html
-func (c *Client) WxaGetTemplateList(ctx context.Context) *WxaGetTemplateListResult {
+func (c *Client) WxaGetTemplateList(ctx context.Context) (*WxaGetTemplateListResult, error) {
+	// 检查
+	err := c.checkComponentIsConfig()
+	if err != nil {
+		return nil, err
+	}
+	// 参数
+	params := gorequest.NewParams()
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/gettemplatelist?access_token=%s", c.GetComponentAccessToken(ctx)), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/gettemplatelist?access_token=%s", c.GetComponentAccessToken(ctx)), params, http.MethodGet)
+	if err != nil {
+		return nil, err
+	}
 	// 定义
 	var response WxaGetTemplateListResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return newWxaGetTemplateListResult(response, request.ResponseBody, request, err)
+	if err != nil {
+		return nil, err
+	}
+	return newWxaGetTemplateListResult(response, request.ResponseBody, request), nil
 }
 
 // ErrcodeInfo 错误描述

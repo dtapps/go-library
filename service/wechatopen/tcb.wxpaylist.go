@@ -24,24 +24,35 @@ type TckWxPayListResult struct {
 	Result TckWxPayListResponse // 结果
 	Body   []byte               // 内容
 	Http   gorequest.Response   // 请求
-	Err    error                // 错误
 }
 
-func newTckWxPayListResult(result TckWxPayListResponse, body []byte, http gorequest.Response, err error) *TckWxPayListResult {
-	return &TckWxPayListResult{Result: result, Body: body, Http: http, Err: err}
+func newTckWxPayListResult(result TckWxPayListResponse, body []byte, http gorequest.Response) *TckWxPayListResult {
+	return &TckWxPayListResult{Result: result, Body: body, Http: http}
 }
 
 // TckWxPayList 获取授权绑定的商户号列表
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/cloudbase-common/wechatpay/getWechatPayList.html
-func (c *Client) TckWxPayList(ctx context.Context) *TckWxPayListResult {
+func (c *Client) TckWxPayList(ctx context.Context) (*TckWxPayListResult, error) {
+	// 检查
+	err := c.checkComponentIsConfig()
+	if err != nil {
+		return nil, err
+	}
+	// 参数
 	// 参数
 	params := gorequest.NewParams()
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/tcb/wxpaylist?access_token="+c.GetComponentAccessToken(ctx), params, http.MethodPost)
+	if err != nil {
+		return nil, err
+	}
 	// 定义
 	var response TckWxPayListResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return newTckWxPayListResult(response, request.ResponseBody, request, err)
+	if err != nil {
+		return nil, err
+	}
+	return newTckWxPayListResult(response, request.ResponseBody, request), nil
 }
 
 // ErrcodeInfo 错误描述

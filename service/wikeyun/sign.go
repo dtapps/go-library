@@ -25,26 +25,26 @@ func (c *Client) sign(params map[string]interface{}) respSign {
 	v := "1.0"
 	format := "json"
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
-	params["v"] = v                     // 客户端接口版本，目前是1.0
-	params["format"] = format           // 默认json
-	params["app_key"] = c.config.AppKey // 应用唯一表示
-	params["client"] = c.clientIp       // 客户端请求ip
-	params["timestamp"] = timestamp     // unix时间戳（秒单位）
+	params["v"] = v                    // 客户端接口版本，目前是1.0
+	params["format"] = format          // 默认json
+	params["app_key"] = c.GetAppKey()  // 应用唯一表示
+	params["client"] = c.GetClientIp() // 客户端请求ip
+	params["timestamp"] = timestamp    // unix时间戳（秒单位）
 	// 排序所有的 key
 	var keys []string
 	for key := range params {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
-	signStr := c.config.AppSecret
+	signStr := c.GetAppSecret()
 	for _, key := range keys {
 		signStr += key + getString(params[key])
 	}
-	signStr += c.config.AppSecret
+	signStr += c.GetAppSecret()
 	return respSign{
-		AppKey:    c.config.AppKey,
+		AppKey:    c.GetAppKey(),
 		Timestamp: timestamp,
-		Client:    c.clientIp,
+		Client:    c.GetClientIp(),
 		V:         v,
 		Format:    format,
 		Sign:      c.createSign(signStr),

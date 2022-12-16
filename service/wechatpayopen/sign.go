@@ -86,7 +86,7 @@ func (c *Client) authorization(method string, paramMap map[string]interface{}, r
 	// 构造签名串
 	message := fmt.Sprintf(SignatureMessageFormat, method, canonicalUrl, timestamp, nonce, signBody)
 
-	sign, err := c.signSHA256WithRSA(message, c.getRsa([]byte(c.config.MchSslKey)))
+	sign, err := c.signSHA256WithRSA(message, c.getRsa([]byte(c.GetMchSslKey())))
 
 	if err != nil {
 		return token, err
@@ -94,7 +94,7 @@ func (c *Client) authorization(method string, paramMap map[string]interface{}, r
 
 	authorization := fmt.Sprintf(
 		HeaderAuthorizationFormat, getAuthorizationType(),
-		c.config.SpMchId, nonce, timestamp, c.config.MchSslSerialNo, sign,
+		c.GetSpMchId(), nonce, timestamp, c.GetMchSslSerialNo(), sign,
 	)
 
 	return authorization, nil

@@ -51,14 +51,15 @@ type RefundDomesticRefundsResponse struct {
 }
 
 type RefundDomesticRefundsResult struct {
-	Result RefundDomesticRefundsResponse // 结果
-	Body   []byte                        // 内容
-	Http   gorequest.Response            // 请求
-	Err    error                         // 错误
+	Result   RefundDomesticRefundsResponse // 结果
+	Body     []byte                        // 内容
+	Http     gorequest.Response            // 请求
+	Err      error                         // 错误
+	ApiError ApiError                      // 接口错误
 }
 
-func newRefundDomesticRefundsResult(result RefundDomesticRefundsResponse, body []byte, http gorequest.Response, err error) *RefundDomesticRefundsResult {
-	return &RefundDomesticRefundsResult{Result: result, Body: body, Http: http, Err: err}
+func newRefundDomesticRefundsResult(result RefundDomesticRefundsResponse, body []byte, http gorequest.Response, err error, apiError ApiError) *RefundDomesticRefundsResult {
+	return &RefundDomesticRefundsResult{Result: result, Body: body, Http: http, Err: err, ApiError: apiError}
 }
 
 // RefundDomesticRefunds 申请退款API
@@ -66,14 +67,17 @@ func newRefundDomesticRefundsResult(result RefundDomesticRefundsResponse, body [
 func (c *Client) RefundDomesticRefunds(ctx context.Context, notMustParams ...gorequest.Params) *RefundDomesticRefundsResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("sub_mchid", c.config.SubMchId) // 子商户号
+	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/refund/domestic/refunds", params, http.MethodPost)
 	if err != nil {
-		return newRefundDomesticRefundsResult(RefundDomesticRefundsResponse{}, request.ResponseBody, request, err)
+		return newRefundDomesticRefundsResult(RefundDomesticRefundsResponse{}, request.ResponseBody, request, err, ApiError{})
 	}
 	// 定义
 	var response RefundDomesticRefundsResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return newRefundDomesticRefundsResult(response, request.ResponseBody, request, err)
+	// 错误
+	var apiError ApiError
+	err = json.Unmarshal(request.ResponseBody, &apiError)
+	return newRefundDomesticRefundsResult(response, request.ResponseBody, request, err, apiError)
 }

@@ -17,13 +17,16 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	params["sign"] = c.getSign(c.GetCustomerKey(), params)
 
 	// 创建请求
-	client := c.client
+	client := c.requestClient
 
 	// 设置请求地址
 	client.SetUri(url)
 
 	// 设置格式
 	client.SetContentTypeJson()
+
+	// 设置用户代理
+	client.SetUserAgent(gorequest.GetRandomUserAgentSystem())
 
 	// 设置参数
 	client.SetParams(params)
@@ -35,11 +38,8 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	}
 
 	// 日志
-	if c.config.PgsqlDb != nil {
-		go c.log.GormMiddleware(ctx, request, go_library.Version())
-	}
-	if c.config.MongoDb != nil {
-		go c.log.MongoMiddleware(ctx, request, go_library.Version())
+	if c.log.status {
+		go c.log.client.Middleware(ctx, request, go_library.Version())
 	}
 
 	return request, err
@@ -48,7 +48,7 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 func (c *Client) requestCache(ctx context.Context, url string, params map[string]interface{}, method string) (gorequest.Response, error) {
 
 	// 创建请求
-	client := c.client
+	client := c.requestClient
 
 	// 设置请求地址
 	client.SetUri(url)
@@ -58,6 +58,9 @@ func (c *Client) requestCache(ctx context.Context, url string, params map[string
 
 	// 设置FORM格式
 	client.SetContentTypeJson()
+
+	// 设置用户代理
+	client.SetUserAgent(gorequest.GetRandomUserAgentSystem())
 
 	// 设置参数
 	client.SetParams(params)
@@ -69,11 +72,8 @@ func (c *Client) requestCache(ctx context.Context, url string, params map[string
 	}
 
 	// 日志
-	if c.config.PgsqlDb != nil {
-		go c.log.GormMiddleware(ctx, request, go_library.Version())
-	}
-	if c.config.MongoDb != nil {
-		go c.log.MongoMiddleware(ctx, request, go_library.Version())
+	if c.log.status {
+		go c.log.client.Middleware(ctx, request, go_library.Version())
 	}
 
 	return request, err

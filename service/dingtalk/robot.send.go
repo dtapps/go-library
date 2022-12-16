@@ -33,7 +33,7 @@ func (c *Client) RobotSend(ctx context.Context, notMustParams ...gorequest.Param
 	// 时间
 	timestamp := time.Now().UnixNano() / 1e6
 	// 请求
-	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/robot/send?access_token=%s&timestamp=%d&sign=%s", c.config.AccessToken, timestamp, c.sign(timestamp)), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/robot/send?access_token=%s&timestamp=%d&sign=%s", c.GetAccessToken(), timestamp, c.sign(timestamp)), params, http.MethodPost)
 	// 定义
 	var response RobotSendResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

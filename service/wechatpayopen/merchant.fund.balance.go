@@ -14,14 +14,15 @@ type MerchantFundBalanceResponse struct {
 }
 
 type MerchantFundBalanceResult struct {
-	Result MerchantFundBalanceResponse // 结果
-	Body   []byte                      // 内容
-	Http   gorequest.Response          // 请求
-	Err    error                       // 错误
+	Result   MerchantFundBalanceResponse // 结果
+	Body     []byte                      // 内容
+	Http     gorequest.Response          // 请求
+	Err      error                       // 错误
+	ApiError ApiError                    // 接口错误
 }
 
-func newMerchantFundBalanceResult(result MerchantFundBalanceResponse, body []byte, http gorequest.Response, err error) *MerchantFundBalanceResult {
-	return &MerchantFundBalanceResult{Result: result, Body: body, Http: http, Err: err}
+func newMerchantFundBalanceResult(result MerchantFundBalanceResponse, body []byte, http gorequest.Response, err error, apiError ApiError) *MerchantFundBalanceResult {
+	return &MerchantFundBalanceResult{Result: result, Body: body, Http: http, Err: err, ApiError: apiError}
 }
 
 // MerchantFundBalance 查询电商平台账户实时余额API
@@ -33,10 +34,13 @@ func (c *Client) MerchantFundBalance(ctx context.Context, accountType string) *M
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/merchant/fund/balance/%s", accountType), params, http.MethodGet)
 	if err != nil {
-		return newMerchantFundBalanceResult(MerchantFundBalanceResponse{}, request.ResponseBody, request, err)
+		return newMerchantFundBalanceResult(MerchantFundBalanceResponse{}, request.ResponseBody, request, err, ApiError{})
 	}
 	// 定义
 	var response MerchantFundBalanceResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return newMerchantFundBalanceResult(response, request.ResponseBody, request, err)
+	// 错误
+	var apiError ApiError
+	err = json.Unmarshal(request.ResponseBody, &apiError)
+	return newMerchantFundBalanceResult(response, request.ResponseBody, request, err, apiError)
 }

@@ -1,52 +1,38 @@
 package dingtalk
 
 import (
-	"github.com/dtapps/go-library/utils/dorm"
 	"github.com/dtapps/go-library/utils/golog"
 	"github.com/dtapps/go-library/utils/gorequest"
-	"gorm.io/gorm"
 )
 
-type ConfigClient struct {
-	Secret       string
-	AccessToken  string
-	MongoDb      *dorm.MongoClient // 日志数据库
-	PgsqlDb      *gorm.DB          // 日志数据库
-	DatabaseName string            // 库名
+// ClientConfig 实例配置
+type ClientConfig struct {
+	Secret      string
+	AccessToken string
 }
 
+// Client 实例
 type Client struct {
-	client *gorequest.App   // 请求客户端
-	log    *golog.ApiClient // 日志服务
-	config *ConfigClient    // 配置
+	requestClient *gorequest.App // 请求服务
+	config        struct {
+		secret      string
+		accessToken string
+	}
+	log struct {
+		status bool             // 状态
+		client *golog.ApiClient // 日志服务
+	}
 }
 
-func NewClient(config *ConfigClient) (*Client, error) {
+// NewClient 创建实例化
+func NewClient(config *ClientConfig) (*Client, error) {
 
-	var err error
-	c := &Client{config: config}
+	c := &Client{}
 
-	c.client = gorequest.NewHttp()
+	c.config.secret = config.Secret
+	c.config.accessToken = config.AccessToken
 
-	if c.config.PgsqlDb != nil {
-		c.log, err = golog.NewApiClient(
-			golog.WithGormClient(c.config.PgsqlDb),
-			golog.WithTableName(logTable),
-		)
-		if err != nil {
-			return nil, err
-		}
-	}
-	if c.config.MongoDb != nil {
-		c.log, err = golog.NewApiClient(
-			golog.WithMongoClient(c.config.MongoDb),
-			golog.WithDatabaseName(c.config.DatabaseName),
-			golog.WithCollectionName(logTable),
-		)
-		if err != nil {
-			return nil, err
-		}
-	}
+	c.requestClient = gorequest.NewHttp()
 
 	return c, nil
 }

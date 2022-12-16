@@ -31,7 +31,7 @@ func newCgiBinTokenResult(result CgiBinTokenResponse, byte []byte, http goreques
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/access-token/auth.getAccessToken.html
 func (c *Client) CgiBinToken(ctx context.Context) *CgiBinTokenResult {
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", c.getAppId(), c.getAppSecret()), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(ctx, fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", c.GetAppId(), c.GetAppSecret()), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response CgiBinTokenResponse
 	err = json.Unmarshal(request.ResponseBody, &response)

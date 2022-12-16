@@ -27,22 +27,34 @@ type WxaGetTemplateDraftListResult struct {
 	Result WxaGetTemplateDraftListResponse // 结果
 	Body   []byte                          // 内容
 	Http   gorequest.Response              // 请求
-	Err    error                           // 错误
 }
 
-func newWxaGetTemplateDraftListResult(result WxaGetTemplateDraftListResponse, body []byte, http gorequest.Response, err error) *WxaGetTemplateDraftListResult {
-	return &WxaGetTemplateDraftListResult{Result: result, Body: body, Http: http, Err: err}
+func newWxaGetTemplateDraftListResult(result WxaGetTemplateDraftListResponse, body []byte, http gorequest.Response) *WxaGetTemplateDraftListResult {
+	return &WxaGetTemplateDraftListResult{Result: result, Body: body, Http: http}
 }
 
 // WxaGetTemplateDraftList 获取代码草稿列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/gettemplatedraftlist.html
-func (c *Client) WxaGetTemplateDraftList(ctx context.Context) *WxaGetTemplateDraftListResult {
+func (c *Client) WxaGetTemplateDraftList(ctx context.Context) (*WxaGetTemplateDraftListResult, error) {
+	// 检查
+	err := c.checkComponentIsConfig()
+	if err != nil {
+		return nil, err
+	}
+	// 参数
+	params := gorequest.NewParams()
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/gettemplatedraftlist?access_token=%s", c.GetComponentAccessToken(ctx)), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/gettemplatedraftlist?access_token=%s", c.GetComponentAccessToken(ctx)), params, http.MethodGet)
+	if err != nil {
+		return nil, err
+	}
 	// 定义
 	var response WxaGetTemplateDraftListResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return newWxaGetTemplateDraftListResult(response, request.ResponseBody, request, err)
+	if err != nil {
+		return nil, err
+	}
+	return newWxaGetTemplateDraftListResult(response, request.ResponseBody, request), nil
 }
 
 // ErrcodeInfo 错误描述

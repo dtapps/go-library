@@ -8,11 +8,13 @@ import (
 )
 
 type TransfersQueryResponse struct {
-	ReturnCode     string `json:"return_code" xml:"return_code"`                         // 返回状态码
-	ReturnMsg      string `json:"return_msg,omitempty" xml:"return_msg,omitempty"`       // 返回信息
-	ResultCode     string `json:"result_code" xml:"result_code"`                         // 业务结果
-	ErrCode        string `json:"err_code,omitempty" xml:"err_code,omitempty"`           // 错误代码
-	ErrCodeDes     string `json:"err_code_des,omitempty" xml:"err_code_des,omitempty"`   // 错误代码描述
+	ReturnCode string `json:"return_code" xml:"return_code"`                   // 返回状态码
+	ReturnMsg  string `json:"return_msg,omitempty" xml:"return_msg,omitempty"` // 返回信息
+
+	ResultCode string `json:"result_code" xml:"result_code"`                       // 业务结果
+	ErrCode    string `json:"err_code,omitempty" xml:"err_code,omitempty"`         // 错误代码
+	ErrCodeDes string `json:"err_code_des,omitempty" xml:"err_code_des,omitempty"` // 错误代码描述
+
 	PartnerTradeNo string `json:"partner_trade_no" xml:"partner_trade_no"`               // 商户单号
 	Appid          string `json:"appid" xml:"appid"`                                     // Appid
 	MchId          string `json:"mch_id" xml:"mch_id"`                                   // 商户号
@@ -40,6 +42,7 @@ func newTransfersQueryResult(result TransfersQueryResponse, body []byte, http go
 
 // TransfersQuery
 // 付款到零钱 - 查询付款
+// 需要证书
 // https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_3
 func (c *Client) TransfersQuery(ctx context.Context, partnerTradeNo string) *TransfersQueryResult {
 	cert, err := c.P12ToPem()
@@ -52,7 +55,7 @@ func (c *Client) TransfersQuery(ctx context.Context, partnerTradeNo string) *Tra
 	// 签名
 	params.Set("sign", c.getMd5Sign(params))
 	// 	请求
-	request, err := c.request(ctx, apiUrl+"/mmpaymkttransfers/gettransferinfo", params, cert)
+	request, err := c.request(ctx, apiUrl+"/mmpaymkttransfers/gettransferinfo", params, true, cert)
 	// 定义
 	var response TransfersQueryResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)

@@ -1,58 +1,53 @@
 package wechatpayapiv3
 
 import (
-	"github.com/dtapps/go-library/utils/dorm"
 	"github.com/dtapps/go-library/utils/golog"
 	"github.com/dtapps/go-library/utils/gorequest"
-	"gorm.io/gorm"
 )
 
-type ConfigClient struct {
-	AppId          string            // 小程序或者公众号唯一凭证
-	AppSecret      string            // 小程序或者公众号唯一凭证密钥
-	MchId          string            // 微信支付的商户id
-	AesKey         string            // 私钥
-	ApiV3          string            // API v3密钥
-	MchSslSerialNo string            // pem 证书号
-	MchSslKey      string            // pem key 内容
-	MongoDb        *dorm.MongoClient // 日志数据库
-	PgsqlDb        *gorm.DB          // 日志数据库
-	DatabaseName   string            // 库名
+// ClientConfig 实例配置
+type ClientConfig struct {
+	AppId          string // 小程序或者公众号唯一凭证
+	AppSecret      string // 小程序或者公众号唯一凭证密钥
+	MchId          string // 微信支付的商户id
+	AesKey         string // 私钥
+	ApiV3          string // API v3密钥
+	MchSslSerialNo string // pem 证书号
+	MchSslKey      string // pem key 内容
 }
 
-// Client 微信支付直连商户
+// Client 实例
 type Client struct {
-	client *gorequest.App   // 请求客户端
-	log    *golog.ApiClient // 日志服务
-	config *ConfigClient    // 配置
+	requestClient *gorequest.App // 请求服务
+	config        struct {
+		appId          string // 小程序或者公众号唯一凭证
+		appSecret      string // 小程序或者公众号唯一凭证密钥
+		mchId          string // 微信支付的商户id
+		aesKey         string // 私钥
+		apiV3          string // API v3密钥
+		mchSslSerialNo string // pem 证书号
+		mchSslKey      string // pem key 内容
+	}
+	log struct {
+		status bool             // 状态
+		client *golog.ApiClient // 日志服务
+	}
 }
 
-func NewClient(config *ConfigClient) (*Client, error) {
+// NewClient 创建实例化
+func NewClient(config *ClientConfig) (*Client, error) {
 
-	var err error
-	c := &Client{config: config}
+	c := &Client{}
 
-	c.client = gorequest.NewHttp()
+	c.config.appId = config.AppId
+	c.config.appSecret = config.AppSecret
+	c.config.mchId = config.MchId
+	c.config.aesKey = config.AesKey
+	c.config.apiV3 = config.ApiV3
+	c.config.mchSslSerialNo = config.MchSslSerialNo
+	c.config.mchSslKey = config.MchSslKey
 
-	if c.config.PgsqlDb != nil {
-		c.log, err = golog.NewApiClient(
-			golog.WithGormClient(c.config.PgsqlDb),
-			golog.WithTableName(logTable),
-		)
-		if err != nil {
-			return nil, err
-		}
-	}
-	if c.config.MongoDb != nil {
-		c.log, err = golog.NewApiClient(
-			golog.WithMongoClient(c.config.MongoDb),
-			golog.WithDatabaseName(c.config.DatabaseName),
-			golog.WithCollectionName(logTable),
-		)
-		if err != nil {
-			return nil, err
-		}
-	}
+	c.requestClient = gorequest.NewHttp()
 
 	return c, nil
 }

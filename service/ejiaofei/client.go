@@ -1,54 +1,42 @@
 package ejiaofei
 
 import (
-	"github.com/dtapps/go-library/utils/dorm"
 	"github.com/dtapps/go-library/utils/golog"
 	"github.com/dtapps/go-library/utils/gorequest"
-	"gorm.io/gorm"
 )
 
-type ConfigClient struct {
-	UserId       string
-	Pwd          string
-	Key          string
-	MongoDb      *dorm.MongoClient // 日志数据库
-	PgsqlDb      *gorm.DB          // 日志数据库
-	DatabaseName string            // 库名
+// ClientConfig 实例配置
+type ClientConfig struct {
+	UserId string
+	Pwd    string
+	Key    string
 }
 
+// Client 实例
 type Client struct {
-	client  *gorequest.App   // 请求客户端
-	log     *golog.ApiClient // 日志服务
-	signStr string           // 加密信息
-	config  *ConfigClient    // 配置
+	requestClient *gorequest.App // 请求服务
+	config        struct {
+		userId  string
+		pwd     string
+		key     string
+		signStr string // 需要签名的字符串
+	}
+	log struct {
+		status bool             // 状态
+		client *golog.ApiClient // 日志服务
+	}
 }
 
-func NewClient(config *ConfigClient) (*Client, error) {
+// NewClient 创建实例化
+func NewClient(config *ClientConfig) (*Client, error) {
 
-	var err error
-	c := &Client{config: config}
+	c := &Client{}
 
-	c.client = gorequest.NewHttp()
+	c.config.userId = config.UserId
+	c.config.pwd = config.Pwd
+	c.config.key = config.Key
 
-	if c.config.PgsqlDb != nil {
-		c.log, err = golog.NewApiClient(
-			golog.WithGormClient(c.config.PgsqlDb),
-			golog.WithTableName(logTable),
-		)
-		if err != nil {
-			return nil, err
-		}
-	}
-	if c.config.MongoDb != nil {
-		c.log, err = golog.NewApiClient(
-			golog.WithMongoClient(c.config.MongoDb),
-			golog.WithDatabaseName(c.config.DatabaseName),
-			golog.WithCollectionName(logTable),
-		)
-		if err != nil {
-			return nil, err
-		}
-	}
+	c.requestClient = gorequest.NewHttp()
 
-	return c, err
+	return c, nil
 }

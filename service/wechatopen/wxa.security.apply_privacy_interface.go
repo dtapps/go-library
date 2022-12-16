@@ -18,24 +18,34 @@ type WxaSecurityApplyPrivacyInterfaceResult struct {
 	Result WxaSecurityApplyPrivacyInterfaceResponse // 结果
 	Body   []byte                                   // 内容
 	Http   gorequest.Response                       // 请求
-	Err    error                                    // 错误
 }
 
-func newWxaSecurityApplyPrivacyInterfaceResult(result WxaSecurityApplyPrivacyInterfaceResponse, body []byte, http gorequest.Response, err error) *WxaSecurityApplyPrivacyInterfaceResult {
-	return &WxaSecurityApplyPrivacyInterfaceResult{Result: result, Body: body, Http: http, Err: err}
+func newWxaSecurityApplyPrivacyInterfaceResult(result WxaSecurityApplyPrivacyInterfaceResponse, body []byte, http gorequest.Response) *WxaSecurityApplyPrivacyInterfaceResult {
+	return &WxaSecurityApplyPrivacyInterfaceResult{Result: result, Body: body, Http: http}
 }
 
 // WxaSecurityApplyPrivacyInterface 申请接口
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/apply_api/apply_privacy_interface.html
-func (c *Client) WxaSecurityApplyPrivacyInterface(ctx context.Context, notMustParams ...gorequest.Params) *WxaSecurityApplyPrivacyInterfaceResult {
+func (c *Client) WxaSecurityApplyPrivacyInterface(ctx context.Context, notMustParams ...gorequest.Params) (*WxaSecurityApplyPrivacyInterfaceResult, error) {
+	// 检查
+	err := c.checkComponentIsConfig()
+	if err != nil {
+		return nil, err
+	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/security/apply_privacy_interface?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	if err != nil {
+		return nil, err
+	}
 	// 定义
 	var response WxaSecurityApplyPrivacyInterfaceResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return newWxaSecurityApplyPrivacyInterfaceResult(response, request.ResponseBody, request, err)
+	if err != nil {
+		return nil, err
+	}
+	return newWxaSecurityApplyPrivacyInterfaceResult(response, request.ResponseBody, request), nil
 }
 
 // ErrcodeInfo 错误描述

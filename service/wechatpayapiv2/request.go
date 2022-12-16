@@ -7,10 +7,10 @@ import (
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
-func (c *Client) request(ctx context.Context, url string, params map[string]interface{}, cert *tls.Certificate) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, params map[string]interface{}, certStatus bool, cert *tls.Certificate) (gorequest.Response, error) {
 
 	// 创建请求
-	client := c.client
+	client := c.requestClient
 
 	// 设置请求地址
 	client.SetUri(url)
@@ -22,7 +22,9 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	client.SetParams(params)
 
 	// 设置证书
-	client.SetP12Cert(cert)
+	if certStatus {
+		client.SetP12Cert(cert)
+	}
 
 	// 发起请求
 	request, err := client.Post(ctx)
@@ -30,12 +32,9 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 		return gorequest.Response{}, err
 	}
 
-	// 日志
-	if c.config.PgsqlDb != nil {
-		go c.log.GormMiddlewareXml(ctx, request, go_library.Version())
-	}
-	if c.config.MongoDb != nil {
-		go c.log.MongoMiddlewareXml(ctx, request, go_library.Version())
+	// 记录日志
+	if c.log.status {
+		go c.log.client.MiddlewareXml(ctx, request, go_library.Version())
 	}
 
 	return request, err

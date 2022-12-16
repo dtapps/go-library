@@ -51,7 +51,7 @@ func (c *Client) GprsChOngZhiAdvance(ctx context.Context, notMustParams ...goreq
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 签名
-	c.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vgprs%varea%veffecttime%vvalidity%vtimes%v", c.getUserId(), c.getPwd(), params["orderid"], params["account"], params["gprs"], params["area"], params["effecttime"], params["validity"], params["times"])
+	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vgprs%varea%veffecttime%vvalidity%vtimes%v", c.GetUserId(), c.GetPwd(), params["orderid"], params["account"], params["gprs"], params["area"], params["effecttime"], params["validity"], params["times"])
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/gprsChongzhiAdvance.do", params, http.MethodGet)
 	// 定义

@@ -10,17 +10,17 @@ type ApiProductResponse struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
 	Data    struct {
-		Id                      int     `json:"id"`                        // 商品编号
-		ProductName             string  `json:"product_name"`              // 商品名称
-		Name                    string  `json:"name"`                      // 规格名称
-		Price                   float64 `json:"price"`                     // 售价
-		ValidPurchasingQuantity string  `json:"valid_purchasing_quantity"` // 合法的购买数量
-		SuperiorCommissionsRate int     `json:"superior_commissions_rate"` // 上级佣金比例
-		Type                    int     `json:"type"`                      // 商品类型（1：充值，2：卡密，3：卡券，4：人工）
-		SupplyState             int     `json:"supply_state"`              // 库存状态（1：充足，2：断货）
-		StockState              int     `json:"stock_state"`               // 状态（1：上架，2：维护，3：下架）
-		BanStartAt              string  `json:"ban_start_at"`              // 禁售开始时间
-		BanEndAt                string  `json:"ban_end_at"`                // 禁售结束时间
+		Id                      int    `json:"id"`                        // 商品编号
+		ProductName             string `json:"product_name,omitempty"`    // 商品名称
+		Name                    string `json:"name"`                      // 规格名称
+		Price                   string `json:"price"`                     // 售价
+		ValidPurchasingQuantity string `json:"valid_purchasing_quantity"` // 合法的购买数量
+		SuperiorCommissionsRate int    `json:"superior_commissions_rate"` // 上级佣金比例
+		Type                    int    `json:"type"`                      // 商品类型（1：充值，2：卡密，3：卡券，4：人工）
+		SupplyState             int    `json:"supply_state"`              // 库存状态（1：充足，2：断货）
+		StockState              int    `json:"stock_state"`               // 状态（1：上架，2：维护，3：下架）
+		BanStartAt              string `json:"ban_start_at,omitempty"`    // 禁售开始时间
+		BanEndAt                string `json:"ban_end_at,omitempty"`      // 禁售结束时间
 	} `json:"data"`
 }
 

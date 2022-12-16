@@ -1,5 +1,5 @@
 package kuaishou
 
 const (
-	logTable = "kuaishou"
+	LogTable = "kuaishou"
 )

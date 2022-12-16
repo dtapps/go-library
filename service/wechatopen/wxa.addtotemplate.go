@@ -17,26 +17,36 @@ type WxaAddToTemplateResult struct {
 	Result WxaAddToTemplateResponse // 结果
 	Body   []byte                   // 内容
 	Http   gorequest.Response       // 请求
-	Err    error                    // 错误
 }
 
-func newWxaAddToTemplateResult(result WxaAddToTemplateResponse, body []byte, http gorequest.Response, err error) *WxaAddToTemplateResult {
-	return &WxaAddToTemplateResult{Result: result, Body: body, Http: http, Err: err}
+func newWxaAddToTemplateResult(result WxaAddToTemplateResponse, body []byte, http gorequest.Response) *WxaAddToTemplateResult {
+	return &WxaAddToTemplateResult{Result: result, Body: body, Http: http}
 }
 
 // WxaAddToTemplate 将草稿添加到代码模板库
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/addtotemplate.html
-func (c *Client) WxaAddToTemplate(ctx context.Context, draftId string, templateType int) *WxaAddToTemplateResult {
+func (c *Client) WxaAddToTemplate(ctx context.Context, draftId string, templateType int) (*WxaAddToTemplateResult, error) {
+	// 检查
+	err := c.checkComponentIsConfig()
+	if err != nil {
+		return nil, err
+	}
 	// 参数
 	params := gorequest.NewParams()
 	params["draft_id"] = draftId
 	params["template_type"] = templateType
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/addtotemplate?access_token=%s", c.GetComponentAccessToken(ctx)), params, http.MethodPost)
+	if err != nil {
+		return nil, err
+	}
 	// 定义
 	var response WxaAddToTemplateResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return newWxaAddToTemplateResult(response, request.ResponseBody, request, err)
+	if err != nil {
+		return nil, err
+	}
+	return newWxaAddToTemplateResult(response, request.ResponseBody, request), nil
 }
 
 // ErrcodeInfo 错误描述

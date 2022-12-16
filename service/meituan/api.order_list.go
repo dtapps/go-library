@@ -52,8 +52,8 @@ func (c *Client) ApiOrderList(ctx context.Context, notMustParams ...gorequest.Pa
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s
 	params["ts"] = gotime.Current().Timestamp()
-	params["appkey"] = c.config.AppKey
-	params["sign"] = c.getSign(c.config.Secret, params)
+	params["appkey"] = c.GetAppKey()
+	params["sign"] = c.getSign(c.GetSecret(), params)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/api/orderList", params, http.MethodGet)
 	// 定义

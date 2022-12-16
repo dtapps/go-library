@@ -23,7 +23,7 @@ type TbkDgMaterialOptionalResponse struct {
 				IncludeMkt             string `json:"include_mkt"`
 				InfoDxjh               string `json:"info_dxjh"`
 				ItemDescription        string `json:"item_description"`
-				ItemId                 int64  `json:"item_id"`
+				ItemId                 string `json:"item_id"`
 				ItemUrl                string `json:"item_url"`
 				LevelOneCategoryId     int64  `json:"level_one_category_id"`
 				LevelOneCategoryName   string `json:"level_one_category_name"`
@@ -60,8 +60,9 @@ type TbkDgMaterialOptionalResponse struct {
 				CouponAmount   string `json:"coupon_amount"`
 			} `json:"map_data"`
 		} `json:"result_list"`
-		TotalResults int64  `json:"total_results"`
-		RequestId    string `json:"request_id"`
+		TotalResults  int64  `json:"total_results"`
+		RequestId     string `json:"request_id"`
+		PageResultKey string `json:"page_result_key,omitempty"`
 	} `json:"tbk_dg_material_optional_response"`
 }
 

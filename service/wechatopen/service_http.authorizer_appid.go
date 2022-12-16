@@ -25,7 +25,10 @@ func (c *Client) ServeHttpAuthorizerAppid(ctx context.Context, r *http.Request) 
 		return resp, agentUserId, errors.New("找不到过期时间参数")
 	}
 
-	info := c.CgiBinComponentApiQueryAuth(ctx, authCode)
+	info, err := c.CgiBinComponentApiQueryAuth(ctx, authCode)
+	if err != nil {
+		return resp, agentUserId, err
+	}
 	if info.Result.AuthorizationInfo.AuthorizerAppid == "" {
 		return resp, agentUserId, errors.New("获取失败")
 	}

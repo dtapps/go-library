@@ -21,25 +21,39 @@ type WxaGetAuditStatusResult struct {
 	Result WxaGetAuditStatusResponse // 结果
 	Body   []byte                    // 内容
 	Http   gorequest.Response        // 请求
-	Err    error                     // 错误
 }
 
-func newWxaGetAuditStatusResult(result WxaGetAuditStatusResponse, body []byte, http gorequest.Response, err error) *WxaGetAuditStatusResult {
-	return &WxaGetAuditStatusResult{Result: result, Body: body, Http: http, Err: err}
+func newWxaGetAuditStatusResult(result WxaGetAuditStatusResponse, body []byte, http gorequest.Response) *WxaGetAuditStatusResult {
+	return &WxaGetAuditStatusResult{Result: result, Body: body, Http: http}
 }
 
 // WxaGetAuditStatus 查询指定发布审核单的审核状态
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_auditstatus.html
-func (c *Client) WxaGetAuditStatus(ctx context.Context, auditid int64) *WxaGetAuditStatusResult {
+func (c *Client) WxaGetAuditStatus(ctx context.Context, auditid int64) (*WxaGetAuditStatusResult, error) {
+	// 检查
+	err := c.checkComponentIsConfig()
+	if err != nil {
+		return nil, err
+	}
+	err = c.checkAuthorizerIsConfig()
+	if err != nil {
+		return nil, err
+	}
 	// 参数
 	params := gorequest.NewParams()
 	params.Set("auditid", auditid)
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/get_auditstatus?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	if err != nil {
+		return nil, err
+	}
 	// 定义
 	var response WxaGetAuditStatusResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return newWxaGetAuditStatusResult(response, request.ResponseBody, request, err)
+	if err != nil {
+		return nil, err
+	}
+	return newWxaGetAuditStatusResult(response, request.ResponseBody, request), nil
 }
 
 // ErrcodeInfo 错误描述

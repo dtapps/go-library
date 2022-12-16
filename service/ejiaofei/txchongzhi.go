@@ -47,7 +47,7 @@ func (c *Client) TxChOngZhi(ctx context.Context, notMustParams ...gorequest.Para
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 签名
-	c.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vproductid%vamount%vip%vtimes%v", c.getUserId(), c.getPwd(), params["orderid"], params["account"], params["productid"], params["amount"], params["ip"], params["times"])
+	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vproductid%vamount%vip%vtimes%v", c.GetUserId(), c.GetPwd(), params["orderid"], params["account"], params["productid"], params["amount"], params["ip"], params["times"])
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/txchongzhi.do", params, http.MethodGet)
 	// 定义

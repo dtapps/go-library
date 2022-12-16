@@ -25,7 +25,7 @@ func NewParamsWithType(_method string, params ...Params) Params {
 	p["format"] = "json"
 	p["v"] = "2.0"
 	p["sign_method"] = "md5"
-	p["partner_id"] = "Nilorg"
+	//p["partner_id"] = "Nilorg"
 	for _, v := range params {
 		p.SetParams(v)
 	}
