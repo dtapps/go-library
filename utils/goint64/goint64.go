@@ -1,6 +1,9 @@
 package goint64
 
-import "math"
+import (
+	"math"
+	"strconv"
+)
 
 // ToFloat64 int64到float64
 func ToFloat64(n int64) float64 {
@@ -20,4 +23,9 @@ func ToUnwrapToInt64(num int64, retain int) int64 {
 // ToFloat64NewWiFi 返回float64
 func ToFloat64NewWiFi(num int64) float64 {
 	return float64(num / 100)
+}
+
+// ToString int到string
+func ToString(n int64) string {
+	return strconv.FormatInt(n, 10)
 }
