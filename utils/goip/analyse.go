@@ -1,53 +1,53 @@
 package goip
 
 import (
+	"net"
 	"strconv"
 )
 
-var (
-	ipv4 = "IPV4"
-	ipv6 = "IPV6"
-)
-
 type AnalyseResult struct {
-	IP       string `json:"ip,omitempty"`       // 输入的ip地址
-	Country  string `json:"country,omitempty"`  // 国家或地区
-	Province string `json:"province,omitempty"` // 省份
-	City     string `json:"city,omitempty"`     // 城市
-	Area     string `json:"area,omitempty"`     // 区域
-	Isp      string `json:"isp,omitempty"`      // 运营商
+	Ip                string  `json:"ip"`                 // ip
+	Continent         string  `json:"continent"`          // 大陆
+	Country           string  `json:"country"`            // 国家
+	Province          string  `json:"province"`           // 省份
+	City              string  `json:"city"`               // 城市
+	Isp               string  `json:"isp"`                // 运营商
+	LocationTimeZone  string  `json:"location_time_zone"` // 位置时区
+	LocationLatitude  float64 `json:"location_latitude"`  // 位置纬度
+	LocationLongitude float64 `json:"location_longitude"` // 位置经度
 }
 
 func (c *Client) Analyse(item string) AnalyseResult {
 	isIp := c.isIpv4OrIpv6(item)
+	ipByte := net.ParseIP(item)
 	switch isIp {
 	case ipv4:
-		info := c.V4db.Find(item)
-		search, err := c.V4Region.MemorySearch(item)
-		if err != nil {
-			return AnalyseResult{
-				IP:      info.IP,
-				Country: info.Country,
-				Area:    info.Area,
-			}
-		} else {
-			return AnalyseResult{
-				IP:       search.IP,
-				Country:  search.Country,
-				Province: search.Province,
-				City:     search.City,
-				Isp:      info.Area,
-			}
+		ip2regionV2Info, _ := c.QueryIp2RegionV2(ipByte)
+		geoIpInfo, _ := c.QueryGeoIp(ipByte)
+		return AnalyseResult{
+			Ip:                ipByte.String(),
+			Continent:         geoIpInfo.Continent.Name,
+			Country:           geoIpInfo.Country.Name,
+			Province:          ip2regionV2Info.Province,
+			City:              ip2regionV2Info.City,
+			Isp:               ip2regionV2Info.Operator,
+			LocationTimeZone:  geoIpInfo.Location.TimeZone,
+			LocationLatitude:  geoIpInfo.Location.Latitude,
+			LocationLongitude: geoIpInfo.Location.Longitude,
 		}
 	case ipv6:
-		info := c.V6db.Find(item)
+		geoIpInfo, _ := c.QueryGeoIp(ipByte)
+		ipv6Info, _ := c.QueryIpv6wry(ipByte)
 		return AnalyseResult{
-			IP:       info.IP,
-			Country:  info.Country,
-			Province: info.Province,
-			City:     info.City,
-			Area:     info.Area,
-			Isp:      info.Isp,
+			Ip:                ipByte.String(),
+			Continent:         geoIpInfo.Continent.Name,
+			Country:           geoIpInfo.Country.Name,
+			Province:          ipv6Info.Province,
+			City:              ipv6Info.City,
+			Isp:               ipv6Info.Isp,
+			LocationTimeZone:  geoIpInfo.Location.TimeZone,
+			LocationLatitude:  geoIpInfo.Location.Latitude,
+			LocationLongitude: geoIpInfo.Location.Longitude,
 		}
 	default:
 		return AnalyseResult{}
