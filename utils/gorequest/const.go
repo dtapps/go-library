@@ -1,7 +1,7 @@
 package gorequest
 
 const (
-	userAgentFormat = "%s/GO/%s"
+	userAgentFormat = "%s/%s/%s/%s"
 )
 
 // 定义请求类型

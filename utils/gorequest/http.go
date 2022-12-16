@@ -7,11 +7,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/dtapps/go-library"
 	"github.com/dtapps/go-library/utils/gostring"
 	"github.com/dtapps/go-library/utils/gotime"
 	"github.com/dtapps/go-library/utils/gotrace_id"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"runtime"
@@ -21,6 +23,7 @@ import (
 
 // Response 返回内容
 type Response struct {
+	RequestId             string      //【请求】编号
 	RequestUri            string      //【请求】链接
 	RequestParams         Params      //【请求】参数
 	RequestMethod         string      //【请求】方式
@@ -36,16 +39,17 @@ type Response struct {
 
 // App 实例
 type App struct {
-	Uri             string           // 全局请求地址，没有设置url才会使用
-	Error           error            // 错误
-	httpUri         string           // 请求地址
-	httpMethod      string           // 请求方法
-	httpHeader      Headers          // 请求头
-	httpParams      Params           // 请求参数
-	responseContent Response         // 返回内容
-	httpContentType string           // 请求内容类型
-	debug           bool             // 是否开启调试模式
-	p12Cert         *tls.Certificate // p12证书内容
+	Uri                    string           // 全局请求地址，没有设置url才会使用
+	Error                  error            // 错误
+	httpUri                string           // 请求地址
+	httpMethod             string           // 请求方法
+	httpHeader             Headers          // 请求头
+	httpParams             Params           // 请求参数
+	responseContent        Response         // 返回内容
+	httpContentType        string           // 请求内容类型
+	debug                  bool             // 是否开启调试模式
+	p12Cert                *tls.Certificate // p12证书内容
+	afferentSdkUserVersion string           // 传入SDk版本
 }
 
 // NewHttp 实例化
@@ -134,6 +138,11 @@ func (app *App) SetP12Cert(content *tls.Certificate) {
 	app.p12Cert = content
 }
 
+// AfferentSdkUserVersion 传入SDk版本
+func (app *App) AfferentSdkUserVersion(afferentSdkUserVersion string) {
+	app.afferentSdkUserVersion = afferentSdkUserVersion
+}
+
 // Get 发起GET请求
 func (app *App) Get(ctx context.Context, uri ...string) (httpResponse Response, err error) {
 	if len(uri) == 1 {
@@ -194,7 +203,11 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	}
 
 	// SDK版本
-	httpResponse.RequestHeader.Set("Sdk-User-Agent", fmt.Sprintf(userAgentFormat, runtime.GOOS, runtime.Version()))
+	if app.afferentSdkUserVersion == "" {
+		httpResponse.RequestHeader.Set("Sdk-User-Agent", fmt.Sprintf(userAgentFormat, runtime.GOOS, runtime.GOARCH, runtime.Version(), go_library.Version()))
+	} else {
+		httpResponse.RequestHeader.Set("Sdk-User-Agent", fmt.Sprintf(userAgentFormat, runtime.GOOS, runtime.GOARCH, runtime.Version(), go_library.Version())+"/"+app.afferentSdkUserVersion)
+	}
 
 	// 请求类型
 	switch app.httpContentType {
@@ -207,11 +220,11 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	}
 
 	// 跟踪编号
-	traceId := gotrace_id.GetTraceIdContext(ctx)
-	if traceId == "" {
-		traceId = gostring.GetUuId()
+	httpResponse.RequestId = gotrace_id.GetTraceIdContext(ctx)
+	if httpResponse.RequestId == "" {
+		httpResponse.RequestId = gostring.GetUuId()
 	}
-	httpResponse.RequestHeader.Set("X-Request-Id", traceId)
+	httpResponse.RequestHeader.Set("X-Request-Id", httpResponse.RequestId)
 
 	// 请求内容
 	var reqBody io.Reader
@@ -297,8 +310,8 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	httpResponse.ResponseContentLength = resp.ContentLength
 
 	if app.debug == true {
-		fmt.Printf("gorequest：%+v\n", httpResponse)
-		fmt.Printf("gorequest.body：%s\n", httpResponse.ResponseBody)
+		log.Printf("gorequest：%+v\n", httpResponse)
+		log.Printf("gorequest.body：%s\n", httpResponse.ResponseBody)
 	}
 
 	return httpResponse, err
