@@ -26,6 +26,11 @@ ORDER BY
 	INDEX_NAME,
 	SEQ_IN_INDEX`
 
+var typeAliasMap = map[string][]string{
+	"bool":    {"tinyint"},
+	"tinyint": {"bool"},
+}
+
 type Migrator struct {
 	migrator.Migrator
 	Dialector
@@ -178,7 +183,7 @@ func (m Migrator) ColumnTypes(value interface{}) ([]gorm.ColumnType, error) {
 		}
 		columnTypeSQL += "FROM information_schema.columns WHERE table_schema = ? AND table_name = ? ORDER BY ORDINAL_POSITION"
 
-		columns, rowErr := m.DB.Raw(columnTypeSQL, currentDatabase, table).Rows()
+		columns, rowErr := m.DB.Table(table).Raw(columnTypeSQL, currentDatabase, table).Rows()
 		if rowErr != nil {
 			return rowErr
 		}
@@ -266,7 +271,7 @@ func (m Migrator) GetIndexes(value interface{}) ([]gorm.Index, error) {
 
 		result := make([]*Index, 0)
 		schema, table := m.CurrentSchema(stmt, stmt.Table)
-		scanErr := m.DB.Raw(indexSql, schema, table).Scan(&result).Error
+		scanErr := m.DB.Table(table).Raw(indexSql, schema, table).Scan(&result).Error
 		if scanErr != nil {
 			return scanErr
 		}
@@ -312,11 +317,13 @@ func groupByIndexName(indexList []*Index) map[string][]*Index {
 }
 
 func (m Migrator) CurrentSchema(stmt *gorm.Statement, table string) (string, string) {
-	if strings.Contains(table, ".") {
-		if tables := strings.Split(table, `.`); len(tables) == 2 {
-			return tables[0], tables[1]
-		}
+	if tables := strings.Split(table, `.`); len(tables) == 2 {
+		return tables[0], tables[1]
 	}
-
+	m.DB = m.DB.Table(table)
 	return m.CurrentDatabase(), table
+}
+
+func (m Migrator) GetTypeAliases(databaseTypeName string) []string {
+	return typeAliasMap[databaseTypeName]
 }

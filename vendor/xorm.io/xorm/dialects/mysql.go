@@ -330,9 +330,9 @@ func (db *mysql) SQLType(c *schemas.Column) string {
 	}
 
 	if hasLen2 {
-		res += "(" + strconv.Itoa(c.Length) + "," + strconv.Itoa(c.Length2) + ")"
+		res += "(" + strconv.FormatInt(c.Length, 10) + "," + strconv.FormatInt(c.Length2, 10) + ")"
 	} else if hasLen1 {
-		res += "(" + strconv.Itoa(c.Length) + ")"
+		res += "(" + strconv.FormatInt(c.Length, 10) + ")"
 	}
 
 	if isUnsigned {
@@ -444,7 +444,7 @@ func (db *mysql) GetColumns(queryer core.Queryer, ctx context.Context, tableName
 		// Remove the /* mariadb-5.3 */ suffix from coltypes
 		colName = strings.TrimSuffix(colName, "/* mariadb-5.3 */")
 		colType = strings.ToUpper(colName)
-		var len1, len2 int
+		var len1, len2 int64
 		if len(cts) == 2 {
 			idx := strings.Index(cts[1], ")")
 			if colType == schemas.Enum && cts[1][0] == '\'' { // enum
@@ -465,12 +465,12 @@ func (db *mysql) GetColumns(queryer core.Queryer, ctx context.Context, tableName
 				}
 			} else {
 				lens := strings.Split(cts[1][0:idx], ",")
-				len1, err = strconv.Atoi(strings.TrimSpace(lens[0]))
+				len1, err = strconv.ParseInt(strings.TrimSpace(lens[0]), 10, 64)
 				if err != nil {
 					return nil, nil, err
 				}
 				if len(lens) == 2 {
-					len2, err = strconv.Atoi(lens[1])
+					len2, err = strconv.ParseInt(lens[1], 10, 64)
 					if err != nil {
 						return nil, nil, err
 					}
@@ -479,7 +479,7 @@ func (db *mysql) GetColumns(queryer core.Queryer, ctx context.Context, tableName
 		} else {
 			switch colType {
 			case "MEDIUMTEXT", "LONGTEXT", "TEXT":
-				len1, err = strconv.Atoi(*maxLength)
+				len1, err = strconv.ParseInt(*maxLength, 10, 64)
 				if err != nil {
 					return nil, nil, err
 				}

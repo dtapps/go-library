@@ -183,7 +183,7 @@ func PtrAppender(fn AppenderFunc) AppenderFunc {
 }
 
 func AppendBoolValue(fmter Formatter, b []byte, v reflect.Value) []byte {
-	return dialect.AppendBool(b, v.Bool())
+	return fmter.Dialect().AppendBool(b, v.Bool())
 }
 
 func AppendIntValue(fmter Formatter, b []byte, v reflect.Value) []byte {
@@ -273,6 +273,9 @@ func appendDriverValue(fmter Formatter, b []byte, v reflect.Value) []byte {
 	value, err := v.Interface().(driver.Valuer).Value()
 	if err != nil {
 		return dialect.AppendError(b, err)
+	}
+	if _, ok := value.(driver.Valuer); ok {
+		return dialect.AppendError(b, fmt.Errorf("driver.Valuer returns unsupported type %T", value))
 	}
 	return Append(fmter, b, value)
 }

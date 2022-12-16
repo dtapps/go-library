@@ -18,21 +18,21 @@ type Collection struct {
 // FindByID method finds a doc and decodes it to a model, otherwise returns an error.
 // The id field can be any value that if passed to the `PrepareID` method, it returns
 // a valid ID (e.g string, bson.ObjectId).
-func (coll *Collection) FindByID(id interface{}, model Model) error {
-	return coll.FindByIDWithCtx(ctx(), id, model)
+func (coll *Collection) FindByID(id interface{}, model Model, opts ...*options.FindOneOptions) error {
+	return coll.FindByIDWithCtx(ctx(), id, model, opts...)
 }
 
 // FindByIDWithCtx method finds a doc and decodes it to a model, otherwise returns an error.
 // The id field can be any value that if passed to the `PrepareID` method, it returns
 // a valid ID (e.g string, bson.ObjectId).
-func (coll *Collection) FindByIDWithCtx(ctx context.Context, id interface{}, model Model) error {
+func (coll *Collection) FindByIDWithCtx(ctx context.Context, id interface{}, model Model, opts ...*options.FindOneOptions) error {
 	id, err := model.PrepareID(id)
 
 	if err != nil {
 		return err
 	}
 
-	return first(ctx, coll, bson.M{field.ID: id}, model)
+	return first(ctx, coll, bson.M{field.ID: id}, model, opts...)
 }
 
 // First method searches and returns the first document in the search results.
@@ -103,7 +103,7 @@ func (coll *Collection) SimpleFindWithCtx(ctx context.Context, results interface
 // Aggregation methods
 //--------------------------------
 
-// SimpleAggregateFirst is just same as SimpleAggregateFirstWithCtx, but doesnt' get context param.
+// SimpleAggregateFirst is just same as SimpleAggregateFirstWithCtx, but doesn't get context param.
 func (coll *Collection) SimpleAggregateFirst(result interface{}, stages ...interface{}) (bool, error) {
 	return coll.SimpleAggregateFirstWithCtx(ctx(), result, stages...)
 }
@@ -123,7 +123,6 @@ func (coll *Collection) SimpleAggregateFirstWithCtx(ctx context.Context, result 
 	return false, nil
 }
 
-
 // SimpleAggregate is just same as SimpleAggregateWithCtx, but doesn't get context param.
 func (coll *Collection) SimpleAggregate(results interface{}, stages ...interface{}) error {
 	return coll.SimpleAggregateWithCtx(ctx(), results, stages...)
@@ -132,7 +131,7 @@ func (coll *Collection) SimpleAggregate(results interface{}, stages ...interface
 // SimpleAggregateWithCtx performs a simple aggregation, decodes the aggregate result and returns the list using the provided result parameter.
 // The value of `stages` can be Operator|bson.M
 // Note: you can not use this method in a transaction because it does not accept a context.
-// To participate in transactions, please use the regular aggergation method.
+// To participate in transactions, please use the regular aggregation method.
 func (coll *Collection) SimpleAggregateWithCtx(ctx context.Context, results interface{}, stages ...interface{}) error {
 	cur, err := coll.SimpleAggregateCursorWithCtx(ctx, stages...)
 	if err != nil {
@@ -150,7 +149,7 @@ func (coll *Collection) SimpleAggregateCursor(stages ...interface{}) (*mongo.Cur
 
 // SimpleAggregateCursorWithCtx performs a simple aggregation and returns a cursor over the resulting documents.
 // Note: you can not use this method in a transaction because it does not accept a context.
-// To participate in transactions, please use the regular aggergation method.
+// To participate in transactions, please use the regular aggregation method.
 func (coll *Collection) SimpleAggregateCursorWithCtx(ctx context.Context, stages ...interface{}) (*mongo.Cursor, error) {
 	pipeline := bson.A{}
 

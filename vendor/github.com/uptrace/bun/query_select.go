@@ -48,8 +48,6 @@ func NewSelectQuery(db *DB) *SelectQuery {
 				conn: db.DB,
 			},
 		},
-		offset: -1,
-		limit:  -1,
 	}
 }
 
@@ -59,7 +57,7 @@ func (q *SelectQuery) Conn(db IConn) *SelectQuery {
 }
 
 func (q *SelectQuery) Model(model interface{}) *SelectQuery {
-	q.setTableModel(model)
+	q.setModel(model)
 	return q
 }
 
@@ -69,7 +67,12 @@ func (q *SelectQuery) Apply(fn func(*SelectQuery) *SelectQuery) *SelectQuery {
 }
 
 func (q *SelectQuery) With(name string, query schema.QueryAppender) *SelectQuery {
-	q.addWith(name, query)
+	q.addWith(name, query, false)
+	return q
+}
+
+func (q *SelectQuery) WithRecursive(name string, query schema.QueryAppender) *SelectQuery {
+	q.addWith(name, query, true)
 	return q
 }
 
@@ -400,7 +403,6 @@ func (q *SelectQuery) Relation(name string, apply ...func(*SelectQuery) *SelectQ
 
 	if len(join.Relation.Condition) > 0 {
 		apply1 = func(q *SelectQuery) *SelectQuery {
-
 			for _, opt := range join.Relation.Condition {
 				q.addWhere(schema.SafeQueryWithSep(opt, nil, " AND "))
 			}
@@ -601,7 +603,7 @@ func (q *SelectQuery) appendQuery(
 		}
 
 		if fmter.Dialect().Features().Has(feature.OffsetFetch) {
-			if q.limit >= 0 && q.offset >= 0 {
+			if q.limit > 0 && q.offset > 0 {
 				b = append(b, " OFFSET "...)
 				b = strconv.AppendInt(b, int64(q.offset), 10)
 				b = append(b, " ROWS"...)
@@ -609,23 +611,23 @@ func (q *SelectQuery) appendQuery(
 				b = append(b, " FETCH NEXT "...)
 				b = strconv.AppendInt(b, int64(q.limit), 10)
 				b = append(b, " ROWS ONLY"...)
-			} else if q.limit >= 0 {
+			} else if q.limit > 0 {
 				b = append(b, " OFFSET 0 ROWS"...)
 
 				b = append(b, " FETCH NEXT "...)
 				b = strconv.AppendInt(b, int64(q.limit), 10)
 				b = append(b, " ROWS ONLY"...)
-			} else if q.offset >= 0 {
+			} else if q.offset > 0 {
 				b = append(b, " OFFSET "...)
 				b = strconv.AppendInt(b, int64(q.offset), 10)
 				b = append(b, " ROWS"...)
 			}
 		} else {
-			if q.limit >= 0 {
+			if q.limit > 0 {
 				b = append(b, " LIMIT "...)
 				b = strconv.AppendInt(b, int64(q.limit), 10)
 			}
-			if q.offset >= 0 {
+			if q.offset > 0 {
 				b = append(b, " OFFSET "...)
 				b = strconv.AppendInt(b, int64(q.offset), 10)
 			}
@@ -1032,12 +1034,7 @@ func (q *SelectQuery) whereExists(ctx context.Context) (bool, error) {
 	}
 
 	query := internal.String(queryBytes)
-	ctx, event := q.db.beforeQuery(ctx, qq, query, nil, query, q.model)
-
-	res, err := q.exec(ctx, q, query)
-
-	q.db.afterQuery(ctx, event, nil, err)
-
+	res, err := q.exec(ctx, qq, query)
 	if err != nil {
 		return false, err
 	}

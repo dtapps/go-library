@@ -1,107 +1,106 @@
 module github.com/dtapps/go-library
 
-go 1.18
+go 1.19
 
 require (
-	github.com/aliyun/aliyun-oss-go-sdk v2.2.4+incompatible
-	github.com/allegro/bigcache/v3 v3.0.2
-	github.com/aws/aws-sdk-go v1.44.61
-	github.com/baidubce/bce-sdk-go v0.9.130
+	github.com/aliyun/aliyun-oss-go-sdk v2.2.6+incompatible
+	github.com/allegro/bigcache/v3 v3.1.0
+	github.com/aws/aws-sdk-go v1.44.161
+	github.com/baidubce/bce-sdk-go v0.9.138
 	github.com/basgys/goxml2json v1.1.0
-	github.com/docker/docker v20.10.17+incompatible
+	github.com/docker/docker v20.10.21+incompatible
 	github.com/drone/drone-go v1.7.1
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-playground/locales v0.14.0
 	github.com/go-playground/universal-translator v0.18.0
-	github.com/go-playground/validator/v10 v10.11.0
-	github.com/go-redis/redis/v9 v9.0.0-beta.1
-	github.com/go-sql-driver/mysql v1.6.0
-	github.com/huaweicloud/huaweicloud-sdk-go-obs v3.21.12+incompatible
+	github.com/go-playground/validator/v10 v10.11.1
+	github.com/go-redis/redis/v9 v9.0.0-rc.2
+	github.com/go-sql-driver/mysql v1.7.0
+	github.com/huaweicloud/huaweicloud-sdk-go-obs v3.22.11+incompatible
 	github.com/jasonlvhit/gocron v0.0.1
-	github.com/kamva/mgm/v3 v3.4.1
-	github.com/ks3sdklib/aws-sdk-go v1.1.6
-	github.com/lib/pq v1.10.6
+	github.com/kamva/mgm/v3 v3.5.0
+	github.com/ks3sdklib/aws-sdk-go v1.1.8
+	github.com/lib/pq v1.10.7
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/mvdan/xurls v1.1.0
 	github.com/natefinch/lumberjack v2.0.0+incompatible
-	github.com/nilorg/sdk v0.0.0-20220617065147-3001fb840741
+	github.com/nilorg/sdk v0.0.0-20221104025912-4b6ccb7004d8
 	github.com/patrickmn/go-cache v2.1.0+incompatible
-	github.com/qiniu/go-sdk/v7 v7.13.0
-	github.com/qiniu/qmgo v1.1.1
+	github.com/qiniu/go-sdk/v7 v7.14.0
+	github.com/qiniu/qmgo v1.1.4
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/rs/xid v1.4.0
 	github.com/saracen/go7z v0.0.0-20191010121135-9c09b6bd7fda
 	github.com/shopspring/decimal v1.3.1
 	github.com/sirupsen/logrus v1.9.0
-	github.com/tencentyun/cos-go-sdk-v5 v0.7.35
+	github.com/tencentyun/cos-go-sdk-v5 v0.7.40
 	github.com/upper/db/v4 v4.6.0
-	github.com/uptrace/bun v1.1.6
-	github.com/uptrace/bun/dialect/mysqldialect v1.1.6
-	github.com/uptrace/bun/dialect/pgdialect v1.1.6
-	github.com/uptrace/bun/driver/pgdriver v1.1.6
-	github.com/upyun/go-sdk/v3 v3.0.2
-	go.mongodb.org/mongo-driver v1.10.0
-	go.uber.org/zap v1.21.0
-	golang.org/x/crypto v0.3.0
-	golang.org/x/oauth2 v0.0.0-20220722155238-128564f6959c
+	github.com/uptrace/bun v1.1.9
+	github.com/uptrace/bun/dialect/mysqldialect v1.1.9
+	github.com/uptrace/bun/dialect/pgdialect v1.1.9
+	github.com/uptrace/bun/driver/pgdriver v1.1.9
+	github.com/upyun/go-sdk/v3 v3.0.3
+	go.mongodb.org/mongo-driver v1.11.1
+	go.uber.org/zap v1.24.0
+	golang.org/x/crypto v0.4.0
+	golang.org/x/oauth2 v0.3.0
 	golang.org/x/text v0.5.0
-	google.golang.org/grpc v1.48.0
-	google.golang.org/protobuf v1.28.0
+	google.golang.org/grpc v1.51.0
+	google.golang.org/protobuf v1.28.1
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
-	gorm.io/datatypes v1.0.7
-	gorm.io/driver/mysql v1.3.5
-	gorm.io/driver/postgres v1.3.8
-	gorm.io/gorm v1.23.8
-	k8s.io/client-go v0.24.3
-	xorm.io/xorm v1.3.1
+	gorm.io/datatypes v1.1.0
+	gorm.io/driver/mysql v1.4.4
+	gorm.io/driver/postgres v1.4.5
+	gorm.io/gorm v1.24.2
+	k8s.io/client-go v0.26.0
+	xorm.io/xorm v1.3.2
 )
 
 require (
-	github.com/Microsoft/go-winio v0.5.2 // indirect
-	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
+	github.com/Microsoft/go-winio v0.6.0 // indirect
 	github.com/bitly/go-simplejson v0.5.0 // indirect
-	github.com/cespare/xxhash/v2 v2.1.2 // indirect
+	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/clbanning/mxj v1.8.4 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/deckarep/golang-set v1.8.0 // indirect
-	github.com/denisenkom/go-mssqldb v0.12.2 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/docker/distribution v2.8.1+incompatible // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
-	github.com/docker/go-units v0.4.0 // indirect
-	github.com/emicklei/go-restful/v3 v3.9.0 // indirect
+	github.com/docker/go-units v0.5.0 // indirect
+	github.com/emicklei/go-restful/v3 v3.10.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.20.0 // indirect
-	github.com/go-openapi/swag v0.21.1 // indirect
-	github.com/goccy/go-json v0.9.10 // indirect
+	github.com/go-openapi/swag v0.22.3 // indirect
+	github.com/goccy/go-json v0.10.0 // indirect
 	github.com/gofrs/uuid v4.2.0+incompatible // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/gnostic v0.6.9 // indirect
+	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/imdario/mergo v0.3.13 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
-	github.com/jackc/pgconn v1.12.1 // indirect
+	github.com/jackc/pgconn v1.13.0 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
-	github.com/jackc/pgproto3/v2 v2.3.0 // indirect
+	github.com/jackc/pgproto3/v2 v2.3.1 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
-	github.com/jackc/pgtype v1.11.0 // indirect
-	github.com/jackc/pgx/v4 v4.16.1 // indirect
+	github.com/jackc/pgtype v1.13.0 // indirect
+	github.com/jackc/pgx/v4 v4.17.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/compress v1.15.9 // indirect
+	github.com/klauspost/compress v1.15.13 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/mattn/go-isatty v0.0.14 // indirect
+	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	github.com/moby/term v0.0.0-20210619224110-3f7ff695adc6 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -124,46 +123,44 @@ require (
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/tmthrgd/go-hex v0.0.0-20190904060850-447a3041c3bc // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
-	github.com/ulikunitz/xz v0.5.10 // indirect
+	github.com/ulikunitz/xz v0.5.11 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
-	github.com/xdg-go/scram v1.1.1 // indirect
-	github.com/xdg-go/stringprep v1.0.3 // indirect
+	github.com/xdg-go/scram v1.1.2 // indirect
+	github.com/xdg-go/stringprep v1.0.4 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20201027041543-1326539a0a0a // indirect
-	go.uber.org/atomic v1.9.0 // indirect
-	go.uber.org/multierr v1.8.0 // indirect
+	go.uber.org/atomic v1.10.0 // indirect
+	go.uber.org/multierr v1.9.0 // indirect
 	golang.org/x/mod v0.7.0 // indirect
-	golang.org/x/net v0.3.0 // indirect
+	golang.org/x/net v0.4.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.3.0 // indirect
 	golang.org/x/term v0.3.0 // indirect
-	golang.org/x/time v0.0.0-20220722155302-e5dcc9cfc0b9 // indirect
+	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.4.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20220722212130-b98a9ff5e252 // indirect
+	google.golang.org/genproto v0.0.0-20221207170731-23e4bf6bdc37 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	gorm.io/driver/sqlite v1.3.6 // indirect
-	gorm.io/driver/sqlserver v1.3.2 // indirect
 	gotest.tools/v3 v3.3.0 // indirect
-	k8s.io/api v0.24.3 // indirect
-	k8s.io/apimachinery v0.24.3 // indirect
-	k8s.io/klog/v2 v2.70.1 // indirect
-	k8s.io/kube-openapi v0.0.0-20220627174259-011e075b9cb8 // indirect
-	k8s.io/utils v0.0.0-20220713171938-56c0de1e6f5e // indirect
+	k8s.io/api v0.26.0 // indirect
+	k8s.io/apimachinery v0.26.0 // indirect
+	k8s.io/klog/v2 v2.80.1 // indirect
+	k8s.io/kube-openapi v0.0.0-20221207184640-f3cff1453715 // indirect
+	k8s.io/utils v0.0.0-20221128185143-99ec85e7a448 // indirect
 	lukechampine.com/uint128 v1.2.0 // indirect
-	mellium.im/sasl v0.2.1 // indirect
+	mellium.im/sasl v0.3.0 // indirect
 	modernc.org/ccgo/v3 v3.16.8 // indirect
 	modernc.org/libc v1.16.17 // indirect
 	modernc.org/opt v0.1.3 // indirect
 	modernc.org/sqlite v1.17.3 // indirect
 	modernc.org/strutil v1.1.2 // indirect
-	sigs.k8s.io/json v0.0.0-20220713155537-f223a00ba0e2 // indirect
-	sigs.k8s.io/structured-merge-diff/v4 v4.2.1 // indirect
+	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
+	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
 	xorm.io/builder v0.3.12 // indirect
 )

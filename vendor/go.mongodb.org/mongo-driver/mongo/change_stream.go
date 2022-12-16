@@ -240,7 +240,6 @@ func (cs *ChangeStream) createOperationDeployment(server driver.Server, connecti
 func (cs *ChangeStream) executeOperation(ctx context.Context, resuming bool) error {
 	var server driver.Server
 	var conn driver.Connection
-	var err error
 
 	if server, cs.err = cs.client.deployment.SelectServer(ctx, cs.selector); cs.err != nil {
 		return cs.Err()
@@ -256,7 +255,10 @@ func (cs *ChangeStream) executeOperation(ctx context.Context, resuming bool) err
 	if resuming {
 		cs.replaceOptions(cs.wireVersion)
 
-		csOptDoc := cs.createPipelineOptionsDoc()
+		csOptDoc, err := cs.createPipelineOptionsDoc()
+		if err != nil {
+			return err
+		}
 		pipIdx, pipDoc := bsoncore.AppendDocumentStart(nil)
 		pipDoc = bsoncore.AppendDocumentElement(pipDoc, "$changeStream", csOptDoc)
 		if pipDoc, cs.err = bsoncore.AppendDocumentEnd(pipDoc, pipIdx); cs.err != nil {
@@ -281,48 +283,62 @@ func (cs *ChangeStream) executeOperation(ctx context.Context, resuming bool) err
 		// Cancel the timeout-derived context at the end of executeOperation to avoid a context leak.
 		defer cancelFunc()
 	}
-	if original := cs.aggregate.Execute(ctx); original != nil {
-		retryableRead := cs.client.retryReads && cs.wireVersion != nil && cs.wireVersion.Max >= 6
-		if !retryableRead {
-			cs.err = replaceErrors(original)
-			return cs.err
+
+	// Execute the aggregate, retrying on retryable errors once (1) if retryable reads are enabled and
+	// infinitely (-1) if context is a Timeout context.
+	var retries int
+	if cs.client.retryReads {
+		retries = 1
+	}
+	if internal.IsTimeoutContext(ctx) {
+		retries = -1
+	}
+
+	var err error
+AggregateExecuteLoop:
+	for {
+		err = cs.aggregate.Execute(ctx)
+		// If no error or no retries remain, do not retry.
+		if err == nil || retries == 0 {
+			break AggregateExecuteLoop
 		}
 
-		cs.err = original
-		switch tt := original.(type) {
+		switch tt := err.(type) {
 		case driver.Error:
+			// If error is not retryable, do not retry.
 			if !tt.RetryableRead() {
-				break
+				break AggregateExecuteLoop
 			}
 
+			// If error is retryable: subtract 1 from retries, redo server selection, checkout
+			// a connection, and restart loop.
+			retries--
 			server, err = cs.client.deployment.SelectServer(ctx, cs.selector)
 			if err != nil {
-				break
+				break AggregateExecuteLoop
 			}
 
 			conn.Close()
 			conn, err = server.Connection(ctx)
 			if err != nil {
-				break
+				break AggregateExecuteLoop
 			}
 			defer conn.Close()
+
+			// Update the wire version with data from the new connection.
 			cs.wireVersion = conn.Description().WireVersion
 
-			if cs.wireVersion == nil || cs.wireVersion.Max < 6 {
-				break
-			}
-
+			// Reset deployment.
 			cs.aggregate.Deployment(cs.createOperationDeployment(server, conn))
-			cs.err = cs.aggregate.Execute(ctx)
+		default:
+			// Do not retry if error is not a driver error.
+			break AggregateExecuteLoop
 		}
-
-		if cs.err != nil {
-			cs.err = replaceErrors(cs.err)
-			return cs.Err()
-		}
-
 	}
-	cs.err = nil
+	if err != nil {
+		cs.err = replaceErrors(err)
+		return cs.err
+	}
 
 	cr := cs.aggregate.ResultCursorResponse()
 	cr.Server = server
@@ -383,9 +399,10 @@ func (cs *ChangeStream) buildPipelineSlice(pipeline interface{}) error {
 	cs.pipelineSlice = make([]bsoncore.Document, 0, val.Len()+1)
 
 	csIdx, csDoc := bsoncore.AppendDocumentStart(nil)
-	csDocTemp := cs.createPipelineOptionsDoc()
-	if cs.err != nil {
-		return cs.err
+
+	csDocTemp, err := cs.createPipelineOptionsDoc()
+	if err != nil {
+		return err
 	}
 	csDoc = bsoncore.AppendDocumentElement(csDoc, "$changeStream", csDocTemp)
 	csDoc, cs.err = bsoncore.AppendDocumentEnd(csDoc, csIdx)
@@ -407,7 +424,7 @@ func (cs *ChangeStream) buildPipelineSlice(pipeline interface{}) error {
 	return cs.err
 }
 
-func (cs *ChangeStream) createPipelineOptionsDoc() bsoncore.Document {
+func (cs *ChangeStream) createPipelineOptionsDoc() (bsoncore.Document, error) {
 	plDocIdx, plDoc := bsoncore.AppendDocumentStart(nil)
 
 	if cs.streamType == ClientStream {
@@ -415,10 +432,7 @@ func (cs *ChangeStream) createPipelineOptionsDoc() bsoncore.Document {
 	}
 
 	if cs.options.FullDocument != nil {
-		// Only append a default "fullDocument" field if wire version is less than 6 (3.6). Otherwise,
-		// the server will assume users want the default behavior, and "fullDocument" does not need to be
-		// specified.
-		if *cs.options.FullDocument != options.Default || (cs.wireVersion != nil && cs.wireVersion.Max < 6) {
+		if *cs.options.FullDocument != options.Default {
 			plDoc = bsoncore.AppendStringElement(plDoc, "fullDocument", string(*cs.options.FullDocument))
 		}
 	}
@@ -431,7 +445,7 @@ func (cs *ChangeStream) createPipelineOptionsDoc() bsoncore.Document {
 		var raDoc bsoncore.Document
 		raDoc, cs.err = transformBsoncoreDocument(cs.registry, cs.options.ResumeAfter, true, "resumeAfter")
 		if cs.err != nil {
-			return nil
+			return nil, cs.err
 		}
 
 		plDoc = bsoncore.AppendDocumentElement(plDoc, "resumeAfter", raDoc)
@@ -445,7 +459,7 @@ func (cs *ChangeStream) createPipelineOptionsDoc() bsoncore.Document {
 		var saDoc bsoncore.Document
 		saDoc, cs.err = transformBsoncoreDocument(cs.registry, cs.options.StartAfter, true, "startAfter")
 		if cs.err != nil {
-			return nil
+			return nil, cs.err
 		}
 
 		plDoc = bsoncore.AppendDocumentElement(plDoc, "startAfter", saDoc)
@@ -461,10 +475,10 @@ func (cs *ChangeStream) createPipelineOptionsDoc() bsoncore.Document {
 	}
 
 	if plDoc, cs.err = bsoncore.AppendDocumentEnd(plDoc, plDocIdx); cs.err != nil {
-		return nil
+		return nil, cs.err
 	}
 
-	return plDoc
+	return plDoc, nil
 }
 
 func (cs *ChangeStream) pipelineToBSON() (bsoncore.Document, error) {

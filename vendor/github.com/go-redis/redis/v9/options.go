@@ -72,49 +72,62 @@ type Options struct {
 	// Default is 5 seconds.
 	DialTimeout time.Duration
 	// Timeout for socket reads. If reached, commands will fail
-	// with a timeout instead of blocking. Use value -1 for no timeout and 0 for default.
-	// Default is 3 seconds.
+	// with a timeout instead of blocking. Supported values:
+	//   - `0` - default timeout (3 seconds).
+	//   - `-1` - no timeout (block indefinitely).
+	//   - `-2` - disables SetReadDeadline calls completely.
 	ReadTimeout time.Duration
 	// Timeout for socket writes. If reached, commands will fail
-	// with a timeout instead of blocking.
-	// Default is ReadTimeout.
+	// with a timeout instead of blocking.  Supported values:
+	//   - `0` - default timeout (3 seconds).
+	//   - `-1` - no timeout (block indefinitely).
+	//   - `-2` - disables SetWriteDeadline calls completely.
 	WriteTimeout time.Duration
+	// ContextTimeoutEnabled controls whether the client respects context timeouts and deadlines.
+	// See https://redis.uptrace.dev/guide/go-redis-debugging.html#timeouts
+	ContextTimeoutEnabled bool
 
 	// Type of connection pool.
 	// true for FIFO pool, false for LIFO pool.
-	// Note that fifo has higher overhead compared to lifo.
+	// Note that FIFO has slightly higher overhead compared to LIFO,
+	// but it helps closing idle connections faster reducing the pool size.
 	PoolFIFO bool
 	// Maximum number of socket connections.
 	// Default is 10 connections per every available CPU as reported by runtime.GOMAXPROCS.
 	PoolSize int
-	// Minimum number of idle connections which is useful when establishing
-	// new connection is slow.
-	MinIdleConns int
-	// Connection age at which client retires (closes) the connection.
-	// Default is to not close aged connections.
-	MaxConnAge time.Duration
 	// Amount of time client waits for connection if all connections
 	// are busy before returning an error.
 	// Default is ReadTimeout + 1 second.
 	PoolTimeout time.Duration
-	// Amount of time after which client closes idle connections.
+	// Minimum number of idle connections which is useful when establishing
+	// new connection is slow.
+	MinIdleConns int
+	// Maximum number of idle connections.
+	MaxIdleConns int
+	// ConnMaxIdleTime is the maximum amount of time a connection may be idle.
 	// Should be less than server's timeout.
-	// Default is 5 minutes. -1 disables idle timeout check.
-	IdleTimeout time.Duration
-	// Frequency of idle checks made by idle connections reaper.
-	// Default is 1 minute. -1 disables idle connections reaper,
-	// but idle connections are still discarded by the client
-	// if IdleTimeout is set.
-	IdleCheckFrequency time.Duration
+	//
+	// Expired connections may be closed lazily before reuse.
+	// If d <= 0, connections are not closed due to a connection's idle time.
+	//
+	// Default is 30 minutes. -1 disables idle timeout check.
+	ConnMaxIdleTime time.Duration
+	// ConnMaxLifetime is the maximum amount of time a connection may be reused.
+	//
+	// Expired connections may be closed lazily before reuse.
+	// If <= 0, connections are not closed due to a connection's age.
+	//
+	// Default is to not close idle connections.
+	ConnMaxLifetime time.Duration
 
-	// Enables read only queries on slave nodes.
-	readOnly bool
-
-	// TLS Config to use. When set TLS will be negotiated.
+	// TLS Config to use. When set, TLS will be negotiated.
 	TLSConfig *tls.Config
 
-	// Limiter interface used to implemented circuit breaker or rate limiter.
+	// Limiter interface used to implement circuit breaker or rate limiter.
 	Limiter Limiter
+
+	// Enables read only queries on slave/follower nodes.
+	readOnly bool
 }
 
 func (opt *Options) init() {
@@ -132,40 +145,36 @@ func (opt *Options) init() {
 		opt.DialTimeout = 5 * time.Second
 	}
 	if opt.Dialer == nil {
-		opt.Dialer = func(ctx context.Context, network, addr string) (net.Conn, error) {
-			netDialer := &net.Dialer{
-				Timeout:   opt.DialTimeout,
-				KeepAlive: 5 * time.Minute,
-			}
-			if opt.TLSConfig == nil {
-				return netDialer.DialContext(ctx, network, addr)
-			}
-			return tls.DialWithDialer(netDialer, network, addr, opt.TLSConfig)
-		}
+		opt.Dialer = NewDialer(opt)
 	}
 	if opt.PoolSize == 0 {
 		opt.PoolSize = 10 * runtime.GOMAXPROCS(0)
 	}
 	switch opt.ReadTimeout {
+	case -2:
+		opt.ReadTimeout = -1
 	case -1:
 		opt.ReadTimeout = 0
 	case 0:
 		opt.ReadTimeout = 3 * time.Second
 	}
 	switch opt.WriteTimeout {
+	case -2:
+		opt.WriteTimeout = -1
 	case -1:
 		opt.WriteTimeout = 0
 	case 0:
 		opt.WriteTimeout = opt.ReadTimeout
 	}
 	if opt.PoolTimeout == 0 {
-		opt.PoolTimeout = opt.ReadTimeout + time.Second
+		if opt.ReadTimeout > 0 {
+			opt.PoolTimeout = opt.ReadTimeout + time.Second
+		} else {
+			opt.PoolTimeout = 30 * time.Second
+		}
 	}
-	if opt.IdleTimeout == 0 {
-		opt.IdleTimeout = 5 * time.Minute
-	}
-	if opt.IdleCheckFrequency == 0 {
-		opt.IdleCheckFrequency = time.Minute
+	if opt.ConnMaxIdleTime == 0 {
+		opt.ConnMaxIdleTime = 30 * time.Minute
 	}
 
 	if opt.MaxRetries == -1 {
@@ -190,6 +199,21 @@ func (opt *Options) init() {
 func (opt *Options) clone() *Options {
 	clone := *opt
 	return &clone
+}
+
+// NewDialer returns a function that will be used as the default dialer
+// when none is specified in Options.Dialer.
+func NewDialer(opt *Options) func(context.Context, string, string) (net.Conn, error) {
+	return func(ctx context.Context, network, addr string) (net.Conn, error) {
+		netDialer := &net.Dialer{
+			Timeout:   opt.DialTimeout,
+			KeepAlive: 5 * time.Minute,
+		}
+		if opt.TLSConfig == nil {
+			return netDialer.DialContext(ctx, network, addr)
+		}
+		return tls.DialWithDialer(netDialer, network, addr, opt.TLSConfig)
+	}
 }
 
 // ParseURL parses an URL into Options that can be used to connect to Redis.
@@ -243,16 +267,7 @@ func setupTCPConn(u *url.URL) (*Options, error) {
 
 	o.Username, o.Password = getUserPassword(u)
 
-	h, p, err := net.SplitHostPort(u.Host)
-	if err != nil {
-		h = u.Host
-	}
-	if h == "" {
-		h = "localhost"
-	}
-	if p == "" {
-		p = "6379"
-	}
+	h, p := getHostPortWithDefaults(u)
 	o.Addr = net.JoinHostPort(h, p)
 
 	f := strings.FieldsFunc(u.Path, func(r rune) bool {
@@ -262,6 +277,7 @@ func setupTCPConn(u *url.URL) (*Options, error) {
 	case 0:
 		o.DB = 0
 	case 1:
+		var err error
 		if o.DB, err = strconv.Atoi(f[0]); err != nil {
 			return nil, fmt.Errorf("redis: invalid database number: %q", f[0])
 		}
@@ -277,6 +293,23 @@ func setupTCPConn(u *url.URL) (*Options, error) {
 	}
 
 	return setupConnParams(u, o)
+}
+
+// getHostPortWithDefaults is a helper function that splits the url into
+// a host and a port. If the host is missing, it defaults to localhost
+// and if the port is missing, it defaults to 6379.
+func getHostPortWithDefaults(u *url.URL) (string, string) {
+	host, port, err := net.SplitHostPort(u.Host)
+	if err != nil {
+		host = u.Host
+	}
+	if host == "" {
+		host = "localhost"
+	}
+	if port == "" {
+		port = "6379"
+	}
+	return host, port
 }
 
 func setupUnixConn(u *url.URL) (*Options, error) {
@@ -297,6 +330,10 @@ type queryOptions struct {
 	err error
 }
 
+func (o *queryOptions) has(name string) bool {
+	return len(o.q[name]) > 0
+}
+
 func (o *queryOptions) string(name string) string {
 	vs := o.q[name]
 	if len(vs) == 0 {
@@ -304,6 +341,12 @@ func (o *queryOptions) string(name string) string {
 	}
 	delete(o.q, name) // enable detection of unknown parameters
 	return vs[len(vs)-1]
+}
+
+func (o *queryOptions) strings(name string) []string {
+	vs := o.q[name]
+	delete(o.q, name)
+	return vs
 }
 
 func (o *queryOptions) int(name string) int {
@@ -391,11 +434,19 @@ func setupConnParams(u *url.URL, o *Options) (*Options, error) {
 	o.WriteTimeout = q.duration("write_timeout")
 	o.PoolFIFO = q.bool("pool_fifo")
 	o.PoolSize = q.int("pool_size")
-	o.MinIdleConns = q.int("min_idle_conns")
-	o.MaxConnAge = q.duration("max_conn_age")
 	o.PoolTimeout = q.duration("pool_timeout")
-	o.IdleTimeout = q.duration("idle_timeout")
-	o.IdleCheckFrequency = q.duration("idle_check_frequency")
+	o.MinIdleConns = q.int("min_idle_conns")
+	o.MaxIdleConns = q.int("max_idle_conns")
+	if q.has("conn_max_idle_time") {
+		o.ConnMaxIdleTime = q.duration("conn_max_idle_time")
+	} else {
+		o.ConnMaxIdleTime = q.duration("idle_timeout")
+	}
+	if q.has("conn_max_lifetime") {
+		o.ConnMaxLifetime = q.duration("conn_max_lifetime")
+	} else {
+		o.ConnMaxLifetime = q.duration("max_conn_age")
+	}
 	if q.err != nil {
 		return nil, q.err
 	}
@@ -419,17 +470,20 @@ func getUserPassword(u *url.URL) (string, string) {
 	return user, password
 }
 
-func newConnPool(opt *Options) *pool.ConnPool {
+func newConnPool(
+	opt *Options,
+	dialer func(ctx context.Context, network, addr string) (net.Conn, error),
+) *pool.ConnPool {
 	return pool.NewConnPool(&pool.Options{
 		Dialer: func(ctx context.Context) (net.Conn, error) {
-			return opt.Dialer(ctx, opt.Network, opt.Addr)
+			return dialer(ctx, opt.Network, opt.Addr)
 		},
-		PoolFIFO:           opt.PoolFIFO,
-		PoolSize:           opt.PoolSize,
-		MinIdleConns:       opt.MinIdleConns,
-		MaxConnAge:         opt.MaxConnAge,
-		PoolTimeout:        opt.PoolTimeout,
-		IdleTimeout:        opt.IdleTimeout,
-		IdleCheckFrequency: opt.IdleCheckFrequency,
+		PoolFIFO:        opt.PoolFIFO,
+		PoolSize:        opt.PoolSize,
+		PoolTimeout:     opt.PoolTimeout,
+		MinIdleConns:    opt.MinIdleConns,
+		MaxIdleConns:    opt.MaxIdleConns,
+		ConnMaxIdleTime: opt.ConnMaxIdleTime,
+		ConnMaxLifetime: opt.ConnMaxLifetime,
 	})
 }

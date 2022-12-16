@@ -20,8 +20,9 @@ const (
 )
 
 type withQuery struct {
-	name  string
-	query schema.QueryAppender
+	name      string
+	query     schema.QueryAppender
+	recursive bool
 }
 
 // IConn is a common interface for *sql.DB, *sql.Conn, and *sql.Tx.
@@ -50,6 +51,7 @@ type IDB interface {
 	NewInsert() *InsertQuery
 	NewUpdate() *UpdateQuery
 	NewDelete() *DeleteQuery
+	NewRaw(query string, args ...interface{}) *RawQuery
 	NewCreateTable() *CreateTableQuery
 	NewDropTable() *DropTableQuery
 	NewCreateIndex() *CreateIndexQuery
@@ -157,8 +159,7 @@ func (q *baseQuery) setConn(db IConn) {
 	}
 }
 
-// TODO: rename to setModel
-func (q *baseQuery) setTableModel(modeli interface{}) {
+func (q *baseQuery) setModel(modeli interface{}) {
 	model, err := newSingleModel(q.db, modeli)
 	if err != nil {
 		q.setErr(err)
@@ -237,17 +238,18 @@ func (q *baseQuery) isSoftDelete() bool {
 	if q.table != nil {
 		return q.table.SoftDeleteField != nil &&
 			!q.flags.Has(allWithDeletedFlag) &&
-			!q.flags.Has(forceDeleteFlag)
+			(!q.flags.Has(forceDeleteFlag) || q.flags.Has(deletedFlag))
 	}
 	return false
 }
 
 //------------------------------------------------------------------------------
 
-func (q *baseQuery) addWith(name string, query schema.QueryAppender) {
+func (q *baseQuery) addWith(name string, query schema.QueryAppender, recursive bool) {
 	q.with = append(q.with, withQuery{
-		name:  name,
-		query: query,
+		name:      name,
+		query:     query,
+		recursive: recursive,
 	})
 }
 
@@ -260,6 +262,10 @@ func (q *baseQuery) appendWith(fmter schema.Formatter, b []byte) (_ []byte, err 
 	for i, with := range q.with {
 		if i > 0 {
 			b = append(b, ", "...)
+		}
+
+		if with.recursive {
+			b = append(b, "RECURSIVE "...)
 		}
 
 		b, err = q.appendCTE(fmter, b, with)
@@ -649,6 +655,10 @@ func (q *baseQuery) NewDelete() *DeleteQuery {
 	return NewDeleteQuery(q.db).Conn(q.conn)
 }
 
+func (q *baseQuery) NewRaw(query string, args ...interface{}) *RawQuery {
+	return NewRawQuery(q.db, query, args...).Conn(q.conn)
+}
+
 func (q *baseQuery) NewCreateTable() *CreateTableQuery {
 	return NewCreateTableQuery(q.db).Conn(q.conn)
 }
@@ -763,7 +773,7 @@ func (q *whereBaseQuery) addWhereCols(cols []string) {
 func (q *whereBaseQuery) mustAppendWhere(
 	fmter schema.Formatter, b []byte, withAlias bool,
 ) ([]byte, error) {
-	if len(q.where) == 0 && q.whereFields == nil {
+	if len(q.where) == 0 && q.whereFields == nil && !q.flags.Has(deletedFlag) {
 		err := errors.New("bun: Update and Delete queries require at least one Where")
 		return nil, err
 	}

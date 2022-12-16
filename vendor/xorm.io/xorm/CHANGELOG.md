@@ -3,6 +3,13 @@
 This changelog goes through all the changes that have been made in each release
 without substantial changes to our git log.
 
+## [1.3.2](https://gitea.com/xorm/xorm/releases/tag/1.3.2) - 2022-09-03
+
+* BUGFIXES
+  * Change schemas.Column to use int64 (#2160)
+* MISC
+  * Prevent Sync failure with non-regular indexes on Postgres (#2174)
+
 ## [1.3.1](https://gitea.com/xorm/xorm/releases/tag/1.3.1) - 2022-06-03
 
 * BREAKING

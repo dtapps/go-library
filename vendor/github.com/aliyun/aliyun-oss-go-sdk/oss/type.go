@@ -5,6 +5,8 @@ import (
 	"encoding/xml"
 	"fmt"
 	"net/url"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -78,6 +80,7 @@ type LifecycleRule struct {
 	// Deprecated: Use NonVersionTransitions instead.
 	NonVersionTransition  *LifecycleVersionTransition  `xml:"-"` // NonVersionTransition is not suggested to use
 	NonVersionTransitions []LifecycleVersionTransition `xml:"NoncurrentVersionTransition,omitempty"`
+	Filter                *LifecycleFilter             `xml:Filter,omitempty` //condition parameter container of this exclusion rule
 }
 
 // LifecycleExpiration defines the rule's expiration property
@@ -91,10 +94,13 @@ type LifecycleExpiration struct {
 
 // LifecycleTransition defines the rule's transition propery
 type LifecycleTransition struct {
-	XMLName           xml.Name         `xml:"Transition"`
-	Days              int              `xml:"Days,omitempty"`              // Relative transition time: The transition time in days after the last modified time
-	CreatedBeforeDate string           `xml:"CreatedBeforeDate,omitempty"` // objects created before the date will be expired
-	StorageClass      StorageClassType `xml:"StorageClass,omitempty"`      // Specifies the target storage type
+	XMLName              xml.Name         `xml:"Transition"`
+	Days                 int              `xml:"Days,omitempty"`                 // Relative transition time: The transition time in days after the last modified time
+	CreatedBeforeDate    string           `xml:"CreatedBeforeDate,omitempty"`    // objects created before the date will be expired
+	StorageClass         StorageClassType `xml:"StorageClass,omitempty"`         // Specifies the target storage type
+	IsAccessTime         *bool            `xml:"IsAccessTime,omitempty"`         // access time
+	ReturnToStdWhenVisit *bool            `xml:"ReturnToStdWhenVisit,omitempty"` // Return To Std When Visit
+	AllowSmallFile       *bool            `xml:AllowSmallFile,omitempty`
 }
 
 // LifecycleAbortMultipartUpload defines the rule's abort multipart upload propery
@@ -112,9 +118,25 @@ type LifecycleVersionExpiration struct {
 
 // LifecycleVersionTransition defines the rule's NoncurrentVersionTransition propery
 type LifecycleVersionTransition struct {
-	XMLName        xml.Name         `xml:"NoncurrentVersionTransition"`
-	NoncurrentDays int              `xml:"NoncurrentDays,omitempty"` // How many days after the Object becomes a non-current version
-	StorageClass   StorageClassType `xml:"StorageClass,omitempty"`
+	XMLName              xml.Name         `xml:"NoncurrentVersionTransition"`
+	NoncurrentDays       int              `xml:"NoncurrentDays,omitempty"` // How many days after the Object becomes a non-current version
+	StorageClass         StorageClassType `xml:"StorageClass,omitempty"`
+	IsAccessTime         *bool            `xml:"IsAccessTime,omitempty"`         // access time
+	ReturnToStdWhenVisit *bool            `xml:"ReturnToStdWhenVisit,omitempty"` // Return To Std When Visit
+	AllowSmallFile       *bool            `xml:AllowSmallFile,omitempty`
+}
+
+// LifecycleFilter defines the rule's Filter propery
+type LifecycleFilter struct {
+	XMLName xml.Name             `xml:"Filter"`
+	Not     []LifecycleFilterNot `xml:"Not,omitempty"`
+}
+
+// LifecycleFilterNot defines the rule's Filter Not propery
+type LifecycleFilterNot struct {
+	XMLName xml.Name `xml:"Not"`
+	Prefix  string   `xml:"Prefix,omitempty"` //Object prefix applicable to this exclusion rule
+	Tag     *Tag     `xml:"Tag,omitempty"`    //the tags applicable to this exclusion rule
 }
 
 const iso8601DateFormat = "2006-01-02T15:04:05.000Z"
@@ -321,6 +343,7 @@ type GetBucketInfoResult struct {
 type BucketInfo struct {
 	XMLName                xml.Name  `xml:"Bucket"`
 	Name                   string    `xml:"Name"`                     // Bucket name
+	AccessMonitor          string    `xml:"AccessMonitor"`            // Bucket Access Monitor
 	Location               string    `xml:"Location"`                 // Bucket datacenter
 	CreationDate           time.Time `xml:"CreationDate"`             // Bucket creation time
 	ExtranetEndpoint       string    `xml:"ExtranetEndpoint"`         // Bucket external endpoint
@@ -358,13 +381,14 @@ type ListObjectsResult struct {
 // ObjectProperties defines Objecct properties
 type ObjectProperties struct {
 	XMLName      xml.Name  `xml:"Contents"`
-	Key          string    `xml:"Key"`          // Object key
-	Type         string    `xml:"Type"`         // Object type
-	Size         int64     `xml:"Size"`         // Object size
-	ETag         string    `xml:"ETag"`         // Object ETag
-	Owner        Owner     `xml:"Owner"`        // Object owner information
-	LastModified time.Time `xml:"LastModified"` // Object last modified time
-	StorageClass string    `xml:"StorageClass"` // Object storage class (Standard, IA, Archive)
+	Key          string    `xml:"Key"`                   // Object key
+	Type         string    `xml:"Type"`                  // Object type
+	Size         int64     `xml:"Size"`                  // Object size
+	ETag         string    `xml:"ETag"`                  // Object ETag
+	Owner        Owner     `xml:"Owner"`                 // Object owner information
+	LastModified time.Time `xml:"LastModified"`          // Object last modified time
+	StorageClass string    `xml:"StorageClass"`          // Object storage class (Standard, IA, Archive)
+	RestoreInfo  string    `xml:"RestoreInfo,omitempty"` // Object restoreInfo
 }
 
 // ListObjectsResultV2 defines the result from ListObjectsV2 request
@@ -410,15 +434,16 @@ type ObjectDeleteMarkerProperties struct {
 
 type ObjectVersionProperties struct {
 	XMLName      xml.Name  `xml:"Version"`
-	Key          string    `xml:"Key"`          // The Object Key
-	VersionId    string    `xml:"VersionId"`    // The Object VersionId
-	IsLatest     bool      `xml:"IsLatest"`     // is latest version or not
-	LastModified time.Time `xml:"LastModified"` // Object last modified time
-	Type         string    `xml:"Type"`         // Object type
-	Size         int64     `xml:"Size"`         // Object size
-	ETag         string    `xml:"ETag"`         // Object ETag
-	StorageClass string    `xml:"StorageClass"` // Object storage class (Standard, IA, Archive)
-	Owner        Owner     `xml:"Owner"`        // bucket owner element
+	Key          string    `xml:"Key"`                   // The Object Key
+	VersionId    string    `xml:"VersionId"`             // The Object VersionId
+	IsLatest     bool      `xml:"IsLatest"`              // is latest version or not
+	LastModified time.Time `xml:"LastModified"`          // Object last modified time
+	Type         string    `xml:"Type"`                  // Object type
+	Size         int64     `xml:"Size"`                  // Object size
+	ETag         string    `xml:"ETag"`                  // Object ETag
+	StorageClass string    `xml:"StorageClass"`          // Object storage class (Standard, IA, Archive)
+	Owner        Owner     `xml:"Owner"`                 // bucket owner element
+	RestoreInfo  string    `xml:"RestoreInfo,omitempty"` // Object restoreInfo
 }
 
 // Owner defines Bucket/Object's owner
@@ -766,6 +791,33 @@ func decodeListMultipartUploadResult(result *ListMultipartUploadResult) error {
 	return nil
 }
 
+// marshalDeleteObjectToXml deleteXML struct to xml
+func marshalDeleteObjectToXml(dxml deleteXML) string {
+	var builder strings.Builder
+	builder.WriteString("<Delete>")
+	builder.WriteString("<Quiet>")
+	builder.WriteString(strconv.FormatBool(dxml.Quiet))
+	builder.WriteString("</Quiet>")
+	if len(dxml.Objects) > 0 {
+		for _, object := range dxml.Objects {
+			builder.WriteString("<Object>")
+			if object.Key != "" {
+				builder.WriteString("<Key>")
+				builder.WriteString(EscapeXml(object.Key))
+				builder.WriteString("</Key>")
+			}
+			if object.VersionId != "" {
+				builder.WriteString("<VersionId>")
+				builder.WriteString(object.VersionId)
+				builder.WriteString("</VersionId>")
+			}
+			builder.WriteString("</Object>")
+		}
+	}
+	builder.WriteString("</Delete>")
+	return builder.String()
+}
+
 // createBucketConfiguration defines the configuration for creating a bucket.
 type createBucketConfiguration struct {
 	XMLName            xml.Name           `xml:"CreateBucketConfiguration"`
@@ -914,10 +966,23 @@ type GetBucketEncryptionResult ServerEncryptionRule
 type GetBucketTaggingResult Tagging
 
 type BucketStat struct {
-	XMLName              xml.Name `xml:"BucketStat"`
-	Storage              int64    `xml:"Storage"`
-	ObjectCount          int64    `xml:"ObjectCount"`
-	MultipartUploadCount int64    `xml:"MultipartUploadCount"`
+	XMLName                     xml.Name `xml:"BucketStat"`
+	Storage                     int64    `xml:"Storage"`
+	ObjectCount                 int64    `xml:"ObjectCount"`
+	MultipartUploadCount        int64    `xml:"MultipartUploadCount"`
+	LiveChannelCount            int64    `xml:"LiveChannelCount"`
+	LastModifiedTime            int64    `xml:"LastModifiedTime"`
+	StandardStorage             int64    `xml:"StandardStorage"`
+	StandardObjectCount         int64    `xml:"StandardObjectCount"`
+	InfrequentAccessStorage     int64    `xml:"InfrequentAccessStorage"`
+	InfrequentAccessRealStorage int64    `xml:"InfrequentAccessRealStorage"`
+	InfrequentAccessObjectCount int64    `xml:"InfrequentAccessObjectCount"`
+	ArchiveStorage              int64    `xml:"ArchiveStorage"`
+	ArchiveRealStorage          int64    `xml:"ArchiveRealStorage"`
+	ArchiveObjectCount          int64    `xml:"ArchiveObjectCount"`
+	ColdArchiveStorage          int64    `xml:"ColdArchiveStorage"`
+	ColdArchiveRealStorage      int64    `xml:"ColdArchiveRealStorage"`
+	ColdArchiveObjectCount      int64    `xml:"ColdArchiveObjectCount"`
 }
 type GetBucketStatResult BucketStat
 
@@ -1304,3 +1369,104 @@ type CreateBucketCnameTokenResult CnameTokenXML
 
 // GetBucketCnameTokenResult defines result object for GetBucketCnameToken request
 type GetBucketCnameTokenResult CnameTokenXML
+
+// GetMetaQueryStatusResult defines result for GetMetaQueryStatus result
+type GetMetaQueryStatusResult GetMetaQueryStatusResultXml
+
+// GetMetaQueryStatusResultXml define get meta query status information
+type GetMetaQueryStatusResultXml struct {
+	XMLName    xml.Name `xml:"MetaQueryStatus"`
+	State      string   `xml:"State"`
+	Phase      string   `xml:"Phase"`
+	CreateTime string   `xml:"CreateTime"`
+	UpdateTime string   `xml:"UpdateTime"`
+}
+
+// DoMetaQuery defines meta query struct
+type MetaQuery struct {
+	XMLName      xml.Name                      `xml:"MetaQuery"`
+	NextToken    string                        `xml:"NextToken,omitempty"`
+	MaxResults   int64                         `xml:"MaxResults,omitempty"`
+	Query        string                        `xml:"Query"`
+	Sort         string                        `xml:"Sort,omitempty"`
+	Order        string                        `xml:"Order,omitempty"`
+	Aggregations []MetaQueryAggregationRequest `xml:"Aggregations>Aggregation,omitempty"`
+}
+
+// MetaQueryAggregationRequest defines meta query aggregation request
+type MetaQueryAggregationRequest struct {
+	XMLName   xml.Name `xml:"Aggregation"`
+	Field     string   `xml:"Field,omitempty"`
+	Operation string   `xml:"Operation,omitempty"`
+}
+
+// MetaQueryAggregationResponse defines meta query aggregation response
+type MetaQueryAggregationResponse struct {
+	XMLName   xml.Name         `xml:"Aggregation"`
+	Field     string           `xml:"Field,omitempty"`
+	Operation string           `xml:"Operation,omitempty"`
+	Value     float64          `xml:"Value,omitempty"`
+	Groups    []MetaQueryGroup `xml:"Groups>Group,omitempty"`
+}
+
+// DoMetaQueryResult defines result for DoMetaQuery result
+type DoMetaQueryResult DoMetaQueryResultXml
+
+// DoMetaQueryResultXml defines do meta query information
+type DoMetaQueryResultXml struct {
+	XMLName      xml.Name                       `xml:"MetaQuery"`
+	NextToken    string                         `xml:"NextToken,omitempty"`                 // next token
+	Files        []MetaQueryFile                `xml:"Files>File,omitempty"`                // file
+	Aggregations []MetaQueryAggregationResponse `xml:"Aggregations>Aggregation,omitempty"'` // Aggregation
+}
+
+// MetaQueryFile defines do meta query result file information
+type MetaQueryFile struct {
+	XMLName                               xml.Name            `xml:"File"`
+	Filename                              string              `xml:"Filename"`                                        //file name
+	Size                                  int64               `xml:"Size"`                                            // file size
+	FileModifiedTime                      string              `xml:"FileModifiedTime"`                                // file Modified Time
+	OssObjectType                         string              `xml:"OSSObjectType"`                                   // Oss Object Type
+	OssStorageClass                       string              `xml:"OSSStorageClass"`                                 // Oss Storage Class
+	ObjectACL                             string              `xml:"ObjectACL"`                                       // Object Acl
+	ETag                                  string              `xml:"ETag"`                                            // ETag
+	OssCRC64                              string              `xml:"OSSCRC64"`                                        // Oss CRC64
+	OssTaggingCount                       int64               `xml:"OSSTaggingCount,omitempty"`                       // Oss Tagging Count
+	OssTagging                            []MetaQueryTagging  `xml:"OSSTagging>Tagging,omitempty"`                    // Tagging
+	OssUserMeta                           []MetaQueryUserMeta `xml:"OSSUserMeta>UserMeta,omitempty"`                  // UserMeta
+	ServerSideEncryption                  string              `xml:"ServerSideEncryption,omitempty"`                  //Server Side Encryption
+	ServerSideEncryptionCustomerAlgorithm string              `xml:"ServerSideEncryptionCustomerAlgorithm,omitempty"` // Server Side Encryption Customer Algorithm
+}
+
+// MetaQueryTagging defines do meta query result tagging information
+type MetaQueryTagging struct {
+	XMLName xml.Name `xml:"Tagging"`
+	Key     string   `xml:"Key"`
+	Value   string   `xml:"Value"`
+}
+
+// MetaQueryUserMeta defines do meta query result user meta information
+type MetaQueryUserMeta struct {
+	XMLName xml.Name `xml:"UserMeta"`
+	Key     string   `xml:"Key"`
+	Value   string   `xml:"Value"`
+}
+
+// MetaQueryGroup defines do meta query result group information
+type MetaQueryGroup struct {
+	XMLName xml.Name `xml:"Group"`
+	Value   string   `xml:"Value"`
+	Count   int64    `xml:"Count"`
+}
+
+//GetBucketAccessMonitorResult define config for get bucket access monitor
+type GetBucketAccessMonitorResult BucketAccessMonitorXml
+
+//BucketAccessMonitor define the xml of bucket access monitor config
+type PutBucketAccessMonitor BucketAccessMonitorXml
+
+// GetBucketAccessMonitorXml define get bucket access monitor information
+type BucketAccessMonitorXml struct {
+	XMLName xml.Name `xml:"AccessMonitorConfiguration"`
+	Status  string   `xml:"Status"` // access monitor status
+}

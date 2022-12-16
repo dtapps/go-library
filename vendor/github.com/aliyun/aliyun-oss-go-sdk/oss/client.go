@@ -732,6 +732,112 @@ func (client Client) DeleteBucketWebsite(bucketName string, options ...Option) e
 	return CheckRespCode(resp.StatusCode, []int{http.StatusNoContent})
 }
 
+// OpenMetaQuery Enables the metadata management feature for a bucket.
+//
+// bucketName    the bucket name.
+//
+// error    it's nil if no error, otherwise it's an error object.
+//
+func (client Client) OpenMetaQuery(bucketName string, options ...Option) error {
+	params := map[string]interface{}{}
+	params["metaQuery"] = nil
+	params["comp"] = "add"
+	resp, err := client.do("POST", bucketName, params, nil, nil, options...)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	return CheckRespCode(resp.StatusCode, []int{http.StatusOK})
+}
+
+// GetMetaQueryStatus Queries the information about the metadata index library of a bucket.
+//
+// bucketName    the bucket name
+//
+// GetMetaQueryStatusResult    the result object upon successful request. It's only valid when error is nil.
+// error    it's nil if no error, otherwise it's an error object.
+//
+func (client Client) GetMetaQueryStatus(bucketName string, options ...Option) (GetMetaQueryStatusResult, error) {
+	var out GetMetaQueryStatusResult
+	params := map[string]interface{}{}
+	params["metaQuery"] = nil
+	resp, err := client.do("GET", bucketName, params, nil, nil, options...)
+	if err != nil {
+		return out, err
+	}
+	defer resp.Body.Close()
+	err = xmlUnmarshal(resp.Body, &out)
+	return out, err
+}
+
+// DoMetaQuery Queries the objects that meet specified conditions and lists the information about objects based on specified fields and sorting methods.
+//
+// bucketName   the bucket name
+//
+// metaQuery    the option of query
+//
+// DoMetaQueryResult   the result object upon successful request. It's only valid when error is nil.
+
+// error    it's nil if no error, otherwise it's an error object.
+//
+func (client Client) DoMetaQuery(bucketName string, metaQuery MetaQuery, options ...Option) (DoMetaQueryResult, error) {
+	var out DoMetaQueryResult
+	bs, err := xml.Marshal(metaQuery)
+	if err != nil {
+		return out, err
+	}
+	out, err = client.DoMetaQueryXml(bucketName, string(bs), options...)
+	return out, err
+}
+
+// DoMetaQuery Queries the objects that meet specified conditions and lists the information about objects based on specified fields and sorting methods.
+//
+// bucketName   the bucket name
+//
+// metaQuery    the option of query
+//
+// DoMetaQueryResult   the result object upon successful request. It's only valid when error is nil.
+
+// error    it's nil if no error, otherwise it's an error object.
+//
+func (client Client) DoMetaQueryXml(bucketName string, metaQueryXml string, options ...Option) (DoMetaQueryResult, error) {
+	var out DoMetaQueryResult
+	buffer := new(bytes.Buffer)
+	buffer.Write([]byte(metaQueryXml))
+	contentType := http.DetectContentType(buffer.Bytes())
+	headers := map[string]string{}
+	headers[HTTPHeaderContentType] = contentType
+
+	params := map[string]interface{}{}
+	params["metaQuery"] = nil
+	params["comp"] = "query"
+	resp, err := client.do("POST", bucketName, params, headers, buffer, options...)
+	if err != nil {
+		return out, err
+	}
+	defer resp.Body.Close()
+	err = xmlUnmarshal(resp.Body, &out)
+	return out, err
+}
+
+// CloseMetaQuery Disables the metadata management feature for a bucket.
+//
+// bucketName    the bucket name.
+//
+// error    it's nil if no error, otherwise it's an error object.
+//
+func (client Client) CloseMetaQuery(bucketName string, options ...Option) error {
+	params := map[string]interface{}{}
+	params["metaQuery"] = nil
+	params["comp"] = "delete"
+	resp, err := client.do("POST", bucketName, params, nil, nil, options...)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	return CheckRespCode(resp.StatusCode, []int{http.StatusOK})
+}
+
 // GetBucketWebsite gets the bucket's default page (index page) and the error page.
 //
 // bucketName    the bucket name
@@ -1087,8 +1193,14 @@ func (client Client) GetBucketTagging(bucketName string, options ...Option) (Get
 // error      nil if success, otherwise error
 //
 func (client Client) DeleteBucketTagging(bucketName string, options ...Option) error {
+	key, _ := FindOption(options, "tagging", nil)
 	params := map[string]interface{}{}
-	params["tagging"] = nil
+	if key == nil {
+		params["tagging"] = nil
+	} else {
+		params["tagging"] = key.(string)
+	}
+
 	resp, err := client.do("DELETE", bucketName, params, nil, nil, options...)
 	if err != nil {
 		return err
@@ -1944,6 +2056,67 @@ func (client Client) GetBucketReplicationProgress(bucketName string, ruleId stri
 		return "", err
 	}
 	return string(data), err
+}
+
+// GetBucketAccessMonitor get bucket's access monitor config
+// bucketName    the bucket name.
+// GetBucketAccessMonitorResult  the access monitor configuration result of bucket.
+// error    it's nil if no error, otherwise it's an error object.
+func (client Client) GetBucketAccessMonitor(bucketName string, options ...Option) (GetBucketAccessMonitorResult, error) {
+	var out GetBucketAccessMonitorResult
+	body, err := client.GetBucketAccessMonitorXml(bucketName, options...)
+	err = xmlUnmarshal(strings.NewReader(body), &out)
+	return out, err
+}
+
+// GetBucketAccessMonitor get bucket's access monitor config
+// bucketName    the bucket name.
+// string  the access monitor configuration result of bucket xml foramt.
+// error    it's nil if no error, otherwise it's an error object.
+func (client Client) GetBucketAccessMonitorXml(bucketName string, options ...Option) (string, error) {
+	params := map[string]interface{}{}
+	params["accessmonitor"] = nil
+	resp, err := client.do("GET", bucketName, params, nil, nil, options...)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	out := string(body)
+	return out, err
+}
+
+// PutBucketAccessMonitor get bucket's access monitor config
+// bucketName    the bucket name.
+// accessMonitor the access monitor configuration of bucket.
+// error    it's nil if no error, otherwise it's an error object.
+func (client Client) PutBucketAccessMonitor(bucketName string, accessMonitor PutBucketAccessMonitor, options ...Option) error {
+	bs, err := xml.Marshal(accessMonitor)
+	if err != nil {
+		return err
+	}
+	err = client.PutBucketAccessMonitorXml(bucketName, string(bs), options...)
+	return err
+}
+
+// PutBucketAccessMonitor get bucket's access monitor config
+// bucketName    the bucket name.
+// xmlData		 the access monitor configuration in xml foramt
+// error    it's nil if no error, otherwise it's an error object.
+func (client Client) PutBucketAccessMonitorXml(bucketName string, xmlData string, options ...Option) error {
+	buffer := new(bytes.Buffer)
+	buffer.Write([]byte(xmlData))
+	contentType := http.DetectContentType(buffer.Bytes())
+	headers := map[string]string{}
+	headers[HTTPHeaderContentType] = contentType
+	params := map[string]interface{}{}
+	params["accessmonitor"] = nil
+	resp, err := client.do("PUT", bucketName, params, nil, buffer, options...)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	return CheckRespCode(resp.StatusCode, []int{http.StatusOK})
 }
 
 // GetBucketCname get bucket's binding cname
