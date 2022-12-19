@@ -2,6 +2,7 @@
 
 - request：update ua
 - ip：update data
+- nldyp：update api
 
 ## v2022-06-10
 
