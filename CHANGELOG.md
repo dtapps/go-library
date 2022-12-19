@@ -1,3 +1,8 @@
+## v2022-12-19
+
+- request：update ua
+- ip：update data
+
 ## v2022-06-10
 
 - lock：优化
