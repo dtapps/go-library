@@ -8,8 +8,8 @@ import (
 
 // ResponseServeHttpOrder 返回参数
 type ResponseServeHttpOrder struct {
-	Smstitle            string `json:"appId,omitempty"`               // 订单标题
-	Quantity            string `json:"CreateTime,omitempty"`          // 订单数量
+	Smstitle            string `json:"smstitle,omitempty"`            // 订单标题
+	Quantity            string `json:"quantity,omitempty"`            // 订单数量
 	Orderid             string `json:"orderid,omitempty"`             // 订单id
 	Dealid              string `json:"dealid,omitempty"`              // 店铺id（部分存在）
 	Paytime             string `json:"paytime,omitempty"`             // 订单支付时间，10位时间戳

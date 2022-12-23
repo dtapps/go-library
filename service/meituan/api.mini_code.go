@@ -26,14 +26,10 @@ func newApiMiniCodeResult(result ApiMiniCodeResponse, body []byte, http goreques
 
 // ApiMiniCode 小程序生成二维码（新版）
 // https://union.meituan.com/v2/apiDetail?id=26
-func (c *Client) ApiMiniCode(ctx context.Context, actId int64, sid string) *ApiMiniCodeResult {
+func (c *Client) ApiMiniCode(ctx context.Context, notMustParams ...gorequest.Params) *ApiMiniCodeResult {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("appkey", c.GetAppKey())
-	param.Set("sid", sid)
-	param.Set("actId", actId)
-	// 转换
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("appkey", c.GetAppKey()) // 媒体名称，可在推广者备案-媒体管理中查询
 	params["sign"] = c.getSign(c.GetSecret(), params)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/api/miniCode", params, http.MethodGet)
