@@ -5,14 +5,14 @@ go 1.19
 require (
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.6+incompatible
 	github.com/allegro/bigcache/v3 v3.1.0
-	github.com/aws/aws-sdk-go v1.44.165
+	github.com/aws/aws-sdk-go v1.44.166
 	github.com/aws/aws-sdk-go-v2/config v1.18.7
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.29.6
 	github.com/baidubce/bce-sdk-go v0.9.138
 	github.com/basgys/goxml2json v1.1.0
 	github.com/docker/docker v20.10.22+incompatible
 	github.com/drone/drone-go v1.7.1
-	github.com/gin-gonic/gin v1.8.1
+	github.com/gin-gonic/gin v1.8.2
 	github.com/go-playground/locales v0.14.0
 	github.com/go-playground/universal-translator v0.18.0
 	github.com/go-playground/validator/v10 v10.11.1
