@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"unicode/utf8"
+	"unsafe"
 )
 
 // ToString 转换成string
@@ -149,4 +150,13 @@ func NumericalToString(value interface{}) (string, bool) {
 		val = strconv.FormatFloat(floatVal, 'f', -1, 64)
 	}
 	return val, true
+}
+
+func StringToBytes(s string) []byte {
+	return unsafe.Slice(unsafe.StringData(s), len(s))
+}
+
+func BytesToString(b []byte) string {
+	//return unsafe.String(&b[0], len(b))
+	return unsafe.String(&b[0], unsafe.IntegerType(len(b)))
 }

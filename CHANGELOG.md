@@ -1,6 +1,7 @@
 ## v2022-12-23
 
 - meituan：update api
+- string：update 
 
 ## v2022-12-19
 
