@@ -157,6 +157,5 @@ func StringToBytes(s string) []byte {
 }
 
 func BytesToString(b []byte) string {
-	//return unsafe.String(&b[0], len(b))
-	return unsafe.String(&b[0], unsafe.IntegerType(len(b)))
+	return unsafe.String(&b[0], len(b))
 }
