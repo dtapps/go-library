@@ -83,9 +83,12 @@ func NewGinClient(config *GinClientConfig) (*GinClient, error) {
 	c.setConfig(ctx)
 
 	gormClient, gormTableName := config.GormClientFun()
-	mongoClient, mongoDatabaseName, mongoCollectionName := config.MongoClientFun()
+	//mongoClient, mongoDatabaseName, mongoCollectionName := config.MongoClientFun()
 
-	if (gormClient == nil || gormClient.GetDb() == nil) || (mongoClient == nil || mongoClient.GetDb() == nil) {
+	//if (gormClient == nil || gormClient.GetDb() == nil) || (mongoClient == nil || mongoClient.GetDb() == nil) {
+	//	return nil, dbClientFunNoConfig
+	//}
+	if gormClient == nil || gormClient.GetDb() == nil {
 		return nil, dbClientFunNoConfig
 	}
 
@@ -106,30 +109,30 @@ func NewGinClient(config *GinClientConfig) (*GinClient, error) {
 	}
 
 	// 配置非关系数据库
-	if mongoClient != nil || mongoClient.GetDb() != nil {
-
-		c.mongoClient = mongoClient
-
-		if mongoDatabaseName == "" {
-			return nil, errors.New("没有设置库名")
-		} else {
-			c.mongoConfig.databaseName = mongoDatabaseName
-		}
-
-		if mongoCollectionName == "" {
-			return nil, errors.New("没有设置表名")
-		} else {
-			c.mongoConfig.collectionName = mongoCollectionName
-		}
-
-		// 创建时间序列集合
-		//c.mongoCreateCollection(ctx)
-
-		// 创建索引
-		c.mongoCreateIndexes(ctx)
-
-		c.mongoConfig.stats = true
-	}
+	//if mongoClient != nil || mongoClient.GetDb() != nil {
+	//
+	//	c.mongoClient = mongoClient
+	//
+	//	if mongoDatabaseName == "" {
+	//		return nil, errors.New("没有设置库名")
+	//	} else {
+	//		c.mongoConfig.databaseName = mongoDatabaseName
+	//	}
+	//
+	//	if mongoCollectionName == "" {
+	//		return nil, errors.New("没有设置表名")
+	//	} else {
+	//		c.mongoConfig.collectionName = mongoCollectionName
+	//	}
+	//
+	//	// 创建时间序列集合
+	//	//c.mongoCreateCollection(ctx)
+	//
+	//	// 创建索引
+	//	c.mongoCreateIndexes(ctx)
+	//
+	//	c.mongoConfig.stats = true
+	//}
 
 	return c, nil
 }
@@ -211,13 +214,6 @@ func (c *GinClient) Middleware() gin.HandlerFunc {
 					c.gormRecordJson(ginCtx, traceId, requestTime, data, responseCode, responseBody, startTime, endTime, info)
 				} else {
 					c.gormRecordXml(ginCtx, traceId, requestTime, data, responseCode, responseBody, startTime, endTime, info)
-				}
-			}
-			if c.mongoConfig.stats {
-				if dataJson {
-					c.mongoRecordJson(ginCtx, traceId, requestTime, data, responseCode, responseBody, startTime, endTime, info)
-				} else {
-					c.mongoRecordXml(ginCtx, traceId, requestTime, data, responseCode, responseBody, startTime, endTime, info)
 				}
 			}
 		}()

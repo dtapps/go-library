@@ -73,9 +73,12 @@ func NewApiClient(config *ApiClientConfig) (*ApiClient, error) {
 	c.setConfig(ctx)
 
 	gormClient, gormTableName := config.GormClientFun()
-	mongoClient, mongoDatabaseName, mongoCollectionName := config.MongoClientFun()
+	//mongoClient, mongoDatabaseName, mongoCollectionName := config.MongoClientFun()
 
-	if (gormClient == nil || gormClient.GetDb() == nil) || (mongoClient == nil || mongoClient.GetDb() == nil) {
+	//if (gormClient == nil || gormClient.GetDb() == nil) || (mongoClient == nil || mongoClient.GetDb() == nil) {
+	//	return nil, dbClientFunNoConfig
+	//}
+	if gormClient == nil || gormClient.GetDb() == nil {
 		return nil, dbClientFunNoConfig
 	}
 
@@ -97,30 +100,30 @@ func NewApiClient(config *ApiClientConfig) (*ApiClient, error) {
 	}
 
 	// 配置非关系数据库
-	if mongoClient != nil || mongoClient.GetDb() != nil {
-
-		c.mongoClient = mongoClient
-
-		if mongoDatabaseName == "" {
-			return nil, errors.New("没有设置库名")
-		} else {
-			c.mongoConfig.databaseName = mongoDatabaseName
-		}
-
-		if mongoCollectionName == "" {
-			return nil, errors.New("没有设置表名")
-		} else {
-			c.mongoConfig.collectionName = mongoCollectionName
-		}
-
-		// 创建时间序列集合
-		c.mongoCreateCollection(ctx)
-
-		// 创建索引
-		c.mongoCreateIndexes(ctx)
-
-		c.mongoConfig.stats = true
-	}
+	//if mongoClient != nil || mongoClient.GetDb() != nil {
+	//
+	//	c.mongoClient = mongoClient
+	//
+	//	if mongoDatabaseName == "" {
+	//		return nil, errors.New("没有设置库名")
+	//	} else {
+	//		c.mongoConfig.databaseName = mongoDatabaseName
+	//	}
+	//
+	//	if mongoCollectionName == "" {
+	//		return nil, errors.New("没有设置表名")
+	//	} else {
+	//		c.mongoConfig.collectionName = mongoCollectionName
+	//	}
+	//
+	//	// 创建时间序列集合
+	//	c.mongoCreateCollection(ctx)
+	//
+	//	// 创建索引
+	//	c.mongoCreateIndexes(ctx)
+	//
+	//	c.mongoConfig.stats = true
+	//}
 
 	return c, nil
 }
@@ -130,9 +133,9 @@ func (c *ApiClient) Middleware(ctx context.Context, request gorequest.Response, 
 	if c.gormConfig.stats {
 		c.gormMiddleware(ctx, request, sdkVersion)
 	}
-	if c.mongoConfig.stats {
-		c.mongoMiddleware(ctx, request, sdkVersion)
-	}
+	//if c.mongoConfig.stats {
+	//	c.mongoMiddleware(ctx, request, sdkVersion)
+	//}
 }
 
 // MiddlewareXml 中间件
@@ -140,9 +143,9 @@ func (c *ApiClient) MiddlewareXml(ctx context.Context, request gorequest.Respons
 	if c.gormConfig.stats {
 		c.gormMiddlewareXml(ctx, request, sdkVersion)
 	}
-	if c.mongoConfig.stats {
-		c.mongoMiddlewareXml(ctx, request, sdkVersion)
-	}
+	//if c.mongoConfig.stats {
+	//	c.mongoMiddlewareXml(ctx, request, sdkVersion)
+	//}
 }
 
 // MiddlewareCustom 中间件
@@ -150,7 +153,7 @@ func (c *ApiClient) MiddlewareCustom(ctx context.Context, api string, request go
 	if c.gormConfig.stats {
 		c.gormMiddlewareCustom(ctx, api, request, sdkVersion)
 	}
-	if c.mongoConfig.stats {
-		c.mongoMiddlewareCustom(ctx, api, request, sdkVersion)
-	}
+	//if c.mongoConfig.stats {
+	//	c.mongoMiddlewareCustom(ctx, api, request, sdkVersion)
+	//}
 }
