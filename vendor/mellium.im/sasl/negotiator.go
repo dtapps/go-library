@@ -50,7 +50,7 @@ func NewClient(m Mechanism, opts ...Option) *Negotiator {
 		lname := m.Name
 		if lname == rname && strings.HasSuffix(lname, "-PLUS") {
 			machine.state |= RemoteCB
-			return machine
+			break
 		}
 	}
 	if len(machine.nonce) == 0 {
@@ -76,7 +76,7 @@ func NewServer(m Mechanism, permissions func(*Negotiator) bool, opts ...Option) 
 		lname := m.Name
 		if lname == rname && strings.HasSuffix(lname, "-PLUS") {
 			machine.state |= RemoteCB
-			return machine
+			break
 		}
 	}
 	if len(machine.nonce) == 0 {

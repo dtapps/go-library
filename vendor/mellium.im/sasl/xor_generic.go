@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-//go:build !amd64 && !ppc64 && !ppc64le && !arm64
+//go:build (!amd64 && !arm64 && !ppc64 && !ppc64le) || purego
 
 package sasl
 
@@ -11,81 +11,48 @@ import (
 	"unsafe"
 )
 
-// xorBytes xors the bytes in a and b. The destination should have enough
-// space, otherwise xorBytes will panic. Returns the number of bytes xor'd.
-func xorBytes(dst, a, b []byte) int {
-	n := len(a)
-	if len(b) < n {
-		n = len(b)
-	}
-	if n == 0 {
-		return 0
-	}
+const wordSize = unsafe.Sizeof(uintptr(0))
 
-	switch {
-	case supportsUnaligned:
-		fastXORBytes(dst, a, b, n)
-	default:
-		// TODO(hanwen): if (dst, a, b) have common alignment
-		// we could still try fastXORBytes. It is not clear
-		// how often this happens, and it's only worth it if
-		// the block encryption itself is hardware
-		// accelerated.
-		safeXORBytes(dst, a, b, n)
-	}
-	return n
-}
+const supportsUnaligned = runtime.GOARCH == "386" ||
+	runtime.GOARCH == "amd64" ||
+	runtime.GOARCH == "ppc64" ||
+	runtime.GOARCH == "ppc64le" ||
+	runtime.GOARCH == "s390x"
 
-const wordSize = int(unsafe.Sizeof(uintptr(0)))
-const supportsUnaligned = runtime.GOARCH == "386" || runtime.GOARCH == "ppc64" || runtime.GOARCH == "ppc64le" || runtime.GOARCH == "s390x"
+func xorBytes(dstb, xb, yb *byte, n int) {
+	// xorBytes assembly is written using pointers and n. Back to slices.
+	dst := unsafe.Slice(dstb, n)
+	x := unsafe.Slice(xb, n)
+	y := unsafe.Slice(yb, n)
 
-// fastXORBytes xors in bulk. It only works on architectures that
-// support unaligned read/writes.
-// n needs to be smaller or equal than the length of a and b.
-func fastXORBytes(dst, a, b []byte, n int) {
-	// Assert dst has enough space
-	_ = dst[n-1]
-
-	w := n / wordSize
-	if w > 0 {
-		dw := *(*[]uintptr)(unsafe.Pointer(&dst))
-		aw := *(*[]uintptr)(unsafe.Pointer(&a))
-		bw := *(*[]uintptr)(unsafe.Pointer(&b))
-		for i := 0; i < w; i++ {
-			dw[i] = aw[i] ^ bw[i]
+	if supportsUnaligned || aligned(dstb, xb, yb) {
+		xorLoop(words(dst), words(x), words(y))
+		if uintptr(n)%wordSize == 0 {
+			return
 		}
+		done := n &^ int(wordSize-1)
+		dst = dst[done:]
+		x = x[done:]
+		y = y[done:]
 	}
-
-	for i := (n - n%wordSize); i < n; i++ {
-		dst[i] = a[i] ^ b[i]
-	}
+	xorLoop(dst, x, y)
 }
 
-// n needs to be smaller or equal than the length of a and b.
-func safeXORBytes(dst, a, b []byte, n int) {
-	for i := 0; i < n; i++ {
-		dst[i] = a[i] ^ b[i]
-	}
+// aligned reports whether dst, x, and y are all word-aligned pointers.
+func aligned(dst, x, y *byte) bool {
+	return (uintptr(unsafe.Pointer(dst))|uintptr(unsafe.Pointer(x))|uintptr(unsafe.Pointer(y)))&(wordSize-1) == 0
 }
 
-// fastXORWords XORs multiples of 4 or 8 bytes (depending on architecture.)
-// The arguments are assumed to be of equal length.
-func fastXORWords(dst, a, b []byte) {
-	dw := *(*[]uintptr)(unsafe.Pointer(&dst))
-	aw := *(*[]uintptr)(unsafe.Pointer(&a))
-	bw := *(*[]uintptr)(unsafe.Pointer(&b))
-	n := len(b) / wordSize
-	for i := 0; i < n; i++ {
-		dw[i] = aw[i] ^ bw[i]
-	}
+// words returns a []uintptr pointing at the same data as x,
+// with any trailing partial word removed.
+func words(x []byte) []uintptr {
+	return unsafe.Slice((*uintptr)(unsafe.Pointer(&x[0])), uintptr(len(x))/wordSize)
 }
 
-// fastXORWords XORs multiples of 4 or 8 bytes (depending on architecture.)
-// The slice arguments a and b are assumed to be of equal length.
-func xorWords(dst, a, b []byte) {
-	if supportsUnaligned {
-		fastXORWords(dst, a, b)
-	} else {
-		safeXORBytes(dst, a, b, len(b))
+func xorLoop[T byte | uintptr](dst, x, y []T) {
+	x = x[:len(dst)] // remove bounds check in loop
+	y = y[:len(dst)] // remove bounds check in loop
+	for i := range dst {
+		dst[i] = x[i] ^ y[i]
 	}
 }

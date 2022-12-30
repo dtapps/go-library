@@ -256,7 +256,7 @@ func scramClientNext(name string, fn func() hash.Hash, m *Negotiator, challenge 
 		}
 		clientSignature := h.Sum(nil)
 		clientProof := make([]byte, len(clientKey))
-		xorBytes(clientProof, clientKey, clientSignature)
+		goXORBytes(clientProof, clientKey, clientSignature)
 
 		encodedClientProof := make([]byte, base64.StdEncoding.EncodedLen(len(clientProof)))
 		base64.StdEncoding.Encode(encodedClientProof, clientProof)

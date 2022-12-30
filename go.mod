@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.6+incompatible
 	github.com/allegro/bigcache/v3 v3.1.0
-	github.com/aws/aws-sdk-go v1.44.168
+	github.com/aws/aws-sdk-go v1.44.170
 	github.com/aws/aws-sdk-go-v2/config v1.18.7
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.29.6
 	github.com/baidubce/bce-sdk-go v0.9.139
@@ -21,7 +21,7 @@ require (
 	github.com/huaweicloud/huaweicloud-sdk-go-obs v3.22.11+incompatible
 	github.com/jasonlvhit/gocron v0.0.1
 	github.com/kamva/mgm/v3 v3.5.0
-	github.com/ks3sdklib/aws-sdk-go v1.1.8
+	github.com/ks3sdklib/aws-sdk-go v1.2.0
 	github.com/lib/pq v1.10.7
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/mvdan/xurls v1.1.0
@@ -78,7 +78,6 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/clbanning/mxj v1.8.4 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/deckarep/golang-set v1.8.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/docker/distribution v2.8.1+incompatible // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
@@ -117,7 +116,7 @@ require (
 	github.com/klauspost/compress v1.15.13 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/mattn/go-isatty v0.0.16 // indirect
+	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	github.com/moby/term v0.0.0-20221205130635-1aeaba878587 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -175,7 +174,7 @@ require (
 	k8s.io/kube-openapi v0.0.0-20221207184640-f3cff1453715 // indirect
 	k8s.io/utils v0.0.0-20221128185143-99ec85e7a448 // indirect
 	lukechampine.com/uint128 v1.2.0 // indirect
-	mellium.im/sasl v0.3.0 // indirect
+	mellium.im/sasl v0.3.1 // indirect
 	modernc.org/ccgo/v3 v3.16.8 // indirect
 	modernc.org/libc v1.16.19 // indirect
 	modernc.org/opt v0.1.3 // indirect
