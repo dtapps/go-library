@@ -7,6 +7,7 @@ import (
 	"github.com/dtapps/go-library/utils/gotime"
 	"github.com/dtapps/go-library/utils/gourl"
 	"github.com/gin-gonic/gin"
+	"log"
 	"time"
 )
 
@@ -103,6 +104,7 @@ func (c *GinClient) gormRecordJson(ginCtx *gin.Context, traceId string, requestT
 
 	if len(requestBody) > 0 {
 		data.RequestBody = dorm.JsonEncodeNoError(requestBody) //【请求】请求主体
+		log.Println(data.RequestBody)
 	}
 
 	c.gormRecord(data)
@@ -141,6 +143,7 @@ func (c *GinClient) gormRecordXml(ginCtx *gin.Context, traceId string, requestTi
 
 	if len(requestBody) > 0 {
 		data.RequestBody = dorm.XmlEncodeNoError(dorm.XmlDecodeNoError(requestBody)) //【请求】请求内容
+		log.Println(data.RequestBody)
 	}
 
 	c.gormRecord(data)
