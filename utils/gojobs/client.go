@@ -17,7 +17,6 @@ type redisPrefixFun func() (lockKeyPrefix, lockKeySeparator, cornKeyPrefix, corn
 // ClientConfig 实例配置
 type ClientConfig struct {
 	GormClientFun  dorm.GormClientFun  // 数据库驱动
-	MongoClientFun dorm.MongoClientFun // 数据库驱动
 	RedisClientFun dorm.RedisClientFun // 数据库驱动
 	RedisPrefixFun redisPrefixFun      // 前缀
 	ZapLog         *golog.ZapLog       // 日志服务
