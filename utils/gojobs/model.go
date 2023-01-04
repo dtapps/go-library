@@ -36,9 +36,6 @@ func (c *Client) GormTaskLogDelete(ctx context.Context, hour int64) error {
 func (c *Client) TaskLogRecord(ctx context.Context, task jobs_gorm_model.Task, taskResultCode int, taskResultDesc string) {
 	runId := gotrace_id.GetTraceIdContext(ctx)
 	c.GormTaskLogRecord(ctx, task, runId, taskResultCode, taskResultDesc)
-	if c.mongoConfig.stats {
-		c.MongoTaskLogRecord(ctx, task, runId, taskResultCode, taskResultDesc)
-	}
 }
 
 // GormTaskLogRecord 记录

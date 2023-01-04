@@ -17,9 +17,6 @@ func (c *Client) Run(ctx context.Context, task jobs_gorm_model.Task, taskResultC
 	}
 
 	c.GormTaskLogRecord(ctx, task, runId, taskResultCode, taskResultDesc)
-	if c.mongoConfig.stats {
-		c.MongoTaskLogRecord(ctx, task, runId, taskResultCode, taskResultDesc)
-	}
 
 	switch taskResultCode {
 	case 0:

@@ -43,8 +43,6 @@ type Client struct {
 		systemOutsideIp     string  // 外网ip
 		goVersion           string  // go版本
 		sdkVersion          string  // sdk版本
-		mongoVersion        string  // mongo版本
-		mongoSdkVersion     string  // mongo sdk版本
 		redisVersion        string  // redis版本
 		redisSdkVersion     string  // redis sdk版本
 		logVersion          string  // log版本
@@ -56,10 +54,6 @@ type Client struct {
 		lockKeySeparator string                // 锁Key分隔符 :
 		cornKeyPrefix    string                // 任务Key前缀 xxx_cron
 		cornKeyCustom    string                // 任务Key自定义
-	}
-	mongoConfig struct {
-		stats        bool   // 状态
-		databaseName string // 库名
 	}
 }
 
@@ -107,23 +101,6 @@ func NewClient(config *ClientConfig) (*Client, error) {
 		c.autoMigrateTaskLog(ctx)
 	} else {
 		return nil, gormClientFunNoConfig
-	}
-
-	// 配置非关系数据库
-	mongoClient, databaseName := config.MongoClientFun()
-	if mongoClient != nil && mongoClient.GetDb() != nil {
-		c.mongoClient = mongoClient
-
-		if databaseName == "" {
-			return nil, mongoClientFunNoConfig
-		} else {
-			c.mongoConfig.databaseName = databaseName
-		}
-
-		TaskLog{}.createCollection(ctx, c.zapLog, c.mongoClient, c.mongoConfig.databaseName)
-		TaskLog{}.createIndexes(ctx, c.zapLog, c.mongoClient, c.mongoConfig.databaseName)
-
-		c.mongoConfig.stats = true
 	}
 
 	return c, nil
