@@ -151,7 +151,12 @@ func (c *GinClient) gormRecordXml(ginCtx *gin.Context, traceId string, requestTi
 
 // GormDelete 删除
 func (c *GinClient) GormDelete(ctx context.Context, hour int64) error {
-	err := c.gormClient.GetDb().Table(c.gormConfig.tableName).Where("request_time < ?", gotime.Current().BeforeHour(hour).Format()).Delete(&ginPostgresqlLog{}).Error
+	return c.GormCustomTableDelete(ctx, c.gormConfig.tableName, hour)
+}
+
+// GormCustomTableDelete 删除数据 - 自定义表名
+func (c *GinClient) GormCustomTableDelete(ctx context.Context, tableName string, hour int64) error {
+	err := c.gormClient.GetDb().Table(tableName).Where("request_time < ?", gotime.Current().BeforeHour(hour).Format()).Delete(&ginPostgresqlLog{}).Error
 	if err != nil {
 		c.zapLog.WithTraceId(ctx).Sugar().Errorf("删除失败：%s", err)
 	}

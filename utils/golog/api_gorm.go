@@ -68,7 +68,12 @@ func (c *ApiClient) gormRecord(ctx context.Context, data apiPostgresqlLog) {
 
 // GormDelete 删除
 func (c *ApiClient) GormDelete(ctx context.Context, hour int64) error {
-	err := c.gormClient.GetDb().Table(c.gormConfig.tableName).Where("request_time < ?", gotime.Current().BeforeHour(hour).Format()).Delete(&apiPostgresqlLog{}).Error
+	return c.GormCustomTableDelete(ctx, c.gormConfig.tableName, hour)
+}
+
+// GormCustomTableDelete 删除数据 - 自定义表名
+func (c *ApiClient) GormCustomTableDelete(ctx context.Context, tableName string, hour int64) error {
+	err := c.gormClient.GetDb().Table(tableName).Where("request_time < ?", gotime.Current().BeforeHour(hour).Format()).Delete(&apiPostgresqlLog{}).Error
 	if err != nil {
 		c.zapLog.WithTraceId(ctx).Sugar().Errorf("删除失败：%s", err)
 	}

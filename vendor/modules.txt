@@ -398,15 +398,6 @@ github.com/qiniu/go-sdk/v7/internal/hostprovider
 github.com/qiniu/go-sdk/v7/internal/log
 github.com/qiniu/go-sdk/v7/reqid
 github.com/qiniu/go-sdk/v7/storage
-# github.com/qiniu/qmgo v1.1.4
-## explicit; go 1.16
-github.com/qiniu/qmgo
-github.com/qiniu/qmgo/field
-github.com/qiniu/qmgo/hook
-github.com/qiniu/qmgo/middleware
-github.com/qiniu/qmgo/operator
-github.com/qiniu/qmgo/options
-github.com/qiniu/qmgo/validator
 # github.com/robfig/cron/v3 v3.0.1
 ## explicit; go 1.12
 github.com/robfig/cron/v3

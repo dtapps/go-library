@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/dtapps/go-library"
 	"github.com/dtapps/go-library/utils/goip"
-	"go.mongodb.org/mongo-driver/version"
 	"runtime"
 )
 
@@ -26,6 +25,4 @@ func (c *ApiClient) setConfig(ctx context.Context) {
 
 	c.config.sdkVersion = go_library.Version()
 	c.config.goVersion = runtime.Version()
-
-	c.config.mongoSdkVersion = version.Driver
 }

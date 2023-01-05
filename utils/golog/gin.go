@@ -19,11 +19,10 @@ type GinClientFun func() *GinClient
 
 // GinClient 框架
 type GinClient struct {
-	gormClient  *dorm.GormClient  // 数据库驱动
-	mongoClient *dorm.MongoClient // 数据库驱动
-	ipService   *goip.Client      // ip服务
-	zapLog      *ZapLog           // 日志服务
-	config      struct {
+	gormClient *dorm.GormClient // 数据库驱动
+	ipService  *goip.Client     // ip服务
+	zapLog     *ZapLog          // 日志服务
+	config     struct {
 		systemHostname      string  // 主机名
 		systemOs            string  // 系统类型
 		systemVersion       string  // 系统版本
@@ -37,17 +36,10 @@ type GinClient struct {
 		systemOutsideIp     string  // 外网ip
 		goVersion           string  // go版本
 		sdkVersion          string  // sdk版本
-		mongoVersion        string  // mongo版本
-		mongoSdkVersion     string  // mongo sdk版本
 	}
 	gormConfig struct {
 		stats     bool   // 状态
 		tableName string // 表名
-	}
-	mongoConfig struct {
-		stats          bool   // 状态
-		databaseName   string // 库名
-		collectionName string // 表名
 	}
 }
 
@@ -83,11 +75,7 @@ func NewGinClient(config *GinClientConfig) (*GinClient, error) {
 	c.setConfig(ctx)
 
 	gormClient, gormTableName := config.GormClientFun()
-	//mongoClient, mongoDatabaseName, mongoCollectionName := config.MongoClientFun()
 
-	//if (gormClient == nil || gormClient.GetDb() == nil) || (mongoClient == nil || mongoClient.GetDb() == nil) {
-	//	return nil, dbClientFunNoConfig
-	//}
 	if gormClient == nil || gormClient.GetDb() == nil {
 		return nil, dbClientFunNoConfig
 	}
@@ -107,32 +95,6 @@ func NewGinClient(config *GinClientConfig) (*GinClient, error) {
 
 		c.gormConfig.stats = true
 	}
-
-	// 配置非关系数据库
-	//if mongoClient != nil || mongoClient.GetDb() != nil {
-	//
-	//	c.mongoClient = mongoClient
-	//
-	//	if mongoDatabaseName == "" {
-	//		return nil, errors.New("没有设置库名")
-	//	} else {
-	//		c.mongoConfig.databaseName = mongoDatabaseName
-	//	}
-	//
-	//	if mongoCollectionName == "" {
-	//		return nil, errors.New("没有设置表名")
-	//	} else {
-	//		c.mongoConfig.collectionName = mongoCollectionName
-	//	}
-	//
-	//	// 创建时间序列集合
-	//	//c.mongoCreateCollection(ctx)
-	//
-	//	// 创建索引
-	//	c.mongoCreateIndexes(ctx)
-	//
-	//	c.mongoConfig.stats = true
-	//}
 
 	return c, nil
 }
