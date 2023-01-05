@@ -28,7 +28,7 @@ type GormClientConfig struct {
 }
 
 // GormClient
-// https://gorm.io/
+// https://gorm.io/zh_CN/docs/index.html
 type GormClient struct {
 	Db     *gorm.DB          // 驱动
 	config *GormClientConfig // 配置
