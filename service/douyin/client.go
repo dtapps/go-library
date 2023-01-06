@@ -8,10 +8,6 @@ import (
 	"strings"
 )
 
-// ClientConfig 实例配置
-type ClientConfig struct {
-}
-
 // Client 实例
 type Client struct {
 	requestClient *gorequest.App // 请求服务
@@ -25,7 +21,7 @@ type Client struct {
 }
 
 // NewClient 创建实例化
-func NewClient(config *ClientConfig) (*Client, error) {
+func NewClient() (*Client, error) {
 
 	c := &Client{}
 

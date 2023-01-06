@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-type AnalysisResponse struct {
+type AnalysisV2Response struct {
 	StatusCode int `json:"status_code"`
 	ItemList   []struct {
 		AwemePoiInfo struct {
@@ -173,19 +173,19 @@ type AnalysisResponse struct {
 	} `json:"extra"`
 }
 
-type AnalysisResult struct {
-	Result AnalysisResponse   // 结果
+type AnalysisV2Result struct {
+	Result AnalysisV2Response // 结果
 	Body   []byte             // 内容
 	Http   gorequest.Response // 请求
 	Err    error              // 错误
 }
 
-func newAnalysisResult(result AnalysisResponse, body []byte, http gorequest.Response, err error) *AnalysisResult {
-	return &AnalysisResult{Result: result, Body: body, Http: http, Err: err}
+func newAnalysisV2Result(result AnalysisV2Response, body []byte, http gorequest.Response, err error) *AnalysisV2Result {
+	return &AnalysisV2Result{Result: result, Body: body, Http: http, Err: err}
 }
 
-// Analysis 抖音解析
-func (c *Client) Analysis(ctx context.Context, content string) *AnalysisResult {
+// AnalysisV2 抖音解析
+func (c *Client) AnalysisV2(ctx context.Context, content string) *AnalysisV2Result {
 
 	// 提取url
 	var url string
@@ -194,26 +194,26 @@ func (c *Client) Analysis(ctx context.Context, content string) *AnalysisResult {
 	} else if strings.Contains(content, "iesdouyin.com") {
 		url = xurls.Relaxed.FindString(content)
 	} else {
-		return newAnalysisResult(AnalysisResponse{}, nil, gorequest.Response{}, errors.New("url为空"))
+		return newAnalysisV2Result(AnalysisV2Response{}, nil, gorequest.Response{}, errors.New("url为空"))
 	}
 
 	// 重定向信息
 	request302, err := c.request302(url)
 	if err != nil {
-		return newAnalysisResult(AnalysisResponse{}, nil, gorequest.Response{}, err)
+		return newAnalysisV2Result(AnalysisV2Response{}, nil, gorequest.Response{}, err)
 	}
 
 	// 提取编号
 	itemIds := regexp.MustCompile(`\d+`).FindStringSubmatch(request302)
 	if len(itemIds) < 1 {
-		return newAnalysisResult(AnalysisResponse{}, nil, gorequest.Response{}, errors.New("参数错误"))
+		return newAnalysisV2Result(AnalysisV2Response{}, nil, gorequest.Response{}, errors.New("参数错误"))
 	}
 
 	// 请求
 	request, err := c.request(ctx, "https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids="+itemIds[0], map[string]interface{}{}, http.MethodGet)
 
 	// 定义
-	var response AnalysisResponse
+	var response AnalysisV2Response
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return newAnalysisResult(response, request.ResponseBody, request, err)
+	return newAnalysisV2Result(response, request.ResponseBody, request, err)
 }
