@@ -454,8 +454,8 @@ gorm.io/driver/mysql
 # gorm.io/driver/postgres v1.4.6
 ## explicit; go 1.14
 gorm.io/driver/postgres
-# gorm.io/gen v0.3.18
-## explicit; go 1.16
+# gorm.io/gen v0.3.19
+## explicit; go 1.18
 gorm.io/gen
 gorm.io/gen/field
 gorm.io/gen/helper

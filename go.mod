@@ -37,7 +37,7 @@ require (
 	gorm.io/datatypes v1.1.0
 	gorm.io/driver/mysql v1.4.5
 	gorm.io/driver/postgres v1.4.6
-	gorm.io/gen v0.3.18
+	gorm.io/gen v0.3.19
 	gorm.io/gorm v1.24.3
 	xorm.io/xorm v1.3.2
 )
