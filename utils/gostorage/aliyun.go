@@ -48,6 +48,7 @@ type AliYun struct {
 
 // NewAliYun 初始化
 // https://help.aliyun.com/document_detail/32144.html
+// https://github.com/aliyun/aliyun-oss-go-sdk
 func NewAliYun(config *AliYunConfig) (*AliYun, error) {
 	app := &AliYun{}
 	app.accessKeyId = config.AccessKeyId

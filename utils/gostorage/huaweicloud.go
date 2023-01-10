@@ -17,6 +17,7 @@ type Huaweicloud struct {
 
 // NewHuaweicloud 初始化
 // https://support.huaweicloud.com/sdk-go-devg-obs/obs_33_0001.html
+// https://github.com/huaweicloud/huaweicloud-sdk-go-obs
 func NewHuaweicloud(accessKey string, secretKey string, endpoint string, bucketName string) *Huaweicloud {
 	app := &Huaweicloud{AccessKey: accessKey, SecretKey: secretKey, Endpoint: endpoint, BucketName: bucketName}
 	app.client, app.error = obs.New(accessKey, secretKey, endpoint)

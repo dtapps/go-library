@@ -14,6 +14,7 @@ type Upyun struct {
 }
 
 // NewUpyun 初始化
+// https://help.upyun.com/docs/storage/
 // https://github.com/upyun/go-sdk
 func NewUpyun(operator string, password string, bucketName string) *Upyun {
 	app := &Upyun{Operator: operator, Password: password, BucketName: bucketName}

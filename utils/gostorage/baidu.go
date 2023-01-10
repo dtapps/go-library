@@ -18,6 +18,7 @@ type Baidu struct {
 
 // NewBaidu 初始化
 // https://cloud.baidu.com/doc/BOS/s/4jwvyry1p
+// https://github.com/baidubce/bce-sdk-go
 func NewBaidu(accessKey string, secretAccessKey, endpoint, bucketName string) *Baidu {
 	app := &Baidu{AccessKey: accessKey, SecretAccessKey: secretAccessKey, Endpoint: endpoint, BucketName: bucketName}
 	clientConfig := bos.BosClientConfiguration{

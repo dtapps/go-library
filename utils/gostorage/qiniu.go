@@ -19,6 +19,7 @@ type Qiniu struct {
 
 // NewQiniu 初始化
 // https://developer.qiniu.com/kodo/1238/go
+// https://github.com/qiniu/go-sdk
 func NewQiniu(accessKey string, secretKey string, bucketName string) *Qiniu {
 	app := &Qiniu{AccessKey: accessKey, SecretKey: secretKey, BucketName: bucketName}
 	app.client = qbox.NewMac(accessKey, secretKey)

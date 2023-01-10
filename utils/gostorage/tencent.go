@@ -21,6 +21,7 @@ type Tencent struct {
 
 // NewTencent 初始化
 // https://cloud.tencent.com/document/product/436/31215
+// https://github.com/tencentyun/cos-go-sdk-v5
 func NewTencent(secretID, secretKey, regions, bucketName string) *Tencent {
 	app := &Tencent{SecretID: secretID, SecretKey: secretKey, Regions: regions, BucketName: bucketName}
 	u, _ := url.Parse(fmt.Sprintf("https://%s.cos.%s.myqcloud.com", bucketName, regions))
