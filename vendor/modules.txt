@@ -90,9 +90,6 @@ github.com/golang/snappy
 # github.com/google/go-querystring v1.1.0
 ## explicit; go 1.10
 github.com/google/go-querystring/query
-# github.com/huaweicloud/huaweicloud-sdk-go-obs v3.22.11+incompatible
-## explicit
-github.com/huaweicloud/huaweicloud-sdk-go-obs/obs
 # github.com/jackc/pgpassfile v1.0.0
 ## explicit; go 1.12
 github.com/jackc/pgpassfile
@@ -113,9 +110,6 @@ github.com/jackc/pgx/v5/pgconn/internal/ctxwatch
 github.com/jackc/pgx/v5/pgproto3
 github.com/jackc/pgx/v5/pgtype
 github.com/jackc/pgx/v5/stdlib
-# github.com/jasonlvhit/gocron v0.0.1
-## explicit; go 1.13
-github.com/jasonlvhit/gocron
 # github.com/jinzhu/inflection v1.0.0
 ## explicit
 github.com/jinzhu/inflection
@@ -168,18 +162,12 @@ github.com/mvdan/xurls
 # github.com/natefinch/lumberjack v2.0.0+incompatible
 ## explicit
 github.com/natefinch/lumberjack
-# github.com/nilorg/sdk v0.0.0-20221104025912-4b6ccb7004d8
-## explicit; go 1.12
-github.com/nilorg/sdk/convert
 # github.com/oschwald/geoip2-golang v1.8.0
 ## explicit; go 1.18
 github.com/oschwald/geoip2-golang
 # github.com/oschwald/maxminddb-golang v1.10.0
 ## explicit; go 1.18
 github.com/oschwald/maxminddb-golang
-# github.com/patrickmn/go-cache v2.1.0+incompatible
-## explicit
-github.com/patrickmn/go-cache
 # github.com/pelletier/go-toml/v2 v2.0.6
 ## explicit; go 1.16
 github.com/pelletier/go-toml/v2
@@ -240,7 +228,7 @@ github.com/syndtr/goleveldb/leveldb/opt
 github.com/syndtr/goleveldb/leveldb/storage
 github.com/syndtr/goleveldb/leveldb/table
 github.com/syndtr/goleveldb/leveldb/util
-# github.com/tencentyun/cos-go-sdk-v5 v0.7.40
+# github.com/tencentyun/cos-go-sdk-v5 v0.7.41
 ## explicit; go 1.12
 github.com/tencentyun/cos-go-sdk-v5
 # github.com/tidwall/pretty v1.2.0
@@ -259,9 +247,6 @@ github.com/ugorji/go/codec
 github.com/ulikunitz/xz/internal/hash
 github.com/ulikunitz/xz/internal/xlog
 github.com/ulikunitz/xz/lzma
-# github.com/upyun/go-sdk/v3 v3.0.3
-## explicit; go 1.13
-github.com/upyun/go-sdk/v3/upyun
 # github.com/xdg-go/pbkdf2 v1.0.0
 ## explicit; go 1.9
 github.com/xdg-go/pbkdf2

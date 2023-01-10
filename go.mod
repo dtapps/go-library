@@ -13,22 +13,17 @@ require (
 	github.com/go-playground/validator/v10 v10.11.1
 	github.com/go-redis/redis/v9 v9.0.0-rc.2
 	github.com/go-sql-driver/mysql v1.7.0
-	github.com/huaweicloud/huaweicloud-sdk-go-obs v3.22.11+incompatible
-	github.com/jasonlvhit/gocron v0.0.1
 	github.com/lib/pq v1.10.7
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/mvdan/xurls v1.1.0
 	github.com/natefinch/lumberjack v2.0.0+incompatible
-	github.com/nilorg/sdk v0.0.0-20221104025912-4b6ccb7004d8
 	github.com/oschwald/geoip2-golang v1.8.0
-	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/qiniu/go-sdk/v7 v7.14.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/saracen/go7z v0.0.0-20191010121135-9c09b6bd7fda
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/sirupsen/logrus v1.9.0
-	github.com/tencentyun/cos-go-sdk-v5 v0.7.40
-	github.com/upyun/go-sdk/v3 v3.0.3
+	github.com/tencentyun/cos-go-sdk-v5 v0.7.41
 	go.mongodb.org/mongo-driver v1.11.1
 	go.uber.org/zap v1.24.0
 	golang.org/x/crypto v0.5.0

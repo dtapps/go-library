@@ -1,5 +1,14 @@
 package godecimal
 
+import "fmt"
+
+// NewInterface 创建
+func NewInterface(value interface{}) Decimal {
+	d := New()
+	d.floatValue.SetString(fmt.Sprint(value))
+	return d
+}
+
 // NewString 从字符串创建
 func NewString(s string) Decimal {
 	d := New()

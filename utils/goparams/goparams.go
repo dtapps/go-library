@@ -2,7 +2,7 @@ package goparams
 
 import (
 	"encoding/json"
-	"github.com/nilorg/sdk/convert"
+	"github.com/dtapps/go-library/utils/godecimal"
 	"log"
 	"net/url"
 )
@@ -47,7 +47,7 @@ func GetParamsString(src interface{}) string {
 	case int, int8, int32, int64:
 	case uint8, uint16, uint32, uint64:
 	case float32, float64:
-		return convert.ToString(src)
+		return godecimal.NewInterface(src).String()
 	}
 	data, err := json.Marshal(src)
 	if err != nil {
