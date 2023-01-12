@@ -25,7 +25,7 @@ type apiPostgresqlLog struct {
 	RequestIp             string    `gorm:"default:0.0.0.0;index;comment:【请求】请求Ip" json:"request_ip,omitempty"` //【请求】请求Ip
 	ResponseHeader        string    `gorm:"comment:【返回】头部" json:"response_header,omitempty"`                    //【返回】头部
 	ResponseStatusCode    int       `gorm:"index;comment:【返回】状态码" json:"response_status_code,omitempty"`        //【返回】状态码
-	ResponseBody          string    `gorm:"comment:【返回】数据" json:"response_content,omitempty"`                   //【返回】数据
+	ResponseBody          string    `gorm:"comment:【返回】数据" json:"response_body,omitempty"`                      //【返回】数据
 	ResponseContentLength int64     `gorm:"comment:【返回】大小" json:"response_content_length,omitempty"`            //【返回】大小
 	ResponseTime          time.Time `gorm:"index;comment:【返回】时间" json:"response_time,omitempty"`                //【返回】时间
 	SystemHostName        string    `gorm:"index;comment:【系统】主机名" json:"system_host_name,omitempty"`            //【系统】主机名
@@ -123,7 +123,7 @@ func (c *ApiClient) gormMiddlewareXml(ctx context.Context, request gorequest.Res
 	}
 	if !request.HeaderIsImg() {
 		if len(request.ResponseBody) > 0 {
-			data.ResponseBody = dorm.JsonEncodeNoError(request.ResponseBody) //【返回】内容
+			data.ResponseBody = dorm.XmlEncodeNoError(dorm.XmlDecodeNoError(request.ResponseBody)) //【返回】内容
 		}
 	}
 
