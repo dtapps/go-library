@@ -102,7 +102,7 @@ func (c *GinClient) gormRecordJson(ginCtx *gin.Context, traceId string, requestT
 	}
 
 	if len(requestBody) > 0 {
-		data.RequestBody = dorm.JsonEncodeNoError(requestBody) //【请求】请求主体
+		data.RequestBody = dorm.JsonEncodeNoError(dorm.JsonDecodeNoError(requestBody)) //【请求】请求主体
 	}
 
 	c.gormRecord(data)
