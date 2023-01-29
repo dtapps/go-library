@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/dtapps/go-library"
 	"github.com/dtapps/go-library/utils/goip"
-	"github.com/go-redis/redis/v9"
+	"github.com/redis/go-redis/v9"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/host"
 	"log"
