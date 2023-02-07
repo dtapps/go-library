@@ -5,12 +5,12 @@ go 1.20
 require (
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.6+incompatible
 	github.com/allegro/bigcache/v3 v3.1.0
-	github.com/baidubce/bce-sdk-go v0.9.141
+	github.com/baidubce/bce-sdk-go v0.9.142
 	github.com/basgys/goxml2json v1.1.0
 	github.com/gin-gonic/gin v1.8.2
 	github.com/go-playground/locales v0.14.1
-	github.com/go-playground/universal-translator v0.18.0
-	github.com/go-playground/validator/v10 v10.11.1
+	github.com/go-playground/universal-translator v0.18.1
+	github.com/go-playground/validator/v10 v10.11.2
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/lib/pq v1.10.7
 	github.com/mitchellh/mapstructure v1.5.0
@@ -18,7 +18,7 @@ require (
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/oschwald/geoip2-golang v1.8.0
 	github.com/qiniu/go-sdk/v7 v7.14.0
-	github.com/redis/go-redis/v9 v9.0.0-rc.4
+	github.com/redis/go-redis/v9 v9.0.2
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/saracen/go7z v0.0.0-20191010121135-9c09b6bd7fda
 	github.com/shirou/gopsutil v3.21.11+incompatible
@@ -32,8 +32,8 @@ require (
 	gorm.io/datatypes v1.1.0
 	gorm.io/driver/mysql v1.4.5
 	gorm.io/driver/postgres v1.4.6
-	gorm.io/gen v0.3.19
-	gorm.io/gorm v1.24.3
+	gorm.io/gen v0.3.21
+	gorm.io/gorm v1.24.5
 	xorm.io/xorm v1.3.2
 )
 
@@ -42,7 +42,6 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/clbanning/mxj v1.8.4 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
-	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/goccy/go-json v0.10.0 // indirect
@@ -71,7 +70,7 @@ require (
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.0 // indirect
-	github.com/ugorji/go/codec v1.2.8 // indirect
+	github.com/ugorji/go/codec v1.2.9 // indirect
 	github.com/ulikunitz/xz v0.5.11 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
@@ -83,7 +82,7 @@ require (
 	golang.org/x/mod v0.7.0 // indirect
 	golang.org/x/net v0.5.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.4.0 // indirect
+	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.5.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
@@ -91,6 +90,6 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gorm.io/hints v1.1.1 // indirect
-	gorm.io/plugin/dbresolver v1.4.0 // indirect
+	gorm.io/plugin/dbresolver v1.4.1 // indirect
 	xorm.io/builder v0.3.12 // indirect
 )
