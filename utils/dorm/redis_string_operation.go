@@ -11,7 +11,7 @@ type StringOperation struct {
 }
 
 func (r *RedisClient) NewStringOperation() *StringOperation {
-	return &StringOperation{db: r.Db}
+	return &StringOperation{db: r.db}
 }
 
 // Set 设置

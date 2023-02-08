@@ -11,7 +11,7 @@ type SimpleOperation struct {
 }
 
 func (r *RedisClient) NewSimpleOperation() *SimpleOperation {
-	return &SimpleOperation{db: r.Db}
+	return &SimpleOperation{db: r.db}
 }
 
 // Set 设置

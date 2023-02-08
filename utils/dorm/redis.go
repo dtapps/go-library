@@ -22,7 +22,7 @@ type RedisClientConfig struct {
 // RedisClient
 // https://redis.uptrace.dev/
 type RedisClient struct {
-	Db     *redis.Client      // 驱动
+	db     *redis.Client      // 驱动
 	config *RedisClientConfig // 配置
 }
 
@@ -34,7 +34,7 @@ func NewRedisClient(config *RedisClientConfig) (*RedisClient, error) {
 		c.config.PoolSize = 100
 	}
 
-	c.Db = redis.NewClient(&redis.Options{
+	c.db = redis.NewClient(&redis.Options{
 		Addr:        c.config.Addr,        // 地址
 		Password:    c.config.Password,    // 密码
 		DB:          c.config.DB,          // 数据库
@@ -45,7 +45,7 @@ func NewRedisClient(config *RedisClientConfig) (*RedisClient, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	_, err := c.Db.Ping(ctx).Result()
+	_, err := c.db.Ping(ctx).Result()
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("连接失败：%v", err))
 	}

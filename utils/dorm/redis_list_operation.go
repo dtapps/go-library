@@ -12,7 +12,7 @@ type ListOperation struct {
 
 // NewListOperation 列表(list)类型数据操作 https://www.tizi365.com/archives/299.html
 func (r *RedisClient) NewListOperation() *ListOperation {
-	return &ListOperation{db: r.Db, ctx: context.Background()}
+	return &ListOperation{db: r.db, ctx: context.Background()}
 }
 
 // LPush 从列表左边插入数据

@@ -7,7 +7,7 @@ import (
 
 // GetJsapiTicket 获取api_ticket
 func (c *Client) GetJsapiTicket(ctx context.Context) string {
-	if c.cache.redisClient.Db == nil {
+	if c.cache.redisClient.GetDb() == nil {
 		return c.config.jsapiTicket
 	}
 	newCache := c.cache.redisClient.NewSimpleStringCache(c.cache.redisClient.NewStringOperation(), time.Second*7000)

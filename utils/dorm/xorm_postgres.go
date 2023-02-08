@@ -12,7 +12,7 @@ func NewXormPostgresClient(config *XormClientConfigXorm) (*XormClient, error) {
 	var err error
 	c := &XormClient{config: config}
 
-	c.Db, err = xorm.NewEngine("postgres", c.config.Dns)
+	c.db, err = xorm.NewEngine("postgres", c.config.Dns)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("连接失败：%v", err))
 	}

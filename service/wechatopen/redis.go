@@ -21,7 +21,7 @@ func (c *Client) SetComponentVerifyTicket(ctx context.Context, componentVerifyTi
 
 // GetComponentVerifyTicket 获取微信后台推送的ticke
 func (c *Client) GetComponentVerifyTicket(ctx context.Context) string {
-	if c.cache.redisClient.Db == nil {
+	if c.cache.redisClient.GetDb() == nil {
 		return c.config.componentVerifyTicket
 	}
 	result, _ := c.cache.redisClient.Get(ctx, c.getComponentVerifyTicketCacheKeyName()).Result()
@@ -44,10 +44,10 @@ func (c *Client) SetComponentAccessToken(ctx context.Context, componentAccessTok
 
 // GetComponentAccessToken 获取令牌
 func (c *Client) GetComponentAccessToken(ctx context.Context) string {
-	if c.cache.redisClient.Db == nil {
+	if c.cache.redisClient.GetDb() == nil {
 		return c.config.componentAccessToken
 	}
-	result, _ := c.cache.redisClient.Db.Get(ctx, c.getComponentAccessTokenCacheKeyName()).Result()
+	result, _ := c.cache.redisClient.GetDb().Get(ctx, c.getComponentAccessTokenCacheKeyName()).Result()
 	return result
 }
 
@@ -84,7 +84,7 @@ func (c *Client) SetAuthorizerAccessToken(ctx context.Context, authorizerAccessT
 
 // GetAuthorizerAccessToken 获取授权方令牌
 func (c *Client) GetAuthorizerAccessToken(ctx context.Context) string {
-	if c.cache.redisClient.Db == nil {
+	if c.cache.redisClient.GetDb() == nil {
 		return c.config.authorizerAccessToken
 	}
 	result, _ := c.cache.redisClient.Get(ctx, c.getAuthorizerAccessTokenCacheKeyName()).Result()
@@ -120,7 +120,7 @@ func (c *Client) SetPreAuthCode(ctx context.Context, preAuthCode string) string 
 
 // GetPreAuthCode 获取预授权码
 func (c *Client) GetPreAuthCode(ctx context.Context) string {
-	if c.cache.redisClient.Db == nil {
+	if c.cache.redisClient.GetDb() == nil {
 		return c.config.authorizerAccessToken
 	}
 	result, _ := c.cache.redisClient.Get(ctx, c.getPreAuthCodeCacheKeyName()).Result()

@@ -7,7 +7,7 @@ import (
 )
 
 func (c *Client) GetAccessTokenMonitor(ctx context.Context) (string, error) {
-	if c.cache.redisClient.Db == nil {
+	if c.cache.redisClient.GetDb() == nil {
 		return "", errors.New("驱动没有初始化")
 	}
 	result := c.GetCallBackIp(ctx)
