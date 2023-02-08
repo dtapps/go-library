@@ -24,6 +24,7 @@ type systemResult struct {
 	CpuMhz              float64 // CPU兆赫
 }
 
+// 获取系统信息
 func getSystem() (result systemResult) {
 
 	hInfo, err := host.Info()
@@ -60,6 +61,7 @@ func getSystem() (result systemResult) {
 	return result
 }
 
+// 设置配置信息
 func (c *Client) setConfig(ctx context.Context) {
 
 	info := getSystem()

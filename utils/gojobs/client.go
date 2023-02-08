@@ -25,10 +25,9 @@ type ClientConfig struct {
 
 // Client 实例
 type Client struct {
-	gormClient  *dorm.GormClient  // 数据库
-	mongoClient *dorm.MongoClient // 数据库
-	zapLog      *golog.ZapLog     // 日志服务
-	config      struct {
+	gormClient *dorm.GormClient // 数据库
+	zapLog     *golog.ZapLog    // 日志服务
+	config     struct {
 		systemHostname      string  // 主机名
 		systemOs            string  // 系统类型
 		systemVersion       string  // 系统版本
