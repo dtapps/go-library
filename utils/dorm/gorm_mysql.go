@@ -37,7 +37,7 @@ func NewGormMysqlClient(config *GormClientConfig) (*GormClient, error) {
 		} else {
 			logLevel = logger.Info
 		}
-		c.Db, err = gorm.Open(mysql.Open(c.config.Dns), &gorm.Config{
+		c.db, err = gorm.Open(mysql.Open(c.config.Dns), &gorm.Config{
 			Logger: logger.New(
 				writer{},
 				logger.Config{
@@ -52,37 +52,37 @@ func NewGormMysqlClient(config *GormClientConfig) (*GormClient, error) {
 			},
 		})
 	} else {
-		c.Db, err = gorm.Open(mysql.Open(c.config.Dns), &gorm.Config{})
+		c.db, err = gorm.Open(mysql.Open(c.config.Dns), &gorm.Config{})
 	}
 
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("连接失败：%v", err))
 	}
 
-	sqlDB, err := c.Db.DB()
+	sqlDd, err := c.db.DB()
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("检查连接失败：%v", err))
 	}
 
 	// 设置空闲连接池中连接的最大数量
 	if c.config.ConnSetMaxIdle == 0 {
-		sqlDB.SetMaxIdleConns(10)
+		sqlDd.SetMaxIdleConns(10)
 	} else {
-		sqlDB.SetMaxIdleConns(c.config.ConnSetMaxIdle)
+		sqlDd.SetMaxIdleConns(c.config.ConnSetMaxIdle)
 	}
 
 	// 设置打开数据库连接的最大数量
 	if c.config.ConnSetMaxOpen == 0 {
-		sqlDB.SetMaxOpenConns(100)
+		sqlDd.SetMaxOpenConns(100)
 	} else {
-		sqlDB.SetMaxOpenConns(c.config.ConnSetMaxOpen)
+		sqlDd.SetMaxOpenConns(c.config.ConnSetMaxOpen)
 	}
 
 	// 设置了连接可复用的最大时间
 	if c.config.ConnSetConnMaxLifetime == 0 {
-		sqlDB.SetConnMaxLifetime(time.Second * 600)
+		sqlDd.SetConnMaxLifetime(time.Second * 600)
 	} else {
-		sqlDB.SetConnMaxLifetime(time.Duration(c.config.ConnSetConnMaxLifetime))
+		sqlDd.SetConnMaxLifetime(time.Duration(c.config.ConnSetConnMaxLifetime))
 	}
 
 	return c, nil

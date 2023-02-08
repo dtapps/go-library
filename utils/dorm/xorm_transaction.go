@@ -11,7 +11,7 @@ type XormClientSession struct {
 
 // Begin 开始事务，需要创建 Session 对象
 //func (c *XormClient) Begin() (*XormClientSession, error) {
-//	session := c.Db.NewSession()
+//	session := c.db.NewSession()
 //	defer session.Close()
 //	return &session, session.Begin()
 //}
