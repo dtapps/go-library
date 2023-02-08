@@ -10,7 +10,6 @@ type Task struct {
 	Id             uint           `gorm:"primaryKey;comment:记录编号" json:"id"`                      // 记录编号
 	Status         string         `gorm:"index;comment:状态码" json:"status"`                        // 状态码
 	Params         string         `gorm:"comment:参数" json:"params"`                               // 参数
-	ParamsType     string         `gorm:"comment:参数类型" json:"params_type"`                        // 参数类型
 	StatusDesc     string         `gorm:"comment:状态描述" json:"status_desc"`                        // 状态描述
 	Frequency      int64          `gorm:"index;comment:频率(秒单位)" json:"frequency"`                 // 频率(秒单位)
 	Number         int64          `gorm:"comment:当前次数" json:"number"`                             // 当前次数

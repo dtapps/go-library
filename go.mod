@@ -30,8 +30,8 @@ require (
 	golang.org/x/text v0.6.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gorm.io/datatypes v1.1.0
-	gorm.io/driver/mysql v1.4.5
-	gorm.io/driver/postgres v1.4.6
+	gorm.io/driver/mysql v1.4.6
+	gorm.io/driver/postgres v1.4.7
 	gorm.io/gen v0.3.21
 	gorm.io/gorm v1.24.5
 	xorm.io/xorm v1.3.2

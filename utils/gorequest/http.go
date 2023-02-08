@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/dtapps/go-library"
 	"github.com/dtapps/go-library/utils/gostring"
 	"github.com/dtapps/go-library/utils/gotime"
 	"github.com/dtapps/go-library/utils/gotrace_id"
@@ -16,7 +15,6 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"runtime"
 	"strings"
 	"time"
 )
@@ -50,14 +48,22 @@ type App struct {
 	debug                  bool             // 是否开启调试模式
 	p12Cert                *tls.Certificate // p12证书内容
 	afferentSdkUserVersion string           // 传入SDk版本
+	config                 struct {
+		systemOs     string // 系统类型
+		systemKernel string // 系统内核
+		goVersion    string // go版本
+		sdkVersion   string // sdk版本
+	}
 }
 
 // NewHttp 实例化
 func NewHttp() *App {
-	return &App{
+	app := &App{
 		httpHeader: NewHeaders(),
 		httpParams: NewParams(),
 	}
+	app.setConfig()
+	return app
 }
 
 // SetDebug 设置调试模式
@@ -204,9 +210,9 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 
 	// SDK版本
 	if app.afferentSdkUserVersion == "" {
-		httpResponse.RequestHeader.Set("Sdk-User-Agent", fmt.Sprintf(userAgentFormat, runtime.GOOS, runtime.GOARCH, runtime.Version(), go_library.Version()))
+		httpResponse.RequestHeader.Set("Sdk-User-Agent", fmt.Sprintf(userAgentFormat, app.config.systemOs, app.config.systemKernel, app.config.goVersion, app.config.sdkVersion))
 	} else {
-		httpResponse.RequestHeader.Set("Sdk-User-Agent", fmt.Sprintf(userAgentFormat, runtime.GOOS, runtime.GOARCH, runtime.Version(), go_library.Version())+"/"+app.afferentSdkUserVersion)
+		httpResponse.RequestHeader.Set("Sdk-User-Agent", fmt.Sprintf(userAgentFormat, app.config.systemOs, app.config.systemKernel, app.config.goVersion, app.config.sdkVersion)+"/"+app.afferentSdkUserVersion)
 	}
 
 	// 请求类型
