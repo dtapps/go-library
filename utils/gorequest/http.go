@@ -210,9 +210,9 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 
 	// SDK版本
 	if app.afferentSdkUserVersion == "" {
-		httpResponse.RequestHeader.Set("Sdk-User-Agent", fmt.Sprintf(userAgentFormat, app.config.systemOs, app.config.systemKernel, app.config.goVersion, app.config.sdkVersion))
+		httpResponse.RequestHeader.Set("Sdk-User-Agent", fmt.Sprintf(userAgentFormat, app.config.systemOs, app.config.systemKernel, app.config.goVersion))
 	} else {
-		httpResponse.RequestHeader.Set("Sdk-User-Agent", fmt.Sprintf(userAgentFormat, app.config.systemOs, app.config.systemKernel, app.config.goVersion, app.config.sdkVersion)+"/"+app.afferentSdkUserVersion)
+		httpResponse.RequestHeader.Set("Sdk-User-Agent", fmt.Sprintf(userAgentFormat, app.config.systemOs, app.config.systemKernel, app.config.goVersion)+"/"+app.afferentSdkUserVersion)
 	}
 
 	// 请求类型
