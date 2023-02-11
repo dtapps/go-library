@@ -48,3 +48,33 @@ func (c *Client) RestRechargeQuery(ctx context.Context, orderNumber string) *Res
 	err = json.Unmarshal(request.ResponseBody, &response)
 	return newRestRechargeQueryResult(response, request.ResponseBody, request, err)
 }
+
+func (resp RestRechargeQueryResponse) GetStatusDesc(status int) string {
+	switch status {
+	case 1:
+		return "充值中"
+	case 2:
+		return "充值成功"
+	case 3:
+		return "充值失败"
+	case 4:
+		return "退款成功"
+	case 5:
+		return "已超时"
+	case 6:
+		return "待充值"
+	case 7:
+		return "已匹配"
+	case 8:
+		return "已存单"
+	case 9:
+		return "已取消"
+	case 10:
+		return "返销"
+	case 11:
+		return "部分到账"
+	case 12:
+		return "取消中"
+	}
+	return "待支付"
+}

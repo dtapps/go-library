@@ -65,3 +65,19 @@ func (c *Client) ApiOuterOrder(ctx context.Context, orderId string) *ApiOuterOrd
 	err = json.Unmarshal(request.ResponseBody, &response)
 	return newApiOuterOrderResult(response, request.ResponseBody, request, err)
 }
+
+func (resp ApiOuterOrderResponse) GetStateDesc(state int) string {
+	switch state {
+	case 100:
+		return "等待发货"
+	case 101:
+		return "正在充值"
+	case 200:
+		return "交易成功"
+	case 500:
+		return "交易失败"
+	case 501:
+		return "未知状态"
+	}
+	return ""
+}
