@@ -70,7 +70,7 @@ require (
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.0 // indirect
-	github.com/ugorji/go/codec v1.2.9 // indirect
+	github.com/ugorji/go/codec v1.2.10 // indirect
 	github.com/ulikunitz/xz v0.5.11 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
