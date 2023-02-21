@@ -8,9 +8,9 @@ import (
 )
 
 type TransferBatchesResponse struct {
-	OutBatchNo string `json:"out_batch_no"` // 商家批次单号
-	BatchId    string `json:"batch_id"`     // 微信批次单号
-	CreateTime string `json:"create_time"`  // 批次创建时间
+	OutBatchNo string `json:"out_batch_no"` // 商户系统内部的商家批次单号，在商户系统内部唯一
+	BatchId    string `json:"batch_id"`     // 微信批次单号，微信商家转账系统返回的唯一标识
+	CreateTime string `json:"create_time"`  // 批次受理成功时返回，按照使用rfc3339所定义的格式，格式为YYYY-MM-DDThh:mm:ss+TIMEZONE
 }
 
 type TransferBatchesResult struct {
@@ -24,8 +24,8 @@ func newTransferBatchesResult(result TransferBatchesResponse, body []byte, http 
 	return &TransferBatchesResult{Result: result, Body: body, Http: http, Err: err}
 }
 
-// TransferBatches 发起商家转账API
-// https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter4_3_1.shtml
+// TransferBatches 发起商家转账
+// https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/initiate-batch-transfer.html
 func (c *Client) TransferBatches(ctx context.Context, notMustParams ...gorequest.Params) *TransferBatchesResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
