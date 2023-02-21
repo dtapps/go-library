@@ -32,11 +32,11 @@ func newTransferBillReceiptOutBatchNoResult(result TransferBillReceiptOutBatchNo
 
 // TransferBillReceiptOutBatchNo 查询转账账单电子回单接口
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/electronic-signature/get-electronic-signature-by-out-no.html
-func (c *Client) TransferBillReceiptOutBatchNo(ctx context.Context, out_batch_no string, notMustParams ...gorequest.Params) *TransferBillReceiptOutBatchNoResult {
+func (c *Client) TransferBillReceiptOutBatchNo(ctx context.Context, outBatchNo string, notMustParams ...gorequest.Params) *TransferBillReceiptOutBatchNoResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/transfer/bill-receipt/"+out_batch_no, params, http.MethodGet, false)
+	request, err := c.request(ctx, apiUrl+"/v3/transfer/bill-receipt/"+outBatchNo, params, http.MethodGet, false)
 	if err != nil {
 		return newTransferBillReceiptOutBatchNoResult(TransferBillReceiptOutBatchNoResponse{}, request.ResponseBody, request, err)
 	}
