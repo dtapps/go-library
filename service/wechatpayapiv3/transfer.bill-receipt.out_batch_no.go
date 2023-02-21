@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-type TransferBillReceiptResponse struct {
+type TransferBillReceiptOutBatchNoResponse struct {
 	OutBatchNo      string    `json:"out_batch_no"`     // 商户系统内部的商家批次单号，在商户系统内部唯一。需要电子回单的批次单号
 	SignatureNo     string    `json:"signature_no"`     // 电子回单申请单号，申请单据的唯一标识
 	SignatureStatus string    `json:"signature_status"` // ACCEPTED:已受理，电子签章已受理成功 FINISHED:已完成。电子签章已处理完成
@@ -19,29 +19,29 @@ type TransferBillReceiptResponse struct {
 	UpdateTime      time.Time `json:"update_time"`      // 电子签章单最近一次状态变更的时间，按照使用rfc3339所定义的格式，格式为YYYY-MM-DDThh:mm:ss+TIMEZONE
 }
 
-type TransferBillReceiptResult struct {
-	Result TransferBillReceiptResponse // 结果
-	Body   []byte                      // 内容
-	Http   gorequest.Response          // 请求
-	Err    error                       // 错误
+type TransferBillReceiptOutBatchNoResult struct {
+	Result TransferBillReceiptOutBatchNoResponse // 结果
+	Body   []byte                                // 内容
+	Http   gorequest.Response                    // 请求
+	Err    error                                 // 错误
 }
 
-func newTransferBillReceiptResult(result TransferBillReceiptResponse, body []byte, http gorequest.Response, err error) *TransferBillReceiptResult {
-	return &TransferBillReceiptResult{Result: result, Body: body, Http: http, Err: err}
+func newTransferBillReceiptOutBatchNoResult(result TransferBillReceiptOutBatchNoResponse, body []byte, http gorequest.Response, err error) *TransferBillReceiptOutBatchNoResult {
+	return &TransferBillReceiptOutBatchNoResult{Result: result, Body: body, Http: http, Err: err}
 }
 
-// TransferBillReceipt 转账账单电子回单申请受理接口
-// https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/electronic-signature/create-electronic-signature.html
-func (c *Client) TransferBillReceipt(ctx context.Context, notMustParams ...gorequest.Params) *TransferBillReceiptResult {
+// TransferBillReceiptOutBatchNo 查询转账账单电子回单接口
+// https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/electronic-signature/get-electronic-signature-by-out-no.html
+func (c *Client) TransferBillReceiptOutBatchNo(ctx context.Context, out_batch_no string, notMustParams ...gorequest.Params) *TransferBillReceiptOutBatchNoResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/transfer/bill-receipt", params, http.MethodPost, false)
+	request, err := c.request(ctx, apiUrl+"/v3/transfer/bill-receipt/"+out_batch_no, params, http.MethodGet, false)
 	if err != nil {
-		return newTransferBillReceiptResult(TransferBillReceiptResponse{}, request.ResponseBody, request, err)
+		return newTransferBillReceiptOutBatchNoResult(TransferBillReceiptOutBatchNoResponse{}, request.ResponseBody, request, err)
 	}
 	// 定义
-	var response TransferBillReceiptResponse
+	var response TransferBillReceiptOutBatchNoResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return newTransferBillReceiptResult(response, request.ResponseBody, request, err)
+	return newTransferBillReceiptOutBatchNoResult(response, request.ResponseBody, request, err)
 }
