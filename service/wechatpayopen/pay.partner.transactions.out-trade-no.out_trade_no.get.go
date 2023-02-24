@@ -50,13 +50,11 @@ func newPayPartnerTransactionsOutTradeNoOutTradeNoGetResult(result PayPartnerTra
 
 // PayPartnerTransactionsOutTradeNoOutTradeNoGet 商户订单号查询
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_2.shtml
-func (c *Client) PayPartnerTransactionsOutTradeNoOutTradeNoGet(ctx context.Context, out_trade_no string, notMustParams ...gorequest.Params) *PayPartnerTransactionsOutTradeNoOutTradeNoGetResult {
+func (c *Client) PayPartnerTransactionsOutTradeNoOutTradeNoGet(ctx context.Context, outTradeNo string) *PayPartnerTransactionsOutTradeNoOutTradeNoGetResult {
 	// 参数
-	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("sp_mchid", c.GetSpMchId())   // 服务商户号
-	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
+	params := gorequest.NewParams()
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/pay/partner/transactions/out-trade-no/"+out_trade_no, params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/v3/pay/partner/transactions/out-trade-no/"+outTradeNo+"?sp_mchid="+c.GetSpMchId()+"&sub_mchid="+c.GetSubMchId(), params, http.MethodGet)
 	if err != nil {
 		return newPayPartnerTransactionsOutTradeNoOutTradeNoGetResult(PayPartnerTransactionsOutTradeNoOutTradeNoGetResponse{}, request.ResponseBody, request, err, ApiError{})
 	}
