@@ -7,6 +7,7 @@ require (
 	github.com/allegro/bigcache/v3 v3.1.0
 	github.com/baidubce/bce-sdk-go v0.9.143
 	github.com/basgys/goxml2json v1.1.0
+	github.com/beego/beego/v2 v2.0.7
 	github.com/gin-gonic/gin v1.9.0
 	github.com/go-playground/locales v0.14.1
 	github.com/go-playground/universal-translator v0.18.1
@@ -49,6 +50,7 @@ require (
 	github.com/goccy/go-json v0.10.0 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
+	github.com/hashicorp/golang-lru v1.0.1 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/jackc/pgx/v5 v5.3.0 // indirect
@@ -69,6 +71,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/saracen/go7z-fixtures v0.0.0-20190623165746-aa6b8fba1d2f // indirect
 	github.com/saracen/solidblock v0.0.0-20190426153529-45df20abab6f // indirect
+	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
 	github.com/syndtr/goleveldb v1.0.0 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
@@ -93,7 +96,6 @@ require (
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/hints v1.1.1 // indirect
 	gorm.io/plugin/dbresolver v1.4.1 // indirect
