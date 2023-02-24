@@ -1,3 +1,7 @@
+# gitee.com/chunanyong/zorm v1.6.6
+## explicit; go 1.13
+gitee.com/chunanyong/zorm
+gitee.com/chunanyong/zorm/decimal
 # github.com/aliyun/aliyun-oss-go-sdk v2.2.6+incompatible
 ## explicit
 github.com/aliyun/aliyun-oss-go-sdk/oss
@@ -21,6 +25,9 @@ github.com/baidubce/bce-sdk-go/util/log
 github.com/basgys/goxml2json
 # github.com/bitly/go-simplejson v0.5.0
 ## explicit
+# github.com/bmizerany/pq v0.0.0-20131128184720-da2b95e392c1
+## explicit
+github.com/bmizerany/pq
 # github.com/bytedance/sonic v1.8.1
 ## explicit; go 1.15
 github.com/bytedance/sonic

@@ -3,10 +3,12 @@ module github.com/dtapps/go-library
 go 1.20
 
 require (
+	gitee.com/chunanyong/zorm v1.6.6
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.6+incompatible
 	github.com/allegro/bigcache/v3 v3.1.0
 	github.com/baidubce/bce-sdk-go v0.9.143
 	github.com/basgys/goxml2json v1.1.0
+	github.com/bmizerany/pq v0.0.0-20131128184720-da2b95e392c1
 	github.com/gin-gonic/gin v1.9.0
 	github.com/go-playground/locales v0.14.1
 	github.com/go-playground/universal-translator v0.18.1
