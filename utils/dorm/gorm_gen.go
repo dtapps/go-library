@@ -13,13 +13,14 @@ type GormGenClientFun func() *GormGenClient
 type GormGenClientTableFun func() (*GormGenClient, string)
 
 type GormGenClientConfig struct {
-	Dns string // 地址
+	Dns    string     // dns地址
+	Config gen.Config // gen配置
 }
 
 // GormGenClient
 // https://gorm.io/zh_CN/gen/index.html
 type GormGenClient struct {
-	Db        *gorm.DB             // 驱动
-	Generator *gen.Generator       // 驱动
+	db        *gorm.DB             // 驱动
+	generator *gen.Generator       // 驱动
 	config    *GormGenClientConfig // 配置
 }

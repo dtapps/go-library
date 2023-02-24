@@ -10,13 +10,10 @@ func NewGormGenMysqlClient(config *GormGenClientConfig) (*GormGenClient, error) 
 
 	c := &GormGenClient{config: config}
 
-	c.Generator = gen.NewGenerator(gen.Config{
-		OutPath: "../query",
-		Mode:    gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface, // generate mode
-	})
+	c.generator = gen.NewGenerator(config.Config)
 
-	c.Db, _ = gorm.Open(mysql.Open(c.config.Dns), &gorm.Config{})
-	c.Generator.UseDB(c.Db)
+	c.db, _ = gorm.Open(mysql.Open(c.config.Dns), &gorm.Config{})
+	c.generator.UseDB(c.db)
 
 	return c, nil
 }
