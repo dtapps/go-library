@@ -34,7 +34,6 @@ type PayPartnerOutTradeNoOutTradeNoGetResponse struct {
 	SceneInfo struct {
 		DeviceId string `json:"device_id"` // 商户端设备号
 	} `json:"scene_info"` // 场景信息
-	PromotionDetail []interface{} `json:"promotion_detail"` // 优惠功能
 }
 
 type PayPartnerOutTradeNoOutTradeNoGetResult struct {
