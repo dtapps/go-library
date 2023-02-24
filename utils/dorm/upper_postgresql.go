@@ -17,7 +17,7 @@ func NewUpperPostgresqlClient(settings postgresql.ConnectionURL) (*UpperClient, 
 	}
 	defer sess.Close()
 
-	c.Db = &sess
+	c.db = &sess
 
 	return c, nil
 }

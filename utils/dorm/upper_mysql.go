@@ -17,7 +17,7 @@ func NewUpperMysqlClient(settings mysql.ConnectionURL) (*UpperClient, error) {
 	}
 	defer sess.Close()
 
-	c.Db = &sess
+	c.db = &sess
 
 	return c, nil
 }
