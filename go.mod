@@ -24,6 +24,7 @@ require (
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/sirupsen/logrus v1.9.0
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.41
+	github.com/upper/db/v4 v4.6.0
 	github.com/uptrace/bun v1.1.12
 	github.com/uptrace/bun/dialect/mysqldialect v1.1.12
 	github.com/uptrace/bun/dialect/pgdialect v1.1.12
@@ -53,8 +54,14 @@ require (
 	github.com/goccy/go-json v0.10.0 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
+	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
+	github.com/jackc/pgconn v1.14.0 // indirect
+	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
+	github.com/jackc/pgproto3/v2 v2.3.2 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
+	github.com/jackc/pgtype v1.14.0 // indirect
+	github.com/jackc/pgx/v4 v4.18.0 // indirect
 	github.com/jackc/pgx/v5 v5.3.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
@@ -73,6 +80,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/saracen/go7z-fixtures v0.0.0-20190623165746-aa6b8fba1d2f // indirect
 	github.com/saracen/solidblock v0.0.0-20190426153529-45df20abab6f // indirect
+	github.com/segmentio/fasthash v1.0.3 // indirect
 	github.com/syndtr/goleveldb v1.0.0 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
@@ -100,7 +108,6 @@ require (
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/hints v1.1.1 // indirect
 	gorm.io/plugin/dbresolver v1.4.1 // indirect
