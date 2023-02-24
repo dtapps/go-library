@@ -54,6 +54,7 @@ func newPayPartnerTransactionsIdTransactionIdGetResult(result PayPartnerTransact
 func (c *Client) PayPartnerTransactionsIdTransactionIdGet(ctx context.Context, transactionId string, notMustParams ...gorequest.Params) *PayPartnerTransactionsIdTransactionIdGetResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("sp_mchid", c.GetSpMchId())   // 服务商户号
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/pay/partner/transactions/id/"+transactionId, params, http.MethodGet)

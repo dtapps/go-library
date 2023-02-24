@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-type PayPartnerOutTradeNoOutTradeNoGetResponse struct {
+type PayPartnerTransactionsOutTradeNoOutTradeNoGetResponse struct {
 	SpAppid        string    `json:"sp_appid"`         // 服务商应用ID
 	SpMchid        string    `json:"sp_mchid"`         // 服务商户号
 	SubAppid       string    `json:"sub_appid"`        // 子商户应用ID
@@ -36,34 +36,35 @@ type PayPartnerOutTradeNoOutTradeNoGetResponse struct {
 	} `json:"scene_info"` // 场景信息
 }
 
-type PayPartnerOutTradeNoOutTradeNoGetResult struct {
-	Result   PayPartnerOutTradeNoOutTradeNoGetResponse // 结果
-	Body     []byte                                    // 内容
-	Http     gorequest.Response                        // 请求
-	Err      error                                     // 错误
-	ApiError ApiError                                  // 接口错误
+type PayPartnerTransactionsOutTradeNoOutTradeNoGetResult struct {
+	Result   PayPartnerTransactionsOutTradeNoOutTradeNoGetResponse // 结果
+	Body     []byte                                                // 内容
+	Http     gorequest.Response                                    // 请求
+	Err      error                                                 // 错误
+	ApiError ApiError                                              // 接口错误
 }
 
-func newPayPartnerOutTradeNoOutTradeNoGetResult(result PayPartnerOutTradeNoOutTradeNoGetResponse, body []byte, http gorequest.Response, err error, apiError ApiError) *PayPartnerOutTradeNoOutTradeNoGetResult {
-	return &PayPartnerOutTradeNoOutTradeNoGetResult{Result: result, Body: body, Http: http, Err: err, ApiError: apiError}
+func newPayPartnerTransactionsOutTradeNoOutTradeNoGetResult(result PayPartnerTransactionsOutTradeNoOutTradeNoGetResponse, body []byte, http gorequest.Response, err error, apiError ApiError) *PayPartnerTransactionsOutTradeNoOutTradeNoGetResult {
+	return &PayPartnerTransactionsOutTradeNoOutTradeNoGetResult{Result: result, Body: body, Http: http, Err: err, ApiError: apiError}
 }
 
-// PayPartnerOutTradeNoOutTradeNoGet 商户订单号查询
+// PayPartnerTransactionsOutTradeNoOutTradeNoGet 商户订单号查询
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_2.shtml
-func (c *Client) PayPartnerOutTradeNoOutTradeNoGet(ctx context.Context, out_trade_no string, notMustParams ...gorequest.Params) *PayPartnerOutTradeNoOutTradeNoGetResult {
+func (c *Client) PayPartnerTransactionsOutTradeNoOutTradeNoGet(ctx context.Context, out_trade_no string, notMustParams ...gorequest.Params) *PayPartnerTransactionsOutTradeNoOutTradeNoGetResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("sp_mchid", c.GetSpMchId())   // 服务商户号
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/pay/partner/transactions/out-trade-no/"+out_trade_no, params, http.MethodGet)
 	if err != nil {
-		return newPayPartnerOutTradeNoOutTradeNoGetResult(PayPartnerOutTradeNoOutTradeNoGetResponse{}, request.ResponseBody, request, err, ApiError{})
+		return newPayPartnerTransactionsOutTradeNoOutTradeNoGetResult(PayPartnerTransactionsOutTradeNoOutTradeNoGetResponse{}, request.ResponseBody, request, err, ApiError{})
 	}
 	// 定义
-	var response PayPartnerOutTradeNoOutTradeNoGetResponse
+	var response PayPartnerTransactionsOutTradeNoOutTradeNoGetResponse
 	err = json.Unmarshal(request.ResponseBody, &response)
 	// 错误
 	var apiError ApiError
 	err = json.Unmarshal(request.ResponseBody, &apiError)
-	return newPayPartnerOutTradeNoOutTradeNoGetResult(response, request.ResponseBody, request, err, apiError)
+	return newPayPartnerTransactionsOutTradeNoOutTradeNoGetResult(response, request.ResponseBody, request, err, apiError)
 }
