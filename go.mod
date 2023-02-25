@@ -39,7 +39,7 @@ require (
 
 require (
 	github.com/bitly/go-simplejson v0.5.0 // indirect
-	github.com/bytedance/sonic v1.8.1 // indirect
+	github.com/bytedance/sonic v1.8.2 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/clbanning/mxj v1.8.4 // indirect
