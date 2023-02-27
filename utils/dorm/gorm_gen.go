@@ -14,6 +14,7 @@ type GormGenClientTableFun func() (*GormGenClient, string)
 
 type GormGenClientConfig struct {
 	Dns    string     // dns地址
+	Db     *gorm.DB   // db驱动
 	Config gen.Config // gen配置
 }
 

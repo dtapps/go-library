@@ -12,8 +12,12 @@ func NewGormGenMysqlClient(config *GormGenClientConfig) (*GormGenClient, error) 
 
 	c.generator = gen.NewGenerator(config.Config)
 
-	c.db, _ = gorm.Open(mysql.Open(c.config.Dns), &gorm.Config{})
-	c.generator.UseDB(c.db)
+	if c.config.Dns != "" {
+		c.db, _ = gorm.Open(mysql.Open(c.config.Dns), &gorm.Config{})
+		c.generator.UseDB(c.db)
+	} else {
+		c.generator.UseDB(c.config.Db)
+	}
 
 	return c, nil
 }
