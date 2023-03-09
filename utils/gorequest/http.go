@@ -2,16 +2,18 @@ package gorequest
 
 import (
 	"bytes"
+	"compress/flate"
+	"compress/gzip"
 	"context"
 	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
+	cookiemonster "github.com/MercuryEngineering/CookieMonster"
 	"github.com/dtapps/go-library/utils/gostring"
 	"github.com/dtapps/go-library/utils/gotime"
 	"github.com/dtapps/go-library/utils/gotrace_id"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -26,6 +28,7 @@ type Response struct {
 	RequestParams         Params      //【请求】参数
 	RequestMethod         string      //【请求】方式
 	RequestHeader         Headers     //【请求】头部
+	RequestCookie         string      //【请求】Cookie
 	RequestTime           time.Time   //【请求】时间
 	ResponseHeader        http.Header //【返回】头部
 	ResponseStatus        string      //【返回】状态
@@ -43,6 +46,7 @@ type App struct {
 	httpMethod             string           // 请求方法
 	httpHeader             Headers          // 请求头
 	httpParams             Params           // 请求参数
+	httpCookie             string           // Cookie
 	responseContent        Response         // 返回内容
 	httpContentType        string           // 请求内容类型
 	debug                  bool             // 是否开启调试模式
@@ -139,6 +143,11 @@ func (app *App) SetParams(params Params) {
 	}
 }
 
+// SetCookie 设置Cookie
+func (app *App) SetCookie(value string) {
+	app.httpCookie = value
+}
+
 // SetP12Cert 设置证书
 func (app *App) SetP12Cert(content *tls.Certificate) {
 	app.p12Cert = content
@@ -183,6 +192,7 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	httpResponse.RequestMethod = app.httpMethod
 	httpResponse.RequestParams = app.httpParams.DeepCopy()
 	httpResponse.RequestHeader = app.httpHeader.DeepCopy()
+	httpResponse.RequestCookie = app.httpCookie
 
 	// 判断网址
 	if httpResponse.RequestUri == "" {
@@ -290,6 +300,18 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 		}
 	}
 
+	// 设置Cookie
+	if httpResponse.RequestCookie != "" {
+		cookies, _ := cookiemonster.ParseString(httpResponse.RequestCookie)
+		if len(cookies) > 0 {
+			for _, c := range cookies {
+				req.AddCookie(c)
+			}
+		} else {
+			req.Header.Set("Cookie", httpResponse.RequestCookie)
+		}
+	}
+
 	// 发送请求
 	resp, err := client.Do(req)
 	if err != nil {
@@ -300,8 +322,19 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	// 最后关闭连接
 	defer resp.Body.Close()
 
+	var reader io.ReadCloser
+	switch resp.Header.Get("Content-Encoding") {
+	case "gzip":
+		reader, _ = gzip.NewReader(resp.Body)
+	case "deflate":
+		reader = flate.NewReader(resp.Body)
+	default:
+		reader = resp.Body
+	}
+	defer reader.Close() // nolint
+
 	// 读取内容
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(reader)
 	if err != nil {
 		app.Error = errors.New(fmt.Sprintf("解析内容出错 %s", err))
 		return httpResponse, app.Error

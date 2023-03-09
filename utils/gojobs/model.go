@@ -32,6 +32,51 @@ func (c *Client) GormTaskLogDelete(ctx context.Context, hour int64) error {
 	return err
 }
 
+// GormTaskLogInDelete 删除任务运行
+func (c *Client) GormTaskLogInDelete(ctx context.Context, hour int64) error {
+	err := c.gormClient.GetDb().Where("task_result_status = ?", TASK_IN).Where("log_time < ?", gotime.Current().BeforeHour(hour).Format()).Delete(&jobs_gorm_model.TaskLog{}).Error
+	if err != nil {
+		c.zapLog.WithTraceId(ctx).Sugar().Errorf("删除失败：%s", err)
+	}
+	return err
+}
+
+// GormTaskLogSuccessDelete 删除任务完成
+func (c *Client) GormTaskLogSuccessDelete(ctx context.Context, hour int64) error {
+	err := c.gormClient.GetDb().Where("task_result_status = ?", TASK_SUCCESS).Where("log_time < ?", gotime.Current().BeforeHour(hour).Format()).Delete(&jobs_gorm_model.TaskLog{}).Error
+	if err != nil {
+		c.zapLog.WithTraceId(ctx).Sugar().Errorf("删除失败：%s", err)
+	}
+	return err
+}
+
+// GormTaskLogErrorDelete 删除任务异常
+func (c *Client) GormTaskLogErrorDelete(ctx context.Context, hour int64) error {
+	err := c.gormClient.GetDb().Where("task_result_status = ?", TASK_ERROR).Where("log_time < ?", gotime.Current().BeforeHour(hour).Format()).Delete(&jobs_gorm_model.TaskLog{}).Error
+	if err != nil {
+		c.zapLog.WithTraceId(ctx).Sugar().Errorf("删除失败：%s", err)
+	}
+	return err
+}
+
+// GormTaskLogTimeoutDelete 删除任务超时
+func (c *Client) GormTaskLogTimeoutDelete(ctx context.Context, hour int64) error {
+	err := c.gormClient.GetDb().Where("task_result_status = ?", TASK_TIMEOUT).Where("log_time < ?", gotime.Current().BeforeHour(hour).Format()).Delete(&jobs_gorm_model.TaskLog{}).Error
+	if err != nil {
+		c.zapLog.WithTraceId(ctx).Sugar().Errorf("删除失败：%s", err)
+	}
+	return err
+}
+
+// GormTaskLogWaitDelete 删除任务等待
+func (c *Client) GormTaskLogWaitDelete(ctx context.Context, hour int64) error {
+	err := c.gormClient.GetDb().Where("task_result_status = ?", TASK_WAIT).Where("log_time < ?", gotime.Current().BeforeHour(hour).Format()).Delete(&jobs_gorm_model.TaskLog{}).Error
+	if err != nil {
+		c.zapLog.WithTraceId(ctx).Sugar().Errorf("删除失败：%s", err)
+	}
+	return err
+}
+
 // TaskLogRecord 记录
 func (c *Client) TaskLogRecord(ctx context.Context, task jobs_gorm_model.Task, taskResultCode int, taskResultDesc string) {
 	runId := gotrace_id.GetTraceIdContext(ctx)
