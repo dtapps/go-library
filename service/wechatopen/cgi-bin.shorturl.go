@@ -26,7 +26,7 @@ func newCgiBinShortUrlResult(result CgiBinShortUrlResponse, body []byte, http go
 
 // CgiBinShortUrl 将二维码长链接转成短链接
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/shorturl.html
-func (c *Client) CgiBinShortUrl(ctx context.Context, longUrl string) (*CgiBinShortUrlResult, error) {
+func (c *Client) CgiBinShortUrl(ctx context.Context, longUrl string, notMustParams ...gorequest.Params) (*CgiBinShortUrlResult, error) {
 	// 检查
 	err := c.checkComponentIsConfig()
 	if err != nil {
@@ -37,7 +37,7 @@ func (c *Client) CgiBinShortUrl(ctx context.Context, longUrl string) (*CgiBinSho
 		return nil, err
 	}
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	params["action"] = "long2short" // 此处填long2short，代表长链接转短链接
 	params["long_url"] = longUrl    // 需要转换的长链接，支持http://、https://、weixin://wxpay 格式的url
 	// 请求

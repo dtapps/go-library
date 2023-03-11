@@ -35,14 +35,14 @@ func newWxaGetTemplateDraftListResult(result WxaGetTemplateDraftListResponse, bo
 
 // WxaGetTemplateDraftList 获取代码草稿列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/gettemplatedraftlist.html
-func (c *Client) WxaGetTemplateDraftList(ctx context.Context) (*WxaGetTemplateDraftListResult, error) {
+func (c *Client) WxaGetTemplateDraftList(ctx context.Context, notMustParams ...gorequest.Params) (*WxaGetTemplateDraftListResult, error) {
 	// 检查
 	err := c.checkComponentIsConfig()
 	if err != nil {
 		return nil, err
 	}
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/gettemplatedraftlist?access_token=%s", c.GetComponentAccessToken(ctx)), params, http.MethodGet)
 	if err != nil {

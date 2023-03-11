@@ -25,7 +25,7 @@ func newCgiBinWxOpenQrCodeJumpPublishResult(result CgiBinWxOpenQrCodeJumpPublish
 
 // CgiBinWxOpenQrCodeJumpPublish 发布已设置的二维码规则
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumppublish.html
-func (c *Client) CgiBinWxOpenQrCodeJumpPublish(ctx context.Context, prefix string) (*CgiBinWxOpenQrCodeJumpPublishResult, error) {
+func (c *Client) CgiBinWxOpenQrCodeJumpPublish(ctx context.Context, prefix string, notMustParams ...gorequest.Params) (*CgiBinWxOpenQrCodeJumpPublishResult, error) {
 	// 检查
 	err := c.checkComponentIsConfig()
 	if err != nil {
@@ -36,7 +36,7 @@ func (c *Client) CgiBinWxOpenQrCodeJumpPublish(ctx context.Context, prefix strin
 		return nil, err
 	}
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	params["prefix"] = prefix
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/wxopen/qrcodejumppublish?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)

@@ -35,7 +35,7 @@ func newWxaGetVersionInfoResult(result WxaGetVersionInfoResponse, body []byte, h
 
 // WxaGetVersionInfo 查询小程序版本信息
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_versioninfo.html
-func (c *Client) WxaGetVersionInfo(ctx context.Context) (*WxaGetVersionInfoResult, error) {
+func (c *Client) WxaGetVersionInfo(ctx context.Context, notMustParams ...gorequest.Params) (*WxaGetVersionInfoResult, error) {
 	// 检查
 	err := c.checkComponentIsConfig()
 	if err != nil {
@@ -46,7 +46,7 @@ func (c *Client) WxaGetVersionInfo(ctx context.Context) (*WxaGetVersionInfoResul
 		return nil, err
 	}
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/getversioninfo?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
 	if err != nil {

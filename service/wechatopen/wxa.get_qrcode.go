@@ -27,7 +27,7 @@ func newWxaGetQrcodeResult(result WxaGetQrcodeResponse, body []byte, http gorequ
 
 // WxaGetQrcode 获取体验版二维码
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_qrcode.html
-func (c *Client) WxaGetQrcode(ctx context.Context, path string) (*WxaGetQrcodeResult, error) {
+func (c *Client) WxaGetQrcode(ctx context.Context, path string, notMustParams ...gorequest.Params) (*WxaGetQrcodeResult, error) {
 	// 检查
 	err := c.checkComponentIsConfig()
 	if err != nil {
@@ -38,7 +38,7 @@ func (c *Client) WxaGetQrcode(ctx context.Context, path string) (*WxaGetQrcodeRe
 		return nil, err
 	}
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	if path != "" {
 		params["path"] = path // 指定二维码扫码后直接进入指定页面并可同时带上参数）
 	}

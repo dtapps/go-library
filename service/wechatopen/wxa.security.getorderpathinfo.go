@@ -35,14 +35,14 @@ func newWxaSecurityGetOrderPathInfoResult(result WxaSecurityGetOrderPathInfoResp
 
 // WxaSecurityGetOrderPathInfo 获取订单页 path 信息
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/basic-info-management/getOrderPathInfo.html
-func (c *Client) WxaSecurityGetOrderPathInfo(ctx context.Context, infoType int) (*WxaSecurityGetOrderPathInfoResult, error) {
+func (c *Client) WxaSecurityGetOrderPathInfo(ctx context.Context, infoType int, notMustParams ...gorequest.Params) (*WxaSecurityGetOrderPathInfoResult, error) {
 	// 检查
 	err := c.checkComponentIsConfig()
 	if err != nil {
 		return nil, err
 	}
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("info_type", infoType)
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/security/getorderpathinfo?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)

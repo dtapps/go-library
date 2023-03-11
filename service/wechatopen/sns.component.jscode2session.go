@@ -30,7 +30,7 @@ func newSnsComponentJsCode2sessionResult(result SnsComponentJsCode2sessionRespon
 
 // SnsComponentJsCode2session 小程序登录
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/others/WeChat_login.html
-func (c *Client) SnsComponentJsCode2session(ctx context.Context, jsCode string) (*SnsComponentJsCode2sessionResult, error) {
+func (c *Client) SnsComponentJsCode2session(ctx context.Context, jsCode string, notMustParams ...gorequest.Params) (*SnsComponentJsCode2sessionResult, error) {
 	// 检查
 	err := c.checkComponentIsConfig()
 	if err != nil {
@@ -41,7 +41,7 @@ func (c *Client) SnsComponentJsCode2session(ctx context.Context, jsCode string) 
 		return nil, err
 	}
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	params["appid"] = c.GetAuthorizerAppid()                          // 小程序的 appId
 	params["js_code"] = jsCode                                        // wx.login 获取的 code
 	params["grant_type"] = "authorization_code"                       // 填 authorization_code

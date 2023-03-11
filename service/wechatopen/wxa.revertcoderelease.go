@@ -31,7 +31,7 @@ func newWxaRevertCodeReleaseResult(result WxaRevertCodeReleaseResponse, body []b
 
 // WxaRevertCodeRelease 小程序版本回退
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/revertCodeRelease.html
-func (c *Client) WxaRevertCodeRelease(ctx context.Context) (*WxaRevertCodeReleaseResult, error) {
+func (c *Client) WxaRevertCodeRelease(ctx context.Context, notMustParams ...gorequest.Params) (*WxaRevertCodeReleaseResult, error) {
 	// 检查
 	err := c.checkComponentIsConfig()
 	if err != nil {
@@ -42,7 +42,7 @@ func (c *Client) WxaRevertCodeRelease(ctx context.Context) (*WxaRevertCodeReleas
 		return nil, err
 	}
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/revertcoderelease?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodGet)
 	if err != nil {

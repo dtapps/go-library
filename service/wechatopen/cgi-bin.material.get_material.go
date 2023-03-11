@@ -28,7 +28,7 @@ func newCgiBinMaterialGetMaterialResult(result CgiBinMaterialGetMaterialResponse
 
 // CgiBinMaterialGetMaterial 获取永久素材
 // https://developers.weixin.qq.com/doc/offiaccount/Asset_Management/Getting_Permanent_Assets.html
-func (c *Client) CgiBinMaterialGetMaterial(ctx context.Context, mediaId string) (*CgiBinMaterialGetMaterialResult, error) {
+func (c *Client) CgiBinMaterialGetMaterial(ctx context.Context, mediaId string, notMustParams ...gorequest.Params) (*CgiBinMaterialGetMaterialResult, error) {
 	// 检查
 	err := c.checkComponentIsConfig()
 	if err != nil {
@@ -39,7 +39,7 @@ func (c *Client) CgiBinMaterialGetMaterial(ctx context.Context, mediaId string) 
 		return nil, err
 	}
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	params["media_id"] = mediaId // 要获取的素材的media_id
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/material/get_material?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)

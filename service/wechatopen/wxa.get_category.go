@@ -33,7 +33,7 @@ func newWxaGetCategoryResult(result WxaGetCategoryResponse, body []byte, http go
 
 // WxaGetCategory 获取审核时可填写的类目信息
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/category/get_category.html
-func (c *Client) WxaGetCategory(ctx context.Context) (*WxaGetCategoryResult, error) {
+func (c *Client) WxaGetCategory(ctx context.Context, notMustParams ...gorequest.Params) (*WxaGetCategoryResult, error) {
 	// 检查
 	err := c.checkComponentIsConfig()
 	if err != nil {
@@ -44,7 +44,7 @@ func (c *Client) WxaGetCategory(ctx context.Context) (*WxaGetCategoryResult, err
 		return nil, err
 	}
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/get_category?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodGet)
 	if err != nil {

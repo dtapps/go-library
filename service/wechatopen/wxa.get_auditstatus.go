@@ -29,7 +29,7 @@ func newWxaGetAuditStatusResult(result WxaGetAuditStatusResponse, body []byte, h
 
 // WxaGetAuditStatus 查询指定发布审核单的审核状态
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_auditstatus.html
-func (c *Client) WxaGetAuditStatus(ctx context.Context, auditid int64) (*WxaGetAuditStatusResult, error) {
+func (c *Client) WxaGetAuditStatus(ctx context.Context, auditid int64, notMustParams ...gorequest.Params) (*WxaGetAuditStatusResult, error) {
 	// 检查
 	err := c.checkComponentIsConfig()
 	if err != nil {
@@ -40,7 +40,7 @@ func (c *Client) WxaGetAuditStatus(ctx context.Context, auditid int64) (*WxaGetA
 		return nil, err
 	}
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("auditid", auditid)
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/get_auditstatus?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)

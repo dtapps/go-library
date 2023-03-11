@@ -25,14 +25,14 @@ func newWxaUnbindTesterResult(result WxaUnbindTesterResponse, body []byte, http 
 
 // WxaUnbindTester 解除绑定体验者
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_AdminManagement/unbind_tester.html
-func (c *Client) WxaUnbindTester(ctx context.Context, wechatid, userstr string) (*WxaUnbindTesterResult, error) {
+func (c *Client) WxaUnbindTester(ctx context.Context, wechatid, userstr string, notMustParams ...gorequest.Params) (*WxaUnbindTesterResult, error) {
 	// 检查
 	err := c.checkComponentIsConfig()
 	if err != nil {
 		return nil, err
 	}
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	if wechatid != "" {
 		params["wechatid"] = wechatid
 	}
