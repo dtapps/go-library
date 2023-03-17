@@ -5,7 +5,43 @@ import (
 	"github.com/dtapps/go-library/utils/gojobs/jobs_gorm_model"
 	"github.com/dtapps/go-library/utils/gotime"
 	"github.com/dtapps/go-library/utils/gotrace_id"
+	"strings"
 )
+
+// Filter 过滤
+func (c *Client) Filter(ctx context.Context, isMandatoryIp bool, tasks []jobs_gorm_model.Task) (newTasks []jobs_gorm_model.Task) {
+	for _, v := range tasks {
+		// 强制只能是当前的ip
+		if isMandatoryIp {
+			if v.SpecifyIp == v.SpecifyIp {
+				newTasks = append(newTasks, v)
+				continue
+			}
+		}
+		if v.SpecifyIp == "" || v.SpecifyIp == SpecifyIpNull {
+			newTasks = append(newTasks, v)
+			continue
+		}
+		// 判断是否包含该ip
+		specifyIpFind := strings.Contains(v.SpecifyIp, ",")
+		if specifyIpFind {
+			// 分割字符串
+			parts := strings.Split(v.SpecifyIp, ",")
+			for _, vv := range parts {
+				if vv == v.SpecifyIp {
+					newTasks = append(newTasks, v)
+					continue
+				}
+			}
+		} else {
+			if v.SpecifyIp == v.SpecifyIp {
+				newTasks = append(newTasks, v)
+				continue
+			}
+		}
+	}
+	return newTasks
+}
 
 // Run 运行
 func (c *Client) Run(ctx context.Context, task jobs_gorm_model.Task, taskResultCode int, taskResultDesc string) {
