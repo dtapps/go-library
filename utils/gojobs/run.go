@@ -2,6 +2,7 @@ package gojobs
 
 import (
 	"context"
+	"github.com/dtapps/go-library/utils/goip"
 	"github.com/dtapps/go-library/utils/gojobs/jobs_gorm_model"
 	"github.com/dtapps/go-library/utils/gotime"
 	"github.com/dtapps/go-library/utils/gotrace_id"
@@ -9,34 +10,49 @@ import (
 )
 
 // Filter 过滤
-func (c *Client) Filter(ctx context.Context, isMandatoryIp bool, tasks []jobs_gorm_model.Task) (newTasks []jobs_gorm_model.Task) {
+// ctx 上下文
+// isMandatoryIp 强制当前ip
+// specifyIp 指定Ip
+// tasks 过滤前的数据
+// newTasks 过滤后的数据
+func (c *Client) Filter(ctx context.Context, isMandatoryIp bool, specifyIp string, tasks []jobs_gorm_model.Task) (newTasks []jobs_gorm_model.Task) {
+	if specifyIp == "" {
+		specifyIp = goip.IsIp(c.GetCurrentIp())
+	} else {
+		specifyIp = goip.IsIp(specifyIp)
+	}
 	for _, v := range tasks {
+		v.SpecifyIp = goip.IsIp(v.SpecifyIp)
 		// 强制只能是当前的ip
 		if isMandatoryIp {
-			if v.SpecifyIp == v.SpecifyIp {
+			if v.SpecifyIp == specifyIp {
 				newTasks = append(newTasks, v)
 				continue
 			}
 		}
-		if v.SpecifyIp == "" || v.SpecifyIp == SpecifyIpNull {
+		if v.SpecifyIp == "" {
 			newTasks = append(newTasks, v)
 			continue
-		}
-		// 判断是否包含该ip
-		specifyIpFind := strings.Contains(v.SpecifyIp, ",")
-		if specifyIpFind {
-			// 分割字符串
-			parts := strings.Split(v.SpecifyIp, ",")
-			for _, vv := range parts {
-				if vv == v.SpecifyIp {
+		} else if v.SpecifyIp == SpecifyIpNull {
+			newTasks = append(newTasks, v)
+			continue
+		} else {
+			// 判断是否包含该ip
+			specifyIpFind := strings.Contains(v.SpecifyIp, ",")
+			if specifyIpFind {
+				// 分割字符串
+				parts := strings.Split(v.SpecifyIp, ",")
+				for _, vv := range parts {
+					if vv == specifyIp {
+						newTasks = append(newTasks, v)
+						continue
+					}
+				}
+			} else {
+				if v.SpecifyIp == specifyIp {
 					newTasks = append(newTasks, v)
 					continue
 				}
-			}
-		} else {
-			if v.SpecifyIp == v.SpecifyIp {
-				newTasks = append(newTasks, v)
-				continue
 			}
 		}
 	}
