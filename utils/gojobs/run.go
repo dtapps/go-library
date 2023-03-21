@@ -2,6 +2,7 @@ package gojobs
 
 import (
 	"context"
+	"fmt"
 	"github.com/dtapps/go-library/utils/goip"
 	"github.com/dtapps/go-library/utils/gojobs/jobs_gorm_model"
 	"github.com/dtapps/go-library/utils/gotime"
@@ -15,42 +16,54 @@ import (
 // specifyIp 指定Ip
 // tasks 过滤前的数据
 // newTasks 过滤后的数据
-func (c *Client) Filter(ctx context.Context, isMandatoryIp bool, specifyIp string, tasks []jobs_gorm_model.Task) (newTasks []jobs_gorm_model.Task) {
+func (c *Client) Filter(ctx context.Context, isMandatoryIp bool, specifyIp string, tasks []jobs_gorm_model.Task, isPrint bool) (newTasks []jobs_gorm_model.Task) {
+	c.Println(isPrint, fmt.Sprintf("【Filter入参】是强制性Ip：%v；指定Ip：%v；任务数量：%v", isMandatoryIp, specifyIp, len(tasks)))
 	if specifyIp == "" {
 		specifyIp = goip.IsIp(c.GetCurrentIp())
 	} else {
 		specifyIp = goip.IsIp(specifyIp)
 	}
+	c.Println(isPrint, fmt.Sprintf("【Filter入参】指定Ip重新解析：%v", specifyIp))
 	for _, v := range tasks {
+		c.Println(isPrint, fmt.Sprintf("【Filter入参】任务指定Ip解析前：%v", v.SpecifyIp))
 		v.SpecifyIp = goip.IsIp(v.SpecifyIp)
+		c.Println(isPrint, fmt.Sprintf("【Filter入参】任务指定Ip重新解析：%v", v.SpecifyIp))
 		// 强制只能是当前的ip
 		if isMandatoryIp {
+			c.Println(isPrint, "【Filter入参】进入强制性Ip")
 			if v.SpecifyIp == specifyIp {
+				c.Println(isPrint, fmt.Sprintf("【Filter入参】进入强制性Ip 添加任务：%v", v.Id))
 				newTasks = append(newTasks, v)
 				continue
 			}
 		}
 		if v.SpecifyIp == "" {
+			c.Println(isPrint, fmt.Sprintf("【Filter入参】任务指定Ip为空 添加任务：%v", v.Id))
 			newTasks = append(newTasks, v)
 			continue
 		} else if v.SpecifyIp == SpecifyIpNull {
+			c.Println(isPrint, fmt.Sprintf("【Filter入参】任务指定Ip无限制 添加任务：%v", v.Id))
 			newTasks = append(newTasks, v)
 			continue
 		} else {
 			// 判断是否包含该ip
 			specifyIpFind := strings.Contains(v.SpecifyIp, ",")
 			if specifyIpFind {
+				c.Println(isPrint, "【Filter入参】进入强制性多Ip")
 				// 分割字符串
 				parts := strings.Split(v.SpecifyIp, ",")
 				for _, vv := range parts {
 					if vv == specifyIp {
+						c.Println(isPrint, fmt.Sprintf("【Filter入参】进入强制性多Ip 添加任务：%v", v.Id))
 						newTasks = append(newTasks, v)
 						continue
 					}
 				}
 			} else {
+				c.Println(isPrint, "【Filter入参】进入强制性单Ip")
 				if v.SpecifyIp == specifyIp {
 					newTasks = append(newTasks, v)
+					c.Println(isPrint, fmt.Sprintf("【Filter入参】进入强制性单Ip 添加任务：%v", v.Id))
 					continue
 				}
 			}
