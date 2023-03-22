@@ -1,3 +1,10 @@
+## v1.0.100
+
+- update [gojobs](utils%2Fgojobs)
+- update [goip](utils%2Fgoip)
+- update [gorequest](utils%2Fgorequest)
+- update [kashangwl](service%2Fkashangwl)
+
 ## v2022-01-06
 
 - 更新抖音接口

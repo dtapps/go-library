@@ -8,5 +8,7 @@ func (c *Client) ConfigApiClientFun(apiClientFun golog.ApiClientFun) {
 	if apiClient != nil {
 		c.log.client = apiClient
 		c.log.status = true
+
+		c.cacheLog.client = apiClient
 	}
 }

@@ -7,8 +7,9 @@ import (
 
 // ClientConfig 实例配置
 type ClientConfig struct {
-	CustomerId  int64  // 商家编号
-	CustomerKey string // 商家密钥
+	CustomerId     int64  // 商家编号
+	CustomerKey    string // 商家密钥
+	CacheLogStatus bool   // 缓存日志状态
 }
 
 // Client 实例
@@ -22,6 +23,10 @@ type Client struct {
 		status bool             // 状态
 		client *golog.ApiClient // 日志服务
 	}
+	cacheLog struct {
+		status bool             // 状态
+		client *golog.ApiClient // 日志服务
+	}
 }
 
 // NewClient 创建实例化
@@ -31,6 +36,8 @@ func NewClient(config *ClientConfig) (*Client, error) {
 
 	c.config.customerId = config.CustomerId
 	c.config.customerKey = config.CustomerKey
+
+	c.cacheLog.status = config.CacheLogStatus
 
 	c.requestClient = gorequest.NewHttp()
 

@@ -72,8 +72,8 @@ func (c *Client) requestCache(ctx context.Context, url string, params map[string
 	}
 
 	// 日志
-	if c.log.status {
-		go c.log.client.Middleware(ctx, request, go_library.Version())
+	if c.cacheLog.status {
+		go c.cacheLog.client.Middleware(ctx, request, go_library.Version())
 	}
 
 	return request, err
