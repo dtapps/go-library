@@ -40,19 +40,20 @@ type Response struct {
 
 // App 实例
 type App struct {
-	Uri                    string           // 全局请求地址，没有设置url才会使用
-	Error                  error            // 错误
-	httpUri                string           // 请求地址
-	httpMethod             string           // 请求方法
-	httpHeader             Headers          // 请求头
-	httpParams             Params           // 请求参数
-	httpCookie             string           // Cookie
-	responseContent        Response         // 返回内容
-	httpContentType        string           // 请求内容类型
-	debug                  bool             // 是否开启调试模式
-	p12Cert                *tls.Certificate // p12证书内容
-	afferentSdkUserVersion string           // 传入SDk版本
-	config                 struct {
+	Uri                          string           // 全局请求地址，没有设置url才会使用
+	Error                        error            // 错误
+	httpUri                      string           // 请求地址
+	httpMethod                   string           // 请求方法
+	httpHeader                   Headers          // 请求头
+	httpParams                   Params           // 请求参数
+	httpCookie                   string           // Cookie
+	responseContent              Response         // 返回内容
+	httpContentType              string           // 请求内容类型
+	debug                        bool             // 是否开启调试模式
+	p12Cert                      *tls.Certificate // p12证书内容
+	tlsMinVersion, tlsMaxVersion uint16           // TLS版本
+	afferentSdkUserVersion       string           // 传入SDk版本
+	config                       struct {
 		systemOs     string // 系统类型
 		systemKernel string // 系统内核
 		goVersion    string // go版本
@@ -98,6 +99,12 @@ func (app *App) SetHeaders(headers Headers) {
 	for key, value := range headers {
 		app.httpHeader.Set(key, value)
 	}
+}
+
+// SetTlsVersion 设置TLS版本
+func (app *App) SetTlsVersion(minVersion, maxVersion uint16) {
+	app.tlsMinVersion = minVersion
+	app.tlsMaxVersion = maxVersion
 }
 
 // SetAuthToken 设置身份验证令牌
@@ -206,13 +213,26 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	// 创建 http 客户端
 	client := &http.Client{}
 
+	transportStatus := false
+	transport := &http.Transport{}
+	transportTls := &tls.Config{}
+
 	if app.p12Cert != nil {
-		transport := &http.Transport{
-			TLSClientConfig: &tls.Config{
-				Certificates: []tls.Certificate{*app.p12Cert},
-			},
-			DisableCompression: true,
-		}
+		transportStatus = true
+		// 配置
+		transportTls.Certificates = []tls.Certificate{*app.p12Cert}
+		transport.DisableCompression = true
+	}
+
+	if app.tlsMinVersion != 0 && app.tlsMaxVersion != 0 {
+		transportStatus = true
+		// 配置
+		transportTls.MinVersion = app.tlsMinVersion
+		transportTls.MaxVersion = app.tlsMaxVersion
+	}
+
+	if transportStatus {
+		transport.TLSClientConfig = transportTls
 		client = &http.Client{
 			Transport: transport,
 		}

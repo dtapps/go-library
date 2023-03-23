@@ -1,3 +1,8 @@
+## v1.0.101
+
+- update [goip](utils%2Fgoip)
+- update [gorequest](utils%2Fgorequest)
+
 ## v1.0.100
 
 - update [gojobs](utils%2Fgojobs)

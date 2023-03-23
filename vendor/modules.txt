@@ -24,7 +24,7 @@ github.com/baidubce/bce-sdk-go/util/log
 github.com/basgys/goxml2json
 # github.com/bitly/go-simplejson v0.5.0
 ## explicit
-# github.com/bytedance/sonic v1.8.5
+# github.com/bytedance/sonic v1.8.6
 ## explicit; go 1.15
 github.com/bytedance/sonic
 github.com/bytedance/sonic/ast
@@ -154,7 +154,7 @@ github.com/leodido/go-urn
 github.com/lib/pq
 github.com/lib/pq/oid
 github.com/lib/pq/scram
-# github.com/mattn/go-isatty v0.0.17
+# github.com/mattn/go-isatty v0.0.18
 ## explicit; go 1.15
 github.com/mattn/go-isatty
 # github.com/mattn/go-sqlite3 v2.0.3+incompatible
