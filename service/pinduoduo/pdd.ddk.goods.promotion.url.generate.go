@@ -2,6 +2,7 @@ package pinduoduo
 
 import (
 	"context"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
