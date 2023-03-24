@@ -1,3 +1,7 @@
+## v1.0.105
+
+- update [wechatopen](service%2Fwechatopen)
+
 ## v1.0.102
 
 - update [json](utils%2Fgojson%2Fjson)

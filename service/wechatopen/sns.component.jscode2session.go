@@ -62,6 +62,7 @@ func (c *Client) SnsComponentJsCode2session(ctx context.Context, jsCode string, 
 }
 
 type UserInfo struct {
+	SessionKey    string `json:"session_key"`
 	EncryptedData string `json:"encrypted_data"`
 	Iv            string `json:"iv"`
 }
@@ -122,6 +123,38 @@ func (r *SnsComponentJsCode2sessionResult) UserInfo(param UserInfo) *UserInfoRes
 	return newUserInfoResult(response, err)
 }
 
+// DecryptionUserInfo 解密用户信息
+func DecryptionUserInfo(param UserInfo) *UserInfoResult {
+	var response UserInfoResponse
+	aesKey, err := base64.StdEncoding.DecodeString(param.SessionKey)
+	if err != nil {
+		return newUserInfoResult(response, err)
+	}
+	cipherText, err := base64.StdEncoding.DecodeString(param.EncryptedData)
+	if err != nil {
+		return newUserInfoResult(response, err)
+	}
+	ivBytes, err := base64.StdEncoding.DecodeString(param.Iv)
+	if err != nil {
+		return newUserInfoResult(response, err)
+	}
+	block, err := aes.NewCipher(aesKey)
+	if err != nil {
+		return newUserInfoResult(response, err)
+	}
+	mode := cipher.NewCBCDecrypter(block, ivBytes)
+	mode.CryptBlocks(cipherText, cipherText)
+	cipherText, err = pkcs7Unpaid(cipherText, block.BlockSize())
+	if err != nil {
+		return newUserInfoResult(response, err)
+	}
+	err = gojson.Unmarshal(cipherText, &response)
+	if err != nil {
+		return newUserInfoResult(response, err)
+	}
+	return newUserInfoResult(response, err)
+}
+
 func (u *UserInfoResponse) UserInfoAvatarUrlReal() string {
 	return UserInfoAvatarUrlReal(u.AvatarUrl)
 }
@@ -131,6 +164,26 @@ func UserInfoAvatarUrlReal(avatarUrl string) string {
 }
 
 func (r *SnsComponentJsCode2sessionResult) pkcs7Unpaid(data []byte, blockSize int) ([]byte, error) {
+	if blockSize <= 0 {
+		return nil, errors.New("invalid block size")
+	}
+	if len(data)%blockSize != 0 || len(data) == 0 {
+		return nil, errors.New("invalid PKCS7 data")
+	}
+	c := data[len(data)-1]
+	n := int(c)
+	if n == 0 || n > len(data) {
+		return nil, errors.New("invalid padding on input")
+	}
+	for i := 0; i < n; i++ {
+		if data[len(data)-n+i] != c {
+			return nil, errors.New("invalid padding on input")
+		}
+	}
+	return data[:len(data)-n], nil
+}
+
+func pkcs7Unpaid(data []byte, blockSize int) ([]byte, error) {
 	if blockSize <= 0 {
 		return nil, errors.New("invalid block size")
 	}
