@@ -1,6 +1,6 @@
 package gojson
 
-import "encoding/json"
+import "github.com/dtapps/go-library/utils/gojson/json"
 
 func Encode(v interface{}) (string, error) {
 	bytes, err := json.Marshal(v)

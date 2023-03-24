@@ -1,7 +1,7 @@
 # github.com/MercuryEngineering/CookieMonster v0.0.0-20180304172713-1584578b3403
 ## explicit
 github.com/MercuryEngineering/CookieMonster
-# github.com/aliyun/aliyun-oss-go-sdk v2.2.6+incompatible
+# github.com/aliyun/aliyun-oss-go-sdk v2.2.7+incompatible
 ## explicit
 github.com/aliyun/aliyun-oss-go-sdk/oss
 # github.com/allegro/bigcache/v3 v3.1.0

@@ -1,3 +1,7 @@
+## v1.0.102
+
+- update [json](utils%2Fgojson%2Fjson)
+
 ## v1.0.101
 
 - update [goip](utils%2Fgoip)
