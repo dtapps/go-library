@@ -2,8 +2,8 @@ package wechatqy
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -35,6 +35,6 @@ func (c *Client) CgiBinGetToken(ctx context.Context, notMustParams ...gorequest.
 	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/cgi-bin/gettoken?corpid=%s&corpsecret=%s", c.GetAppId(), c.GetSecret()), params, http.MethodGet)
 	// 定义
 	var response CgiBinGetTokenResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newCgiBinGetTokenResult(response, request.ResponseBody, request, err)
 }

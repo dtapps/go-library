@@ -1,8 +1,8 @@
 package gitee
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 	"time"
@@ -59,6 +59,6 @@ func (c *Client) ApiV5User(accessToken string) *ApiV5UserResult {
 	request, err := c.request(apiUrl+fmt.Sprintf("/api/v5/user?access_token=%s", accessToken), params, http.MethodGet)
 	// 定义
 	var response ApiV5UserResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newApiV5UserResult(response, request.ResponseBody, request, err)
 }

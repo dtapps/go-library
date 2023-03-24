@@ -1,8 +1,8 @@
 package gitee
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -31,6 +31,6 @@ func (c *Client) OauthToken(code string) *OauthTokenResult {
 	request, err := c.request(apiUrl+fmt.Sprintf("/oauth/token?grant_type=authorization_code&code=%s&client_id=%s&redirect_uri=%s&client_secret=%s", code, c.config.ClientID, c.config.RedirectUri, c.config.ClientSecret), params, http.MethodPost)
 	// 定义
 	var response OauthTokenResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newOauthTokenResult(response, request.ResponseBody, request, err)
 }

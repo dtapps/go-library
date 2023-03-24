@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"crypto/md5"
 	"encoding/hex"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"io"
 	"sort"
 	"strconv"
@@ -40,7 +40,7 @@ func (c *Client) getString(i interface{}) string {
 	case bool:
 		return strconv.FormatBool(v)
 	default:
-		marshal, _ := json.Marshal(v)
+		marshal, _ := gojson.Marshal(v)
 		return string(marshal)
 	}
 }

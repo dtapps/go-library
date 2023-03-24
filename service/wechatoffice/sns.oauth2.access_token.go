@@ -2,8 +2,8 @@ package wechatoffice
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -34,6 +34,6 @@ func (c *Client) SnsOauth2AccessToken(ctx context.Context, code string) *SnsOaut
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code", c.GetAppId(), c.GetAppSecret(), code), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response SnsOauth2AccessTokenResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newSnsOauth2AccessTokenResult(response, request.ResponseBody, request, err)
 }

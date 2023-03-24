@@ -2,8 +2,8 @@ package wechatoffice
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -45,6 +45,6 @@ func (c *Client) CgiBinUserInfo(ctx context.Context, openid string) *CgiBinUserI
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN", c.getAccessToken(ctx), openid), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response CgiBinUserInfoResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newCgiBinUserInfoResult(response, request.ResponseBody, request, err)
 }

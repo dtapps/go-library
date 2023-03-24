@@ -6,10 +6,10 @@ import (
 	"compress/gzip"
 	"context"
 	"crypto/tls"
-	"encoding/json"
 	"errors"
 	"fmt"
 	cookiemonster "github.com/MercuryEngineering/CookieMonster"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gostring"
 	"github.com/dtapps/go-library/utils/gotime"
 	"github.com/dtapps/go-library/utils/gotrace_id"
@@ -266,7 +266,7 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	var reqBody io.Reader
 
 	if httpResponse.RequestMethod == http.MethodPost && app.httpContentType == httpParamsModeJson {
-		jsonStr, err := json.Marshal(httpResponse.RequestParams)
+		jsonStr, err := gojson.Marshal(httpResponse.RequestParams)
 		if err != nil {
 			app.Error = errors.New(fmt.Sprintf("解析出错 %s", err))
 			return httpResponse, app.Error

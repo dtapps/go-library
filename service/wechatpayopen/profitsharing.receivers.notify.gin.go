@@ -2,7 +2,7 @@ package wechatpayopen
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/gin-gonic/gin"
 )
 
@@ -34,7 +34,7 @@ func (c *Client) ProfitSharingReceiversNotifyGin(ctx context.Context, ginCtx *gi
 		return validateJson, response, gcm, err
 	}
 
-	err = json.Unmarshal(gcm, &response)
+	err = gojson.Unmarshal(gcm, &response)
 
 	return validateJson, response, gcm, err
 }

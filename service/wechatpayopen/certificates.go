@@ -2,7 +2,7 @@ package wechatpayopen
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 	"time"
@@ -43,6 +43,6 @@ func (c *Client) Certificates(ctx context.Context) *CertificatesResult {
 	}
 	// 定义
 	var response CertificatesResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newCertificatesResult(response, request.ResponseBody, request, err)
 }

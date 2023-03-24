@@ -2,7 +2,7 @@ package eastiot
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -32,6 +32,6 @@ func (c *Client) IotApiRechargeSim(ctx context.Context, notMustParams ...goreque
 	request, err := c.request(ctx, apiUrl+"/Api/IotApi/rechargeSim", params, http.MethodPost)
 	// 定义
 	var response IotApiRechargeSimResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newIotApiRechargeSimResult(response, request.ResponseBody, request, err)
 }

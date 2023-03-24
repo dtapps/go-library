@@ -2,7 +2,7 @@ package nldyp
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -36,6 +36,6 @@ func (c *Client) PartnerCommonGetSurplusMoney(ctx context.Context, notMustParams
 	request, err := c.request(ctx, apiUrl+"/partner/common/GetSurplusMoney", params)
 	// 定义
 	var response PartnerCommonGetSurplusMoneyResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newPartnerCommonGetSurplusMoneyResult(response, request.ResponseBody, request, err)
 }

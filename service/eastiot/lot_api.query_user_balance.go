@@ -2,7 +2,7 @@ package eastiot
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -33,6 +33,6 @@ func (c *Client) IotApiQueryUserBalance(ctx context.Context) *IotApiQueryUserBal
 	request, err := c.request(ctx, apiUrl+"/Api/IotApi/queryUserBalance", map[string]interface{}{}, http.MethodPost)
 	// 定义
 	var response IotApiQueryUserBalanceResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newIotApiQueryUserBalanceResult(response, request.ResponseBody, request, err)
 }

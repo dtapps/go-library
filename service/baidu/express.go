@@ -1,7 +1,7 @@
 package baidu
 
 import (
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -28,6 +28,6 @@ func (c *Client) Express() *ExpressResult {
 	request, err := c.request("https://m.baidu.com/s?word=快递查询&ts={$ts}&t_kt=0&ie=utf-8&rsv_iqid=&rsv_t=&sa=&rsv_pq=&rsv_sug4=&tj=1&inputT={$input}&sugid=&ss=", params, http.MethodPost)
 	// 定义
 	var response ExpressResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newExpressResult(response, request.ResponseBody, request, err)
 }

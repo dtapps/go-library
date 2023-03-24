@@ -2,7 +2,7 @@ package wikeyun
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -54,6 +54,6 @@ func (c *Client) RestRechargeMobileInfo(ctx context.Context, orderNumber string)
 	request, err := c.request(ctx, apiUrl+"/rest/Recharge/mobileInfo", params)
 	// 定义
 	var response RestRechargeMobileInfoResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newRestRechargeMobileInfoResult(response, request.ResponseBody, request, err)
 }

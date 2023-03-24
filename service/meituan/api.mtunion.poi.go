@@ -2,7 +2,7 @@ package meituan
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"github.com/dtapps/go-library/utils/gotime"
 	"net/http"
@@ -58,6 +58,6 @@ func (c *Client) ApiMtUnionPoi(ctx context.Context, notMustParams ...gorequest.P
 	request, err := c.request(ctx, apiUrl+"/api/getqualityscorebysid", params, http.MethodGet)
 	// 定义
 	var response ApiMtUnionPoiResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newApiMtUnionPoiResult(response, request.ResponseBody, request, err)
 }

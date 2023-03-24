@@ -3,10 +3,10 @@ package golog
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
 	"github.com/dtapps/go-library/utils/dorm"
 	"github.com/dtapps/go-library/utils/goip"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"github.com/dtapps/go-library/utils/gotime"
 	"github.com/dtapps/go-library/utils/gotrace_id"
@@ -115,7 +115,7 @@ func (w bodyLogWriter) WriteString(s string) (int, error) {
 }
 
 func (c *GinClient) jsonUnmarshal(data string) (result interface{}) {
-	_ = json.Unmarshal([]byte(data), &result)
+	_ = gojson.Unmarshal([]byte(data), &result)
 	return
 }
 
@@ -155,7 +155,7 @@ func (c *GinClient) Middleware() gin.HandlerFunc {
 
 			// 判断是否有内容
 			if len(data) > 0 {
-				err := json.Unmarshal(data, &jsonBody)
+				err := gojson.Unmarshal(data, &jsonBody)
 				if err != nil {
 					dataJson = false
 				}

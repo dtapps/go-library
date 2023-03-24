@@ -2,7 +2,7 @@ package wechatpayopen
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -32,6 +32,6 @@ func (c *Client) PayPartnerTransactionsOutTradeNoOutTradeNoClosePost(ctx context
 	}
 	// 错误
 	var apiError ApiError
-	err = json.Unmarshal(request.ResponseBody, &apiError)
+	err = gojson.Unmarshal(request.ResponseBody, &apiError)
 	return newPayPartnerTransactionsOutTradeNoOutTradeNoClosePostResult(request.ResponseBody, request, err, apiError)
 }

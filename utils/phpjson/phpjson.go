@@ -1,14 +1,14 @@
 package phpjson
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"reflect"
 	"strings"
 )
 
 func Encode(v interface{}) (string, error) {
-	bytes, err := json.Marshal(v)
+	bytes, err := gojson.Marshal(v)
 	if err != nil {
 		return "", err
 	}
@@ -16,7 +16,7 @@ func Encode(v interface{}) (string, error) {
 }
 
 func MarshalToString(msg interface{}) (string, error) {
-	j, e := json.Marshal(msg)
+	j, e := gojson.Marshal(msg)
 	if e != nil {
 		return "", e
 	}

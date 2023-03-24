@@ -2,8 +2,8 @@ package wechatunion
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -35,6 +35,6 @@ func (c *Client) PromotionDel(ctx context.Context, promotionSourcePid, promotion
 	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/promoter/promotion/del?access_token%s", c.getAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response PromotionDelResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newPromotionDelResult(response, request.ResponseBody, request, err)
 }

@@ -2,7 +2,7 @@ package jd
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -131,7 +131,7 @@ func (c *Client) UnionOpenGoodsJIngFenQuery(ctx context.Context, notMustParams .
 	// 定义
 	var responce UnionOpenGoodsJIngFenQueryResultResponse
 	var result UnionOpenGoodsJIngFenQueryQueryResult
-	err = json.Unmarshal(request.ResponseBody, &responce)
-	err = json.Unmarshal([]byte(responce.JdUnionOpenGoodsJingfenQueryResponce.QueryResult), &result)
+	err = gojson.Unmarshal(request.ResponseBody, &responce)
+	err = gojson.Unmarshal([]byte(responce.JdUnionOpenGoodsJingfenQueryResponce.QueryResult), &result)
 	return newUnionOpenGoodsJIngFenQueryResult(responce, result, request.ResponseBody, request, err)
 }

@@ -2,7 +2,7 @@ package pintoto
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -38,6 +38,6 @@ func (c *Client) GetShowDate(ctx context.Context, cityId, filmId int) *GetShowDa
 	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-show-date", params)
 	// 定义
 	var response GetShowDateResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newGetShowDateResult(response, request.ResponseBody, request, err)
 }

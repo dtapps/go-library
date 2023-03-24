@@ -2,7 +2,7 @@ package wechatpayopen
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 	"time"
@@ -76,9 +76,9 @@ func (c *Client) RefundDomesticRefundsPost(ctx context.Context, outRefundNo stri
 	}
 	// 定义
 	var response RefundDomesticRefundsPostResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	// 错误
 	var apiError ApiError
-	err = json.Unmarshal(request.ResponseBody, &apiError)
+	err = gojson.Unmarshal(request.ResponseBody, &apiError)
 	return newRefundDomesticRefundsPostResult(response, request.ResponseBody, request, err, apiError)
 }

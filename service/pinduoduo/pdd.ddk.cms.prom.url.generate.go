@@ -2,7 +2,7 @@ package pinduoduo
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -71,8 +71,8 @@ func (c *Client) CmsPromUrlGenerate(ctx context.Context, notMustParams ...Params
 	request, err := c.request(ctx, params)
 	// 定义
 	var response CmsPromUrlGenerateResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	var responseError CmsPromUrlGenerateError
-	err = json.Unmarshal(request.ResponseBody, &responseError)
+	err = gojson.Unmarshal(request.ResponseBody, &responseError)
 	return newCmsPromUrlGenerateResult(response, request.ResponseBody, request, err, responseError)
 }

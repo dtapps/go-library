@@ -1,7 +1,7 @@
 package leshuazf
 
 import (
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -50,6 +50,6 @@ func (c *Client) DataBankBranch2(notMustParams ...gorequest.Params) *DataBankBra
 	request, err := c.request("/data/bankbranch2", params, http.MethodPost)
 	// 定义
 	var response DataBankBranch2Response
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newDataBankBranch2Result(response, request.ResponseBody, request, err)
 }

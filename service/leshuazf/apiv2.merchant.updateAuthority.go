@@ -1,7 +1,7 @@
 package leshuazf
 
 import (
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -29,6 +29,6 @@ func (c *Client) ApiV2MerchantUpdateAuthority(notMustParams ...gorequest.Params)
 	request, err := c.request("/apiv2/merchant/updateAuthority", params, http.MethodPost)
 	// 定义
 	var response ApiV2MerchantUpdateAuthorityResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newApiV2MerchantUpdateAuthorityResult(response, request.ResponseBody, request, err)
 }

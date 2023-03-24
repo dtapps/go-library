@@ -2,8 +2,8 @@ package dingtalk
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 	"time"
@@ -36,6 +36,6 @@ func (c *Client) RobotSend(ctx context.Context, notMustParams ...gorequest.Param
 	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/robot/send?access_token=%s&timestamp=%d&sign=%s", c.GetAccessToken(), timestamp, c.sign(timestamp)), params, http.MethodPost)
 	// 定义
 	var response RobotSendResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newRobotSendResult(response, request.ResponseBody, request, err)
 }

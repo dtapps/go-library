@@ -2,7 +2,7 @@ package kashangwl
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -34,6 +34,6 @@ func (c *Client) ApiCustomer(ctx context.Context) *ApiCustomerResult {
 	request, err := c.request(ctx, apiUrl+"/api/customer", map[string]interface{}{})
 	// 定义
 	var response ApiCustomerResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newApiCustomerResult(response, request.ResponseBody, request, err)
 }

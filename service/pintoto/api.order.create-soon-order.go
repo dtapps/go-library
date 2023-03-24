@@ -2,7 +2,7 @@ package pintoto
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -46,15 +46,15 @@ func newApiOrderCreateSoonOrderResult(result ApiOrderCreateSoonOrderResponse, bo
 func (c *Client) ApiOrderCreateSoonOrder(ctx context.Context, param ApiOrderCreateSoonOrder) *ApiOrderCreateSoonOrderResult {
 	// api params
 	params := map[string]interface{}{}
-	b, _ := json.Marshal(&param)
+	b, _ := gojson.Marshal(&param)
 	var m map[string]interface{}
-	_ = json.Unmarshal(b, &m)
+	_ = gojson.Unmarshal(b, &m)
 	for k, v := range m {
 		params[k] = v
 	}
 	request, err := c.request(ctx, apiUrl+"/api/order/create-soon-order", params)
 	// 定义
 	var response ApiOrderCreateSoonOrderResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newApiOrderCreateSoonOrderResult(response, request.ResponseBody, request, err)
 }

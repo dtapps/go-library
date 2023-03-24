@@ -2,7 +2,7 @@ package wechatpayopen
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/gin-gonic/gin"
 	"time"
 )
@@ -35,7 +35,7 @@ func (c *Client) RefundDomesticRefundsPostNotifyGin(ctx context.Context, ginCtx 
 		return validateJson, response, gcm, err
 	}
 
-	err = json.Unmarshal(gcm, &response)
+	err = gojson.Unmarshal(gcm, &response)
 
 	return validateJson, response, gcm, err
 }

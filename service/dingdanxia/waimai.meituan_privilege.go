@@ -2,7 +2,7 @@ package dingdanxia
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -50,6 +50,6 @@ func (c *Client) WaiMaiMeituanPrivilege(ctx context.Context, sid string, generat
 	request, err := c.request(ctx, apiUrl+"/waimai/meituan_privilege", params, http.MethodPost)
 	// 定义
 	var response WaiMaiMeituanPrivilegeResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newWaiMaiMeituanPrivilegeResult(response, request.ResponseBody, request, err)
 }

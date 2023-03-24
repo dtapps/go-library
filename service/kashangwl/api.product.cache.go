@@ -2,8 +2,8 @@ package kashangwl
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -43,6 +43,6 @@ func (c *Client) ApiProductCache(ctx context.Context, productId int64) *ApiProdu
 	request, err := c.requestCache(ctx, fmt.Sprintf("%s/goods_info", apiUrlCache), params, http.MethodGet)
 	// 定义
 	var response ApiProductCacheResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newApiProductCacheResult(response, request.ResponseBody, request, err)
 }

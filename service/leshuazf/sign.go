@@ -1,8 +1,8 @@
 package leshuazf
 
 import (
-	"encoding/json"
 	"github.com/dtapps/go-library/utils/gobase64"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gomd5"
 	"sort"
 )
@@ -16,6 +16,6 @@ func (c *Client) getSign(params map[string]interface{}) string {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
-	str, _ := json.Marshal(keys) // data字符串值
+	str, _ := gojson.Marshal(keys) // data字符串值
 	return gobase64.Encode(gomd5.ToLower("lepos" + c.GetKeyAgent() + string(str)))
 }

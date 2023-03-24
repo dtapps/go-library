@@ -2,8 +2,8 @@ package wechatopen
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -44,7 +44,7 @@ func (c *Client) CgiBinWxOpenQrCodeJumpAdd(ctx context.Context, notMustParams ..
 	}
 	// 定义
 	var response CgiBinWxOpenQrCodeJumpAddResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	if err != nil {
 		return nil, err
 	}

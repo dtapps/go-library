@@ -2,8 +2,8 @@ package wechatoffice
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -38,6 +38,6 @@ func (c *Client) SnsUserinfo(ctx context.Context, accessToken, openid string) *S
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN", accessToken, openid), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response SnsUserinfoResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newSnsUserinfoResult(response, request.ResponseBody, request, err)
 }

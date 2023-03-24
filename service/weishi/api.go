@@ -2,8 +2,8 @@ package weishi
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"github.com/mvdan/xurls"
 	"regexp"
@@ -1086,6 +1086,6 @@ func (c *Client) Analysis(ctx context.Context, content string) *AnalysisResult {
 
 	// 定义
 	var response AnalysisResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newAnalysisResult(response, request.ResponseBody, request, err)
 }

@@ -2,8 +2,8 @@ package wechatunion
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -30,6 +30,6 @@ func (c *Client) GetCallBackIp(ctx context.Context) *GetCallBackIpResult {
 	request, err := c.request(ctx, fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=%s", c.getAccessToken(ctx)), map[string]interface{}{}, "GET")
 	// 定义
 	var response GetCallBackIpResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newGetCallBackIpResult(response, request.ResponseBody, request, err)
 }

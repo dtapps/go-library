@@ -2,8 +2,8 @@ package feishu
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -34,6 +34,6 @@ func (c *Client) WebhookSend(ctx context.Context, notMustParams ...gorequest.Par
 	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/open-apis/bot/v2/hook/%s", c.GetKey()), params)
 	// 定义
 	var response WebhookSendResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newWebhookSendResult(response, request.ResponseBody, request, err)
 }

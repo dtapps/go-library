@@ -2,7 +2,7 @@ package dingdanxia
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -45,6 +45,6 @@ func (c *Client) TbkActivityinfo(ctx context.Context, notMustParams ...gorequest
 	request, err := c.request(ctx, apiUrl+"/tbk/activityinfo", params, http.MethodPost)
 	// 定义
 	var response TbkActivityinfoResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newTbkActivityinfoResult(response, request.ResponseBody, request, err)
 }

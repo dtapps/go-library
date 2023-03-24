@@ -3,9 +3,9 @@ package wechatminiprogram
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"github.com/dtapps/go-library/utils/gostorage"
 	"net/http"
@@ -38,7 +38,7 @@ func (c *Client) WxaGetWxaCode(ctx context.Context, notMustParams ...gorequest.P
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/getwxacode?access_token=%s", c.getAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response WxaGetWxaCodeResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newWxaGetWxaCodeResult(response, request.ResponseBody, request, err)
 }
 

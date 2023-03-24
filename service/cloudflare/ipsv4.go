@@ -1,7 +1,7 @@
 package cloudflare
 
 import (
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -28,6 +28,6 @@ func (c *Client) IpsV4() *IpsV4Result {
 	request, err := c.request(apiUrl+"/ips-v4", params, http.MethodPost)
 	// 定义
 	var response IpsV4Response
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newIpsV4Result(response, request.ResponseBody, request, err)
 }

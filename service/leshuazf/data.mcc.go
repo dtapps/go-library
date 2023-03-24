@@ -1,7 +1,7 @@
 package leshuazf
 
 import (
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -36,6 +36,6 @@ func (c *Client) DataMcc(notMustParams ...gorequest.Params) *DataMccResult {
 	request, err := c.request("/data/mcc", params, http.MethodPost)
 	// 定义
 	var response DataMccResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newDataMccResult(response, request.ResponseBody, request, err)
 }

@@ -2,7 +2,7 @@ package pinduoduo
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -88,6 +88,6 @@ func (c *Client) GoodsRecommendGet(ctx context.Context, notMustParams ...Params)
 	request, err := c.request(ctx, params)
 	// 定义
 	var response GoodsRecommendGetResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newGoodsRecommendGetResult(response, request.ResponseBody, request, err)
 }

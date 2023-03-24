@@ -2,8 +2,8 @@ package wechatminiprogram
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -44,6 +44,6 @@ func (c *Client) WxaBusinessGetUserPhoneNumber(ctx context.Context, code string)
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/business/getuserphonenumber?access_token=%s", c.getAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response WxaBusinessGetUserPhoneNumberResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newWxaBusinessGetUserPhoneNumberResult(response, request.ResponseBody, request, err)
 }

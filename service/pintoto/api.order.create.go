@@ -2,7 +2,7 @@ package pintoto
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -31,6 +31,6 @@ func (c *Client) ApiOrderCreate(ctx context.Context, notMustParams ...gorequest.
 	request, err := c.request(ctx, apiUrl+"/api/order/create", params)
 	// 定义
 	var response ApiOrderCreateResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newApiOrderCreateResult(response, request.ResponseBody, request, err)
 }

@@ -2,8 +2,8 @@ package wechatopen
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -49,7 +49,7 @@ func (c *Client) WxaGetWxaCodeUnLimit(ctx context.Context, notMustParams ...gore
 	// 判断内容是否为图片
 	if request.HeaderIsImg() {
 	} else {
-		err = json.Unmarshal(request.ResponseBody, &response)
+		err = gojson.Unmarshal(request.ResponseBody, &response)
 		if err != nil {
 			return nil, err
 		}

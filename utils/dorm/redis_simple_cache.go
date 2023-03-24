@@ -2,7 +2,7 @@ package dorm
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"time"
 )
 
@@ -43,7 +43,7 @@ func (c *SimpleCache) GetCache(ctx context.Context, key string) (ret interface{}
 	if c.Serializer == SerializerJson {
 		f := func() string {
 			obj := c.JsonGetter()
-			b, err := json.Marshal(obj)
+			b, err := gojson.Marshal(obj)
 			if err != nil {
 				return ""
 			}

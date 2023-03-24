@@ -1,8 +1,8 @@
 package eastiot
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gomd5"
 	"sort"
 	"strconv"
@@ -31,7 +31,7 @@ func (c *Client) getString(i interface{}) string {
 	case bool:
 		return strconv.FormatBool(v)
 	default:
-		bytes, _ := json.Marshal(v)
+		bytes, _ := gojson.Marshal(v)
 		return string(bytes)
 	}
 }

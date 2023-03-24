@@ -1,7 +1,7 @@
 package leshuazf
 
 import (
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -37,6 +37,6 @@ func (c *Client) DataArea(notMustParams ...gorequest.Params) *DataAreaResult {
 	request, err := c.request("/data/area", params, http.MethodPost)
 	// 定义
 	var response DataAreaResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newDataAreaResult(response, request.ResponseBody, request, err)
 }

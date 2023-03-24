@@ -2,7 +2,7 @@ package alipayopen
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -48,9 +48,9 @@ func (c *Client) AlipaySystemOauthToken(ctx context.Context, grantType, code, re
 	}
 	// 定义
 	var response AlipaySystemOauthTokenResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	// 错误
 	var apiError ApiError
-	err = json.Unmarshal(request.ResponseBody, &apiError)
+	err = gojson.Unmarshal(request.ResponseBody, &apiError)
 	return newAlipaySystemOauthTokenResult(response, request.ResponseBody, request, apiError), err
 }

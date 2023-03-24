@@ -2,7 +2,7 @@ package meituan
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -75,6 +75,6 @@ func (c *Client) ApiOrder(ctx context.Context, notMustParams ...gorequest.Params
 	request, err := c.request(ctx, apiUrl+"/api/order", params, http.MethodGet)
 	// 定义
 	var response ApiOrderResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newApiOrderResult(response, request.ResponseBody, request, err)
 }

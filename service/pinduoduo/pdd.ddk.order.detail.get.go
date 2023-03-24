@@ -2,7 +2,7 @@ package pinduoduo
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -76,6 +76,6 @@ func (c *Client) OrderDetailGet(ctx context.Context, orderSn string) *OrderDetai
 	request, err := c.request(ctx, params)
 	// 定义
 	var response OrderDetailGetResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newOrderDetailGetResult(response, request.ResponseBody, request, err)
 }

@@ -2,7 +2,7 @@ package meituan
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"github.com/dtapps/go-library/utils/gotime"
 	"net/http"
@@ -60,6 +60,6 @@ func (c *Client) ApiOrderList(ctx context.Context, notMustParams ...gorequest.Pa
 	request, err := c.request(ctx, apiUrl+"/api/orderList", params, http.MethodGet)
 	// 定义
 	var response ApiOrderListResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newApiOrderListResult(response, request.ResponseBody, request, err)
 }

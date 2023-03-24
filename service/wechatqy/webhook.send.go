@@ -2,8 +2,8 @@ package wechatqy
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -36,6 +36,6 @@ func (c *Client) WebhookSend(ctx context.Context, notMustParams ...gorequest.Par
 	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/cgi-bin/webhook/send?key=%s&type=%s", c.GetKey(), "text"), params, http.MethodPost)
 	// 定义
 	var response WebhookSendResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newWebhookSendResult(response, request.ResponseBody, request, err)
 }

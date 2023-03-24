@@ -2,7 +2,7 @@ package pinduoduo
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -67,6 +67,6 @@ func (c *PddDdkOauthCmsApi) UrlGenerate(ctx context.Context, notMustParams ...Pa
 	request, err := c.client.request(ctx, params)
 	// 定义
 	var response PddDdkOauthCmsUrlGenerateResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newPddDdkOauthCmsUrlGenerateResult(response, request.ResponseBody, request, err)
 }

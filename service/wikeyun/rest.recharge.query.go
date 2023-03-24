@@ -2,7 +2,7 @@ package wikeyun
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -45,7 +45,7 @@ func (c *Client) RestRechargeQuery(ctx context.Context, orderNumber string) *Res
 	request, err := c.request(ctx, apiUrl+"/rest/Recharge/query", params)
 	// 定义
 	var response RestRechargeQueryResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newRestRechargeQueryResult(response, request.ResponseBody, request, err)
 }
 

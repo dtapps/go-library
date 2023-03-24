@@ -2,7 +2,7 @@ package kashangwl
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -41,6 +41,6 @@ func (c *Client) ApiProductRechargeParams(ctx context.Context, productId int64) 
 	request, err := c.request(ctx, apiUrl+"/api/product/recharge-params", params)
 	// 定义
 	var response ApiProductRechargeParamsResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newApiProductRechargeParamsResult(response, request.ResponseBody, request, err)
 }

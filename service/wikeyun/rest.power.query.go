@@ -2,7 +2,7 @@ package wikeyun
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -46,7 +46,7 @@ func (c *Client) RestPowerQuery(ctx context.Context, orderNumber string) *RestPo
 	request, err := c.request(ctx, apiUrl+"/rest/Power/query", params)
 	// 定义
 	var response RestPowerQueryResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newRestPowerQueryResult(response, request.ResponseBody, request, err)
 }
 

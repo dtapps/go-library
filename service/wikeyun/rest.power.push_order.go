@@ -2,7 +2,7 @@ package wikeyun
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -36,6 +36,6 @@ func (c *Client) RestPowerPushOrder(ctx context.Context, notMustParams ...gorequ
 	request, err := c.request(ctx, apiUrl+"/rest/Power/pushOrder", params)
 	// 定义
 	var response RestPowerPushOrderResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newRestPowerPushOrderResult(response, request.ResponseBody, request, err)
 }

@@ -2,7 +2,7 @@ package pintoto
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -54,6 +54,6 @@ func (c *Client) GetSeat(ctx context.Context, showId string) *GetSeatResult {
 	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-seat", params)
 	// 定义
 	var response GetSeatResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newGetSeatResult(response, request.ResponseBody, request, err)
 }

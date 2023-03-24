@@ -2,6 +2,14 @@ package gojson
 
 import "github.com/dtapps/go-library/utils/gojson/json"
 
+func Marshal(v any) ([]byte, error) {
+	return json.Marshal(v)
+}
+
+func Unmarshal(data []byte, v any) error {
+	return json.Unmarshal(data, v)
+}
+
 func Encode(v interface{}) (string, error) {
 	bytes, err := json.Marshal(v)
 	if err != nil {

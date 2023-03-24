@@ -2,9 +2,9 @@ package gddata
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/baidubce/bce-sdk-go/http"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -37,6 +37,6 @@ func (c *Client) GdpIndex(ctx context.Context, year string) *GdpIndexResult {
 	request, err := c.request(ctx, apiUrl+fmt.Sprintf("MjkwMDBfMDM2MDAwMTc=?token=%s", c.GetToken()), params, http.GET)
 	// 定义
 	var response GdpIndexResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newGdpIndexResult(response, request.ResponseBody, request, err)
 }

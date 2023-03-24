@@ -2,7 +2,7 @@ package taobao
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -36,6 +36,6 @@ func (c *Client) TbkDgNewuserOrderGet(ctx context.Context, notMustParams ...Para
 	request, err := c.request(ctx, params)
 	// 定义
 	var response TbkDgNewuserOrderGetResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newTbkDgNewuserOrderGetResult(response, request.ResponseBody, request, err)
 }

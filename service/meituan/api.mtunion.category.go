@@ -2,7 +2,7 @@ package meituan
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"github.com/dtapps/go-library/utils/gotime"
 	"net/http"
@@ -43,6 +43,6 @@ func (c *Client) ApiMtUnionCategory(ctx context.Context, notMustParams ...gorequ
 	request, err := c.request(ctx, apiUrl+"/api/getqualityscorebysid", params, http.MethodGet)
 	// 定义
 	var response ApiMtUnionCategoryResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newApiMtUnionCategoryResult(response, request.ResponseBody, request, err)
 }

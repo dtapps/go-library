@@ -2,7 +2,7 @@ package wikeyun
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -34,6 +34,6 @@ func (c *Client) RestPowerCancel(ctx context.Context, orderNumber string) *RestP
 	request, err := c.request(ctx, apiUrl+"/rest/Power/cancel", params)
 	// 定义
 	var response RestPowerCancelResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newRestPowerCancelResult(response, request.ResponseBody, request, err)
 }

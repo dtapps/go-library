@@ -2,8 +2,8 @@ package wechatoffice
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -34,6 +34,6 @@ func (c *Client) MessageTemplateSend(ctx context.Context, notMustParams ...goreq
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/message/template/send?access_token=%s", c.getAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response MessageTemplateSendResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newMessageTemplateSendResult(response, request.ResponseBody, request, err)
 }

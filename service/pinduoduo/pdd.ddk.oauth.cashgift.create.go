@@ -2,7 +2,7 @@ package pinduoduo
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -33,6 +33,6 @@ func (c *PddDdkOauthCashGiftApi) Create(ctx context.Context, notMustParams ...Pa
 	request, err := c.client.request(ctx, params)
 	// 定义
 	var response PddDdkOauthCashGiftCreateResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newPddDdkOauthCashGiftCreateResult(response, request.ResponseBody, request, err)
 }

@@ -2,7 +2,7 @@ package dorm
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"time"
 )
 
@@ -62,7 +62,7 @@ func (rc *RedisClientCache) GetString(ctx context.Context, key string) (ret stri
 func (rc *RedisClientCache) GetInterface(ctx context.Context, key string, result interface{}) {
 
 	f := func() string {
-		marshal, _ := json.Marshal(rc.GetterInterface())
+		marshal, _ := gojson.Marshal(rc.GetterInterface())
 		return string(marshal)
 	}
 
@@ -74,7 +74,7 @@ func (rc *RedisClientCache) GetInterface(ctx context.Context, key string, result
 		ret, _ = rc.operation.Get(ctx, key).Result()
 	}
 
-	err = json.Unmarshal([]byte(ret), result)
+	err = gojson.Unmarshal([]byte(ret), result)
 
 	return
 }
@@ -85,12 +85,12 @@ func (rc *RedisClientCache) GetInterfaceKey(ctx context.Context, key string, res
 	if err != nil {
 		return err
 	}
-	err = json.Unmarshal([]byte(ret), result)
+	err = gojson.Unmarshal([]byte(ret), result)
 	return nil
 }
 
 // SetInterfaceKey 设置key值
 func (rc *RedisClientCache) SetInterfaceKey(ctx context.Context, key string, value interface{}) (string, error) {
-	marshal, _ := json.Marshal(value)
+	marshal, _ := gojson.Marshal(value)
 	return rc.operation.Set(ctx, key, marshal, rc.defaultExpiration).Result()
 }

@@ -2,8 +2,8 @@ package wechatqy
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -37,6 +37,6 @@ func (c *Client) CgiBinUserGetUserInfo(ctx context.Context, code, accessToken st
 	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/cgi-bin/user/getuserinfo?access_token=%s&code=%s", accessToken, code), params, http.MethodGet)
 	// 定义
 	var response CgiBinUserGetUserInfoResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newCgiBinUserGetUserInfoResult(response, request.ResponseBody, request, err)
 }

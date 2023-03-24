@@ -2,8 +2,8 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -72,6 +72,6 @@ func (c *Client) PayTransactionsId(ctx context.Context, transactionId string) *P
 	}
 	// 定义
 	var response PayTransactionsIdResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newPayTransactionsIdResult(response, request.ResponseBody, request, err)
 }

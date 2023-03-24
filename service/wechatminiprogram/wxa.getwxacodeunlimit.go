@@ -3,9 +3,9 @@ package wechatminiprogram
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"github.com/dtapps/go-library/utils/gostorage"
 	"net/http"
@@ -38,7 +38,7 @@ func (c *Client) WxaGetWxaCodeUnLimit(ctx context.Context, notMustParams ...gore
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/getwxacodeunlimit?access_token=%s", c.getAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response WxaGetWxaCodeUnLimitResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newWxaGetWxaCodeUnLimitResult(response, request.ResponseBody, request, err)
 }
 

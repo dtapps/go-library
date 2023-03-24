@@ -2,7 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -40,7 +40,7 @@ func (c *Client) CgiBinOpenSameEnTity(ctx context.Context, notMustParams ...gore
 	}
 	// 定义
 	var response CgiBinOpenSameEnTityResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	if err != nil {
 		return nil, err
 	}

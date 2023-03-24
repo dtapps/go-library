@@ -2,7 +2,7 @@ package meituan
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -35,6 +35,6 @@ func (c *Client) ApiGenerateLink(ctx context.Context, notMustParams ...gorequest
 	request, err := c.request(ctx, apiUrl+"/api/generateLink", params, http.MethodGet)
 	// 定义
 	var response ApiGenerateLinkResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newApiGenerateLinkResult(response, request.ResponseBody, request, err)
 }

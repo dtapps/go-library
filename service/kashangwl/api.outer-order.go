@@ -2,7 +2,7 @@ package kashangwl
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -62,7 +62,7 @@ func (c *Client) ApiOuterOrder(ctx context.Context, orderId string) *ApiOuterOrd
 	request, err := c.request(ctx, apiUrl+"/api/outer-order", params)
 	// 定义
 	var response ApiOuterOrderResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newApiOuterOrderResult(response, request.ResponseBody, request, err)
 }
 

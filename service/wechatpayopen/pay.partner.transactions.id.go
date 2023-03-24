@@ -2,8 +2,8 @@ package wechatpayopen
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -76,9 +76,9 @@ func (c *Client) PayPartnerTransactionsId(ctx context.Context, transactionId str
 	}
 	// 定义
 	var response PayPartnerTransactionsIdResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	// 错误
 	var apiError ApiError
-	err = json.Unmarshal(request.ResponseBody, &apiError)
+	err = gojson.Unmarshal(request.ResponseBody, &apiError)
 	return newPayPartnerTransactionsIdResult(response, request.ResponseBody, request, err, apiError)
 }

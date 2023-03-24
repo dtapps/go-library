@@ -5,8 +5,8 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/base64"
-	"encoding/json"
 	"errors"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 	"strings"
@@ -54,7 +54,7 @@ func (c *Client) SnsComponentJsCode2session(ctx context.Context, jsCode string, 
 	}
 	// 定义
 	var response SnsComponentJsCode2sessionResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +115,7 @@ func (r *SnsComponentJsCode2sessionResult) UserInfo(param UserInfo) *UserInfoRes
 	if err != nil {
 		return newUserInfoResult(response, err)
 	}
-	err = json.Unmarshal(cipherText, &response)
+	err = gojson.Unmarshal(cipherText, &response)
 	if err != nil {
 		return newUserInfoResult(response, err)
 	}

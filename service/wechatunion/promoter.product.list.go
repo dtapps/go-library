@@ -2,8 +2,8 @@ package wechatunion
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -147,6 +147,6 @@ func (c *Client) PromoterProductList(ctx context.Context, notMustParams ...goreq
 	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/promoter/product/list?access_token=%s", c.getAccessToken(ctx)), params, http.MethodGet)
 	// 定义
 	var response PromoterProductListResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newPromoterProductListResult(response, request.ResponseBody, request, err)
 }

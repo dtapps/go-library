@@ -3,8 +3,8 @@ package wechatopen
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"github.com/dtapps/go-library/utils/gostorage"
 	"net/http"
@@ -52,7 +52,7 @@ func (c *Client) WxaGetQrcode(ctx context.Context, path string, notMustParams ..
 	// 判断内容是否为图片
 	if request.HeaderIsImg() {
 	} else {
-		err = json.Unmarshal(request.ResponseBody, &response)
+		err = gojson.Unmarshal(request.ResponseBody, &response)
 		if err != nil {
 			return nil, err
 		}

@@ -2,7 +2,7 @@ package wikeyun
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -35,6 +35,6 @@ func (c *Client) RestUserQuery(ctx context.Context) *RestUserQueryResult {
 	request, err := c.request(ctx, apiUrl+"/rest/User/query", map[string]interface{}{})
 	// 定义
 	var response RestUserQueryResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newRestUserQueryResult(response, request.ResponseBody, request, err)
 }

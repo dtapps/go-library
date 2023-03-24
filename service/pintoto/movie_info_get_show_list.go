@@ -2,7 +2,7 @@ package pintoto
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -52,15 +52,15 @@ func newGetShowListResult(result GetShowListResponse, body []byte, http goreques
 func (c *Client) GetShowList(ctx context.Context, param GetShowList) *GetShowListResult {
 	// api params
 	params := map[string]interface{}{}
-	b, _ := json.Marshal(&param)
+	b, _ := gojson.Marshal(&param)
 	var m map[string]interface{}
-	_ = json.Unmarshal(b, &m)
+	_ = gojson.Unmarshal(b, &m)
 	for k, v := range m {
 		params[k] = v
 	}
 	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-show-list", params)
 	// 定义
 	var response GetShowListResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newGetShowListResult(response, request.ResponseBody, request, err)
 }

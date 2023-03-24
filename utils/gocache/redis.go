@@ -2,8 +2,8 @@ package gocache
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/dtapps/go-library/utils/dorm"
+	"github.com/dtapps/go-library/utils/gojson"
 	"time"
 )
 
@@ -36,7 +36,7 @@ func (r *Redis) Set(key string, value interface{}, expiration time.Duration) (st
 // SetInterface 设置一个key的值
 func (r *Redis) SetInterface(key string, value interface{}, expiration time.Duration) (string, error) {
 	r.setLog(key)
-	marshal, _ := json.Marshal(value)
+	marshal, _ := gojson.Marshal(value)
 	return r.Client.GetDb().Set(context.Background(), key, marshal, expiration).Result()
 }
 
@@ -49,7 +49,7 @@ func (r *Redis) SetDefaultExpiration(key string, value interface{}) (string, err
 // SetInterfaceDefaultExpiration 设置一个key的值，使用全局默认过期时间
 func (r *Redis) SetInterfaceDefaultExpiration(key string, value interface{}) (string, error) {
 	r.setLog(key)
-	marshal, _ := json.Marshal(value)
+	marshal, _ := gojson.Marshal(value)
 	return r.Client.GetDb().Set(context.Background(), key, marshal, r.config.DefaultExpiration).Result()
 }
 
@@ -66,7 +66,7 @@ func (r *Redis) GetInterface(key string, result interface{}) error {
 	if err != nil {
 		return err
 	}
-	err = json.Unmarshal([]byte(ret), result)
+	err = gojson.Unmarshal([]byte(ret), result)
 	return nil
 }
 

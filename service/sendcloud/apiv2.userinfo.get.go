@@ -1,7 +1,7 @@
 package sendcloud
 
 import (
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -63,6 +63,6 @@ func (c *Client) ApiV2UserinfoGet() *ApiV2UserinfoGetResult {
 	request, err := c.request(apiUrl+"/apiv2/userinfo/get", params, http.MethodGet)
 	// 定义
 	var response ApiV2UserinfoGetResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newApiV2UserinfoGetResult(response, request.ResponseBody, request, err)
 }

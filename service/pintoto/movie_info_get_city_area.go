@@ -2,7 +2,7 @@ package pintoto
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -39,6 +39,6 @@ func (c *Client) GetCityArea(ctx context.Context, cityId int) *GetCityAreaResult
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-city-area", params)
 	var response GetCityAreaResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newGetCityAreaResult(response, request.ResponseBody, request, err)
 }

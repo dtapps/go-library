@@ -1,7 +1,7 @@
 package gocache
 
 import (
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"time"
 )
 
@@ -54,7 +54,7 @@ func (rc *RedisCache) GetString(key string) (ret string) {
 func (rc *RedisCache) GetInterface(key string, result interface{}) {
 
 	f := func() string {
-		marshal, _ := json.Marshal(rc.GetterInterface())
+		marshal, _ := gojson.Marshal(rc.GetterInterface())
 		return string(marshal)
 	}
 
@@ -66,7 +66,7 @@ func (rc *RedisCache) GetInterface(key string, result interface{}) {
 		ret, _ = rc.operation.Get(key)
 	}
 
-	err = json.Unmarshal([]byte(ret), result)
+	err = gojson.Unmarshal([]byte(ret), result)
 
 	return
 }

@@ -2,7 +2,7 @@ package pinduoduo
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -79,6 +79,6 @@ func (c *Client) OrderListIncrementGet(ctx context.Context, notMustParams ...Par
 	request, err := c.request(ctx, params)
 	// 定义
 	var response OrderListIncrementGetResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newOrderListIncrementGetResult(response, request.ResponseBody, request, err)
 }

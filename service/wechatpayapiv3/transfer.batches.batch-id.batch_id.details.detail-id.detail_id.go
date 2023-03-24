@@ -2,7 +2,7 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 	"time"
@@ -48,6 +48,6 @@ func (c *Client) TransferBatchesBatchIdBatchIdDetailsDetailIdDetailId(ctx contex
 	}
 	// 定义
 	var response TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newTransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult(response, request.ResponseBody, request, err)
 }

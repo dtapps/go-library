@@ -2,8 +2,8 @@ package wechatoffice
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -33,6 +33,6 @@ func (c *Client) CgiBinTicketGetTicket(ctx context.Context, Type string) *CgiBin
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/ticket/getticket?access_token=%s&type=%s", c.getAccessToken(ctx), Type), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response CgiBinTicketGetTicketResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newCgiBinTicketGetTicketResult(response, request.ResponseBody, request, err)
 }

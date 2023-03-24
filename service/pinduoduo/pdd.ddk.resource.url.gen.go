@@ -2,7 +2,7 @@ package pinduoduo
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -60,8 +60,8 @@ func (c *Client) ResourceUrlGen(ctx context.Context, notMustParams ...Params) *R
 	request, err := c.request(ctx, params)
 	// 定义
 	var response ResourceUrlGenResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	var responseError ResourceUrlGenError
-	err = json.Unmarshal(request.ResponseBody, &responseError)
+	err = gojson.Unmarshal(request.ResponseBody, &responseError)
 	return newResourceUrlGenResult(response, request.ResponseBody, request, err, responseError)
 }

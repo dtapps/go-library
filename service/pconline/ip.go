@@ -1,8 +1,8 @@
 package pconline
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"golang.org/x/text/encoding/simplifiedchinese"
 )
@@ -42,6 +42,6 @@ func (c *Client) Ip(ip string) *IpResult {
 	var decodeBytes, _ = simplifiedchinese.GB18030.NewDecoder().Bytes(request.ResponseBody)
 	// 定义
 	var response IpResponse
-	err = json.Unmarshal(decodeBytes, &response)
+	err = gojson.Unmarshal(decodeBytes, &response)
 	return newIpResult(response, request.ResponseBody, request, err)
 }

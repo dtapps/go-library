@@ -2,7 +2,7 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/gin-gonic/gin"
 )
 
@@ -34,7 +34,7 @@ func (c *Client) RefundDomesticRefundsNotifyGin(ctx context.Context, ginCtx *gin
 		return validateJson, response, gcm, err
 	}
 
-	err = json.Unmarshal(gcm, &response)
+	err = gojson.Unmarshal(gcm, &response)
 
 	return validateJson, response, gcm, err
 }

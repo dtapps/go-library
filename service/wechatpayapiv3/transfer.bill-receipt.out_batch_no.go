@@ -2,7 +2,7 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 	"time"
@@ -42,6 +42,6 @@ func (c *Client) TransferBillReceiptOutBatchNo(ctx context.Context, outBatchNo s
 	}
 	// 定义
 	var response TransferBillReceiptOutBatchNoResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newTransferBillReceiptOutBatchNoResult(response, request.ResponseBody, request, err)
 }

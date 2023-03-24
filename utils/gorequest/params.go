@@ -1,7 +1,7 @@
 package gorequest
 
 import (
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gostring"
 	"log"
 )
@@ -46,7 +46,7 @@ func GetParamsString(src interface{}) string {
 	case float32, float64:
 		return gostring.ToString(src)
 	}
-	data, err := json.Marshal(src)
+	data, err := gojson.Marshal(src)
 	if err != nil {
 		log.Fatal(err)
 	}

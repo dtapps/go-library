@@ -2,7 +2,7 @@ package wechatpayopen
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -53,9 +53,9 @@ func (c *Client) ProfitSharingOrdersOutOrderNo(ctx context.Context, transactionI
 	}
 	// 定义
 	var response ProfitSharingOrdersOutOrderNoResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	// 错误
 	var apiError ApiError
-	err = json.Unmarshal(request.ResponseBody, &apiError)
+	err = gojson.Unmarshal(request.ResponseBody, &apiError)
 	return newProfitSharingOrdersOutOrderNoResult(response, request.ResponseBody, request, err, apiError)
 }

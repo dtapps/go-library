@@ -2,8 +2,8 @@ package wechatminiprogram
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -33,6 +33,6 @@ func (c *Client) SubscribeMessageSend(ctx context.Context, notMustParams ...gore
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/message/subscribe/send?access_token=%s", c.getAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response SubscribeMessageSendResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newSubscribeMessageSendResult(response, request.ResponseBody, request, err)
 }

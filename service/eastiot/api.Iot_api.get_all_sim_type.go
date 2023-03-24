@@ -2,7 +2,7 @@ package eastiot
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -35,6 +35,6 @@ func (c *Client) IotApiGetAllSimType(ctx context.Context) *IotApiGetAllSimTypeRe
 	request, err := c.request(ctx, apiUrl+"/Api/IotApi/getAllSimType", map[string]interface{}{}, http.MethodPost)
 	// 定义
 	var response IotApiGetAllSimTypeResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newIotApiGetAllSimTypeResult(response, request.ResponseBody, request, err)
 }

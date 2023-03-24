@@ -2,8 +2,8 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -71,6 +71,6 @@ func (c *Client) RefundDomesticRefundsOutRefundNo(ctx context.Context, outRefund
 	}
 	// 定义
 	var response RefundDomesticRefundsOutRefundNoResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newRefundDomesticRefundsOutRefundNoResult(response, request.ResponseBody, request, err)
 }

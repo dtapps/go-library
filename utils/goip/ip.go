@@ -2,7 +2,7 @@ package goip
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"log"
 	"net"
@@ -69,7 +69,7 @@ func GetOutsideIp(ctx context.Context) string {
 	}
 	// 解析
 	var responseJson respGetOutsideIp
-	err = json.Unmarshal(response.ResponseBody, &responseJson)
+	err = gojson.Unmarshal(response.ResponseBody, &responseJson)
 	if err != nil {
 		log.Printf("[GetOutsideIp]json.Unmarshal：%s\n", err)
 		return "0.0.0.0"

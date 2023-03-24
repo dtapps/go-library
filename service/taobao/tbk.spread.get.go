@@ -2,7 +2,7 @@ package taobao
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -39,6 +39,6 @@ func (c *Client) TbkSpreadGet(ctx context.Context, notMustParams ...Params) *Tbk
 	request, err := c.request(ctx, params)
 	// 定义
 	var response TbkSpreadGetResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newTbkSpreadGetResult(response, request.ResponseBody, request, err)
 }

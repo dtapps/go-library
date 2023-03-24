@@ -5,8 +5,8 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/base64"
-	"encoding/json"
 	"errors"
+	"github.com/dtapps/go-library/utils/gojson"
 )
 
 type UserPhone struct {
@@ -59,7 +59,7 @@ func (c *Client) UserPhone(ctx context.Context, param UserPhone) *UserPhoneResul
 	if err != nil {
 		return newUserPhoneResult(response, err)
 	}
-	err = json.Unmarshal(cipherText, &response)
+	err = gojson.Unmarshal(cipherText, &response)
 	if err != nil {
 		return newUserPhoneResult(response, err)
 	}

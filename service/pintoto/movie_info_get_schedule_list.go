@@ -2,7 +2,7 @@ package pintoto
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -57,6 +57,6 @@ func (c *Client) GetScheduleList(ctx context.Context, cinemaId int) *GetSchedule
 	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-schedule-list", params)
 	// 定义
 	var response GetScheduleListResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newGetScheduleListResult(response, request.ResponseBody, request, err)
 }

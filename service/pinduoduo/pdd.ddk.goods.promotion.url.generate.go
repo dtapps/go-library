@@ -2,7 +2,6 @@ package pinduoduo
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -64,6 +63,6 @@ func (c *Client) GoodsPromotionUrlGenerate(ctx context.Context, notMustParams ..
 	request, err := c.request(ctx, params)
 	// 定义
 	var response GoodsPromotionUrlGenerateResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newGoodsPromotionUrlGenerateResult(response, request.ResponseBody, request, err)
 }

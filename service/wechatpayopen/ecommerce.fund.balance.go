@@ -2,8 +2,8 @@ package wechatpayopen
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -39,6 +39,6 @@ func (c *Client) EcommerceFundBalance(ctx context.Context, accountType string) *
 	}
 	// 定义
 	var response EcommerceFundBalanceResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newEcommerceFundBalanceResult(response, request.ResponseBody, request, err)
 }

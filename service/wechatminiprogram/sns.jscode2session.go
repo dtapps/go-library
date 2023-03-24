@@ -2,8 +2,8 @@ package wechatminiprogram
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -34,6 +34,6 @@ func (c *Client) SnsJsCode2session(ctx context.Context, jsCode string) *SnsJsCod
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", c.GetAppId(), c.GetAppSecret(), jsCode), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response SnsJsCode2sessionResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newSnsJsCode2sessionResult(response, request.ResponseBody, request, err)
 }

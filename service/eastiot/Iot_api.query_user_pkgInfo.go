@@ -2,7 +2,7 @@ package eastiot
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -45,6 +45,6 @@ func (c *Client) IotApiQueryUserPkgInfo(ctx context.Context) *IotApiQueryUserPkg
 	request, err := c.request(ctx, apiUrl+"/Api/IotApi/queryUserPkgInfo", map[string]interface{}{}, http.MethodPost)
 	// 定义
 	var response IotApiQueryUserPkgInfoResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newIotApiQueryUserPkgInfoResult(response, request.ResponseBody, request, err)
 }

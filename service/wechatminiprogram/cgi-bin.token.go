@@ -2,8 +2,8 @@ package wechatminiprogram
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -34,6 +34,6 @@ func (c *Client) CgiBinToken(ctx context.Context) *CgiBinTokenResult {
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", c.GetAppId(), c.GetAppSecret()), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response CgiBinTokenResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newCgiBinTokenResult(response, request.ResponseBody, request, err)
 }

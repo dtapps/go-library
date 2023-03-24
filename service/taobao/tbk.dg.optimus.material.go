@@ -2,7 +2,7 @@ package taobao
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -71,6 +71,6 @@ func (c *Client) TbkDgOptimusMaterial(ctx context.Context, notMustParams ...Para
 	request, err := c.request(ctx, params)
 	// 定义
 	var response TbkDgOptimusMaterialResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newTbkDgOptimusMaterialResult(response, request.ResponseBody, request, err)
 }

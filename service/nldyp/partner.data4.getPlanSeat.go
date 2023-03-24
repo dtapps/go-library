@@ -2,7 +2,7 @@ package nldyp
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -47,6 +47,6 @@ func (c *Client) PartnerData4GetPlanSeat(ctx context.Context, cinemaId int, feat
 	request, err := c.request(ctx, apiUrl+"/partner/data4/getPlanSeat", params)
 	// 定义
 	var response PartnerData4GetPlanSeatResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newPartnerData4GetPlanSeatResult(response, request.ResponseBody, request, err)
 }

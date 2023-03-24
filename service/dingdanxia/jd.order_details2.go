@@ -2,7 +2,7 @@ package dingdanxia
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -16,6 +16,6 @@ func (c *Client) JdOrderDetails2(ctx context.Context, notMustParams ...gorequest
 	request, err := c.request(ctx, apiUrl+"/jd/order_details2", params, http.MethodPost)
 	// 定义
 	var response JdJyOrderDetailsResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newJdJyOrderDetailsResult(response, request.ResponseBody, request, err)
 }

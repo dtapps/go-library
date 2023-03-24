@@ -2,8 +2,8 @@ package wechatunion
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -35,6 +35,6 @@ func (c *Client) PromoterProductCategory(ctx context.Context) *PromoterProductCa
 	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/promoter/product/category?access_token=%s", c.getAccessToken(ctx)), map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response PromoterProductCategoryResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newPromoterProductCategoryResult(response, request.ResponseBody, request, err)
 }

@@ -2,7 +2,7 @@ package pintoto
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -37,6 +37,6 @@ func newGetCityListResult(result GetCityListResponse, body []byte, http goreques
 func (c *Client) GetCityList(ctx context.Context) *GetCityListResult {
 	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-city-list", map[string]interface{}{})
 	var response GetCityListResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newGetCityListResult(response, request.ResponseBody, request, err)
 }

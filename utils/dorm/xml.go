@@ -1,8 +1,8 @@
 package dorm
 
 import (
-	"encoding/json"
 	"github.com/basgys/goxml2json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"strings"
 )
 
@@ -11,7 +11,7 @@ func XmlDecodeNoError(b []byte) map[string]interface{} {
 	xtj := strings.NewReader(string(b))
 	jtx, _ := xml2json.Convert(xtj)
 	var data map[string]interface{}
-	_ = json.Unmarshal(jtx.Bytes(), &data)
+	_ = gojson.Unmarshal(jtx.Bytes(), &data)
 	return data
 }
 

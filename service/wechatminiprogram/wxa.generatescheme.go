@@ -2,8 +2,8 @@ package wechatminiprogram
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -34,6 +34,6 @@ func (c *Client) WxaGenerateScheme(ctx context.Context, notMustParams ...goreque
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/generatescheme?access_token=%s", c.getAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response WxaGenerateSchemeResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newWxaGenerateSchemeResult(response, request.ResponseBody, request, err)
 }

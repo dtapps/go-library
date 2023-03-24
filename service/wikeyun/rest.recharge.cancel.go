@@ -2,7 +2,7 @@ package wikeyun
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -34,6 +34,6 @@ func (c *Client) RestRechargeCancel(ctx context.Context, orderNumber string) *Re
 	request, err := c.request(ctx, apiUrl+"/rest/Recharge/cancel", params)
 	// 定义
 	var response RestRechargeCancelResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newRestRechargeCancelResult(response, request.ResponseBody, request, err)
 }

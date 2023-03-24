@@ -1,7 +1,7 @@
 package taobao
 
 import (
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"net/url"
 	"sort"
 	"strconv"
@@ -77,7 +77,7 @@ func getString(i interface{}) string {
 	case bool:
 		return strconv.FormatBool(v)
 	default:
-		bytes, _ := json.Marshal(v)
+		bytes, _ := gojson.Marshal(v)
 		return string(bytes)
 	}
 }

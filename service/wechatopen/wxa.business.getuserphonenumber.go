@@ -2,8 +2,8 @@ package wechatopen
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -54,7 +54,7 @@ func (c *Client) WxaBusinessGetUserPhoneNumber(ctx context.Context, code string,
 	}
 	// 定义
 	var response WxaBusinessGetUserPhoneNumberResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	if err != nil {
 		return nil, err
 	}

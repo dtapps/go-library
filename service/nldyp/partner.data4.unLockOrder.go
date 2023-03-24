@@ -2,7 +2,7 @@ package nldyp
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -35,6 +35,6 @@ func (c *Client) PartnerData4UnLockOrder(ctx context.Context, notMustParams ...g
 	request, err := c.request(ctx, apiUrl+"/partner/data4/unLockOrder", params)
 	// 定义
 	var response PartnerData4UnLockOrderResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newPartnerData4UnLockOrderResult(response, request.ResponseBody, request, err)
 }

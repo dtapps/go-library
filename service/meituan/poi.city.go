@@ -2,7 +2,7 @@ package meituan
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -34,6 +34,6 @@ func (c *Client) PoiCity(ctx context.Context) *PoiCityResult {
 	request, err := c.request(ctx, apiUrl+"/poi/city", map[string]interface{}{}, http.MethodGet)
 	// 定义
 	var response PoiCityResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newPoiCityResult(response, request.ResponseBody, request, err)
 }

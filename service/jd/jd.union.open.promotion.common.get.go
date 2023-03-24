@@ -2,7 +2,7 @@ package jd
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -45,7 +45,7 @@ func (c *Client) UnionOpenPromotionCommonGet(ctx context.Context, notMustParams 
 	// 定义
 	var responce UnionOpenPromotionCommonGetResultResponse
 	var result UnionOpenPromotionCommonGetGetResult
-	err = json.Unmarshal(request.ResponseBody, &responce)
-	err = json.Unmarshal([]byte(responce.JdUnionOpenPromotionCommonGetResponce.GetResult), &result)
+	err = gojson.Unmarshal(request.ResponseBody, &responce)
+	err = gojson.Unmarshal([]byte(responce.JdUnionOpenPromotionCommonGetResponce.GetResult), &result)
 	return newUnionOpenPromotionCommonGetResult(responce, result, request.ResponseBody, request, err)
 }

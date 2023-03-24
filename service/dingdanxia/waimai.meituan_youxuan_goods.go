@@ -2,7 +2,7 @@ package dingdanxia
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -47,6 +47,6 @@ func (c *Client) WaiMaiMeituanYouxuanGoods(ctx context.Context, notMustParams ..
 	request, err := c.request(ctx, apiUrl+"/waimai/meituan_youxuan_goods", params, http.MethodPost)
 	// 定义
 	var response WaiMaiMeituanYouxuanGoodsResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newWaiMaiMeituanYouxuanGoodsResult(response, request.ResponseBody, request, err)
 }

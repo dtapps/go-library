@@ -2,8 +2,8 @@ package wechatopen
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -40,7 +40,7 @@ func (c *Client) WxaApiWxAembeddedSetAuthorize(ctx context.Context, notMustParam
 	}
 	// 定义
 	var response WxaApiWxAembeddedSetAuthorizeResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	if err != nil {
 		return nil, err
 	}

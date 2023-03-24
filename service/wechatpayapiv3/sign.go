@@ -9,10 +9,10 @@ import (
 	"crypto/sha256"
 	"crypto/x509"
 	"encoding/base64"
-	"encoding/json"
 	"encoding/pem"
 	"errors"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorandom"
 	"net/url"
 	"time"
@@ -56,7 +56,7 @@ func (c *Client) haSha256(str string) []byte {
 func (c *Client) authorization(method string, paramMap map[string]interface{}, rawUrl string) (token string, err error) {
 	var body string
 	if len(paramMap) != 0 {
-		paramJsonBytes, err := json.Marshal(paramMap)
+		paramJsonBytes, err := gojson.Marshal(paramMap)
 		if err != nil {
 			return token, err
 		}

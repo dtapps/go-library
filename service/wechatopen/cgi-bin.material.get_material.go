@@ -3,9 +3,9 @@ package wechatopen
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"github.com/dtapps/go-library/utils/gostorage"
 	"net/http"
@@ -49,7 +49,7 @@ func (c *Client) CgiBinMaterialGetMaterial(ctx context.Context, mediaId string, 
 	// 定义
 	var response CgiBinMaterialGetMaterialResponse
 	// 判断内容是否为图片
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	if err != nil {
 		// 可能是图片
 		return newCgiBinMaterialGetMaterialResult(CgiBinMaterialGetMaterialResponse{}, request.ResponseBody, request), nil

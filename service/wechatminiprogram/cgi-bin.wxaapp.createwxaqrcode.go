@@ -2,8 +2,8 @@ package wechatminiprogram
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -35,6 +35,6 @@ func (c *Client) CgiBinWxaAppCreateWxaQrCode(ctx context.Context, notMustParams 
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/wxaapp/createwxaqrcode?access_token=%s", c.getAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response CgiBinWxaAppCreateWxaQrCodeResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newCgiBinWxaAppCreateWxaQrCodeResult(response, request.ResponseBody, request, err)
 }

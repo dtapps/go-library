@@ -5,8 +5,8 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/base64"
-	"encoding/json"
 	"errors"
+	"github.com/dtapps/go-library/utils/gojson"
 	"strings"
 )
 
@@ -65,7 +65,7 @@ func (c *Client) UserInfo(ctx context.Context, param UserInfo) *UserInfoResult {
 	if err != nil {
 		return newUserInfoResult(response, err)
 	}
-	err = json.Unmarshal(cipherText, &response)
+	err = gojson.Unmarshal(cipherText, &response)
 	if err != nil {
 		return newUserInfoResult(response, err)
 	}

@@ -2,7 +2,7 @@ package pintoto
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -53,6 +53,6 @@ func (c *Client) GetHotList(ctx context.Context, cityId int) *GetHotListResult {
 	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-hot-list", params)
 	// 定义
 	var response GetHotListResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newGetHotListResult(response, request.ResponseBody, request, err)
 }

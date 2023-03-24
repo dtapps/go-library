@@ -2,7 +2,7 @@ package wechatminiprogram
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -45,6 +45,6 @@ func (c *Client) WxaApiFeedbackList(ctx context.Context, notMustParams ...gorequ
 	request, err := c.request(ctx, apiUrl+"/wxaapi/feedback/list", params, http.MethodGet)
 	// 定义
 	var response WxaApiFeedbackListResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newWxaApiFeedbackListResult(response, request.ResponseBody, request, err)
 }

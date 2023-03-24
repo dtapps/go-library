@@ -2,7 +2,7 @@ package pintoto
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -29,6 +29,6 @@ func (c *Client) GetVersion(ctx context.Context) *GetVersionResult {
 	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-version", map[string]interface{}{})
 	// 定义
 	var response GetVersionResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newGetVersionResult(response, request.ResponseBody, request, err)
 }

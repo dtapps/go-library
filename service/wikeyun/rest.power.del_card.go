@@ -2,7 +2,7 @@ package wikeyun
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -35,6 +35,6 @@ func (c *Client) RestPowerDelCard(ctx context.Context, cardId string) *RestPower
 	request, err := c.request(ctx, apiUrl+"/rest/Power/delCard", params)
 	// 定义
 	var response RestPowerDelCardResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newRestPowerDelCardResult(response, request.ResponseBody, request, err)
 }

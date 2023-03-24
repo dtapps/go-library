@@ -2,7 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -48,7 +48,7 @@ func (c *Client) TckWxPayList(ctx context.Context, notMustParams ...gorequest.Pa
 	}
 	// 定义
 	var response TckWxPayListResponse
-	err = json.Unmarshal(request.ResponseBody, &response)
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 	if err != nil {
 		return nil, err
 	}
