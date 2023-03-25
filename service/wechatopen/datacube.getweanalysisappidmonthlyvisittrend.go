@@ -14,6 +14,7 @@ type DataCubeGetWeAnAlySisAppidMonthlyVisitTrendResponse struct {
 		VisitPv         int     `json:"visit_pv"`
 		VisitUv         int     `json:"visit_uv"`
 		VisitUvNew      int     `json:"visit_uv_new"`
+		StayTimeUv      float64 `json:"stay_time_uv"`
 		StayTimeSession float64 `json:"stay_time_session"`
 		VisitDepth      float64 `json:"visit_depth"`
 	} `json:"list"`

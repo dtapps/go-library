@@ -14,6 +14,7 @@ type DataCubeGetWeAnAlySisAppidWeeklyVisitTrendResponse struct {
 		VisitPv         int     `json:"visit_pv"`
 		VisitUv         int     `json:"visit_uv"`
 		VisitUvNew      int     `json:"visit_uv_new"`
+		StayTimeUv      float64 `json:"stay_time_uv"`
 		StayTimeSession float64 `json:"stay_time_session"`
 		VisitDepth      float64 `json:"visit_depth"`
 	} `json:"list"`
@@ -29,7 +30,7 @@ func newDataCubeGetWeAnAlySisAppidWeeklyVisitTrendResult(result DataCubeGetWeAnA
 	return &DataCubeGetWeAnAlySisAppidWeeklyVisitTrendResult{Result: result, Body: body, Http: http}
 }
 
-// DataCubeGetWeAnAlySisAppidWeeklyVisitTrend 获取用户访问小程序数据概况
+// DataCubeGetWeAnAlySisAppidWeeklyVisitTrend 获取用户访问小程序数据周趋势
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/visit-trend/getWeeklyVisitTrend.html
 func (c *Client) DataCubeGetWeAnAlySisAppidWeeklyVisitTrend(ctx context.Context, beginDate, endDate string) (*DataCubeGetWeAnAlySisAppidWeeklyVisitTrendResult, error) {
 	// 检查
