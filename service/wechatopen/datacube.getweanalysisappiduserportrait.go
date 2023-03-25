@@ -11,64 +11,64 @@ type DataCubeGetWeAnAlySisAppidUserPortraitResponse struct {
 	RefDate    string `json:"ref_date"` // 时间范围
 	VisitUvNew struct {
 		Province []struct {
-			Id    int    `json:"id"`
+			Id    int64  `json:"id"`
 			Name  string `json:"name"`
-			Value int    `json:"value"`
+			Value int64  `json:"value"`
 		} `json:"province"` // 分布类型
 		City []struct {
-			Id    int    `json:"id"`
+			Id    int64  `json:"id"`
 			Name  string `json:"name"`
-			Value int    `json:"value"`
+			Value int64  `json:"value"`
 		} `json:"city"` // 省份
 		Genders []struct {
-			Id    int    `json:"id"`
+			Id    int64  `json:"id"`
 			Name  string `json:"name"`
-			Value int    `json:"value"`
+			Value int64  `json:"value"`
 		} `json:"genders"` // 城市
 		Platforms []struct {
-			Id    int    `json:"id"`
+			Id    int64  `json:"id"`
 			Name  string `json:"name"`
-			Value int    `json:"value"`
+			Value int64  `json:"value"`
 		} `json:"platforms"` // 性别
 		Devices []struct {
 			Name  string `json:"name"`
-			Value int    `json:"value"`
+			Value int64  `json:"value"`
 		} `json:"devices"` // 终端类型
 		Ages []struct {
-			Id    int    `json:"id"`
+			Id    int64  `json:"id"`
 			Name  string `json:"name"`
-			Value int    `json:"value"`
+			Value int64  `json:"value"`
 		} `json:"ages"` // 年龄
 	} `json:"visit_uv_new"` // 新用户画像
 	VisitUv struct {
 		Province []struct {
-			Id    int    `json:"id"`
+			Id    int64  `json:"id"`
 			Name  string `json:"name"`
-			Value int    `json:"value"`
+			Value int64  `json:"value"`
 		} `json:"province"` // 分布类型
 		City []struct {
-			Id    int    `json:"id"`
+			Id    int64  `json:"id"`
 			Name  string `json:"name"`
-			Value int    `json:"value"`
+			Value int64  `json:"value"`
 		} `json:"city"` // 省份
 		Genders []struct {
-			Id    int    `json:"id"`
+			Id    int64  `json:"id"`
 			Name  string `json:"name"`
-			Value int    `json:"value"`
+			Value int64  `json:"value"`
 		} `json:"genders"` // 城市
 		Platforms []struct {
-			Id    int    `json:"id"`
+			Id    int64  `json:"id"`
 			Name  string `json:"name"`
-			Value int    `json:"value"`
+			Value int64  `json:"value"`
 		} `json:"platforms"` // 性别
 		Devices []struct {
 			Name  string `json:"name"`
-			Value int    `json:"value"`
+			Value int64  `json:"value"`
 		} `json:"devices"` // 终端类型
 		Ages []struct {
-			Id    int    `json:"id"`
+			Id    int64  `json:"id"`
 			Name  string `json:"name"`
-			Value int    `json:"value"`
+			Value int64  `json:"value"`
 		} `json:"ages"` // 年龄
 	} `json:"visit_uv"` // 活跃用户画像
 }

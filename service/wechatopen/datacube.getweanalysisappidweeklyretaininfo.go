@@ -8,15 +8,15 @@ import (
 )
 
 type DataCubeGetWeAnAlySisAppidWeeklyRetainInfoResponse struct {
-	RefDate    string `json:"ref_date"`
+	RefDate    string `json:"ref_date"` // 日期
 	VisitUvNew []struct {
-		Key   int `json:"key"`
-		Value int `json:"value"`
-	} `json:"visit_uv_new"`
+		Key   int64 `json:"key"`
+		Value int64 `json:"value"`
+	} `json:"visit_uv_new"` // 新增用户留存
 	VisitUv []struct {
-		Key   int `json:"key"`
-		Value int `json:"value"`
-	} `json:"visit_uv"`
+		Key   int64 `json:"key"`
+		Value int64 `json:"value"`
+	} `json:"visit_uv"` // 活跃用户留存
 }
 
 type DataCubeGetWeAnAlySisAppidWeeklyRetainInfoResult struct {

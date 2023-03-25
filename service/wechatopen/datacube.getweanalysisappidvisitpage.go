@@ -8,17 +8,17 @@ import (
 )
 
 type DataCubeGetWeAnAlySisAppidVisitPageResponse struct {
-	RefDate string `json:"ref_date"`
+	RefDate string `json:"ref_date"` // 日期
 	List    []struct {
-		PagePath       string  `json:"page_path"`
-		PageVisitPv    int     `json:"page_visit_pv"`
-		PageVisitUv    int     `json:"page_visit_uv"`
-		PageStaytimePv float64 `json:"page_staytime_pv"`
-		EntrypagePv    int     `json:"entrypage_pv"`
-		ExitpagePv     int     `json:"exitpage_pv"`
-		PageSharePv    int     `json:"page_share_pv"`
-		PageShareUv    int     `json:"page_share_uv"`
-	} `json:"list"`
+		PagePath       string  `json:"page_path"`        // 页面路径
+		PageVisitPv    int64   `json:"page_visit_pv"`    // 访问次数
+		PageVisitUv    int64   `json:"page_visit_uv"`    // 访问人数
+		PageStaytimePv float64 `json:"page_staytime_pv"` // 次均停留时长
+		EntrypagePv    int64   `json:"entrypage_pv"`     // 进入页次数
+		ExitpagePv     int64   `json:"exitpage_pv"`      // 退出页次数
+		PageSharePv    int64   `json:"page_share_pv"`    // 转发次数
+		PageShareUv    int64   `json:"page_share_uv"`    // 转发人数
+	} `json:"list"` // 数据列表
 }
 
 type DataCubeGetWeAnAlySisAppidVisitPageResult struct {

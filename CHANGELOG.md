@@ -1,3 +1,8 @@
+## v1.0.106
+
+- update [wechatopen](service%2Fwechatopen)
+- update [wechatpayopen](service%2Fwechatpayopen)
+
 ## v1.0.105
 
 - update [wechatopen](service%2Fwechatopen)

@@ -9,10 +9,10 @@ import (
 	"crypto/sha256"
 	"crypto/x509"
 	"encoding/base64"
-	"encoding/json"
 	"encoding/pem"
 	"errors"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorandom"
 	"net/url"
 	"time"
@@ -63,7 +63,7 @@ func (c *Client) authorization(method string, paramMap map[string]interface{}, r
 	// 请求报文主体
 	var signBody string
 	if len(paramMap) != 0 {
-		paramJsonBytes, err := json.Marshal(paramMap)
+		paramJsonBytes, err := gojson.Marshal(paramMap)
 		if err != nil {
 			return token, err
 		}
@@ -143,22 +143,4 @@ func (c *Client) getRsa(privateKey []byte) *rsa.PrivateKey {
 	}
 
 	return key
-}
-
-// 通过私钥对字符串以 SHA256WithRSA 算法生成签名信息
-func (c *Client) signSHA256WithRSA(source string, privateKey *rsa.PrivateKey) (signature string, err error) {
-	if privateKey == nil {
-		return "", fmt.Errorf("private key should not be nil")
-	}
-	h := crypto.Hash.New(crypto.SHA256)
-	_, err = h.Write([]byte(source))
-	if err != nil {
-		return "", nil
-	}
-	hashed := h.Sum(nil)
-	signatureByte, err := rsa.SignPKCS1v15(rand.Reader, privateKey, crypto.SHA256, hashed)
-	if err != nil {
-		return "", err
-	}
-	return base64.StdEncoding.EncodeToString(signatureByte), nil
 }

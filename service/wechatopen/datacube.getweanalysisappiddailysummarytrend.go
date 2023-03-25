@@ -9,11 +9,11 @@ import (
 
 type DataCubeGetWeAnAlySisAppidDailySummaryTrendResponse struct {
 	List []struct {
-		RefDate    string `json:"ref_date"`
-		VisitTotal int    `json:"visit_total"`
-		SharePv    int    `json:"share_pv"`
-		ShareUv    int    `json:"share_uv"`
-	} `json:"list"`
+		RefDate    string `json:"ref_date"`    // 日期
+		VisitTotal int64  `json:"visit_total"` // 累计用户数
+		SharePv    int64  `json:"share_pv"`    // 转发次数
+		ShareUv    int64  `json:"share_uv"`    // 转发人数
+	} `json:"list"` // 数据列表
 }
 
 type DataCubeGetWeAnAlySisAppidDailySummaryTrendResult struct {

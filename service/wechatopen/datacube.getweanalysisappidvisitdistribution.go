@@ -12,8 +12,8 @@ type DataCubeGetWeAnAlysIsAppidVisitDistributionResponse struct {
 	List    []struct {
 		Index    string `json:"index"` // 分布类型。枚举值为：access_source_session_cnt（访问来源分布）、access_staytime_info（访问时长分布）、access_depth_info（访问深度的分布 ）
 		ItemList []struct {
-			Key   int `json:"key"`   // 场景 id，定义在各个 index 下不同，具体参见下方表格
-			Value int `json:"value"` // 该场景 id 访问 pv
+			Key   int64 `json:"key"`   // 场景 id，定义在各个 index 下不同，具体参见下方表格
+			Value int64 `json:"value"` // 该场景 id 访问 pv
 		} `json:"item_list"` // 分布数据列表
 	} `json:"list"` // 数据列表
 }
