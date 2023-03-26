@@ -1,3 +1,7 @@
+## v1.0.108
+
+- add [rocron](utils%2Frocron)
+
 ## v1.0.106
 
 - update [wechatopen](service%2Fwechatopen)
