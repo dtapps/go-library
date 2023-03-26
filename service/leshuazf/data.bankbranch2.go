@@ -1,6 +1,7 @@
 package leshuazf
 
 import (
+	"context"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -43,11 +44,11 @@ func newDataBankBranch2Result(result DataBankBranch2Response, body []byte, http 
 
 // DataBankBranch2 代理商通过联行号来查支行信息
 // https://www.yuque.com/leshuazf/doc/dbmxyi#QYl0c
-func (c *Client) DataBankBranch2(notMustParams ...gorequest.Params) *DataBankBranch2Result {
+func (c *Client) DataBankBranch2(ctx context.Context, notMustParams ...gorequest.Params) *DataBankBranch2Result {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request("/data/bankbranch2", params, http.MethodPost)
+	request, err := c.request(ctx, "/data/bankbranch2", params, http.MethodPost)
 	// 定义
 	var response DataBankBranch2Response
 	err = gojson.Unmarshal(request.ResponseBody, &response)

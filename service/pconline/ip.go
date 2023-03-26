@@ -1,6 +1,7 @@
 package pconline
 
 import (
+	"context"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -32,9 +33,10 @@ func newIpResult(result IpResponse, body []byte, http gorequest.Response, err er
 }
 
 // Ip 接口 https://whois.pconline.com.cn/
-func (c *Client) Ip(ip string) *IpResult {
+func (c *Client) Ip(ctx context.Context, ip string) *IpResult { // 参数
+	param := gorequest.NewParams()
 	// 请求
-	request, err := c.request(apiUrl + fmt.Sprintf("/ipJson.jsp?json=true&ip=%s", ip))
+	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/ipJson.jsp?json=true&ip=%s", ip), param)
 	if err != nil {
 		return newIpResult(IpResponse{}, request.ResponseBody, request, err)
 	}

@@ -1,6 +1,7 @@
 package sendcloud
 
 import (
+	"context"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -53,14 +54,14 @@ func newApiV2UserinfoGetResult(result ApiV2UserinfoGetResponse, body []byte, htt
 // ApiV2UserinfoGet 获取单个订单信息。
 // 仅能获取自己购买的订单。
 // http://doc.cqmeihu.cn/sales/ApiV2UserinfoGet-info.html
-func (c *Client) ApiV2UserinfoGet() *ApiV2UserinfoGetResult {
+func (c *Client) ApiV2UserinfoGet(ctx context.Context) *ApiV2UserinfoGetResult {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("apiUser", c.GetApiUser())
 	param.Set("apiKey", c.GetApiKey())
 	params := gorequest.NewParamsWith(param)
 	// 请求
-	request, err := c.request(apiUrl+"/apiv2/userinfo/get", params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/apiv2/userinfo/get", params, http.MethodGet)
 	// 定义
 	var response ApiV2UserinfoGetResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)

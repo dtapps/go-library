@@ -23,6 +23,9 @@
 - add [dingtalk](service%2Fdingtalk)
 - add [dingdanxia](service%2Fdingdanxia)
 - add [alipayopen](service%2Falipayopen)
+- add [leshuazf](service%2Fleshuazf)
+- add [pconline](service%2Fpconline)
+- add [sendcloud](service%2Fsendcloud)
 
 ## v1.0.108
 

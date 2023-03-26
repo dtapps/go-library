@@ -1,6 +1,7 @@
 package leshuazf
 
 import (
+	"context"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -29,11 +30,11 @@ func newDataMccResult(result DataMccResponse, body []byte, http gorequest.Respon
 
 // DataMcc 代理商通过MccCode来查商户类别明细
 // https://www.yuque.com/leshuazf/doc/dbmxyi#jRTHN
-func (c *Client) DataMcc(notMustParams ...gorequest.Params) *DataMccResult {
+func (c *Client) DataMcc(ctx context.Context, notMustParams ...gorequest.Params) *DataMccResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request("/data/mcc", params, http.MethodPost)
+	request, err := c.request(ctx, "/data/mcc", params, http.MethodPost)
 	// 定义
 	var response DataMccResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)

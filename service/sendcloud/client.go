@@ -1,52 +1,35 @@
 package sendcloud
 
 import (
-	"github.com/dtapps/go-library/utils/dorm"
 	"github.com/dtapps/go-library/utils/golog"
 	"github.com/dtapps/go-library/utils/gorequest"
-	"gorm.io/gorm"
 )
 
 type ConfigClient struct {
-	ApiUser      string            // API_USER
-	ApiKey       string            // API_KEY
-	MongoDb      *dorm.MongoClient // 日志数据库
-	PgsqlDb      *gorm.DB          // 日志数据库
-	DatabaseName string            // 库名
+	ApiUser string // API_USER
+	ApiKey  string // API_KEY
 }
 
 type Client struct {
-	client *gorequest.App   // 请求客户端
-	log    *golog.ApiClient // 日志服务
-	config *ConfigClient    // 配置
+	client *gorequest.App // 请求服务
+	config struct {
+		apiUser string // API_USER
+		apiKey  string // API_KEY
+	}
+	log struct {
+		status bool             // 状态
+		client *golog.ApiClient // 日志服务
+	}
 }
 
 func NewClient(config *ConfigClient) (*Client, error) {
 
-	var err error
-	c := &Client{config: config}
+	c := &Client{}
+
+	c.config.apiUser = config.ApiUser
+	c.config.apiKey = config.ApiKey
 
 	c.client = gorequest.NewHttp()
-
-	if c.config.PgsqlDb != nil {
-		c.log, err = golog.NewApiClient(
-			golog.WithGormClient(c.config.PgsqlDb),
-			golog.WithTableName(logTable),
-		)
-		if err != nil {
-			return nil, err
-		}
-	}
-	if c.config.MongoDb != nil {
-		c.log, err = golog.NewApiClient(
-			golog.WithMongoClient(c.config.MongoDb),
-			golog.WithDatabaseName(c.config.DatabaseName),
-			golog.WithCollectionName(logTable),
-		)
-		if err != nil {
-			return nil, err
-		}
-	}
 
 	return c, nil
 }

@@ -1,6 +1,7 @@
 package leshuazf
 
 import (
+	"context"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -30,11 +31,11 @@ func newDataAreaResult(result DataAreaResponse, body []byte, http gorequest.Resp
 
 // DataArea 代理商通过地区信息来查地区详细信息
 // https://www.yuque.com/leshuazf/doc/dbmxyi#YwJl7
-func (c *Client) DataArea(notMustParams ...gorequest.Params) *DataAreaResult {
+func (c *Client) DataArea(ctx context.Context, notMustParams ...gorequest.Params) *DataAreaResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request("/data/area", params, http.MethodPost)
+	request, err := c.request(ctx, "/data/area", params, http.MethodPost)
 	// 定义
 	var response DataAreaResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
