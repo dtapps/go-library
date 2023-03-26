@@ -1,3 +1,29 @@
+## v1.0.109
+
+- update [goip](utils%2Fgoip)
+- update [gojobs](utils%2Fgojobs)
+- add [wikeyun](service%2Fwikeyun)
+- add [wechatunion](service%2Fwechatunion)
+- add [wechatqy](service%2Fwechatqy)
+- add [wechatpayopen](service%2Fwechatpayopen)
+- add [wechatpayapiv3](service%2Fwechatpayapiv3)
+- add [wechatopen](service%2Fwechatopen)
+- add [wechatoffice](service%2Fwechatoffice)
+- add [wechatminiprogram](service%2Fwechatminiprogram)
+- add [taobao](service%2Ftaobao)
+- add [pintoto](service%2Fpintoto)
+- add [pinduoduo](service%2Fpinduoduo)
+- add [nldyp](service%2Fnldyp)
+- add [meituan](service%2Fmeituan)
+- add [kashangwl](service%2Fkashangwl)
+- add [jd](service%2Fjd)
+- add [feishu](service%2Ffeishu)
+- add [ejiaofei](service%2Fejiaofei)
+- add [eastiot](service%2Feastiot)
+- add [dingtalk](service%2Fdingtalk)
+- add [dingdanxia](service%2Fdingdanxia)
+- add [alipayopen](service%2Falipayopen)
+
 ## v1.0.108
 
 - add [rocron](utils%2Frocron)

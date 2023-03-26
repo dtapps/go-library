@@ -131,6 +131,13 @@ func (c *Client) taskFindAll(ctx context.Context, tx *gorm.DB, frequency int64, 
 
 // 查询多任务
 func (c *Client) taskFindAllType(ctx context.Context, tx *gorm.DB, Type string, frequency int64, status string) (results []jobs_gorm_model.Task) {
+	if frequency == 0 {
+		err := tx.Where("type = ?", Type).Where("status = ?", status).Order("id asc").Find(&results).Error
+		if err != nil {
+			c.zapLog.WithTraceId(ctx).Sugar().Errorf("查询多任务：%v", err)
+		}
+		return results
+	}
 	err := tx.Where("type = ?", Type).Where("frequency = ?", frequency).Where("status = ?", status).Order("id asc").Find(&results).Error
 	if err != nil {
 		c.zapLog.WithTraceId(ctx).Sugar().Errorf("查询多任务：%v", err)
@@ -144,8 +151,8 @@ func (c *Client) TaskFindAllIn(ctx context.Context, tx *gorm.DB, frequency int64
 }
 
 // TaskFindAllInType 查询多任务 - 任务运行
-func (c *Client) TaskFindAllInType(ctx context.Context, tx *gorm.DB, Type string, frequency int64) []jobs_gorm_model.Task {
-	return c.taskFindAllType(ctx, tx, Type, frequency, TASK_IN)
+func (c *Client) TaskFindAllInType(ctx context.Context, tx *gorm.DB, Type string) []jobs_gorm_model.Task {
+	return c.taskFindAllType(ctx, tx, Type, 0, TASK_IN)
 }
 
 // TaskFindAllSuccess 查询多任务 - 任务完成
@@ -154,8 +161,8 @@ func (c *Client) TaskFindAllSuccess(ctx context.Context, tx *gorm.DB, frequency 
 }
 
 // TaskFindAllSuccessType 查询多任务 - 任务完成
-func (c *Client) TaskFindAllSuccessType(ctx context.Context, tx *gorm.DB, Type string, frequency int64) []jobs_gorm_model.Task {
-	return c.taskFindAllType(ctx, tx, Type, frequency, TASK_SUCCESS)
+func (c *Client) TaskFindAllSuccessType(ctx context.Context, tx *gorm.DB, Type string) []jobs_gorm_model.Task {
+	return c.taskFindAllType(ctx, tx, Type, 0, TASK_SUCCESS)
 }
 
 // TaskFindAllError 查询多任务 - 任务异常
@@ -164,8 +171,8 @@ func (c *Client) TaskFindAllError(ctx context.Context, tx *gorm.DB, frequency in
 }
 
 // TaskFindAllErrorType 查询多任务 - 任务异常
-func (c *Client) TaskFindAllErrorType(ctx context.Context, tx *gorm.DB, Type string, frequency int64) []jobs_gorm_model.Task {
-	return c.taskFindAllType(ctx, tx, Type, frequency, TASK_ERROR)
+func (c *Client) TaskFindAllErrorType(ctx context.Context, tx *gorm.DB, Type string) []jobs_gorm_model.Task {
+	return c.taskFindAllType(ctx, tx, Type, 0, TASK_ERROR)
 }
 
 // TaskFindAllTimeout 查询多任务 - 任务超时
@@ -174,8 +181,8 @@ func (c *Client) TaskFindAllTimeout(ctx context.Context, tx *gorm.DB, frequency 
 }
 
 // TaskFindAllTimeoutType 查询多任务 - 任务超时
-func (c *Client) TaskFindAllTimeoutType(ctx context.Context, tx *gorm.DB, Type string, frequency int64) []jobs_gorm_model.Task {
-	return c.taskFindAllType(ctx, tx, Type, frequency, TASK_TIMEOUT)
+func (c *Client) TaskFindAllTimeoutType(ctx context.Context, tx *gorm.DB, Type string) []jobs_gorm_model.Task {
+	return c.taskFindAllType(ctx, tx, Type, 0, TASK_TIMEOUT)
 }
 
 // TaskFindAllWait 查询多任务 - 任务等待
@@ -184,8 +191,8 @@ func (c *Client) TaskFindAllWait(ctx context.Context, tx *gorm.DB, frequency int
 }
 
 // TaskFindAllWaitType 查询多任务 - 任务等待
-func (c *Client) TaskFindAllWaitType(ctx context.Context, tx *gorm.DB, Type string, frequency int64) []jobs_gorm_model.Task {
-	return c.taskFindAllType(ctx, tx, Type, frequency, TASK_WAIT)
+func (c *Client) TaskFindAllWaitType(ctx context.Context, tx *gorm.DB, Type string) []jobs_gorm_model.Task {
+	return c.taskFindAllType(ctx, tx, Type, 0, TASK_WAIT)
 }
 
 // StartTask 任务启动
