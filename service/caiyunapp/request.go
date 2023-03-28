@@ -2,7 +2,7 @@ package caiyunapp
 
 import (
 	"context"
-	go_library "github.com/dtapps/go-library"
+	"github.com/dtapps/go-library"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
