@@ -2,6 +2,7 @@
 
 - add [caiyunapp](service%2Fcaiyunapp)
 - add [amap](service%2Famap)
+- add [qq](service%2Fqq)
 
 ## v1.0.109
 
