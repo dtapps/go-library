@@ -19,22 +19,25 @@ type WxaGetUserRiskRankResult struct {
 	Result WxaGetUserRiskRankResponse // 结果
 	Body   []byte                     // 内容
 	Http   gorequest.Response         // 请求
-	Err    error                      // 错误
 }
 
-func newWxaGetUserRiskRankResult(result WxaGetUserRiskRankResponse, body []byte, http gorequest.Response, err error) *WxaGetUserRiskRankResult {
-	return &WxaGetUserRiskRankResult{Result: result, Body: body, Http: http, Err: err}
+func newWxaGetUserRiskRankResult(result WxaGetUserRiskRankResponse, body []byte, http gorequest.Response) *WxaGetUserRiskRankResult {
+	return &WxaGetUserRiskRankResult{Result: result, Body: body, Http: http}
 }
 
 // WxaGetUserRiskRank 获取用户安全等级
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/sec-center/safety-control-capability/getUserRiskRank.html
-func (c *Client) WxaGetUserRiskRank(ctx context.Context, notMustParams ...gorequest.Params) *WxaGetUserRiskRankResult {
+func (c *Client) WxaGetUserRiskRank(ctx context.Context, notMustParams ...gorequest.Params) (*WxaGetUserRiskRankResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("appid", c.GetAuthorizerAppid())
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/getuserriskrank?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	if err != nil {
+		return newWxaGetUserRiskRankResult(WxaGetUserRiskRankResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response WxaGetUserRiskRankResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newWxaGetUserRiskRankResult(response, request.ResponseBody, request, err)
+	return newWxaGetUserRiskRankResult(response, request.ResponseBody, request), err
 }

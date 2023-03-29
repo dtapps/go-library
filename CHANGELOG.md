@@ -1,4 +1,4 @@
-## v1.0.111
+## v1.0.111-v1.0.112
 
 - update [wechatopen](service%2Fwechatopen)
 - update [wechatminiprogram](service%2Fwechatminiprogram)

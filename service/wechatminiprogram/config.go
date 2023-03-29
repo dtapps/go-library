@@ -1,6 +1,9 @@
 package wechatminiprogram
 
-import "github.com/dtapps/go-library/utils/golog"
+import (
+	"github.com/dtapps/go-library/utils/dorm"
+	"github.com/dtapps/go-library/utils/golog"
+)
 
 // ConfigApp 配置
 func (c *Client) ConfigApp(appId, appSecret string) *Client {
@@ -16,4 +19,18 @@ func (c *Client) ConfigApiClientFun(apiClientFun golog.ApiClientFun) {
 		c.log.client = apiClient
 		c.log.status = true
 	}
+}
+
+// ConfigRedisClient 缓存数据库
+func (c *Client) ConfigRedisClient(client *dorm.RedisClient) {
+	c.cache.redisClient = client
+}
+
+// ConfigRedisCachePrefixFunWechatAccessToken 缓存前缀
+func (c *Client) ConfigRedisCachePrefixFunWechatAccessToken(config string) error {
+	c.cache.wechatAccessTokenPrefix = config
+	if c.cache.wechatAccessTokenPrefix == "" {
+		return redisCachePrefixNoConfig
+	}
+	return nil
 }

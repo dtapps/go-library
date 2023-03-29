@@ -36,22 +36,24 @@ type WxaMediaCheckAsyncResult struct {
 	Result WxaMediaCheckAsyncResponse // 结果
 	Body   []byte                     // 内容
 	Http   gorequest.Response         // 请求
-	Err    error                      // 错误
 }
 
-func newWxaMediaCheckAsyncResult(result WxaMediaCheckAsyncResponse, body []byte, http gorequest.Response, err error) *WxaMediaCheckAsyncResult {
-	return &WxaMediaCheckAsyncResult{Result: result, Body: body, Http: http, Err: err}
+func newWxaMediaCheckAsyncResult(result WxaMediaCheckAsyncResponse, body []byte, http gorequest.Response) *WxaMediaCheckAsyncResult {
+	return &WxaMediaCheckAsyncResult{Result: result, Body: body, Http: http}
 }
 
 // WxaMediaCheckAsync 音视频内容安全识别
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/sec-center/sec-check/mediaCheckAsync.html
-func (c *Client) WxaMediaCheckAsync(ctx context.Context, notMustParams ...gorequest.Params) *WxaMediaCheckAsyncResult {
+func (c *Client) WxaMediaCheckAsync(ctx context.Context, notMustParams ...gorequest.Params) (*WxaMediaCheckAsyncResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/media_check_async?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	if err != nil {
+		return newWxaMediaCheckAsyncResult(WxaMediaCheckAsyncResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response WxaMediaCheckAsyncResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newWxaMediaCheckAsyncResult(response, request.ResponseBody, request, err)
+	return newWxaMediaCheckAsyncResult(response, request.ResponseBody, request), err
 }

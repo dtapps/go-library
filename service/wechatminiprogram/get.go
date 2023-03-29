@@ -14,6 +14,9 @@ func (c *Client) GetAppSecret() string {
 }
 
 func (c *Client) getAccessToken(ctx context.Context) string {
+	if c.config.selfAccessToken {
+		return c.config.accessToken
+	}
 	c.config.accessToken = c.GetAccessToken(ctx)
 	return c.config.accessToken
 }
