@@ -1,3 +1,8 @@
+## v1.0.113
+
+- update [golog](utils%2Fgolog)
+- update [gorequest](utils%2Fgorequest)
+
 ## v1.0.111-v1.0.112
 
 - update [wechatopen](service%2Fwechatopen)
