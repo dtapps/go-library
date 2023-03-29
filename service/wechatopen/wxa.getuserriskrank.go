@@ -1,4 +1,4 @@
-package wechatminiprogram
+package wechatopen
 
 import (
 	"context"
@@ -32,7 +32,7 @@ func (c *Client) WxaGetUserRiskRank(ctx context.Context, notMustParams ...gorequ
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/getuserriskrank?access_token=%s", c.getAccessToken(ctx)), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/getuserriskrank?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response WxaGetUserRiskRankResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)

@@ -1,3 +1,8 @@
+## v1.0.111
+
+- update [wechatopen](service%2Fwechatopen)
+- update [wechatminiprogram](service%2Fwechatminiprogram)
+
 ## v1.0.110
 
 - add [caiyunapp](service%2Fcaiyunapp)

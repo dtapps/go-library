@@ -1,4 +1,4 @@
-package wechatminiprogram
+package wechatopen
 
 import (
 	"context"
@@ -44,7 +44,7 @@ func (c *Client) WxaMsgSecCheck(ctx context.Context, notMustParams ...gorequest.
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/msg_sec_check?access_token=%s", c.getAccessToken(ctx)), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/msg_sec_check?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
 	// 定义
 	var response WxaMsgSecCheckResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
