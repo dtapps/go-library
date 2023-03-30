@@ -65,6 +65,7 @@ func (c *GinCustomClient) GinRecord(ginCtx *gin.Context) *GinCustomClientGinReco
 		ipService:  c.ipService,
 		tableName:  c.gormConfig.tableName,
 	}
+	operation.data = new(ginPostgresqlLogCustom)
 	operation.data.LogTime = gotime.Current().Time            //【日志】时间
 	operation.data.TraceId = gotrace_id.GetGinTraceId(ginCtx) // 【系统】跟踪编号
 	if ginCtx.Request.TLS == nil {
