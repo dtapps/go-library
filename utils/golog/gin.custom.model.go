@@ -2,6 +2,7 @@ package golog
 
 import (
 	"context"
+	"fmt"
 	"github.com/dtapps/go-library/utils/dorm"
 	"github.com/dtapps/go-library/utils/goip"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -89,10 +90,10 @@ func (c *GinCustomClient) GinRecord(ginCtx *gin.Context) *GinCustomClientGinReco
 	return operation
 }
 
-func (o *GinCustomClientGinRecordOperation) CustomInfo(customId, customType, customContent string) *GinCustomClientGinRecordOperation {
-	o.data.CustomId = customId           //【日志】自定义编号
-	o.data.CustomType = customType       //【日志】自定义类型
-	o.data.CustomContent = customContent //【日志】自定义内容
+func (o *GinCustomClientGinRecordOperation) CustomInfo(customId any, customType any, customContent any) *GinCustomClientGinRecordOperation {
+	o.data.CustomId = fmt.Sprintf("%s", customId)           //【日志】自定义编号
+	o.data.CustomType = fmt.Sprintf("%s", customType)       //【日志】自定义类型
+	o.data.CustomContent = fmt.Sprintf("%s", customContent) //【日志】自定义内容
 	return o
 }
 
