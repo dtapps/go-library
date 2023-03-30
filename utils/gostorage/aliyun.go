@@ -35,7 +35,19 @@ func NewAliYun(config *AliYunConfig) (*AliYun, error) {
 	app.endpoint = config.Endpoint
 	app.bucketName = config.BucketName
 
+	// 创建链接
 	app.client, app.error = oss.New(app.endpoint, app.accessKeyId, app.accessKeySecret)
+	if app.error != nil {
+		return nil, app.error
+	}
+	// 填写存储空间名称
+	app.bucket, app.error = app.client.Bucket(app.bucketName)
+	if app.error != nil {
+		return nil, app.error
+	}
+
+	// 判断存储空间是否存在
+	_, app.error = app.client.IsBucketExist(app.bucketName)
 	if app.error != nil {
 		return nil, app.error
 	}
