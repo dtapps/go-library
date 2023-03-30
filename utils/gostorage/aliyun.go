@@ -40,7 +40,7 @@ func NewAliYun(config *AliYunConfig) (*AliYun, error) {
 		return nil, app.error
 	}
 
-	return app, errors.New("链接失败")
+	return app, nil
 }
 
 // PutObject 上传文件流
