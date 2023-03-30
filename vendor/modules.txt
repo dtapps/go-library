@@ -54,6 +54,8 @@ github.com/chenzhuoyu/base64x
 # github.com/clbanning/mxj v1.8.4
 ## explicit
 github.com/clbanning/mxj
+# github.com/clbanning/mxj/v2 v2.5.7
+## explicit; go 1.15
 # github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f
 ## explicit
 github.com/dgryski/go-rendezvous

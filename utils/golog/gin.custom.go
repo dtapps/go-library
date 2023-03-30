@@ -28,6 +28,7 @@ type GinCustomClient struct {
 type ConfigGinCustomClient struct {
 	IpService     *goip.Client            // ip服务
 	GormClientFun dorm.GormClientTableFun // 日志配置
+	CurrentIp     string                  // 当前ip
 }
 
 func NewGinCustomClient(config *ConfigGinCustomClient) (*GinCustomClient, error) {
@@ -35,6 +36,8 @@ func NewGinCustomClient(config *ConfigGinCustomClient) (*GinCustomClient, error)
 	var ctx = context.Background()
 
 	c := &GinCustomClient{}
+
+	c.config.systemOutsideIp = config.CurrentIp
 
 	c.config.systemOutsideIp = goip.IsIp(c.config.systemOutsideIp)
 	if c.config.systemOutsideIp == "" {

@@ -1,3 +1,8 @@
+## v1.0.115
+
+- update [golog](utils%2Fgolog)
+- update [gostorage](utils%2Fgostorage)
+
 ## v1.0.114
 
 - update [golog](utils%2Fgolog)
