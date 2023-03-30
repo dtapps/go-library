@@ -28,35 +28,32 @@ type TransfersResult struct {
 	Result TransfersResponse  // 结果
 	Body   []byte             // 内容
 	Http   gorequest.Response // 请求
-	Err    error              // 错误
 }
 
-func newTransfersResult(result TransfersResponse, body []byte, http gorequest.Response, err error) *TransfersResult {
-	return &TransfersResult{Result: result, Body: body, Http: http, Err: err}
+func newTransfersResult(result TransfersResponse, body []byte, http gorequest.Response) *TransfersResult {
+	return &TransfersResult{Result: result, Body: body, Http: http}
 }
 
 // Transfers
 // 付款到零钱 - 付款
 // 需要证书
 // https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_2
-func (c *Client) Transfers(ctx context.Context, partnerTradeNo, openid string, amount int64, desc string) *TransfersResult {
+func (c *Client) Transfers(ctx context.Context, notMustParams ...gorequest.Params) (*TransfersResult, error) {
 	cert, err := c.P12ToPem()
 	// 参数
-	params := NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("mch_appid", c.GetAppId())
 	params.Set("mchid", c.GetMchId())
 	params.Set("nonce_str", gorandom.Alphanumeric(32))
-	params.Set("partner_trade_no", partnerTradeNo)
-	params.Set("openid", openid)
-	params.Set("check_name", "NO_CHECK")
-	params.Set("amount", amount)
-	params.Set("desc", desc)
 	// 签名
 	params.Set("sign", c.getMd5Sign(params))
 	// 	请求
 	request, err := c.request(ctx, apiUrl+"/mmpaymkttransfers/promotion/transfers", params, true, cert)
+	if err != nil {
+		return newTransfersResult(TransfersResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response TransfersResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return newTransfersResult(response, request.ResponseBody, request, err)
+	return newTransfersResult(response, request.ResponseBody, request), err
 }

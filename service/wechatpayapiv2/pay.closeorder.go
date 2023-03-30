@@ -38,7 +38,7 @@ func newPayCloseOrderResult(result PayCloseOrderResponse, body []byte, http gore
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_3
 func (c *Client) PayCloseOrder(ctx context.Context, outTradeNo string) *PayCloseOrderResult {
 	// 参数
-	params := NewParams()
+	params := gorequest.NewParams()
 	params.Set("appid", c.GetAppId())                  // 小程序ID
 	params.Set("mch_id", c.GetMchId())                 // 商户号
 	params.Set("out_trade_no", outTradeNo)             // 商户订单号
