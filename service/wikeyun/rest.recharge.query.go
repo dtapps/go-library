@@ -11,7 +11,7 @@ type RestRechargeQueryResponse struct {
 	Data struct {
 		Id             int    `json:"id,omitempty"`
 		Fanli          string `json:"fanli"`            // 平台返利金额
-		Amount         string `json:"amount"`           // 充值金额
+		Amount         int64  `json:"amount"`           // 充值金额
 		CostPrice      string `json:"cost_price"`       // 充值成本价格
 		Status         int    `json:"status"`           // 订单状态 0 待支付 1 已付 充值中 2充值成功 3充值失败 需要退款 4退款成功 5已超时 6待充值 7 已匹配 8已存单 9 已取消 10返销 11部分到账 12取消中
 		OrderNumber    string `json:"order_number"`     // 平台订单号
