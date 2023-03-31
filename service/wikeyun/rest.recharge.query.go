@@ -11,7 +11,7 @@ type RestRechargeQueryResponse struct {
 	Data struct {
 		Id             int    `json:"id,omitempty"`
 		Fanli          string `json:"fanli"`            // 平台返利金额
-		Amount         int    `json:"amount"`           // 充值金额
+		Amount         string `json:"amount"`           // 充值金额
 		CostPrice      string `json:"cost_price"`       // 充值成本价格
 		Status         int    `json:"status"`           // 订单状态 0 待支付 1 已付 充值中 2充值成功 3充值失败 需要退款 4退款成功 5已超时 6待充值 7 已匹配 8已存单 9 已取消 10返销 11部分到账 12取消中
 		OrderNumber    string `json:"order_number"`     // 平台订单号
@@ -19,7 +19,7 @@ type RestRechargeQueryResponse struct {
 		OrgOrderNumber string `json:"org_order_number"` // 组织订单号
 		StoreId        int    `json:"store_id"`         // 店铺ID
 		Mobile         string `json:"mobile"`           // 充值手机号
-		ArrivedAmount  int64  `json:"arrived_amount"`   // 到账金额
+		ArrivedAmount  string `json:"arrived_amount"`   // 到账金额
 		Reason         string `json:"reason,omitempty"` // 失败原因
 	} `json:"data"`
 	Msg  string `json:"msg"`
@@ -30,26 +30,28 @@ type RestRechargeQueryResult struct {
 	Result RestRechargeQueryResponse // 结果
 	Body   []byte                    // 内容
 	Http   gorequest.Response        // 请求
-	Err    error                     // 错误
 }
 
-func newRestRechargeQueryResult(result RestRechargeQueryResponse, body []byte, http gorequest.Response, err error) *RestRechargeQueryResult {
-	return &RestRechargeQueryResult{Result: result, Body: body, Http: http, Err: err}
+func newRestRechargeQueryResult(result RestRechargeQueryResponse, body []byte, http gorequest.Response) *RestRechargeQueryResult {
+	return &RestRechargeQueryResult{Result: result, Body: body, Http: http}
 }
 
 // RestRechargeQuery 话费订单查询
 // https://open.wikeyun.cn/#/apiDocument/9/document/299
-func (c *Client) RestRechargeQuery(ctx context.Context, orderNumber string) *RestRechargeQueryResult {
+func (c *Client) RestRechargeQuery(ctx context.Context, orderNumber string) (*RestRechargeQueryResult, error) {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("order_number", orderNumber) // 平台订单号
 	params := gorequest.NewParamsWith(param)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/rest/Recharge/query", params)
+	if err != nil {
+		return newRestRechargeQueryResult(RestRechargeQueryResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response RestRechargeQueryResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newRestRechargeQueryResult(response, request.ResponseBody, request, err)
+	return newRestRechargeQueryResult(response, request.ResponseBody, request), err
 }
 
 func (resp RestRechargeQueryResponse) GetStatusDesc(status int) string {
