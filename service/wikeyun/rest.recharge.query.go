@@ -8,19 +8,22 @@ import (
 
 type RestRechargeQueryResponse struct {
 	Code string `json:"code"`
+	Data struct {
+		Id             int    `json:"id,omitempty"`
+		Fanli          string `json:"fanli"`            // 平台返利金额
+		Amount         int    `json:"amount"`           // 充值金额
+		CostPrice      string `json:"cost_price"`       // 充值成本价格
+		Status         int    `json:"status"`           // 订单状态 0 待支付 1 已付 充值中 2充值成功 3充值失败 需要退款 4退款成功 5已超时 6待充值 7 已匹配 8已存单 9 已取消 10返销 11部分到账 12取消中
+		OrderNumber    string `json:"order_number"`     // 平台订单号
+		OrderNo        string `json:"order_no"`         // 第三方单号
+		OrgOrderNumber string `json:"org_order_number"` // 组织订单号
+		StoreId        int    `json:"store_id"`         // 店铺ID
+		Mobile         string `json:"mobile"`           // 充值手机号
+		ArrivedAmount  int64  `json:"arrived_amount"`   // 到账金额
+		Reason         string `json:"reason,omitempty"` // 失败原因
+	} `json:"data"`
 	Msg  string `json:"msg"`
 	Time string `json:"time"`
-	Data struct {
-		Id             uint   `json:"id"`
-		Fanli          string `json:"fanli"`
-		Amount         int64  `json:"amount"`
-		Mobile         string `json:"mobile"`
-		Status         int    `json:"status"`
-		OrderNo        string `json:"order_no"`
-		CostPrice      string `json:"cost_price"`
-		OrderNumber    string `json:"order_number"`
-		OrgOrderNumber string `json:"org_order_number"`
-	} `json:"data"`
 }
 
 type RestRechargeQueryResult struct {
