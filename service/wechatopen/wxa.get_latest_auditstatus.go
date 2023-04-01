@@ -42,7 +42,7 @@ func (c *Client) WxaGetLatestAuditStatus(ctx context.Context, notMustParams ...g
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/get_latest_auditstatus?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/get_latest_auditstatus?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodGet)
 	if err != nil {
 		return nil, err
 	}
