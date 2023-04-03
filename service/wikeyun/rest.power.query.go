@@ -20,7 +20,7 @@ type RestPowerQueryResponse struct {
 		OrderNo        string `json:"order_no"`         // 第三方单号
 		OrgOrderNumber string `json:"org_order_number"` // 组织订单号
 		CardId         string `json:"card_id"`          // 充值卡ID
-		ArrivedAmount  string `json:"arrived_amount"`   // 到账金额
+		ArrivedAmount  int64  `json:"arrived_amount"`   // 到账金额
 		Reason         string `json:"reason,omitempty"` // 失败原因
 	} `json:"data"`
 }
