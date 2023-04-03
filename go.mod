@@ -8,7 +8,7 @@ require (
 	github.com/allegro/bigcache/v3 v3.1.0
 	github.com/baidubce/bce-sdk-go v0.9.146
 	github.com/basgys/goxml2json v1.1.0
-	github.com/bytedance/sonic v1.8.6
+	github.com/bytedance/sonic v1.8.7
 	github.com/gin-gonic/gin v1.9.0
 	github.com/go-co-op/gocron v1.19.0
 	github.com/go-playground/locales v0.14.1
