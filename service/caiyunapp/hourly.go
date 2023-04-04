@@ -123,7 +123,7 @@ func (c *Client) Hourly(ctx context.Context, location string, notMustParams ...g
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, c.getApiUrl()+fmt.Sprintf("/%s/hourly?hourlysteps=1", location), params, http.MethodGet)
+	request, err := c.request(ctx, c.getApiUrl()+fmt.Sprintf("/%s/hourly", location), params, http.MethodGet)
 	if err != nil {
 		return newHourlyResult(HourlyResponse{}, request.ResponseBody, request), err
 	}

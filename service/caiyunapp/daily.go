@@ -251,7 +251,7 @@ func (c *Client) Daily(ctx context.Context, location string, notMustParams ...go
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, c.getApiUrl()+fmt.Sprintf("/%s/daily?dailysteps=1", location), params, http.MethodGet)
+	request, err := c.request(ctx, c.getApiUrl()+fmt.Sprintf("/%s/daily", location), params, http.MethodGet)
 	if err != nil {
 		return newDailyResult(DailyResponse{}, request.ResponseBody, request), err
 	}
