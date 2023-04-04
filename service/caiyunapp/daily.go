@@ -19,6 +19,30 @@ type DailyResponse struct {
 	ServerTime float64   `json:"server_time"`
 	Location   []float64 `json:"location"`
 	Result     struct {
+		Alert struct {
+			Status  string `json:"status"`
+			Content []struct {
+				Pubtimestamp  int       `json:"pubtimestamp"` // 发布时间，单位是 Unix 时间戳
+				AlertID       string    `json:"alertId"`      // 预警 ID
+				Status        string    `json:"status"`       // 预警信息的状态
+				Adcode        string    `json:"adcode"`       // 区域代码
+				Location      string    `json:"location"`     // 位置
+				Province      string    `json:"province"`     // 省
+				City          string    `json:"city"`         // 市
+				County        string    `json:"county"`       // 县
+				Code          string    `json:"code"`         // 预警代码
+				Source        string    `json:"source"`       // 发布单位
+				Title         string    `json:"title"`        // 标题
+				Description   string    `json:"description"`  // 描述
+				RegionID      string    `json:"regionId"`
+				Latlon        []float64 `json:"latlon"`
+				RequestStatus string    `json:"request_status"`
+			} `json:"content"`
+			Adcodes []struct {
+				Adcode int    `json:"adcode"`
+				Name   string `json:"name"`
+			} `json:"adcodes"` // 行政区划层级信息
+		} `json:"alert"` // 预警数据
 		Daily struct {
 			Status string `json:"status"`
 			Astro  []struct {
@@ -206,7 +230,7 @@ type DailyResponse struct {
 					Desc  string `json:"desc"` // 感冒指数自然语言
 				} `json:"coldRisk"`
 			} `json:"life_index"`
-		} `json:"daily"`
+		} `json:"daily"` // 天级别预报
 		Primary float64 `json:"primary"`
 	} `json:"result"`
 }
@@ -223,11 +247,11 @@ func newDailyResult(result DailyResponse, body []byte, http gorequest.Response) 
 
 // Daily 天级别预报
 // https://docs.caiyunapp.com/docs/daily
-func (c *Client) Daily(ctx context.Context, locationLongitude, locationLatitude string, notMustParams ...gorequest.Params) (*DailyResult, error) {
+func (c *Client) Daily(ctx context.Context, location string, notMustParams ...gorequest.Params) (*DailyResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, c.getApiUrl()+fmt.Sprintf("/%s,%s/daily?dailysteps=1", locationLatitude, locationLongitude), params, http.MethodGet)
+	request, err := c.request(ctx, c.getApiUrl()+fmt.Sprintf("/%s/daily?dailysteps=1", location), params, http.MethodGet)
 	if err != nil {
 		return newDailyResult(DailyResponse{}, request.ResponseBody, request), err
 	}
@@ -235,4 +259,20 @@ func (c *Client) Daily(ctx context.Context, locationLongitude, locationLatitude 
 	var response DailyResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newDailyResult(response, request.ResponseBody, request), err
+}
+
+// GetUltravioletDesc 紫外线 https://docs.caiyunapp.com/docs/tables/lifeindex
+func (DailyResult) GetUltravioletDesc(ultraviolet string) string {
+	if ultraviolet <= "1" {
+		return "最弱"
+	} else if ultraviolet <= "2" {
+		return "弱"
+	} else if ultraviolet <= "3" {
+		return "中等"
+	} else if ultraviolet <= "4" {
+		return "强"
+	} else if ultraviolet <= "5" {
+		return "很强"
+	}
+	return "无"
 }

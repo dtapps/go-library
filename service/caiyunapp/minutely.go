@@ -19,6 +19,30 @@ type MinutelyResponse struct {
 	ServerTime float64   `json:"server_time"`
 	Location   []float64 `json:"location"`
 	Result     struct {
+		Alert struct {
+			Status  string `json:"status"`
+			Content []struct {
+				Pubtimestamp  int       `json:"pubtimestamp"` // 发布时间，单位是 Unix 时间戳
+				AlertID       string    `json:"alertId"`      // 预警 ID
+				Status        string    `json:"status"`       // 预警信息的状态
+				Adcode        string    `json:"adcode"`       // 区域代码
+				Location      string    `json:"location"`     // 位置
+				Province      string    `json:"province"`     // 省
+				City          string    `json:"city"`         // 市
+				County        string    `json:"county"`       // 县
+				Code          string    `json:"code"`         // 预警代码
+				Source        string    `json:"source"`       // 发布单位
+				Title         string    `json:"title"`        // 标题
+				Description   string    `json:"description"`  // 描述
+				RegionID      string    `json:"regionId"`
+				Latlon        []float64 `json:"latlon"`
+				RequestStatus string    `json:"request_status"`
+			} `json:"content"`
+			Adcodes []struct {
+				Adcode int    `json:"adcode"`
+				Name   string `json:"name"`
+			} `json:"adcodes"` // 行政区划层级信息
+		} `json:"alert"` // 预警数据
 		Minutely struct {
 			Status          string    `json:"status"`
 			Datasource      string    `json:"datasource"`
@@ -26,7 +50,7 @@ type MinutelyResponse struct {
 			Precipitation   []float64 `json:"precipitation"`
 			Probability     []float64 `json:"probability"`
 			Description     string    `json:"description"`
-		} `json:"minutely"`
+		} `json:"minutely"` // 分钟级预报
 		Primary          float64 `json:"primary"`
 		ForecastKeypoint string  `json:"forecast_keypoint"`
 	} `json:"result"`
@@ -44,11 +68,11 @@ func newMinutelyResult(result MinutelyResponse, body []byte, http gorequest.Resp
 
 // Minutely 分钟级预报
 // https://docs.caiyunapp.com/docs/minutely
-func (c *Client) Minutely(ctx context.Context, locationLongitude, locationLatitude string, notMustParams ...gorequest.Params) (*MinutelyResult, error) {
+func (c *Client) Minutely(ctx context.Context, location string, notMustParams ...gorequest.Params) (*MinutelyResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, c.getApiUrl()+fmt.Sprintf("/%s,%s/minutely", locationLatitude, locationLongitude), params, http.MethodGet)
+	request, err := c.request(ctx, c.getApiUrl()+fmt.Sprintf("/%s/minutely", location), params, http.MethodGet)
 	if err != nil {
 		return newMinutelyResult(MinutelyResponse{}, request.ResponseBody, request), err
 	}
