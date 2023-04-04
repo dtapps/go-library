@@ -88,7 +88,7 @@ func newRealtimeResult(result RealtimeResponse, body []byte, http gorequest.Resp
 
 // Realtime 实况
 // https://docs.caiyunapp.com/docs/realtime
-func (c *Client) Realtime(ctx context.Context, locationLatitude, locationLongitude string, notMustParams ...gorequest.Params) (*RealtimeResult, error) {
+func (c *Client) Realtime(ctx context.Context, locationLongitude, locationLatitude string, notMustParams ...gorequest.Params) (*RealtimeResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

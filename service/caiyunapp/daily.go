@@ -223,7 +223,7 @@ func newDailyResult(result DailyResponse, body []byte, http gorequest.Response) 
 
 // Daily 天级别预报
 // https://docs.caiyunapp.com/docs/daily
-func (c *Client) Daily(ctx context.Context, locationLatitude, locationLongitude string, notMustParams ...gorequest.Params) (*DailyResult, error) {
+func (c *Client) Daily(ctx context.Context, locationLongitude, locationLatitude string, notMustParams ...gorequest.Params) (*DailyResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

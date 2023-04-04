@@ -46,7 +46,7 @@ func newWeatherResult(result WeatherResponse, body []byte, http gorequest.Respon
 
 // Weather 综合
 // https://docs.caiyunapp.com/docs/weather
-func (c *Client) Weather(ctx context.Context, locationLatitude, locationLongitude string, notMustParams ...gorequest.Params) (*WeatherResult, error) {
+func (c *Client) Weather(ctx context.Context, locationLongitude, locationLatitude string, notMustParams ...gorequest.Params) (*WeatherResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

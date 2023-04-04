@@ -95,7 +95,7 @@ func newHourlyResult(result HourlyResponse, body []byte, http gorequest.Response
 
 // Hourly 小时级别预报
 // https://docs.caiyunapp.com/docs/hourly
-func (c *Client) Hourly(ctx context.Context, locationLatitude, locationLongitude string, notMustParams ...gorequest.Params) (*HourlyResult, error) {
+func (c *Client) Hourly(ctx context.Context, locationLongitude, locationLatitude string, notMustParams ...gorequest.Params) (*HourlyResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

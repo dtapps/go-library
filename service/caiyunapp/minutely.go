@@ -44,7 +44,7 @@ func newMinutelyResult(result MinutelyResponse, body []byte, http gorequest.Resp
 
 // Minutely 分钟级预报
 // https://docs.caiyunapp.com/docs/minutely
-func (c *Client) Minutely(ctx context.Context, locationLatitude, locationLongitude string, notMustParams ...gorequest.Params) (*MinutelyResult, error) {
+func (c *Client) Minutely(ctx context.Context, locationLongitude, locationLatitude string, notMustParams ...gorequest.Params) (*MinutelyResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
