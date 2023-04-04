@@ -13,7 +13,7 @@ type redisCachePrefixFun func() (wechatAccessToken, wechatJsapiTicket string)
 
 // ClientConfig 实例配置
 type ClientConfig struct {
-	AppId               string              // 小程序唯一凭证，即 appId
+	AppId               string              `json:"app_id"` // 小程序唯一凭证，即 appId
 	AppSecret           string              // 小程序唯一凭证密钥，即 appSecret
 	RedisClient         *dorm.RedisClient   // 缓存数据库
 	RedisCachePrefixFun redisCachePrefixFun // 缓存前缀

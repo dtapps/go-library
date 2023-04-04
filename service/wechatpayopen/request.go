@@ -20,6 +20,11 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	// 设置请求地址
 	client.SetUri(url)
 
+	client.SetHeader("sp_appid", c.GetSpAppid())
+	client.SetHeader("sp_mch_id", c.GetSpMchId())
+	client.SetHeader("sub_appid", c.GetSubAppid())
+	client.SetHeader("sub_mch_id", c.GetSubMchId())
+
 	// 设置方式
 	client.SetMethod(method)
 

@@ -7,9 +7,9 @@ import (
 
 // ClientConfig 实例配置
 type ClientConfig struct {
-	AppId          string // 小程序或者公众号唯一凭证
+	AppId          string `json:"app_id"` // 小程序或者公众号唯一凭证
 	AppSecret      string // 小程序或者公众号唯一凭证密钥
-	MchId          string // 微信支付的商户id
+	MchId          string `json:"mch_id"` // 微信支付的商户id
 	AesKey         string // 私钥
 	ApiV3          string // API v3密钥
 	MchSslSerialNo string // pem 证书号

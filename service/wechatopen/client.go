@@ -15,8 +15,8 @@ type redisCachePrefixFun func() (componentVerifyTicket, componentAccessToken, au
 
 // ClientConfig 实例配置
 type ClientConfig struct {
-	AuthorizerAppid     string // 授权方 appid
-	ComponentAppId      string // 第三方平台 appid
+	AuthorizerAppid     string `json:"authorizer_appid"` // 授权方 appid
+	ComponentAppId      string `json:"component_app_id"` // 第三方平台 appid
 	ComponentAppSecret  string // 第三方平台 app_secret
 	MessageToken        string
 	MessageKey          string

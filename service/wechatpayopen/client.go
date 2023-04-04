@@ -7,8 +7,8 @@ import (
 
 // ClientConfig 实例配置
 type ClientConfig struct {
-	SpAppid        string // 服务商应用ID
-	SpMchId        string // 服务商户号
+	SpAppid        string `json:"sp_appid"`  // 服务商应用ID
+	SpMchId        string `json:"sp_mch_id"` // 服务商户号
 	ApiV2          string // APIv2密钥
 	ApiV3          string // APIv3密钥
 	SerialNo       string // 序列号
