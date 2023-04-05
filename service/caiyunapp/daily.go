@@ -260,19 +260,3 @@ func (c *Client) Daily(ctx context.Context, location string, notMustParams ...go
 	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newDailyResult(response, request.ResponseBody, request), err
 }
-
-// GetUltravioletDesc 紫外线 https://docs.caiyunapp.com/docs/tables/lifeindex
-func (DailyResult) GetUltravioletDesc(ultraviolet string) string {
-	if ultraviolet <= "1" {
-		return "最弱"
-	} else if ultraviolet <= "2" {
-		return "弱"
-	} else if ultraviolet <= "3" {
-		return "中等"
-	} else if ultraviolet <= "4" {
-		return "强"
-	} else if ultraviolet <= "5" {
-		return "很强"
-	}
-	return "无"
-}
