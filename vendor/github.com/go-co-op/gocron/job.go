@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/robfig/cron/v3"
-	"golang.org/x/sync/singleflight"
 )
 
 // Job struct stores the information necessary to run a Job
@@ -30,7 +29,6 @@ type Job struct {
 	scheduledWeekdays []time.Weekday  // Specific days of the week to start on
 	daysOfTheMonth    []int           // Specific days of the month to run the job
 	tags              []string        // allow the user to tag Jobs with certain labels
-	runCount          int             // number of times the job ran
 	timer             *time.Timer     // handles running tasks at specific time
 	cronSchedule      cron.Schedule   // stores the schedule when a task uses cron
 	runWithDetails    bool            // when true the job is passed as the last arg of the jobFunc
@@ -43,16 +41,20 @@ type random struct {
 }
 
 type jobFunction struct {
-	eventListeners                     // additional functions to allow run 'em during job performing
-	function       any                 // task's function
-	parameters     []any               // task's function parameters
-	parametersLen  int                 // length of the passed parameters
-	name           string              // nolint the function name to run
-	runConfig      runConfig           // configuration for how many times to run the job
-	limiter        *singleflight.Group // limits inflight runs of job to one
-	ctx            context.Context     // for cancellation
-	cancel         context.CancelFunc  // for cancellation
-	runState       *int64              // will be non-zero when jobs are running
+	eventListeners                       // additional functions to allow run 'em during job performing
+	function          any                // task's function
+	parameters        []any              // task's function parameters
+	parametersLen     int                // length of the passed parameters
+	name              string             // nolint the function name to run
+	runConfig         runConfig          // configuration for how many times to run the job
+	singletonQueue    *atomic.Int64      // limits inflight runs of a job to one
+	singletonRunnerOn *atomic.Bool       // whether the runner function for singleton is running
+	ctx               context.Context    // for cancellation
+	cancel            context.CancelFunc // for cancellation
+	isRunning         *atomic.Bool       // whether the job func is currently being run
+	runStartCount     *atomic.Int64      // number of times the job was started
+	runFinishCount    *atomic.Int64      // number of times the job was finished
+	singletonWg       *sync.WaitGroup    // used by singleton runner
 }
 
 type eventListeners struct {
@@ -64,30 +66,22 @@ type jobMutex struct {
 	sync.RWMutex
 }
 
-func (jf *jobFunction) incrementRunState() {
-	if jf.runState != nil {
-		atomic.AddInt64(jf.runState, 1)
-	}
-}
-
-func (jf *jobFunction) decrementRunState() {
-	if jf.runState != nil {
-		atomic.AddInt64(jf.runState, -1)
-	}
-}
-
 func (jf *jobFunction) copy() jobFunction {
 	cp := jobFunction{
-		eventListeners: jf.eventListeners,
-		function:       jf.function,
-		parameters:     nil,
-		parametersLen:  jf.parametersLen,
-		name:           jf.name,
-		runConfig:      jf.runConfig,
-		limiter:        jf.limiter,
-		ctx:            jf.ctx,
-		cancel:         jf.cancel,
-		runState:       jf.runState,
+		eventListeners:    jf.eventListeners,
+		function:          jf.function,
+		parameters:        nil,
+		parametersLen:     jf.parametersLen,
+		name:              jf.name,
+		runConfig:         jf.runConfig,
+		singletonQueue:    jf.singletonQueue,
+		ctx:               jf.ctx,
+		cancel:            jf.cancel,
+		isRunning:         jf.isRunning,
+		runStartCount:     jf.runStartCount,
+		runFinishCount:    jf.runFinishCount,
+		singletonWg:       jf.singletonWg,
+		singletonRunnerOn: jf.singletonRunnerOn,
 	}
 	cp.parameters = append(cp.parameters, jf.parameters...)
 	return cp
@@ -113,7 +107,6 @@ const (
 // newJob creates a new Job with the provided interval
 func newJob(interval int, startImmediately bool, singletonMode bool) *Job {
 	ctx, cancel := context.WithCancel(context.Background())
-	var zero int64
 	job := &Job{
 		mu:       &jobMutex{},
 		interval: interval,
@@ -121,9 +114,12 @@ func newJob(interval int, startImmediately bool, singletonMode bool) *Job {
 		lastRun:  time.Time{},
 		nextRun:  time.Time{},
 		jobFunction: jobFunction{
-			ctx:      ctx,
-			cancel:   cancel,
-			runState: &zero,
+			ctx:               ctx,
+			cancel:            cancel,
+			isRunning:         &atomic.Bool{},
+			runStartCount:     &atomic.Int64{},
+			runFinishCount:    &atomic.Int64{},
+			singletonRunnerOn: &atomic.Bool{},
 		},
 		tags:              []string{},
 		startsImmediately: startImmediately,
@@ -397,7 +393,8 @@ func (j *Job) SingletonMode() {
 	j.mu.Lock()
 	defer j.mu.Unlock()
 	j.runConfig.mode = singletonMode
-	j.jobFunction.limiter = &singleflight.Group{}
+	j.jobFunction.singletonQueue = &atomic.Int64{}
+	j.jobFunction.singletonWg = &sync.WaitGroup{}
 }
 
 // shouldRun evaluates if this job should run again
@@ -405,7 +402,7 @@ func (j *Job) SingletonMode() {
 func (j *Job) shouldRun() bool {
 	j.mu.RLock()
 	defer j.mu.RUnlock()
-	return !j.runConfig.finiteRuns || j.runCount < j.runConfig.maxRuns
+	return !j.runConfig.finiteRuns || j.runStartCount.Load() < int64(j.runConfig.maxRuns)
 }
 
 // LastRun returns the time the job was run last
@@ -432,11 +429,18 @@ func (j *Job) setNextRun(t time.Time) {
 	j.nextRun = t
 }
 
-// RunCount returns the number of time the job ran so far
+// RunCount returns the number of times the job has been started
 func (j *Job) RunCount() int {
 	j.mu.Lock()
 	defer j.mu.Unlock()
-	return j.runCount
+	return int(j.runStartCount.Load())
+}
+
+// FinishedRunCount returns the number of times the job has finished running
+func (j *Job) FinishedRunCount() int {
+	j.mu.Lock()
+	defer j.mu.Unlock()
+	return int(j.runFinishCount.Load())
 }
 
 func (j *Job) stop() {
@@ -452,7 +456,7 @@ func (j *Job) stop() {
 
 // IsRunning reports whether any instances of the job function are currently running
 func (j *Job) IsRunning() bool {
-	return atomic.LoadInt64(j.runState) != 0
+	return j.isRunning.Load()
 }
 
 // you must lock the job before calling copy
@@ -472,7 +476,6 @@ func (j *Job) copy() Job {
 		scheduledWeekdays: j.scheduledWeekdays,
 		daysOfTheMonth:    j.daysOfTheMonth,
 		tags:              j.tags,
-		runCount:          j.runCount,
 		timer:             j.timer,
 		cronSchedule:      j.cronSchedule,
 		runWithDetails:    j.runWithDetails,
