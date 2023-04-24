@@ -1,0 +1,52 @@
+package wnfuwu
+
+import (
+	"context"
+	"github.com/dtapps/go-library/utils/gojson"
+	"github.com/dtapps/go-library/utils/gorequest"
+)
+
+type CheckResponse struct {
+	Errno  int64  `json:"errno"`  // 错误码，0代表成功，非0代表失败
+	Errmsg string `json:"errmsg"` // 错误描述
+	Data   struct {
+		OrderNumber  string  `json:"order_number"`  // 系统定单号
+		OutTradeNum  string  `json:"out_trade_num"` // 商户订单号
+		CreateTime   string  `json:"create_time"`   // 下单时间
+		Mobile       string  `json:"mobile"`        // 手机号
+		ProductId    string  `json:"product_id"`    // 产品ID
+		ChargeAmount float64 `json:"charge_amount"` // 充值成功面额
+		ChargeKami   string  `json:"charge_kami"`   // 卡密流水
+		State        string  `json:"state"`         // 充值状态：-1取消，0充值中 ，1充值成功，2充值失败，3部分成功
+	} `json:"data,omitempty"`
+}
+
+type CheckResult struct {
+	Result CheckResponse      // 结果
+	Body   []byte             // 内容
+	Http   gorequest.Response // 请求
+}
+
+func newCheckResult(result CheckResponse, body []byte, http gorequest.Response) *CheckResult {
+	return &CheckResult{Result: result, Body: body, Http: http}
+}
+
+// Check 自发查询订单状态
+// https://www.showdoc.com.cn/dyr/9227006175502841
+func (c *Client) Check(ctx context.Context, outTradeNums string, notMustParams ...gorequest.Params) (*CheckResult, error) {
+	// 参数
+	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("userid", c.GetUserId())
+	if outTradeNums != "" {
+		params.Set("out_trade_nums", outTradeNums)
+	}
+	// 请求
+	request, err := c.request(ctx, apiUrl+"/index/check", params)
+	if err != nil {
+		return newCheckResult(CheckResponse{}, request.ResponseBody, request), err
+	}
+	// 定义
+	var response CheckResponse
+	err = gojson.Unmarshal(request.ResponseBody, &response)
+	return newCheckResult(response, request.ResponseBody, request), err
+}
