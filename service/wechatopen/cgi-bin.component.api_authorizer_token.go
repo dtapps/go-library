@@ -9,9 +9,9 @@ import (
 )
 
 type CgiBinComponentApiAuthorizerTokenResponse struct {
-	AuthorizerAccessToken  string `json:"authorizer_access_token"`
-	ExpiresIn              int64  `json:"expires_in"`
-	AuthorizerRefreshToken string `json:"authorizer_refresh_token"`
+	AuthorizerAccessToken  string `json:"authorizer_access_token"`  // 授权方令牌
+	ExpiresIn              int64  `json:"expires_in"`               // 有效期，单位：秒
+	AuthorizerRefreshToken string `json:"authorizer_refresh_token"` // 刷新令牌
 }
 
 type CgiBinComponentApiAuthorizerTokenResult struct {

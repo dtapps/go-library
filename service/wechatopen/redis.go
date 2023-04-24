@@ -2,6 +2,8 @@ package wechatopen
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"time"
 )
 
@@ -101,6 +103,9 @@ func (c *Client) MonitorAuthorizerAccessToken(ctx context.Context, authorizerRef
 	}
 	// 重新获取
 	resp, err := c.CgiBinComponentApiAuthorizerToken(ctx, authorizerRefreshToken)
+	if resp.Result.AuthorizerRefreshToken == "" {
+		return authorizerAccessToken, errors.New(fmt.Sprintf("获取失败：%v", err))
+	}
 	return c.SetAuthorizerAccessToken(ctx, resp.Result.AuthorizerAccessToken), err
 }
 
