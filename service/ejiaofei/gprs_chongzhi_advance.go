@@ -11,10 +11,10 @@ import (
 type GprsChOngZhiAdvanceParams struct {
 	OrderID    string `json:"orderid"`    // 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
 	Account    string `json:"account"`    // 充值手机号 需要充值的手机号
-	Gprs       int    `json:"gprs"`       // 充值流量值 单位：MB（具体流量值请咨询商务）
-	Area       int    `json:"area"`       // 充值流量范围 0 全国流量，1 省内流量
-	EffectTime int    `json:"effecttime"` // 生效日期 0 即时生效，1次日生效，2 次月生效
-	Validity   int    `json:"validity"`   // 流量有效期 传入月数，0为当月有效
+	Gprs       int64  `json:"gprs"`       // 充值流量值 单位：MB（具体流量值请咨询商务）
+	Area       int64  `json:"area"`       // 充值流量范围 0 全国流量，1 省内流量
+	EffectTime int64  `json:"effecttime"` // 生效日期 0 即时生效，1次日生效，2 次月生效
+	Validity   int64  `json:"validity"`   // 流量有效期 传入月数，0为当月有效
 	Times      string `json:"times"`      // 时间戳 格式：yyyyMMddhhmmss
 }
 
@@ -24,7 +24,7 @@ type GprsChOngZhiAdvanceResponse struct {
 	OrderID    string   `xml:"orderid"`    // 会员提交订单号
 	PorderID   string   `xml:"Porderid"`   // 平台订单号
 	Account    string   `xml:"account"`    // 充值手机号
-	State      int      `xml:"state"`      // 订单状态
+	State      int64    `xml:"state"`      // 订单状态
 	StartTime  string   `xml:"starttime"`  // 开始时间
 	EndTime    string   `xml:"endtime"`    // 结束时间
 	Error      string   `xml:"error"`      // 错误提示

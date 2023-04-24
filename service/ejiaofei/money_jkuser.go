@@ -11,8 +11,8 @@ import (
 type MoneyJkUserResponse struct {
 	XMLName   xml.Name `xml:"response"`
 	LastMoney float64  `xml:"lastMoney"` // 用户余额
-	Tag       int      `xml:"tag"`       // 用户状态（0正常 1暂停）
-	Error     int      `xml:"error"`     // 错误提示
+	Tag       int64    `xml:"tag"`       // 用户状态（0正常 1暂停）
+	Error     int64    `xml:"error"`     // 错误提示
 }
 
 type MoneyJkUserResult struct {

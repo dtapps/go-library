@@ -14,7 +14,7 @@ type CheckCostResponse struct {
 	OrderID string   `xml:"orderid"` // 用户提交订单号
 	Face    float64  `xml:"face"`    // 官方价格
 	Price   float64  `xml:"price"`   // 用户成本价
-	Error   int      `xml:"error"`   // 错误提示
+	Error   int64    `xml:"error"`   // 错误提示
 }
 
 type CheckCostResult struct {
