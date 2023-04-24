@@ -2,11 +2,11 @@ package wikeyun
 
 import "github.com/dtapps/go-library/utils/golog"
 
-func (c *Client) GetStoreId() int {
+func (c *Client) GetStoreId() int64 {
 	return c.config.storeId
 }
 
-func (c *Client) GetAppKey() int {
+func (c *Client) GetAppKey() int64 {
 	return c.config.appKey
 }
 

@@ -3,7 +3,7 @@ package wikeyun
 import "github.com/dtapps/go-library/utils/golog"
 
 // ConfigApp 配置
-func (c *Client) ConfigApp(storeId, appKey int, appSecret string) *Client {
+func (c *Client) ConfigApp(storeId, appKey int64, appSecret string) *Client {
 	c.config.storeId = storeId
 	c.config.appKey = appKey
 	c.config.appSecret = appSecret

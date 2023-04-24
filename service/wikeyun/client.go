@@ -7,8 +7,8 @@ import (
 
 // ClientConfig 实例配置
 type ClientConfig struct {
-	StoreId   int    // 店铺ID
-	AppKey    int    // key
+	StoreId   int64  // 店铺ID
+	AppKey    int64  // key
 	AppSecret string // secret
 	CurrentIp string // 当前ip
 }
@@ -18,8 +18,8 @@ type Client struct {
 	requestClient *gorequest.App // 请求服务
 	config        struct {
 		clientIp  string // 当前Ip
-		storeId   int    // 店铺ID
-		appKey    int    // key
+		storeId   int64  // 店铺ID
+		appKey    int64  // key
 		appSecret string // secret
 	}
 	log struct {

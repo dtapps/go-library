@@ -11,7 +11,7 @@ import (
 )
 
 type respSign struct {
-	AppKey    int
+	AppKey    int64
 	Timestamp string
 	Client    string
 	V         string
