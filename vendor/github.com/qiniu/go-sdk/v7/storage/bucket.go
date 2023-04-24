@@ -8,14 +8,9 @@ package storage
 import (
 	"context"
 	"encoding/base64"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
-	"net/http"
 	"net/url"
-	"os"
-	"strconv"
 	"strings"
 
 	"github.com/qiniu/go-sdk/v7/auth"
@@ -33,21 +28,11 @@ const (
 // FileInfo 文件基本信息
 type FileInfo struct {
 
-	// 文件的HASH值，使用hash值算法计算。
-	Hash string `json:"hash"`
-
 	// 资源内容的大小，单位：字节。
 	Fsize int64 `json:"fsize"`
 
-	// 上传时间，单位：100纳秒，其值去掉低七位即为Unix时间戳。
-	PutTime int64 `json:"putTime"`
-
-	/**
-	 * 归档/深度归档存储文件的解冻状态，归档/深度归档文件冻结时，不返回该字段。
-	 * 1 表示解冻中
-	 * 2 表示解冻完成
-	 */
-	RestoreStatus int `json:"restoreStatus"`
+	// 文件的HASH值，使用hash值算法计算。
+	Hash string `json:"hash"`
 
 	// 资源的 MIME 类型。
 	MimeType string `json:"mimeType"`
@@ -61,10 +46,15 @@ type FileInfo struct {
 	 */
 	Type int `json:"type"`
 
+	// 上传时间，单位：100纳秒，其值去掉低七位即为Unix时间戳。
+	PutTime int64 `json:"putTime"`
+
 	/**
-	 * 文件上传时设置的endUser
+	 * 归档/深度归档存储文件的解冻状态，归档/深度归档文件冻结时，不返回该字段。
+	 * 1 表示解冻中
+	 * 2 表示解冻完成
 	 */
-	EndUser string `json:"endUser"`
+	RestoreStatus int `json:"restoreStatus"`
 
 	/**
 	 * 文件的存储状态，即禁用状态和启用状态间的的互相转换，请参考：文件状态。
@@ -77,6 +67,11 @@ type FileInfo struct {
 	 * 文件的 md5 值
 	 */
 	Md5 string `json:"md5"`
+
+	/**
+	 * 文件上传时设置的endUser
+	 */
+	EndUser string `json:"endUser"`
 
 	/**
 	 * 文件过期删除日期，int64 类型，Unix 时间戳格式，具体文件过期日期计算参考 生命周期管理。
@@ -157,12 +152,92 @@ func (r *FetchRet) String() string {
 type BatchOpRet struct {
 	Code int `json:"code,omitempty"`
 	Data struct {
-		Hash     string `json:"hash"`
-		Fsize    int64  `json:"fsize"`
-		PutTime  int64  `json:"putTime"`
+		// 资源内容的大小，单位：字节。
+		Fsize int64 `json:"fsize"`
+
+		// 文件的HASH值，使用hash值算法计算。
+		Hash string `json:"hash"`
+
+		// 资源的 MIME 类型。
 		MimeType string `json:"mimeType"`
-		Type     int    `json:"type"`
-		Error    string `json:"error"`
+
+		/**
+		 * 资源的存储类型
+		 * 0 表示标准存储
+		 * 1 表示低频存储
+		 * 2 表示归档存储
+		 * 3 表示深度归档存储
+		 */
+		Type int `json:"type"`
+
+		// 上传时间，单位：100纳秒，其值去掉低七位即为Unix时间戳。
+		PutTime int64 `json:"putTime"`
+
+		/**
+		 * 归档/深度归档存储文件的解冻状态，归档/深度归档文件冻结时，不返回该字段。
+		 * 1 表示解冻中
+		 * 2 表示解冻完成
+		 */
+		RestoreStatus *int `json:"restoreStatus"`
+
+		/**
+		 * 文件的存储状态，即禁用状态和启用状态间的的互相转换，请参考：文件状态。
+		 * 0 表示启用
+		 * 1 表示禁用
+		 */
+		Status *int `json:"status"`
+
+		/**
+		 * 文件的 md5 值
+		 */
+		Md5 string `json:"md5"`
+
+		/**
+		 * 文件上传时设置的endUser
+		 */
+		EndUser string `json:"endUser"`
+
+		/**
+		 * 文件过期删除日期，Unix 时间戳格式，具体文件过期日期计算参考 生命周期管理。
+		 * 文件在设置过期时间后才会返回该字段（通过生命周期规则设置文件过期时间，仅对该功能发布后满足规则条件新上传文件返回该字段；
+		 * 历史文件想要返回该字段需要在功能发布后可通过 修改文件过期删除时间 API 或者 修改文件生命周期 API 指定过期时间；对于已
+		 * 经设置过过期时间的历史文件，到期都会正常过期删除，只是服务端没有该字段返回)
+		 *
+		 * 例如：值为1568736000的时间，表示文件会在2019/9/18当天内删除。
+		 */
+		Expiration *int64 `json:"expiration"`
+
+		/**
+		 * 文件生命周期中转为低频存储的日期，Unix 时间戳格式 ，具体日期计算参考 生命周期管理。
+		 * 文件在设置转低频后才会返回该字段（通过生命周期规则设置文件转低频，仅对该功能发布后满足规则条件新上传文件返回该字段；
+		 * 历史文件想要返回该字段需要在功能发布后可通过 修改文件生命周期 API 指定转低频时间；对于已经设置过转低频时间的历史文
+		 * 件，到期都会正常执行，只是服务端没有该字段返回)
+		 *
+		 * 例如：值为1568736000的时间，表示文件会在2019/9/18当天转为低频存储类型。
+		 */
+		TransitionToIA *int64 `json:"transitionToIA"`
+
+		/**
+		 * 文件生命周期中转为归档存储的日期，Unix 时间戳格式 ，具体日期计算参考 生命周期管理。
+		 * 文件在设置转归档后才会返回该字段（通过生命周期规则设置文件转归档，仅对该功能发布后满足规则条件新上传文件返回该字段；
+		 * 历史文件想要返回该字段需要在功能发布后可通过 修改文件生命周期 API 指定转归档时间；对于已经设置过转归档时间的历史文
+		 * 件，到期都会正常执行，只是服务端没有该字段返回)
+		 *
+		 * 例如：值为1568736000的时间，表示文件会在2019/9/18当天转为归档存储类型。
+		 */
+		TransitionToArchive *int64 `json:"transitionToARCHIVE"`
+
+		/**
+		 * 文件生命周期中转为深度归档存储的日期，Unix 时间戳格式 ，具体日期计算参考 生命周期管理。
+		 * 文件在设置转深度归档后才会返回该字段（通过生命周期规则设置文件转深度归档，仅对该功能发布后满足规则条件新上传文件返回该字段；
+		 * 历史文件想要返回该字段需要在功能发布后可通过 修改文件生命周期 API 指定转深度归档时间；对于已经设置过转深度归档时间的历史文
+		 * 件，到期都会正常执行，只是服务端没有该字段返回)
+		 *
+		 * 例如：值为1568736000的时间，表示文件会在2019/9/18当天转为深度归档存储类型。
+		 */
+		TransitionToDeepArchive *int64 `json:"transitionToDeepArchive"`
+
+		Error string `json:"error"`
 	} `json:"data,omitempty"`
 }
 
@@ -375,20 +450,60 @@ func (m *BucketManager) DeleteAfterDays(bucket, key string, days int) (err error
 }
 
 // Batch 接口提供了资源管理的批量操作，支持 stat，copy，move，delete，chgm，chtype，deleteAfterDays几个接口
-func (m *BucketManager) Batch(operations []string) (batchOpRet []BatchOpRet, err error) {
+// 没有 bucket 参数，会从 operations 中解析出 bucket
+// @param	operations	操作对象列表，操作对象所属的 bucket 可能会不同，但是必须属于同一个区域
+func (m *BucketManager) Batch(operations []string) ([]BatchOpRet, error) {
+	if len(operations) == 0 {
+		return nil, errors.New("operations is empty")
+	}
+
+	bucket := ""
+	for _, operation := range operations {
+		paths := strings.Split(operation, "/")
+		if len(paths) < 3 {
+			continue
+		}
+
+		// 按当前模式，第 3 个 entry 是 bucket 和 key 键值对
+		if b, _, err := decodedEntry(paths[2]); err != nil {
+			continue
+		} else {
+			bucket = b
+			break
+		}
+	}
+	if len(bucket) == 0 {
+		return nil, errors.New("can't get one bucket from operations")
+	}
+
+	return m.BatchWithContext(nil, bucket, operations)
+}
+
+// BatchWithContext 接口提供了资源管理的批量操作，支持 stat，copy，move，delete，chgm，chtype，deleteAfterDays几个接口
+// @param	ctx		context.Context
+// @param	bucket	operations 列表中任意一个操作对象所属的 bucket
+// @param	operations	操作对象列表，操作对象所属的 bucket 可能会不同，但是必须属于同一个区域
+func (m *BucketManager) BatchWithContext(ctx context.Context, bucket string, operations []string) ([]BatchOpRet, error) {
+	host, err := m.RsReqHost(bucket)
+	if err != nil {
+		return nil, err
+	}
+	return m.batchOperation(ctx, host, operations)
+}
+
+func (m *BucketManager) batchOperation(ctx context.Context, reqURL string, operations []string) (batchOpRet []BatchOpRet, err error) {
 	if len(operations) > 1000 {
 		err = errors.New("batch operation count exceeds the limit of 1000")
 		return
 	}
-	scheme := "http://"
-	if m.Cfg.UseHTTPS {
-		scheme = "https://"
-	}
-	reqURL := fmt.Sprintf("%s%s/batch", scheme, m.Cfg.CentralRsHost)
 	params := map[string][]string{
 		"op": operations,
 	}
-	err = m.Client.CredentialedCallWithForm(context.Background(), m.Mac, auth.TokenQiniu, &batchOpRet, "POST", reqURL, nil, params)
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	reqURL = fmt.Sprintf("%s/batch", reqURL)
+	err = m.Client.CredentialedCallWithForm(ctx, m.Mac, auth.TokenQiniu, &batchOpRet, "POST", reqURL, nil, params)
 	return
 }
 
@@ -417,7 +532,7 @@ func (m *BucketManager) RsReqHost(bucket string) (reqHost string, err error) {
 		reqHost = m.Cfg.RsHost
 	}
 	if !strings.HasPrefix(reqHost, "http") {
-		reqHost = "http://" + reqHost
+		reqHost = endpoint(m.Cfg.UseHTTPS, reqHost)
 	}
 	return
 }
@@ -435,7 +550,7 @@ func (m *BucketManager) ApiReqHost(bucket string) (reqHost string, err error) {
 		reqHost = m.Cfg.ApiHost
 	}
 	if !strings.HasPrefix(reqHost, "http") {
-		reqHost = "http://" + reqHost
+		reqHost = endpoint(m.Cfg.UseHTTPS, reqHost)
 	}
 	return
 }
@@ -453,7 +568,7 @@ func (m *BucketManager) RsfReqHost(bucket string) (reqHost string, err error) {
 		reqHost = m.Cfg.RsfHost
 	}
 	if !strings.HasPrefix(reqHost, "http") {
-		reqHost = "http://" + reqHost
+		reqHost = endpoint(m.Cfg.UseHTTPS, reqHost)
 	}
 	return
 }
@@ -471,7 +586,7 @@ func (m *BucketManager) IoReqHost(bucket string) (reqHost string, err error) {
 		reqHost = m.Cfg.IoHost
 	}
 	if !strings.HasPrefix(reqHost, "http") {
-		reqHost = "http://" + reqHost
+		reqHost = endpoint(m.Cfg.UseHTTPS, reqHost)
 	}
 	return
 }
@@ -504,11 +619,8 @@ type DomainInfo struct {
 
 // ListBucketDomains 返回绑定在存储空间中的域名信息
 func (m *BucketManager) ListBucketDomains(bucket string) (info []DomainInfo, err error) {
-	reqHost, err := m.z0ApiHost()
-	if err != nil {
-		return
-	}
-	reqURL := fmt.Sprintf("%s/v7/domain/list?tbl=%s", reqHost, bucket)
+	host := getUcHost(m.Cfg.UseHTTPS)
+	reqURL := fmt.Sprintf("%s/v3/domains?tbl=%s", host, bucket)
 	err = m.Client.CredentialedCall(context.Background(), m.Mac, auth.TokenQiniu, &info, "GET", reqURL, nil)
 	return
 }
@@ -527,14 +639,14 @@ func (m *BucketManager) Prefetch(bucket, key string) (err error) {
 
 // SetImage 用来设置空间镜像源
 func (m *BucketManager) SetImage(siteURL, bucket string) (err error) {
-	reqURL := fmt.Sprintf("http://%s%s", DefaultPubHost, uriSetImage(siteURL, bucket))
+	reqURL := fmt.Sprintf("%s%s", getUcHost(m.Cfg.UseHTTPS), uriSetImage(siteURL, bucket))
 	err = m.Client.CredentialedCall(context.Background(), m.Mac, auth.TokenQiniu, nil, "POST", reqURL, nil)
 	return
 }
 
 // SetImageWithHost 用来设置空间镜像源，额外添加回源Host头部
 func (m *BucketManager) SetImageWithHost(siteURL, bucket, host string) (err error) {
-	reqURL := fmt.Sprintf("http://%s%s", DefaultPubHost,
+	reqURL := fmt.Sprintf("%s%s", getUcHost(m.Cfg.UseHTTPS),
 		uriSetImageWithHost(siteURL, bucket, host))
 	err = m.Client.CredentialedCall(context.Background(), m.Mac, auth.TokenQiniu, nil, "POST", reqURL, nil)
 	return
@@ -542,74 +654,9 @@ func (m *BucketManager) SetImageWithHost(siteURL, bucket, host string) (err erro
 
 // UnsetImage 用来取消空间镜像源设置
 func (m *BucketManager) UnsetImage(bucket string) (err error) {
-	reqURL := fmt.Sprintf("http://%s%s", DefaultPubHost, uriUnsetImage(bucket))
+	reqURL := fmt.Sprintf("%s%s", getUcHost(m.Cfg.UseHTTPS), uriUnsetImage(bucket))
 	err = m.Client.CredentialedCall(context.Background(), m.Mac, auth.TokenQiniu, nil, "POST", reqURL, nil)
 	return err
-}
-
-// ListFiles 用来获取空间文件列表，可以根据需要指定文件的前缀 prefix，文件的目录 delimiter，循环列举的时候下次
-// 列举的位置 marker，以及每次返回的文件的最大数量limit，其中limit最大为1000。
-func (m *BucketManager) ListFiles(bucket, prefix, delimiter, marker string,
-	limit int) (entries []ListItem, commonPrefixes []string, nextMarker string, hasNext bool, err error) {
-	if limit <= 0 || limit > 1000 {
-		err = errors.New("invalid list limit, only allow [1, 1000]")
-		return
-	}
-
-	reqHost, reqErr := m.RsfReqHost(bucket)
-	if reqErr != nil {
-		err = reqErr
-		return
-	}
-
-	ret := listFilesRet{}
-	reqURL := fmt.Sprintf("%s%s", reqHost, uriListFiles(bucket, prefix, delimiter, marker, limit))
-	err = m.Client.CredentialedCall(context.Background(), m.Mac, auth.TokenQiniu, &ret, "POST", reqURL, nil)
-	if err != nil {
-		return
-	}
-
-	commonPrefixes = ret.CommonPrefixes
-	nextMarker = ret.Marker
-	entries = ret.Items
-	if ret.Marker != "" {
-		hasNext = true
-	}
-
-	return
-}
-
-// ListBucket 用来获取空间文件列表，可以根据需要指定文件的前缀 prefix，文件的目录 delimiter，流式返回每条数据。
-func (m *BucketManager) ListBucket(bucket, prefix, delimiter, marker string) (retCh chan listFilesRet2, err error) {
-
-	ctx := auth.WithCredentialsType(context.Background(), m.Mac, auth.TokenQiniu)
-	reqHost, reqErr := m.RsfReqHost(bucket)
-	if reqErr != nil {
-		err = reqErr
-		return
-	}
-
-	// limit 0 ==> 列举所有文件
-	reqURL := fmt.Sprintf("%s%s", reqHost, uriListFiles2(bucket, prefix, delimiter, marker))
-	retCh, err = callChan(m.Client, ctx, "POST", reqURL, nil)
-	return
-}
-
-// ListBucketContext 用来获取空间文件列表，可以根据需要指定文件的前缀 prefix，文件的目录 delimiter，流式返回每条数据。
-// 接受的context可以用来取消列举操作
-func (m *BucketManager) ListBucketContext(ctx context.Context, bucket, prefix, delimiter, marker string) (retCh chan listFilesRet2, err error) {
-
-	ctx = auth.WithCredentialsType(ctx, m.Mac, auth.TokenQiniu)
-	reqHost, reqErr := m.RsfReqHost(bucket)
-	if reqErr != nil {
-		err = reqErr
-		return
-	}
-
-	// limit 0 ==> 列举所有文件
-	reqURL := fmt.Sprintf("%s%s", reqHost, uriListFiles2(bucket, prefix, delimiter, marker))
-	retCh, err = callChan(m.Client, ctx, "POST", reqURL, nil)
-	return
 }
 
 type AsyncFetchParam struct {
@@ -680,11 +727,6 @@ func (m *BucketManager) ApiHost(bucket string) (apiHost string, err error) {
 	}
 
 	apiHost = zone.GetApiHost(m.Cfg.UseHTTPS)
-	return
-}
-
-func (m *BucketManager) z0ApiHost() (apiHost string, err error) {
-	apiHost = regionHuadong.GetApiHost(m.Cfg.UseHTTPS)
 	return
 }
 
@@ -774,43 +816,25 @@ func uriUnsetImage(bucket string) string {
 	return fmt.Sprintf("/unimage/%s", bucket)
 }
 
-func uriListFiles(bucket, prefix, delimiter, marker string, limit int) string {
-	query := make(url.Values)
-	query.Add("bucket", bucket)
-	if prefix != "" {
-		query.Add("prefix", prefix)
-	}
-	if delimiter != "" {
-		query.Add("delimiter", delimiter)
-	}
-	if marker != "" {
-		query.Add("marker", marker)
-	}
-	if limit > 0 {
-		query.Add("limit", strconv.FormatInt(int64(limit), 10))
-	}
-	return fmt.Sprintf("/list?%s", query.Encode())
-}
-
-func uriListFiles2(bucket, prefix, delimiter, marker string) string {
-	query := make(url.Values)
-	query.Add("bucket", bucket)
-	if prefix != "" {
-		query.Add("prefix", prefix)
-	}
-	if delimiter != "" {
-		query.Add("delimiter", delimiter)
-	}
-	if marker != "" {
-		query.Add("marker", marker)
-	}
-	return fmt.Sprintf("/v2/list?%s", query.Encode())
-}
-
 // EncodedEntry 生成URL Safe Base64编码的 Entry
 func EncodedEntry(bucket, key string) string {
 	entry := fmt.Sprintf("%s:%s", bucket, key)
 	return base64.URLEncoding.EncodeToString([]byte(entry))
+}
+
+func decodedEntry(entry string) (bucket, key string, err error) {
+	value, dErr := base64.URLEncoding.DecodeString(entry)
+	if dErr != nil {
+		return "", "", dErr
+	}
+	bk := strings.Split(string(value), ":")
+	if len(bk) == 0 {
+		return "", "", errors.New("entry format error")
+	}
+	if len(bk) == 1 {
+		return bk[0], "", nil
+	}
+	return bk[0], bk[1], nil
 }
 
 // EncodedEntryWithoutKey 生成 key 为null的情况下 URL Safe Base64编码的Entry
@@ -908,87 +932,4 @@ func urlEncodeQuery(str string) (ret string) {
 	str = strings.Replace(str, "%7C", "|", -1)
 	str = strings.Replace(str, "+", "%20", -1)
 	return str
-}
-
-type listFilesRet2 struct {
-	Marker string   `json:"marker"`
-	Item   ListItem `json:"item"`
-	Dir    string   `json:"dir"`
-}
-
-type listFilesRet struct {
-	Marker         string     `json:"marker"`
-	Items          []ListItem `json:"items"`
-	CommonPrefixes []string   `json:"commonPrefixes"`
-}
-
-// ListItem 为文件列举的返回值
-type ListItem struct {
-	Key      string `json:"key"`
-	Hash     string `json:"hash"`
-	Fsize    int64  `json:"fsize"`
-	PutTime  int64  `json:"putTime"`
-	MimeType string `json:"mimeType"`
-	Type     int    `json:"type"`
-	EndUser  string `json:"endUser"`
-}
-
-// 接口可能返回空的记录
-func (l *ListItem) IsEmpty() (empty bool) {
-	return l.Key == "" && l.Hash == "" && l.Fsize == 0 && l.PutTime == 0
-}
-
-func (l *ListItem) String() string {
-	str := ""
-	str += fmt.Sprintf("Hash:     %s\n", l.Hash)
-	str += fmt.Sprintf("Fsize:    %d\n", l.Fsize)
-	str += fmt.Sprintf("PutTime:  %d\n", l.PutTime)
-	str += fmt.Sprintf("MimeType: %s\n", l.MimeType)
-	str += fmt.Sprintf("Type:     %d\n", l.Type)
-	str += fmt.Sprintf("EndUser:  %s\n", l.EndUser)
-	return str
-}
-
-func callChan(r *client.Client, ctx context.Context, method, reqUrl string, headers http.Header) (chan listFilesRet2, error) {
-
-	resp, err := r.DoRequestWith(ctx, method, reqUrl, headers, nil, 0)
-	if err != nil {
-		return nil, err
-	}
-	if resp.StatusCode/100 != 2 {
-		return nil, client.ResponseError(resp)
-	}
-	return callRetChan(ctx, resp)
-}
-
-func callRetChan(ctx context.Context, resp *http.Response) (retCh chan listFilesRet2, err error) {
-
-	retCh = make(chan listFilesRet2)
-	if resp.StatusCode/100 != 2 {
-		return nil, client.ResponseError(resp)
-	}
-
-	go func() {
-		defer resp.Body.Close()
-		defer close(retCh)
-
-		dec := json.NewDecoder(resp.Body)
-		var ret listFilesRet2
-
-		for {
-			err = dec.Decode(&ret)
-			if err != nil {
-				if err != io.EOF {
-					fmt.Fprintf(os.Stderr, "decode error: %v\n", err)
-				}
-				return
-			}
-			select {
-			case <-ctx.Done():
-				return
-			case retCh <- ret:
-			}
-		}
-	}()
-	return
 }

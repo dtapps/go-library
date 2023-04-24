@@ -47,7 +47,7 @@ type jobFunction struct {
 	parametersLen     int                // length of the passed parameters
 	name              string             // nolint the function name to run
 	runConfig         runConfig          // configuration for how many times to run the job
-	singletonQueue    *atomic.Int64      // limits inflight runs of a job to one
+	singletonQueue    chan struct{}      // queues jobs for the singleton runner to handle
 	singletonRunnerOn *atomic.Bool       // whether the runner function for singleton is running
 	ctx               context.Context    // for cancellation
 	cancel            context.CancelFunc // for cancellation
@@ -55,6 +55,7 @@ type jobFunction struct {
 	runStartCount     *atomic.Int64      // number of times the job was started
 	runFinishCount    *atomic.Int64      // number of times the job was finished
 	singletonWg       *sync.WaitGroup    // used by singleton runner
+	stopped           *atomic.Bool
 }
 
 type eventListeners struct {
@@ -82,6 +83,7 @@ func (jf *jobFunction) copy() jobFunction {
 		runFinishCount:    jf.runFinishCount,
 		singletonWg:       jf.singletonWg,
 		singletonRunnerOn: jf.singletonRunnerOn,
+		stopped:           jf.stopped,
 	}
 	cp.parameters = append(cp.parameters, jf.parameters...)
 	return cp
@@ -120,6 +122,7 @@ func newJob(interval int, startImmediately bool, singletonMode bool) *Job {
 			runStartCount:     &atomic.Int64{},
 			runFinishCount:    &atomic.Int64{},
 			singletonRunnerOn: &atomic.Bool{},
+			stopped:           &atomic.Bool{},
 		},
 		tags:              []string{},
 		startsImmediately: startImmediately,
@@ -290,6 +293,11 @@ func (j *Job) Error() error {
 	return j.error
 }
 
+// Context returns the job's context. The context controls cancellation.
+func (j *Job) Context() context.Context {
+	return j.ctx
+}
+
 // Tag allows you to add arbitrary labels to a Job that do not
 // impact the functionality of the Job
 func (j *Job) Tag(tags ...string) {
@@ -393,8 +401,8 @@ func (j *Job) SingletonMode() {
 	j.mu.Lock()
 	defer j.mu.Unlock()
 	j.runConfig.mode = singletonMode
-	j.jobFunction.singletonQueue = &atomic.Int64{}
 	j.jobFunction.singletonWg = &sync.WaitGroup{}
+	j.jobFunction.singletonQueue = make(chan struct{}, 100)
 }
 
 // shouldRun evaluates if this job should run again
@@ -451,7 +459,9 @@ func (j *Job) stop() {
 	}
 	if j.cancel != nil {
 		j.cancel()
+		j.ctx, j.cancel = context.WithCancel(context.Background())
 	}
+	j.stopped.Store(true)
 }
 
 // IsRunning reports whether any instances of the job function are currently running

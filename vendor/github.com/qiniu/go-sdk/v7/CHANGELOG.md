@@ -1,4 +1,13 @@
 # Changelog
+## 7.15.0
+* 优化
+    * 表单上传 Put 方法的 PutExtra 参数，支持传入 nil
+    * Bucket 镜像源/配额方法内部请求使用 UC 域名
+    * BucketManager ListBucket 和 ListBucketContext 方法内部接口由 /v2/list 调用调整为 /list
+* 新增
+    * BucketManager 新增批量方法 BatchWithContext
+    * BucketManager 增加 Bucket 列举方法 ListFileWithContext
+
 ## 7.14.0
 * Go SDK  对七牛回调请求的鉴权验证函数支持 Qiniu 签名
 * UploadMananger 支持双活区域

@@ -73,6 +73,10 @@ func (b *QueryStructMeta) parseStruct(st interface{}) error {
 
 // getFieldRealType  get basic type of field
 func (b *QueryStructMeta) getFieldRealType(f reflect.Type) string {
+	serializerInterface := reflect.TypeOf((*schema.SerializerInterface)(nil)).Elem()
+	if f.Implements(serializerInterface) || reflect.New(f).Type().Implements(serializerInterface) {
+		return "serializer"
+	}
 	scanValuer := reflect.TypeOf((*field.ScanValuer)(nil)).Elem()
 	if f.Implements(scanValuer) || reflect.New(f).Type().Implements(scanValuer) {
 		return "field"
@@ -190,7 +194,7 @@ func (b *QueryStructMeta) ReviseDIYMethod() error {
 
 func (b *QueryStructMeta) addMethodFromAddMethodOpt(methods ...interface{}) *QueryStructMeta {
 	for _, method := range methods {
-		modelMethods, err := parser.GetModelMethod(method, 4)
+		modelMethods, err := parser.GetModelMethod(method, 5)
 		if err != nil {
 			panic("add diy method err:" + err.Error())
 		}

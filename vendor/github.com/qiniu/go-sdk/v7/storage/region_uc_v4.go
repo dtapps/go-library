@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/qiniu/go-sdk/v7/client"
 	"golang.org/x/sync/singleflight"
+	"math"
 	"os"
 	"path/filepath"
 	"sync"
@@ -20,6 +21,7 @@ type ucQueryV4Region struct {
 	RegionId string          `json:"region"`
 	TTL      int             `json:"ttl"`
 	Io       ucQueryV4Server `json:"io"`
+	IoSrc    ucQueryV4Server `json:"io_src"`
 	Up       ucQueryV4Server `json:"up"`
 	Rs       ucQueryV4Server `json:"rs"`
 	Rsf      ucQueryV4Server `json:"rsf"`
@@ -47,9 +49,17 @@ type regionV4CacheValue struct {
 	Regions  []*Region `json:"regions"`
 	Deadline time.Time `json:"deadline"`
 }
+
+func (r *regionV4CacheValue) getRegions() []*Region {
+	if r == nil {
+		return nil
+	}
+	return r.Regions
+}
+
 type regionV4CacheMap map[string]regionV4CacheValue
 
-const regionV4CacheFileName = "query_v4.cache.json"
+const regionV4CacheFileName = "query_v4_00.cache.json"
 
 var (
 	regionV4CachePath     = filepath.Join(os.TempDir(), "qiniu-golang-sdk", regionV4CacheFileName)
@@ -130,10 +140,11 @@ func getRegionByV4(ak, bucket string) (*RegionGroup, error) {
 	regionID := fmt.Sprintf("%s:%s", ak, bucket)
 	//check from cache
 	if v, ok := regionV4Cache.Load(regionID); ok && time.Now().Before(v.(regionV4CacheValue).Deadline) {
-		return NewRegionGroup(v.(regionV4CacheValue).Regions...), nil
+		cacheValue, _ := v.(regionV4CacheValue)
+		return NewRegionGroup(cacheValue.getRegions()...), nil
 	}
 
-	newRegion, err, _ := ucQueryV2Group.Do(regionID, func() (interface{}, error) {
+	newRegion, err, _ := ucQueryV4Group.Do(regionID, func() (interface{}, error) {
 		reqURL := fmt.Sprintf("%s/v4/query?ak=%s&bucket=%s", getUcHostByDefaultProtocol(), ak, bucket)
 
 		var ret ucQueryV4Ret
@@ -142,10 +153,12 @@ func getRegionByV4(ak, bucket string) (*RegionGroup, error) {
 			return nil, fmt.Errorf("query region error, %s", err.Error())
 		}
 
-		ttl := 0
+		ttl := math.MaxInt32
 		regions := make([]*Region, 0, 0)
 		for _, host := range ret.Hosts {
-			ttl = host.TTL
+			if ttl > host.TTL {
+				ttl = host.TTL
+			}
 			regions = append(regions, &Region{
 				SrcUpHosts: host.Up.Domains,
 				CdnUpHosts: host.Up.Domains,
@@ -153,6 +166,7 @@ func getRegionByV4(ak, bucket string) (*RegionGroup, error) {
 				RsfHost:    host.Rsf.getOneServer(),
 				ApiHost:    host.Api.getOneServer(),
 				IovipHost:  host.Io.getOneServer(),
+				IoSrcHost:  host.IoSrc.getOneServer(),
 			})
 		}
 

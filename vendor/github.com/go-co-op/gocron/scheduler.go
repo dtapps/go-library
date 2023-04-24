@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/robfig/cron/v3"
-	"golang.org/x/sync/semaphore"
 )
 
 type limitMode int8
@@ -69,8 +68,10 @@ func NewScheduler(loc *time.Location) *Scheduler {
 
 // SetMaxConcurrentJobs limits how many jobs can be running at the same time.
 // This is useful when running resource intensive jobs and a precise start time is not critical.
+//
+// Note: WaitMode and RescheduleMode provide details on usage and potential risks.
 func (s *Scheduler) SetMaxConcurrentJobs(n int, mode limitMode) {
-	s.executor.maxRunningJobs = semaphore.NewWeighted(int64(n))
+	s.executor.limitModeMaxRunningJobs = n
 	s.executor.limitMode = mode
 }
 
@@ -93,12 +94,7 @@ func (s *Scheduler) StartAsync() {
 
 // start starts the scheduler, scheduling and running jobs
 func (s *Scheduler) start() {
-	stopCtx, cancel := context.WithCancel(context.Background())
-	s.executor.ctx = stopCtx
-	s.executor.cancel = cancel
-	s.executor.jobsWg = &sync.WaitGroup{}
-
-	go s.executor.start()
+	s.executor.start()
 	s.setRunning(true)
 	s.runJobs(s.Jobs())
 }
@@ -595,7 +591,7 @@ func (s *Scheduler) runContinuous(job *Job) {
 	}
 	nr := next.dateTime.Sub(s.now())
 	if nr < 0 {
-		time.Sleep(absDuration(nr))
+		job.setLastRun(s.now())
 		shouldRun, next := s.scheduleNextRun(job)
 		if !shouldRun {
 			return
@@ -653,10 +649,14 @@ func (s *Scheduler) RunByTagWithDelay(tag string, d time.Duration) error {
 // Remove specific Job by function
 //
 // Removing a job stops that job's timer. However, if a job has already
-// been started by by the job's timer before being removed, there is no way to stop
-// it through gocron as https://pkg.go.dev/time#Timer.Stop explains.
-// The job function would need to have implemented a means of
-// stopping, e.g. using a context.WithCancel().
+// been started by the job's timer before being removed, the only way to stop
+// it through gocron is to use DoWithJobDetails and access the job's Context which
+// informs you when the job has been canceled.
+//
+// Alternatively, the job function would need to have implemented a means of
+// stopping, e.g. using a context.WithCancel() passed as params to Do method.
+//
+// The above are based on what the underlying library suggests https://pkg.go.dev/time#Timer.Stop.
 func (s *Scheduler) Remove(job any) {
 	fName := getFunctionName(job)
 	j := s.findJobByTaskName(fName)
@@ -786,6 +786,16 @@ func (s *Scheduler) LimitRunsTo(i int) *Scheduler {
 
 // SingletonMode prevents a new job from starting if the prior job has not yet
 // completed its run
+//
+// Warning: do not use this mode if your jobs will continue to stack
+// up beyond the ability of the limit workers to keep up. An example of
+// what NOT to do:
+//
+//	 s.Every("1s").SingletonMode().Do(func() {
+//	     // this will result in an ever-growing number of goroutines
+//		   // blocked trying to send to the buffered channel
+//	     time.Sleep(10 * time.Minute)
+//	 })
 func (s *Scheduler) SingletonMode() *Scheduler {
 	job := s.getCurrentJob()
 	job.SingletonMode()
@@ -794,6 +804,19 @@ func (s *Scheduler) SingletonMode() *Scheduler {
 
 // SingletonModeAll prevents new jobs from starting if the prior instance of the
 // particular job has not yet completed its run
+//
+// Warning: do not use this mode if your jobs will continue to stack
+// up beyond the ability of the limit workers to keep up. An example of
+// what NOT to do:
+//
+//	 s := gocron.NewScheduler(time.UTC)
+//	 s.SingletonModeAll()
+//
+//	 s.Every("1s").Do(func() {
+//	     // this will result in an ever-growing number of goroutines
+//		   // blocked trying to send to the buffered channel
+//	     time.Sleep(10 * time.Minute)
+//	 })
 func (s *Scheduler) SingletonModeAll() {
 	s.singletonMode = true
 }
@@ -1252,7 +1275,6 @@ func (s *Scheduler) Update() (*Job, error) {
 	}
 	s.updateJob = false
 	job.stop()
-	job.ctx, job.cancel = context.WithCancel(context.Background())
 	job.setStartsImmediately(false)
 
 	if job.runWithDetails {
