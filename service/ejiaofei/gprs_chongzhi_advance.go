@@ -39,23 +39,25 @@ type GprsChOngZhiAdvanceResult struct {
 	Result GprsChOngZhiAdvanceResponse // 结果
 	Body   []byte                      // 内容
 	Http   gorequest.Response          // 请求
-	Err    error                       // 错误
 }
 
-func newGprsChOngZhiAdvanceResult(result GprsChOngZhiAdvanceResponse, body []byte, http gorequest.Response, err error) *GprsChOngZhiAdvanceResult {
-	return &GprsChOngZhiAdvanceResult{Result: result, Body: body, Http: http, Err: err}
+func newGprsChOngZhiAdvanceResult(result GprsChOngZhiAdvanceResponse, body []byte, http gorequest.Response) *GprsChOngZhiAdvanceResult {
+	return &GprsChOngZhiAdvanceResult{Result: result, Body: body, Http: http}
 }
 
 // GprsChOngZhiAdvance 流量充值接口
-func (c *Client) GprsChOngZhiAdvance(ctx context.Context, notMustParams ...gorequest.Params) *GprsChOngZhiAdvanceResult {
+func (c *Client) GprsChOngZhiAdvance(ctx context.Context, notMustParams ...gorequest.Params) (*GprsChOngZhiAdvanceResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 签名
 	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vgprs%varea%veffecttime%vvalidity%vtimes%v", c.GetUserId(), c.GetPwd(), params["orderid"], params["account"], params["gprs"], params["area"], params["effecttime"], params["validity"], params["times"])
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/gprsChongzhiAdvance.do", params, http.MethodGet)
+	if err != nil {
+		return newGprsChOngZhiAdvanceResult(GprsChOngZhiAdvanceResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response GprsChOngZhiAdvanceResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return newGprsChOngZhiAdvanceResult(response, request.ResponseBody, request, err)
+	return newGprsChOngZhiAdvanceResult(response, request.ResponseBody, request), err
 }

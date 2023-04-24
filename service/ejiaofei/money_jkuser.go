@@ -19,21 +19,23 @@ type MoneyJkUserResult struct {
 	Result MoneyJkUserResponse // 结果
 	Body   []byte              // 内容
 	Http   gorequest.Response  // 请求
-	Err    error               // 错误
 }
 
-func newMoneyJkUserResult(result MoneyJkUserResponse, body []byte, http gorequest.Response, err error) *MoneyJkUserResult {
-	return &MoneyJkUserResult{Result: result, Body: body, Http: http, Err: err}
+func newMoneyJkUserResult(result MoneyJkUserResponse, body []byte, http gorequest.Response) *MoneyJkUserResult {
+	return &MoneyJkUserResult{Result: result, Body: body, Http: http}
 }
 
 // MoneyJkUser 用户余额查询
-func (c *Client) MoneyJkUser(ctx context.Context) *MoneyJkUserResult {
+func (c *Client) MoneyJkUser(ctx context.Context) (*MoneyJkUserResult, error) {
 	// 签名
 	c.config.signStr = fmt.Sprintf("userid%vpwd%v", c.GetUserId(), c.GetPwd())
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/money_jkuser.do", map[string]interface{}{}, http.MethodGet)
+	if err != nil {
+		return newMoneyJkUserResult(MoneyJkUserResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response MoneyJkUserResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return newMoneyJkUserResult(response, request.ResponseBody, request, err)
+	return newMoneyJkUserResult(response, request.ResponseBody, request), err
 }

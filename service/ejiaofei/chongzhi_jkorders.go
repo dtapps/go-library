@@ -26,18 +26,17 @@ type ChOngZhiJkOrdersResult struct {
 	Result ChOngZhiJkOrdersResponse // 结果
 	Body   []byte                   // 内容
 	Http   gorequest.Response       // 请求
-	Err    error                    // 错误
 }
 
-func newChOngZhiJkOrdersResult(result ChOngZhiJkOrdersResponse, body []byte, http gorequest.Response, err error) *ChOngZhiJkOrdersResult {
-	return &ChOngZhiJkOrdersResult{Result: result, Body: body, Http: http, Err: err}
+func newChOngZhiJkOrdersResult(result ChOngZhiJkOrdersResponse, body []byte, http gorequest.Response) *ChOngZhiJkOrdersResult {
+	return &ChOngZhiJkOrdersResult{Result: result, Body: body, Http: http}
 }
 
 // ChOngZhiJkOrders 话费充值接口
-// orderid 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
+// orderID 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
 // face 充值面值	以元为单位，包含10、20、30、50、100、200、300、500 移动联通电信
 // account 手机号码	需要充值的手机号码
-func (c *Client) ChOngZhiJkOrders(ctx context.Context, orderID string, face int, account string) *ChOngZhiJkOrdersResult {
+func (c *Client) ChOngZhiJkOrders(ctx context.Context, orderID string, face int, account string) (*ChOngZhiJkOrdersResult, error) {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("orderid", orderID)
@@ -49,8 +48,11 @@ func (c *Client) ChOngZhiJkOrders(ctx context.Context, orderID string, face int,
 	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%vface%vaccount%vamount1", c.GetUserId(), c.GetPwd(), orderID, face, account)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/chongzhi_jkorders.do", params, http.MethodGet)
+	if err != nil {
+		return newChOngZhiJkOrdersResult(ChOngZhiJkOrdersResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response ChOngZhiJkOrdersResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return newChOngZhiJkOrdersResult(response, request.ResponseBody, request, err)
+	return newChOngZhiJkOrdersResult(response, request.ResponseBody, request), err
 }

@@ -35,23 +35,25 @@ type TxChOngZhiResult struct {
 	Result TxChOngZhiResponse // 结果
 	Body   []byte             // 内容
 	Http   gorequest.Response // 请求
-	Err    error              // 错误
 }
 
-func newTxChOngZhiResult(result TxChOngZhiResponse, body []byte, http gorequest.Response, err error) *TxChOngZhiResult {
-	return &TxChOngZhiResult{Result: result, Body: body, Http: http, Err: err}
+func newTxChOngZhiResult(result TxChOngZhiResponse, body []byte, http gorequest.Response) *TxChOngZhiResult {
+	return &TxChOngZhiResult{Result: result, Body: body, Http: http}
 }
 
 // TxChOngZhi 流量充值接口
-func (c *Client) TxChOngZhi(ctx context.Context, notMustParams ...gorequest.Params) *TxChOngZhiResult {
+func (c *Client) TxChOngZhi(ctx context.Context, notMustParams ...gorequest.Params) (*TxChOngZhiResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 签名
 	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vproductid%vamount%vip%vtimes%v", c.GetUserId(), c.GetPwd(), params["orderid"], params["account"], params["productid"], params["amount"], params["ip"], params["times"])
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/txchongzhi.do", params, http.MethodGet)
+	if err != nil {
+		return newTxChOngZhiResult(TxChOngZhiResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response TxChOngZhiResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return newTxChOngZhiResult(response, request.ResponseBody, request, err)
+	return newTxChOngZhiResult(response, request.ResponseBody, request), err
 }

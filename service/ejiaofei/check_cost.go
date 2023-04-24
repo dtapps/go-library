@@ -21,15 +21,15 @@ type CheckCostResult struct {
 	Result CheckCostResponse  // 结果
 	Body   []byte             // 内容
 	Http   gorequest.Response // 请求
-	Err    error              // 错误
 }
 
-func newCheckCostResult(result CheckCostResponse, body []byte, http gorequest.Response, err error) *CheckCostResult {
-	return &CheckCostResult{Result: result, Body: body, Http: http, Err: err}
+func newCheckCostResult(result CheckCostResponse, body []byte, http gorequest.Response) *CheckCostResult {
+	return &CheckCostResult{Result: result, Body: body, Http: http}
 }
 
 // CheckCost 会员订单成本价查询接口
-func (c *Client) CheckCost(ctx context.Context, orderId string) *CheckCostResult {
+// orderID 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
+func (c *Client) CheckCost(ctx context.Context, orderId string) (*CheckCostResult, error) {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("orderid", orderId)
@@ -38,8 +38,11 @@ func (c *Client) CheckCost(ctx context.Context, orderId string) *CheckCostResult
 	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%v", c.GetUserId(), c.GetPwd(), orderId)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/checkCost.do", params, http.MethodGet)
+	if err != nil {
+		return newCheckCostResult(CheckCostResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response CheckCostResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return newCheckCostResult(response, request.ResponseBody, request, err)
+	return newCheckCostResult(response, request.ResponseBody, request), err
 }

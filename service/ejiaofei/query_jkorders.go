@@ -26,16 +26,15 @@ type QueryJkOrdersResult struct {
 	Result QueryJkOrdersResponse // 结果
 	Body   []byte                // 内容
 	Http   gorequest.Response    // 请求
-	Err    error                 // 错误
 }
 
-func newQueryJkOrdersResult(result QueryJkOrdersResponse, body []byte, http gorequest.Response, err error) *QueryJkOrdersResult {
-	return &QueryJkOrdersResult{Result: result, Body: body, Http: http, Err: err}
+func newQueryJkOrdersResult(result QueryJkOrdersResponse, body []byte, http gorequest.Response) *QueryJkOrdersResult {
+	return &QueryJkOrdersResult{Result: result, Body: body, Http: http}
 }
 
 // QueryJkOrders 通用查询接口
-// orderid 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
-func (c *Client) QueryJkOrders(ctx context.Context, orderId string) *QueryJkOrdersResult {
+// orderId 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
+func (c *Client) QueryJkOrders(ctx context.Context, orderId string) (*QueryJkOrdersResult, error) {
 	// 参数
 	param := gorequest.NewParams()
 	param.Set("orderid", orderId)
@@ -44,8 +43,11 @@ func (c *Client) QueryJkOrders(ctx context.Context, orderId string) *QueryJkOrde
 	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%v", c.GetUserId(), c.GetPwd(), orderId)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/query_jkorders.do", params, http.MethodGet)
+	if err != nil {
+		return newQueryJkOrdersResult(QueryJkOrdersResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response QueryJkOrdersResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return newQueryJkOrdersResult(response, request.ResponseBody, request, err)
+	return newQueryJkOrdersResult(response, request.ResponseBody, request), err
 }
