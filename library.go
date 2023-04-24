@@ -1,5 +1,5 @@
 package go_library
 
 func Version() string {
-	return "1.0.133"
+	return "1.0.134"
 }
