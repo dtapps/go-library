@@ -16,7 +16,7 @@ require (
 	github.com/go-playground/validator/v10 v10.12.0
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/goccy/go-json v0.10.2
-	github.com/gogf/gf/v2 v2.3.3
+	github.com/gogf/gf/v2 v2.4.0
 	github.com/json-iterator/go v1.1.12
 	github.com/lib/pq v1.10.8
 	github.com/mitchellh/mapstructure v1.5.0
