@@ -8,11 +8,11 @@ import (
 )
 
 type IotApiGetAllSimTypeResponse struct {
-	Code int `json:"code"`
+	Code int64 `json:"code"`
 	Data []struct {
-		Type   int    `json:"type"`   // 卡类型
+		Type   int64  `json:"type"`   // 卡类型
 		Name   string `json:"name"`   // 类型名
-		MOrder int    `json:"mOrder"` // 是否支持单次充值多个流量包，0:不支持 1:支持
+		MOrder int64  `json:"mOrder"` // 是否支持单次充值多个流量包，0:不支持 1:支持
 	} `json:"data"`
 	Msg string `json:"msg"`
 }

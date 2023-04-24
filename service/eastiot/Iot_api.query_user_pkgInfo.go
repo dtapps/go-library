@@ -8,21 +8,21 @@ import (
 )
 
 type IotApiQueryUserPkgInfoResponse struct {
-	Code int `json:"code"`
+	Code int64 `json:"code"`
 	Data []struct {
-		Type    int     `json:"type"`
+		Type    int64   `json:"type"`
 		PkgId   int64   `json:"pkgId"`
 		PkgName string  `json:"pkgName"`
 		Price   float64 `json:"price"`
 		Sprice  float64 `json:"sprice"`
-		Traffic int     `json:"traffic"`
-		Caltype int     `json:"caltype"`
-		SimType int     `json:"simType"`
-		Isdm    int     `json:"isdm"`
-		Isnm    int     `json:"isnm"`
-		Istest  int     `json:"istest"`
-		Isimm   int     `json:"isimm"`
-		Daynum  int     `json:"daynum"`
+		Traffic int64   `json:"traffic"`
+		Caltype int64   `json:"caltype"`
+		SimType int64   `json:"simType"`
+		Isdm    int64   `json:"isdm"`
+		Isnm    int64   `json:"isnm"`
+		Istest  int64   `json:"istest"`
+		Isimm   int64   `json:"isimm"`
+		Daynum  int64   `json:"daynum"`
 	} `json:"data"`
 	Msg string `json:"msg"`
 }

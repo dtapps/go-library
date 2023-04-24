@@ -8,15 +8,15 @@ import (
 )
 
 type IotApiQueryOrderedPkgInfoResponse struct {
-	Code   int `json:"code"`
-	Istest int `json:"istest"`
+	Code   int64 `json:"code"`
+	Istest int64 `json:"istest"`
 	Data   []struct {
 		Name      string  `json:"name"`      // 流量包名字
 		PkgId     int64   `json:"pkgId"`     // 流量包ID
-		Traffic   int     `json:"traffic"`   // 流量大小，单位:MB
+		Traffic   int64   `json:"traffic"`   // 流量大小，单位:MB
 		Ntraffic  float64 `json:"ntraffic"`  // 已用量，单位:MB
-		Starttime int     `json:"starttime"` // 流量生效起始时间时间戳
-		Endtime   int     `json:"endtime"`   // 流量生效结束时间时间戳
+		Starttime int64   `json:"starttime"` // 流量生效起始时间时间戳
+		Endtime   int64   `json:"endtime"`   // 流量生效结束时间时间戳
 		Addtime   int64   `json:"addtime"`   // 订购时间时间戳
 	} `json:"data"`
 	Msg string `json:"msg"`

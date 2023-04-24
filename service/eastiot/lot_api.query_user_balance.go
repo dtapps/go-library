@@ -8,7 +8,7 @@ import (
 )
 
 type IotApiQueryUserBalanceResponse struct {
-	Code int `json:"code"`
+	Code int64 `json:"code"`
 	Data struct {
 		Balance float64 `json:"balance"`
 	} `json:"data"`
