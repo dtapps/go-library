@@ -159,3 +159,13 @@ func StringToBytes(s string) []byte {
 func BytesToString(b []byte) string {
 	return unsafe.String(&b[0], len(b))
 }
+
+// ToUpper 转大写
+func ToUpper(s string) string {
+	return strings.ToUpper(s)
+}
+
+// ToLower 转小写
+func ToLower(s string) string {
+	return strings.ToLower(s)
+}
