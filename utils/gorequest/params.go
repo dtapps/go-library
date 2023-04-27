@@ -36,6 +36,11 @@ func (p Params) SetParams(params Params) {
 	}
 }
 
+// Get 获取参数
+func (p Params) Get(key string) interface{} {
+	return p[key]
+}
+
 // GetParamsString 获取参数字符串
 func GetParamsString(src interface{}) string {
 	switch src.(type) {
