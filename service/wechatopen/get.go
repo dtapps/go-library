@@ -1,47 +1,60 @@
 package wechatopen
 
-import "github.com/dtapps/go-library/utils/golog"
+import (
+	"context"
+	"github.com/dtapps/go-library/utils/golog"
+)
 
-//func (c *Client) GetComponentAccessToken() string {
-//	return c.config.componentAccessToken
-//}
-
-//func (c *Client) GetComponentVerifyTicket() string {
-//	return c.config.componentVerifyTicket
-//}
-
-//func (c *Client) GetPreAuthCode() string {
-//	return c.config.preAuthCode
-//}
-
-//func (c *Client) GetAuthorizerAccessToken() string {
-//	return c.config.authorizerAccessToken
-//}
-
-func (c *Client) GetAuthorizerRefreshToken() string {
-	return c.config.authorizerRefreshToken
-}
-
-func (c *Client) GetAuthorizerAppid() string {
-	return c.config.authorizerAppid
-}
-
-func (c *Client) GetComponentAppId() string {
+// GetComponentAppId 获取第三方平台appid
+func (c *Client) GetComponentAppId(ctx context.Context) string {
 	return c.config.componentAppId
 }
 
-func (c *Client) GetComponentAppSecret() string {
+// GetComponentAppSecret 获取第三方平台app_secret
+func (c *Client) GetComponentAppSecret(ctx context.Context) string {
 	return c.config.componentAppSecret
 }
 
-func (c *Client) GetMessageToken() string {
+// GetMessageToken 获取第三方平台消息令牌
+func (c *Client) GetMessageToken(ctx context.Context) string {
 	return c.config.messageToken
 }
 
-func (c *Client) GetMessageKey() string {
+// GetMessageKey 获取第三方平台消息密钥
+func (c *Client) GetMessageKey(ctx context.Context) string {
 	return c.config.messageKey
 }
 
-func (c *Client) GetLog() *golog.ApiClient {
+// GetComponentAccessToken 获取第三方平台access_token
+func (c *Client) GetComponentAccessToken(ctx context.Context) string {
+	return c.config.componentAccessToken
+}
+
+// GetComponentVerifyTicket 获取第三方平台推送ticket
+func (c *Client) GetComponentVerifyTicket(ctx context.Context) string {
+	return c.config.componentVerifyTicket
+}
+
+// GetPreAuthCode 获取第三方平台预授权码
+func (c *Client) GetPreAuthCode(ctx context.Context) string {
+	return c.config.preAuthCode
+}
+
+// GetAuthorizerAppid 获取授权方appid
+func (c *Client) GetAuthorizerAppid(ctx context.Context) string {
+	return c.config.authorizerAppid
+}
+
+// GetAuthorizerAccessToken 获取授权方access_token
+func (c *Client) GetAuthorizerAccessToken(ctx context.Context) string {
+	return c.config.authorizerAccessToken
+}
+
+// GetAuthorizerRefreshToken 获取授权方refresh_token
+func (c *Client) GetAuthorizerRefreshToken(ctx context.Context) string {
+	return c.config.authorizerRefreshToken
+}
+
+func (c *Client) GetLog(ctx context.Context) *golog.ApiClient {
 	return c.log.client
 }

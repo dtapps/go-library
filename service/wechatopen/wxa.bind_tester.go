@@ -2,7 +2,6 @@ package wechatopen
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -28,29 +27,21 @@ func newWxaBindTesterResult(result WxaBindTesterResponse, body []byte, http gore
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_AdminManagement/Admin.html
 func (c *Client) WxaBindTester(ctx context.Context, wechatid string, notMustParams ...gorequest.Params) (*WxaBindTesterResult, error) {
 	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
-	}
-	err = c.checkAuthorizerIsConfig()
-	if err != nil {
-		return nil, err
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newWxaBindTesterResult(WxaBindTesterResponse{}, []byte{}, gorequest.Response{}), err
 	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params["wechatid"] = wechatid
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/bind_tester?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/bind_tester?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
-		return nil, err
+		return newWxaBindTesterResult(WxaBindTesterResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response WxaBindTesterResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newWxaBindTesterResult(response, request.ResponseBody, request), nil
+	return newWxaBindTesterResult(response, request.ResponseBody, request), err
 }
 
 // ErrcodeInfo 错误描述

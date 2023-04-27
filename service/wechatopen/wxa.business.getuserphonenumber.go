@@ -2,7 +2,6 @@ package wechatopen
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -36,29 +35,21 @@ func newWxaBusinessGetUserPhoneNumberResult(result WxaBusinessGetUserPhoneNumber
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/phonenumber/phonenumber.getPhoneNumber.html
 func (c *Client) WxaBusinessGetUserPhoneNumber(ctx context.Context, code string, notMustParams ...gorequest.Params) (*WxaBusinessGetUserPhoneNumberResult, error) {
 	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
-	}
-	err = c.checkAuthorizerIsConfig()
-	if err != nil {
-		return nil, err
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newWxaBusinessGetUserPhoneNumberResult(WxaBusinessGetUserPhoneNumberResponse{}, []byte{}, gorequest.Response{}), err
 	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("code", code)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/business/getuserphonenumber?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/business/getuserphonenumber?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
-		return nil, err
+		return newWxaBusinessGetUserPhoneNumberResult(WxaBusinessGetUserPhoneNumberResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response WxaBusinessGetUserPhoneNumberResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newWxaBusinessGetUserPhoneNumberResult(response, request.ResponseBody, request), nil
+	return newWxaBusinessGetUserPhoneNumberResult(response, request.ResponseBody, request), err
 }
 
 // ErrcodeInfo 错误描述

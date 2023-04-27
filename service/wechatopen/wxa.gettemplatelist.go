@@ -2,7 +2,6 @@ package wechatopen
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -37,25 +36,17 @@ func newWxaGetTemplateListResult(result WxaGetTemplateListResponse, body []byte,
 // WxaGetTemplateList 获取代码模板列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/gettemplatelist.html
 func (c *Client) WxaGetTemplateList(ctx context.Context, notMustParams ...gorequest.Params) (*WxaGetTemplateListResult, error) {
-	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
-	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/gettemplatelist?access_token=%s", c.GetComponentAccessToken(ctx)), params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/wxa/gettemplatelist?access_token="+c.GetComponentAccessToken(ctx), params, http.MethodGet)
 	if err != nil {
-		return nil, err
+		return newWxaGetTemplateListResult(WxaGetTemplateListResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response WxaGetTemplateListResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newWxaGetTemplateListResult(response, request.ResponseBody, request), nil
+	return newWxaGetTemplateListResult(response, request.ResponseBody, request), err
 }
 
 // ErrcodeInfo 错误描述

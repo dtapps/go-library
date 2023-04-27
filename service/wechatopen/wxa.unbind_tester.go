@@ -2,7 +2,6 @@ package wechatopen
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -27,26 +26,22 @@ func newWxaUnbindTesterResult(result WxaUnbindTesterResponse, body []byte, http 
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_AdminManagement/unbind_tester.html
 func (c *Client) WxaUnbindTester(ctx context.Context, wechatid, userstr string, notMustParams ...gorequest.Params) (*WxaUnbindTesterResult, error) {
 	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newWxaUnbindTesterResult(WxaUnbindTesterResponse{}, []byte{}, gorequest.Response{}), err
 	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	if wechatid != "" {
-		params["wechatid"] = wechatid
+		params.Set("wechatid", wechatid)
 	}
-	params["userstr"] = userstr
+	params.Set("userstr", userstr)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/unbind_tester?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/unbind_tester?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
-		return nil, err
+		return newWxaUnbindTesterResult(WxaUnbindTesterResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response WxaUnbindTesterResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newWxaUnbindTesterResult(response, request.ResponseBody, request), nil
+	return newWxaUnbindTesterResult(response, request.ResponseBody, request), err
 }

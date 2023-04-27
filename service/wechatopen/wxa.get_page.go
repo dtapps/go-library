@@ -2,7 +2,6 @@ package wechatopen
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -28,26 +27,18 @@ func newWxaGetPageResult(result WxaGetPageResponse, body []byte, http gorequest.
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_page.html
 func (c *Client) WxaGetPage(ctx context.Context, notMustParams ...gorequest.Params) (*WxaGetPageResult, error) {
 	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
-	}
-	err = c.checkAuthorizerIsConfig()
-	if err != nil {
-		return nil, err
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newWxaGetPageResult(WxaGetPageResponse{}, []byte{}, gorequest.Response{}), err
 	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/get_page?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/wxa/get_page?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodGet)
 	if err != nil {
-		return nil, err
+		return newWxaGetPageResult(WxaGetPageResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response WxaGetPageResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newWxaGetPageResult(response, request.ResponseBody, request), nil
+	return newWxaGetPageResult(response, request.ResponseBody, request), err
 }

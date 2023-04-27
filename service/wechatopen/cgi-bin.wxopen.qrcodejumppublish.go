@@ -2,7 +2,6 @@ package wechatopen
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -27,29 +26,21 @@ func newCgiBinWxOpenQrCodeJumpPublishResult(result CgiBinWxOpenQrCodeJumpPublish
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumppublish.html
 func (c *Client) CgiBinWxOpenQrCodeJumpPublish(ctx context.Context, prefix string, notMustParams ...gorequest.Params) (*CgiBinWxOpenQrCodeJumpPublishResult, error) {
 	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
-	}
-	err = c.checkAuthorizerIsConfig()
-	if err != nil {
-		return nil, err
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newCgiBinWxOpenQrCodeJumpPublishResult(CgiBinWxOpenQrCodeJumpPublishResponse{}, []byte{}, gorequest.Response{}), err
 	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params["prefix"] = prefix
+	params.Set("prefix", prefix)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/wxopen/qrcodejumppublish?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/wxopen/qrcodejumppublish?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
-		return nil, err
+		return newCgiBinWxOpenQrCodeJumpPublishResult(CgiBinWxOpenQrCodeJumpPublishResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response CgiBinWxOpenQrCodeJumpPublishResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newCgiBinWxOpenQrCodeJumpPublishResult(response, request.ResponseBody, request), nil
+	return newCgiBinWxOpenQrCodeJumpPublishResult(response, request.ResponseBody, request), err
 }
 
 // ErrcodeInfo 错误描述

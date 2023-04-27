@@ -33,30 +33,22 @@ func newDataCubeGetWeAnAlySisAppidVisitPageResult(result DataCubeGetWeAnAlySisAp
 
 // DataCubeGetWeAnAlySisAppidVisitPage 获取访问页面数据
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/others/getVisitPage.html
-func (c *Client) DataCubeGetWeAnAlySisAppidVisitPage(ctx context.Context, beginDate, endDate string) (*DataCubeGetWeAnAlySisAppidVisitPageResult, error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidVisitPage(ctx context.Context, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlySisAppidVisitPageResult, error) {
 	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
-	}
-	err = c.checkAuthorizerIsConfig()
-	if err != nil {
-		return nil, err
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newDataCubeGetWeAnAlySisAppidVisitPageResult(DataCubeGetWeAnAlySisAppidVisitPageResponse{}, []byte{}, gorequest.Response{}), err
 	}
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("begin_date", beginDate)
 	params.Set("end_date", endDate)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/datacube/getweanalysisappidvisitpage?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
-		return nil, err
+		return newDataCubeGetWeAnAlySisAppidVisitPageResult(DataCubeGetWeAnAlySisAppidVisitPageResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response DataCubeGetWeAnAlySisAppidVisitPageResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newDataCubeGetWeAnAlySisAppidVisitPageResult(response, request.ResponseBody, request), nil
+	return newDataCubeGetWeAnAlySisAppidVisitPageResult(response, request.ResponseBody, request), err
 }

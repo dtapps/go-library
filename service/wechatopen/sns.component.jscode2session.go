@@ -32,33 +32,25 @@ func newSnsComponentJsCode2sessionResult(result SnsComponentJsCode2sessionRespon
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/others/WeChat_login.html
 func (c *Client) SnsComponentJsCode2session(ctx context.Context, jsCode string, notMustParams ...gorequest.Params) (*SnsComponentJsCode2sessionResult, error) {
 	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
-	}
-	err = c.checkAuthorizerIsConfig()
-	if err != nil {
-		return nil, err
+	if err := c.checkAuthorizerIsConfig(ctx); err != nil {
+		return newSnsComponentJsCode2sessionResult(SnsComponentJsCode2sessionResponse{}, []byte{}, gorequest.Response{}), err
 	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params["appid"] = c.GetAuthorizerAppid()                          // 小程序的 appId
+	params["appid"] = c.GetAuthorizerAppid(ctx)                       // 小程序的 appId
 	params["js_code"] = jsCode                                        // wx.login 获取的 code
 	params["grant_type"] = "authorization_code"                       // 填 authorization_code
-	params["component_appid"] = c.GetComponentAppId()                 // 第三方平台 appid
+	params["component_appid"] = c.GetComponentAppId(ctx)              // 第三方平台 appid
 	params["component_access_token"] = c.GetComponentAccessToken(ctx) // 第三方平台的component_access_token
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/sns/component/jscode2session", params, http.MethodGet)
 	if err != nil {
-		return nil, err
+		return newSnsComponentJsCode2sessionResult(SnsComponentJsCode2sessionResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response SnsComponentJsCode2sessionResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newSnsComponentJsCode2sessionResult(response, request.ResponseBody, request), nil
+	return newSnsComponentJsCode2sessionResult(response, request.ResponseBody, request), err
 }
 
 type UserInfo struct {

@@ -30,30 +30,22 @@ func newDataCubeGetWeAnAlysIsAppidVisitDistributionResult(result DataCubeGetWeAn
 
 // DataCubeGetWeAnAlysIsAppidVisitDistribution 获取用户小程序访问分布数据
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/others/getVisitDistribution.html
-func (c *Client) DataCubeGetWeAnAlysIsAppidVisitDistribution(ctx context.Context, beginDate, endDate string) (*DataCubeGetWeAnAlysIsAppidVisitDistributionResult, error) {
+func (c *Client) DataCubeGetWeAnAlysIsAppidVisitDistribution(ctx context.Context, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlysIsAppidVisitDistributionResult, error) {
 	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
-	}
-	err = c.checkAuthorizerIsConfig()
-	if err != nil {
-		return nil, err
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newDataCubeGetWeAnAlysIsAppidVisitDistributionResult(DataCubeGetWeAnAlysIsAppidVisitDistributionResponse{}, []byte{}, gorequest.Response{}), err
 	}
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("begin_date", beginDate)
 	params.Set("end_date", endDate)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/datacube/getweanalysisappidvisitdistribution?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
-		return nil, err
+		return newDataCubeGetWeAnAlysIsAppidVisitDistributionResult(DataCubeGetWeAnAlysIsAppidVisitDistributionResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response DataCubeGetWeAnAlysIsAppidVisitDistributionResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newDataCubeGetWeAnAlysIsAppidVisitDistributionResult(response, request.ResponseBody, request), nil
+	return newDataCubeGetWeAnAlysIsAppidVisitDistributionResult(response, request.ResponseBody, request), err
 }

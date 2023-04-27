@@ -31,30 +31,22 @@ func newDataCubeGetWeAnAlySisAppidMonthlyRetainInfoResult(result DataCubeGetWeAn
 
 // DataCubeGetWeAnAlySisAppidMonthlyRetainInfo 获取用户访问小程序月留存
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/visit-retain/getMonthlyRetain.html
-func (c *Client) DataCubeGetWeAnAlySisAppidMonthlyRetainInfo(ctx context.Context, beginDate, endDate string) (*DataCubeGetWeAnAlySisAppidMonthlyRetainInfoResult, error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidMonthlyRetainInfo(ctx context.Context, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlySisAppidMonthlyRetainInfoResult, error) {
 	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
-	}
-	err = c.checkAuthorizerIsConfig()
-	if err != nil {
-		return nil, err
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newDataCubeGetWeAnAlySisAppidMonthlyRetainInfoResult(DataCubeGetWeAnAlySisAppidMonthlyRetainInfoResponse{}, []byte{}, gorequest.Response{}), err
 	}
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("begin_date", beginDate)
 	params.Set("end_date", endDate)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/datacube/getweanalysisappidmonthlyretaininfo?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
-		return nil, err
+		return newDataCubeGetWeAnAlySisAppidMonthlyRetainInfoResult(DataCubeGetWeAnAlySisAppidMonthlyRetainInfoResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response DataCubeGetWeAnAlySisAppidMonthlyRetainInfoResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newDataCubeGetWeAnAlySisAppidMonthlyRetainInfoResult(response, request.ResponseBody, request), nil
+	return newDataCubeGetWeAnAlySisAppidMonthlyRetainInfoResult(response, request.ResponseBody, request), err
 }

@@ -2,7 +2,6 @@ package wechatopen
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -26,27 +25,19 @@ func newWxaAddToTemplateResult(result WxaAddToTemplateResponse, body []byte, htt
 // WxaAddToTemplate 将草稿添加到代码模板库
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/addtotemplate.html
 func (c *Client) WxaAddToTemplate(ctx context.Context, draftId string, templateType int, notMustParams ...gorequest.Params) (*WxaAddToTemplateResult, error) {
-	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
-	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params["draft_id"] = draftId
-	params["template_type"] = templateType
+	params.Set("draft_id", draftId)
+	params.Set("template_type", templateType)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/addtotemplate?access_token=%s", c.GetComponentAccessToken(ctx)), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/addtotemplate?access_token="+c.GetComponentAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
-		return nil, err
+		return newWxaAddToTemplateResult(WxaAddToTemplateResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response WxaAddToTemplateResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newWxaAddToTemplateResult(response, request.ResponseBody, request), nil
+	return newWxaAddToTemplateResult(response, request.ResponseBody, request), err
 }
 
 // ErrcodeInfo 错误描述

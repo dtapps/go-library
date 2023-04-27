@@ -2,7 +2,6 @@ package wechatopen
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -24,27 +23,24 @@ func newWxaApiWxAembeddedSetAuthorizeResult(result WxaApiWxAembeddedSetAuthorize
 }
 
 // WxaApiWxAembeddedSetAuthorize 设置授权方式
+// checkComponentIsConfig && checkAuthorizerConfig
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/embedded-management/setAuthorizedEmbedded.html
 func (c *Client) WxaApiWxAembeddedSetAuthorize(ctx context.Context, notMustParams ...gorequest.Params) (*WxaApiWxAembeddedSetAuthorizeResult, error) {
 	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newWxaApiWxAembeddedSetAuthorizeResult(WxaApiWxAembeddedSetAuthorizeResponse{}, []byte{}, gorequest.Response{}), err
 	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxaapi/wxaembedded/set_authorize?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxaapi/wxaembedded/set_authorize?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
-		return nil, err
+		return newWxaApiWxAembeddedSetAuthorizeResult(WxaApiWxAembeddedSetAuthorizeResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response WxaApiWxAembeddedSetAuthorizeResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newWxaApiWxAembeddedSetAuthorizeResult(response, request.ResponseBody, request), nil
+	return newWxaApiWxAembeddedSetAuthorizeResult(response, request.ResponseBody, request), err
 }
 
 // ErrcodeInfo 错误描述

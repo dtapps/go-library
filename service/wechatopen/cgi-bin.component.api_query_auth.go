@@ -2,7 +2,6 @@ package wechatopen
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -39,27 +38,18 @@ func newCgiBinComponentApiQueryAuthResult(result CgiBinComponentApiQueryAuthResp
 
 // CgiBinComponentApiQueryAuth 使用授权码获取授权信息
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/authorization_info.html
-func (c *Client) CgiBinComponentApiQueryAuth(ctx context.Context, authorizationCode string) (*CgiBinComponentApiQueryAuthResult, error) {
-	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
-	}
+func (c *Client) CgiBinComponentApiQueryAuth(ctx context.Context, authorizationCode string, notMustParams ...gorequest.Params) (*CgiBinComponentApiQueryAuthResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param["component_appid"] = c.GetComponentAppId() // 第三方平台 appid
-	param["authorization_code"] = authorizationCode  // 授权码, 会在授权成功时返回给第三方平台
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("component_appid", c.GetComponentAppId(ctx)) // 第三方平台appid
+	params.Set("authorization_code", authorizationCode)     // 授权码会在授权成功时返回给第三方平台
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/component/api_query_auth?component_access_token=%v", c.GetComponentAccessToken(ctx)), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/api_query_auth?component_access_token="+c.GetComponentAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
-		return nil, err
+		return newCgiBinComponentApiQueryAuthResult(CgiBinComponentApiQueryAuthResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response CgiBinComponentApiQueryAuthResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newCgiBinComponentApiQueryAuthResult(response, request.ResponseBody, request), nil
+	return newCgiBinComponentApiQueryAuthResult(response, request.ResponseBody, request), err
 }

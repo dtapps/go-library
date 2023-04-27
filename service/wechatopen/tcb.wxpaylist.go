@@ -33,26 +33,17 @@ func newTckWxPayListResult(result TckWxPayListResponse, body []byte, http gorequ
 // TckWxPayList 获取授权绑定的商户号列表
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/cloudbase-common/wechatpay/getWechatPayList.html
 func (c *Client) TckWxPayList(ctx context.Context, notMustParams ...gorequest.Params) (*TckWxPayListResult, error) {
-	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
-	}
-	// 参数
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/tcb/wxpaylist?access_token="+c.GetComponentAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
-		return nil, err
+		return newTckWxPayListResult(TckWxPayListResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response TckWxPayListResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newTckWxPayListResult(response, request.ResponseBody, request), nil
+	return newTckWxPayListResult(response, request.ResponseBody, request), err
 }
 
 // ErrcodeInfo 错误描述

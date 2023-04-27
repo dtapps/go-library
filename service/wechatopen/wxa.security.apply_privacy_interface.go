@@ -2,7 +2,6 @@ package wechatopen
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -28,24 +27,20 @@ func newWxaSecurityApplyPrivacyInterfaceResult(result WxaSecurityApplyPrivacyInt
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/apply_api/apply_privacy_interface.html
 func (c *Client) WxaSecurityApplyPrivacyInterface(ctx context.Context, notMustParams ...gorequest.Params) (*WxaSecurityApplyPrivacyInterfaceResult, error) {
 	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newWxaSecurityApplyPrivacyInterfaceResult(WxaSecurityApplyPrivacyInterfaceResponse{}, []byte{}, gorequest.Response{}), err
 	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/security/apply_privacy_interface?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/security/apply_privacy_interface?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
-		return nil, err
+		return newWxaSecurityApplyPrivacyInterfaceResult(WxaSecurityApplyPrivacyInterfaceResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response WxaSecurityApplyPrivacyInterfaceResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newWxaSecurityApplyPrivacyInterfaceResult(response, request.ResponseBody, request), nil
+	return newWxaSecurityApplyPrivacyInterfaceResult(response, request.ResponseBody, request), err
 }
 
 // ErrcodeInfo 错误描述

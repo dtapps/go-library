@@ -2,7 +2,6 @@ package wechatopen
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -45,10 +44,14 @@ func newWxaMediaCheckAsyncResult(result WxaMediaCheckAsyncResponse, body []byte,
 // WxaMediaCheckAsync 音视频内容安全识别
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/sec-center/sec-check/mediaCheckAsync.html
 func (c *Client) WxaMediaCheckAsync(ctx context.Context, notMustParams ...gorequest.Params) (*WxaMediaCheckAsyncResult, error) {
+	// 检查
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newWxaMediaCheckAsyncResult(WxaMediaCheckAsyncResponse{}, []byte{}, gorequest.Response{}), err
+	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/media_check_async?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/media_check_async?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
 		return newWxaMediaCheckAsyncResult(WxaMediaCheckAsyncResponse{}, request.ResponseBody, request), err
 	}

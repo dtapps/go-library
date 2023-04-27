@@ -32,30 +32,22 @@ func newDataCubeGetWeAnAlySisAppidMonthlyVisitTrendResult(result DataCubeGetWeAn
 
 // DataCubeGetWeAnAlySisAppidMonthlyVisitTrend 获取用户访问小程序数据月趋势
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/visit-trend/getMonthlyVisitTrend.html
-func (c *Client) DataCubeGetWeAnAlySisAppidMonthlyVisitTrend(ctx context.Context, beginDate, endDate string) (*DataCubeGetWeAnAlySisAppidMonthlyVisitTrendResult, error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidMonthlyVisitTrend(ctx context.Context, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlySisAppidMonthlyVisitTrendResult, error) {
 	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
-	}
-	err = c.checkAuthorizerIsConfig()
-	if err != nil {
-		return nil, err
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newDataCubeGetWeAnAlySisAppidMonthlyVisitTrendResult(DataCubeGetWeAnAlySisAppidMonthlyVisitTrendResponse{}, []byte{}, gorequest.Response{}), err
 	}
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("begin_date", beginDate)
 	params.Set("end_date", endDate)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/datacube/getweanalysisappidmonthlyvisittrend?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
-		return nil, err
+		return newDataCubeGetWeAnAlySisAppidMonthlyVisitTrendResult(DataCubeGetWeAnAlySisAppidMonthlyVisitTrendResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response DataCubeGetWeAnAlySisAppidMonthlyVisitTrendResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newDataCubeGetWeAnAlySisAppidMonthlyVisitTrendResult(response, request.ResponseBody, request), nil
+	return newDataCubeGetWeAnAlySisAppidMonthlyVisitTrendResult(response, request.ResponseBody, request), err
 }

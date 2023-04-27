@@ -14,8 +14,8 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	// 设置请求地址
 	client.SetUri(url)
 
-	client.SetHeader("component_app_id", c.GetComponentAppId())
-	client.SetHeader("authorizer_appid", c.GetAuthorizerAppid())
+	client.SetHeader("component_app_id", c.GetComponentAppId(ctx))
+	client.SetHeader("authorizer_appid", c.GetAuthorizerAppid(ctx))
 
 	// 设置方式
 	client.SetMethod(method)

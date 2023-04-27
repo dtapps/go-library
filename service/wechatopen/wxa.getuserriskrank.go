@@ -2,7 +2,6 @@ package wechatopen
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -28,11 +27,15 @@ func newWxaGetUserRiskRankResult(result WxaGetUserRiskRankResponse, body []byte,
 // WxaGetUserRiskRank 获取用户安全等级
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/sec-center/safety-control-capability/getUserRiskRank.html
 func (c *Client) WxaGetUserRiskRank(ctx context.Context, notMustParams ...gorequest.Params) (*WxaGetUserRiskRankResult, error) {
+	// 检查
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newWxaGetUserRiskRankResult(WxaGetUserRiskRankResponse{}, []byte{}, gorequest.Response{}), err
+	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("appid", c.GetAuthorizerAppid())
+	params.Set("appid", c.GetAuthorizerAppid(ctx))
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/getuserriskrank?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/getuserriskrank?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
 		return newWxaGetUserRiskRankResult(WxaGetUserRiskRankResponse{}, request.ResponseBody, request), err
 	}

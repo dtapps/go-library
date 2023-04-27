@@ -2,7 +2,6 @@ package wechatopen
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -27,24 +26,20 @@ func newWxaApiWxaembeddedAddEmbeddedResult(result WxaApiWxaembeddedAddEmbeddedRe
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/embedded-management/addEmbedded.html
 func (c *Client) WxaApiWxaembeddedAddEmbedded(ctx context.Context, notMustParams ...gorequest.Params) (*WxaApiWxaembeddedAddEmbeddedResult, error) {
 	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newWxaApiWxaembeddedAddEmbeddedResult(WxaApiWxaembeddedAddEmbeddedResponse{}, []byte{}, gorequest.Response{}), err
 	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxaapi/wxaembedded/add_embedded?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxaapi/wxaembedded/add_embedded?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
-		return nil, err
+		return newWxaApiWxaembeddedAddEmbeddedResult(WxaApiWxaembeddedAddEmbeddedResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response WxaApiWxaembeddedAddEmbeddedResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newWxaApiWxaembeddedAddEmbeddedResult(response, request.ResponseBody, request), nil
+	return newWxaApiWxaembeddedAddEmbeddedResult(response, request.ResponseBody, request), err
 }
 
 // ErrcodeInfo 错误描述

@@ -2,7 +2,6 @@ package wechatopen
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -28,15 +27,12 @@ func (c *Client) CgiBinGetApiDomainIp(ctx context.Context, componentAccessToken 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/get_api_domain_ip?access_token=%s", componentAccessToken), params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/get_api_domain_ip?access_token="+componentAccessToken, params, http.MethodGet)
 	if err != nil {
-		return nil, err
+		return NewGetCallBackIpResult(GetCallBackIpResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response GetCallBackIpResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return NewGetCallBackIpResult(response, request.ResponseBody, request), nil
+	return NewGetCallBackIpResult(response, request.ResponseBody, request), err
 }

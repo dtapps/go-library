@@ -2,7 +2,6 @@ package wechatopen
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -29,26 +28,18 @@ func newCgiBinWxOpenQrCodeJumpDownloadResult(result CgiBinWxOpenQrCodeJumpDownlo
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumpdownload.html
 func (c *Client) CgiBinWxOpenQrCodeJumpDownload(ctx context.Context, notMustParams ...gorequest.Params) (*CgiBinWxOpenQrCodeJumpDownloadResult, error) {
 	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
-	}
-	err = c.checkAuthorizerIsConfig()
-	if err != nil {
-		return nil, err
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newCgiBinWxOpenQrCodeJumpDownloadResult(CgiBinWxOpenQrCodeJumpDownloadResponse{}, []byte{}, gorequest.Response{}), err
 	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/wxopen/qrcodejumpdownload?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/wxopen/qrcodejumpdownload?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
-		return nil, err
+		return newCgiBinWxOpenQrCodeJumpDownloadResult(CgiBinWxOpenQrCodeJumpDownloadResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response CgiBinWxOpenQrCodeJumpDownloadResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newCgiBinWxOpenQrCodeJumpDownloadResult(response, request.ResponseBody, request), nil
+	return newCgiBinWxOpenQrCodeJumpDownloadResult(response, request.ResponseBody, request), err
 }

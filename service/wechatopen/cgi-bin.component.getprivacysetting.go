@@ -2,7 +2,6 @@ package wechatopen
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -60,27 +59,19 @@ func newCgiBinComponentGetPrivacySettingResult(result CgiBinComponentGetPrivacyS
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/privacy_config/get_privacy_setting.html
 func (c *Client) CgiBinComponentGetPrivacySetting(ctx context.Context, privacyVer int, notMustParams ...gorequest.Params) (*CgiBinComponentGetPrivacySettingResult, error) {
 	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
-	}
-	err = c.checkAuthorizerIsConfig()
-	if err != nil {
-		return nil, err
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newCgiBinComponentGetPrivacySettingResult(CgiBinComponentGetPrivacySettingResponse{}, []byte{}, gorequest.Response{}), err
 	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params["privacy_ver"] = privacyVer
+	params.Set("privacy_ver", privacyVer)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/component/getprivacysetting?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/getprivacysetting?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
-		return nil, err
+		return newCgiBinComponentGetPrivacySettingResult(CgiBinComponentGetPrivacySettingResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response CgiBinComponentGetPrivacySettingResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newCgiBinComponentGetPrivacySettingResult(response, request.ResponseBody, request), nil
+	return newCgiBinComponentGetPrivacySettingResult(response, request.ResponseBody, request), err
 }

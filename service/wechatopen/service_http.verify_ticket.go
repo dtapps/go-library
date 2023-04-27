@@ -58,7 +58,7 @@ func (c *Client) ServeHttpVerifyTicket(ctx context.Context, r *http.Request) (re
 		return resp, errors.New("未找到随机数参数")
 	}
 
-	wantSignature = Sign(c.GetMessageToken(), timestamp, nonce)
+	wantSignature = Sign(c.GetMessageToken(ctx), timestamp, nonce)
 	if haveSignature != wantSignature {
 		return resp, errors.New("签名错误")
 	}
@@ -97,7 +97,7 @@ func (c *Client) ServeHttpVerifyTicket(ctx context.Context, r *http.Request) (re
 		return resp, errors.New(fmt.Sprintf("Encrypt 解码字符串错误：%v", err))
 	}
 
-	AesKey, err := base64.StdEncoding.DecodeString(c.GetMessageKey() + "=")
+	AesKey, err := base64.StdEncoding.DecodeString(c.GetMessageKey(ctx) + "=")
 	if err != nil {
 		return resp, errors.New(fmt.Sprintf("messageKey 解码字符串错误：%v", err))
 	}

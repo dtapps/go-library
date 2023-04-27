@@ -26,25 +26,17 @@ func newCgiBinComponentFastRegisterWeAppCreateResult(result CgiBinComponentFastR
 // CgiBinComponentFastRegisterWeAppCreate 快速注册企业小程序
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/register-management/fast-registration-ent/registerMiniprogram.html
 func (c *Client) CgiBinComponentFastRegisterWeAppCreate(ctx context.Context, notMustParams ...gorequest.Params) (*CgiBinComponentFastRegisterWeAppCreateResult, error) {
-	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
-	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/fastregisterweapp?action=create&component_access_token="+c.GetComponentAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
-		return nil, err
+		return newCgiBinComponentFastRegisterWeAppCreateResult(CgiBinComponentFastRegisterWeAppCreateResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response CgiBinComponentFastRegisterWeAppCreateResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newCgiBinComponentFastRegisterWeAppCreateResult(response, request.ResponseBody, request), nil
+	return newCgiBinComponentFastRegisterWeAppCreateResult(response, request.ResponseBody, request), err
 }
 
 // ErrcodeInfo 错误描述

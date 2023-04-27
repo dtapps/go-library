@@ -29,35 +29,26 @@ func newWxaGetQrcodeResult(result WxaGetQrcodeResponse, body []byte, http gorequ
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_qrcode.html
 func (c *Client) WxaGetQrcode(ctx context.Context, path string, notMustParams ...gorequest.Params) (*WxaGetQrcodeResult, error) {
 	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
-	}
-	err = c.checkAuthorizerIsConfig()
-	if err != nil {
-		return nil, err
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newWxaGetQrcodeResult(WxaGetQrcodeResponse{}, []byte{}, gorequest.Response{}), err
 	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	if path != "" {
-		params["path"] = path // 指定二维码扫码后直接进入指定页面并可同时带上参数）
+		params.Set("path", path) // 指定二维码扫码后直接进入指定页面并可同时带上参数）
 	}
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/get_qrcode?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/wxa/get_qrcode?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodGet)
 	if err != nil {
-		return nil, err
+		return newWxaGetQrcodeResult(WxaGetQrcodeResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response WxaGetQrcodeResponse
 	// 判断内容是否为图片
-	if request.HeaderIsImg() {
-	} else {
+	if request.HeaderIsImg() == false {
 		err = gojson.Unmarshal(request.ResponseBody, &response)
-		if err != nil {
-			return nil, err
-		}
 	}
-	return newWxaGetQrcodeResult(response, request.ResponseBody, request), nil
+	return newWxaGetQrcodeResult(response, request.ResponseBody, request), err
 }
 
 func (cr *WxaGetQrcodeResult) SaveImg(db *gostorage.AliYun, fileName, filePath string) error {

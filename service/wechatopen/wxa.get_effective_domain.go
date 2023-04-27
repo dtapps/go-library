@@ -2,7 +2,6 @@ package wechatopen
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -51,26 +50,18 @@ func newWxaGetEffectiveDomainResult(result WxaGetEffectiveDomainResponse, body [
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_Basic_Info/get_effective_domain.html
 func (c *Client) WxaGetEffectiveDomain(ctx context.Context, notMustParams ...gorequest.Params) (*WxaGetEffectiveDomainResult, error) {
 	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
-	}
-	err = c.checkAuthorizerIsConfig()
-	if err != nil {
-		return nil, err
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newWxaGetEffectiveDomainResult(WxaGetEffectiveDomainResponse{}, []byte{}, gorequest.Response{}), err
 	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/get_effective_domain?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/get_effective_domain?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
-		return nil, err
+		return newWxaGetEffectiveDomainResult(WxaGetEffectiveDomainResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response WxaGetEffectiveDomainResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newWxaGetEffectiveDomainResult(response, request.ResponseBody, request), nil
+	return newWxaGetEffectiveDomainResult(response, request.ResponseBody, request), err
 }

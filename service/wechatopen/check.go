@@ -1,21 +1,26 @@
 package wechatopen
 
-func (c *Client) checkComponentIsConfig() error {
-	componentAppId := c.GetComponentAppId()
-	if componentAppId == "" {
-		return componentAppIdNoConfig
-	}
-	componentAppSecret := c.GetComponentAppSecret()
-	if componentAppSecret == "" {
-		return componentAppSecretNoConfig
+import (
+	"context"
+	"errors"
+)
+
+func (c *Client) checkAuthorizerIsConfig(ctx context.Context) error {
+	authorizerAppid := c.GetAuthorizerAppid(ctx)
+	if authorizerAppid == "" {
+		return errors.New("请配置 authorizerAppid")
 	}
 	return nil
 }
 
-func (c *Client) checkAuthorizerIsConfig() error {
-	authorizerAppid := c.GetAuthorizerAppid()
+func (c *Client) checkAuthorizerConfig(ctx context.Context) error {
+	authorizerAppid := c.GetAuthorizerAppid(ctx)
 	if authorizerAppid == "" {
-		return authorizerAppidNoConfig
+		return errors.New("请配置 authorizerAppid")
+	}
+	authorizerAccessToken := c.GetAuthorizerAccessToken(ctx)
+	if authorizerAccessToken == "" {
+		return errors.New("请配置 authorizerAccessToken")
 	}
 	return nil
 }

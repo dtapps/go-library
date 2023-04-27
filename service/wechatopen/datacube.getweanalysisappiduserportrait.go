@@ -85,30 +85,22 @@ func newDataCubeGetWeAnAlySisAppidUserPortraitResult(result DataCubeGetWeAnAlySi
 
 // DataCubeGetWeAnAlySisAppidUserPortrait 获取小程序用户画像分布
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/others/getUserPortrait.html
-func (c *Client) DataCubeGetWeAnAlySisAppidUserPortrait(ctx context.Context, beginDate, endDate string) (*DataCubeGetWeAnAlySisAppidUserPortraitResult, error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidUserPortrait(ctx context.Context, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlySisAppidUserPortraitResult, error) {
 	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
-	}
-	err = c.checkAuthorizerIsConfig()
-	if err != nil {
-		return nil, err
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newDataCubeGetWeAnAlySisAppidUserPortraitResult(DataCubeGetWeAnAlySisAppidUserPortraitResponse{}, []byte{}, gorequest.Response{}), err
 	}
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("begin_date", beginDate)
 	params.Set("end_date", endDate)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/datacube/getweanalysisappiduserportrait?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
-		return nil, err
+		return newDataCubeGetWeAnAlySisAppidUserPortraitResult(DataCubeGetWeAnAlySisAppidUserPortraitResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response DataCubeGetWeAnAlySisAppidUserPortraitResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newDataCubeGetWeAnAlySisAppidUserPortraitResult(response, request.ResponseBody, request), nil
+	return newDataCubeGetWeAnAlySisAppidUserPortraitResult(response, request.ResponseBody, request), err
 }

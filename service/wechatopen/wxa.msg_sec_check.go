@@ -2,7 +2,6 @@ package wechatopen
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -40,10 +39,14 @@ func newWxaMsgSecCheckResult(result WxaMsgSecCheckResponse, body []byte, http go
 // WxaMsgSecCheck 文本内容安全识别
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.getUnlimited.html
 func (c *Client) WxaMsgSecCheck(ctx context.Context, notMustParams ...gorequest.Params) (*WxaMsgSecCheckResult, error) {
+	// 检查
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newWxaMsgSecCheckResult(WxaMsgSecCheckResponse{}, []byte{}, gorequest.Response{}), err
+	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/msg_sec_check?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/msg_sec_check?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
 		return newWxaMsgSecCheckResult(WxaMsgSecCheckResponse{}, request.ResponseBody, request), err
 	}

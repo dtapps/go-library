@@ -2,7 +2,6 @@ package wechatopen
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -27,24 +26,20 @@ func newWxaApiWxaembeddedDelAuthorizeResult(result WxaApiWxaembeddedDelAuthorize
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/embedded-management/deleteAuthorizedEmbedded.html
 func (c *Client) WxaApiWxaembeddedDelAuthorize(ctx context.Context, notMustParams ...gorequest.Params) (*WxaApiWxaembeddedDelAuthorizeResult, error) {
 	// 检查
-	err := c.checkComponentIsConfig()
-	if err != nil {
-		return nil, err
+	if err := c.checkAuthorizerConfig(ctx); err != nil {
+		return newWxaApiWxaembeddedDelAuthorizeResult(WxaApiWxaembeddedDelAuthorizeResponse{}, []byte{}, gorequest.Response{}), err
 	}
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxaapi/wxaembedded/del_authorize?access_token=%s", c.GetAuthorizerAccessToken(ctx)), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxaapi/wxaembedded/del_authorize?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
 	if err != nil {
-		return nil, err
+		return newWxaApiWxaembeddedDelAuthorizeResult(WxaApiWxaembeddedDelAuthorizeResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response WxaApiWxaembeddedDelAuthorizeResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return nil, err
-	}
-	return newWxaApiWxaembeddedDelAuthorizeResult(response, request.ResponseBody, request), nil
+	return newWxaApiWxaembeddedDelAuthorizeResult(response, request.ResponseBody, request), err
 }
 
 // ErrcodeInfo 错误描述
