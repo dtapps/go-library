@@ -28,7 +28,7 @@ func newCgiBinComponentApiAuthorizerTokenResult(result CgiBinComponentApiAuthori
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/api_authorizer_token.html
 func (c *Client) CgiBinComponentApiAuthorizerToken(ctx context.Context, authorizerRefreshToken string, notMustParams ...gorequest.Params) (*CgiBinComponentApiAuthorizerTokenResult, error) {
 	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
+	if err := c.checkAuthorizerIsConfig(ctx); err != nil {
 		return newCgiBinComponentApiAuthorizerTokenResult(CgiBinComponentApiAuthorizerTokenResponse{}, []byte{}, gorequest.Response{}, c.GetAuthorizerAppid(ctx)), err
 	}
 	// 参数
