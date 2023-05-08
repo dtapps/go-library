@@ -39,7 +39,7 @@ require (
 	gorm.io/driver/mysql v1.5.0
 	gorm.io/driver/postgres v1.5.0
 	gorm.io/gen v0.3.22
-	gorm.io/gorm v1.25.0
+	gorm.io/gorm v1.25.1
 	xorm.io/builder v0.3.12
 	xorm.io/xorm v1.3.2
 )

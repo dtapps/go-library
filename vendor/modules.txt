@@ -600,7 +600,7 @@ gorm.io/gen/internal/model
 gorm.io/gen/internal/parser
 gorm.io/gen/internal/template
 gorm.io/gen/internal/utils/pools
-# gorm.io/gorm v1.25.0
+# gorm.io/gorm v1.25.1
 ## explicit; go 1.16
 gorm.io/gorm
 gorm.io/gorm/callbacks

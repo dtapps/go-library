@@ -27,9 +27,9 @@ func newCgiBinComponentApiComponentTokenResult(result CgiBinComponentApiComponen
 func (c *Client) CgiBinComponentApiComponentToken(ctx context.Context, notMustParams ...gorequest.Params) (*CgiBinComponentApiComponentTokenResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("component_appid", c.GetComponentAppId(ctx))                // 第三方平台appid
-	params.Set("component_appsecret", c.GetComponentAppSecret(ctx))        // 第三方平台appsecret
-	params.Set("component_verify_ticket", c.GetComponentVerifyTicket(ctx)) // 微信后台推送的ticket
+	params.Set("component_appid", c.GetComponentAppId(ctx))                 // 第三方平台appid
+	params.Set("component_appsecret", c.GetComponentAppSecret(ctx))         // 第三方平台appsecret
+	params.Set("component_verify_ticket", GetComponentVerifyTicket(ctx, c)) // 微信后台推送的ticket
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/api_component_token", params, http.MethodPost)
 	if err != nil {
