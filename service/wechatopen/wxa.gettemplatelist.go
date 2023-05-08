@@ -39,7 +39,7 @@ func (c *Client) WxaGetTemplateList(ctx context.Context, notMustParams ...gorequ
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/gettemplatelist?access_token="+c.GetComponentAccessToken(ctx), params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/wxa/gettemplatelist?access_token="+GetComponentAccessToken(ctx, c), params, http.MethodGet)
 	if err != nil {
 		return newWxaGetTemplateListResult(WxaGetTemplateListResponse{}, request.ResponseBody, request), err
 	}

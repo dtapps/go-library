@@ -32,7 +32,7 @@ func (c *Client) CgiBinWxOpenQrCodeJumpAdd(ctx context.Context, notMustParams ..
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/wxopen/qrcodejumpadd?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/wxopen/qrcodejumpadd?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newCgiBinWxOpenQrCodeJumpAddResult(CgiBinWxOpenQrCodeJumpAddResponse{}, request.ResponseBody, request), err
 	}

@@ -32,7 +32,7 @@ func (c *Client) WxaRelease(ctx context.Context, notMustParams ...gorequest.Para
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/release?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/release?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newWxaReleaseResult(WxaReleaseResponse{}, request.ResponseBody, request), err
 	}

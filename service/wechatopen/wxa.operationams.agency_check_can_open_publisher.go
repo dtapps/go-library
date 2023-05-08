@@ -33,7 +33,7 @@ func (c *Client) WxaOperationamsAgencyCheckCanOpenPublisher(ctx context.Context,
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/operationams?action=agency_check_can_open_publisher&access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/operationams?action=agency_check_can_open_publisher&access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newWxaOperationamsAgencyCheckCanOpenPublisherResult(WxaOperationamsAgencyCheckCanOpenPublisherResponse{}, request.ResponseBody, request), err
 	}

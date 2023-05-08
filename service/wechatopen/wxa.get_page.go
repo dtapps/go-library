@@ -33,7 +33,7 @@ func (c *Client) WxaGetPage(ctx context.Context, notMustParams ...gorequest.Para
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/get_page?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/wxa/get_page?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodGet)
 	if err != nil {
 		return newWxaGetPageResult(WxaGetPageResponse{}, request.ResponseBody, request), err
 	}

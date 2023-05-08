@@ -38,7 +38,7 @@ func (c *Client) WxaGetQrcode(ctx context.Context, path string, notMustParams ..
 		params.Set("path", path) // 指定二维码扫码后直接进入指定页面并可同时带上参数）
 	}
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/get_qrcode?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/wxa/get_qrcode?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodGet)
 	if err != nil {
 		return newWxaGetQrcodeResult(WxaGetQrcodeResponse{}, request.ResponseBody, request), err
 	}

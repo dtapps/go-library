@@ -66,7 +66,7 @@ func (c *Client) CgiBinComponentGetPrivacySetting(ctx context.Context, privacyVe
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("privacy_ver", privacyVer)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/getprivacysetting?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/getprivacysetting?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newCgiBinComponentGetPrivacySettingResult(CgiBinComponentGetPrivacySettingResponse{}, request.ResponseBody, request), err
 	}

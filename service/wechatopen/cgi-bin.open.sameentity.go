@@ -29,7 +29,7 @@ func (c *Client) CgiBinOpenSameEnTity(ctx context.Context, notMustParams ...gore
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/open/sameentity?access_token="+c.GetComponentAccessToken(ctx), params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/open/sameentity?access_token="+GetComponentAccessToken(ctx, c), params, http.MethodGet)
 	if err != nil {
 		return newCgiBinOpenSameEnTityResult(CgiBinOpenSameEnTityResponse{}, request.ResponseBody, request), err
 	}

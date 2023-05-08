@@ -40,7 +40,7 @@ func (c *Client) WxaGetCategory(ctx context.Context, notMustParams ...gorequest.
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/get_category?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/wxa/get_category?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodGet)
 	if err != nil {
 		return newWxaGetCategoryResult(WxaGetCategoryResponse{}, request.ResponseBody, request), err
 	}

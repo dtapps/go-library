@@ -36,7 +36,7 @@ func (c *Client) TckWxPayList(ctx context.Context, notMustParams ...gorequest.Pa
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/tcb/wxpaylist?access_token="+c.GetComponentAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/tcb/wxpaylist?access_token="+GetComponentAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newTckWxPayListResult(TckWxPayListResponse{}, request.ResponseBody, request), err
 	}

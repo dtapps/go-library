@@ -40,7 +40,7 @@ func (c *Client) DataCubeGetWeAnAlysIsAppidVisitDistribution(ctx context.Context
 	params.Set("begin_date", beginDate)
 	params.Set("end_date", endDate)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/datacube/getweanalysisappidvisitdistribution?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/datacube/getweanalysisappidvisitdistribution?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newDataCubeGetWeAnAlysIsAppidVisitDistributionResult(DataCubeGetWeAnAlysIsAppidVisitDistributionResponse{}, request.ResponseBody, request), err
 	}

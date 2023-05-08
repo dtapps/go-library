@@ -33,7 +33,7 @@ func (c *Client) CgiBinWxOpenQrCodeJumpDelete(ctx context.Context, prefix string
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("prefix", prefix)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/wxopen/qrcodejumpdelete?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/wxopen/qrcodejumpdelete?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newCgiBinWxOpenQrCodeJumpDeleteResult(CgiBinWxOpenQrCodeJumpDeleteResponse{}, request.ResponseBody, request), err
 	}

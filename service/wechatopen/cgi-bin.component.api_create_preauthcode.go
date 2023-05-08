@@ -29,7 +29,7 @@ func (c *Client) CgiBinComponentApiCreatePreAuthCoden(ctx context.Context, notMu
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("component_appid", c.GetComponentAppId(ctx)) // 第三方平台appid
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/api_create_preauthcode?component_access_token="+c.GetComponentAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/api_create_preauthcode?component_access_token="+GetComponentAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newCgiBinComponentApiCreatePreAuthCodenResult(CgiBinComponentApiCreatePreAuthCodenResponse{}, request.ResponseBody, request), err
 	}

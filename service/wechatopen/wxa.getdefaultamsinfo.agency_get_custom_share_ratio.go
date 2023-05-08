@@ -34,7 +34,7 @@ func (c *Client) WxaGetDefaultamsInfoAgencyGetCustomShareRatio(ctx context.Conte
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", c.GetAuthorizerAppid(ctx))
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/getdefaultamsinfo?action=agency_get_custom_share_ratio&access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/getdefaultamsinfo?action=agency_get_custom_share_ratio&access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newWxaGetDefaultamsInfoAgencyGetCustomShareRatioResult(WxaGetDefaultamsInfoAgencyGetCustomShareRatioResponse{}, request.ResponseBody, request), err
 	}

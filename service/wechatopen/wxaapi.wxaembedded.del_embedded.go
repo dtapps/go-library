@@ -32,7 +32,7 @@ func (c *Client) WxaApiWxaembeddedDelAuthorize(ctx context.Context, notMustParam
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxaapi/wxaembedded/del_authorize?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxaapi/wxaembedded/del_authorize?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newWxaApiWxaembeddedDelAuthorizeResult(WxaApiWxaembeddedDelAuthorizeResponse{}, request.ResponseBody, request), err
 	}

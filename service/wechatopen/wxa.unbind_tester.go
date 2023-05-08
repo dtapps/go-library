@@ -36,7 +36,7 @@ func (c *Client) WxaUnbindTester(ctx context.Context, wechatid, userstr string, 
 	}
 	params.Set("userstr", userstr)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/unbind_tester?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/unbind_tester?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newWxaUnbindTesterResult(WxaUnbindTesterResponse{}, request.ResponseBody, request), err
 	}

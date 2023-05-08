@@ -18,7 +18,7 @@ func (c *Client) checkAuthorizerConfig(ctx context.Context) error {
 	if authorizerAppid == "" {
 		return errors.New("请配置 authorizerAppid")
 	}
-	authorizerAccessToken := c.GetAuthorizerAccessToken(ctx)
+	authorizerAccessToken := GetAuthorizerAccessToken(ctx, c)
 	if authorizerAccessToken == "" {
 		return errors.New("请配置 authorizerAccessToken")
 	}

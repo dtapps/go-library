@@ -44,7 +44,7 @@ func (c *Client) CgiBinComponentApiQueryAuth(ctx context.Context, authorizationC
 	params.Set("component_appid", c.GetComponentAppId(ctx)) // 第三方平台appid
 	params.Set("authorization_code", authorizationCode)     // 授权码会在授权成功时返回给第三方平台
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/api_query_auth?component_access_token="+c.GetComponentAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/api_query_auth?component_access_token="+GetComponentAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newCgiBinComponentApiQueryAuthResult(CgiBinComponentApiQueryAuthResponse{}, request.ResponseBody, request), err
 	}

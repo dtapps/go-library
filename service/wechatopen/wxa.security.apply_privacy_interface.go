@@ -33,7 +33,7 @@ func (c *Client) WxaSecurityApplyPrivacyInterface(ctx context.Context, notMustPa
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/security/apply_privacy_interface?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/security/apply_privacy_interface?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newWxaSecurityApplyPrivacyInterfaceResult(WxaSecurityApplyPrivacyInterfaceResponse{}, request.ResponseBody, request), err
 	}

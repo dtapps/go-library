@@ -35,7 +35,7 @@ func (c *Client) WxaSetDefaultamsInfoSetShareRatio(ctx context.Context, shareRat
 		params.Set("share_ratio", shareRatio)
 	}
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/setdefaultamsinfo?action=set_share_ratio&access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/setdefaultamsinfo?action=set_share_ratio&access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newWxaSetDefaultamsInfoSetShareRatioResult(WxaSetDefaultamsInfoSetShareRatioResponse{}, request.ResponseBody, request), err
 	}

@@ -32,7 +32,7 @@ func (c *Client) WxaCommit(ctx context.Context, notMustParams ...gorequest.Param
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/commit?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/commit?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newWxaCommitResult(WxaCommitResponse{}, request.ResponseBody, request), err
 	}

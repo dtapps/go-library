@@ -92,7 +92,7 @@ func (c *Client) CgiBinComponentApiGetAuthorizerInfo(ctx context.Context, notMus
 	params.Set("component_appid", c.GetComponentAppId(ctx))   // 第三方平台appid
 	params.Set("authorizer_appid", c.GetAuthorizerAppid(ctx)) // 授权方appid
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/api_get_authorizer_info?component_access_token="+c.GetComponentAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/api_get_authorizer_info?component_access_token="+GetComponentAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newCgiBinComponentApiGetAuthorizerInfoResult(CgiBinComponentApiGetAuthorizerInfoResponse{}, request.ResponseBody, request), err
 	}

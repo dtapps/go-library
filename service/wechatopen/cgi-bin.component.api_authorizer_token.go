@@ -37,7 +37,7 @@ func (c *Client) CgiBinComponentApiAuthorizerToken(ctx context.Context, authoriz
 	params.Set("authorizer_appid", c.GetAuthorizerAppid(ctx))      // 授权方appid
 	params.Set("authorizer_refresh_token", authorizerRefreshToken) // 授权码会在授权成功时返回给第三方平台
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/api_authorizer_token?component_access_token="+c.GetComponentAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/api_authorizer_token?component_access_token="+GetComponentAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newCgiBinComponentApiAuthorizerTokenResult(CgiBinComponentApiAuthorizerTokenResponse{}, request.ResponseBody, request, params.Get("authorizer_appid").(string)), err
 	}

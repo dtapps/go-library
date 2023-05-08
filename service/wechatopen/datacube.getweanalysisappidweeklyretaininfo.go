@@ -41,7 +41,7 @@ func (c *Client) DataCubeGetWeAnAlySisAppidWeeklyRetainInfo(ctx context.Context,
 	params.Set("begin_date", beginDate)
 	params.Set("end_date", endDate)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/datacube/getweanalysisappidweeklyretaininfo?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/datacube/getweanalysisappidweeklyretaininfo?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newDataCubeGetWeAnAlySisAppidWeeklyRetainInfoResult(DataCubeGetWeAnAlySisAppidWeeklyRetainInfoResponse{}, request.ResponseBody, request), err
 	}

@@ -33,7 +33,7 @@ func (c *Client) WxaSubmitAudit(ctx context.Context, notMustParams ...gorequest.
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/submit_audit?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/submit_audit?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newWxaSubmitAuditResult(WxaSubmitAuditResponse{}, request.ResponseBody, request), err
 	}

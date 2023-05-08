@@ -42,7 +42,7 @@ func (c *Client) WxaGetVersionInfo(ctx context.Context, notMustParams ...goreque
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/getversioninfo?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/getversioninfo?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newWxaGetVersionInfoResult(WxaGetVersionInfoResponse{}, request.ResponseBody, request), err
 	}

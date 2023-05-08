@@ -42,7 +42,7 @@ func (c *Client) WxaBusinessGetUserPhoneNumber(ctx context.Context, code string,
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("code", code)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/business/getuserphonenumber?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/business/getuserphonenumber?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newWxaBusinessGetUserPhoneNumberResult(WxaBusinessGetUserPhoneNumberResponse{}, request.ResponseBody, request), err
 	}

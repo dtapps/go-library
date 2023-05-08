@@ -34,7 +34,7 @@ func (c *Client) WxaBindTester(ctx context.Context, wechatid string, notMustPara
 	params := gorequest.NewParamsWith(notMustParams...)
 	params["wechatid"] = wechatid
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/bind_tester?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/bind_tester?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newWxaBindTesterResult(WxaBindTesterResponse{}, request.ResponseBody, request), err
 	}

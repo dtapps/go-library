@@ -33,7 +33,7 @@ func (c *Client) CgiBinWxOpenQrCodeJumpPublish(ctx context.Context, prefix strin
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("prefix", prefix)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/wxopen/qrcodejumppublish?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/wxopen/qrcodejumppublish?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newCgiBinWxOpenQrCodeJumpPublishResult(CgiBinWxOpenQrCodeJumpPublishResponse{}, request.ResponseBody, request), err
 	}

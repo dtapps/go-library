@@ -33,7 +33,7 @@ func (c *Client) WxaApiWxAembeddedSetAuthorize(ctx context.Context, notMustParam
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxaapi/wxaembedded/set_authorize?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxaapi/wxaembedded/set_authorize?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newWxaApiWxAembeddedSetAuthorizeResult(WxaApiWxAembeddedSetAuthorizeResponse{}, request.ResponseBody, request), err
 	}

@@ -29,7 +29,7 @@ func (c *Client) CgiBinComponentFastRegisterWeAppSearch(ctx context.Context, not
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/fastregisterweapp?action=search&component_access_token="+c.GetComponentAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/fastregisterweapp?action=search&component_access_token="+GetComponentAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newCgiBinComponentFastRegisterWeAppSearchResult(CgiBinComponentFastRegisterWeAppSearchResponse{}, request.ResponseBody, request), err
 	}

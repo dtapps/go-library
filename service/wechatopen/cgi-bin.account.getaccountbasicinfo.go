@@ -62,7 +62,7 @@ func (c *Client) CgiBinAccountGetAccountBasicInfo(ctx context.Context, notMustPa
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/account/getaccountbasicinfo?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/account/getaccountbasicinfo?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodGet)
 	if err != nil {
 		return newCgiBinAccountGetAccountBasicInfoResult(CgiBinAccountGetAccountBasicInfoResponse{}, request.ResponseBody, request), err
 	}

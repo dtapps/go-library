@@ -75,7 +75,7 @@ github.com/gin-gonic/gin/binding
 github.com/gin-gonic/gin/internal/bytesconv
 github.com/gin-gonic/gin/internal/json
 github.com/gin-gonic/gin/render
-# github.com/go-co-op/gocron v1.23.0
+# github.com/go-co-op/gocron v1.25.0
 ## explicit; go 1.20
 github.com/go-co-op/gocron
 # github.com/go-logr/logr v1.2.4
@@ -117,7 +117,7 @@ github.com/goccy/go-json/internal/encoder/vm_color_indent
 github.com/goccy/go-json/internal/encoder/vm_indent
 github.com/goccy/go-json/internal/errors
 github.com/goccy/go-json/internal/runtime
-# github.com/gogf/gf/v2 v2.4.0
+# github.com/gogf/gf/v2 v2.4.1
 ## explicit; go 1.15
 github.com/gogf/gf/v2/container/garray
 github.com/gogf/gf/v2/container/glist

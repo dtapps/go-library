@@ -43,7 +43,7 @@ func (c *Client) CgiBinOpenapiRidGet(ctx context.Context, rid string, notMustPar
 		params.Set("rid", rid)
 	}
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/openapi/rid/get?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/openapi/rid/get?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newCgiBinOpenapiRidGetResult(CgiBinOpenapiRidGetResponse{}, request.ResponseBody, request), err
 	}

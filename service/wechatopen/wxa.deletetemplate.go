@@ -33,7 +33,7 @@ func (c *Client) WxaDeleteTemplate(ctx context.Context, templateId string, notMu
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("template_id", templateId)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/deletetemplate?access_token="+c.GetComponentAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/deletetemplate?access_token="+GetComponentAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newWxaDeleteTemplateResult(WxaDeleteTemplateResponse{}, request.ResponseBody, request), err
 	}

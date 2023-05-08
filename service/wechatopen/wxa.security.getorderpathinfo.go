@@ -43,7 +43,7 @@ func (c *Client) WxaSecurityGetOrderPathInfo(ctx context.Context, infoType int, 
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("info_type", infoType)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/security/getorderpathinfo?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/security/getorderpathinfo?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newWxaSecurityGetOrderPathInfoResult(WxaSecurityGetOrderPathInfoResponse{}, request.ResponseBody, request), err
 	}

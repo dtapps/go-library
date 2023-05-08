@@ -36,7 +36,7 @@ func (c *Client) WxaMemberAuth(ctx context.Context, notMustParams ...gorequest.P
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("action", "get_experiencer")
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/memberauth?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/memberauth?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newWxaMemberAuthResult(WxaMemberAuthResponse{}, request.ResponseBody, request), err
 	}

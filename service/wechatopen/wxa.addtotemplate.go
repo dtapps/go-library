@@ -30,7 +30,7 @@ func (c *Client) WxaAddToTemplate(ctx context.Context, draftId string, templateT
 	params.Set("draft_id", draftId)
 	params.Set("template_type", templateType)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/addtotemplate?access_token="+c.GetComponentAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/addtotemplate?access_token="+GetComponentAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newWxaAddToTemplateResult(WxaAddToTemplateResponse{}, request.ResponseBody, request), err
 	}

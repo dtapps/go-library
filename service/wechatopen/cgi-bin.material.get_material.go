@@ -36,7 +36,7 @@ func (c *Client) CgiBinMaterialGetMaterial(ctx context.Context, mediaId string, 
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("media_id", mediaId) // 要获取的素材的media_id
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/material/get_material?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/material/get_material?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newCgiBinMaterialGetMaterialResult(CgiBinMaterialGetMaterialResponse{}, request.ResponseBody, request), err
 	}

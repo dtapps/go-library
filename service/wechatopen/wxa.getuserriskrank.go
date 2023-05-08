@@ -35,7 +35,7 @@ func (c *Client) WxaGetUserRiskRank(ctx context.Context, notMustParams ...gorequ
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", c.GetAuthorizerAppid(ctx))
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/getuserriskrank?access_token="+c.GetAuthorizerAccessToken(ctx), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/getuserriskrank?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
 	if err != nil {
 		return newWxaGetUserRiskRankResult(WxaGetUserRiskRankResponse{}, request.ResponseBody, request), err
 	}
