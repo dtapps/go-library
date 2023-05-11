@@ -7,6 +7,7 @@ import (
 	"sort"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/robfig/cron/v3"
@@ -22,8 +23,7 @@ type Scheduler struct {
 
 	locationMutex sync.RWMutex
 	location      *time.Location
-	runningMutex  sync.RWMutex
-	running       bool // represents if the scheduler is running at the moment or not
+	running       *atomic.Bool // represents if the scheduler is running at the moment or not
 
 	time     TimeWrapper // wrapper around time.Time
 	timer    func(d time.Duration, f func()) *time.Timer
@@ -58,7 +58,7 @@ func NewScheduler(loc *time.Location) *Scheduler {
 	return &Scheduler{
 		jobs:       make([]*Job, 0),
 		location:   loc,
-		running:    false,
+		running:    &atomic.Bool{},
 		time:       &trueTime{},
 		executor:   &executor,
 		tagsUnique: false,
@@ -82,7 +82,12 @@ func (s *Scheduler) StartBlocking() {
 	s.startBlockingStopChanMutex.Lock()
 	s.startBlockingStopChan = make(chan struct{}, 1)
 	s.startBlockingStopChanMutex.Unlock()
+
 	<-s.startBlockingStopChan
+
+	s.startBlockingStopChanMutex.Lock()
+	s.startBlockingStopChan = nil
+	s.startBlockingStopChanMutex.Unlock()
 }
 
 // StartAsync starts all jobs without blocking the current thread
@@ -111,16 +116,12 @@ func (s *Scheduler) runJobs(jobs []*Job) {
 }
 
 func (s *Scheduler) setRunning(b bool) {
-	s.runningMutex.Lock()
-	defer s.runningMutex.Unlock()
-	s.running = b
+	s.running.Store(b)
 }
 
 // IsRunning returns true if the scheduler is running
 func (s *Scheduler) IsRunning() bool {
-	s.runningMutex.RLock()
-	defer s.runningMutex.RUnlock()
-	return s.running
+	return s.running.Load()
 }
 
 // Jobs returns the list of Jobs from the Scheduler
@@ -128,6 +129,16 @@ func (s *Scheduler) Jobs() []*Job {
 	s.jobsMutex.RLock()
 	defer s.jobsMutex.RUnlock()
 	return s.jobs
+}
+
+// Name sets the name of the current job.
+//
+// If the scheduler is running using WithDistributedLocker(), the job name is used
+// as the distributed lock key.
+func (s *Scheduler) Name(name string) *Scheduler {
+	job := s.getCurrentJob()
+	job.jobName = name
+	return s
 }
 
 func (s *Scheduler) setJobs(jobs []*Job) {
@@ -662,7 +673,7 @@ func (s *Scheduler) Remove(job any) {
 	j := s.findJobByTaskName(fName)
 	s.removeJobsUniqueTags(j)
 	s.removeByCondition(func(someJob *Job) bool {
-		return someJob.name == fName
+		return someJob.funcName == fName
 	})
 }
 
@@ -678,7 +689,7 @@ func (s *Scheduler) RemoveByReference(job *Job) {
 
 func (s *Scheduler) findJobByTaskName(name string) *Job {
 	for _, job := range s.Jobs() {
-		if job.name == name {
+		if job.funcName == name {
 			return job
 		}
 	}
@@ -824,7 +835,7 @@ func (s *Scheduler) SingletonModeAll() {
 // TaskPresent checks if specific job's function was added to the scheduler.
 func (s *Scheduler) TaskPresent(j any) bool {
 	for _, job := range s.Jobs() {
-		if job.name == getFunctionName(j) {
+		if job.funcName == getFunctionName(j) {
 			return true
 		}
 	}
@@ -872,10 +883,10 @@ func (s *Scheduler) Stop() {
 }
 
 func (s *Scheduler) stop() {
-	s.setRunning(false)
 	s.stopJobs(s.jobs)
 	s.executor.stop()
 	s.StopBlockingChan()
+	s.setRunning(false)
 }
 
 func (s *Scheduler) stopJobs(jobs []*Job) {
@@ -919,10 +930,10 @@ func (s *Scheduler) doCommon(jobFun any, params ...any) (*Job, error) {
 	}
 
 	fname := getFunctionName(jobFun)
-	if job.name != fname {
+	if job.funcName != fname {
 		job.function = jobFun
 		job.parameters = params
-		job.name = fname
+		job.funcName = fname
 	}
 
 	f := reflect.ValueOf(jobFun)
@@ -1380,8 +1391,8 @@ func (s *Scheduler) CustomTimer(customTimer func(d time.Duration, f func()) *tim
 
 func (s *Scheduler) StopBlockingChan() {
 	s.startBlockingStopChanMutex.Lock()
-	if s.startBlockingStopChan != nil {
-		s.startBlockingStopChan <- struct{}{}
+	if s.IsRunning() && s.startBlockingStopChan != nil {
+		close(s.startBlockingStopChan)
 	}
 	s.startBlockingStopChanMutex.Unlock()
 }
@@ -1400,8 +1411,13 @@ func (s *Scheduler) StopBlockingChan() {
 // Another strategy is to use the Cron or CronWithSeconds methods as they
 // use the same behavior described above using StartAt.
 //
-// NOTE - the Locker will NOT lock jobs using any of the limiting functions:
-// SingletonMode, SingletonModeAll or SetMaxConcurrentJobs
+// NOTE - the Locker will NOT lock jobs using the singleton options:
+// SingletonMode, or SingletonModeAll
+//
+// NOTE - beware of potential race conditions when running the Locker
+// with SetMaxConcurrentJobs and WaitMode as jobs are not guaranteed
+// to be locked when each scheduler's is below its limit and able
+// to run the job.
 func (s *Scheduler) WithDistributedLocker(l Locker) {
 	s.executor.distributedLocker = l
 }

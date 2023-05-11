@@ -48,6 +48,7 @@ type executor struct {
 	limitModeFuncsRunning   *atomic.Int64    // tracks the count of limited mode funcs running
 	limitModeFuncWg         *sync.WaitGroup  // allow the executor to wait for limit mode functions to wrap up
 	limitModeQueue          chan jobFunction // pass job functions to the limit mode workers
+	limitModeQueueMu        *sync.Mutex      // for protecting the limitModeQueue
 	limitModeRunningJobs    *atomic.Int64    // tracks the count of running jobs to check against the max
 	stopped                 *atomic.Bool     // allow workers to drain the buffered limitModeQueue
 
@@ -61,7 +62,7 @@ func newExecutor() executor {
 		limitModeFuncsRunning: &atomic.Int64{},
 		limitModeFuncWg:       &sync.WaitGroup{},
 		limitModeRunningJobs:  &atomic.Int64{},
-		limitModeQueue:        make(chan jobFunction, 1000),
+		limitModeQueueMu:      &sync.Mutex{},
 	}
 	return e
 }
@@ -96,7 +97,6 @@ func (jf *jobFunction) singletonRunner() {
 }
 
 func (e *executor) limitModeRunner() {
-	e.limitModeFuncWg.Add(1)
 	for {
 		select {
 		case <-e.ctx.Done():
@@ -105,7 +105,7 @@ func (e *executor) limitModeRunner() {
 			return
 		case jf := <-e.limitModeQueue:
 			if !e.stopped.Load() {
-				runJob(jf)
+				e.runJob(jf)
 			}
 		}
 	}
@@ -122,7 +122,46 @@ func (e *executor) start() {
 	e.jobsWg = &sync.WaitGroup{}
 
 	e.stopped = &atomic.Bool{}
+
+	e.limitModeQueueMu.Lock()
+	e.limitModeQueue = make(chan jobFunction, 1000)
+	e.limitModeQueueMu.Unlock()
 	go e.run()
+}
+
+func (e *executor) runJob(f jobFunction) {
+	switch f.runConfig.mode {
+	case defaultMode:
+		lockKey := f.jobName
+		if lockKey == "" {
+			lockKey = f.funcName
+		}
+		if e.distributedLocker != nil {
+			l, err := e.distributedLocker.Lock(f.ctx, lockKey)
+			if err != nil || l == nil {
+				return
+			}
+			defer func() {
+				durationToNextRun := time.Until(f.jobFuncNextRun)
+				if durationToNextRun > time.Second*5 {
+					durationToNextRun = time.Second * 5
+				}
+				if durationToNextRun > time.Millisecond*100 {
+					timeToSleep := time.Duration(float64(durationToNextRun) * 0.9)
+					time.Sleep(timeToSleep)
+				}
+				_ = l.Unlock(f.ctx)
+			}()
+		}
+		runJob(f)
+	case singletonMode:
+		e.singletonWgs.Store(f.singletonWg, struct{}{})
+
+		if !f.singletonRunnerOn.Load() {
+			go f.singletonRunner()
+		}
+		f.singletonQueue <- struct{}{}
+	}
 }
 
 func (e *executor) run() {
@@ -138,6 +177,7 @@ func (e *executor) run() {
 				if countRunning < int64(e.limitModeMaxRunningJobs) {
 					diff := int64(e.limitModeMaxRunningJobs) - countRunning
 					for i := int64(0); i < diff; i++ {
+						e.limitModeFuncWg.Add(1)
 						go e.limitModeRunner()
 						e.limitModeFuncsRunning.Add(1)
 					}
@@ -154,7 +194,7 @@ func (e *executor) run() {
 				if panicHandler != nil {
 					defer func() {
 						if r := recover(); r != any(nil) {
-							panicHandler(f.name, r)
+							panicHandler(f.funcName, r)
 						}
 					}()
 				}
@@ -163,42 +203,21 @@ func (e *executor) run() {
 					switch e.limitMode {
 					case RescheduleMode:
 						if e.limitModeRunningJobs.Load() < int64(e.limitModeMaxRunningJobs) {
-							e.limitModeQueue <- f
+							select {
+							case e.limitModeQueue <- f:
+							case <-e.ctx.Done():
+							}
 						}
 					case WaitMode:
-						e.limitModeQueue <- f
+						select {
+						case e.limitModeQueue <- f:
+						case <-e.ctx.Done():
+						}
 					}
 					return
 				}
 
-				switch f.runConfig.mode {
-				case defaultMode:
-					if e.distributedLocker != nil {
-						l, err := e.distributedLocker.Lock(f.ctx, f.name)
-						if err != nil || l == nil {
-							return
-						}
-						defer func() {
-							durationToNextRun := time.Until(f.jobFuncNextRun)
-							if durationToNextRun > time.Second*5 {
-								durationToNextRun = time.Second * 5
-							}
-							if durationToNextRun > time.Millisecond*100 {
-								timeToSleep := time.Duration(float64(durationToNextRun) * 0.9)
-								time.Sleep(timeToSleep)
-							}
-							_ = l.Unlock(f.ctx)
-						}()
-					}
-					runJob(f)
-				case singletonMode:
-					e.singletonWgs.Store(f.singletonWg, struct{}{})
-
-					if !f.singletonRunnerOn.Load() {
-						go f.singletonRunner()
-					}
-					f.singletonQueue <- struct{}{}
-				}
+				e.runJob(f)
 			}()
 		case <-e.ctx.Done():
 			e.jobsWg.Wait()
@@ -222,5 +241,8 @@ func (e *executor) stop() {
 	}
 	if e.limitModeMaxRunningJobs > 0 {
 		e.limitModeFuncWg.Wait()
+		e.limitModeQueueMu.Lock()
+		e.limitModeQueue = nil
+		e.limitModeQueueMu.Unlock()
 	}
 }
