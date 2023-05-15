@@ -139,29 +139,29 @@ func (zl *ApiZapLog) Middleware(ctx context.Context, request gorequest.Response)
 			Type:   zapcore.StringType,
 			String: request.RequestMethod,
 		}, zapcore.Field{
-			Key:    "request_params",
-			Type:   zapcore.StringType,
-			String: dorm.JsonEncodeNoError(request.RequestParams),
+			Key:       "request_params",
+			Type:      zapcore.StringType,
+			Interface: request.RequestParams, //
 		}, zapcore.Field{
-			Key:    "request_header",
-			Type:   zapcore.StringType,
-			String: dorm.JsonEncodeNoError(request.RequestHeader),
+			Key:       "request_header",
+			Type:      zapcore.StringType,
+			Interface: request.RequestHeader, //
 		}, zapcore.Field{
 			Key:    "request_ip",
 			Type:   zapcore.StringType,
 			String: zl.systemConfig.systemOutsideIp,
 		}, zapcore.Field{
-			Key:    "response_header",
-			Type:   zapcore.StringType,
-			String: dorm.JsonEncodeNoError(request.ResponseHeader),
+			Key:       "response_header",
+			Type:      zapcore.StringType,
+			Interface: request.ResponseHeader, //
 		}, zapcore.Field{
 			Key:       "response_status_code",
 			Type:      zapcore.Int64Type,
 			Interface: request.ResponseStatusCode,
 		}, zapcore.Field{
-			Key:    "response_body",
-			Type:   zapcore.StringType,
-			String: dorm.JsonEncodeNoError(dorm.JsonDecodeNoError(request.ResponseBody)),
+			Key:       "response_body",
+			Type:      zapcore.StringType,
+			Interface: dorm.JsonDecodeNoError(request.ResponseBody), //
 		}, zapcore.Field{
 			Key:       "response_content_length",
 			Type:      zapcore.Int64Type,
@@ -226,29 +226,29 @@ func (zl *ApiZapLog) MiddlewareXml(ctx context.Context, request gorequest.Respon
 			Type:   zapcore.StringType,
 			String: request.RequestMethod,
 		}, zapcore.Field{
-			Key:    "request_params",
-			Type:   zapcore.StringType,
-			String: dorm.JsonEncodeNoError(request.RequestParams),
+			Key:       "request_params",
+			Type:      zapcore.StringType,
+			Interface: request.RequestParams, //
 		}, zapcore.Field{
-			Key:    "request_header",
-			Type:   zapcore.StringType,
-			String: dorm.JsonEncodeNoError(request.RequestHeader),
+			Key:       "request_header",
+			Type:      zapcore.StringType,
+			Interface: request.RequestHeader, //
 		}, zapcore.Field{
 			Key:    "request_ip",
 			Type:   zapcore.StringType,
 			String: zl.systemConfig.systemOutsideIp,
 		}, zapcore.Field{
-			Key:    "response_header",
-			Type:   zapcore.StringType,
-			String: dorm.JsonEncodeNoError(request.ResponseHeader),
+			Key:       "response_header",
+			Type:      zapcore.StringType,
+			Interface: request.ResponseHeader, //
 		}, zapcore.Field{
 			Key:       "response_status_code",
 			Type:      zapcore.Int64Type,
 			Interface: request.ResponseStatusCode,
 		}, zapcore.Field{
-			Key:    "response_body",
-			Type:   zapcore.StringType,
-			String: dorm.XmlEncodeNoError(dorm.XmlDecodeNoError(request.ResponseBody)),
+			Key:       "response_body",
+			Type:      zapcore.StringType,
+			Interface: dorm.XmlDecodeNoError(request.ResponseBody), //
 		}, zapcore.Field{
 			Key:       "response_content_length",
 			Type:      zapcore.Int64Type,
@@ -313,29 +313,29 @@ func (zl *ApiZapLog) MiddlewareCustom(ctx context.Context, api string, request g
 			Type:   zapcore.StringType,
 			String: request.RequestMethod,
 		}, zapcore.Field{
-			Key:    "request_params",
-			Type:   zapcore.StringType,
-			String: dorm.JsonEncodeNoError(request.RequestParams),
+			Key:       "request_params",
+			Type:      zapcore.StringType,
+			Interface: request.RequestParams, //
 		}, zapcore.Field{
-			Key:    "request_header",
-			Type:   zapcore.StringType,
-			String: dorm.JsonEncodeNoError(request.RequestHeader),
+			Key:       "request_header",
+			Type:      zapcore.StringType,
+			Interface: request.RequestHeader, //
 		}, zapcore.Field{
 			Key:    "request_ip",
 			Type:   zapcore.StringType,
 			String: zl.systemConfig.systemOutsideIp,
 		}, zapcore.Field{
-			Key:    "response_header",
-			Type:   zapcore.StringType,
-			String: dorm.JsonEncodeNoError(request.ResponseHeader),
+			Key:       "response_header",
+			Type:      zapcore.StringType,
+			Interface: request.ResponseHeader, //
 		}, zapcore.Field{
 			Key:       "response_status_code",
 			Type:      zapcore.Int64Type,
 			Interface: request.ResponseStatusCode,
 		}, zapcore.Field{
-			Key:    "response_body",
-			Type:   zapcore.StringType,
-			String: dorm.JsonEncodeNoError(dorm.JsonDecodeNoError(request.ResponseBody)),
+			Key:       "response_body",
+			Type:      zapcore.StringType,
+			Interface: dorm.JsonDecodeNoError(request.ResponseBody), //
 		}, zapcore.Field{
 			Key:       "response_content_length",
 			Type:      zapcore.Int64Type,
