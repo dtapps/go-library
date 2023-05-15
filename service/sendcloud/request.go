@@ -2,7 +2,6 @@ package sendcloud
 
 import (
 	"context"
-	go_library "github.com/dtapps/go-library"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -36,7 +35,10 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 
 	// 日志
 	if c.log.status {
-		go c.log.client.Middleware(ctx, request, go_library.Version())
+		go c.log.client.Middleware(ctx, request)
+	}
+	if c.zap.status {
+		go c.zap.client.Middleware(ctx, request)
 	}
 
 	return request, err

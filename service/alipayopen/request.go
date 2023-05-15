@@ -2,7 +2,6 @@ package alipayopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"github.com/dtapps/go-library/utils/gostring"
 )
@@ -21,9 +20,6 @@ func (c *Client) request(ctx context.Context, param map[string]interface{}) (gor
 	// 设置用户代理
 	client.SetUserAgent(gorequest.GetRandomUserAgentSystem())
 
-	// 传入SDk版本
-	client.AfferentSdkUserVersion(go_library.Version())
-
 	// 发起请求
 	request, err := client.Get(ctx)
 	if err != nil {
@@ -32,7 +28,10 @@ func (c *Client) request(ctx context.Context, param map[string]interface{}) (gor
 
 	// 记录日志
 	if c.log.status {
-		go c.log.client.MiddlewareCustom(ctx, gostring.ToString(params["method"]), request, go_library.Version())
+		go c.log.client.MiddlewareCustom(ctx, gostring.ToString(params["method"]), request)
+	}
+	if c.zap.status {
+		go c.zap.client.MiddlewareCustom(ctx, gostring.ToString(params["method"]), request)
 	}
 
 	return request, err

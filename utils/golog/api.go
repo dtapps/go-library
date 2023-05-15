@@ -91,22 +91,22 @@ func NewApiClient(config *ApiClientConfig) (*ApiClient, error) {
 }
 
 // Middleware 中间件
-func (c *ApiClient) Middleware(ctx context.Context, request gorequest.Response, sdkVersion string) {
+func (c *ApiClient) Middleware(ctx context.Context, request gorequest.Response) {
 	if c.gormConfig.stats {
-		c.gormMiddleware(ctx, request, sdkVersion)
+		c.gormMiddleware(ctx, request)
 	}
 }
 
 // MiddlewareXml 中间件
-func (c *ApiClient) MiddlewareXml(ctx context.Context, request gorequest.Response, sdkVersion string) {
+func (c *ApiClient) MiddlewareXml(ctx context.Context, request gorequest.Response) {
 	if c.gormConfig.stats {
-		c.gormMiddlewareXml(ctx, request, sdkVersion)
+		c.gormMiddlewareXml(ctx, request)
 	}
 }
 
 // MiddlewareCustom 中间件
-func (c *ApiClient) MiddlewareCustom(ctx context.Context, api string, request gorequest.Response, sdkVersion string) {
+func (c *ApiClient) MiddlewareCustom(ctx context.Context, api string, request gorequest.Response) {
 	if c.gormConfig.stats {
-		c.gormMiddlewareCustom(ctx, api, request, sdkVersion)
+		c.gormMiddlewareCustom(ctx, api, request)
 	}
 }

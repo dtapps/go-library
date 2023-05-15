@@ -2,6 +2,7 @@ package golog
 
 import (
 	"context"
+	"github.com/dtapps/go-library"
 	"github.com/dtapps/go-library/utils/dorm"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"github.com/dtapps/go-library/utils/gotime"
@@ -81,7 +82,7 @@ func (c *ApiClient) GormCustomTableDelete(ctx context.Context, tableName string,
 }
 
 // 中间件
-func (c *ApiClient) gormMiddleware(ctx context.Context, request gorequest.Response, sdkVersion string) {
+func (c *ApiClient) gormMiddleware(ctx context.Context, request gorequest.Response) {
 	data := apiPostgresqlLog{
 		RequestTime:           request.RequestTime,                            //【请求】时间
 		RequestUri:            request.RequestUri,                             //【请求】链接
@@ -94,7 +95,7 @@ func (c *ApiClient) gormMiddleware(ctx context.Context, request gorequest.Respon
 		ResponseStatusCode:    request.ResponseStatusCode,                     //【返回】状态码
 		ResponseContentLength: request.ResponseContentLength,                  //【返回】大小
 		ResponseTime:          request.ResponseTime,                           //【返回】时间
-		SdkVersion:            sdkVersion,                                     //【程序】Sdk版本
+		SdkVersion:            go_library.Version(),                           //【程序】Sdk版本
 	}
 	if !request.HeaderIsImg() {
 		if len(request.ResponseBody) > 0 {
@@ -106,7 +107,7 @@ func (c *ApiClient) gormMiddleware(ctx context.Context, request gorequest.Respon
 }
 
 // 中间件
-func (c *ApiClient) gormMiddlewareXml(ctx context.Context, request gorequest.Response, sdkVersion string) {
+func (c *ApiClient) gormMiddlewareXml(ctx context.Context, request gorequest.Response) {
 	data := apiPostgresqlLog{
 		RequestTime:           request.RequestTime,                            //【请求】时间
 		RequestUri:            request.RequestUri,                             //【请求】链接
@@ -119,7 +120,7 @@ func (c *ApiClient) gormMiddlewareXml(ctx context.Context, request gorequest.Res
 		ResponseStatusCode:    request.ResponseStatusCode,                     //【返回】状态码
 		ResponseContentLength: request.ResponseContentLength,                  //【返回】大小
 		ResponseTime:          request.ResponseTime,                           //【返回】时间
-		SdkVersion:            sdkVersion,                                     //【程序】Sdk版本
+		SdkVersion:            go_library.Version(),                           //【程序】Sdk版本
 	}
 	if !request.HeaderIsImg() {
 		if len(request.ResponseBody) > 0 {
@@ -131,7 +132,7 @@ func (c *ApiClient) gormMiddlewareXml(ctx context.Context, request gorequest.Res
 }
 
 // 中间件
-func (c *ApiClient) gormMiddlewareCustom(ctx context.Context, api string, request gorequest.Response, sdkVersion string) {
+func (c *ApiClient) gormMiddlewareCustom(ctx context.Context, api string, request gorequest.Response) {
 	data := apiPostgresqlLog{
 		RequestTime:           request.RequestTime,                            //【请求】时间
 		RequestUri:            request.RequestUri,                             //【请求】链接
@@ -144,7 +145,7 @@ func (c *ApiClient) gormMiddlewareCustom(ctx context.Context, api string, reques
 		ResponseStatusCode:    request.ResponseStatusCode,                     //【返回】状态码
 		ResponseContentLength: request.ResponseContentLength,                  //【返回】大小
 		ResponseTime:          request.ResponseTime,                           //【返回】时间
-		SdkVersion:            sdkVersion,                                     //【程序】Sdk版本
+		SdkVersion:            go_library.Version(),                           //【程序】Sdk版本
 	}
 	if !request.HeaderIsImg() {
 		if len(request.ResponseBody) > 0 {

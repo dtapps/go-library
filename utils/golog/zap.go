@@ -11,6 +11,9 @@ import (
 	"time"
 )
 
+// ZapLogFun *ApiClient 驱动
+type ZapLogFun func() *ZapLog
+
 type ZapLogConfig struct {
 	LogPath      string // 日志文件路径
 	LogName      string // 日志文件名

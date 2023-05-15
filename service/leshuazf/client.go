@@ -23,6 +23,10 @@ type Client struct {
 		status bool             // 状态
 		client *golog.ApiClient // 日志服务
 	}
+	zap struct {
+		status bool             // 状态
+		client *golog.ApiZapLog // 日志服务
+	}
 }
 
 func NewClient(config *ConfigClient) (*Client, error) {

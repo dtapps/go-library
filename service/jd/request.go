@@ -3,7 +3,6 @@ package jd
 import (
 	"context"
 	"fmt"
-	"github.com/dtapps/go-library"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -30,7 +29,10 @@ func (c *Client) request(ctx context.Context, params map[string]interface{}) (go
 
 	// 记录日志
 	if c.log.status {
-		go c.log.client.MiddlewareCustom(ctx, fmt.Sprintf("%s", params["method"]), request, go_library.Version())
+		go c.log.client.MiddlewareCustom(ctx, fmt.Sprintf("%s", params["method"]), request)
+	}
+	if c.zap.status {
+		go c.zap.client.MiddlewareCustom(ctx, fmt.Sprintf("%s", params["method"]), request)
 	}
 
 	return request, err

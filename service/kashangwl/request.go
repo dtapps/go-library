@@ -2,7 +2,6 @@ package kashangwl
 
 import (
 	"context"
-	"github.com/dtapps/go-library"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"time"
 )
@@ -39,7 +38,10 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 
 	// 日志
 	if c.log.status {
-		go c.log.client.Middleware(ctx, request, go_library.Version())
+		go c.log.client.Middleware(ctx, request)
+	}
+	if c.zap.status {
+		go c.zap.client.Middleware(ctx, request)
 	}
 
 	return request, err
@@ -73,7 +75,10 @@ func (c *Client) requestCache(ctx context.Context, url string, params map[string
 
 	// 日志
 	if c.cacheLog.status {
-		go c.cacheLog.client.Middleware(ctx, request, go_library.Version())
+		go c.cacheLog.client.Middleware(ctx, request)
+	}
+	if c.cacheLog.status {
+		go c.cacheLog.client.Middleware(ctx, request)
 	}
 
 	return request, err

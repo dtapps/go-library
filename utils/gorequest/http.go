@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	cookiemonster "github.com/MercuryEngineering/CookieMonster"
+	"github.com/dtapps/go-library"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gostring"
 	"github.com/dtapps/go-library/utils/gotime"
@@ -52,7 +53,6 @@ type App struct {
 	debug                        bool             // 是否开启调试模式
 	p12Cert                      *tls.Certificate // p12证书内容
 	tlsMinVersion, tlsMaxVersion uint16           // TLS版本
-	afferentSdkUserVersion       string           // 传入SDk版本
 	config                       struct {
 		systemOs     string // 系统类型
 		systemKernel string // 系统内核
@@ -160,11 +160,6 @@ func (app *App) SetP12Cert(content *tls.Certificate) {
 	app.p12Cert = content
 }
 
-// AfferentSdkUserVersion 传入SDk版本
-func (app *App) AfferentSdkUserVersion(afferentSdkUserVersion string) {
-	app.afferentSdkUserVersion = afferentSdkUserVersion
-}
-
 // Get 发起GET请求
 func (app *App) Get(ctx context.Context, uri ...string) (httpResponse Response, err error) {
 	if len(uri) == 1 {
@@ -239,11 +234,7 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	}
 
 	// SDK版本
-	if app.afferentSdkUserVersion == "" {
-		httpResponse.RequestHeader.Set("Sdk-User-Agent", fmt.Sprintf(userAgentFormat, app.config.systemOs, app.config.systemKernel, app.config.goVersion))
-	} else {
-		httpResponse.RequestHeader.Set("Sdk-User-Agent", fmt.Sprintf(userAgentFormat, app.config.systemOs, app.config.systemKernel, app.config.goVersion)+"/"+app.afferentSdkUserVersion)
-	}
+	httpResponse.RequestHeader.Set("Sdk-User-Agent", fmt.Sprintf(userAgentFormat, app.config.systemOs, app.config.systemKernel, app.config.goVersion)+"/"+go_library.Version())
 
 	// 请求类型
 	switch app.httpContentType {

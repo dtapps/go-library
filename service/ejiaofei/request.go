@@ -3,7 +3,6 @@ package ejiaofei
 import (
 	"context"
 	"fmt"
-	"github.com/dtapps/go-library"
 	"github.com/dtapps/go-library/utils/gomd5"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -40,7 +39,10 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 
 	// 记录日志
 	if c.log.status {
-		go c.log.client.MiddlewareXml(ctx, request, go_library.Version())
+		go c.log.client.MiddlewareXml(ctx, request)
+	}
+	if c.zap.status {
+		go c.zap.client.MiddlewareXml(ctx, request)
 	}
 
 	return request, err

@@ -1,4 +1,4 @@
-package wechatqy
+package qiniu
 
 import (
 	"github.com/dtapps/go-library/utils/golog"
@@ -7,30 +7,20 @@ import (
 
 // ClientConfig 实例配置
 type ClientConfig struct {
-	AppId       string
-	AgentId     int
-	Secret      string
-	RedirectUri string
-	Key         string // key
+	AccessKey string
+	SecretKey string
 }
 
 // Client 实例
 type Client struct {
 	requestClient *gorequest.App // 请求服务
 	config        struct {
-		appId       string
-		agentId     int
-		secret      string
-		redirectUri string
-		key         string
+		accessKey string
+		secretKey string
 	}
 	log struct {
 		status bool             // 状态
 		client *golog.ApiClient // 日志服务
-	}
-	zap struct {
-		status bool             // 状态
-		client *golog.ApiZapLog // 日志服务
 	}
 }
 
@@ -39,11 +29,8 @@ func NewClient(config *ClientConfig) (*Client, error) {
 
 	c := &Client{}
 
-	c.config.appId = config.AppId
-	c.config.agentId = config.AgentId
-	c.config.secret = config.Secret
-	c.config.redirectUri = config.RedirectUri
-	c.config.key = config.Key
+	c.config.accessKey = config.AccessKey
+	c.config.secretKey = config.SecretKey
 
 	c.requestClient = gorequest.NewHttp()
 
