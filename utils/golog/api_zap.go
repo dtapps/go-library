@@ -35,23 +35,17 @@ type ApiZapLog struct {
 	logger       *zap.Logger
 	zapCore      zapcore.Core
 	systemConfig struct {
-		systemHostname      string  // 主机名
-		systemOs            string  // 系统类型
-		systemVersion       string  // 系统版本
-		systemKernel        string  // 系统内核
-		systemKernelVersion string  // 系统内核版本
-		systemBootTime      uint64  // 系统开机时间
-		cpuCores            int     // CPU核数
-		cpuModelName        string  // CPU型号名称
-		cpuMhz              float64 // CPU兆赫
-		systemInsideIp      string  // 内网ip
-		systemOutsideIp     string  // 外网ip
-		goVersion           string  // go版本
-		sdkVersion          string  // sdk版本
+		systemHostname  string // 主机名
+		systemOs        string // 系统类型
+		systemKernel    string // 系统内核
+		systemInsideIp  string // 内网ip
+		systemOutsideIp string // 外网ip
+		goVersion       string // go版本
+		sdkVersion      string // sdk版本
 	}
 }
 
-func NewApiZapLog(config *ApiZapLogConfig) *ApiZapLog {
+func NewApiZapLog(ctx context.Context, config *ApiZapLogConfig) *ApiZapLog {
 
 	zl := &ApiZapLog{config: config}
 
@@ -104,6 +98,8 @@ func NewApiZapLog(config *ApiZapLogConfig) *ApiZapLog {
 
 	zl.logger = zl.withShowLine(zap.New(zl.zapCore))
 
+	zl.setConfig(ctx)
+
 	return zl
 }
 
@@ -125,7 +121,7 @@ func (zl *ApiZapLog) Middleware(ctx context.Context, request gorequest.Response)
 		}, zapcore.Field{
 			Key:    "request_time",
 			Type:   zapcore.StringType,
-			String: request.RequestTime.String(),
+			String: gotime.SetCurrent(request.RequestTime).Format(),
 		}, zapcore.Field{
 			Key:    "request_uri",
 			Type:   zapcore.StringType,
@@ -173,7 +169,7 @@ func (zl *ApiZapLog) Middleware(ctx context.Context, request gorequest.Response)
 		}, zapcore.Field{
 			Key:    "response_time",
 			Type:   zapcore.StringType,
-			String: request.ResponseTime.GoString(),
+			String: gotime.SetCurrent(request.ResponseTime).Format(),
 		}, zapcore.Field{
 			Key:    "system_host_name",
 			Type:   zapcore.StringType,
@@ -212,7 +208,7 @@ func (zl *ApiZapLog) MiddlewareXml(ctx context.Context, request gorequest.Respon
 		}, zapcore.Field{
 			Key:    "request_time",
 			Type:   zapcore.StringType,
-			String: request.RequestTime.String(),
+			String: gotime.SetCurrent(request.RequestTime).Format(),
 		}, zapcore.Field{
 			Key:    "request_uri",
 			Type:   zapcore.StringType,
@@ -260,7 +256,7 @@ func (zl *ApiZapLog) MiddlewareXml(ctx context.Context, request gorequest.Respon
 		}, zapcore.Field{
 			Key:    "response_time",
 			Type:   zapcore.StringType,
-			String: request.ResponseTime.GoString(),
+			String: gotime.SetCurrent(request.ResponseTime).Format(),
 		}, zapcore.Field{
 			Key:    "system_host_name",
 			Type:   zapcore.StringType,
@@ -299,7 +295,7 @@ func (zl *ApiZapLog) MiddlewareCustom(ctx context.Context, api string, request g
 		}, zapcore.Field{
 			Key:    "request_time",
 			Type:   zapcore.StringType,
-			String: request.RequestTime.String(),
+			String: gotime.SetCurrent(request.RequestTime).Format(),
 		}, zapcore.Field{
 			Key:    "request_uri",
 			Type:   zapcore.StringType,
@@ -347,7 +343,7 @@ func (zl *ApiZapLog) MiddlewareCustom(ctx context.Context, api string, request g
 		}, zapcore.Field{
 			Key:    "response_time",
 			Type:   zapcore.StringType,
-			String: request.ResponseTime.GoString(),
+			String: gotime.SetCurrent(request.ResponseTime).Format(),
 		}, zapcore.Field{
 			Key:    "system_host_name",
 			Type:   zapcore.StringType,
@@ -382,13 +378,7 @@ func (zl *ApiZapLog) setConfig(ctx context.Context) {
 
 	zl.systemConfig.systemHostname = info.SystemHostname
 	zl.systemConfig.systemOs = info.SystemOs
-	zl.systemConfig.systemVersion = info.SystemVersion
 	zl.systemConfig.systemKernel = info.SystemKernel
-	zl.systemConfig.systemKernelVersion = info.SystemKernelVersion
-	zl.systemConfig.systemBootTime = info.SystemBootTime
-	zl.systemConfig.cpuCores = info.CpuCores
-	zl.systemConfig.cpuModelName = info.CpuModelName
-	zl.systemConfig.cpuMhz = info.CpuMhz
 
 	zl.systemConfig.systemInsideIp = goip.GetInsideIp(ctx)
 
