@@ -10,13 +10,16 @@ type RechargeResponse struct {
 	Errno  int64  `json:"errno"`  // 错误码，0代表成功，非0代表失败
 	Errmsg string `json:"errmsg"` // 错误描述
 	Data   struct {
-		OrderNumber string `json:"order_number"`  // 系统定单号
-		Mobile      string `json:"mobile"`        // 充值手机号
-		ProductId   string `json:"product_id"`    // 产品ID
-		TotalPrice  string `json:"total_price"`   // 消费金额
-		OutTradeNum string `json:"out_trade_num"` // 商户订单号
-		Title       string `json:"title"`         // 充值产品说明
-	} `json:"data"`
+		CreateTime  int64  `json:"create_time,omitempty"` // 下单时间
+		Guishu      string `json:"guishu,omitempty"`      // 归属地
+		Id          int64  `json:"id,omitempty"`          // 编号
+		Mobile      string `json:"mobile"`                // 充值手机号
+		OrderNumber string `json:"order_number"`          // 系统定单号
+		OutTradeNum string `json:"out_trade_num"`         // 商户订单号
+		ProductId   int64  `json:"product_id"`            // 产品ID
+		Title       string `json:"title"`                 // 充值产品说明
+		TotalPrice  string `json:"total_price"`           // 消费金额
+	} `json:"data,omitempty"`
 }
 
 type RechargeResult struct {
