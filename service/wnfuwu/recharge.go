@@ -9,6 +9,11 @@ import (
 type RechargeResponse struct {
 	Errno  int64  `json:"errno"`  // 错误码，0代表成功，非0代表失败
 	Errmsg string `json:"errmsg"` // 错误描述
+}
+
+type RechargeResponseContent struct {
+	Errno  int64  `json:"errno"`  // 错误码，0代表成功，非0代表失败
+	Errmsg string `json:"errmsg"` // 错误描述
 	Data   struct {
 		CreateTime  int64  `json:"create_time,omitempty"` // 下单时间
 		Guishu      string `json:"guishu,omitempty"`      // 归属地

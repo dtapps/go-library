@@ -9,6 +9,11 @@ import (
 type CheckResponse struct {
 	Errno  int64  `json:"errno"`  // 错误码，0代表成功，非0代表失败
 	Errmsg string `json:"errmsg"` // 错误描述
+}
+
+type CheckResponseContent struct {
+	Errno  int64  `json:"errno"`  // 错误码，0代表成功，非0代表失败
+	Errmsg string `json:"errmsg"` // 错误描述
 	Data   []struct {
 		Id           int64  `json:"id,omitempty"`           // 编号
 		OrderNumber  string `json:"order_number"`           // 系统定单号
