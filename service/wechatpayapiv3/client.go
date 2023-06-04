@@ -28,10 +28,6 @@ type Client struct {
 		mchSslSerialNo string // pem 证书号
 		mchSslKey      string // pem key 内容
 	}
-	log struct {
-		status bool             // 状态
-		client *golog.ApiClient // 日志服务
-	}
 	zap struct {
 		status bool             // 状态
 		client *golog.ApiZapLog // 日志服务

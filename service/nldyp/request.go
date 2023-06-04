@@ -29,9 +29,6 @@ func (c *Client) request(ctx context.Context, url string, param map[string]inter
 	}
 
 	// 日志
-	if c.log.status {
-		go c.log.client.Middleware(ctx, request)
-	}
 	if c.zap.status {
 		go c.zap.client.Middleware(ctx, request)
 	}

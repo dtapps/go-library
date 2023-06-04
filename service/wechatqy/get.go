@@ -1,7 +1,5 @@
 package wechatqy
 
-import "github.com/dtapps/go-library/utils/golog"
-
 func (c *Client) GetKey() string {
 	return c.config.key
 }
@@ -20,8 +18,4 @@ func (c *Client) GetSecret() string {
 
 func (c *Client) GetRedirectUri() string {
 	return c.config.redirectUri
-}
-
-func (c *Client) GetLog() *golog.ApiClient {
-	return c.log.client
 }

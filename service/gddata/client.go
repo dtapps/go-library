@@ -1,7 +1,6 @@
 package gddata
 
 import (
-	"github.com/dtapps/go-library/utils/golog"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -15,10 +14,6 @@ type Client struct {
 	requestClient *gorequest.App // 请求服务
 	config        struct {
 		token string
-	}
-	log struct {
-		status bool             // 状态
-		client *golog.ApiClient // 日志服务
 	}
 }
 

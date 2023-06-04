@@ -2,7 +2,6 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/golog"
 )
 
 // GetComponentAppId 第三方平台appid
@@ -28,8 +27,4 @@ func (c *Client) GetMessageKey(ctx context.Context) string {
 // GetAuthorizerAppid 授权方appid
 func (c *Client) GetAuthorizerAppid(ctx context.Context) string {
 	return c.config.authorizerAppid
-}
-
-func (c *Client) GetLog(ctx context.Context) *golog.ApiClient {
-	return c.log.client
 }

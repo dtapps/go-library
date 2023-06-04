@@ -1,7 +1,6 @@
 package qiniu
 
 import (
-	"github.com/dtapps/go-library/utils/golog"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
@@ -17,10 +16,6 @@ type Client struct {
 	config        struct {
 		accessKey string
 		secretKey string
-	}
-	log struct {
-		status bool             // 状态
-		client *golog.ApiClient // 日志服务
 	}
 }
 

@@ -22,10 +22,6 @@ type Client struct {
 		siteId     string // 网站ID/APP ID
 		positionId string // 推广位id
 	}
-	log struct {
-		status bool             // 状态
-		client *golog.ApiClient // 日志服务
-	}
 	zap struct {
 		status bool             // 状态
 		client *golog.ApiZapLog // 日志服务

@@ -24,9 +24,6 @@ func (c *Client) request(ctx context.Context, params map[string]interface{}) (go
 	}
 
 	// 日志
-	if c.log.status {
-		go c.log.client.MiddlewareCustom(ctx, fmt.Sprintf("%s", params["type"]), request)
-	}
 	if c.zap.status {
 		go c.zap.client.MiddlewareCustom(ctx, fmt.Sprintf("%s", params["type"]), request)
 	}

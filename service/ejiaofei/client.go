@@ -21,10 +21,6 @@ type Client struct {
 		key     string
 		signStr string // 需要签名的字符串
 	}
-	log struct {
-		status bool             // 状态
-		client *golog.ApiClient // 日志服务
-	}
 	zap struct {
 		status bool             // 状态
 		client *golog.ApiZapLog // 日志服务

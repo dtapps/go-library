@@ -30,10 +30,6 @@ type Client struct {
 		alipayRSA2 string // 支付宝公钥
 		aes        string // 接口内容加密方式
 	}
-	log struct {
-		status bool             // 状态
-		client *golog.ApiClient // 日志服务
-	}
 	zap struct {
 		status bool             // 状态
 		client *golog.ApiZapLog // 日志服务

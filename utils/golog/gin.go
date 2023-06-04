@@ -45,11 +45,10 @@ type GinClient struct {
 
 // GinClientConfig 框架实例配置
 type GinClientConfig struct {
-	IpService      *goip.Client                  // ip服务
-	GormClientFun  dorm.GormClientTableFun       // 日志配置
-	MongoClientFun dorm.MongoClientCollectionFun // 日志配置
-	ZapLog         *ZapLog                       // 日志服务
-	CurrentIp      string                        // 当前ip
+	IpService     *goip.Client            // ip服务
+	GormClientFun dorm.GormClientTableFun // 日志配置
+	ZapLog        *ZapLog                 // 日志服务
+	CurrentIp     string                  // 当前ip
 }
 
 // NewGinClient 创建框架实例化

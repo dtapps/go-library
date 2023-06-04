@@ -2,7 +2,6 @@ package wechatoffice
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/golog"
 )
 
 func (c *Client) GetAppId() string {
@@ -21,8 +20,4 @@ func (c *Client) getAccessToken(ctx context.Context) string {
 func (c *Client) getJsapiTicket(ctx context.Context) string {
 	c.config.jsapiTicket = c.GetJsapiTicket(ctx)
 	return c.config.jsapiTicket
-}
-
-func (c *Client) GetLog() *golog.ApiClient {
-	return c.log.client
 }

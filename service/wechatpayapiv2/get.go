@@ -2,7 +2,6 @@ package wechatpayapiv2
 
 import (
 	"crypto/tls"
-	"github.com/dtapps/go-library/utils/golog"
 )
 
 func (c *Client) GetAppId() string {
@@ -32,8 +31,4 @@ func (c *Client) GetKeyString() string {
 func (c *Client) P12ToPem() (*tls.Certificate, error) {
 	pemCert, err := tls.X509KeyPair([]byte(c.GetCertString()), []byte(c.GetKeyString()))
 	return &pemCert, err
-}
-
-func (c *Client) GetLog() *golog.ApiClient {
-	return c.log.client
 }

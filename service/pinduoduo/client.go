@@ -24,10 +24,6 @@ type Client struct {
 		mediaId      string // 媒体ID
 		pid          string // 推广位
 	}
-	log struct {
-		status bool             // 状态
-		client *golog.ApiClient // 日志服务
-	}
 	zap struct {
 		status bool             // 状态
 		client *golog.ApiZapLog // 日志服务

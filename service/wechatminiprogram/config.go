@@ -12,15 +12,6 @@ func (c *Client) ConfigApp(appId, appSecret string) *Client {
 	return c
 }
 
-// ConfigApiClientFun 日志配置
-func (c *Client) ConfigApiClientFun(apiClientFun golog.ApiClientFun) {
-	apiClient := apiClientFun()
-	if apiClient != nil {
-		c.log.client = apiClient
-		c.log.status = true
-	}
-}
-
 // ConfigRedisClient 缓存数据库
 func (c *Client) ConfigRedisClient(client *dorm.RedisClient) {
 	c.cache.redisClient = client
