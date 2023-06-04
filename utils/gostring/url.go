@@ -6,6 +6,9 @@ import (
 
 // CompleteUrlHttp 补全 URL
 func CompleteUrlHttp(url string) string {
+	if url == "" {
+		return url
+	}
 	if strings.HasPrefix(url, "//") {
 		url = "http:" + url
 	} else if strings.HasPrefix(url, "://") {
@@ -21,6 +24,9 @@ func CompleteUrlHttp(url string) string {
 
 // CompleteUrlHttps 补全 URL
 func CompleteUrlHttps(url string) string {
+	if url == "" {
+		return url
+	}
 	if strings.HasPrefix(url, "//") {
 		url = "https:" + url
 	} else if strings.HasPrefix(url, "://") {
