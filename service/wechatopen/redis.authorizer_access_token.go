@@ -14,6 +14,9 @@ func GetAuthorizerAccessTokenCacheKeyName(ctx context.Context, c *Client) string
 
 // GetAuthorizerAccessToken 授权方access_token
 func GetAuthorizerAccessToken(ctx context.Context, c *Client) string {
+	if c.config.authorizerAccessToken != "" {
+		return c.config.authorizerAccessToken
+	}
 	if c.cache.redisClient.GetDb() == nil {
 		return c.config.authorizerAccessToken
 	}

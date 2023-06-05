@@ -28,3 +28,13 @@ func (c *Client) GetMessageKey(ctx context.Context) string {
 func (c *Client) GetAuthorizerAppid(ctx context.Context) string {
 	return c.config.authorizerAppid
 }
+
+// GetAuthorizerAccessToken 授权方access_token
+func (c *Client) GetAuthorizerAccessToken(ctx context.Context) string {
+	return c.config.authorizerAccessToken
+}
+
+// GetAuthorizerRefreshToken 授权方refresh_token
+func (c *Client) GetAuthorizerRefreshToken(ctx context.Context) string {
+	return c.config.authorizerRefreshToken
+}
