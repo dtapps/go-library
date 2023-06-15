@@ -37,15 +37,11 @@ func newWxaModifyDomainDirectlyResult(result WxaModifyDomainDirectlyResponse, bo
 
 // WxaModifyDomainDirectly 快速配置小程序服务器域名
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/modifyServerDomainDirectly.html
-func (c *Client) WxaModifyDomainDirectly(ctx context.Context, notMustParams ...gorequest.Params) (*WxaModifyDomainDirectlyResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newWxaModifyDomainDirectlyResult(WxaModifyDomainDirectlyResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) WxaModifyDomainDirectly(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaModifyDomainDirectlyResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/modify_domain_directly?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/modify_domain_directly?access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newWxaModifyDomainDirectlyResult(WxaModifyDomainDirectlyResponse{}, request.ResponseBody, request), err
 	}

@@ -8,7 +8,7 @@ import (
 )
 
 type GetCallBackIpResponse struct {
-	IpList []string `json:"ip_list"`
+	IpList []string `json:"ip_list,omitempty"`
 }
 
 type GetCallBackIpResult struct {
@@ -21,7 +21,7 @@ func NewGetCallBackIpResult(result GetCallBackIpResponse, body []byte, http gore
 	return &GetCallBackIpResult{Result: result, Body: body, Http: http}
 }
 
-// CgiBinGetApiDomainIp 获取微信服务器IP地址
+// CgiBinGetApiDomainIp 获取微信API接口 IP地址
 // https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_the_WeChat_server_IP_address.html
 func (c *Client) CgiBinGetApiDomainIp(ctx context.Context, componentAccessToken string, notMustParams ...gorequest.Params) (*GetCallBackIpResult, error) {
 	// 参数

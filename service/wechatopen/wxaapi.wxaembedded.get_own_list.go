@@ -33,15 +33,11 @@ func newWxaApiWxAembeddedGetOwnListResult(result WxaApiWxAembeddedGetOwnListResp
 
 // WxaApiWxAembeddedGetOwnList 获取半屏小程序授权列表
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/embedded-management/getOwnList.html
-func (c *Client) WxaApiWxAembeddedGetOwnList(ctx context.Context, notMustParams ...gorequest.Params) (*WxaApiWxAembeddedGetOwnListResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newWxaApiWxAembeddedGetOwnListResult(WxaApiWxAembeddedGetOwnListResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) WxaApiWxAembeddedGetOwnList(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaApiWxAembeddedGetOwnListResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxaapi/wxaembedded/get_own_list?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/wxaapi/wxaembedded/get_own_list?access_token="+authorizerAccessToken, params, http.MethodGet)
 	if err != nil {
 		return newWxaApiWxAembeddedGetOwnListResult(WxaApiWxAembeddedGetOwnListResponse{}, request.ResponseBody, request), err
 	}

@@ -7,7 +7,7 @@ import (
 )
 
 // ServeHttpAuthorizerAppid 授权跳转
-func (c *Client) ServeHttpAuthorizerAppid(ctx context.Context, r *http.Request) (resp CgiBinComponentApiQueryAuthResponse, agentUserId string, err error) {
+func (c *Client) ServeHttpAuthorizerAppid(ctx context.Context, r *http.Request, componentAccessToken string) (resp CgiBinComponentApiQueryAuthResponse, agentUserId string, err error) {
 	var (
 		query = r.URL.Query()
 
@@ -25,7 +25,7 @@ func (c *Client) ServeHttpAuthorizerAppid(ctx context.Context, r *http.Request) 
 		return resp, agentUserId, errors.New("找不到过期时间参数")
 	}
 
-	info, err := c.CgiBinComponentApiQueryAuth(ctx, authCode)
+	info, err := c.CgiBinComponentApiQueryAuth(ctx, componentAccessToken, authCode)
 	if err != nil {
 		return resp, agentUserId, err
 	}

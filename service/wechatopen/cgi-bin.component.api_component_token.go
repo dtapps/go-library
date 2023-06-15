@@ -24,12 +24,12 @@ func newCgiBinComponentApiComponentTokenResult(result CgiBinComponentApiComponen
 
 // CgiBinComponentApiComponentToken 令牌
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/component_access_token.html
-func (c *Client) CgiBinComponentApiComponentToken(ctx context.Context, notMustParams ...gorequest.Params) (*CgiBinComponentApiComponentTokenResult, error) {
+func (c *Client) CgiBinComponentApiComponentToken(ctx context.Context, componentVerifyTicket string, notMustParams ...gorequest.Params) (*CgiBinComponentApiComponentTokenResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("component_appid", c.GetComponentAppId(ctx))                 // 第三方平台appid
-	params.Set("component_appsecret", c.GetComponentAppSecret(ctx))         // 第三方平台appsecret
-	params.Set("component_verify_ticket", GetComponentVerifyTicket(ctx, c)) // 微信后台推送的ticket
+	params.Set("component_appid", c.config.componentAppId)         // 第三方平台appid
+	params.Set("component_appsecret", c.config.componentAppSecret) // 第三方平台appsecret
+	params.Set("component_verify_ticket", componentVerifyTicket)   // 微信后台推送的ticket
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/api_component_token", params, http.MethodPost)
 	if err != nil {

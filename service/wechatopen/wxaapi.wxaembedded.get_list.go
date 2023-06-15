@@ -33,15 +33,11 @@ func newWxaApiWxaembeddedGetListResult(result WxaApiWxaembeddedGetListResponse, 
 
 // WxaApiWxaembeddedGetList 获取半屏小程序调用列表
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/embedded-management/getEmbeddedList.html
-func (c *Client) WxaApiWxaembeddedGetList(ctx context.Context, notMustParams ...gorequest.Params) (*WxaApiWxaembeddedGetListResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newWxaApiWxaembeddedGetListResult(WxaApiWxaembeddedGetListResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) WxaApiWxaembeddedGetList(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaApiWxaembeddedGetListResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxaapi/wxaembedded/get_list?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/wxaapi/wxaembedded/get_list?access_token="+authorizerAccessToken, params, http.MethodGet)
 	if err != nil {
 		return newWxaApiWxaembeddedGetListResult(WxaApiWxaembeddedGetListResponse{}, request.ResponseBody, request), err
 	}

@@ -31,17 +31,13 @@ func newDataCubeGetWeAnAlySisAppidWeeklyRetainInfoResult(result DataCubeGetWeAnA
 
 // DataCubeGetWeAnAlySisAppidWeeklyRetainInfo 获取用户访问小程序周留存
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/visit-retain/getWeeklyRetain.html
-func (c *Client) DataCubeGetWeAnAlySisAppidWeeklyRetainInfo(ctx context.Context, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlySisAppidWeeklyRetainInfoResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newDataCubeGetWeAnAlySisAppidWeeklyRetainInfoResult(DataCubeGetWeAnAlySisAppidWeeklyRetainInfoResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) DataCubeGetWeAnAlySisAppidWeeklyRetainInfo(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlySisAppidWeeklyRetainInfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("begin_date", beginDate)
 	params.Set("end_date", endDate)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/datacube/getweanalysisappidweeklyretaininfo?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/datacube/getweanalysisappidweeklyretaininfo?access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newDataCubeGetWeAnAlySisAppidWeeklyRetainInfoResult(DataCubeGetWeAnAlySisAppidWeeklyRetainInfoResponse{}, request.ResponseBody, request), err
 	}

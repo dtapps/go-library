@@ -48,15 +48,11 @@ func newWxaGetEffectiveDomainResult(result WxaGetEffectiveDomainResponse, body [
 
 // WxaGetEffectiveDomain 获取发布后生效服务器域名列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_Basic_Info/get_effective_domain.html
-func (c *Client) WxaGetEffectiveDomain(ctx context.Context, notMustParams ...gorequest.Params) (*WxaGetEffectiveDomainResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newWxaGetEffectiveDomainResult(WxaGetEffectiveDomainResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) WxaGetEffectiveDomain(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaGetEffectiveDomainResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/get_effective_domain?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/get_effective_domain?access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newWxaGetEffectiveDomainResult(WxaGetEffectiveDomainResponse{}, request.ResponseBody, request), err
 	}

@@ -26,15 +26,11 @@ func newWxaGetWxaCodeUnLimitResult(result WxaGetWxaCodeUnLimitResponse, body []b
 
 // WxaGetWxaCodeUnLimit 获取小程序码，适用于需要的码数量极多的业务场景。通过该接口生成的小程序码，永久有效，数量暂无限制
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.getUnlimited.html
-func (c *Client) WxaGetWxaCodeUnLimit(ctx context.Context, notMustParams ...gorequest.Params) (*WxaGetWxaCodeUnLimitResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newWxaGetWxaCodeUnLimitResult(WxaGetWxaCodeUnLimitResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) WxaGetWxaCodeUnLimit(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaGetWxaCodeUnLimitResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/getwxacodeunlimit?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/getwxacodeunlimit?access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newWxaGetWxaCodeUnLimitResult(WxaGetWxaCodeUnLimitResponse{}, request.ResponseBody, request), err
 	}

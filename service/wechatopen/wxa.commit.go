@@ -24,15 +24,11 @@ func newWxaCommitResult(result WxaCommitResponse, body []byte, http gorequest.Re
 
 // WxaCommit 上传小程序代码并生成体验版
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/commit.html
-func (c *Client) WxaCommit(ctx context.Context, notMustParams ...gorequest.Params) (*WxaCommitResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newWxaCommitResult(WxaCommitResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) WxaCommit(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaCommitResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/commit?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/commit?access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newWxaCommitResult(WxaCommitResponse{}, request.ResponseBody, request), err
 	}

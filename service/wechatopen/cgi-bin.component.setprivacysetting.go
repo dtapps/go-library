@@ -24,15 +24,11 @@ func newCgiBinComponentSetPrivacySettingResult(result CgiBinComponentSetPrivacyS
 
 // CgiBinComponentSetPrivacySetting 配置小程序用户隐私保护指引
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/privacy_config/set_privacy_setting.html
-func (c *Client) CgiBinComponentSetPrivacySetting(ctx context.Context, notMustParams ...gorequest.Params) (*CgiBinComponentSetPrivacySettingResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newCgiBinComponentSetPrivacySettingResult(CgiBinComponentSetPrivacySettingResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) CgiBinComponentSetPrivacySetting(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*CgiBinComponentSetPrivacySettingResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/setprivacysetting?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/setprivacysetting?access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newCgiBinComponentSetPrivacySettingResult(CgiBinComponentSetPrivacySettingResponse{}, request.ResponseBody, request), err
 	}

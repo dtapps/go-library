@@ -30,17 +30,13 @@ func newDataCubeGetWeAnAlysIsAppidVisitDistributionResult(result DataCubeGetWeAn
 
 // DataCubeGetWeAnAlysIsAppidVisitDistribution 获取用户小程序访问分布数据
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/others/getVisitDistribution.html
-func (c *Client) DataCubeGetWeAnAlysIsAppidVisitDistribution(ctx context.Context, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlysIsAppidVisitDistributionResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newDataCubeGetWeAnAlysIsAppidVisitDistributionResult(DataCubeGetWeAnAlysIsAppidVisitDistributionResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) DataCubeGetWeAnAlysIsAppidVisitDistribution(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlysIsAppidVisitDistributionResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("begin_date", beginDate)
 	params.Set("end_date", endDate)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/datacube/getweanalysisappidvisitdistribution?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/datacube/getweanalysisappidvisitdistribution?access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newDataCubeGetWeAnAlysIsAppidVisitDistributionResult(DataCubeGetWeAnAlysIsAppidVisitDistributionResponse{}, request.ResponseBody, request), err
 	}

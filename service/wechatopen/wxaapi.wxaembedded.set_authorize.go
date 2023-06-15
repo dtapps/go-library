@@ -25,15 +25,11 @@ func newWxaApiWxAembeddedSetAuthorizeResult(result WxaApiWxAembeddedSetAuthorize
 // WxaApiWxAembeddedSetAuthorize 设置授权方式
 // checkComponentIsConfig && checkAuthorizerConfig
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/embedded-management/setAuthorizedEmbedded.html
-func (c *Client) WxaApiWxAembeddedSetAuthorize(ctx context.Context, notMustParams ...gorequest.Params) (*WxaApiWxAembeddedSetAuthorizeResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newWxaApiWxAembeddedSetAuthorizeResult(WxaApiWxAembeddedSetAuthorizeResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) WxaApiWxAembeddedSetAuthorize(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaApiWxAembeddedSetAuthorizeResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxaapi/wxaembedded/set_authorize?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxaapi/wxaembedded/set_authorize?access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newWxaApiWxAembeddedSetAuthorizeResult(WxaApiWxAembeddedSetAuthorizeResponse{}, request.ResponseBody, request), err
 	}

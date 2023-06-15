@@ -25,15 +25,11 @@ func newWxaOperationamsAgencyCheckCanOpenPublisherResult(result WxaOperationamsA
 
 // WxaOperationamsAgencyCheckCanOpenPublisher 检测是否能开通流量主
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/open/AgencyCheckCanOpenPublisher.html
-func (c *Client) WxaOperationamsAgencyCheckCanOpenPublisher(ctx context.Context, notMustParams ...gorequest.Params) (*WxaOperationamsAgencyCheckCanOpenPublisherResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newWxaOperationamsAgencyCheckCanOpenPublisherResult(WxaOperationamsAgencyCheckCanOpenPublisherResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) WxaOperationamsAgencyCheckCanOpenPublisher(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaOperationamsAgencyCheckCanOpenPublisherResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/operationams?action=agency_check_can_open_publisher&access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/operationams?action=agency_check_can_open_publisher&access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newWxaOperationamsAgencyCheckCanOpenPublisherResult(WxaOperationamsAgencyCheckCanOpenPublisherResponse{}, request.ResponseBody, request), err
 	}

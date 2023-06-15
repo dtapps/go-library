@@ -82,17 +82,13 @@ func newCgiBinComponentApiGetAuthorizerInfoResult(result CgiBinComponentApiGetAu
 
 // CgiBinComponentApiGetAuthorizerInfo 获取授权帐号详情
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/api_get_authorizer_info.html
-func (c *Client) CgiBinComponentApiGetAuthorizerInfo(ctx context.Context, notMustParams ...gorequest.Params) (*CgiBinComponentApiGetAuthorizerInfoResult, error) {
-	// 检查
-	if err := c.checkAuthorizerIsConfig(ctx); err != nil {
-		return newCgiBinComponentApiGetAuthorizerInfoResult(CgiBinComponentApiGetAuthorizerInfoResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) CgiBinComponentApiGetAuthorizerInfo(ctx context.Context, authorizerAppid, componentAccessToken string, notMustParams ...gorequest.Params) (*CgiBinComponentApiGetAuthorizerInfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("component_appid", c.GetComponentAppId(ctx))   // 第三方平台appid
-	params.Set("authorizer_appid", c.GetAuthorizerAppid(ctx)) // 授权方appid
+	params.Set("component_appid", c.config.componentAppId) // 第三方平台appid
+	params.Set("authorizer_appid", authorizerAppid)        // 授权方appid
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/api_get_authorizer_info?component_access_token="+GetComponentAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/api_get_authorizer_info?component_access_token="+componentAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newCgiBinComponentApiGetAuthorizerInfoResult(CgiBinComponentApiGetAuthorizerInfoResponse{}, request.ResponseBody, request), err
 	}

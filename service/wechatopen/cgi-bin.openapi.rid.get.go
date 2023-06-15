@@ -32,18 +32,14 @@ func newCgiBinOpenapiRidGetResult(result CgiBinOpenapiRidGetResponse, body []byt
 
 // CgiBinOpenapiRidGet 查询rid信息
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/openapi/getRidInfo.html
-func (c *Client) CgiBinOpenapiRidGet(ctx context.Context, rid string, notMustParams ...gorequest.Params) (*CgiBinOpenapiRidGetResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newCgiBinOpenapiRidGetResult(CgiBinOpenapiRidGetResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) CgiBinOpenapiRidGet(ctx context.Context, authorizerAccessToken, rid string, notMustParams ...gorequest.Params) (*CgiBinOpenapiRidGetResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	if rid != "" {
 		params.Set("rid", rid)
 	}
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/openapi/rid/get?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/openapi/rid/get?access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newCgiBinOpenapiRidGetResult(CgiBinOpenapiRidGetResponse{}, request.ResponseBody, request), err
 	}

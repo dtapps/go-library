@@ -38,13 +38,13 @@ func newCgiBinComponentApiQueryAuthResult(result CgiBinComponentApiQueryAuthResp
 
 // CgiBinComponentApiQueryAuth 使用授权码获取授权信息
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/authorization_info.html
-func (c *Client) CgiBinComponentApiQueryAuth(ctx context.Context, authorizationCode string, notMustParams ...gorequest.Params) (*CgiBinComponentApiQueryAuthResult, error) {
+func (c *Client) CgiBinComponentApiQueryAuth(ctx context.Context, componentAccessToken, authorizationCode string, notMustParams ...gorequest.Params) (*CgiBinComponentApiQueryAuthResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("component_appid", c.GetComponentAppId(ctx)) // 第三方平台appid
-	params.Set("authorization_code", authorizationCode)     // 授权码会在授权成功时返回给第三方平台
+	params.Set("component_appid", c.config.componentAppId) // 第三方平台appid
+	params.Set("authorization_code", authorizationCode)    // 授权码会在授权成功时返回给第三方平台
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/api_query_auth?component_access_token="+GetComponentAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/api_query_auth?component_access_token="+componentAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newCgiBinComponentApiQueryAuthResult(CgiBinComponentApiQueryAuthResponse{}, request.ResponseBody, request), err
 	}

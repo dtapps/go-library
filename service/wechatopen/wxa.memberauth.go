@@ -27,16 +27,12 @@ func newWxaMemberAuthResult(result WxaMemberAuthResponse, body []byte, http gore
 
 // WxaMemberAuth 获取体验者列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_AdminManagement/memberauth.html
-func (c *Client) WxaMemberAuth(ctx context.Context, notMustParams ...gorequest.Params) (*WxaMemberAuthResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newWxaMemberAuthResult(WxaMemberAuthResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) WxaMemberAuth(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaMemberAuthResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("action", "get_experiencer")
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/memberauth?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/memberauth?access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newWxaMemberAuthResult(WxaMemberAuthResponse{}, request.ResponseBody, request), err
 	}

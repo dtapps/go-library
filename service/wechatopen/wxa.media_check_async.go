@@ -43,15 +43,11 @@ func newWxaMediaCheckAsyncResult(result WxaMediaCheckAsyncResponse, body []byte,
 
 // WxaMediaCheckAsync 音视频内容安全识别
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/sec-center/sec-check/mediaCheckAsync.html
-func (c *Client) WxaMediaCheckAsync(ctx context.Context, notMustParams ...gorequest.Params) (*WxaMediaCheckAsyncResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newWxaMediaCheckAsyncResult(WxaMediaCheckAsyncResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) WxaMediaCheckAsync(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaMediaCheckAsyncResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/media_check_async?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/media_check_async?access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newWxaMediaCheckAsyncResult(WxaMediaCheckAsyncResponse{}, request.ResponseBody, request), err
 	}

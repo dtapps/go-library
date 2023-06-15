@@ -29,8 +29,8 @@ func newCgiBinComponentApiStartPushTicketResult(result CgiBinComponentApiStartPu
 func (c *Client) CgiBinComponentApiStartPushTicket(ctx context.Context, notMustParams ...gorequest.Params) (*CgiBinComponentApiStartPushTicketResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("component_appid", c.GetComponentAppId(ctx))      // 第三方平台appid
-	params.Set("component_secret", c.GetComponentAppSecret(ctx)) // 第三方平台app_secret
+	params.Set("component_appid", c.config.componentAppId)      // 第三方平台appid
+	params.Set("component_secret", c.config.componentAppSecret) // 第三方平台app_secret
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/api_start_push_ticket", params, http.MethodPost)
 	if err != nil {

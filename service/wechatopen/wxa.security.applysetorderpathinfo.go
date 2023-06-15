@@ -24,15 +24,11 @@ func newWxaSecurityApplySetOrderPathInfoResult(result WxaSecurityApplySetOrderPa
 
 // WxaSecurityApplySetOrderPathInfo 申请设置订单页 path 信息
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/basic-info-management/applySetOrderPathInfo.html
-func (c *Client) WxaSecurityApplySetOrderPathInfo(ctx context.Context, notMustParams ...gorequest.Params) (*WxaSecurityApplySetOrderPathInfoResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newWxaSecurityApplySetOrderPathInfoResult(WxaSecurityApplySetOrderPathInfoResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) WxaSecurityApplySetOrderPathInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaSecurityApplySetOrderPathInfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/security/applysetorderpathinfo?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/security/applysetorderpathinfo?access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newWxaSecurityApplySetOrderPathInfoResult(WxaSecurityApplySetOrderPathInfoResponse{}, request.ResponseBody, request), err
 	}

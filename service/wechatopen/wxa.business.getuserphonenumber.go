@@ -33,16 +33,12 @@ func newWxaBusinessGetUserPhoneNumberResult(result WxaBusinessGetUserPhoneNumber
 
 // WxaBusinessGetUserPhoneNumber code换取用户手机号。 每个 code 只能使用一次，code的有效期为5min
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/phonenumber/phonenumber.getPhoneNumber.html
-func (c *Client) WxaBusinessGetUserPhoneNumber(ctx context.Context, code string, notMustParams ...gorequest.Params) (*WxaBusinessGetUserPhoneNumberResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newWxaBusinessGetUserPhoneNumberResult(WxaBusinessGetUserPhoneNumberResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) WxaBusinessGetUserPhoneNumber(ctx context.Context, authorizerAccessToken, code string, notMustParams ...gorequest.Params) (*WxaBusinessGetUserPhoneNumberResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("code", code)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/business/getuserphonenumber?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/business/getuserphonenumber?access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newWxaBusinessGetUserPhoneNumberResult(WxaBusinessGetUserPhoneNumberResponse{}, request.ResponseBody, request), err
 	}

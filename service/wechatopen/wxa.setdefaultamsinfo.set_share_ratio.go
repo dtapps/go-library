@@ -24,18 +24,14 @@ func newWxaSetDefaultamsInfoSetShareRatioResult(result WxaSetDefaultamsInfoSetSh
 
 // WxaSetDefaultamsInfoSetShareRatio 设置默认分账比例
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/percentage/SetShareRatio.html
-func (c *Client) WxaSetDefaultamsInfoSetShareRatio(ctx context.Context, shareRatio int64, notMustParams ...gorequest.Params) (*WxaSetDefaultamsInfoSetShareRatioResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newWxaSetDefaultamsInfoSetShareRatioResult(WxaSetDefaultamsInfoSetShareRatioResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) WxaSetDefaultamsInfoSetShareRatio(ctx context.Context, authorizerAccessToken string, shareRatio int64, notMustParams ...gorequest.Params) (*WxaSetDefaultamsInfoSetShareRatioResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	if shareRatio > 0 {
 		params.Set("share_ratio", shareRatio)
 	}
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/setdefaultamsinfo?action=set_share_ratio&access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/setdefaultamsinfo?action=set_share_ratio&access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newWxaSetDefaultamsInfoSetShareRatioResult(WxaSetDefaultamsInfoSetShareRatioResponse{}, request.ResponseBody, request), err
 	}

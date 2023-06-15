@@ -29,7 +29,7 @@ func (c *Client) SignDecrypt(ctx context.Context, params SignDecryptParams, strX
 		return nil, errors.New("未找到随机数参数")
 	}
 
-	wantSignature := Sign(c.GetMessageToken(ctx), params.Timestamp, params.Nonce)
+	wantSignature := Sign(c.config.messageToken, params.Timestamp, params.Nonce)
 	if params.Signature != wantSignature {
 		return nil, errors.New("签名错误")
 	}
@@ -47,7 +47,7 @@ func (c *Client) SignDecrypt(ctx context.Context, params SignDecryptParams, strX
 		return nil, errors.New(fmt.Sprintf("Encrypt 解码字符串错误：%v", err))
 	}
 
-	AesKey, err := base64.StdEncoding.DecodeString(c.GetMessageKey(ctx) + "=")
+	AesKey, err := base64.StdEncoding.DecodeString(c.config.messageKey + "=")
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("messageKey 解码字符串错误：%v", err))
 	}

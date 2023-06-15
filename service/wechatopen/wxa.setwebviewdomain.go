@@ -24,15 +24,11 @@ func newWxaSetWebViewDoMainResult(result WxaSetWebViewDoMainResponse, body []byt
 
 // WxaSetWebViewDoMain 配置小程序业务域名
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/modifyJumpDomain.html
-func (c *Client) WxaSetWebViewDoMain(ctx context.Context, notMustParams ...gorequest.Params) (*WxaSetWebViewDoMainResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newWxaSetWebViewDoMainResult(WxaSetWebViewDoMainResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) WxaSetWebViewDoMain(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaSetWebViewDoMainResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/setwebviewdomain?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/setwebviewdomain?access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newWxaSetWebViewDoMainResult(WxaSetWebViewDoMainResponse{}, request.ResponseBody, request), err
 	}

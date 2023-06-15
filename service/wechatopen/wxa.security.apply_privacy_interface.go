@@ -25,15 +25,11 @@ func newWxaSecurityApplyPrivacyInterfaceResult(result WxaSecurityApplyPrivacyInt
 
 // WxaSecurityApplyPrivacyInterface 申请接口
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/apply_api/apply_privacy_interface.html
-func (c *Client) WxaSecurityApplyPrivacyInterface(ctx context.Context, notMustParams ...gorequest.Params) (*WxaSecurityApplyPrivacyInterfaceResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newWxaSecurityApplyPrivacyInterfaceResult(WxaSecurityApplyPrivacyInterfaceResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) WxaSecurityApplyPrivacyInterface(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaSecurityApplyPrivacyInterfaceResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/security/apply_privacy_interface?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/security/apply_privacy_interface?access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newWxaSecurityApplyPrivacyInterfaceResult(WxaSecurityApplyPrivacyInterfaceResponse{}, request.ResponseBody, request), err
 	}

@@ -24,15 +24,11 @@ func newWxaApiWxaembeddedAddEmbeddedResult(result WxaApiWxaembeddedAddEmbeddedRe
 
 // WxaApiWxaembeddedAddEmbedded 添加半屏小程序
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/embedded-management/addEmbedded.html
-func (c *Client) WxaApiWxaembeddedAddEmbedded(ctx context.Context, notMustParams ...gorequest.Params) (*WxaApiWxaembeddedAddEmbeddedResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newWxaApiWxaembeddedAddEmbeddedResult(WxaApiWxaembeddedAddEmbeddedResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) WxaApiWxaembeddedAddEmbedded(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaApiWxaembeddedAddEmbeddedResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxaapi/wxaembedded/add_embedded?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxaapi/wxaembedded/add_embedded?access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newWxaApiWxaembeddedAddEmbeddedResult(WxaApiWxaembeddedAddEmbeddedResponse{}, request.ResponseBody, request), err
 	}

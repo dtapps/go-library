@@ -24,12 +24,12 @@ func newCgiBinComponentApiCreatePreAuthCodenResult(result CgiBinComponentApiCrea
 
 // CgiBinComponentApiCreatePreAuthCoden 预授权码
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/pre_auth_code.html
-func (c *Client) CgiBinComponentApiCreatePreAuthCoden(ctx context.Context, notMustParams ...gorequest.Params) (*CgiBinComponentApiCreatePreAuthCodenResult, error) {
+func (c *Client) CgiBinComponentApiCreatePreAuthCoden(ctx context.Context, componentAccessToken string, notMustParams ...gorequest.Params) (*CgiBinComponentApiCreatePreAuthCodenResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("component_appid", c.GetComponentAppId(ctx)) // 第三方平台appid
+	params.Set("component_appid", c.config.componentAppId) // 第三方平台appid
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/api_create_preauthcode?component_access_token="+GetComponentAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/api_create_preauthcode?component_access_token="+componentAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newCgiBinComponentApiCreatePreAuthCodenResult(CgiBinComponentApiCreatePreAuthCodenResponse{}, request.ResponseBody, request), err
 	}

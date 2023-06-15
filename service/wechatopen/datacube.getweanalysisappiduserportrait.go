@@ -85,17 +85,13 @@ func newDataCubeGetWeAnAlySisAppidUserPortraitResult(result DataCubeGetWeAnAlySi
 
 // DataCubeGetWeAnAlySisAppidUserPortrait 获取小程序用户画像分布
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/others/getUserPortrait.html
-func (c *Client) DataCubeGetWeAnAlySisAppidUserPortrait(ctx context.Context, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlySisAppidUserPortraitResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newDataCubeGetWeAnAlySisAppidUserPortraitResult(DataCubeGetWeAnAlySisAppidUserPortraitResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) DataCubeGetWeAnAlySisAppidUserPortrait(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlySisAppidUserPortraitResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("begin_date", beginDate)
 	params.Set("end_date", endDate)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/datacube/getweanalysisappiduserportrait?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/datacube/getweanalysisappiduserportrait?access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newDataCubeGetWeAnAlySisAppidUserPortraitResult(DataCubeGetWeAnAlySisAppidUserPortraitResponse{}, request.ResponseBody, request), err
 	}

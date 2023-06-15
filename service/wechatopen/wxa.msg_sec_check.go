@@ -38,15 +38,11 @@ func newWxaMsgSecCheckResult(result WxaMsgSecCheckResponse, body []byte, http go
 
 // WxaMsgSecCheck 文本内容安全识别
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.getUnlimited.html
-func (c *Client) WxaMsgSecCheck(ctx context.Context, notMustParams ...gorequest.Params) (*WxaMsgSecCheckResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newWxaMsgSecCheckResult(WxaMsgSecCheckResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) WxaMsgSecCheck(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaMsgSecCheckResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/msg_sec_check?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/msg_sec_check?access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newWxaMsgSecCheckResult(WxaMsgSecCheckResponse{}, request.ResponseBody, request), err
 	}

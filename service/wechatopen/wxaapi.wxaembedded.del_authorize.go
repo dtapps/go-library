@@ -24,15 +24,11 @@ func newWxaApiWxaembeddedDelEmbeddedResult(result WxaApiWxaembeddedDelEmbeddedRe
 
 // WxaApiWxaembeddedDelEmbedded 删除半屏小程序
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/embedded-management/deleteEmbedded.html
-func (c *Client) WxaApiWxaembeddedDelEmbedded(ctx context.Context, notMustParams ...gorequest.Params) (*WxaApiWxaembeddedDelEmbeddedResult, error) {
-	// 检查
-	if err := c.checkAuthorizerConfig(ctx); err != nil {
-		return newWxaApiWxaembeddedDelEmbeddedResult(WxaApiWxaembeddedDelEmbeddedResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) WxaApiWxaembeddedDelEmbedded(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaApiWxaembeddedDelEmbeddedResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxaapi/wxaembedded/del_embedded?access_token="+GetAuthorizerAccessToken(ctx, c), params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxaapi/wxaembedded/del_embedded?access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newWxaApiWxaembeddedDelEmbeddedResult(WxaApiWxaembeddedDelEmbeddedResponse{}, request.ResponseBody, request), err
 	}

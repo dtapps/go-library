@@ -30,18 +30,14 @@ func newSnsComponentJsCode2sessionResult(result SnsComponentJsCode2sessionRespon
 
 // SnsComponentJsCode2session 小程序登录
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/others/WeChat_login.html
-func (c *Client) SnsComponentJsCode2session(ctx context.Context, jsCode string, notMustParams ...gorequest.Params) (*SnsComponentJsCode2sessionResult, error) {
-	// 检查
-	if err := c.checkAuthorizerIsConfig(ctx); err != nil {
-		return newSnsComponentJsCode2sessionResult(SnsComponentJsCode2sessionResponse{}, []byte{}, gorequest.Response{}), err
-	}
+func (c *Client) SnsComponentJsCode2session(ctx context.Context, componentAccessToken, authorizerAppid, jsCode string, notMustParams ...gorequest.Params) (*SnsComponentJsCode2sessionResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params["appid"] = c.GetAuthorizerAppid(ctx)                        // 小程序的 appId
-	params["js_code"] = jsCode                                         // wx.login 获取的 code
-	params["grant_type"] = "authorization_code"                        // 填 authorization_code
-	params["component_appid"] = c.GetComponentAppId(ctx)               // 第三方平台 appid
-	params["component_access_token"] = GetComponentAccessToken(ctx, c) // 第三方平台的component_access_token
+	params["appid"] = authorizerAppid                       // 小程序的 appId
+	params["js_code"] = jsCode                              // wx.login 获取的 code
+	params["grant_type"] = "authorization_code"             // 填 authorization_code
+	params["component_appid"] = c.config.componentAppId     // 第三方平台 appid
+	params["component_access_token"] = componentAccessToken // 第三方平台的component_access_token
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/sns/component/jscode2session", params, http.MethodGet)
 	if err != nil {
