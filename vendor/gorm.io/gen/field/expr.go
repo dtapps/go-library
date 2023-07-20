@@ -24,7 +24,7 @@ type Expr interface {
 	Build(clause.Builder)
 
 	As(alias string) Expr
-	ColumnName() sql
+	IColumnName
 	BuildColumn(*gorm.Statement, ...BuildOpt) sql
 	BuildWithArgs(*gorm.Statement) (query sql, args []interface{})
 	RawExpr() expression
@@ -51,6 +51,10 @@ type OrderExpr interface {
 }
 
 type expression interface{}
+
+type IColumnName interface {
+	ColumnName() sql
+}
 
 type sql string
 
@@ -188,6 +192,10 @@ func (e expr) Min() Float64 {
 
 func (e expr) Avg() Float64 {
 	return Float64{e.setE(clause.Expr{SQL: "AVG(?)", Vars: []interface{}{e.RawExpr()}})}
+}
+
+func (e expr) Abs() Float64 {
+	return Float64{e.setE(clause.Expr{SQL: "ABS(?)", Vars: []interface{}{e.RawExpr()}})}
 }
 
 func (e expr) Null() AssignExpr {

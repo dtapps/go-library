@@ -14,9 +14,18 @@ import (
 // ModelOpt field option
 type ModelOpt = model.Option
 
+// Field exported model.Field
+type Field = *model.Field
+
 var ns = schema.NamingStrategy{}
 
 var (
+	FieldModify = func(opt func(Field) Field) model.ModifyFieldOpt {
+		return func(f *model.Field) *model.Field {
+			return opt(f)
+		}
+	}
+
 	// FieldNew add new field (any type your want)
 	FieldNew = func(fieldName, fieldType string, fieldTag field.Tag) model.CreateFieldOpt {
 		return func(*model.Field) *model.Field {
@@ -142,6 +151,16 @@ var (
 	FieldGORMTag = func(columnName string, gormTag func(tag field.GormTag) field.GormTag) model.ModifyFieldOpt {
 		return func(m *model.Field) *model.Field {
 			if m.ColumnName == columnName {
+				m.GORMTag = gormTag(m.GORMTag)
+			}
+			return m
+		}
+	}
+	// FieldGORMTagReg specify GORM tag by RegExp
+	FieldGORMTagReg = func(columnNameReg string, gormTag func(tag field.GormTag) field.GormTag) model.ModifyFieldOpt {
+		reg := regexp.MustCompile(columnNameReg)
+		return func(m *model.Field) *model.Field {
+			if reg.MatchString(m.ColumnName) {
 				m.GORMTag = gormTag(m.GORMTag)
 			}
 			return m

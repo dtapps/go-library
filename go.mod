@@ -6,16 +6,16 @@ require (
 	github.com/MercuryEngineering/CookieMonster v0.0.0-20180304172713-1584578b3403
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.7+incompatible
 	github.com/allegro/bigcache/v3 v3.1.0
-	github.com/baidubce/bce-sdk-go v0.9.151
+	github.com/baidubce/bce-sdk-go v0.9.153
 	github.com/basgys/goxml2json v1.1.0
-	github.com/bytedance/sonic v1.9.2
+	github.com/bytedance/sonic v1.10.0-rc2
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-playground/locales v0.14.1
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/go-playground/validator/v10 v10.14.1
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/goccy/go-json v0.10.2
-	github.com/gogf/gf/v2 v2.4.4
+	github.com/gogf/gf/v2 v2.5.0
 	github.com/json-iterator/go v1.1.12
 	github.com/lib/pq v1.10.9
 	github.com/mitchellh/mapstructure v1.5.0
@@ -32,13 +32,13 @@ require (
 	go.mongodb.org/mongo-driver v1.12.0
 	go.uber.org/zap v1.24.0
 	golang.org/x/crypto v0.11.0
-	golang.org/x/exp v0.0.0-20230626212559-97b1e661b5df
+	golang.org/x/exp v0.0.0-20230713183714-613f0c0eb8a1
 	golang.org/x/text v0.11.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gorm.io/datatypes v1.2.0
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/driver/postgres v1.5.2
-	gorm.io/gen v0.3.22
+	gorm.io/gen v0.3.23
 	gorm.io/gorm v1.25.2
 	xorm.io/builder v0.3.12
 	xorm.io/xorm v1.3.2
@@ -47,7 +47,8 @@ require (
 require (
 	github.com/bitly/go-simplejson v0.5.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
-	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
+	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
+	github.com/chenzhuoyu/iasm v0.9.0 // indirect
 	github.com/clbanning/mxj v1.8.4 // indirect
 	github.com/clbanning/mxj/v2 v2.5.7 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
@@ -62,7 +63,7 @@ require (
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
-	github.com/jackc/pgx/v5 v5.4.1 // indirect
+	github.com/jackc/pgx/v5 v5.4.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/klauspost/compress v1.16.7 // indirect
@@ -76,7 +77,7 @@ require (
 	github.com/montanaflynn/stats v0.7.1 // indirect
 	github.com/mozillazg/go-httpheader v0.4.0 // indirect
 	github.com/oschwald/maxminddb-golang v1.11.0 // indirect
-	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
+	github.com/pelletier/go-toml/v2 v2.0.9 // indirect
 	github.com/rogpeppe/go-internal v1.8.1 // indirect
 	github.com/saracen/go7z-fixtures v0.0.0-20190623165746-aa6b8fba1d2f // indirect
 	github.com/saracen/solidblock v0.0.0-20190426153529-45df20abab6f // indirect
