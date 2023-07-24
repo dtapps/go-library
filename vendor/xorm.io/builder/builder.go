@@ -60,7 +60,7 @@ type Builder struct {
 	subQuery   *Builder
 	cond       Cond
 	selects    []string
-	joins      []join
+	joins      joins
 	setOps     []setOp
 	limitation *limit
 	insertCols []string
@@ -68,7 +68,7 @@ type Builder struct {
 	updates    []UpdateCond
 	orderBy    interface{}
 	groupBy    string
-	having     string
+	having     interface{}
 }
 
 // Dialect sets the db dialect of Builder.
@@ -113,21 +113,31 @@ func (b *Builder) Where(cond Cond) *Builder {
 }
 
 // From sets from subject(can be a table name in string or a builder pointer) and its alias
-func (b *Builder) From(subject interface{}, alias ...string) *Builder {
-	switch subject.(type) {
+func (b *Builder) From(subject interface{}, aliasMaybe ...string) *Builder {
+	alias := ""
+	if len(aliasMaybe) > 0 {
+		alias = aliasMaybe[0]
+	}
+
+	if aliased, ok := subject.(*Aliased); ok {
+		subject = aliased.table
+		alias = aliased.alias
+	}
+
+	switch t := subject.(type) {
 	case *Builder:
-		b.subQuery = subject.(*Builder)
+		b.subQuery = t
 
 		if len(alias) > 0 {
-			b.from = alias[0]
+			b.from = alias
 		} else {
 			b.isNested = true
 		}
 	case string:
-		b.from = subject.(string)
+		b.from = t
 
 		if len(alias) > 0 {
-			b.from = b.from + " " + alias[0]
+			b.from = b.from + " " + alias
 		}
 	}
 

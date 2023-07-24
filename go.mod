@@ -40,7 +40,7 @@ require (
 	gorm.io/driver/postgres v1.5.2
 	gorm.io/gen v0.3.23
 	gorm.io/gorm v1.25.2
-	xorm.io/builder v0.3.12
+	xorm.io/builder v0.3.13
 	xorm.io/xorm v1.3.2
 )
 

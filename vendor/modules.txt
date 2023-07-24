@@ -639,7 +639,7 @@ gorm.io/hints
 # gorm.io/plugin/dbresolver v1.4.1
 ## explicit; go 1.14
 gorm.io/plugin/dbresolver
-# xorm.io/builder v0.3.12
+# xorm.io/builder v0.3.13
 ## explicit; go 1.11
 xorm.io/builder
 # xorm.io/xorm v1.3.2

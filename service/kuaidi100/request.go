@@ -32,7 +32,7 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	client.SetContentTypeForm()
 
 	// 设置参数
-	client.SetParams(params)
+	client.SetParams(newParams)
 
 	// 发起请求
 	request, err := client.Request(ctx)

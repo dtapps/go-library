@@ -30,6 +30,7 @@ func NewClient(config *ClientConfig) (*Client, error) {
 	c := &Client{}
 
 	c.config.customer = config.Customer
+	c.config.key = config.Key
 
 	c.requestClient = gorequest.NewHttp()
 
