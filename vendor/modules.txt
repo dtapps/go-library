@@ -1,14 +1,14 @@
 # github.com/MercuryEngineering/CookieMonster v0.0.0-20180304172713-1584578b3403
 ## explicit
 github.com/MercuryEngineering/CookieMonster
-# github.com/aliyun/aliyun-oss-go-sdk v2.2.8+incompatible
+# github.com/aliyun/aliyun-oss-go-sdk v2.2.9+incompatible
 ## explicit
 github.com/aliyun/aliyun-oss-go-sdk/oss
 # github.com/allegro/bigcache/v3 v3.1.0
 ## explicit; go 1.16
 github.com/allegro/bigcache/v3
 github.com/allegro/bigcache/v3/queue
-# github.com/baidubce/bce-sdk-go v0.9.154
+# github.com/baidubce/bce-sdk-go v0.9.156
 ## explicit; go 1.11
 github.com/baidubce/bce-sdk-go/auth
 github.com/baidubce/bce-sdk-go/bce
@@ -24,7 +24,7 @@ github.com/baidubce/bce-sdk-go/util/log
 github.com/basgys/goxml2json
 # github.com/bitly/go-simplejson v0.5.0
 ## explicit
-# github.com/bytedance/sonic v1.10.0-rc3
+# github.com/bytedance/sonic v1.10.0
 ## explicit; go 1.16
 github.com/bytedance/sonic
 github.com/bytedance/sonic/ast
@@ -60,8 +60,6 @@ github.com/chenzhuoyu/iasm/x86_64
 # github.com/clbanning/mxj v1.8.4
 ## explicit
 github.com/clbanning/mxj
-# github.com/clbanning/mxj/v2 v2.5.7
-## explicit; go 1.15
 # github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f
 ## explicit
 github.com/dgryski/go-rendezvous
@@ -94,7 +92,7 @@ github.com/go-logr/logr/funcr
 # github.com/go-logr/stdr v1.2.2
 ## explicit; go 1.16
 github.com/go-logr/stdr
-# github.com/go-ole/go-ole v1.2.6
+# github.com/go-ole/go-ole v1.3.0
 ## explicit; go 1.12
 github.com/go-ole/go-ole
 github.com/go-ole/go-ole/oleutil
@@ -107,7 +105,7 @@ github.com/go-playground/locales/zh
 # github.com/go-playground/universal-translator v0.18.1
 ## explicit; go 1.18
 github.com/go-playground/universal-translator
-# github.com/go-playground/validator/v10 v10.14.1
+# github.com/go-playground/validator/v10 v10.15.1
 ## explicit; go 1.18
 github.com/go-playground/validator/v10
 github.com/go-playground/validator/v10/translations/en
@@ -126,8 +124,8 @@ github.com/goccy/go-json/internal/encoder/vm_color_indent
 github.com/goccy/go-json/internal/encoder/vm_indent
 github.com/goccy/go-json/internal/errors
 github.com/goccy/go-json/internal/runtime
-# github.com/gogf/gf/v2 v2.5.1
-## explicit; go 1.15
+# github.com/gogf/gf/v2 v2.5.2
+## explicit; go 1.18
 github.com/gogf/gf/v2/container/garray
 github.com/gogf/gf/v2/container/glist
 github.com/gogf/gf/v2/container/gmap
@@ -165,7 +163,6 @@ github.com/gogf/gf/v2/os/gfpool
 github.com/gogf/gf/v2/os/gfsnotify
 github.com/gogf/gf/v2/os/glog
 github.com/gogf/gf/v2/os/gmlock
-github.com/gogf/gf/v2/os/gmutex
 github.com/gogf/gf/v2/os/grpool
 github.com/gogf/gf/v2/os/gstructs
 github.com/gogf/gf/v2/os/gtime
@@ -188,7 +185,7 @@ github.com/jackc/pgpassfile
 # github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a
 ## explicit; go 1.14
 github.com/jackc/pgservicefile
-# github.com/jackc/pgx/v5 v5.4.2
+# github.com/jackc/pgx/v5 v5.4.3
 ## explicit; go 1.19
 github.com/jackc/pgx/v5
 github.com/jackc/pgx/v5/internal/anynil
@@ -286,7 +283,7 @@ github.com/qiniu/go-sdk/v7/internal/hostprovider
 github.com/qiniu/go-sdk/v7/internal/log
 github.com/qiniu/go-sdk/v7/reqid
 github.com/qiniu/go-sdk/v7/storage
-# github.com/redis/go-redis/v9 v9.0.5
+# github.com/redis/go-redis/v9 v9.1.0
 ## explicit; go 1.18
 github.com/redis/go-redis/v9
 github.com/redis/go-redis/v9/internal
@@ -339,7 +336,7 @@ github.com/syndtr/goleveldb/leveldb/util
 # github.com/tencentyun/cos-go-sdk-v5 v0.7.42
 ## explicit; go 1.12
 github.com/tencentyun/cos-go-sdk-v5
-# github.com/tklauser/go-sysconf v0.3.11
+# github.com/tklauser/go-sysconf v0.3.12
 ## explicit; go 1.13
 github.com/tklauser/go-sysconf
 # github.com/tklauser/numcpus v0.6.1
@@ -458,8 +455,6 @@ go.opentelemetry.io/otel/sdk/trace
 # go.opentelemetry.io/otel/trace v1.16.0
 ## explicit; go 1.19
 go.opentelemetry.io/otel/trace
-# go.uber.org/atomic v1.11.0
-## explicit; go 1.18
 # go.uber.org/multierr v1.11.0
 ## explicit; go 1.19
 go.uber.org/multierr
@@ -491,7 +486,7 @@ golang.org/x/crypto/scrypt
 golang.org/x/crypto/sha3
 golang.org/x/crypto/ssh
 golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
-# golang.org/x/exp v0.0.0-20230801115018-d63ba01acd4b
+# golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63
 ## explicit; go 1.20
 golang.org/x/exp/constraints
 golang.org/x/exp/slices
@@ -554,7 +549,7 @@ golang.org/x/text/width
 # golang.org/x/time v0.3.0
 ## explicit
 golang.org/x/time/rate
-# golang.org/x/tools v0.11.1
+# golang.org/x/tools v0.12.1-0.20230815132531-74c255bcf846
 ## explicit; go 1.18
 golang.org/x/tools/go/ast/astutil
 golang.org/x/tools/go/gcexportdata
@@ -624,7 +619,7 @@ gorm.io/gen/internal/model
 gorm.io/gen/internal/parser
 gorm.io/gen/internal/template
 gorm.io/gen/internal/utils/pools
-# gorm.io/gorm v1.25.2
+# gorm.io/gorm v1.25.4
 ## explicit; go 1.16
 gorm.io/gorm
 gorm.io/gorm/callbacks
@@ -637,7 +632,7 @@ gorm.io/gorm/utils/tests
 # gorm.io/hints v1.1.2
 ## explicit; go 1.16
 gorm.io/hints
-# gorm.io/plugin/dbresolver v1.4.2
+# gorm.io/plugin/dbresolver v1.4.7
 ## explicit; go 1.14
 gorm.io/plugin/dbresolver
 # xorm.io/builder v0.3.13

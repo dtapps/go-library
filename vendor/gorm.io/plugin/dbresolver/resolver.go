@@ -54,8 +54,8 @@ func (r *resolver) call(fc func(connPool gorm.ConnPool) error) error {
 		}
 	}
 
-	for _, r := range r.replicas {
-		if err := fc(r); err != nil {
+	for _, re := range r.replicas {
+		if err := fc(re); err != nil {
 			return err
 		}
 	}
