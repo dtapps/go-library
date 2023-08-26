@@ -48,7 +48,7 @@ func newMmpaymkttransfersGethbinfoResult(result MmpaymkttransfersGethbinfoRespon
 }
 
 // MmpaymkttransfersGethbinfo
-// 付款到零钱 - 查询红包记录
+// 现金红包 - 查询红包记录
 // https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon_sl.php?chapter=13_6&index=5
 func (c *Client) MmpaymkttransfersGethbinfo(ctx context.Context, notMustParams ...gorequest.Params) (*MmpaymkttransfersGethbinfoResult, error) {
 	cert, err := c.P12ToPem()
@@ -58,7 +58,7 @@ func (c *Client) MmpaymkttransfersGethbinfo(ctx context.Context, notMustParams .
 	// 签名
 	params.Set("sign", c.getMd5Sign(params))
 	// 	请求
-	request, err := c.request(ctx, apiUrl+"/mmpaymkttransfers/sendgroupredpack", params, true, cert)
+	request, err := c.request(ctx, apiUrl+"/mmpaymkttransfers/gethbinfo", params, true, cert)
 	if err != nil {
 		return newMmpaymkttransfersGethbinfoResult(MmpaymkttransfersGethbinfoResponse{}, request.ResponseBody, request), err
 	}
