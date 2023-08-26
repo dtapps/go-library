@@ -26,7 +26,7 @@ func TestIp2regionV2OnlineDownload(t *testing.T) {
 }
 
 func TestGeoIpOnlineDownload(t *testing.T) {
-	geoip.OnlineDownload(geoip.GetGeoLite2CountryDownloadUrl("bb26plSFSVqDCJen"), "GeoLite2-Country_20230602.tar.gz")
-	geoip.OnlineDownload(geoip.GetGeoLite2CityDownloadUrl("bb26plSFSVqDCJen"), "GeoLite2-City_20230602.tar.gz")
-	geoip.OnlineDownload(geoip.GetGeoLite2AsnDownloadUrl("bb26plSFSVqDCJen"), "GeoLite2-ASN_20230602.tar.gz")
+	geoip.OnlineDownload(geoip.GetGeoLite2CountryDownloadUrl("bb26plSFSVqDCJen"), "GeoLite2-Country_20230825.tar.gz")
+	geoip.OnlineDownload(geoip.GetGeoLite2CityDownloadUrl("bb26plSFSVqDCJen"), "GeoLite2-City_20230825.tar.gz")
+	geoip.OnlineDownload(geoip.GetGeoLite2AsnDownloadUrl("bb26plSFSVqDCJen"), "GeoLite2-ASN_20230825.tar.gz")
 }
