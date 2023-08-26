@@ -14,9 +14,6 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	// 设置请求地址
 	client.SetUri(url)
 
-	client.SetHeader("app_id", c.GetAppId())
-	client.SetHeader("mch_id", c.GetMchId())
-
 	// 设置格式
 	client.SetContentTypeXml()
 
