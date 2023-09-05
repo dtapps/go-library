@@ -2,13 +2,13 @@ package kashangwl
 
 import "github.com/dtapps/go-library/utils/golog"
 
-// ConfigZapClientFun 日志配置
-func (c *Client) ConfigZapClientFun(apiZapLogFun golog.ApiZapLogFun) {
-	apiZapLog := apiZapLogFun()
-	if apiZapLog != nil {
-		c.zap.client = apiZapLog
-		c.zap.status = true
+// ConfigSLogClientFun 日志配置
+func (c *Client) ConfigSLogClientFun(apiSLogFun golog.ApiSLogFun) {
+	apiSLog := apiSLogFun()
+	if apiSLog != nil {
+		c.slog.client = apiSLog
+		c.slog.status = true
 
-		c.cacheZap.client = apiZapLog
+		c.cacheSlog.client = apiSLog
 	}
 }

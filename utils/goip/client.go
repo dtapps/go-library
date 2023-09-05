@@ -34,7 +34,7 @@ type Client struct {
 }
 
 // NewIp 实例化
-func NewIp(config ClientConfig) (*Client, error) {
+func NewIp(config *ClientConfig) (*Client, error) {
 
 	var err error
 	c := &Client{}

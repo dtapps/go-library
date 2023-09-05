@@ -34,8 +34,8 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	}
 
 	// 日志
-	if c.zap.status {
-		go c.zap.client.Middleware(ctx, request)
+	if c.slog.status {
+		go c.slog.client.Middleware(ctx, request)
 	}
 
 	return request, err

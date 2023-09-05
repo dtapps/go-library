@@ -19,13 +19,13 @@ type Client struct {
 		customerId  int64  // 商家编号
 		customerKey string // 商家密钥
 	}
-	zap struct {
-		status bool             // 状态
-		client *golog.ApiZapLog // 日志服务
+	slog struct {
+		status bool           // 状态
+		client *golog.ApiSLog // 日志服务
 	}
-	cacheZap struct {
-		status bool             // 状态
-		client *golog.ApiZapLog // 日志服务
+	cacheSlog struct {
+		status bool           // 状态
+		client *golog.ApiSLog // 日志服务
 	}
 }
 
@@ -37,7 +37,7 @@ func NewClient(config *ClientConfig) (*Client, error) {
 	c.config.customerId = config.CustomerId
 	c.config.customerKey = config.CustomerKey
 
-	c.cacheZap.status = config.CacheLogStatus
+	c.cacheSlog.status = config.CacheLogStatus
 
 	c.requestClient = gorequest.NewHttp()
 

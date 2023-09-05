@@ -23,8 +23,8 @@ func (c *Client) request(ctx context.Context, url string) (gorequest.Response, e
 	}
 
 	// 记录日志
-	if c.zap.status {
-		go c.zap.client.Middleware(ctx, request)
+	if c.slog.status {
+		go c.slog.client.Middleware(ctx, request)
 	}
 
 	return request, err

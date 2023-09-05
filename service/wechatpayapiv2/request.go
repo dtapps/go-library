@@ -32,8 +32,8 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	}
 
 	// 记录日志
-	if c.zap.status {
-		go c.zap.client.MiddlewareXml(ctx, request)
+	if c.slog.status {
+		go c.slog.client.MiddlewareXml(ctx, request)
 	}
 
 	return request, err

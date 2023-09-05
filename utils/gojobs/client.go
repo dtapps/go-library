@@ -19,14 +19,14 @@ type ClientConfig struct {
 	GormClientFun  dorm.GormClientFun  // 数据库驱动
 	RedisClientFun dorm.RedisClientFun // 数据库驱动
 	RedisPrefixFun redisPrefixFun      // 前缀
-	ZapLog         *golog.ZapLog       // 日志服务
+	SLog           *golog.SLog         // 日志服务
 	CurrentIp      string              // 当前ip
 }
 
 // Client 实例
 type Client struct {
 	gormClient *dorm.GormClient // 数据库
-	zapLog     *golog.ZapLog    // 日志服务
+	sLog       *golog.SLog      // 日志服务
 	config     struct {
 		systemHostname      string  // 主机名
 		systemOs            string  // 系统类型
@@ -62,7 +62,7 @@ func NewClient(config *ClientConfig) (*Client, error) {
 
 	c := &Client{}
 
-	c.zapLog = config.ZapLog
+	c.sLog = config.SLog
 
 	if config.CurrentIp != "" && config.CurrentIp != "0.0.0.0" {
 		c.config.systemOutsideIp = config.CurrentIp

@@ -29,9 +29,9 @@ type Client struct {
 		authorizerAccessToken  string // 授权方access_token
 		authorizerRefreshToken string // 授权方refresh_token
 	}
-	zap struct {
-		status bool             // 状态
-		client *golog.ApiZapLog // 日志服务
+	slog struct {
+		status bool           // 状态
+		client *golog.ApiSLog // 日志服务
 	}
 }
 

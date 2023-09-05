@@ -37,8 +37,8 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	}
 
 	// 日志
-	if c.zap.status {
-		go c.zap.client.Middleware(ctx, request)
+	if c.slog.status {
+		go c.slog.client.Middleware(ctx, request)
 	}
 
 	return request, err
@@ -71,8 +71,8 @@ func (c *Client) requestCache(ctx context.Context, url string, params map[string
 	}
 
 	// 日志
-	if c.cacheZap.status {
-		go c.cacheZap.client.Middleware(ctx, request)
+	if c.cacheSlog.status {
+		go c.cacheSlog.client.Middleware(ctx, request)
 	}
 
 	return request, err

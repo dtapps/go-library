@@ -20,9 +20,9 @@ type Client struct {
 		appSecret string // 密钥
 		adzoneId  int64  // mm_xxx_xxx_xxx的第三位
 	}
-	zap struct {
-		status bool             // 状态
-		client *golog.ApiZapLog // 日志服务
+	slog struct {
+		status bool           // 状态
+		client *golog.ApiSLog // 日志服务
 	}
 }
 

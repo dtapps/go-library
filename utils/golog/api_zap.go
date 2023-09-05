@@ -10,9 +10,9 @@ import (
 	"github.com/dtapps/go-library/utils/gotime"
 	"github.com/dtapps/go-library/utils/gotrace_id"
 	"github.com/dtapps/go-library/utils/gourl"
-	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"runtime"
 	"time"
 )
@@ -56,13 +56,10 @@ func NewApiZapLog(ctx context.Context, config *ApiZapLogConfig) *ApiZapLog {
 	hook := lumberjack.Logger{
 		Filename:   zl.config.LogPath + zl.config.LogName, // ⽇志⽂件路径
 		MaxSize:    zl.config.MaxSize,                     // 单位为MB,默认为512MB
+		MaxAge:     zl.config.MaxAge,                      // 文件最多保存多少天
 		MaxBackups: zl.config.MaxBackups,                  // 保留旧文件的最大个数
 		LocalTime:  zl.config.LocalTime,                   // 采用本地时间
 		Compress:   zl.config.Compress,                    // 是否压缩日志
-	}
-	if zl.config.MaxAge > 0 {
-		// 文件最多保存多少天
-		hook.MaxAge = zl.config.MaxAge
 	}
 	// 在文件输出日志
 	syncer = zapcore.AddSync(&hook)

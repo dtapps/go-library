@@ -18,9 +18,9 @@ type Client struct {
 		customer string // 授权码
 		key      string // 密钥
 	}
-	zap struct {
-		status bool             // 状态
-		client *golog.ApiZapLog // 日志服务
+	slog struct {
+		status bool           // 状态
+		client *golog.ApiSLog // 日志服务
 	}
 }
 

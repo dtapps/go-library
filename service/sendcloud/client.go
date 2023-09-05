@@ -16,9 +16,9 @@ type Client struct {
 		apiUser string // API_USER
 		apiKey  string // API_KEY
 	}
-	zap struct {
-		status bool             // 状态
-		client *golog.ApiZapLog // 日志服务
+	slog struct {
+		status bool           // 状态
+		client *golog.ApiSLog // 日志服务
 	}
 }
 

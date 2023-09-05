@@ -27,8 +27,8 @@ func (c *Client) request(ctx context.Context, param map[string]interface{}) (gor
 	}
 
 	// 记录日志
-	if c.zap.status {
-		go c.zap.client.MiddlewareCustom(ctx, gostring.ToString(params["method"]), request)
+	if c.slog.status {
+		go c.slog.client.MiddlewareCustom(ctx, gostring.ToString(params["method"]), request)
 	}
 
 	return request, err
