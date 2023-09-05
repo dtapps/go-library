@@ -81,7 +81,10 @@ func (c *Client) QueryIpv6wry(ipAddress net.IP) (result ipv6wry.QueryResult, err
 		return result, QueryIncorrect
 	}
 
-	query := c.ipv6wryClient.Query(ipAddress)
+	query, err := c.ipv6wryClient.Query(ipAddress)
+	if err != nil {
+		return ipv6wry.QueryResult{}, err
+	}
 
 	return query, nil
 }

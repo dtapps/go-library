@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net"
 	"strconv"
+	"strings"
 )
 
 type QueryResult struct {
@@ -70,4 +71,13 @@ func (c *Client) Query(ipAddress net.IP) (result QueryResult, err error) {
 	result = getIpInfo(result.Ip, getLong(dbBuff, dataPtr), dbBuff[(dataPtr)+4:dataPtr+dataLen])
 
 	return result, nil
+}
+
+// QueryIP ip地址查询对应归属地信息
+func (c *Client) QueryIP(ipAddressStr string) (result QueryResult, err error) {
+	arrIpv4 := strings.Split(ipAddressStr, ".")
+	if len(arrIpv4) == 4 {
+		return c.Query(net.ParseIP(ipAddressStr))
+	}
+	return QueryResult{}, errors.New("不是IPV4")
 }

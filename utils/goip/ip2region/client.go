@@ -1,7 +1,6 @@
 package ip2region
 
 import (
-	_ "embed"
 	"errors"
 	"github.com/dtapps/go-library/utils/gostring"
 	"os"
@@ -13,7 +12,6 @@ const (
 	IndexBlockLength = 12
 )
 
-//go:embed ip2region.db
 var dbBuff []byte
 
 type Client struct {
@@ -37,11 +35,27 @@ type Client struct {
 	dbFile string
 }
 
-func New() *Client {
+func New(filepath string) (*Client, error) {
 
+	var err error
 	c := &Client{}
 
-	return c
+	dbBuff, err = os.ReadFile(filepath)
+	if err != nil {
+		return nil, err
+	}
+
+	return c, nil
+}
+
+func NewBuff(file []byte) (*Client, error) {
+
+	var _ error
+	c := &Client{}
+
+	dbBuff = file
+
+	return c, nil
 }
 
 // 获取Ip信息

@@ -1,9 +1,9 @@
 package ipv6wry
 
 import (
-	_ "embed"
 	"encoding/binary"
 	"log"
+	"os"
 )
 
 var (
@@ -16,7 +16,6 @@ var (
 	end     uint32
 )
 
-//go:embed ipv6wry.db
 var datBuff []byte
 
 type Client struct {
@@ -25,9 +24,15 @@ type Client struct {
 	IndexLen uint32
 }
 
-func New() *Client {
+func New(filepath string) (*Client, error) {
 
+	var err error
 	c := &Client{}
+
+	datBuff, err = os.ReadFile(filepath)
+	if err != nil {
+		return nil, err
+	}
 
 	buf := datBuff[0:8]
 	start := binary.LittleEndian.Uint32(buf[:4])
@@ -36,7 +41,24 @@ func New() *Client {
 	num := int64((end-start)/7 + 1)
 	log.Printf("ipv6wry.db 共加载：%d 条ip记录\n", num)
 
-	return c
+	return c, nil
+}
+
+func NewBuff(file []byte) (*Client, error) {
+
+	var _ error
+	c := &Client{}
+
+	datBuff = file
+
+	buf := datBuff[0:8]
+	start := binary.LittleEndian.Uint32(buf[:4])
+	end := binary.LittleEndian.Uint32(buf[4:])
+
+	num := int64((end-start)/7 + 1)
+	log.Printf("ipv6wry.db 共加载：%d 条ip记录\n", num)
+
+	return c, nil
 }
 
 // ReadData 从文件中读取数据

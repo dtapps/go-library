@@ -1,6 +1,7 @@
 package ipv6wry
 
 import (
+	"errors"
 	"github.com/dtapps/go-library/utils/gostring"
 	"math/big"
 	"net"
@@ -18,7 +19,7 @@ type QueryResult struct {
 }
 
 // Query ip地址查询对应归属地信息
-func (c *Client) Query(ipAddress net.IP) (result QueryResult) {
+func (c *Client) Query(ipAddress net.IP) (result QueryResult, err error) {
 
 	result.Ip = ipAddress.String()
 
@@ -78,5 +79,14 @@ func (c *Client) Query(ipAddress net.IP) (result QueryResult) {
 
 	result.Isp = gostring.SpaceAndLineBreak(result.Isp)
 
-	return result
+	return result, nil
+}
+
+// QueryIP ip地址查询对应归属地信息
+func (c *Client) QueryIP(ipAddressStr string) (result QueryResult, err error) {
+	arrIpv6 := strings.Split(ipAddressStr, ":")
+	if len(arrIpv6) == 8 {
+		return c.Query(net.ParseIP(ipAddressStr))
+	}
+	return QueryResult{}, errors.New("不是IPV6")
 }

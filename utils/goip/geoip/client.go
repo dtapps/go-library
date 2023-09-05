@@ -1,17 +1,14 @@
 package geoip
 
 import (
-	_ "embed"
 	"github.com/oschwald/geoip2-golang"
+	"os"
 )
 
-//go:embed GeoLite2-ASN.mmdb
 var asnBuff []byte
 
-//go:embed GeoLite2-City.mmdb
 var cityBuff []byte
 
-//go:embed GeoLite2-Country.mmdb
 var countryBuff []byte
 
 type Client struct {
@@ -20,22 +17,60 @@ type Client struct {
 	countryDb *geoip2.Reader
 }
 
-func New() (*Client, error) {
+func New(asnFilepath string, cityFilepath string, countryFilepath string) (*Client, error) {
 
 	var err error
 	c := &Client{}
 
+	asnBuff, err = os.ReadFile(asnFilepath)
+	if err != nil {
+		return nil, err
+	}
 	c.asnDb, err = geoip2.FromBytes(asnBuff)
 	if err != nil {
 		return nil, err
 	}
 
+	cityBuff, err = os.ReadFile(cityFilepath)
+	if err != nil {
+		return nil, err
+	}
 	c.cityDb, err = geoip2.FromBytes(cityBuff)
 	if err != nil {
 		return nil, err
 	}
 
+	countryBuff, err = os.ReadFile(countryFilepath)
+	if err != nil {
+		return nil, err
+	}
 	c.countryDb, err = geoip2.FromBytes(countryBuff)
+	if err != nil {
+		return nil, err
+	}
+
+	return c, err
+}
+
+func NewBuff(asnFile []byte, cityFile []byte, countryFile []byte) (*Client, error) {
+
+	var err error
+	c := &Client{}
+
+	asnBuff = asnFile
+	c.asnDb, err = geoip2.FromBytes(asnFile)
+	if err != nil {
+		return nil, err
+	}
+
+	cityBuff = cityFile
+	c.cityDb, err = geoip2.FromBytes(cityFile)
+	if err != nil {
+		return nil, err
+	}
+
+	countryBuff = countryFile
+	c.countryDb, err = geoip2.FromBytes(countryFile)
 	if err != nil {
 		return nil, err
 	}

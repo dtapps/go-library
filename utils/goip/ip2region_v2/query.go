@@ -2,8 +2,10 @@ package ip2region_v2
 
 import (
 	_ "embed"
+	"errors"
 	"github.com/dtapps/go-library/utils/gostring"
 	"net"
+	"strings"
 )
 
 // QueryResult 返回
@@ -49,4 +51,13 @@ func (c *Client) Query(ipAddress net.IP) (result QueryResult, err error) {
 	}
 
 	return result, err
+}
+
+// QueryIP ip地址查询对应归属地信息
+func (c *Client) QueryIP(ipAddressStr string) (result QueryResult, err error) {
+	arrIpv4 := strings.Split(ipAddressStr, ".")
+	if len(arrIpv4) == 4 {
+		return c.Query(net.ParseIP(ipAddressStr))
+	}
+	return QueryResult{}, errors.New("不是IPV4")
 }
