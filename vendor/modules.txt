@@ -1,3 +1,5 @@
+# github.com/BurntSushi/toml v1.2.0
+## explicit; go 1.16
 # github.com/MercuryEngineering/CookieMonster v0.0.0-20180304172713-1584578b3403
 ## explicit
 github.com/MercuryEngineering/CookieMonster
@@ -63,12 +65,6 @@ github.com/clbanning/mxj
 # github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f
 ## explicit
 github.com/dgryski/go-rendezvous
-# github.com/fatih/color v1.15.0
-## explicit; go 1.17
-github.com/fatih/color
-# github.com/fsnotify/fsnotify v1.6.0
-## explicit; go 1.16
-github.com/fsnotify/fsnotify
 # github.com/gabriel-vasile/mimetype v1.4.2
 ## explicit; go 1.20
 github.com/gabriel-vasile/mimetype
@@ -85,13 +81,6 @@ github.com/gin-gonic/gin/binding
 github.com/gin-gonic/gin/internal/bytesconv
 github.com/gin-gonic/gin/internal/json
 github.com/gin-gonic/gin/render
-# github.com/go-logr/logr v1.2.4
-## explicit; go 1.16
-github.com/go-logr/logr
-github.com/go-logr/logr/funcr
-# github.com/go-logr/stdr v1.2.2
-## explicit; go 1.16
-github.com/go-logr/stdr
 # github.com/go-ole/go-ole v1.3.0
 ## explicit; go 1.12
 github.com/go-ole/go-ole
@@ -105,7 +94,7 @@ github.com/go-playground/locales/zh
 # github.com/go-playground/universal-translator v0.18.1
 ## explicit; go 1.18
 github.com/go-playground/universal-translator
-# github.com/go-playground/validator/v10 v10.15.1
+# github.com/go-playground/validator/v10 v10.15.3
 ## explicit; go 1.18
 github.com/go-playground/validator/v10
 github.com/go-playground/validator/v10/translations/en
@@ -124,58 +113,11 @@ github.com/goccy/go-json/internal/encoder/vm_color_indent
 github.com/goccy/go-json/internal/encoder/vm_indent
 github.com/goccy/go-json/internal/errors
 github.com/goccy/go-json/internal/runtime
-# github.com/gogf/gf/v2 v2.5.2
-## explicit; go 1.18
-github.com/gogf/gf/v2/container/garray
-github.com/gogf/gf/v2/container/glist
-github.com/gogf/gf/v2/container/gmap
-github.com/gogf/gf/v2/container/gpool
-github.com/gogf/gf/v2/container/gqueue
-github.com/gogf/gf/v2/container/gset
-github.com/gogf/gf/v2/container/gtree
-github.com/gogf/gf/v2/container/gtype
-github.com/gogf/gf/v2/container/gvar
-github.com/gogf/gf/v2/database/gredis
-github.com/gogf/gf/v2/debug/gdebug
-github.com/gogf/gf/v2/encoding/gbinary
-github.com/gogf/gf/v2/encoding/gcompress
-github.com/gogf/gf/v2/encoding/ghash
-github.com/gogf/gf/v2/errors/gcode
-github.com/gogf/gf/v2/errors/gerror
-github.com/gogf/gf/v2/internal/command
-github.com/gogf/gf/v2/internal/consts
-github.com/gogf/gf/v2/internal/deepcopy
-github.com/gogf/gf/v2/internal/empty
-github.com/gogf/gf/v2/internal/intlog
-github.com/gogf/gf/v2/internal/json
-github.com/gogf/gf/v2/internal/reflection
-github.com/gogf/gf/v2/internal/rwmutex
-github.com/gogf/gf/v2/internal/tracing
-github.com/gogf/gf/v2/internal/utils
-github.com/gogf/gf/v2/net/gipv4
-github.com/gogf/gf/v2/net/gtrace
-github.com/gogf/gf/v2/net/gtrace/internal/provider
-github.com/gogf/gf/v2/os/gcache
-github.com/gogf/gf/v2/os/gcron
-github.com/gogf/gf/v2/os/gctx
-github.com/gogf/gf/v2/os/gfile
-github.com/gogf/gf/v2/os/gfpool
-github.com/gogf/gf/v2/os/gfsnotify
-github.com/gogf/gf/v2/os/glog
-github.com/gogf/gf/v2/os/gmlock
-github.com/gogf/gf/v2/os/grpool
-github.com/gogf/gf/v2/os/gstructs
-github.com/gogf/gf/v2/os/gtime
-github.com/gogf/gf/v2/os/gtimer
-github.com/gogf/gf/v2/text/gregex
-github.com/gogf/gf/v2/text/gstr
-github.com/gogf/gf/v2/util/gconv
-github.com/gogf/gf/v2/util/grand
-github.com/gogf/gf/v2/util/gtag
-github.com/gogf/gf/v2/util/gutil
 # github.com/golang/snappy v0.0.4
 ## explicit
 github.com/golang/snappy
+# github.com/google/go-cmp v0.5.9
+## explicit; go 1.13
 # github.com/google/go-querystring v1.1.0
 ## explicit; go 1.10
 github.com/google/go-querystring/query
@@ -223,14 +165,6 @@ github.com/klauspost/cpuid/v2
 # github.com/leodido/go-urn v1.2.4
 ## explicit; go 1.16
 github.com/leodido/go-urn
-# github.com/lib/pq v1.10.9
-## explicit; go 1.13
-github.com/lib/pq
-github.com/lib/pq/oid
-github.com/lib/pq/scram
-# github.com/mattn/go-colorable v0.1.13
-## explicit; go 1.15
-github.com/mattn/go-colorable
 # github.com/mattn/go-isatty v0.0.19
 ## explicit; go 1.15
 github.com/mattn/go-isatty
@@ -263,14 +197,14 @@ github.com/oschwald/geoip2-golang
 # github.com/oschwald/maxminddb-golang v1.12.0
 ## explicit; go 1.19
 github.com/oschwald/maxminddb-golang
-# github.com/pelletier/go-toml/v2 v2.0.9
+# github.com/pelletier/go-toml/v2 v2.1.0
 ## explicit; go 1.16
 github.com/pelletier/go-toml/v2
 github.com/pelletier/go-toml/v2/internal/characters
 github.com/pelletier/go-toml/v2/internal/danger
 github.com/pelletier/go-toml/v2/internal/tracker
 github.com/pelletier/go-toml/v2/unstable
-# github.com/qiniu/go-sdk/v7 v7.17.0
+# github.com/qiniu/go-sdk/v7 v7.17.1
 ## explicit; go 1.14
 github.com/qiniu/go-sdk/v7
 github.com/qiniu/go-sdk/v7/auth
@@ -319,20 +253,6 @@ github.com/shirou/gopsutil/process
 # github.com/sirupsen/logrus v1.9.3
 ## explicit; go 1.13
 github.com/sirupsen/logrus
-# github.com/syndtr/goleveldb v1.0.0
-## explicit
-github.com/syndtr/goleveldb/leveldb
-github.com/syndtr/goleveldb/leveldb/cache
-github.com/syndtr/goleveldb/leveldb/comparer
-github.com/syndtr/goleveldb/leveldb/errors
-github.com/syndtr/goleveldb/leveldb/filter
-github.com/syndtr/goleveldb/leveldb/iterator
-github.com/syndtr/goleveldb/leveldb/journal
-github.com/syndtr/goleveldb/leveldb/memdb
-github.com/syndtr/goleveldb/leveldb/opt
-github.com/syndtr/goleveldb/leveldb/storage
-github.com/syndtr/goleveldb/leveldb/table
-github.com/syndtr/goleveldb/leveldb/util
 # github.com/tencentyun/cos-go-sdk-v5 v0.7.42
 ## explicit; go 1.12
 github.com/tencentyun/cos-go-sdk-v5
@@ -426,35 +346,6 @@ go.mongodb.org/mongo-driver/x/mongo/driver/operation
 go.mongodb.org/mongo-driver/x/mongo/driver/session
 go.mongodb.org/mongo-driver/x/mongo/driver/topology
 go.mongodb.org/mongo-driver/x/mongo/driver/wiremessage
-# go.opentelemetry.io/otel v1.16.0
-## explicit; go 1.19
-go.opentelemetry.io/otel
-go.opentelemetry.io/otel/attribute
-go.opentelemetry.io/otel/baggage
-go.opentelemetry.io/otel/codes
-go.opentelemetry.io/otel/internal
-go.opentelemetry.io/otel/internal/attribute
-go.opentelemetry.io/otel/internal/baggage
-go.opentelemetry.io/otel/internal/global
-go.opentelemetry.io/otel/propagation
-go.opentelemetry.io/otel/semconv/internal
-go.opentelemetry.io/otel/semconv/v1.17.0
-go.opentelemetry.io/otel/semconv/v1.4.0
-# go.opentelemetry.io/otel/metric v1.16.0
-## explicit; go 1.19
-go.opentelemetry.io/otel/metric
-go.opentelemetry.io/otel/metric/embedded
-# go.opentelemetry.io/otel/sdk v1.16.0
-## explicit; go 1.19
-go.opentelemetry.io/otel/sdk
-go.opentelemetry.io/otel/sdk/instrumentation
-go.opentelemetry.io/otel/sdk/internal
-go.opentelemetry.io/otel/sdk/internal/env
-go.opentelemetry.io/otel/sdk/resource
-go.opentelemetry.io/otel/sdk/trace
-# go.opentelemetry.io/otel/trace v1.16.0
-## explicit; go 1.19
-go.opentelemetry.io/otel/trace
 # go.uber.org/multierr v1.11.0
 ## explicit; go 1.19
 go.uber.org/multierr
@@ -468,7 +359,7 @@ go.uber.org/zap/internal/color
 go.uber.org/zap/internal/exit
 go.uber.org/zap/internal/pool
 go.uber.org/zap/zapcore
-# golang.org/x/arch v0.4.0
+# golang.org/x/arch v0.5.0
 ## explicit; go 1.17
 golang.org/x/arch/x86/x86asm
 # golang.org/x/crypto v0.12.0
@@ -512,15 +403,14 @@ golang.org/x/net/idna
 ## explicit; go 1.17
 golang.org/x/sync/errgroup
 golang.org/x/sync/singleflight
-# golang.org/x/sys v0.11.0
+# golang.org/x/sys v0.12.0
 ## explicit; go 1.17
 golang.org/x/sys/cpu
 golang.org/x/sys/execabs
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-golang.org/x/sys/windows/registry
-# golang.org/x/text v0.12.0
+# golang.org/x/text v0.13.0
 ## explicit; go 1.17
 golang.org/x/text/cases
 golang.org/x/text/encoding
@@ -635,21 +525,3 @@ gorm.io/hints
 # gorm.io/plugin/dbresolver v1.4.7
 ## explicit; go 1.14
 gorm.io/plugin/dbresolver
-# xorm.io/builder v0.3.13
-## explicit; go 1.11
-xorm.io/builder
-# xorm.io/xorm v1.3.2
-## explicit; go 1.13
-xorm.io/xorm
-xorm.io/xorm/caches
-xorm.io/xorm/contexts
-xorm.io/xorm/convert
-xorm.io/xorm/core
-xorm.io/xorm/dialects
-xorm.io/xorm/internal/json
-xorm.io/xorm/internal/statements
-xorm.io/xorm/internal/utils
-xorm.io/xorm/log
-xorm.io/xorm/names
-xorm.io/xorm/schemas
-xorm.io/xorm/tags
