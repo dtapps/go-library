@@ -2,6 +2,7 @@ package gojobs
 
 import (
 	"context"
+	"fmt"
 	"github.com/dtapps/go-library/utils/gojobs/jobs_gorm_model"
 	"github.com/dtapps/go-library/utils/gotime"
 	"github.com/dtapps/go-library/utils/gotrace_id"
@@ -12,7 +13,7 @@ func (c *Client) autoMigrateTask(ctx context.Context) {
 	err := c.gormClient.GetDb().AutoMigrate(&jobs_gorm_model.Task{})
 	if err != nil {
 		if c.slog.status {
-			c.slog.client.WithTraceId(ctx).Errorf("创建模型：%s", err)
+			c.slog.client.WithTraceId(ctx).Error(fmt.Sprintf("创建模型：%s", err))
 		}
 	}
 }
@@ -22,7 +23,7 @@ func (c *Client) autoMigrateTaskLog(ctx context.Context) {
 	err := c.gormClient.GetDb().AutoMigrate(&jobs_gorm_model.TaskLog{})
 	if err != nil {
 		if c.slog.status {
-			c.slog.client.WithTraceId(ctx).Errorf("创建模型：%s", err)
+			c.slog.client.WithTraceId(ctx).Error(fmt.Sprintf("创建模型：%s", err))
 		}
 	}
 }
@@ -32,7 +33,7 @@ func (c *Client) GormTaskLogDelete(ctx context.Context, hour int64) error {
 	err := c.gormClient.GetDb().Where("log_time < ?", gotime.Current().BeforeHour(hour).Format()).Delete(&jobs_gorm_model.TaskLog{}).Error
 	if err != nil {
 		if c.slog.status {
-			c.slog.client.WithTraceId(ctx).Errorf("删除失败：%s", err)
+			c.slog.client.WithTraceId(ctx).Error(fmt.Sprintf("删除失败：%s", err))
 		}
 	}
 	return err
@@ -43,7 +44,7 @@ func (c *Client) GormTaskLogInDelete(ctx context.Context, hour int64) error {
 	err := c.gormClient.GetDb().Where("task_result_status = ?", TASK_IN).Where("log_time < ?", gotime.Current().BeforeHour(hour).Format()).Delete(&jobs_gorm_model.TaskLog{}).Error
 	if err != nil {
 		if c.slog.status {
-			c.slog.client.WithTraceId(ctx).Errorf("删除失败：%s", err)
+			c.slog.client.WithTraceId(ctx).Error(fmt.Sprintf("删除失败：%s", err))
 		}
 	}
 	return err
@@ -54,7 +55,7 @@ func (c *Client) GormTaskLogSuccessDelete(ctx context.Context, hour int64) error
 	err := c.gormClient.GetDb().Where("task_result_status = ?", TASK_SUCCESS).Where("log_time < ?", gotime.Current().BeforeHour(hour).Format()).Delete(&jobs_gorm_model.TaskLog{}).Error
 	if err != nil {
 		if c.slog.status {
-			c.slog.client.WithTraceId(ctx).Errorf("删除失败：%s", err)
+			c.slog.client.WithTraceId(ctx).Error(fmt.Sprintf("删除失败：%s", err))
 		}
 	}
 	return err
@@ -65,7 +66,7 @@ func (c *Client) GormTaskLogErrorDelete(ctx context.Context, hour int64) error {
 	err := c.gormClient.GetDb().Where("task_result_status = ?", TASK_ERROR).Where("log_time < ?", gotime.Current().BeforeHour(hour).Format()).Delete(&jobs_gorm_model.TaskLog{}).Error
 	if err != nil {
 		if c.slog.status {
-			c.slog.client.WithTraceId(ctx).Errorf("删除失败：%s", err)
+			c.slog.client.WithTraceId(ctx).Error(fmt.Sprintf("删除失败：%s", err))
 		}
 	}
 	return err
@@ -76,7 +77,7 @@ func (c *Client) GormTaskLogTimeoutDelete(ctx context.Context, hour int64) error
 	err := c.gormClient.GetDb().Where("task_result_status = ?", TASK_TIMEOUT).Where("log_time < ?", gotime.Current().BeforeHour(hour).Format()).Delete(&jobs_gorm_model.TaskLog{}).Error
 	if err != nil {
 		if c.slog.status {
-			c.slog.client.WithTraceId(ctx).Errorf("删除失败：%s", err)
+			c.slog.client.WithTraceId(ctx).Error(fmt.Sprintf("删除失败：%s", err))
 		}
 	}
 	return err
@@ -87,7 +88,7 @@ func (c *Client) GormTaskLogWaitDelete(ctx context.Context, hour int64) error {
 	err := c.gormClient.GetDb().Where("task_result_status = ?", TASK_WAIT).Where("log_time < ?", gotime.Current().BeforeHour(hour).Format()).Delete(&jobs_gorm_model.TaskLog{}).Error
 	if err != nil {
 		if c.slog.status {
-			c.slog.client.WithTraceId(ctx).Errorf("删除失败：%s", err)
+			c.slog.client.WithTraceId(ctx).Error(fmt.Sprintf("删除失败：%s", err))
 		}
 	}
 	return err
@@ -118,8 +119,8 @@ func (c *Client) GormTaskLogRecord(ctx context.Context, task jobs_gorm_model.Tas
 	err := c.gormClient.GetDb().Create(&taskLog).Error
 	if err != nil {
 		if c.slog.status {
-			c.slog.client.WithTraceId(ctx).Errorf("记录失败：%s", err)
-			c.slog.client.WithTraceId(ctx).Errorf("记录数据：%+v", taskLog)
+			c.slog.client.WithTraceId(ctx).Error(fmt.Sprintf("记录失败：%s", err))
+			c.slog.client.WithTraceId(ctx).Error(fmt.Sprintf("记录数据：%+v", taskLog))
 		}
 	}
 

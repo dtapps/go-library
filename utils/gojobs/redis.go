@@ -2,6 +2,7 @@ package gojobs
 
 import (
 	"context"
+	"fmt"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -13,7 +14,7 @@ func (c *Client) Publish(ctx context.Context, channel string, message interface{
 	publish, err := c.cache.redisClient.Publish(ctx, channel, message).Result()
 	if err != nil {
 		if c.slog.status {
-			c.slog.client.WithTraceId(ctx).Errorf("发布失败：%s %s %v %s", channel, message, publish, err)
+			c.slog.client.WithTraceId(ctx).Error(fmt.Sprintf("发布失败：%s %s %v %s", channel, message, publish, err))
 		}
 	}
 	return err
