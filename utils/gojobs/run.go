@@ -96,7 +96,7 @@ func (c *Client) Run(ctx context.Context, task jobs_gorm_model.Task, taskResultC
 			}).Error
 		if err != nil {
 			if c.slog.status {
-				c.slog.client.WithTraceId(ctx).Errorf("保存失败：%s", err.Error())
+				c.slog.client.WithTraceId(ctx).Error(fmt.Sprintf("保存失败：%s", err))
 			}
 		}
 		return
@@ -114,7 +114,7 @@ func (c *Client) Run(ctx context.Context, task jobs_gorm_model.Task, taskResultC
 			}).Error
 		if err != nil {
 			if c.slog.status {
-				c.slog.client.WithTraceId(ctx).Errorf("保存失败：%s", err.Error())
+				c.slog.client.WithTraceId(ctx).Error(fmt.Sprintf("保存失败：%s", err))
 			}
 		}
 	case CodeEnd:
@@ -131,7 +131,7 @@ func (c *Client) Run(ctx context.Context, task jobs_gorm_model.Task, taskResultC
 			}).Error
 		if err != nil {
 			if c.slog.status {
-				c.slog.client.WithTraceId(ctx).Errorf("保存失败：%s", err.Error())
+				c.slog.client.WithTraceId(ctx).Error(fmt.Sprintf("保存失败：%s", err))
 			}
 		}
 	case CodeError:
@@ -148,7 +148,7 @@ func (c *Client) Run(ctx context.Context, task jobs_gorm_model.Task, taskResultC
 			}).Error
 		if err != nil {
 			if c.slog.status {
-				c.slog.client.WithTraceId(ctx).Errorf("保存失败：%s", err.Error())
+				c.slog.client.WithTraceId(ctx).Error(fmt.Sprintf("保存失败：%s", err))
 			}
 		}
 	}
@@ -163,7 +163,7 @@ func (c *Client) Run(ctx context.Context, task jobs_gorm_model.Task, taskResultC
 				}).Error
 			if err != nil {
 				if c.slog.status {
-					c.slog.client.WithTraceId(ctx).Errorf("保存失败：%s", err.Error())
+					c.slog.client.WithTraceId(ctx).Error(fmt.Sprintf("保存失败：%s", err))
 				}
 			}
 		}
