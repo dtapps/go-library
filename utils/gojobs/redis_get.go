@@ -39,7 +39,7 @@ func (c *Client) GetIssueAddress(ctx context.Context, workers []string, v *jobs_
 			// 判断是否指定某ip执行
 			if gostring.Contains(workers[0], currentIp) {
 				if c.slog.status {
-					c.slog.client.WithTraceId(ctx).Info("只有一个客户端在线，指定某ip执行：", workers[0], currentIp)
+					c.slog.client.WithTraceId(ctx).Infof("只有一个客户端在线，指定某ip执行：", workers[0], currentIp)
 				}
 				return workers[0], nil
 			}
@@ -53,7 +53,7 @@ func (c *Client) GetIssueAddress(ctx context.Context, workers []string, v *jobs_
 		for wk, wv := range workers {
 			if gostring.Contains(wv, currentIp) {
 				if c.slog.status {
-					c.slog.client.WithTraceId(ctx).Info("优先处理指定某ip执行：", workers[wk], currentIp)
+					c.slog.client.WithTraceId(ctx).Infof("优先处理指定某ip执行：", workers[wk], currentIp)
 				}
 				return workers[wk], nil
 			}
@@ -66,7 +66,7 @@ func (c *Client) GetIssueAddress(ctx context.Context, workers []string, v *jobs_
 			return address, errors.New("获取执行的客户端异常")
 		}
 		if c.slog.status {
-			c.slog.client.WithTraceId(ctx).Info("随机返回一个：", address, currentIp)
+			c.slog.client.WithTraceId(ctx).Infof("随机返回一个：", address, currentIp)
 		}
 		return address, nil
 	}
