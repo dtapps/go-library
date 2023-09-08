@@ -77,7 +77,9 @@ func (c *Client) Run(ctx context.Context, task jobs_gorm_model.Task, taskResultC
 
 	runId := gotrace_id.GetTraceIdContext(ctx)
 	if runId == "" {
-		c.sLog.WithTraceId(ctx).Error("上下文没有跟踪编号")
+		if c.slog.status {
+			c.slog.client.WithTraceId(ctx).Error("上下文没有跟踪编号")
+		}
 		return
 	}
 
@@ -93,7 +95,9 @@ func (c *Client) Run(ctx context.Context, task jobs_gorm_model.Task, taskResultC
 				NextRunTime: gotime.Current().AfterSeconds(task.Frequency).Time,
 			}).Error
 		if err != nil {
-			c.sLog.WithTraceId(ctx).Errorf("保存失败：%s", err.Error())
+			if c.slog.status {
+				c.slog.client.WithTraceId(ctx).Errorf("保存失败：%s", err.Error())
+			}
 		}
 		return
 	case CodeSuccess:
@@ -109,7 +113,9 @@ func (c *Client) Run(ctx context.Context, task jobs_gorm_model.Task, taskResultC
 				NextRunTime: gotime.Current().AfterSeconds(task.Frequency).Time,
 			}).Error
 		if err != nil {
-			c.sLog.WithTraceId(ctx).Errorf("保存失败：%s", err.Error())
+			if c.slog.status {
+				c.slog.client.WithTraceId(ctx).Errorf("保存失败：%s", err.Error())
+			}
 		}
 	case CodeEnd:
 		// 执行成功、提前结束
@@ -124,7 +130,9 @@ func (c *Client) Run(ctx context.Context, task jobs_gorm_model.Task, taskResultC
 				NextRunTime: gotime.Current().Time,
 			}).Error
 		if err != nil {
-			c.sLog.WithTraceId(ctx).Errorf("保存失败：%s", err.Error())
+			if c.slog.status {
+				c.slog.client.WithTraceId(ctx).Errorf("保存失败：%s", err.Error())
+			}
 		}
 	case CodeError:
 		// 执行失败
@@ -139,7 +147,9 @@ func (c *Client) Run(ctx context.Context, task jobs_gorm_model.Task, taskResultC
 				NextRunTime: gotime.Current().AfterSeconds(task.Frequency).Time,
 			}).Error
 		if err != nil {
-			c.sLog.WithTraceId(ctx).Errorf("保存失败：%s", err.Error())
+			if c.slog.status {
+				c.slog.client.WithTraceId(ctx).Errorf("保存失败：%s", err.Error())
+			}
 		}
 	}
 
@@ -152,7 +162,9 @@ func (c *Client) Run(ctx context.Context, task jobs_gorm_model.Task, taskResultC
 					Status: TASK_TIMEOUT,
 				}).Error
 			if err != nil {
-				c.sLog.WithTraceId(ctx).Errorf("保存失败：%s", err.Error())
+				if c.slog.status {
+					c.slog.client.WithTraceId(ctx).Errorf("保存失败：%s", err.Error())
+				}
 			}
 		}
 	}

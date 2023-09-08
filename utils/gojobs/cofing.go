@@ -4,12 +4,22 @@ import (
 	"context"
 	"github.com/dtapps/go-library"
 	"github.com/dtapps/go-library/utils/goip"
+	"github.com/dtapps/go-library/utils/golog"
 	"github.com/redis/go-redis/v9"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/host"
 	"log"
 	"runtime"
 )
+
+// ConfigSLogClientFun 日志配置
+func (c *Client) ConfigSLogClientFun(sLogFun golog.SLogFun) {
+	sLog := sLogFun()
+	if sLog != nil {
+		c.slog.client = sLog
+		c.slog.status = true
+	}
+}
 
 type systemResult struct {
 	SystemHostname      string  // 主机名

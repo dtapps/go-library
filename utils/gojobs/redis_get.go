@@ -38,7 +38,9 @@ func (c *Client) GetIssueAddress(ctx context.Context, workers []string, v *jobs_
 		if appointIpStatus {
 			// 判断是否指定某ip执行
 			if gostring.Contains(workers[0], currentIp) {
-				c.sLog.WithTraceId(ctx).Info("只有一个客户端在线，指定某ip执行：", workers[0], currentIp)
+				if c.slog.status {
+					c.slog.client.WithTraceId(ctx).Info("只有一个客户端在线，指定某ip执行：", workers[0], currentIp)
+				}
 				return workers[0], nil
 			}
 			return "", errors.New(fmt.Sprintf("需要执行的[%s]客户端不在线", currentIp))
@@ -50,7 +52,9 @@ func (c *Client) GetIssueAddress(ctx context.Context, workers []string, v *jobs_
 	if appointIpStatus {
 		for wk, wv := range workers {
 			if gostring.Contains(wv, currentIp) {
-				c.sLog.WithTraceId(ctx).Info("优先处理指定某ip执行：", workers[wk], currentIp)
+				if c.slog.status {
+					c.slog.client.WithTraceId(ctx).Info("优先处理指定某ip执行：", workers[wk], currentIp)
+				}
 				return workers[wk], nil
 			}
 		}
@@ -61,7 +65,9 @@ func (c *Client) GetIssueAddress(ctx context.Context, workers []string, v *jobs_
 		if address == "" {
 			return address, errors.New("获取执行的客户端异常")
 		}
-		c.sLog.WithTraceId(ctx).Info("随机返回一个：", address, currentIp)
+		if c.slog.status {
+			c.slog.client.WithTraceId(ctx).Info("随机返回一个：", address, currentIp)
+		}
 		return address, nil
 	}
 }
@@ -72,7 +78,9 @@ func (c *Client) GetSubscribeClientList(ctx context.Context) (client []string, e
 	// 查询活跃的channel
 	client, err = c.cache.redisClient.PubSubChannels(ctx, c.cache.cornKeyPrefix+"_*").Result()
 	if err != nil {
-		c.sLog.WithTraceId(ctx).Errorf("获取在线的客户端失败：%s，%v", c.cache.cornKeyPrefix+"_*", err)
+		if c.slog.status {
+			c.slog.client.WithTraceId(ctx).Errorf("获取在线的客户端失败：%s，%v", c.cache.cornKeyPrefix+"_*", err)
+		}
 	}
 
 	return client, err

@@ -19,14 +19,12 @@ type ClientConfig struct {
 	GormClientFun  dorm.GormClientFun  // 数据库驱动
 	RedisClientFun dorm.RedisClientFun // 数据库驱动
 	RedisPrefixFun redisPrefixFun      // 前缀
-	SLog           *golog.SLog         // 日志服务
-	CurrentIp      string              // 当前ip
+	CurrentIp      string              // 当前IP
 }
 
 // Client 实例
 type Client struct {
 	gormClient *dorm.GormClient // 数据库
-	sLog       *golog.SLog      // 日志服务
 	config     struct {
 		systemHostname      string  // 主机名
 		systemOs            string  // 系统类型
@@ -53,6 +51,10 @@ type Client struct {
 		cornKeyPrefix    string                // 任务Key前缀 xxx_cron
 		cornKeyCustom    string                // 任务Key自定义
 	}
+	slog struct {
+		status bool        // 状态
+		client *golog.SLog // 日志服务
+	}
 }
 
 // NewClient 创建实例
@@ -61,8 +63,6 @@ func NewClient(config *ClientConfig) (*Client, error) {
 	var ctx = context.Background()
 
 	c := &Client{}
-
-	c.sLog = config.SLog
 
 	if config.CurrentIp != "" && config.CurrentIp != "0.0.0.0" {
 		c.config.systemOutsideIp = config.CurrentIp
