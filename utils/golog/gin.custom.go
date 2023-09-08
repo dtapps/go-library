@@ -2,15 +2,12 @@ package golog
 
 import (
 	"context"
-	"errors"
-	"github.com/dtapps/go-library/utils/dorm"
 	"github.com/dtapps/go-library/utils/goip"
 )
 
 type GinCustomClient struct {
-	gormClient *dorm.GormClient // 数据库驱动
-	ipService  *goip.Client     // ip服务
-	config     struct {
+	ipService *goip.Client // IP服务
+	config    struct {
 		systemHostname  string // 主机名
 		systemOs        string // 系统类型
 		systemKernel    string // 系统内核
@@ -19,21 +16,18 @@ type GinCustomClient struct {
 		goVersion       string // go版本
 		sdkVersion      string // sdk版本
 	}
-	gormConfig struct {
-		stats     bool   // 状态
-		tableName string // 表名
+	slog struct {
+		status bool  // 状态
+		client *SLog // 日志服务
 	}
 }
 
 type ConfigGinCustomClient struct {
-	IpService     *goip.Client            // ip服务
-	GormClientFun dorm.GormClientTableFun // 日志配置
-	CurrentIp     string                  // 当前ip
+	IpService *goip.Client // IP服务
+	CurrentIp string       // 当前IP
 }
 
-func NewGinCustomClient(config *ConfigGinCustomClient) (*GinCustomClient, error) {
-
-	var ctx = context.Background()
+func NewGinCustomClient(ctx context.Context, config *ConfigGinCustomClient) (*GinCustomClient, error) {
 
 	c := &GinCustomClient{}
 
@@ -48,31 +42,6 @@ func NewGinCustomClient(config *ConfigGinCustomClient) (*GinCustomClient, error)
 
 	// 配置信息
 	c.setConfig(ctx)
-
-	gormClient, gormTableName := config.GormClientFun()
-
-	if gormClient == nil || gormClient.GetDb() == nil {
-		return nil, dbClientFunNoConfig
-	}
-
-	// 配置关系数据库
-	if gormClient != nil || gormClient.GetDb() != nil {
-
-		c.gormClient = gormClient
-
-		if gormTableName == "" {
-			return nil, errors.New("没有设置表名")
-		} else {
-			c.gormConfig.tableName = gormTableName
-		}
-
-		err := c.autoMigrate(ctx)
-		if err != nil {
-			return nil, err
-		}
-
-		c.gormConfig.stats = true
-	}
 
 	return c, nil
 }

@@ -11,6 +11,8 @@ import (
 	"os"
 )
 
+type SLogFun func() *SLog
+
 type SLogConfig struct {
 	LogPath      string // 日志文件路径
 	LogName      string // 日志文件名
@@ -32,7 +34,7 @@ type SLog struct {
 	logger           *slog.Logger
 }
 
-func NewSlog(config *SLogConfig) *SLog {
+func NewSlog(ctx context.Context, config *SLogConfig) *SLog {
 
 	sl := &SLog{config: config}
 

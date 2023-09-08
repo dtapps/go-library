@@ -1,9 +1,9 @@
 package golog
 
 import (
-	"context"
 	"github.com/dtapps/go-library/utils/dorm"
 	"github.com/dtapps/go-library/utils/goip"
+	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gotime"
 	"github.com/dtapps/go-library/utils/gourl"
 	"github.com/gin-gonic/gin"
@@ -11,50 +11,41 @@ import (
 )
 
 // 模型
-type ginPostgresqlLog struct {
-	LogId              uint      `gorm:"primaryKey;comment:【记录】编号" json:"log_id,omitempty"`                     //【记录】编号
-	TraceId            string    `gorm:"index;comment:【系统】跟踪编号" json:"trace_id,omitempty"`                      //【系统】跟踪编号
-	RequestTime        time.Time `gorm:"index;comment:【请求】时间" json:"request_time,omitempty"`                    //【请求】时间
-	RequestUri         string    `gorm:"comment:【请求】请求链接 域名+路径+参数" json:"request_uri,omitempty"`                //【请求】请求链接 域名+路径+参数
-	RequestUrl         string    `gorm:"comment:【请求】请求链接 域名+路径" json:"request_url,omitempty"`                   //【请求】请求链接 域名+路径
-	RequestApi         string    `gorm:"index;comment:【请求】请求接口 路径" json:"request_api,omitempty"`                //【请求】请求接口 路径
-	RequestMethod      string    `gorm:"index;comment:【请求】请求方式" json:"request_method,omitempty"`                //【请求】请求方式
-	RequestProto       string    `gorm:"comment:【请求】请求协议" json:"request_proto,omitempty"`                       //【请求】请求协议
-	RequestUa          string    `gorm:"comment:【请求】请求UA" json:"request_ua,omitempty"`                          //【请求】请求UA
-	RequestReferer     string    `gorm:"comment:【请求】请求referer" json:"request_referer,omitempty"`                //【请求】请求referer
-	RequestBody        string    `gorm:"comment:【请求】请求主体" json:"request_body,omitempty"`                        //【请求】请求主体
-	RequestUrlQuery    string    `gorm:"comment:【请求】请求URL参数" json:"request_url_query,omitempty"`                //【请求】请求URL参数
-	RequestIp          string    `gorm:"default:0.0.0.0;index;comment:【请求】请求客户端Ip" json:"request_ip,omitempty"` //【请求】请求客户端Ip
-	RequestIpCountry   string    `gorm:"index;comment:【请求】请求客户端城市" json:"request_ip_country,omitempty"`         //【请求】请求客户端城市
-	RequestIpProvince  string    `gorm:"index;comment:【请求】请求客户端省份" json:"request_ip_province,omitempty"`        //【请求】请求客户端省份
-	RequestIpCity      string    `gorm:"index;comment:【请求】请求客户端城市" json:"request_ip_city,omitempty"`            //【请求】请求客户端城市
-	RequestIpIsp       string    `gorm:"index;comment:【请求】请求客户端运营商" json:"request_ip_isp,omitempty"`            //【请求】请求客户端运营商
-	RequestIpLongitude float64   `gorm:"index;comment:【请求】请求客户端经度" json:"request_ip_longitude,omitempty"`       //【请求】请求客户端经度
-	RequestIpLatitude  float64   `gorm:"index;comment:【请求】请求客户端纬度" json:"request_ip_latitude,omitempty"`        //【请求】请求客户端纬度
-	RequestHeader      string    `gorm:"comment:【请求】请求头" json:"request_header,omitempty"`                       //【请求】请求头
-	ResponseTime       time.Time `gorm:"index;comment:【返回】时间" json:"response_time,omitempty"`                   //【返回】时间
-	ResponseCode       int       `gorm:"index;comment:【返回】状态码" json:"response_code,omitempty"`                  //【返回】状态码
-	ResponseMsg        string    `gorm:"comment:【返回】描述" json:"response_msg,omitempty"`                          //【返回】描述
-	ResponseData       string    `gorm:"comment:【返回】数据" json:"response_data,omitempty"`                         //【返回】数据
-	CostTime           int64     `gorm:"comment:【系统】花费时间" json:"cost_time,omitempty"`                           //【系统】花费时间
-	SystemHostName     string    `gorm:"index;comment:【系统】主机名" json:"system_host_name,omitempty"`               //【系统】主机名
-	SystemInsideIp     string    `gorm:"default:0.0.0.0;comment:【系统】内网ip" json:"system_inside_ip,omitempty"`    //【系统】内网ip
-	SystemOs           string    `gorm:"index;comment:【系统】系统类型" json:"system_os,omitempty"`                     //【系统】系统类型
-	SystemArch         string    `gorm:"index;comment:【系统】系统架构" json:"system_arch,omitempty"`                   //【系统】系统架构
-	GoVersion          string    `gorm:"comment:【程序】Go版本" json:"go_version,omitempty"`                          //【程序】Go版本
-	SdkVersion         string    `gorm:"comment:【程序】Sdk版本" json:"sdk_version,omitempty"`                        //【程序】Sdk版本
-}
-
-// 创建模型
-func (c *GinClient) gormAutoMigrate(ctx context.Context) {
-	err := c.gormClient.GetDb().Table(c.gormConfig.tableName).AutoMigrate(&ginPostgresqlLog{})
-	if err != nil {
-		c.zapLog.WithTraceId(ctx).Sugar().Errorf("创建模型：%s", err)
-	}
+type ginSLog struct {
+	TraceId            string    `json:"trace_id,omitempty"`             //【系统】跟踪编号
+	RequestTime        time.Time `json:"request_time,omitempty"`         //【请求】时间
+	RequestUri         string    `json:"request_uri,omitempty"`          //【请求】请求链接 域名+路径+参数
+	RequestUrl         string    `json:"request_url,omitempty"`          //【请求】请求链接 域名+路径
+	RequestApi         string    `json:"request_api,omitempty"`          //【请求】请求接口 路径
+	RequestMethod      string    `json:"request_method,omitempty"`       //【请求】请求方式
+	RequestProto       string    `json:"request_proto,omitempty"`        //【请求】请求协议
+	RequestUa          string    `json:"request_ua,omitempty"`           //【请求】请求UA
+	RequestReferer     string    `json:"request_referer,omitempty"`      //【请求】请求referer
+	RequestBody        string    `json:"request_body,omitempty"`         //【请求】请求主体
+	RequestUrlQuery    string    `json:"request_url_query,omitempty"`    //【请求】请求URL参数
+	RequestIp          string    `json:"request_ip,omitempty"`           //【请求】请求客户端Ip
+	RequestIpCountry   string    `json:"request_ip_country,omitempty"`   //【请求】请求客户端城市
+	RequestIpProvince  string    `json:"request_ip_province,omitempty"`  //【请求】请求客户端省份
+	RequestIpCity      string    `json:"request_ip_city,omitempty"`      //【请求】请求客户端城市
+	RequestIpIsp       string    `json:"request_ip_isp,omitempty"`       //【请求】请求客户端运营商
+	RequestIpLongitude float64   `json:"request_ip_longitude,omitempty"` //【请求】请求客户端经度
+	RequestIpLatitude  float64   `json:"request_ip_latitude,omitempty"`  //【请求】请求客户端纬度
+	RequestHeader      string    `json:"request_header,omitempty"`       //【请求】请求头
+	ResponseTime       time.Time `json:"response_time,omitempty"`        //【返回】时间
+	ResponseCode       int       `json:"response_code,omitempty"`        //【返回】状态码
+	ResponseMsg        string    `json:"response_msg,omitempty"`         //【返回】描述
+	ResponseData       string    `json:"response_data,omitempty"`        //【返回】数据
+	CostTime           int64     `json:"cost_time,omitempty"`            //【系统】花费时间
+	SystemHostName     string    `json:"system_host_name,omitempty"`     //【系统】主机名
+	SystemInsideIp     string    `json:"system_inside_ip,omitempty"`     //【系统】内网ip
+	SystemOs           string    `json:"system_os,omitempty"`            //【系统】系统类型
+	SystemArch         string    `json:"system_arch,omitempty"`          //【系统】系统架构
+	GoVersion          string    `json:"go_version,omitempty"`           //【程序】Go版本
+	SdkVersion         string    `json:"sdk_version,omitempty"`          //【程序】Sdk版本
 }
 
 // gormRecord 记录日志
-func (c *GinClient) gormRecord(data ginPostgresqlLog) {
+func (c *GinClient) gormRecord(data ginSLog) {
 
 	data.SystemHostName = c.config.systemHostname //【系统】主机名
 	data.SystemInsideIp = c.config.systemInsideIp //【系统】内网ip
@@ -63,16 +54,12 @@ func (c *GinClient) gormRecord(data ginPostgresqlLog) {
 	data.SystemOs = c.config.systemOs             //【系统】系统类型
 	data.SystemArch = c.config.systemKernel       //【系统】系统架构
 
-	err := c.gormClient.GetDb().Table(c.gormConfig.tableName).Create(&data).Error
-	if err != nil {
-		c.zapLog.WithTraceIdStr(data.TraceId).Sugar().Errorf("记录框架日志错误：%s", err)
-		c.zapLog.WithTraceIdStr(data.TraceId).Sugar().Errorf("记录框架日志数据：%+v", data)
-	}
+	c.slog.client.WithLogger().Info(gojson.JsonEncodeNoError(data))
 }
 
 func (c *GinClient) gormRecordJson(ginCtx *gin.Context, traceId string, requestTime time.Time, requestBody []byte, responseCode int, responseBody string, startTime, endTime int64, ipInfo goip.AnalyseResult) {
 
-	data := ginPostgresqlLog{
+	data := ginSLog{
 		TraceId:            traceId,                                                      //【系统】跟踪编号
 		RequestTime:        requestTime,                                                  //【请求】时间
 		RequestUrl:         ginCtx.Request.RequestURI,                                    //【请求】请求链接
@@ -110,7 +97,7 @@ func (c *GinClient) gormRecordJson(ginCtx *gin.Context, traceId string, requestT
 
 func (c *GinClient) gormRecordXml(ginCtx *gin.Context, traceId string, requestTime time.Time, requestBody []byte, responseCode int, responseBody string, startTime, endTime int64, ipInfo goip.AnalyseResult) {
 
-	data := ginPostgresqlLog{
+	data := ginSLog{
 		TraceId:            traceId,                                                      //【系统】跟踪编号
 		RequestTime:        requestTime,                                                  //【请求】时间
 		RequestUrl:         ginCtx.Request.RequestURI,                                    //【请求】请求链接
@@ -144,18 +131,4 @@ func (c *GinClient) gormRecordXml(ginCtx *gin.Context, traceId string, requestTi
 	}
 
 	c.gormRecord(data)
-}
-
-// GormDelete 删除
-func (c *GinClient) GormDelete(ctx context.Context, hour int64) error {
-	return c.GormCustomTableDelete(ctx, c.gormConfig.tableName, hour)
-}
-
-// GormCustomTableDelete 删除数据 - 自定义表名
-func (c *GinClient) GormCustomTableDelete(ctx context.Context, tableName string, hour int64) error {
-	err := c.gormClient.GetDb().Table(tableName).Where("request_time < ?", gotime.Current().BeforeHour(hour).Format()).Delete(&ginPostgresqlLog{}).Error
-	if err != nil {
-		c.zapLog.WithTraceId(ctx).Sugar().Errorf("删除失败：%s", err)
-	}
-	return err
 }

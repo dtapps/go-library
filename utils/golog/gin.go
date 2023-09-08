@@ -3,8 +3,6 @@ package golog
 import (
 	"bytes"
 	"context"
-	"errors"
-	"github.com/dtapps/go-library/utils/dorm"
 	"github.com/dtapps/go-library/utils/goip"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
@@ -19,10 +17,8 @@ type GinClientFun func() *GinClient
 
 // GinClient 框架
 type GinClient struct {
-	gormClient *dorm.GormClient // 数据库驱动
-	ipService  *goip.Client     // ip服务
-	zapLog     *ZapLog          // 日志服务
-	config     struct {
+	ipService *goip.Client // IP服务
+	config    struct {
 		systemHostname      string  // 主机名
 		systemOs            string  // 系统类型
 		systemVersion       string  // 系统版本
@@ -37,28 +33,22 @@ type GinClient struct {
 		goVersion           string  // go版本
 		sdkVersion          string  // sdk版本
 	}
-	gormConfig struct {
-		stats     bool   // 状态
-		tableName string // 表名
+	slog struct {
+		status bool  // 状态
+		client *SLog // 日志服务
 	}
 }
 
 // GinClientConfig 框架实例配置
 type GinClientConfig struct {
-	IpService     *goip.Client            // ip服务
-	GormClientFun dorm.GormClientTableFun // 日志配置
-	ZapLog        *ZapLog                 // 日志服务
-	CurrentIp     string                  // 当前ip
+	IpService *goip.Client // IP服务
+	CurrentIp string       // 当前IP
 }
 
 // NewGinClient 创建框架实例化
-func NewGinClient(config *GinClientConfig) (*GinClient, error) {
-
-	var ctx = context.Background()
+func NewGinClient(ctx context.Context, config *GinClientConfig) (*GinClient, error) {
 
 	c := &GinClient{}
-
-	c.zapLog = config.ZapLog
 
 	if config.CurrentIp != "" && config.CurrentIp != "0.0.0.0" {
 		c.config.systemOutsideIp = config.CurrentIp
@@ -72,28 +62,6 @@ func NewGinClient(config *GinClientConfig) (*GinClient, error) {
 
 	// 配置信息
 	c.setConfig(ctx)
-
-	gormClient, gormTableName := config.GormClientFun()
-
-	if gormClient == nil || gormClient.GetDb() == nil {
-		return nil, dbClientFunNoConfig
-	}
-
-	// 配置关系数据库
-	if gormClient != nil || gormClient.GetDb() != nil {
-
-		c.gormClient = gormClient
-
-		if gormTableName == "" {
-			return nil, errors.New("没有设置表名")
-		} else {
-			c.gormConfig.tableName = gormTableName
-		}
-
-		c.gormAutoMigrate(ctx)
-
-		c.gormConfig.stats = true
-	}
 
 	return c, nil
 }
@@ -170,13 +138,14 @@ func (c *GinClient) Middleware() gin.HandlerFunc {
 			var traceId = gotrace_id.GetGinTraceId(ginCtx)
 
 			// 记录
-			if c.gormConfig.stats {
+			if c.slog.status {
 				if dataJson {
 					c.gormRecordJson(ginCtx, traceId, requestTime, data, responseCode, responseBody, startTime, endTime, info)
 				} else {
 					c.gormRecordXml(ginCtx, traceId, requestTime, data, responseCode, responseBody, startTime, endTime, info)
 				}
 			}
+
 		}()
 	}
 }
