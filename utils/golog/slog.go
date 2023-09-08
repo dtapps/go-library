@@ -2,7 +2,6 @@ package golog
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gotime"
 	"github.com/dtapps/go-library/utils/gotrace_id"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -93,121 +92,46 @@ func NewSlog(ctx context.Context, config *SLogConfig) *SLog {
 }
 
 // WithLogger 跟踪编号
-func (sl *SLog) WithLogger() *LoggerOperation {
+func (sl *SLog) WithLogger() *slog.Logger {
 	if sl.config.JsonFormat {
 		logger := slog.New(sl.jsonHandler)
-		return &LoggerOperation{
-			logger: logger,
-		}
+		return logger
 	} else {
 		logger := slog.New(sl.textHandler)
-		return &LoggerOperation{
-			logger: logger,
-		}
+		return logger
 	}
 }
 
 // WithTraceId 跟踪编号
-func (sl *SLog) WithTraceId(ctx context.Context) *LoggerOperation {
+func (sl *SLog) WithTraceId(ctx context.Context) *slog.Logger {
 	if sl.config.JsonFormat {
 		jsonHandler := sl.jsonHandler.WithAttrs([]slog.Attr{
 			slog.String("trace_id", gotrace_id.GetTraceIdContext(ctx)),
 		})
 		logger := slog.New(jsonHandler)
-		return &LoggerOperation{
-			logger: logger,
-		}
+		return logger
 	} else {
 		textHandler := sl.textHandler.WithAttrs([]slog.Attr{
 			slog.String("trace_id", gotrace_id.GetTraceIdContext(ctx)),
 		})
 		logger := slog.New(textHandler)
-		return &LoggerOperation{
-			logger: logger,
-		}
+		return logger
 	}
 }
 
 // WithTraceIdStr 跟踪编号
-func (sl *SLog) WithTraceIdStr(traceId string) *LoggerOperation {
+func (sl *SLog) WithTraceIdStr(traceId string) *slog.Logger {
 	if sl.config.JsonFormat {
 		jsonHandler := sl.jsonHandler.WithAttrs([]slog.Attr{
 			slog.String("trace_id", traceId),
 		})
 		logger := slog.New(jsonHandler)
-		return &LoggerOperation{
-			logger: logger,
-		}
+		return logger
 	} else {
 		textHandler := sl.textHandler.WithAttrs([]slog.Attr{
 			slog.String("trace_id", traceId),
 		})
 		logger := slog.New(textHandler)
-		return &LoggerOperation{
-			logger: logger,
-		}
+		return logger
 	}
-}
-
-type LoggerOperation struct {
-	logger *slog.Logger
-}
-
-// Debug logs at LevelDebug.
-func (l *LoggerOperation) Debug(msg any) {
-	l.logger.Debug(fmt.Sprintf("%v", msg))
-}
-
-// Debugf formats the message according to the format specifier
-func (l *LoggerOperation) Debugf(template string, args ...any) {
-	l.logger.Debug(fmt.Sprintf(template, args...))
-}
-
-// DebugContext logs at LevelDebug with the given context.
-func (l *LoggerOperation) DebugContext(ctx context.Context, msg string, args ...any) {
-	l.logger.DebugContext(ctx, msg, args...)
-}
-
-// Info logs at LevelInfo.
-func (l *LoggerOperation) Info(msg any) {
-	l.logger.Info(fmt.Sprintf("%v", msg))
-}
-
-// Infof formats the message according to the format specifier
-func (l *LoggerOperation) Infof(template string, args ...any) {
-	l.logger.Info(fmt.Sprintf(template, args...))
-}
-
-// InfoContext logs at LevelInfo with the given context.
-func (l *LoggerOperation) InfoContext(ctx context.Context, msg string, args ...any) {
-	l.logger.InfoContext(ctx, msg, args...)
-}
-
-// Warn logs at LevelWarn.
-func (l *LoggerOperation) Warn(msg any) {
-	l.logger.Warn(fmt.Sprintf("%v", msg))
-}
-
-// Warnf formats the message according to the format specifier
-func (l *LoggerOperation) Warnf(template string, args ...any) {
-	l.logger.Warn(fmt.Sprintf(template, args...))
-}
-
-func (l *LoggerOperation) WarnContext(ctx context.Context, msg string, args ...any) {
-	l.logger.WarnContext(ctx, msg, args...)
-}
-
-// Error logs at LevelError.
-func (l *LoggerOperation) Error(msg any) {
-	l.logger.Error(fmt.Sprintf("%v", msg))
-}
-
-// Errorf formats the message according to the format specifier
-func (l *LoggerOperation) Errorf(template string, args ...any) {
-	l.logger.Error(fmt.Sprintf(template, args...))
-}
-
-// ErrorContext logs at LevelError with the given context.
-func (l *LoggerOperation) ErrorContext(ctx context.Context, msg string, args ...any) {
-	l.logger.ErrorContext(ctx, msg, args...)
 }
