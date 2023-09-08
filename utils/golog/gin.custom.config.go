@@ -7,6 +7,15 @@ import (
 	"runtime"
 )
 
+// ConfigSLogClientFun 日志配置
+func (c *GinCustomClient) ConfigSLogClientFun(sLogFun SLogFun) {
+	sLog := sLogFun()
+	if sLog != nil {
+		c.slog.client = sLog
+		c.slog.status = true
+	}
+}
+
 func (c *GinCustomClient) setConfig(ctx context.Context) {
 
 	info := getSystem()

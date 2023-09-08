@@ -12,28 +12,29 @@ import (
 	"github.com/dtapps/go-library/utils/gourl"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"log/slog"
+	"os"
 	"runtime"
 )
 
 type ApiSLogFun func() *ApiSLog
 
 type ApiSLogConfig struct {
-	LogPath    string // 日志文件路径
-	LogName    string // 日志文件名
-	MaxSize    int    // 单位为MB,默认为512MB
-	MaxBackups int    // 保留旧文件的最大个数
-	MaxAge     int    // 文件最多保存多少天 0=不删除
-	LocalTime  bool   // 采用本地时间
-	Compress   bool   // 是否压缩日志
-	ShowLine   bool   // 显示代码行
+	LogPath     string // 日志文件路径
+	LogName     string // 日志文件名
+	MaxSize     int    // 单位为MB,默认为512MB
+	MaxBackups  int    // 保留旧文件的最大个数
+	MaxAge      int    // 文件最多保存多少天 0=不删除
+	LocalTime   bool   // 采用本地时间
+	Compress    bool   // 是否压缩日志
+	ShowLine    bool   // 显示代码行
+	LogSaveFile bool   // 是否保存到文件
 }
 
 type ApiSLog struct {
-	config           *ApiSLogConfig
-	lumberjackLogger lumberjack.Logger
-	jsonHandler      *slog.JSONHandler
-	logger           *slog.Logger
-	systemConfig     struct {
+	config       *ApiSLogConfig
+	jsonHandler  *slog.JSONHandler
+	logger       *slog.Logger
+	systemConfig struct {
 		systemHostname  string // 主机名
 		systemOs        string // 系统类型
 		systemKernel    string // 系统内核
@@ -48,15 +49,6 @@ func NewApiSlog(ctx context.Context, config *ApiSLogConfig) *ApiSLog {
 
 	sl := &ApiSLog{config: config}
 
-	sl.lumberjackLogger = lumberjack.Logger{
-		Filename:   sl.config.LogPath + sl.config.LogName, // ⽇志⽂件路径
-		MaxSize:    sl.config.MaxSize,                     // 单位为MB,默认为512MB
-		MaxAge:     sl.config.MaxAge,                      // 文件最多保存多少天
-		MaxBackups: sl.config.MaxBackups,                  // 保留旧文件的最大个数
-		LocalTime:  sl.config.LocalTime,                   // 采用本地时间
-		Compress:   sl.config.Compress,                    // 是否压缩日志
-	}
-
 	opts := slog.HandlerOptions{
 		AddSource: sl.config.ShowLine,
 		Level:     slog.LevelDebug,
@@ -69,9 +61,22 @@ func NewApiSlog(ctx context.Context, config *ApiSLogConfig) *ApiSLog {
 		},
 	}
 
-	sl.jsonHandler = slog.NewJSONHandler(&sl.lumberjackLogger, &opts)
-
-	sl.logger = slog.New(sl.jsonHandler)
+	// 是否保存到文件
+	if sl.config.LogSaveFile {
+		lumberjackLogger := lumberjack.Logger{
+			Filename:   sl.config.LogPath + sl.config.LogName, // ⽇志⽂件路径
+			MaxSize:    sl.config.MaxSize,                     // 单位为MB,默认为512MB
+			MaxAge:     sl.config.MaxAge,                      // 文件最多保存多少天
+			MaxBackups: sl.config.MaxBackups,                  // 保留旧文件的最大个数
+			LocalTime:  sl.config.LocalTime,                   // 采用本地时间
+			Compress:   sl.config.Compress,                    // 是否压缩日志
+		}
+		sl.jsonHandler = slog.NewJSONHandler(&lumberjackLogger, &opts)
+		sl.logger = slog.New(sl.jsonHandler)
+	} else {
+		sl.jsonHandler = slog.NewJSONHandler(os.Stdout, &opts)
+		sl.logger = slog.New(sl.jsonHandler)
+	}
 
 	sl.setConfig(ctx)
 
@@ -174,4 +179,5 @@ func (sl *ApiSLog) setConfig(ctx context.Context) {
 
 	sl.systemConfig.sdkVersion = go_library.Version()
 	sl.systemConfig.goVersion = runtime.Version()
+
 }
