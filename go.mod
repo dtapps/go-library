@@ -26,7 +26,6 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.43
 	go.mongodb.org/mongo-driver v1.12.1
-	go.uber.org/zap v1.25.0
 	golang.org/x/crypto v0.13.0
 	golang.org/x/text v0.13.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
@@ -81,7 +80,6 @@ require (
 	github.com/xdg-go/stringprep v1.0.4 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20201027041543-1326539a0a0a // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
-	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.5.0 // indirect
 	golang.org/x/mod v0.12.0 // indirect
 	golang.org/x/net v0.15.0 // indirect
