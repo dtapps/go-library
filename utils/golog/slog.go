@@ -154,8 +154,8 @@ type LoggerOperation struct {
 }
 
 // Debug logs at LevelDebug.
-func (l *LoggerOperation) Debug(msg string, args ...any) {
-	l.logger.Debug(msg, args...)
+func (l *LoggerOperation) Debug(msg any) {
+	l.logger.Debug(fmt.Sprintf("%v", msg))
 }
 
 // Debugf formats the message according to the format specifier
@@ -169,8 +169,8 @@ func (l *LoggerOperation) DebugContext(ctx context.Context, msg string, args ...
 }
 
 // Info logs at LevelInfo.
-func (l *LoggerOperation) Info(msg string, args ...any) {
-	l.logger.Info(msg, args...)
+func (l *LoggerOperation) Info(msg any) {
+	l.logger.Info(fmt.Sprintf("%v", msg))
 }
 
 // Infof formats the message according to the format specifier
@@ -184,8 +184,8 @@ func (l *LoggerOperation) InfoContext(ctx context.Context, msg string, args ...a
 }
 
 // Warn logs at LevelWarn.
-func (l *LoggerOperation) Warn(msg string, args ...any) {
-	l.logger.Warn(msg, args...)
+func (l *LoggerOperation) Warn(msg any) {
+	l.logger.Warn(fmt.Sprintf("%v", msg))
 }
 
 // Warnf formats the message according to the format specifier
@@ -198,8 +198,8 @@ func (l *LoggerOperation) WarnContext(ctx context.Context, msg string, args ...a
 }
 
 // Error logs at LevelError.
-func (l *LoggerOperation) Error(msg string, args ...any) {
-	l.logger.Error(msg, args...)
+func (l *LoggerOperation) Error(msg any) {
+	l.logger.Error(fmt.Sprintf("%v", msg))
 }
 
 // Errorf formats the message according to the format specifier
