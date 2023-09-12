@@ -1,13 +1,11 @@
 package wechatminiprogram
 
 import (
-	"bytes"
 	"context"
 	"errors"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
-	"github.com/dtapps/go-library/utils/gostorage"
 	"net/http"
 )
 
@@ -62,9 +60,4 @@ func (resp *WxaGetWxaCodeUnLimitResult) Check() error {
 		return nil
 	}
 	return errors.New("返回不是二进制图片")
-}
-
-// Update 上传
-func (resp *WxaGetWxaCodeUnLimitResult) Update(storage *gostorage.AliYun, filePath, fileName string) (gostorage.FileInfo, error) {
-	return storage.PutObject(bytes.NewReader(resp.Body), filePath, fileName)
 }

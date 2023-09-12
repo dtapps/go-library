@@ -1,12 +1,9 @@
 package wechatopen
 
 import (
-	"bytes"
 	"context"
-	"errors"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
-	"github.com/dtapps/go-library/utils/gostorage"
 	"net/http"
 )
 
@@ -41,16 +38,4 @@ func (c *Client) CgiBinMaterialGetMaterial(ctx context.Context, authorizerAccess
 	// 判断内容是否为图片
 	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newCgiBinMaterialGetMaterialResult(response, request.ResponseBody, request), err
-}
-
-func (cr *CgiBinMaterialGetMaterialResult) SaveImg(db *gostorage.AliYun, fileName, filePath string) error {
-	if cr.Result.Errcode != 0 {
-		return errors.New(cr.Result.Errmsg)
-	}
-	// 上传
-	_, err := db.PutObject(bytes.NewReader(cr.Body), filePath, fileName)
-	if err != nil {
-		return err
-	}
-	return nil
 }
