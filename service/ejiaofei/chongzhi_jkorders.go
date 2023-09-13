@@ -36,16 +36,11 @@ func newChOngZhiJkOrdersResult(result ChOngZhiJkOrdersResponse, body []byte, htt
 // orderID 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
 // face 充值面值	以元为单位，包含10、20、30、50、100、200、300、500 移动联通电信
 // account 手机号码	需要充值的手机号码
-func (c *Client) ChOngZhiJkOrders(ctx context.Context, orderID string, face int, account string) (*ChOngZhiJkOrdersResult, error) {
+func (c *Client) ChOngZhiJkOrders(ctx context.Context, notMustParams ...gorequest.Params) (*ChOngZhiJkOrdersResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("orderid", orderID)
-	param.Set("face", face)
-	param.Set("account", account)
-	param.Set("amount", 1)
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 签名
-	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%vface%vaccount%vamount1", c.GetUserId(), c.GetPwd(), orderID, face, account)
+	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%vface%vaccount%vamount1", c.GetUserId(), c.GetPwd(), params["orderid"], params["face"], params["account"], params["amount"])
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/chongzhi_jkorders.do", params, http.MethodGet)
 	if err != nil {

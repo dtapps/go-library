@@ -45,13 +45,10 @@ func newCheckResult(result CheckResponse, body []byte, http gorequest.Response) 
 
 // Check 自发查询订单状态
 // https://www.showdoc.com.cn/dyr/9227006175502841
-func (c *Client) Check(ctx context.Context, outTradeNums string, notMustParams ...gorequest.Params) (*CheckResult, error) {
+func (c *Client) Check(ctx context.Context, notMustParams ...gorequest.Params) (*CheckResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserId())
-	if outTradeNums != "" {
-		params.Set("out_trade_nums", outTradeNums)
-	}
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/index/check", params)
 	if err != nil {

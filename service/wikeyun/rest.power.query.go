@@ -37,11 +37,10 @@ func newRestPowerQueryResult(result RestPowerQueryResponse, body []byte, http go
 
 // RestPowerQuery 电费订单查询
 // https://open.wikeyun.cn/#/apiDocument/9/document/313
-func (c *Client) RestPowerQuery(ctx context.Context, orderNumber string) (*RestPowerQueryResult, error) {
+func (c *Client) RestPowerQuery(ctx context.Context, notMustParams ...gorequest.Params) (*RestPowerQueryResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("order_number", orderNumber) // 平台单号
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("store_id", c.GetStoreId())
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/rest/Power/query", params)
 	if err != nil {

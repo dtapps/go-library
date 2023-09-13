@@ -38,11 +38,10 @@ func newRestRechargeQueryResult(result RestRechargeQueryResponse, body []byte, h
 
 // RestRechargeQuery 话费订单查询
 // https://open.wikeyun.cn/#/apiDocument/9/document/299
-func (c *Client) RestRechargeQuery(ctx context.Context, orderNumber string) (*RestRechargeQueryResult, error) {
+func (c *Client) RestRechargeQuery(ctx context.Context, notMustParams ...gorequest.Params) (*RestRechargeQueryResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("order_number", orderNumber) // 平台订单号
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("store_id", c.GetStoreId())
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/rest/Recharge/query", params)
 	if err != nil {

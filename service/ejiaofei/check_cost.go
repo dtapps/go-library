@@ -29,13 +29,11 @@ func newCheckCostResult(result CheckCostResponse, body []byte, http gorequest.Re
 
 // CheckCost 会员订单成本价查询接口
 // orderID 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
-func (c *Client) CheckCost(ctx context.Context, orderId string) (*CheckCostResult, error) {
+func (c *Client) CheckCost(ctx context.Context, notMustParams ...gorequest.Params) (*CheckCostResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("orderid", orderId)
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 签名
-	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%v", c.GetUserId(), c.GetPwd(), orderId)
+	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%v", c.GetUserId(), c.GetPwd(), params["orderid"])
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/checkCost.do", params, http.MethodGet)
 	if err != nil {

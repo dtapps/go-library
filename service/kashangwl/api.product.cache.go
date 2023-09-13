@@ -34,11 +34,10 @@ func newApiProductCacheResult(result ApiProductCacheResponse, body []byte, http 
 }
 
 // ApiProductCache [缓存，需托管授权]获取单个商品信息
-func (c *Client) ApiProductCache(ctx context.Context, productId int64) *ApiProductCacheResult {
+func (c *Client) ApiProductCache(ctx context.Context, notMustParams ...gorequest.Params) *ApiProductCacheResult {
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("customer_id", c.GetCustomerId())
-	params.Set("product_id", productId)
 	// 请求
 	request, err := c.requestCache(ctx, fmt.Sprintf("%s/goods_info", apiUrlCache), params, http.MethodGet)
 	// 定义
