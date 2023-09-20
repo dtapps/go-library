@@ -66,7 +66,7 @@ func newPayTransactionsOutTradeNoResult(result PayTransactionsOutTradeNoResponse
 // PayTransactionsOutTradeNo 商户订单号查询 https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_2.shtml
 func (c *Client) PayTransactionsOutTradeNo(ctx context.Context, outTradeNo string) *PayTransactionsOutTradeNoResult {
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/pay/transactions/out-trade-no/%s?mchid=%s", outTradeNo, c.GetMchId()), map[string]interface{}{}, http.MethodGet, true)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/pay/transactions/out-trade-no/%s?mchid=%s", outTradeNo, c.GetMchId()), nil, http.MethodGet, true)
 	if err != nil {
 		return newPayTransactionsOutTradeNoResult(PayTransactionsOutTradeNoResponse{}, request.ResponseBody, request, err)
 	}

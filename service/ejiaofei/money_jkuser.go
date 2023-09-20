@@ -30,7 +30,7 @@ func (c *Client) MoneyJkUser(ctx context.Context) (*MoneyJkUserResult, error) {
 	// 签名
 	c.config.signStr = fmt.Sprintf("userid%vpwd%v", c.GetUserId(), c.GetPwd())
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/money_jkuser.do", map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/money_jkuser.do", nil, http.MethodGet)
 	if err != nil {
 		return newMoneyJkUserResult(MoneyJkUserResponse{}, request.ResponseBody, request), err
 	}

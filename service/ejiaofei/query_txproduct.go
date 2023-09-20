@@ -28,7 +28,7 @@ func (c *Client) QueryTxProduct(ctx context.Context) (*QueryTxProductResult, err
 	// 签名
 	c.config.signStr = fmt.Sprintf("userid%vpwd%v", c.GetUserId(), c.GetPwd())
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/queryTXproduct.do", map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/queryTXproduct.do", nil, http.MethodGet)
 	if err != nil {
 		return newQueryTxProductResult(QueryTxProductResponse{}, request.ResponseBody, request), err
 	}

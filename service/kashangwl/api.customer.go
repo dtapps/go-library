@@ -31,7 +31,7 @@ func newApiCustomerResult(result ApiCustomerResponse, body []byte, http goreques
 // http://doc.cqmeihu.cn/sales/merchant-info.html
 func (c *Client) ApiCustomer(ctx context.Context) *ApiCustomerResult {
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/api/customer", map[string]interface{}{})
+	request, err := c.request(ctx, apiUrl+"/api/customer", nil)
 	// 定义
 	var response ApiCustomerResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)

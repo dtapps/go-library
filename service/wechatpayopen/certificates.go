@@ -37,7 +37,7 @@ func newCertificatesResult(result CertificatesResponse, body []byte, http gorequ
 // https://pay.weixin.qq.com/wiki/doc/apiv3/apis/wechatpay5_1.shtml
 func (c *Client) Certificates(ctx context.Context) *CertificatesResult {
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/certificates", map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+"/v3/certificates", nil, http.MethodGet)
 	if err != nil {
 		return newCertificatesResult(CertificatesResponse{}, request.ResponseBody, request, err)
 	}

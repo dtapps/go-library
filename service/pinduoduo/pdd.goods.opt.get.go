@@ -32,7 +32,7 @@ func newGoodsOptGetResult(result GoodsOptGetResponse, body []byte, http goreques
 // https://open.pinduoduo.com/application/document/api?id=pdd.goods.opt.get
 func (c *Client) GoodsOptGet(ctx context.Context, parentOptId int) *GoodsOptGetResult {
 	// 参数
-	param := NewParams()
+	param := gorequest.NewParams()
 	param.Set("parent_opt_id", parentOptId)
 	params := NewParamsWithType("pdd.goods.opt.get", param)
 	// 请求
