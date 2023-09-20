@@ -25,7 +25,7 @@ func newPayPartnerTransactionsJsapiResult(result PayPartnerTransactionsJsapiResp
 
 // PayPartnerTransactionsJsapi JSAPI下单
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_1.shtml
-func (c *Client) PayPartnerTransactionsJsapi(ctx context.Context, notMustParams ...gorequest.Params) *PayPartnerTransactionsJsapiResult {
+func (c *Client) PayPartnerTransactionsJsapi(ctx context.Context, notMustParams ...*gorequest.Params) *PayPartnerTransactionsJsapiResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sp_appid", c.GetSpAppid())   // 服务商应用ID

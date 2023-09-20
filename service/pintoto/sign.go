@@ -3,21 +3,21 @@ package pintoto
 import (
 	"crypto/md5"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gojson"
+	"github.com/dtapps/go-library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/gostring"
 	"net/url"
 	"sort"
-	"strconv"
 )
 
-func (c *Client) getSign(appSecret string, p map[string]interface{}) string {
+func (c *Client) getSign(appSecret string, p *gorequest.Params) string {
 	var keys []string
-	for k := range p {
+	for k := range p.ToMap() {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
 	signStr := ""
 	for _, key := range keys {
-		signStr += fmt.Sprintf("%s=%s&", key, c.getString(p[key]))
+		signStr += fmt.Sprintf("%s=%s&", key, gostring.GetString(p.Get(key)))
 	}
 	signStr += fmt.Sprintf("appSecret=%s", appSecret)
 	// md5加密
@@ -26,27 +26,13 @@ func (c *Client) getSign(appSecret string, p map[string]interface{}) string {
 	return fmt.Sprintf("%x", has)
 }
 
-func (c *Client) getString(i interface{}) string {
-	switch v := i.(type) {
-	case string:
-		return v
-	case int:
-		return strconv.Itoa(v)
-	case bool:
-		return strconv.FormatBool(v)
-	default:
-		bytes, _ := gojson.Marshal(v)
-		return string(bytes)
-	}
-}
-
 // 获取请求数据
-func (c *Client) getRequestData(params map[string]interface{}) string {
+func (c *Client) getRequestData(param *gorequest.Params) string {
 	// 公共参数
 	args := url.Values{}
 	// 请求参数
-	for key, val := range params {
-		args.Set(key, c.getString(val))
+	for key, val := range param.ToMap() {
+		args.Set(key, gostring.GetString(val))
 	}
 	return args.Encode()
 }

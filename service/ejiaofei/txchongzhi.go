@@ -42,11 +42,11 @@ func newTxChOngZhiResult(result TxChOngZhiResponse, body []byte, http gorequest.
 }
 
 // TxChOngZhi 流量充值接口
-func (c *Client) TxChOngZhi(ctx context.Context, notMustParams ...gorequest.Params) (*TxChOngZhiResult, error) {
+func (c *Client) TxChOngZhi(ctx context.Context, notMustParams ...*gorequest.Params) (*TxChOngZhiResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 签名
-	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vproductid%vamount%vip%vtimes%v", c.GetUserId(), c.GetPwd(), params["orderid"], params["account"], params["productid"], params["amount"], params["ip"], params["times"])
+	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vproductid%vamount%vip%vtimes%v", c.GetUserId(), c.GetPwd(), params.Get("orderid"), params.Get("account"), params.Get("productid"), params.Get("amount"), params.Get("ip"), params.Get("times"))
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/txchongzhi.do", params, http.MethodGet)
 	if err != nil {

@@ -37,7 +37,7 @@ func newWxaModifyDomainResult(result WxaModifyDomainResponse, body []byte, http 
 
 // WxaModifyDomain 配置小程序服务器域名
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/modifyServerDomain.html
-func (c *Client) WxaModifyDomain(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaModifyDomainResult, error) {
+func (c *Client) WxaModifyDomain(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaModifyDomainResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

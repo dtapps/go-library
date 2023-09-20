@@ -59,7 +59,7 @@ func newWeatherWeatherInfoResult(result WeatherWeatherInfoResponse, body []byte,
 
 // WeatherWeatherInfo 天气查询
 // https://lbs.amap.com/api/webservice/guide/api/weatherinfo
-func (c *Client) WeatherWeatherInfo(ctx context.Context, city string, notMustParams ...gorequest.Params) (*WeatherWeatherInfoResult, error) {
+func (c *Client) WeatherWeatherInfo(ctx context.Context, city string, notMustParams ...*gorequest.Params) (*WeatherWeatherInfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("key", c.GetKey())

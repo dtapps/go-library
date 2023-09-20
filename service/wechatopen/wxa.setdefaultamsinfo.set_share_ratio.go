@@ -24,7 +24,7 @@ func newWxaSetDefaultamsInfoSetShareRatioResult(result WxaSetDefaultamsInfoSetSh
 
 // WxaSetDefaultamsInfoSetShareRatio 设置默认分账比例
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/percentage/SetShareRatio.html
-func (c *Client) WxaSetDefaultamsInfoSetShareRatio(ctx context.Context, authorizerAccessToken string, shareRatio int64, notMustParams ...gorequest.Params) (*WxaSetDefaultamsInfoSetShareRatioResult, error) {
+func (c *Client) WxaSetDefaultamsInfoSetShareRatio(ctx context.Context, authorizerAccessToken string, shareRatio int64, notMustParams ...*gorequest.Params) (*WxaSetDefaultamsInfoSetShareRatioResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	if shareRatio > 0 {

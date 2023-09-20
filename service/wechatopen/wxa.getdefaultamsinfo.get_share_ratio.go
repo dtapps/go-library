@@ -24,7 +24,7 @@ func newWxaGetDefaultamsInfoGetShareRatioResult(result WxaGetDefaultamsInfoGetSh
 
 // WxaGetDefaultamsInfoGetShareRatio 查询分账比例
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/percentage/GetShareRatio.html
-func (c *Client) WxaGetDefaultamsInfoGetShareRatio(ctx context.Context, authorizerAppid, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaGetDefaultamsInfoGetShareRatioResult, error) {
+func (c *Client) WxaGetDefaultamsInfoGetShareRatio(ctx context.Context, authorizerAppid, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaGetDefaultamsInfoGetShareRatioResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", authorizerAppid)

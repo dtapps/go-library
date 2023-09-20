@@ -32,13 +32,13 @@ func newApiMtUnionCityResult(result ApiMtUnionCityResponse, body []byte, http go
 
 // ApiMtUnionCity 城市信息查询（新版）
 // https://union.meituan.com/v2/apiDetail?id=29
-func (c *Client) ApiMtUnionCity(ctx context.Context, notMustParams ...gorequest.Params) *ApiMtUnionCityResult {
+func (c *Client) ApiMtUnionCity(ctx context.Context, notMustParams ...*gorequest.Params) *ApiMtUnionCityResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s
-	params["ts"] = gotime.Current().Timestamp()
-	params["appkey"] = c.GetAppKey()
-	params["sign"] = c.getSign(c.GetSecret(), params)
+	params.Set("ts", gotime.Current().Timestamp())
+	params.Set("appkey", c.GetAppKey())
+	params.Set("sign", c.getSign(c.GetSecret(), params))
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/api/getqualityscorebysid", params, http.MethodGet)
 	// 定义

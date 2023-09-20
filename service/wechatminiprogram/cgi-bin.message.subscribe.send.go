@@ -26,7 +26,7 @@ func newSubscribeMessageSendResult(result SubscribeMessageSendResponse, body []b
 
 // SubscribeMessageSend 发送订阅消息
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/subscribe-message/subscribeMessage.send.html
-func (c *Client) SubscribeMessageSend(ctx context.Context, notMustParams ...gorequest.Params) *SubscribeMessageSendResult {
+func (c *Client) SubscribeMessageSend(ctx context.Context, notMustParams ...*gorequest.Params) *SubscribeMessageSendResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

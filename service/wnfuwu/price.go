@@ -36,7 +36,7 @@ func newPriceResult(result PriceResponse, body []byte, http gorequest.Response) 
 
 // Price 产品ID查询【新增】
 // https://www.showdoc.com.cn/dyr/9757701226597233
-func (c *Client) Price(ctx context.Context, id int64, notMustParams ...gorequest.Params) (*PriceResult, error) {
+func (c *Client) Price(ctx context.Context, id int64, notMustParams ...*gorequest.Params) (*PriceResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserId())

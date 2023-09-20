@@ -27,7 +27,7 @@ func newMessageTemplateSendResult(result MessageTemplateSendResponse, body []byt
 
 // MessageTemplateSend 模板消息
 // https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Template_Message_Interface.html
-func (c *Client) MessageTemplateSend(ctx context.Context, notMustParams ...gorequest.Params) *MessageTemplateSendResult {
+func (c *Client) MessageTemplateSend(ctx context.Context, notMustParams ...*gorequest.Params) *MessageTemplateSendResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

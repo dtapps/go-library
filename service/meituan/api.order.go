@@ -66,11 +66,11 @@ func newApiOrderResult(result ApiOrderResponse, body []byte, http gorequest.Resp
 
 // ApiOrder 单订单查询接口（新版）
 // https://union.meituan.com/v2/apiDetail?id=24
-func (c *Client) ApiOrder(ctx context.Context, notMustParams ...gorequest.Params) *ApiOrderResult {
+func (c *Client) ApiOrder(ctx context.Context, notMustParams ...*gorequest.Params) *ApiOrderResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params["appkey"] = c.GetAppKey()
-	params["sign"] = c.getSign(c.GetSecret(), params)
+	params.Set("appkey", c.GetAppKey())
+	params.Set("sign", c.getSign(c.GetSecret(), params))
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/api/order", params, http.MethodGet)
 	// 定义

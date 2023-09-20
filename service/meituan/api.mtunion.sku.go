@@ -37,13 +37,13 @@ func newApiMtUnionSkuResult(result ApiMtUnionSkuResponse, body []byte, http gore
 
 // ApiMtUnionSku 商品列表查询（新版）
 // https://union.meituan.com/v2/apiDetail?id=31
-func (c *Client) ApiMtUnionSku(ctx context.Context, notMustParams ...gorequest.Params) *ApiMtUnionSkuResult {
+func (c *Client) ApiMtUnionSku(ctx context.Context, notMustParams ...*gorequest.Params) *ApiMtUnionSkuResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s
-	params["ts"] = gotime.Current().Timestamp()
-	params["appkey"] = c.GetAppKey()
-	params["sign"] = c.getSign(c.GetSecret(), params)
+	params.Set("ts", gotime.Current().Timestamp())
+	params.Set("appkey", c.GetAppKey())
+	params.Set("sign", c.getSign(c.GetSecret(), params))
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/api/getqualityscorebysid", params, http.MethodGet)
 	// 定义

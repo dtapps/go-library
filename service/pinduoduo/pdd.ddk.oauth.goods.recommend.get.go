@@ -68,7 +68,7 @@ func newPddDdkOauthGoodsRecommendGetResult(result PddDdkOauthGoodsRecommendGetRe
 
 // RecommendGet 运营频道商品查询API
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.goods.recommend.get
-func (c *PddDdkOauthGoodsApi) RecommendGet(ctx context.Context, notMustParams ...Params) *PddDdkOauthGoodsRecommendGetResult {
+func (c *PddDdkOauthGoodsApi) RecommendGet(ctx context.Context, notMustParams ...*gorequest.Params) *PddDdkOauthGoodsRecommendGetResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.goods.recommend.get", notMustParams...)
 	// 请求

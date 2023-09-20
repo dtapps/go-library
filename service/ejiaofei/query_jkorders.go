@@ -34,11 +34,11 @@ func newQueryJkOrdersResult(result QueryJkOrdersResponse, body []byte, http gore
 
 // QueryJkOrders 通用查询接口
 // orderId 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
-func (c *Client) QueryJkOrders(ctx context.Context, notMustParams ...gorequest.Params) (*QueryJkOrdersResult, error) {
+func (c *Client) QueryJkOrders(ctx context.Context, notMustParams ...*gorequest.Params) (*QueryJkOrdersResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 签名
-	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%v", c.GetUserId(), c.GetPwd(), params["orderid"])
+	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%v", c.GetUserId(), c.GetPwd(), params.Get("orderid"))
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/query_jkorders.do", params, http.MethodGet)
 	if err != nil {

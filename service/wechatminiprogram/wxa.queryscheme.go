@@ -38,7 +38,7 @@ func newWxaQuerySchemeResult(result WxaQuerySchemeResponse, body []byte, http go
 
 // WxaQueryScheme 查询小程序 scheme 码，及长期有效 quota
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/url-scheme/urlscheme.query.html
-func (c *Client) WxaQueryScheme(ctx context.Context, notMustParams ...gorequest.Params) *WxaQuerySchemeResult {
+func (c *Client) WxaQueryScheme(ctx context.Context, notMustParams ...*gorequest.Params) *WxaQuerySchemeResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

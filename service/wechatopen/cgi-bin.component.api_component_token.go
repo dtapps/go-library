@@ -24,7 +24,7 @@ func newCgiBinComponentApiComponentTokenResult(result CgiBinComponentApiComponen
 
 // CgiBinComponentApiComponentToken 令牌
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/component_access_token.html
-func (c *Client) CgiBinComponentApiComponentToken(ctx context.Context, componentVerifyTicket string, notMustParams ...gorequest.Params) (*CgiBinComponentApiComponentTokenResult, error) {
+func (c *Client) CgiBinComponentApiComponentToken(ctx context.Context, componentVerifyTicket string, notMustParams ...*gorequest.Params) (*CgiBinComponentApiComponentTokenResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("component_appid", c.config.componentAppId)         // 第三方平台appid

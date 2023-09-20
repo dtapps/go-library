@@ -5,7 +5,7 @@ import (
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
-func (c *Client) request(ctx context.Context, url string, param map[string]interface{}) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param *gorequest.Params) (gorequest.Response, error) {
 
 	// 签名
 	params := c.Sign(param)

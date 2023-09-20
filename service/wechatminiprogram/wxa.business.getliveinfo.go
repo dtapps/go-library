@@ -57,7 +57,7 @@ func newBusinessGetLiveInfoResult(result BusinessGetLiveInfoResponse, body []byt
 // BusinessGetLiveInfo 获取直播间列表
 // 调用此接口获取直播间列表及直播间信息
 // https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/industry/liveplayer/studio-api.html
-func (c *Client) BusinessGetLiveInfo(ctx context.Context, notMustParams ...gorequest.Params) *BusinessGetLiveInfoResult {
+func (c *Client) BusinessGetLiveInfo(ctx context.Context, notMustParams ...*gorequest.Params) *BusinessGetLiveInfoResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

@@ -24,7 +24,7 @@ func newWxaReleaseResult(result WxaReleaseResponse, body []byte, http gorequest.
 
 // WxaRelease 发布已通过审核的小程序
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/release.html
-func (c *Client) WxaRelease(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaReleaseResult, error) {
+func (c *Client) WxaRelease(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaReleaseResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

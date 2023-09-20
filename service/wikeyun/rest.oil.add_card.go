@@ -6,7 +6,7 @@ import (
 )
 
 // RestOilCardAdd 添加充值卡
-func (c *Client) RestOilCardAdd(ctx context.Context, notMustParams ...gorequest.Params) (body []byte, err error) {
+func (c *Client) RestOilCardAdd(ctx context.Context, notMustParams ...*gorequest.Params) (body []byte, err error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

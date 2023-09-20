@@ -150,7 +150,7 @@ func newGeocoderLocationResult(result GeocoderLocationResponse, body []byte, htt
 
 // GeocoderLocation 逆地址解析（坐标位置描述）
 // https://lbs.qq.com/service/webService/webServiceGuide/webServiceGcoder
-func (c *Client) GeocoderLocation(ctx context.Context, location string, notMustParams ...gorequest.Params) (*GeocoderLocationResult, error) {
+func (c *Client) GeocoderLocation(ctx context.Context, location string, notMustParams ...*gorequest.Params) (*GeocoderLocationResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("key", c.GetKey())

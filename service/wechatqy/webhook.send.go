@@ -29,7 +29,7 @@ func newWebhookSendResult(result WebhookSendResponse, body []byte, http goreques
 
 // WebhookSend 发送应用消息
 // https://developer.work.weixin.qq.com/document/path/90372
-func (c *Client) WebhookSend(ctx context.Context, notMustParams ...gorequest.Params) *WebhookSendResult {
+func (c *Client) WebhookSend(ctx context.Context, notMustParams ...*gorequest.Params) *WebhookSendResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

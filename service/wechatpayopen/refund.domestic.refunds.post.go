@@ -65,7 +65,7 @@ func newRefundDomesticRefundsPostResult(result RefundDomesticRefundsPostResponse
 
 // RefundDomesticRefundsPost 申请退款API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_9.shtml
-func (c *Client) RefundDomesticRefundsPost(ctx context.Context, outRefundNo string, notMustParams ...gorequest.Params) *RefundDomesticRefundsPostResult {
+func (c *Client) RefundDomesticRefundsPost(ctx context.Context, outRefundNo string, notMustParams ...*gorequest.Params) *RefundDomesticRefundsPostResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号

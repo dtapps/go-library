@@ -83,7 +83,7 @@ func newTbkOrderDetailsGetResult(result TbkOrderDetailsGetResponse, body []byte,
 
 // TbkOrderDetailsGet 淘宝客-推广者-所有订单查询
 // https://open.taobao.com/api.htm?docId=43328&docType=2&scopeId=16175
-func (c *Client) TbkOrderDetailsGet(ctx context.Context, notMustParams ...Params) *TbkOrderDetailsGetResult {
+func (c *Client) TbkOrderDetailsGet(ctx context.Context, notMustParams ...*gorequest.Params) *TbkOrderDetailsGetResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.order.details.get", notMustParams...)
 	// 请求

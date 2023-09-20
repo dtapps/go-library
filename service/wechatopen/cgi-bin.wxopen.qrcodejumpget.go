@@ -35,7 +35,7 @@ func newCgiBinWxOpenQrCodeJumpGetResult(result CgiBinWxOpenQrCodeJumpGetResponse
 
 // CgiBinWxOpenQrCodeJumpGet 获取已设置的二维码规则
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumpadd.html
-func (c *Client) CgiBinWxOpenQrCodeJumpGet(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*CgiBinWxOpenQrCodeJumpGetResult, error) {
+func (c *Client) CgiBinWxOpenQrCodeJumpGet(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*CgiBinWxOpenQrCodeJumpGetResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

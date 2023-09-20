@@ -39,7 +39,7 @@ func newApiBuyResult(result ApiBuyResponse, body []byte, http gorequest.Response
 
 // ApiBuy 购买商品
 // http://doc.cqmeihu.cn/sales/buy.html
-func (c *Client) ApiBuy(ctx context.Context, notMustParams ...gorequest.Params) *ApiBuyResult {
+func (c *Client) ApiBuy(ctx context.Context, notMustParams ...*gorequest.Params) *ApiBuyResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

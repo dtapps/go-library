@@ -32,7 +32,7 @@ func newTckWxPayListResult(result TckWxPayListResponse, body []byte, http gorequ
 
 // TckWxPayList 获取授权绑定的商户号列表
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/cloudbase-common/wechatpay/getWechatPayList.html
-func (c *Client) TckWxPayList(ctx context.Context, componentAccessToken string, notMustParams ...gorequest.Params) (*TckWxPayListResult, error) {
+func (c *Client) TckWxPayList(ctx context.Context, componentAccessToken string, notMustParams ...*gorequest.Params) (*TckWxPayListResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

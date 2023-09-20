@@ -47,13 +47,13 @@ func newApiMtUnionPoiResult(result ApiMtUnionPoiResponse, body []byte, http gore
 
 // ApiMtUnionPoi 门店POI查询（新版）
 // https://union.meituan.com/v2/apiDetail?id=32
-func (c *Client) ApiMtUnionPoi(ctx context.Context, notMustParams ...gorequest.Params) *ApiMtUnionPoiResult {
+func (c *Client) ApiMtUnionPoi(ctx context.Context, notMustParams ...*gorequest.Params) *ApiMtUnionPoiResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s
-	params["ts"] = gotime.Current().Timestamp()
-	params["appkey"] = c.GetAppKey()
-	params["sign"] = c.getSign(c.GetSecret(), params)
+	params.Set("ts", gotime.Current().Timestamp())
+	params.Set("appkey", c.GetAppKey())
+	params.Set("sign", c.getSign(c.GetSecret(), params))
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/api/getqualityscorebysid", params, http.MethodGet)
 	// 定义

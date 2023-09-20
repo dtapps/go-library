@@ -51,7 +51,7 @@ func newPayPartnerTransactionsIdTransactionIdGetResult(result PayPartnerTransact
 
 // PayPartnerTransactionsIdTransactionIdGet 微信支付订单号查询
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_2.shtml
-func (c *Client) PayPartnerTransactionsIdTransactionIdGet(ctx context.Context, transactionId string, notMustParams ...gorequest.Params) *PayPartnerTransactionsIdTransactionIdGetResult {
+func (c *Client) PayPartnerTransactionsIdTransactionIdGet(ctx context.Context, transactionId string, notMustParams ...*gorequest.Params) *PayPartnerTransactionsIdTransactionIdGetResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sp_mchid", c.GetSpMchId())   // 服务商户号

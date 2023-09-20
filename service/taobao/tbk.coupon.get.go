@@ -59,7 +59,7 @@ func newTbkCouponGetResult(result TbkCouponGetResponse, body []byte, http gorequ
 
 // TbkCouponGet 淘宝客-公用-阿里妈妈推广券详情查询
 // https://open.taobao.com/api.htm?docId=31106&docType=2
-func (c *Client) TbkCouponGet(ctx context.Context, notMustParams ...Params) *TbkCouponGetResult {
+func (c *Client) TbkCouponGet(ctx context.Context, notMustParams ...*gorequest.Params) *TbkCouponGetResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.coupon.get", notMustParams...)
 	// 请求

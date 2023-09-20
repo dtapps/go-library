@@ -6,7 +6,7 @@ import (
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
-func (c *Client) Post(ctx context.Context, _method string, certStatus bool, cert *tls.Certificate, notMustParams ...gorequest.Params) ([]byte, error) {
+func (c *Client) Post(ctx context.Context, _method string, certStatus bool, cert *tls.Certificate, notMustParams ...*gorequest.Params) ([]byte, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

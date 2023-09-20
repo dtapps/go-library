@@ -5,6 +5,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"github.com/dtapps/go-library/utils/gojson"
+	"github.com/dtapps/go-library/utils/gorequest"
 	"io"
 	"sort"
 	"strconv"
@@ -12,17 +13,17 @@ import (
 
 // 签名(sign)生成逻辑（新版）
 // https://union.meituan.com/v2/apiDetail?id=27
-func (c *Client) getSign(Secret string, params map[string]interface{}) string {
+func (c *Client) getSign(Secret string, param *gorequest.Params) string {
 	// 参数按照参数名的字典升序排列
 	var keys []string
-	for k := range params {
+	for k := range param.ToMap() {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
 	signStr := bytes.NewBufferString(Secret)
 	for _, k := range keys {
 		signStr.WriteString(k)
-		signStr.WriteString(c.getString(params[k]))
+		signStr.WriteString(c.getString(param.Get(k)))
 	}
 	signStr.WriteString(Secret)
 	// md5加密

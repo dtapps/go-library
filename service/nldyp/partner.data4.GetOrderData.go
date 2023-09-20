@@ -24,7 +24,7 @@ func newPartnerData4GetOrderDataResult(result PartnerData4GetOrderDataResponse, 
 
 // PartnerData4GetOrderData 15分钟出票模式
 // https://docs.apipost.cn/preview/fa101f4865dc783f/66e7c2e894fda4a6?target_id=98dfc19f-6f76-4018-8de4-86cdeea4fcab
-func (c *Client) PartnerData4GetOrderData(ctx context.Context, notMustParams ...gorequest.Params) *PartnerData4GetOrderDataResult {
+func (c *Client) PartnerData4GetOrderData(ctx context.Context, notMustParams ...*gorequest.Params) *PartnerData4GetOrderDataResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

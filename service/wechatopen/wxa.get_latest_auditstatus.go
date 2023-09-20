@@ -31,7 +31,7 @@ func newWxaGetLatestAuditStatusResult(result WxaGetLatestAuditStatusResponse, bo
 
 // WxaGetLatestAuditStatus 查询最新一次提交的审核状态
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_auditstatus.html
-func (c *Client) WxaGetLatestAuditStatus(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaGetLatestAuditStatusResult, error) {
+func (c *Client) WxaGetLatestAuditStatus(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaGetLatestAuditStatusResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

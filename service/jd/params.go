@@ -1,97 +1,47 @@
 package jd
 
 import (
-	"github.com/dtapps/go-library/utils/gojson"
-	"net/url"
+	"github.com/dtapps/go-library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/gostring"
 	"sort"
-	"strconv"
 	"time"
 )
 
-// Params 请求参数
-type Params map[string]interface{}
-
-func NewParams() Params {
-	p := make(Params)
-	return p
-}
-
-func NewParamsWith(params ...Params) Params {
-	p := make(Params)
-	for _, v := range params {
-		p.SetParams(v)
-	}
-	return p
-}
-
-func NewParamsWithType(_method string, params ...Params) Params {
-	p := make(Params)
-	p["method"] = _method
+func NewParamsWithType(_method string, params ...*gorequest.Params) *gorequest.Params {
+	p := gorequest.NewParamsWith(params...)
+	p.Set("method", _method)
 	hh, _ := time.ParseDuration("8h")
 	loc := time.Now().UTC().Add(hh)
-	p["timestamp"] = loc.Format("2006-01-02 15:04:05")
-	p["format"] = "json"
-	p["v"] = "1.0"
-	p["sign_method"] = "md5"
+	p.Set("timestamp", loc.Format("2006-01-02 15:04:05"))
+	p.Set("format", "json")
+	p.Set("v", "1.0")
+	p.Set("sign_method", "md5")
 	for _, v := range params {
 		p.SetParams(v)
 	}
 	return p
 }
 
-func (c *Client) Sign(p Params) {
-	p["app_key"] = c.GetAppKey()
+func (c *Client) Sign(p *gorequest.Params) {
+	p.Set("app_key", c.GetAppKey())
 	// 排序所有的 key
 	var keys []string
-	for key := range p {
+	for key := range p.ToMap() {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
 	signStr := c.GetSecretKey()
 	for _, key := range keys {
-		signStr += key + getString(p[key])
+		signStr += key + gostring.GetString(p.Get(key))
 	}
 	signStr += c.GetSecretKey()
-	p["sign"] = createSign(signStr)
+	p.Set("sign", createSign(signStr))
 }
 
-func (p Params) Set(key string, value interface{}) {
-	p[key] = value
-}
-
-func (p Params) SetParams(params Params) {
-	for key, value := range params {
-		p[key] = value
-	}
-}
-
-func (p Params) SetCustomParameters(uid string, sid string) {
-	p["custom_parameters"] = map[string]interface{}{
+func SetCustomParameters(p *gorequest.Params, uid string, sid string) *gorequest.Params {
+	p.Set("custom_parameters", map[string]interface{}{
 		"uid": uid,
 		"sid": sid,
-	}
-}
-
-func (p Params) GetQuery() string {
-	u := url.Values{}
-	for k, v := range p {
-		u.Set(k, getString(v))
-	}
-	return u.Encode()
-}
-
-func getString(i interface{}) string {
-	switch v := i.(type) {
-	case string:
-		return v
-	case []byte:
-		return string(v)
-	case int:
-		return strconv.Itoa(v)
-	case bool:
-		return strconv.FormatBool(v)
-	default:
-		bytes, _ := gojson.Marshal(v)
-		return string(bytes)
-	}
+	})
+	return p
 }

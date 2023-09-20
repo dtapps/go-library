@@ -26,7 +26,7 @@ func newCgiBinComponentApiStartPushTicketResult(result CgiBinComponentApiStartPu
 
 // CgiBinComponentApiStartPushTicket 启动ticket推送服务
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/component_verify_ticket_service.html
-func (c *Client) CgiBinComponentApiStartPushTicket(ctx context.Context, notMustParams ...gorequest.Params) (*CgiBinComponentApiStartPushTicketResult, error) {
+func (c *Client) CgiBinComponentApiStartPushTicket(ctx context.Context, notMustParams ...*gorequest.Params) (*CgiBinComponentApiStartPushTicketResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("component_appid", c.config.componentAppId)      // 第三方平台appid

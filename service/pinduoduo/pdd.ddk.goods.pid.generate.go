@@ -31,7 +31,7 @@ func newGoodsPidGenerateResult(result GoodsPidGenerateResponse, body []byte, htt
 
 // GoodsPidGenerate 创建多多进宝推广位
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.pid.generate
-func (c *Client) GoodsPidGenerate(ctx context.Context, notMustParams ...Params) *GoodsPidGenerateResult {
+func (c *Client) GoodsPidGenerate(ctx context.Context, notMustParams ...*gorequest.Params) *GoodsPidGenerateResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.pid.generate", notMustParams...)
 	// 请求

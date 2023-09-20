@@ -3,14 +3,9 @@ package gddata
 import (
 	"context"
 	"github.com/dtapps/go-library/utils/gorequest"
-	"log"
 )
 
-func (c *Client) request(ctx context.Context, url string, params map[string]interface{}, method string) (gorequest.Response, error) {
-
-	log.Println(url)
-	log.Println(params)
-	log.Println(method)
+func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, method string) (gorequest.Response, error) {
 
 	// 创建请求
 	client := c.requestClient
@@ -25,7 +20,7 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	client.SetContentTypeJson()
 
 	// 设置参数
-	client.SetParams(params)
+	client.SetParams(param)
 
 	// 发起请求
 	request, err := client.Request(ctx)

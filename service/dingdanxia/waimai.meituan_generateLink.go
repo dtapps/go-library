@@ -27,7 +27,7 @@ func newWaiMaiMeituanGenerateLinkResult(result WaiMaiMeituanGenerateLinkResponse
 
 // WaiMaiMeituanGenerateLink 美团外卖/闪购/酒店/优选CPS转链接口【推荐使用】
 // https://www.dingdanxia.com/doc/221/173
-func (c *Client) WaiMaiMeituanGenerateLink(ctx context.Context, notMustParams ...gorequest.Params) *WaiMaiMeituanGenerateLinkResult {
+func (c *Client) WaiMaiMeituanGenerateLink(ctx context.Context, notMustParams ...*gorequest.Params) *WaiMaiMeituanGenerateLinkResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

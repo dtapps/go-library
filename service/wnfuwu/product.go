@@ -55,7 +55,7 @@ func newProductResult(result ProductResponse, body []byte, http gorequest.Respon
 
 // Product 获取产品
 // https://www.showdoc.com.cn/dyr/9227005691961526
-func (c *Client) Product(ctx context.Context, Type, cateId int64, notMustParams ...gorequest.Params) (*ProductResult, error) {
+func (c *Client) Product(ctx context.Context, Type, cateId int64, notMustParams ...*gorequest.Params) (*ProductResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserId())

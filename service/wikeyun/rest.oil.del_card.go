@@ -6,7 +6,7 @@ import (
 )
 
 // RestOilCardDel 油卡删除
-func (c *Client) RestOilCardDel(ctx context.Context, notMustParams ...gorequest.Params) (body []byte, err error) {
+func (c *Client) RestOilCardDel(ctx context.Context, notMustParams ...*gorequest.Params) (body []byte, err error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

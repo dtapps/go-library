@@ -59,7 +59,7 @@ func newTbkItemInfoGetResult(result TbkItemInfoGetResponse, body []byte, http go
 
 // TbkItemInfoGet 淘宝客-公用-淘宝客商品详情查询(简版)
 // https://open.taobao.com/api.htm?docId=24518&docType=2&source=search
-func (c *Client) TbkItemInfoGet(ctx context.Context, notMustParams ...Params) *TbkItemInfoGetResult {
+func (c *Client) TbkItemInfoGet(ctx context.Context, notMustParams ...*gorequest.Params) *TbkItemInfoGetResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.item.info.get", notMustParams...)
 	// 请求

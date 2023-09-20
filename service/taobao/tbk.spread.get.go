@@ -32,7 +32,7 @@ func newTbkSpreadGetResult(result TbkSpreadGetResponse, body []byte, http gorequ
 
 // TbkSpreadGet 淘宝客-公用-长链转短链
 // https://open.taobao.com/api.htm?docId=27832&docType=2&source=search
-func (c *Client) TbkSpreadGet(ctx context.Context, notMustParams ...Params) *TbkSpreadGetResult {
+func (c *Client) TbkSpreadGet(ctx context.Context, notMustParams ...*gorequest.Params) *TbkSpreadGetResult {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.spread.get", notMustParams...)
 	// 请求

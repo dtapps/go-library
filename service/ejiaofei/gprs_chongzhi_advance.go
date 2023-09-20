@@ -46,11 +46,11 @@ func newGprsChOngZhiAdvanceResult(result GprsChOngZhiAdvanceResponse, body []byt
 }
 
 // GprsChOngZhiAdvance 流量充值接口
-func (c *Client) GprsChOngZhiAdvance(ctx context.Context, notMustParams ...gorequest.Params) (*GprsChOngZhiAdvanceResult, error) {
+func (c *Client) GprsChOngZhiAdvance(ctx context.Context, notMustParams ...*gorequest.Params) (*GprsChOngZhiAdvanceResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 签名
-	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vgprs%varea%veffecttime%vvalidity%vtimes%v", c.GetUserId(), c.GetPwd(), params["orderid"], params["account"], params["gprs"], params["area"], params["effecttime"], params["validity"], params["times"])
+	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vgprs%varea%veffecttime%vvalidity%vtimes%v", c.GetUserId(), c.GetPwd(), params.Get("orderid"), params.Get("account"), params.Get("gprs"), params.Get("area"), params.Get("effecttime"), params.Get("validity"), params.Get("times"))
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/gprsChongzhiAdvance.do", params, http.MethodGet)
 	if err != nil {

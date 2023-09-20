@@ -40,7 +40,7 @@ func newPayUnifiedOrderResult(result PayUnifiedOrderResponse, body []byte, http 
 // PayUnifiedOrder
 // 小程序支付 - 统一下单
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1
-func (c *Client) PayUnifiedOrder(ctx context.Context, notMustParams ...gorequest.Params) *PayUnifiedOrderResult {
+func (c *Client) PayUnifiedOrder(ctx context.Context, notMustParams ...*gorequest.Params) *PayUnifiedOrderResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", c.GetAppId())                  // 小程序ID

@@ -24,7 +24,7 @@ func newWxaSecurityApplySetOrderPathInfoResult(result WxaSecurityApplySetOrderPa
 
 // WxaSecurityApplySetOrderPathInfo 申请设置订单页 path 信息
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/basic-info-management/applySetOrderPathInfo.html
-func (c *Client) WxaSecurityApplySetOrderPathInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaSecurityApplySetOrderPathInfoResult, error) {
+func (c *Client) WxaSecurityApplySetOrderPathInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaSecurityApplySetOrderPathInfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

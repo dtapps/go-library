@@ -32,7 +32,7 @@ func newCgiBinOpenapiRidGetResult(result CgiBinOpenapiRidGetResponse, body []byt
 
 // CgiBinOpenapiRidGet 查询rid信息
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/openapi/getRidInfo.html
-func (c *Client) CgiBinOpenapiRidGet(ctx context.Context, authorizerAccessToken, rid string, notMustParams ...gorequest.Params) (*CgiBinOpenapiRidGetResult, error) {
+func (c *Client) CgiBinOpenapiRidGet(ctx context.Context, authorizerAccessToken, rid string, notMustParams ...*gorequest.Params) (*CgiBinOpenapiRidGetResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	if rid != "" {

@@ -92,7 +92,7 @@ func newUnionOpenOrderRowQueryResult(responce UnionOpenOrderRowQueryResultRespon
 
 // UnionOpenOrderRowQuery 订单行查询接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.order.row.query
-func (c *Client) UnionOpenOrderRowQuery(ctx context.Context, notMustParams ...Params) *UnionOpenOrderRowQueryResult {
+func (c *Client) UnionOpenOrderRowQuery(ctx context.Context, notMustParams ...*gorequest.Params) *UnionOpenOrderRowQueryResult {
 	// 参数
 	params := NewParamsWithType("jd.union.open.order.row.query", notMustParams...)
 	// 请求

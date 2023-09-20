@@ -123,7 +123,7 @@ func newUnionOpenGoodsJIngFenQueryResult(responce UnionOpenGoodsJIngFenQueryResu
 
 // UnionOpenGoodsJIngFenQuery 京粉精选商品查询接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.goods.jingfen.query
-func (c *Client) UnionOpenGoodsJIngFenQuery(ctx context.Context, notMustParams ...Params) *UnionOpenGoodsJIngFenQueryResult {
+func (c *Client) UnionOpenGoodsJIngFenQuery(ctx context.Context, notMustParams ...*gorequest.Params) *UnionOpenGoodsJIngFenQueryResult {
 	// 参数
 	params := NewParamsWithType("jd.union.open.goods.jingfen.query", notMustParams...)
 	// 请求

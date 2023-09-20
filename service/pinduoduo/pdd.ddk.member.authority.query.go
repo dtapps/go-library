@@ -26,7 +26,7 @@ func newMemberAuthorityQueryResult(result MemberAuthorityQueryResponse, body []b
 
 // MemberAuthorityQuery 查询是否绑定备案
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.search
-func (c *Client) MemberAuthorityQuery(ctx context.Context, notMustParams ...Params) *MemberAuthorityQueryResult {
+func (c *Client) MemberAuthorityQuery(ctx context.Context, notMustParams ...*gorequest.Params) *MemberAuthorityQueryResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.member.authority.query", notMustParams...)
 	params.Set("pid", c.GetPid())

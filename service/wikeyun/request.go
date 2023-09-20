@@ -7,10 +7,10 @@ import (
 )
 
 // 请求接口
-func (c *Client) request(ctx context.Context, url string, params map[string]interface{}) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param *gorequest.Params) (gorequest.Response, error) {
 
 	// 签名
-	sign := c.sign(params)
+	sign := c.sign(param)
 
 	// 创建请求
 	client := c.requestClient
@@ -22,7 +22,7 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	client.SetContentTypeForm()
 
 	// 设置参数
-	client.SetParams(params)
+	client.SetParams(param)
 
 	// 发起请求
 	request, err := client.Post(ctx)

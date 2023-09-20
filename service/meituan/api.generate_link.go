@@ -26,11 +26,11 @@ func newApiGenerateLinkResult(result ApiGenerateLinkResponse, body []byte, http 
 
 // ApiGenerateLink 自助取链接口（新版）
 // https://union.meituan.com/v2/apiDetail?id=25
-func (c *Client) ApiGenerateLink(ctx context.Context, notMustParams ...gorequest.Params) *ApiGenerateLinkResult {
+func (c *Client) ApiGenerateLink(ctx context.Context, notMustParams ...*gorequest.Params) *ApiGenerateLinkResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appkey", c.GetAppKey()) // 媒体名称，可在推广者备案-媒体管理中查询
-	params["sign"] = c.getSign(c.GetSecret(), params)
+	params.Set("sign", c.getSign(c.GetSecret(), params))
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/api/generateLink", params, http.MethodGet)
 	// 定义

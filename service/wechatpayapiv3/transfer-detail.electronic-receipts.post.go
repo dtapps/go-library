@@ -31,7 +31,7 @@ func newTransferDetailElectronicReceiptsPostResult(result TransferDetailElectron
 
 // TransferDetailElectronicReceiptsPost 受理转账明细电子回单API
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/electronic-receipt-api/create-electronic-receipt.html
-func (c *Client) TransferDetailElectronicReceiptsPost(ctx context.Context, notMustParams ...gorequest.Params) *TransferDetailElectronicReceiptsPostResult {
+func (c *Client) TransferDetailElectronicReceiptsPost(ctx context.Context, notMustParams ...*gorequest.Params) *TransferDetailElectronicReceiptsPostResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

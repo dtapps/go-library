@@ -80,7 +80,7 @@ func newGoodsRecommendGetResult(result GoodsRecommendGetResponse, body []byte, h
 
 // GoodsRecommendGet 多多进宝商品推荐API
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.recommend.get
-func (c *Client) GoodsRecommendGet(ctx context.Context, notMustParams ...Params) *GoodsRecommendGetResult {
+func (c *Client) GoodsRecommendGet(ctx context.Context, notMustParams ...*gorequest.Params) *GoodsRecommendGetResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.recommend.get", notMustParams...)
 	params.Set("pid", c.GetPid())

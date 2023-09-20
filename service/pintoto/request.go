@@ -7,14 +7,14 @@ import (
 )
 
 // 请求
-func (c *Client) request(ctx context.Context, url string, params map[string]interface{}) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param *gorequest.Params) (gorequest.Response, error) {
 
 	// 公共参数
-	params["time"] = time.Now().Unix()
-	params["appKey"] = c.GetAppKey()
+	param.Set("time", time.Now().Unix())
+	param.Set("appKey", c.GetAppKey())
 
 	// 签名
-	params["sign"] = c.getSign(c.GetAppSecret(), params)
+	param.Set("sign", c.getSign(c.GetAppSecret(), param))
 
 	// 创建请求
 	client := c.requestClient
@@ -26,7 +26,7 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	client.SetContentTypeForm()
 
 	// 设置参数
-	client.SetParams(params)
+	client.SetParams(param)
 
 	// 发起请求
 	request, err := client.Post(ctx)

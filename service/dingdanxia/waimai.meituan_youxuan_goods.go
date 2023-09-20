@@ -40,7 +40,7 @@ func newWaiMaiMeituanYouxuanGoodsResult(result WaiMaiMeituanYouxuanGoodsResponse
 
 // WaiMaiMeituanYouxuanGoods 优选商品查询API【2022年1月17日暂停数据访问】
 // https://www.dingdanxia.com/doc/235/173
-func (c *Client) WaiMaiMeituanYouxuanGoods(ctx context.Context, notMustParams ...gorequest.Params) *WaiMaiMeituanYouxuanGoodsResult {
+func (c *Client) WaiMaiMeituanYouxuanGoods(ctx context.Context, notMustParams ...*gorequest.Params) *WaiMaiMeituanYouxuanGoodsResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

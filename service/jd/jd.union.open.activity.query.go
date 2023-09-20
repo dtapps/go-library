@@ -62,7 +62,7 @@ func newUnionOpenActivityQueryResult(responce UnionOpenActivityQueryResultRespon
 
 // UnionOpenActivityQuery 活动查询接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.activity.query
-func (c *Client) UnionOpenActivityQuery(ctx context.Context, notMustParams ...Params) *UnionOpenActivityQueryResult {
+func (c *Client) UnionOpenActivityQuery(ctx context.Context, notMustParams ...*gorequest.Params) *UnionOpenActivityQueryResult {
 	// 参数
 	params := NewParamsWithType("jd.union.open.activity.query", notMustParams...)
 	// 请求

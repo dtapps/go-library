@@ -63,7 +63,7 @@ func newCmsPromUrlGenerateResult(result CmsPromUrlGenerateResponse, body []byte,
 
 // CmsPromUrlGenerate 生成商城-频道推广链接
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.cms.prom.url.generate
-func (c *Client) CmsPromUrlGenerate(ctx context.Context, notMustParams ...Params) *CmsPromUrlGenerateResult {
+func (c *Client) CmsPromUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) *CmsPromUrlGenerateResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.cms.prom.url.generate", notMustParams...)
 	params.Set("p_id_list", []string{c.GetPid()})

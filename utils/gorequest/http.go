@@ -26,7 +26,7 @@ import (
 type Response struct {
 	RequestId             string      //【请求】编号
 	RequestUri            string      //【请求】链接
-	RequestParams         Params      //【请求】参数
+	RequestParams         *Params     //【请求】参数
 	RequestMethod         string      //【请求】方式
 	RequestHeader         Headers     //【请求】头部
 	RequestCookie         string      //【请求】Cookie
@@ -46,7 +46,7 @@ type App struct {
 	httpUri                      string           // 请求地址
 	httpMethod                   string           // 请求方法
 	httpHeader                   Headers          // 请求头
-	httpParams                   Params           // 请求参数
+	httpParams                   *Params          // 请求参数
 	httpCookie                   string           // Cookie
 	responseContent              Response         // 返回内容
 	httpContentType              string           // 请求内容类型
@@ -144,10 +144,11 @@ func (app *App) SetParam(key string, value interface{}) {
 }
 
 // SetParams 批量设置请求参数
-func (app *App) SetParams(params Params) {
-	for key, value := range params {
-		app.httpParams.Set(key, value)
-	}
+func (app *App) SetParams(params *Params) {
+	params.m.Range(func(key, value interface{}) bool {
+		app.httpParams.Set(key.(string), value)
+		return true
+	})
 }
 
 // SetCookie 设置Cookie
@@ -269,8 +270,8 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	if httpResponse.RequestMethod == http.MethodPost && app.httpContentType == httpParamsModeForm {
 		// 携带 form 参数
 		form := url.Values{}
-		if len(httpResponse.RequestParams) > 0 {
-			for k, v := range httpResponse.RequestParams {
+		if httpResponse.RequestParams.HasData() {
+			for k, v := range httpResponse.RequestParams.ToMap() {
 				form.Add(k, GetParamsString(v))
 			}
 		}
@@ -295,9 +296,9 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 
 	// GET 请求携带查询参数
 	if httpResponse.RequestMethod == http.MethodGet {
-		if len(httpResponse.RequestParams) > 0 {
+		if httpResponse.RequestParams.HasData() {
 			q := req.URL.Query()
-			for k, v := range httpResponse.RequestParams {
+			for k, v := range httpResponse.RequestParams.ToMap() {
 				q.Add(k, GetParamsString(v))
 			}
 			req.URL.RawQuery = q.Encode()

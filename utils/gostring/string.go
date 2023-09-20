@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"github.com/dtapps/go-library/utils/gojson"
 	"strconv"
 	"strings"
 	"unicode/utf8"
@@ -168,4 +169,21 @@ func ToUpper(s string) string {
 // ToLower 转小写
 func ToLower(s string) string {
 	return strings.ToLower(s)
+}
+
+func GetString(i interface{}) string {
+	switch v := i.(type) {
+	case string:
+		return v
+	case []byte:
+		return string(v)
+	case int:
+		return strconv.Itoa(v)
+	case bool:
+		return strconv.FormatBool(v)
+	default:
+
+		bytes, _ := gojson.Marshal(v)
+		return string(bytes)
+	}
 }

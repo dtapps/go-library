@@ -39,7 +39,7 @@ func newUnionOpenCategoryGoodsGetResult(responce UnionOpenCategoryGoodsGetResult
 
 // UnionOpenCategoryGoodsGet 商品类目查询接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.category.goods.get
-func (c *Client) UnionOpenCategoryGoodsGet(ctx context.Context, notMustParams ...Params) *UnionOpenCategoryGoodsGetResult {
+func (c *Client) UnionOpenCategoryGoodsGet(ctx context.Context, notMustParams ...*gorequest.Params) *UnionOpenCategoryGoodsGetResult {
 	// 参数
 	params := NewParamsWithType("jd.union.open.category.goods.get", notMustParams...)
 	// 请求

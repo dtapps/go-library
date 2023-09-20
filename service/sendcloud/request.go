@@ -5,7 +5,7 @@ import (
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
-func (c *Client) request(ctx context.Context, url string, params map[string]interface{}, method string) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, method string) (gorequest.Response, error) {
 	// 公共参数
 	//params["userid"] = c.userId
 	//params["pwd"] = c.pwd
@@ -25,7 +25,7 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	client.SetContentTypeForm()
 
 	// 设置参数
-	client.SetParams(params)
+	client.SetParams(param)
 
 	// 发起请求
 	request, err := client.Request(ctx)

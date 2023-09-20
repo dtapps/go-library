@@ -5,7 +5,7 @@ import (
 	"github.com/dtapps/go-library/utils/gotime"
 )
 
-func (c *Client) newParamsWithType(_method string, param ...gorequest.Params) gorequest.Params {
+func (c *Client) newParamsWithType(_method string, param ...*gorequest.Params) *gorequest.Params {
 	params := gorequest.NewParamsWith(param...)
 	params.Set("app_id", c.GetAppId())
 	params.Set("method", _method)

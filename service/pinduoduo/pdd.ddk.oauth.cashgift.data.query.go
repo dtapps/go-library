@@ -49,7 +49,7 @@ func newPddDdkOauthCashGiftDataQueryResult(result PddDdkOauthCashGiftDataQueryRe
 
 // DataQuery 查询多多礼金效果数据
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.cashgift.data.query
-func (c *PddDdkOauthCashGiftApi) DataQuery(ctx context.Context, notMustParams ...Params) *PddDdkOauthCashGiftDataQueryResult {
+func (c *PddDdkOauthCashGiftApi) DataQuery(ctx context.Context, notMustParams ...*gorequest.Params) *PddDdkOauthCashGiftDataQueryResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.cashgift.data.query", notMustParams...)
 	// 请求

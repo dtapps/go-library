@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorandom"
+	"github.com/dtapps/go-library/utils/gorequest"
 	"net/url"
 	"time"
 )
@@ -53,10 +54,10 @@ func (c *Client) haSha256(str string) []byte {
 }
 
 // 生成身份认证信息
-func (c *Client) authorization(method string, paramMap map[string]interface{}, rawUrl string) (token string, err error) {
+func (c *Client) authorization(method string, param *gorequest.Params, rawUrl string) (token string, err error) {
 	var body string
-	if len(paramMap) != 0 {
-		paramJsonBytes, err := gojson.Marshal(paramMap)
+	if param.HasData() != true {
+		paramJsonBytes, err := gojson.Marshal(param)
 		if err != nil {
 			return token, err
 		}

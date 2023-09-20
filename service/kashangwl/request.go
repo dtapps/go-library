@@ -6,14 +6,14 @@ import (
 	"time"
 )
 
-func (c *Client) request(ctx context.Context, url string, params map[string]interface{}) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param *gorequest.Params) (gorequest.Response, error) {
 
 	// 公共参数
-	params["timestamp"] = time.Now().UnixNano() / 1e6
-	params["customer_id"] = c.GetCustomerId()
+	param.Set("timestamp", time.Now().UnixNano()/1e6)
+	param.Set("customer_id", c.GetCustomerId())
 
 	// 签名参数
-	params["sign"] = c.getSign(c.GetCustomerKey(), params)
+	param.Set("sign", c.getSign(c.GetCustomerKey(), param))
 
 	// 创建请求
 	client := c.requestClient
@@ -28,7 +28,7 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	client.SetUserAgent(gorequest.GetRandomUserAgentSystem())
 
 	// 设置参数
-	client.SetParams(params)
+	client.SetParams(param)
 
 	// 发起请求
 	request, err := client.Post(ctx)
@@ -44,7 +44,7 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	return request, err
 }
 
-func (c *Client) requestCache(ctx context.Context, url string, params map[string]interface{}, method string) (gorequest.Response, error) {
+func (c *Client) requestCache(ctx context.Context, url string, param *gorequest.Params, method string) (gorequest.Response, error) {
 
 	// 创建请求
 	client := c.requestClient
@@ -62,7 +62,7 @@ func (c *Client) requestCache(ctx context.Context, url string, params map[string
 	client.SetUserAgent(gorequest.GetRandomUserAgentSystem())
 
 	// 设置参数
-	client.SetParams(params)
+	client.SetParams(param)
 
 	// 发起请求
 	request, err := client.Request(ctx)

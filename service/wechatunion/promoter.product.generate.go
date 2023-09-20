@@ -56,7 +56,7 @@ func newPromoterProductGenerateResult(result PromoterProductGenerateResponse, bo
 
 // PromoterProductGenerate 获取商品推广素材
 // https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/product/category.html#_4-%E8%8E%B7%E5%8F%96%E5%95%86%E5%93%81%E6%8E%A8%E5%B9%BF%E7%B4%A0%E6%9D%90
-func (c *Client) PromoterProductGenerate(ctx context.Context, notMustParams ...gorequest.Params) *PromoterProductGenerateResult {
+func (c *Client) PromoterProductGenerate(ctx context.Context, notMustParams ...*gorequest.Params) *PromoterProductGenerateResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("pid", c.GetPid())

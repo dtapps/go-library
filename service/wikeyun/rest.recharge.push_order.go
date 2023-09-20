@@ -27,7 +27,7 @@ func newRestRechargePushOrderResult(result RestRechargePushOrderResponse, body [
 
 // RestRechargePushOrder 话费充值推送
 // https://open.wikeyun.cn/#/apiDocument/9/document/298
-func (c *Client) RestRechargePushOrder(ctx context.Context, notMustParams ...gorequest.Params) *RestRechargePushOrderResult {
+func (c *Client) RestRechargePushOrder(ctx context.Context, notMustParams ...*gorequest.Params) *RestRechargePushOrderResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("store_id", c.GetStoreId()) // 店铺ID

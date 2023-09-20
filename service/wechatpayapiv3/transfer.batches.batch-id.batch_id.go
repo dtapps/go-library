@@ -48,7 +48,7 @@ func newTransferBatchesBatchIdBatchIdResult(result TransferBatchesBatchIdBatchId
 
 // TransferBatchesBatchIdBatchId 通过微信批次单号查询批次单
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/get-transfer-batch-by-no.html
-func (c *Client) TransferBatchesBatchIdBatchId(ctx context.Context, batchId string, notMustParams ...gorequest.Params) *TransferBatchesBatchIdBatchIdResult {
+func (c *Client) TransferBatchesBatchIdBatchId(ctx context.Context, batchId string, notMustParams ...*gorequest.Params) *TransferBatchesBatchIdBatchIdResult {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

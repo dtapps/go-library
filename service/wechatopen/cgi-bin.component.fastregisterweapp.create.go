@@ -25,7 +25,7 @@ func newCgiBinComponentFastRegisterWeAppCreateResult(result CgiBinComponentFastR
 
 // CgiBinComponentFastRegisterWeAppCreate 快速注册企业小程序
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/register-management/fast-registration-ent/registerMiniprogram.html
-func (c *Client) CgiBinComponentFastRegisterWeAppCreate(ctx context.Context, componentAccessToken string, notMustParams ...gorequest.Params) (*CgiBinComponentFastRegisterWeAppCreateResult, error) {
+func (c *Client) CgiBinComponentFastRegisterWeAppCreate(ctx context.Context, componentAccessToken string, notMustParams ...*gorequest.Params) (*CgiBinComponentFastRegisterWeAppCreateResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

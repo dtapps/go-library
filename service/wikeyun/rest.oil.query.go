@@ -6,7 +6,7 @@ import (
 )
 
 // RestOilOrderQuery 订单查询
-func (c *Client) RestOilOrderQuery(ctx context.Context, notMustParams ...gorequest.Params) (body []byte, err error) {
+func (c *Client) RestOilOrderQuery(ctx context.Context, notMustParams ...*gorequest.Params) (body []byte, err error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

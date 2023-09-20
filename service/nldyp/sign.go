@@ -5,26 +5,27 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
+	"github.com/dtapps/go-library/utils/gorequest"
 	"github.com/dtapps/go-library/utils/gotime"
 	"sort"
 	"strconv"
 	"strings"
 )
 
-func (c *Client) Sign(p map[string]interface{}) map[string]interface{} {
-	p["vendor"] = c.GetVendor()
-	p["ts"] = gotime.Current().Timestamp()
+func (c *Client) Sign(p *gorequest.Params) *gorequest.Params {
+	p.Set("vendor", c.GetVendor())
+	p.Set("ts", gotime.Current().Timestamp())
 	// 排序所有的 key
 	var keys []string
-	for key := range p {
+	for key := range p.ToMap() {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
 	signStr := ""
 	for _, key := range keys {
-		signStr += key + getString(p[key])
+		signStr += key + getString(p.Get(key))
 	}
-	p["sign"] = createSign(fmt.Sprintf("%s%s%s", c.GetVendor(), p["ts"], signStr))
+	p.Set("sign", createSign(fmt.Sprintf("%s%s%s", c.GetVendor(), p.Get("ts"), signStr)))
 	return p
 }
 

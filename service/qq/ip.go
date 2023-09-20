@@ -41,7 +41,7 @@ func newIpResult(result IpResponse, body []byte, http gorequest.Response) *IpRes
 
 // Ip IP定位
 // https://lbs.qq.com/service/webService/webServiceGuide/webServiceIp
-func (c *Client) Ip(ctx context.Context, ip string, notMustParams ...gorequest.Params) (*IpResult, error) {
+func (c *Client) Ip(ctx context.Context, ip string, notMustParams ...*gorequest.Params) (*IpResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("key", c.GetKey())

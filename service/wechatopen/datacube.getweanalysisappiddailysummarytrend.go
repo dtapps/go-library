@@ -28,7 +28,7 @@ func newDataCubeGetWeAnAlySisAppidDailySummaryTrendResult(result DataCubeGetWeAn
 
 // DataCubeGetWeAnAlySisAppidDailySummaryTrend 获取用户访问小程序数据概况
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/others/getDailySummary.html
-func (c *Client) DataCubeGetWeAnAlySisAppidDailySummaryTrend(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlySisAppidDailySummaryTrendResult, error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidDailySummaryTrend(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (*DataCubeGetWeAnAlySisAppidDailySummaryTrendResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("begin_date", beginDate)

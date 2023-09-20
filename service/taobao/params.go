@@ -1,83 +1,41 @@
 package taobao
 
 import (
-	"github.com/dtapps/go-library/utils/gojson"
-	"net/url"
+	"github.com/dtapps/go-library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/gostring"
 	"sort"
 	"strconv"
 	"time"
 )
 
-// Params 请求参数
-type Params map[string]interface{}
-
-func NewParams() Params {
-	p := make(Params)
-	return p
-}
-
-func NewParamsWithType(_method string, params ...Params) Params {
-	p := make(Params)
-	p["method"] = _method
+func NewParamsWithType(_method string, params ...*gorequest.Params) *gorequest.Params {
+	p := gorequest.NewParamsWith(params...)
+	p.Set("method", _method)
 	hh, _ := time.ParseDuration("8h")
 	loc := time.Now().UTC().Add(hh)
-	p["timestamp"] = strconv.FormatInt(loc.Unix(), 10)
-	p["format"] = "json"
-	p["v"] = "2.0"
-	p["sign_method"] = "md5"
-	//p["partner_id"] = "Nilorg"
+	p.Set("timestamp", strconv.FormatInt(loc.Unix(), 10))
+	p.Set("format", "json")
+	p.Set("v", "2.0")
+	p.Set("sign_method", "md5")
+	//p.Set("partner_id", "Nilorg")
 	for _, v := range params {
 		p.SetParams(v)
 	}
 	return p
 }
 
-func (c *Client) Sign(p Params) {
-	p["app_key"] = c.GetAppKey()
+func (c *Client) Sign(p *gorequest.Params) {
+	p.Set("app_key", c.GetAppKey())
 	// 排序所有的 key
 	var keys []string
-	for key := range p {
+	for key := range p.ToMap() {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
 	signStr := c.GetAppSecret()
 	for _, key := range keys {
-		signStr += key + getString(p[key])
+		signStr += key + gostring.GetString(p.Get(key))
 	}
 	signStr += c.GetAppSecret()
-	p["sign"] = createSign(signStr)
-}
-
-func (p Params) Set(key string, value interface{}) {
-	p[key] = value
-}
-
-func (p Params) SetParams(params Params) {
-	for key, value := range params {
-		p[key] = value
-	}
-}
-
-func (p Params) GetQuery() string {
-	u := url.Values{}
-	for k, v := range p {
-		u.Set(k, getString(v))
-	}
-	return u.Encode()
-}
-
-func getString(i interface{}) string {
-	switch v := i.(type) {
-	case string:
-		return v
-	case []byte:
-		return string(v)
-	case int:
-		return strconv.Itoa(v)
-	case bool:
-		return strconv.FormatBool(v)
-	default:
-		bytes, _ := gojson.Marshal(v)
-		return string(bytes)
-	}
+	p.Set("sign", createSign(signStr))
 }

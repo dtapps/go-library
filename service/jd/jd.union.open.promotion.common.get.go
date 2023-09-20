@@ -37,7 +37,7 @@ func newUnionOpenPromotionCommonGetResult(responce UnionOpenPromotionCommonGetRe
 
 // UnionOpenPromotionCommonGet 网站/APP获取推广链接接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.promotion.common.get
-func (c *Client) UnionOpenPromotionCommonGet(ctx context.Context, notMustParams ...Params) *UnionOpenPromotionCommonGetResult {
+func (c *Client) UnionOpenPromotionCommonGet(ctx context.Context, notMustParams ...*gorequest.Params) *UnionOpenPromotionCommonGetResult {
 	// 参数
 	params := NewParamsWithType("jd.union.open.promotion.common.get", notMustParams...)
 	// 请求

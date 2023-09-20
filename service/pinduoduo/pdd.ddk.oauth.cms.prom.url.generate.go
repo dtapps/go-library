@@ -60,7 +60,7 @@ func newPddDdkOauthCmsUrlGenerateResult(result PddDdkOauthCmsUrlGenerateResponse
 
 // UrlGenerate 生成商城推广链接接口
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.cms.prom.url.generate
-func (c *PddDdkOauthCmsApi) UrlGenerate(ctx context.Context, notMustParams ...Params) *PddDdkOauthCmsUrlGenerateResult {
+func (c *PddDdkOauthCmsApi) UrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) *PddDdkOauthCmsUrlGenerateResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.cms.prom.url.generate", notMustParams...)
 	// 请求

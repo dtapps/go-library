@@ -68,7 +68,7 @@ func newPddDdkOauthOrderDetailGetResult(result PddDdkOauthOrderDetailGetResponse
 
 // DetailGet 获取订单详情
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.order.detail.get
-func (c *PddDdkOauthOrderApi) DetailGet(ctx context.Context, notMustParams ...Params) *PddDdkOauthOrderDetailGetResult {
+func (c *PddDdkOauthOrderApi) DetailGet(ctx context.Context, notMustParams ...*gorequest.Params) *PddDdkOauthOrderDetailGetResult {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.order.detail.get", notMustParams...)
 	// 请求

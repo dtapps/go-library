@@ -28,7 +28,7 @@ func newUserResult(result UserResponse, body []byte, http gorequest.Response) *U
 
 // User 查询用户信息
 // https://www.showdoc.com.cn/dyr/9227004018562421
-func (c *Client) User(ctx context.Context, notMustParams ...gorequest.Params) (*UserResult, error) {
+func (c *Client) User(ctx context.Context, notMustParams ...*gorequest.Params) (*UserResult, error) {
 	// 参数
 	params := gorequest.NewParams()
 	params.Set("userid", c.GetUserId())

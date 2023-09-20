@@ -36,7 +36,7 @@ func newMmpaymkttransfersSendgroupredpackResult(result MmpaymkttransfersSendgrou
 // MmpaymkttransfersSendgroupredpack
 // 现金红包 - 发放裂变红包
 // https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon_sl.php?chapter=13_5&index=4
-func (c *Client) MmpaymkttransfersSendgroupredpack(ctx context.Context, notMustParams ...gorequest.Params) (*MmpaymkttransfersSendgroupredpackResult, error) {
+func (c *Client) MmpaymkttransfersSendgroupredpack(ctx context.Context, notMustParams ...*gorequest.Params) (*MmpaymkttransfersSendgroupredpackResult, error) {
 	cert, err := c.P12ToPem()
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

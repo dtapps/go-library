@@ -39,7 +39,7 @@ func newRechargeResult(result RechargeResponse, body []byte, http gorequest.Resp
 
 // Recharge 充值提交接口
 // https://www.showdoc.com.cn/dyr/9227003154511692
-func (c *Client) Recharge(ctx context.Context, notMustParams ...gorequest.Params) (*RechargeResult, error) {
+func (c *Client) Recharge(ctx context.Context, notMustParams ...*gorequest.Params) (*RechargeResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserId())
