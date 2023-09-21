@@ -242,7 +242,7 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 
 	// 请求类型
 	if app.httpContentType == "" {
-		app.httpContentType = httpParamsModeJson
+		app.httpContentType = httpParamsModeForm
 	}
 	switch app.httpContentType {
 	case httpParamsModeJson:

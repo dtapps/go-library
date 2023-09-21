@@ -21,7 +21,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	client.SetMethod(method)
 
 	// 设置格式
-	client.SetContentTypeJson()
+	client.SetContentTypeForm()
 
 	// 设置用户代理
 	client.SetUserAgent(gorequest.GetRandomUserAgentSystem())
