@@ -88,9 +88,6 @@ func (app *App) SetMethod(method string) {
 
 // SetHeader 设置请求头
 func (app *App) SetHeader(key, value string) {
-	if key == "" {
-		panic("url is empty")
-	}
 	app.httpHeader.Set(key, value)
 }
 
@@ -137,18 +134,14 @@ func (app *App) SetContentTypeXml() {
 
 // SetParam 设置请求参数
 func (app *App) SetParam(key string, value interface{}) {
-	if key == "" {
-		panic("url is empty")
-	}
 	app.httpParams.Set(key, value)
 }
 
 // SetParams 批量设置请求参数
 func (app *App) SetParams(params *Params) {
-	params.m.Range(func(key, value interface{}) bool {
-		app.httpParams.Set(key.(string), value)
-		return true
-	})
+	for key, value := range params.ToMap() {
+		app.httpParams.Set(key, value)
+	}
 }
 
 // SetCookie 设置Cookie
@@ -242,7 +235,7 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 
 	// 请求类型
 	if app.httpContentType == "" {
-		app.httpContentType = httpParamsModeForm
+		app.httpContentType = httpParamsModeJson
 	}
 	switch app.httpContentType {
 	case httpParamsModeJson:
