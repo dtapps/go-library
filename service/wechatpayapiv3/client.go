@@ -18,8 +18,9 @@ type ClientConfig struct {
 
 // Client 实例
 type Client struct {
-	requestClient *gorequest.App // 请求服务
-	config        struct {
+	requestClient       *gorequest.App // 请求服务
+	requestClientStatus bool           // 请求服务状态
+	config              struct {
 		appId          string // 小程序或者公众号唯一凭证
 		appSecret      string // 小程序或者公众号唯一凭证密钥
 		mchId          string // 微信支付的商户id
@@ -46,8 +47,6 @@ func NewClient(config *ClientConfig) (*Client, error) {
 	c.config.apiV3 = config.ApiV3
 	c.config.mchSslSerialNo = config.MchSslSerialNo
 	c.config.mchSslKey = config.MchSslKey
-
-	c.requestClient = gorequest.NewHttp()
 
 	return c, nil
 }

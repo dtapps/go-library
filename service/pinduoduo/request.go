@@ -13,6 +13,10 @@ func (c *Client) request(ctx context.Context, param *gorequest.Params) (goreques
 
 	// 创建请求
 	client := c.requestClient
+	if !c.requestClientStatus {
+		c.DefaultHttp()
+		client = c.requestClient
+	}
 
 	// 设置参数
 	client.SetParams(param)

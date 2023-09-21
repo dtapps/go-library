@@ -19,8 +19,9 @@ type ClientConfig struct {
 
 // Client 实例
 type Client struct {
-	requestClient *gorequest.App // 请求服务
-	config        struct {
+	requestClient       *gorequest.App // 请求服务
+	requestClientStatus bool           // 请求服务状态
+	config              struct {
 		spAppid        string // 服务商应用ID
 		spMchId        string // 服务商户号
 		subAppid       string // 子商户应用ID
@@ -51,8 +52,6 @@ func NewClient(config *ClientConfig) (*Client, error) {
 	c.config.mchSslSerialNo = config.MchSslSerialNo
 	c.config.mchSslCer = config.MchSslCer
 	c.config.mchSslKey = config.MchSslKey
-
-	c.requestClient = gorequest.NewHttp()
 
 	return c, nil
 }

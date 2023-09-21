@@ -6,8 +6,9 @@ import (
 )
 
 type Client struct {
-	client *gorequest.App // 请求服务
-	slog   struct {
+	requestClient       *gorequest.App // 请求服务
+	requestClientStatus bool           // 请求服务状态
+	slog                struct {
 		status bool           // 状态
 		client *golog.ApiSLog // 日志服务
 	}
@@ -16,8 +17,6 @@ type Client struct {
 func NewClient() (*Client, error) {
 
 	c := &Client{}
-
-	c.client = gorequest.NewHttp()
 
 	return c, nil
 }

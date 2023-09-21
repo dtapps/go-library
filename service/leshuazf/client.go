@@ -13,8 +13,9 @@ type ConfigClient struct {
 
 // Client 乐刷
 type Client struct {
-	client *gorequest.App // 请求服务
-	config struct {
+	requestClient       *gorequest.App // 请求服务
+	requestClientStatus bool           // 请求服务状态
+	config              struct {
 		agentId     string // 服务商编号，由乐刷分配的接入方唯一标识，明文传输。
 		environment string // 环境
 		keyAgent    string
@@ -32,8 +33,6 @@ func NewClient(config *ConfigClient) (*Client, error) {
 	c.config.agentId = config.AgentId
 	c.config.environment = config.Environment
 	c.config.keyAgent = config.KeyAgent
-
-	c.client = gorequest.NewHttp()
 
 	return c, nil
 }

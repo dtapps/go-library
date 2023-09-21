@@ -28,7 +28,7 @@ type Response struct {
 	RequestUri            string      //【请求】链接
 	RequestParams         *Params     //【请求】参数
 	RequestMethod         string      //【请求】方式
-	RequestHeader         Headers     //【请求】头部
+	RequestHeader         *Headers    //【请求】头部
 	RequestCookie         string      //【请求】Cookie
 	RequestTime           time.Time   //【请求】时间
 	ResponseHeader        http.Header //【返回】头部
@@ -45,7 +45,7 @@ type App struct {
 	Error                        error            // 错误
 	httpUri                      string           // 请求地址
 	httpMethod                   string           // 请求方法
-	httpHeader                   Headers          // 请求头
+	httpHeader                   *Headers         // 请求头
 	httpParams                   *Params          // 请求参数
 	httpCookie                   string           // Cookie
 	responseContent              Response         // 返回内容
@@ -95,8 +95,8 @@ func (app *App) SetHeader(key, value string) {
 }
 
 // SetHeaders 批量设置请求头
-func (app *App) SetHeaders(headers Headers) {
-	for key, value := range headers {
+func (app *App) SetHeaders(headers *Headers) {
+	for key, value := range headers.ToMap() {
 		app.httpHeader.Set(key, value)
 	}
 }
@@ -270,10 +270,8 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	if httpResponse.RequestMethod == http.MethodPost && app.httpContentType == httpParamsModeForm {
 		// 携带 form 参数
 		form := url.Values{}
-		if httpResponse.RequestParams.HasData() {
-			for k, v := range httpResponse.RequestParams.ToMap() {
-				form.Add(k, GetParamsString(v))
-			}
+		for k, v := range httpResponse.RequestParams.ToMap() {
+			form.Add(k, GetParamsString(v))
 		}
 		// 赋值
 		reqBody = strings.NewReader(form.Encode())
@@ -296,19 +294,17 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 
 	// GET 请求携带查询参数
 	if httpResponse.RequestMethod == http.MethodGet {
-		if httpResponse.RequestParams.HasData() {
-			q := req.URL.Query()
-			for k, v := range httpResponse.RequestParams.ToMap() {
-				q.Add(k, GetParamsString(v))
-			}
-			req.URL.RawQuery = q.Encode()
+		q := req.URL.Query()
+		for k, v := range httpResponse.RequestParams.ToMap() {
+			q.Add(k, GetParamsString(v))
 		}
+		req.URL.RawQuery = q.Encode()
 	}
 
 	// 设置请求头
-	if len(httpResponse.RequestHeader) > 0 {
-		for key, value := range httpResponse.RequestHeader {
-			req.Header.Set(key, value)
+	if httpResponse.RequestHeader.HasData() {
+		for key, value := range httpResponse.RequestHeader.ToMap() {
+			req.Header.Set(key, fmt.Sprintf("%v", value))
 		}
 	}
 
@@ -322,6 +318,15 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 		} else {
 			req.Header.Set("Cookie", httpResponse.RequestCookie)
 		}
+	}
+
+	if app.debug {
+		log.Printf("请求Time：%s\n", httpResponse.RequestTime)
+		log.Printf("请求Uri：%s\n", httpResponse.RequestUri)
+		log.Printf("请求Method：%s\n", httpResponse.RequestMethod)
+		log.Printf("请求Params：%s\n", httpResponse.RequestParams.ToMap())
+		log.Printf("请求Header：%s\n", httpResponse.RequestHeader.ToMap())
+		log.Printf("请求Cookie：%s\n", httpResponse.RequestCookie)
 	}
 
 	// 发送请求
@@ -360,9 +365,13 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	httpResponse.ResponseBody = body
 	httpResponse.ResponseContentLength = resp.ContentLength
 
-	if app.debug == true {
-		log.Printf("gorequest：%+v\n", httpResponse)
-		log.Printf("gorequest.body：%s\n", httpResponse.ResponseBody)
+	if app.debug {
+		log.Printf("返回Time：%s\n", httpResponse.ResponseTime)
+		log.Printf("返回Status：%s\n", httpResponse.ResponseStatus)
+		log.Printf("返回StatusCode：%v\n", httpResponse.ResponseStatusCode)
+		log.Printf("返回Header：%s\n", httpResponse.ResponseHeader)
+		log.Printf("返回Body：%s\n", httpResponse.ResponseBody)
+		log.Printf("返回ContentLength：%v\n", httpResponse.ResponseContentLength)
 	}
 
 	return httpResponse, err

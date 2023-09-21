@@ -23,7 +23,11 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	param.Set("sign", c.getSign(param))
 
 	// 创建请求
-	client := c.client
+	client := c.requestClient
+	if !c.requestClientStatus {
+		c.DefaultHttp()
+		client = c.requestClient
+	}
 
 	// 设置请求地址
 	client.SetUri(url)

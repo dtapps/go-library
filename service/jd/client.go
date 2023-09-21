@@ -15,8 +15,9 @@ type ClientConfig struct {
 
 // Client 实例
 type Client struct {
-	requestClient *gorequest.App // 请求服务
-	config        struct {
+	requestClient       *gorequest.App // 请求服务
+	requestClientStatus bool           // 请求服务状态
+	config              struct {
 		appKey     string // 应用Key
 		secretKey  string // 密钥
 		siteId     string // 网站ID/APP ID
@@ -37,9 +38,6 @@ func NewClient(config *ClientConfig) (*Client, error) {
 	c.config.secretKey = config.SecretKey
 	c.config.siteId = config.SiteId
 	c.config.positionId = config.PositionId
-
-	c.requestClient = gorequest.NewHttp()
-	c.requestClient.Uri = apiUrl
 
 	return c, nil
 }

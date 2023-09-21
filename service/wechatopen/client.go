@@ -16,8 +16,9 @@ type ClientConfig struct {
 
 // Client 实例
 type Client struct {
-	requestClient *gorequest.App // 请求服务
-	config        struct {
+	requestClient       *gorequest.App // 请求服务
+	requestClientStatus bool           // 请求服务状态
+	config              struct {
 		componentAppId         string // 第三方平台appid
 		componentAppSecret     string // 第三方平台app_secret
 		messageToken           string // 第三方平台消息令牌
@@ -59,8 +60,6 @@ func NewClient(config *ClientConfig) (*Client, error) {
 		return nil, errors.New("请配置 MessageKey")
 	}
 	c.config.messageKey = config.MessageKey
-
-	c.requestClient = gorequest.NewHttp()
 
 	return c, nil
 }

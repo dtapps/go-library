@@ -14,8 +14,9 @@ type ClientConfig struct {
 
 // Client 实例
 type Client struct {
-	requestClient *gorequest.App // 请求服务
-	config        struct {
+	requestClient       *gorequest.App // 请求服务
+	requestClientStatus bool           // 请求服务状态
+	config              struct {
 		appKey    string // 应用Key
 		appSecret string // 密钥
 		adzoneId  int64  // mm_xxx_xxx_xxx的第三位
@@ -34,9 +35,6 @@ func NewClient(config *ClientConfig) (*Client, error) {
 	c.config.appKey = config.AppKey
 	c.config.appSecret = config.AppSecret
 	c.config.adzoneId = config.AdzoneId
-
-	c.requestClient = gorequest.NewHttp()
-	c.requestClient.Uri = apiUrl
 
 	return c, nil
 }

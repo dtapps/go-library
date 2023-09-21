@@ -2,6 +2,7 @@ package taobao
 
 import (
 	"context"
+	"github.com/dtapps/go-library/utils/gorequest"
 )
 
 func (c *Client) Get(ctx context.Context, _method string, notMustParams ...*gorequest.Params) ([]byte, error) {

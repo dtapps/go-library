@@ -21,8 +21,9 @@ type ClientConfig struct {
 
 // Client 实例
 type Client struct {
-	requestClient *gorequest.App // 请求服务
-	config        struct {
+	requestClient       *gorequest.App // 请求服务
+	requestClientStatus bool           // 请求服务状态
+	config              struct {
 		appId       string // 小程序唯一凭证，即 appId
 		appSecret   string // 小程序唯一凭证密钥，即 appSecret
 		accessToken string // 接口调用凭证
@@ -46,8 +47,6 @@ func NewClient(config *ClientConfig) (*Client, error) {
 
 	c.config.appId = config.AppId
 	c.config.appSecret = config.AppSecret
-
-	c.requestClient = gorequest.NewHttp()
 
 	c.cache.redisClient = config.RedisClient
 

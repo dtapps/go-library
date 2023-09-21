@@ -10,8 +10,9 @@ import (
 
 // Client 实例
 type Client struct {
-	requestClient *gorequest.App // 请求服务
-	config        struct {
+	requestClient       *gorequest.App // 请求服务
+	requestClientStatus bool           // 请求服务状态
+	config              struct {
 		ua string // 用户代理
 	}
 	slog struct {
@@ -26,8 +27,6 @@ func NewClient() (*Client, error) {
 	c := &Client{}
 
 	c.config.ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1"
-
-	c.requestClient = gorequest.NewHttp()
 
 	return c, nil
 }

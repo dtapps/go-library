@@ -11,8 +11,9 @@ type ConfigClient struct {
 }
 
 type Client struct {
-	client *gorequest.App // 请求服务
-	config struct {
+	requestClient       *gorequest.App // 请求服务
+	requestClientStatus bool           // 请求服务状态
+	config              struct {
 		apiUser string // API_USER
 		apiKey  string // API_KEY
 	}
@@ -28,8 +29,6 @@ func NewClient(config *ConfigClient) (*Client, error) {
 
 	c.config.apiUser = config.ApiUser
 	c.config.apiKey = config.ApiKey
-
-	c.client = gorequest.NewHttp()
 
 	return c, nil
 }

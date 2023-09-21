@@ -17,8 +17,9 @@ type ClientConfig struct {
 
 // Client 实例
 type Client struct {
-	requestClient *gorequest.App // 请求服务
-	config        struct {
+	requestClient       *gorequest.App // 请求服务
+	requestClientStatus bool           // 请求服务状态
+	config              struct {
 		clientId     string // POP分配给应用的client_id
 		clientSecret string // POP分配给应用的client_secret
 		mediaId      string // 媒体ID
@@ -39,9 +40,6 @@ func NewClient(config *ClientConfig) (*Client, error) {
 	c.config.clientSecret = config.ClientSecret
 	c.config.mediaId = config.MediaId
 	c.config.pid = config.Pid
-
-	c.requestClient = gorequest.NewHttp()
-	c.requestClient.Uri = apiUrl
 
 	return c, nil
 }

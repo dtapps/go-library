@@ -21,9 +21,10 @@ type ClientConfig struct {
 
 // Client 实例
 type Client struct {
-	requestClient *gorequest.App  // 请求服务
-	privateKey    *rsa.PrivateKey // 私钥服务
-	config        struct {
+	requestClient       *gorequest.App  // 请求服务
+	requestClientStatus bool            // 请求服务状态
+	privateKey          *rsa.PrivateKey // 私钥服务
+	config              struct {
 		appId      string // 支付宝分配给开发者的应用ID
 		appKey     string // 支付宝分配给开发者的应用私钥
 		appRSA2    string // 应用公钥
@@ -58,10 +59,6 @@ func NewClient(config *ClientConfig) (*Client, error) {
 		return nil, err
 	}
 	c.privateKey = privateKey.(*rsa.PrivateKey)
-
-	// 请求
-	c.requestClient = gorequest.NewHttp()
-	c.requestClient.Uri = apiUrl
 
 	return c, nil
 }

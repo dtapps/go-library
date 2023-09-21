@@ -13,8 +13,9 @@ type ClientConfig struct {
 
 // Client 实例
 type Client struct {
-	requestClient *gorequest.App // 请求服务
-	config        struct {
+	requestClient       *gorequest.App // 请求服务
+	requestClientStatus bool           // 请求服务状态
+	config              struct {
 		customer string // 授权码
 		key      string // 密钥
 	}
@@ -31,8 +32,6 @@ func NewClient(config *ClientConfig) (*Client, error) {
 
 	c.config.customer = config.Customer
 	c.config.key = config.Key
-
-	c.requestClient = gorequest.NewHttp()
 
 	return c, nil
 }

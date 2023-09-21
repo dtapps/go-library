@@ -12,8 +12,9 @@ type ClientConfig struct {
 
 // Client 实例
 type Client struct {
-	requestClient *gorequest.App // 请求服务
-	config        struct {
+	requestClient       *gorequest.App // 请求服务
+	requestClientStatus bool           // 请求服务状态
+	config              struct {
 		key string
 	}
 	slog struct {
@@ -28,8 +29,6 @@ func NewClient(config *ClientConfig) (*Client, error) {
 	c := &Client{}
 
 	c.config.key = config.Key
-
-	c.requestClient = gorequest.NewHttp()
 
 	return c, nil
 }

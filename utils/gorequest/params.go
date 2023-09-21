@@ -31,7 +31,7 @@ func NewParamsWith(params ...*Params) *Params {
 }
 
 // Set 设置参数
-func (p *Params) Set(key string, value interface{}) {
+func (p *Params) Set(key string, value any) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	p.m.Store(key, value)
@@ -49,18 +49,6 @@ func (p *Params) SetParams(params *Params) {
 func (p *Params) Get(key string) interface{} {
 	val, _ := p.m.Load(key)
 	return val
-}
-
-// DeepCopy 深度复制
-func (p *Params) DeepCopy() *Params {
-	newParams := NewParams()
-
-	p.m.Range(func(key, value interface{}) bool {
-		newParams.Set(key.(string), value)
-		return true
-	})
-
-	return newParams
 }
 
 // ToMap 返回 map[string]interface{}
@@ -86,6 +74,18 @@ func (p *Params) HasData() bool {
 	})
 
 	return hasData
+}
+
+// DeepCopy 深度复制
+func (p *Params) DeepCopy() *Params {
+	newParams := NewParams()
+
+	p.m.Range(func(key, value interface{}) bool {
+		newParams.Set(key.(string), value)
+		return true
+	})
+
+	return newParams
 }
 
 // GetParamsString 获取参数字符串

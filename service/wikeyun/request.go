@@ -14,6 +14,10 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 
 	// 创建请求
 	client := c.requestClient
+	if !c.requestClientStatus {
+		c.DefaultHttp()
+		client = c.requestClient
+	}
 
 	// 设置请求地址
 	client.SetUri(fmt.Sprintf("%s?app_key=%d&timestamp=%s&client=%s&format=%s&v=%s&sign=%s", url, c.GetAppKey(), sign.Timestamp, sign.Client, sign.Format, sign.V, sign.Sign))
