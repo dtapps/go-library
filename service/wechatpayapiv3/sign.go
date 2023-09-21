@@ -56,7 +56,7 @@ func (c *Client) haSha256(str string) []byte {
 // 生成身份认证信息
 func (c *Client) authorization(method string, param *gorequest.Params, rawUrl string) (token string, err error) {
 	var body string
-	if param.HasData() != true {
+	if param.HasData() {
 		paramJsonBytes, err := gojson.Marshal(param)
 		if err != nil {
 			return token, err

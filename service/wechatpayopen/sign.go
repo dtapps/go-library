@@ -63,7 +63,7 @@ func (c *Client) authorization(method string, paramMap *gorequest.Params, rawUrl
 
 	// 请求报文主体
 	var signBody string
-	if paramMap.HasData() != false {
+	if paramMap.HasData() {
 		paramJsonBytes, err := gojson.Marshal(paramMap)
 		if err != nil {
 			return token, err
