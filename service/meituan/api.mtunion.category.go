@@ -23,16 +23,15 @@ type ApiMtUnionCategoryResult struct {
 	Result ApiMtUnionCategoryResponse // 结果
 	Body   []byte                     // 内容
 	Http   gorequest.Response         // 请求
-	Err    error                      // 错误
 }
 
-func newApiMtUnionCategoryResult(result ApiMtUnionCategoryResponse, body []byte, http gorequest.Response, err error) *ApiMtUnionCategoryResult {
-	return &ApiMtUnionCategoryResult{Result: result, Body: body, Http: http, Err: err}
+func newApiMtUnionCategoryResult(result ApiMtUnionCategoryResponse, body []byte, http gorequest.Response) *ApiMtUnionCategoryResult {
+	return &ApiMtUnionCategoryResult{Result: result, Body: body, Http: http}
 }
 
 // ApiMtUnionCategory 商品类目查询（新版）
 // https://union.meituan.com/v2/apiDetail?id=30
-func (c *Client) ApiMtUnionCategory(ctx context.Context, notMustParams ...*gorequest.Params) *ApiMtUnionCategoryResult {
+func (c *Client) ApiMtUnionCategory(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiMtUnionCategoryResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s
@@ -41,8 +40,11 @@ func (c *Client) ApiMtUnionCategory(ctx context.Context, notMustParams ...*goreq
 	params.Set("sign", c.getSign(c.GetSecret(), params))
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/api/getqualityscorebysid", params, http.MethodGet)
+	if err != nil {
+		return newApiMtUnionCategoryResult(ApiMtUnionCategoryResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response ApiMtUnionCategoryResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newApiMtUnionCategoryResult(response, request.ResponseBody, request, err)
+	return newApiMtUnionCategoryResult(response, request.ResponseBody, request), err
 }

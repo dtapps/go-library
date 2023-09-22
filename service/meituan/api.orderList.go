@@ -40,16 +40,15 @@ type ApiOrderListResult struct {
 	Result ApiOrderListResponse // 结果
 	Body   []byte               // 内容
 	Http   gorequest.Response   // 请求
-	Err    error                // 错误
 }
 
-func newApiOrderListResult(result ApiOrderListResponse, body []byte, http gorequest.Response, err error) *ApiOrderListResult {
-	return &ApiOrderListResult{Result: result, Body: body, Http: http, Err: err}
+func newApiOrderListResult(result ApiOrderListResponse, body []byte, http gorequest.Response) *ApiOrderListResult {
+	return &ApiOrderListResult{Result: result, Body: body, Http: http}
 }
 
 // ApiOrderList 订单列表查询接口（新版）
 // https://union.meituan.com/v2/apiDetail?id=23
-func (c *Client) ApiOrderList(ctx context.Context, notMustParams ...*gorequest.Params) *ApiOrderListResult {
+func (c *Client) ApiOrderList(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiOrderListResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s
@@ -58,8 +57,11 @@ func (c *Client) ApiOrderList(ctx context.Context, notMustParams ...*gorequest.P
 	params.Set("sign", c.getSign(c.GetSecret(), params))
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/api/orderList", params, http.MethodGet)
+	if err != nil {
+		return newApiOrderListResult(ApiOrderListResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response ApiOrderListResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newApiOrderListResult(response, request.ResponseBody, request, err)
+	return newApiOrderListResult(response, request.ResponseBody, request), err
 }

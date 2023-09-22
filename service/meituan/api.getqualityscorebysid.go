@@ -26,16 +26,15 @@ type ApiGetQuaLitYsCoreBySidResult struct {
 	Result ApiGetQuaLitYsCoreBySidResponse // 结果
 	Body   []byte                          // 内容
 	Http   gorequest.Response              // 请求
-	Err    error                           // 错误
 }
 
-func newApiGetQuaLitYsCoreBySidResult(result ApiGetQuaLitYsCoreBySidResponse, body []byte, http gorequest.Response, err error) *ApiGetQuaLitYsCoreBySidResult {
-	return &ApiGetQuaLitYsCoreBySidResult{Result: result, Body: body, Http: http, Err: err}
+func newApiGetQuaLitYsCoreBySidResult(result ApiGetQuaLitYsCoreBySidResponse, body []byte, http gorequest.Response) *ApiGetQuaLitYsCoreBySidResult {
+	return &ApiGetQuaLitYsCoreBySidResult{Result: result, Body: body, Http: http}
 }
 
 // ApiGetQuaLitYsCoreBySid 优选sid质量分&复购率查询
 // https://union.meituan.com/v2/apiDetail?id=28
-func (c *Client) ApiGetQuaLitYsCoreBySid(ctx context.Context, notMustParams ...*gorequest.Params) *ApiGetQuaLitYsCoreBySidResult {
+func (c *Client) ApiGetQuaLitYsCoreBySid(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiGetQuaLitYsCoreBySidResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s
@@ -44,8 +43,11 @@ func (c *Client) ApiGetQuaLitYsCoreBySid(ctx context.Context, notMustParams ...*
 	params.Set("sign", c.getSign(c.GetSecret(), params))
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/api/getqualityscorebysid", params, http.MethodGet)
+	if err != nil {
+		return newApiGetQuaLitYsCoreBySidResult(ApiGetQuaLitYsCoreBySidResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response ApiGetQuaLitYsCoreBySidResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newApiGetQuaLitYsCoreBySidResult(response, request.ResponseBody, request, err)
+	return newApiGetQuaLitYsCoreBySidResult(response, request.ResponseBody, request), err
 }

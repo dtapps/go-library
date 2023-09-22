@@ -23,16 +23,15 @@ type ApiMtUnionCityResult struct {
 	Result ApiMtUnionCityResponse // 结果
 	Body   []byte                 // 内容
 	Http   gorequest.Response     // 请求
-	Err    error                  // 错误
 }
 
-func newApiMtUnionCityResult(result ApiMtUnionCityResponse, body []byte, http gorequest.Response, err error) *ApiMtUnionCityResult {
-	return &ApiMtUnionCityResult{Result: result, Body: body, Http: http, Err: err}
+func newApiMtUnionCityResult(result ApiMtUnionCityResponse, body []byte, http gorequest.Response) *ApiMtUnionCityResult {
+	return &ApiMtUnionCityResult{Result: result, Body: body, Http: http}
 }
 
 // ApiMtUnionCity 城市信息查询（新版）
 // https://union.meituan.com/v2/apiDetail?id=29
-func (c *Client) ApiMtUnionCity(ctx context.Context, notMustParams ...*gorequest.Params) *ApiMtUnionCityResult {
+func (c *Client) ApiMtUnionCity(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiMtUnionCityResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s
@@ -41,8 +40,11 @@ func (c *Client) ApiMtUnionCity(ctx context.Context, notMustParams ...*gorequest
 	params.Set("sign", c.getSign(c.GetSecret(), params))
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/api/getqualityscorebysid", params, http.MethodGet)
+	if err != nil {
+		return newApiMtUnionCityResult(ApiMtUnionCityResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response ApiMtUnionCityResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newApiMtUnionCityResult(response, request.ResponseBody, request, err)
+	return newApiMtUnionCityResult(response, request.ResponseBody, request), err
 }
