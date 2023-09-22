@@ -30,22 +30,24 @@ type ApiBuyResult struct {
 	Result ApiBuyResponse     // 结果
 	Body   []byte             // 内容
 	Http   gorequest.Response // 请求
-	Err    error              // 错误
 }
 
-func newApiBuyResult(result ApiBuyResponse, body []byte, http gorequest.Response, err error) *ApiBuyResult {
-	return &ApiBuyResult{Result: result, Body: body, Http: http, Err: err}
+func newApiBuyResult(result ApiBuyResponse, body []byte, http gorequest.Response) *ApiBuyResult {
+	return &ApiBuyResult{Result: result, Body: body, Http: http}
 }
 
 // ApiBuy 购买商品
 // http://doc.cqmeihu.cn/sales/buy.html
-func (c *Client) ApiBuy(ctx context.Context, notMustParams ...*gorequest.Params) *ApiBuyResult {
+func (c *Client) ApiBuy(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiBuyResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/api/buy", params)
+	if err != nil {
+		return newApiBuyResult(ApiBuyResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response ApiBuyResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newApiBuyResult(response, request.ResponseBody, request, err)
+	return newApiBuyResult(response, request.ResponseBody, request), err
 }

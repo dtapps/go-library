@@ -43,23 +43,25 @@ type ApiOrderResult struct {
 	Result ApiOrderResponse   // 结果
 	Body   []byte             // 内容
 	Http   gorequest.Response // 请求
-	Err    error              // 错误
 }
 
-func newApiOrderResult(result ApiOrderResponse, body []byte, http gorequest.Response, err error) *ApiOrderResult {
-	return &ApiOrderResult{Result: result, Body: body, Http: http, Err: err}
+func newApiOrderResult(result ApiOrderResponse, body []byte, http gorequest.Response) *ApiOrderResult {
+	return &ApiOrderResult{Result: result, Body: body, Http: http}
 }
 
 // ApiOrder 获取单个订单信息。
 // 仅能获取自己购买的订单。
 // http://doc.cqmeihu.cn/sales/order-info.html
-func (c *Client) ApiOrder(ctx context.Context, notMustParams ...*gorequest.Params) *ApiOrderResult {
+func (c *Client) ApiOrder(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiOrderResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/api/order", params)
+	if err != nil {
+		return newApiOrderResult(ApiOrderResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response ApiOrderResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newApiOrderResult(response, request.ResponseBody, request, err)
+	return newApiOrderResult(response, request.ResponseBody, request), err
 }

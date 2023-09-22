@@ -20,20 +20,24 @@ type ApiCustomerResult struct {
 	Result ApiCustomerResponse // 结果
 	Body   []byte              // 内容
 	Http   gorequest.Response  // 请求
-	Err    error               // 错误
 }
 
-func newApiCustomerResult(result ApiCustomerResponse, body []byte, http gorequest.Response, err error) *ApiCustomerResult {
-	return &ApiCustomerResult{Result: result, Body: body, Http: http, Err: err}
+func newApiCustomerResult(result ApiCustomerResponse, body []byte, http gorequest.Response) *ApiCustomerResult {
+	return &ApiCustomerResult{Result: result, Body: body, Http: http}
 }
 
 // ApiCustomer 获取商家信息
 // http://doc.cqmeihu.cn/sales/merchant-info.html
-func (c *Client) ApiCustomer(ctx context.Context) *ApiCustomerResult {
+func (c *Client) ApiCustomer(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiCustomerResult, error) {
+	// 参数
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/api/customer", nil)
+	request, err := c.request(ctx, apiUrl+"/api/customer", params)
+	if err != nil {
+		return newApiCustomerResult(ApiCustomerResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response ApiCustomerResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newApiCustomerResult(response, request.ResponseBody, request, err)
+	return newApiCustomerResult(response, request.ResponseBody, request), err
 }

@@ -28,22 +28,24 @@ type ApiProductResult struct {
 	Result ApiProductResponse // 结果
 	Body   []byte             // 内容
 	Http   gorequest.Response // 请求
-	Err    error              // 错误
 }
 
-func newApiProductResult(result ApiProductResponse, body []byte, http gorequest.Response, err error) *ApiProductResult {
-	return &ApiProductResult{Result: result, Body: body, Http: http, Err: err}
+func newApiProductResult(result ApiProductResponse, body []byte, http gorequest.Response) *ApiProductResult {
+	return &ApiProductResult{Result: result, Body: body, Http: http}
 }
 
 // ApiProduct 获取单个商品信息
 // http://doc.cqmeihu.cn/sales/product-info.html
-func (c *Client) ApiProduct(ctx context.Context, notMustParams ...*gorequest.Params) *ApiProductResult {
+func (c *Client) ApiProduct(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiProductResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/api/product", params)
+	if err != nil {
+		return newApiProductResult(ApiProductResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response ApiProductResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newApiProductResult(response, request.ResponseBody, request, err)
+	return newApiProductResult(response, request.ResponseBody, request), err
 }

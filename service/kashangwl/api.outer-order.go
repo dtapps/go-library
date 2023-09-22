@@ -43,25 +43,27 @@ type ApiOuterOrderResult struct {
 	Result ApiOuterOrderResponse // 结果
 	Body   []byte                // 内容
 	Http   gorequest.Response    // 请求
-	Err    error                 // 错误
 }
 
-func newApiOuterOrderResult(result ApiOuterOrderResponse, body []byte, http gorequest.Response, err error) *ApiOuterOrderResult {
-	return &ApiOuterOrderResult{Result: result, Body: body, Http: http, Err: err}
+func newApiOuterOrderResult(result ApiOuterOrderResponse, body []byte, http gorequest.Response) *ApiOuterOrderResult {
+	return &ApiOuterOrderResult{Result: result, Body: body, Http: http}
 }
 
 // ApiOuterOrder 使用外部订单号获取单个订单信息
 // 仅能获取自己购买的订单
 // http://doc.cqmeihu.cn/sales/outer-order-info.html
-func (c *Client) ApiOuterOrder(ctx context.Context, notMustParams ...*gorequest.Params) *ApiOuterOrderResult {
+func (c *Client) ApiOuterOrder(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiOuterOrderResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/api/outer-order", params)
+	if err != nil {
+		return newApiOuterOrderResult(ApiOuterOrderResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response ApiOuterOrderResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newApiOuterOrderResult(response, request.ResponseBody, request, err)
+	return newApiOuterOrderResult(response, request.ResponseBody, request), err
 }
 
 func (resp ApiOuterOrderResponse) GetStateDesc(state int) string {

@@ -26,22 +26,24 @@ type ApiProductCacheResult struct {
 	Result ApiProductCacheResponse // 结果
 	Body   []byte                  // 内容
 	Http   gorequest.Response      // 请求
-	Err    error                   // 错误
 }
 
-func newApiProductCacheResult(result ApiProductCacheResponse, body []byte, http gorequest.Response, err error) *ApiProductCacheResult {
-	return &ApiProductCacheResult{Result: result, Body: body, Http: http, Err: err}
+func newApiProductCacheResult(result ApiProductCacheResponse, body []byte, http gorequest.Response) *ApiProductCacheResult {
+	return &ApiProductCacheResult{Result: result, Body: body, Http: http}
 }
 
 // ApiProductCache [缓存，需托管授权]获取单个商品信息
-func (c *Client) ApiProductCache(ctx context.Context, notMustParams ...*gorequest.Params) *ApiProductCacheResult {
+func (c *Client) ApiProductCache(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiProductCacheResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("customer_id", c.GetCustomerId())
 	// 请求
 	request, err := c.requestCache(ctx, fmt.Sprintf("%s/goods_info", apiUrlCache), params, http.MethodGet)
+	if err != nil {
+		return newApiProductCacheResult(ApiProductCacheResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response ApiProductCacheResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newApiProductCacheResult(response, request.ResponseBody, request, err)
+	return newApiProductCacheResult(response, request.ResponseBody, request), err
 }
