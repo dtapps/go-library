@@ -30,24 +30,26 @@ type UnionOpenCategoryGoodsGetResult struct {
 	Result   UnionOpenCategoryGoodsGetQueryResult    // 结果
 	Body     []byte                                  // 内容
 	Http     gorequest.Response                      // 请求
-	Err      error                                   // 错误
 }
 
-func newUnionOpenCategoryGoodsGetResult(responce UnionOpenCategoryGoodsGetResultResponse, result UnionOpenCategoryGoodsGetQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenCategoryGoodsGetResult {
-	return &UnionOpenCategoryGoodsGetResult{Responce: responce, Result: result, Body: body, Http: http, Err: err}
+func newUnionOpenCategoryGoodsGetResult(responce UnionOpenCategoryGoodsGetResultResponse, result UnionOpenCategoryGoodsGetQueryResult, body []byte, http gorequest.Response) *UnionOpenCategoryGoodsGetResult {
+	return &UnionOpenCategoryGoodsGetResult{Responce: responce, Result: result, Body: body, Http: http}
 }
 
 // UnionOpenCategoryGoodsGet 商品类目查询接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.category.goods.get
-func (c *Client) UnionOpenCategoryGoodsGet(ctx context.Context, notMustParams ...*gorequest.Params) *UnionOpenCategoryGoodsGetResult {
+func (c *Client) UnionOpenCategoryGoodsGet(ctx context.Context, notMustParams ...*gorequest.Params) (*UnionOpenCategoryGoodsGetResult, error) {
 	// 参数
 	params := NewParamsWithType("jd.union.open.category.goods.get", notMustParams...)
 	// 请求
 	request, err := c.request(ctx, params)
+	if err != nil {
+		return newUnionOpenCategoryGoodsGetResult(UnionOpenCategoryGoodsGetResultResponse{}, UnionOpenCategoryGoodsGetQueryResult{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var responce UnionOpenCategoryGoodsGetResultResponse
 	var result UnionOpenCategoryGoodsGetQueryResult
 	err = gojson.Unmarshal(request.ResponseBody, &responce)
 	err = gojson.Unmarshal([]byte(responce.JdUnionOpenCategoryGoodsGetResponce.GetResult), &result)
-	return newUnionOpenCategoryGoodsGetResult(responce, result, request.ResponseBody, request, err)
+	return newUnionOpenCategoryGoodsGetResult(responce, result, request.ResponseBody, request), err
 }

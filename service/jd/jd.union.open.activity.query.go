@@ -53,24 +53,26 @@ type UnionOpenActivityQueryResult struct {
 	Result   UnionOpenActivityQueryQueryResult    // 结果
 	Body     []byte                               // 内容
 	Http     gorequest.Response                   // 请求
-	Err      error                                // 错误
 }
 
-func newUnionOpenActivityQueryResult(responce UnionOpenActivityQueryResultResponse, result UnionOpenActivityQueryQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenActivityQueryResult {
-	return &UnionOpenActivityQueryResult{Responce: responce, Result: result, Body: body, Http: http, Err: err}
+func newUnionOpenActivityQueryResult(responce UnionOpenActivityQueryResultResponse, result UnionOpenActivityQueryQueryResult, body []byte, http gorequest.Response) *UnionOpenActivityQueryResult {
+	return &UnionOpenActivityQueryResult{Responce: responce, Result: result, Body: body, Http: http}
 }
 
 // UnionOpenActivityQuery 活动查询接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.activity.query
-func (c *Client) UnionOpenActivityQuery(ctx context.Context, notMustParams ...*gorequest.Params) *UnionOpenActivityQueryResult {
+func (c *Client) UnionOpenActivityQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*UnionOpenActivityQueryResult, error) {
 	// 参数
 	params := NewParamsWithType("jd.union.open.activity.query", notMustParams...)
 	// 请求
 	request, err := c.request(ctx, params)
+	if err != nil {
+		return newUnionOpenActivityQueryResult(UnionOpenActivityQueryResultResponse{}, UnionOpenActivityQueryQueryResult{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var responce UnionOpenActivityQueryResultResponse
 	var result UnionOpenActivityQueryQueryResult
 	err = gojson.Unmarshal(request.ResponseBody, &responce)
 	err = gojson.Unmarshal([]byte(responce.JdUnionOpenActivityQueryResponce.QueryResult), &result)
-	return newUnionOpenActivityQueryResult(responce, result, request.ResponseBody, request, err)
+	return newUnionOpenActivityQueryResult(responce, result, request.ResponseBody, request), err
 }

@@ -28,24 +28,26 @@ type UnionOpenPromotionBySubUnionIdGetResult struct {
 	Result   UnionOpenPromotionBySubUnionIdGetGetResult      // 结果
 	Body     []byte                                          // 内容
 	Http     gorequest.Response                              // 请求
-	Err      error                                           // 错误
 }
 
-func newUnionOpenPromotionBySubUnionIdGetResult(responce UnionOpenPromotionBySubUnionIdGetResultResponse, result UnionOpenPromotionBySubUnionIdGetGetResult, body []byte, http gorequest.Response, err error) *UnionOpenPromotionBySubUnionIdGetResult {
-	return &UnionOpenPromotionBySubUnionIdGetResult{Responce: responce, Result: result, Body: body, Http: http, Err: err}
+func newUnionOpenPromotionBySubUnionIdGetResult(responce UnionOpenPromotionBySubUnionIdGetResultResponse, result UnionOpenPromotionBySubUnionIdGetGetResult, body []byte, http gorequest.Response) *UnionOpenPromotionBySubUnionIdGetResult {
+	return &UnionOpenPromotionBySubUnionIdGetResult{Responce: responce, Result: result, Body: body, Http: http}
 }
 
 // UnionOpenPromotionBySubUnionIdGet 社交媒体获取推广链接接口【申请】
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.promotion.bysubunionid.get
-func (c *Client) UnionOpenPromotionBySubUnionIdGet(ctx context.Context, notMustParams ...*gorequest.Params) *UnionOpenPromotionBySubUnionIdGetResult {
+func (c *Client) UnionOpenPromotionBySubUnionIdGet(ctx context.Context, notMustParams ...*gorequest.Params) (*UnionOpenPromotionBySubUnionIdGetResult, error) {
 	// 参数
 	params := NewParamsWithType("jd.union.open.promotion.bysubunionid.get", notMustParams...)
 	// 请求
 	request, err := c.request(ctx, params)
+	if err != nil {
+		return newUnionOpenPromotionBySubUnionIdGetResult(UnionOpenPromotionBySubUnionIdGetResultResponse{}, UnionOpenPromotionBySubUnionIdGetGetResult{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var responce UnionOpenPromotionBySubUnionIdGetResultResponse
 	var result UnionOpenPromotionBySubUnionIdGetGetResult
 	err = gojson.Unmarshal(request.ResponseBody, &responce)
 	err = gojson.Unmarshal([]byte(responce.JdUnionOpenPromotionBySubUnionIdGetResponce.GetResult), &result)
-	return newUnionOpenPromotionBySubUnionIdGetResult(responce, result, request.ResponseBody, request, err)
+	return newUnionOpenPromotionBySubUnionIdGetResult(responce, result, request.ResponseBody, request), err
 }

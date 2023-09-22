@@ -114,24 +114,26 @@ type UnionOpenGoodsJIngFenQueryResult struct {
 	Result   UnionOpenGoodsJIngFenQueryQueryResult    // 结果
 	Body     []byte                                   // 内容
 	Http     gorequest.Response                       // 请求
-	Err      error                                    // 错误
 }
 
-func newUnionOpenGoodsJIngFenQueryResult(responce UnionOpenGoodsJIngFenQueryResultResponse, result UnionOpenGoodsJIngFenQueryQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenGoodsJIngFenQueryResult {
-	return &UnionOpenGoodsJIngFenQueryResult{Responce: responce, Result: result, Body: body, Http: http, Err: err}
+func newUnionOpenGoodsJIngFenQueryResult(responce UnionOpenGoodsJIngFenQueryResultResponse, result UnionOpenGoodsJIngFenQueryQueryResult, body []byte, http gorequest.Response) *UnionOpenGoodsJIngFenQueryResult {
+	return &UnionOpenGoodsJIngFenQueryResult{Responce: responce, Result: result, Body: body, Http: http}
 }
 
 // UnionOpenGoodsJIngFenQuery 京粉精选商品查询接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.goods.jingfen.query
-func (c *Client) UnionOpenGoodsJIngFenQuery(ctx context.Context, notMustParams ...*gorequest.Params) *UnionOpenGoodsJIngFenQueryResult {
+func (c *Client) UnionOpenGoodsJIngFenQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*UnionOpenGoodsJIngFenQueryResult, error) {
 	// 参数
 	params := NewParamsWithType("jd.union.open.goods.jingfen.query", notMustParams...)
 	// 请求
 	request, err := c.request(ctx, params)
+	if err != nil {
+		return newUnionOpenGoodsJIngFenQueryResult(UnionOpenGoodsJIngFenQueryResultResponse{}, UnionOpenGoodsJIngFenQueryQueryResult{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var responce UnionOpenGoodsJIngFenQueryResultResponse
 	var result UnionOpenGoodsJIngFenQueryQueryResult
 	err = gojson.Unmarshal(request.ResponseBody, &responce)
 	err = gojson.Unmarshal([]byte(responce.JdUnionOpenGoodsJingfenQueryResponce.QueryResult), &result)
-	return newUnionOpenGoodsJIngFenQueryResult(responce, result, request.ResponseBody, request, err)
+	return newUnionOpenGoodsJIngFenQueryResult(responce, result, request.ResponseBody, request), err
 }

@@ -83,24 +83,26 @@ type UnionOpenOrderRowQueryResult struct {
 	Result   UnionOpenOrderRowQueryQueryResult    // 结果
 	Body     []byte                               // 内容
 	Http     gorequest.Response                   // 请求
-	Err      error                                // 错误
 }
 
-func newUnionOpenOrderRowQueryResult(responce UnionOpenOrderRowQueryResultResponse, result UnionOpenOrderRowQueryQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenOrderRowQueryResult {
-	return &UnionOpenOrderRowQueryResult{Responce: responce, Result: result, Body: body, Http: http, Err: err}
+func newUnionOpenOrderRowQueryResult(responce UnionOpenOrderRowQueryResultResponse, result UnionOpenOrderRowQueryQueryResult, body []byte, http gorequest.Response) *UnionOpenOrderRowQueryResult {
+	return &UnionOpenOrderRowQueryResult{Responce: responce, Result: result, Body: body, Http: http}
 }
 
 // UnionOpenOrderRowQuery 订单行查询接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.order.row.query
-func (c *Client) UnionOpenOrderRowQuery(ctx context.Context, notMustParams ...*gorequest.Params) *UnionOpenOrderRowQueryResult {
+func (c *Client) UnionOpenOrderRowQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*UnionOpenOrderRowQueryResult, error) {
 	// 参数
 	params := NewParamsWithType("jd.union.open.order.row.query", notMustParams...)
 	// 请求
 	request, err := c.request(ctx, params)
+	if err != nil {
+		return newUnionOpenOrderRowQueryResult(UnionOpenOrderRowQueryResultResponse{}, UnionOpenOrderRowQueryQueryResult{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var responce UnionOpenOrderRowQueryResultResponse
 	var result UnionOpenOrderRowQueryQueryResult
 	err = gojson.Unmarshal(request.ResponseBody, &responce)
 	err = gojson.Unmarshal([]byte(responce.JdUnionOpenOrderRowQueryResponce.QueryResult), &result)
-	return newUnionOpenOrderRowQueryResult(responce, result, request.ResponseBody, request, err)
+	return newUnionOpenOrderRowQueryResult(responce, result, request.ResponseBody, request), err
 }

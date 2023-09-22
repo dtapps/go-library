@@ -49,24 +49,26 @@ type UnionOpenGoodsPromotionGoodsInfoQueryResult struct {
 	Result   UnionOpenGoodsPromotionGoodsInfoQueryQueryResult    // 结果
 	Body     []byte                                              // 内容
 	Http     gorequest.Response                                  // 请求
-	Err      error                                               // 错误
 }
 
-func newUnionOpenGoodsPromotionGoodsInfoQueryResult(responce UnionOpenGoodsPromotionGoodsInfoQueryResultResponse, result UnionOpenGoodsPromotionGoodsInfoQueryQueryResult, body []byte, http gorequest.Response, err error) *UnionOpenGoodsPromotionGoodsInfoQueryResult {
-	return &UnionOpenGoodsPromotionGoodsInfoQueryResult{Responce: responce, Result: result, Body: body, Http: http, Err: err}
+func newUnionOpenGoodsPromotionGoodsInfoQueryResult(responce UnionOpenGoodsPromotionGoodsInfoQueryResultResponse, result UnionOpenGoodsPromotionGoodsInfoQueryQueryResult, body []byte, http gorequest.Response) *UnionOpenGoodsPromotionGoodsInfoQueryResult {
+	return &UnionOpenGoodsPromotionGoodsInfoQueryResult{Responce: responce, Result: result, Body: body, Http: http}
 }
 
 // UnionOpenGoodsPromotionGoodsInfoQuery 根据skuid查询商品信息接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.goods.promotiongoodsinfo.query
-func (c *Client) UnionOpenGoodsPromotionGoodsInfoQuery(ctx context.Context, notMustParams ...*gorequest.Params) *UnionOpenGoodsPromotionGoodsInfoQueryResult {
+func (c *Client) UnionOpenGoodsPromotionGoodsInfoQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*UnionOpenGoodsPromotionGoodsInfoQueryResult, error) {
 	// 参数
 	params := NewParamsWithType("jd.union.open.goods.promotiongoodsinfo.query", notMustParams...)
 	// 请求
 	request, err := c.request(ctx, params)
+	if err != nil {
+		return newUnionOpenGoodsPromotionGoodsInfoQueryResult(UnionOpenGoodsPromotionGoodsInfoQueryResultResponse{}, UnionOpenGoodsPromotionGoodsInfoQueryQueryResult{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var responce UnionOpenGoodsPromotionGoodsInfoQueryResultResponse
 	var result UnionOpenGoodsPromotionGoodsInfoQueryQueryResult
 	err = gojson.Unmarshal(request.ResponseBody, &responce)
 	err = gojson.Unmarshal([]byte(responce.JdUnionOpenGoodsPromotiongoodsinfoQueryResponce.QueryResult), &result)
-	return newUnionOpenGoodsPromotionGoodsInfoQueryResult(responce, result, request.ResponseBody, request, err)
+	return newUnionOpenGoodsPromotionGoodsInfoQueryResult(responce, result, request.ResponseBody, request), err
 }
