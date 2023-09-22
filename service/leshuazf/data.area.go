@@ -22,22 +22,24 @@ type DataAreaResult struct {
 	Result DataAreaResponse   // 结果
 	Body   []byte             // 内容
 	Http   gorequest.Response // 请求
-	Err    error              // 错误
 }
 
-func newDataAreaResult(result DataAreaResponse, body []byte, http gorequest.Response, err error) *DataAreaResult {
-	return &DataAreaResult{Result: result, Body: body, Http: http, Err: err}
+func newDataAreaResult(result DataAreaResponse, body []byte, http gorequest.Response) *DataAreaResult {
+	return &DataAreaResult{Result: result, Body: body, Http: http}
 }
 
 // DataArea 代理商通过地区信息来查地区详细信息
 // https://www.yuque.com/leshuazf/doc/dbmxyi#YwJl7
-func (c *Client) DataArea(ctx context.Context, notMustParams ...*gorequest.Params) *DataAreaResult {
+func (c *Client) DataArea(ctx context.Context, notMustParams ...*gorequest.Params) (*DataAreaResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, "/data/area", params, http.MethodPost)
+	if err != nil {
+		return newDataAreaResult(DataAreaResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response DataAreaResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newDataAreaResult(response, request.ResponseBody, request, err)
+	return newDataAreaResult(response, request.ResponseBody, request), err
 }
