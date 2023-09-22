@@ -20,23 +20,24 @@ type GdpIndexResult struct {
 	Result GdpIndexResponse   // 结果
 	Body   []byte             // 内容
 	Http   gorequest.Response // 请求
-	Err    error              // 错误
 }
 
-func newGdpIndexResult(result GdpIndexResponse, body []byte, http gorequest.Response, err error) *GdpIndexResult {
-	return &GdpIndexResult{Result: result, Body: body, Http: http, Err: err}
+func newGdpIndexResult(result GdpIndexResponse, body []byte, http gorequest.Response) *GdpIndexResult {
+	return &GdpIndexResult{Result: result, Body: body, Http: http}
 }
 
 // GdpIndex 地区生产总值指数（1978＝100）接口
 // https://gddata.gd.gov.cn/opdata/index?chooseValue=apiForm&id=29000%2F03600017&sourceType
-func (c *Client) GdpIndex(ctx context.Context, year string) *GdpIndexResult {
+func (c *Client) GdpIndex(ctx context.Context, notMustParams ...*gorequest.Params) (*GdpIndexResult, error) {
 	// 参数
-	params := gorequest.NewParams()
-	params.Set("year", year) // 统计年份
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+fmt.Sprintf("MjkwMDBfMDM2MDAwMTc=?token=%s", c.GetToken()), params, http.GET)
+	if err != nil {
+		return newGdpIndexResult(GdpIndexResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response GdpIndexResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newGdpIndexResult(response, request.ResponseBody, request, err)
+	return newGdpIndexResult(response, request.ResponseBody, request), err
 }
