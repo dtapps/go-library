@@ -48,11 +48,10 @@ func newGeocodeGeoResult(result GeocodeGeoResponse, body []byte, http gorequest.
 
 // GeocodeGeo 地理编码
 // https://lbs.amap.com/api/webservice/guide/api/georegeo
-func (c *Client) GeocodeGeo(ctx context.Context, address string, notMustParams ...*gorequest.Params) (*GeocodeGeoResult, error) {
+func (c *Client) GeocodeGeo(ctx context.Context, notMustParams ...*gorequest.Params) (*GeocodeGeoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("key", c.GetKey())
-	params.Set("address", address)
 	params.Set("output", "JSON")
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/geocode/geo", params, http.MethodGet)
