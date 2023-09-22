@@ -70,7 +70,11 @@ func (p *Headers) DeepCopy() *Headers {
 	newHeaders := NewHeaders()
 
 	p.m.Range(func(key, value interface{}) bool {
-		newHeaders.Set(key.(string), value.(string))
+		// 深度复制数据并存储到新参数集合
+		newValue := deepCopy(value)
+		newHeaders.Set(key.(string), newValue)
+		// 清空原始数据
+		p.m.Delete(key)
 		return true
 	})
 

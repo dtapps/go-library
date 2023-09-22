@@ -1,9 +1,6 @@
 package gorequest
 
 import (
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gostring"
-	"log"
 	"sync"
 )
 
@@ -81,26 +78,13 @@ func (p *Params) DeepCopy() *Params {
 	newParams := NewParams()
 
 	p.m.Range(func(key, value interface{}) bool {
-		newParams.Set(key.(string), value)
+		// 深度复制数据并存储到新参数集合
+		newValue := deepCopy(value)
+		newParams.Set(key.(string), newValue)
+		// 清空原始数据
+		p.m.Delete(key)
 		return true
 	})
 
 	return newParams
-}
-
-// GetParamsString 获取参数字符串
-func GetParamsString(src interface{}) string {
-	switch src.(type) {
-	case string:
-		return src.(string)
-	case int, int8, int32, int64:
-	case uint8, uint16, uint32, uint64:
-	case float32, float64:
-		return gostring.ToString(src)
-	}
-	data, err := gojson.Marshal(src)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return string(data)
 }

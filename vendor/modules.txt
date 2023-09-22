@@ -8,7 +8,7 @@ github.com/aliyun/aliyun-oss-go-sdk/oss
 ## explicit; go 1.16
 github.com/allegro/bigcache/v3
 github.com/allegro/bigcache/v3/queue
-# github.com/baidubce/bce-sdk-go v0.9.156
+# github.com/baidubce/bce-sdk-go v0.9.157
 ## explicit; go 1.11
 github.com/baidubce/bce-sdk-go/auth
 github.com/baidubce/bce-sdk-go/bce

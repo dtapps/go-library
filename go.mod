@@ -6,7 +6,7 @@ require (
 	github.com/MercuryEngineering/CookieMonster v0.0.0-20180304172713-1584578b3403
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.9+incompatible
 	github.com/allegro/bigcache/v3 v3.1.0
-	github.com/baidubce/bce-sdk-go v0.9.156
+	github.com/baidubce/bce-sdk-go v0.9.157
 	github.com/basgys/goxml2json v1.1.0
 	github.com/bytedance/sonic v1.10.1
 	github.com/gin-gonic/gin v1.9.1
