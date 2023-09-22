@@ -35,22 +35,24 @@ type PartnerData4GetPlanResult struct {
 	Result PartnerData4GetPlanResponse // 结果
 	Body   []byte                      // 内容
 	Http   gorequest.Response          // 请求
-	Err    error                       // 错误
 }
 
-func newPartnerData4GetPlanResult(result PartnerData4GetPlanResponse, body []byte, http gorequest.Response, err error) *PartnerData4GetPlanResult {
-	return &PartnerData4GetPlanResult{Result: result, Body: body, Http: http, Err: err}
+func newPartnerData4GetPlanResult(result PartnerData4GetPlanResponse, body []byte, http gorequest.Response) *PartnerData4GetPlanResult {
+	return &PartnerData4GetPlanResult{Result: result, Body: body, Http: http}
 }
 
 // PartnerData4GetPlan 获取影院排期
 // https://docs.apipost.cn/preview/fa101f4865dc783f/66e7c2e894fda4a6?target_id=1e0161fe-12ca-4a64-afb9-5c97431f1f70
-func (c *Client) PartnerData4GetPlan(ctx context.Context) *PartnerData4GetPlanResult {
+func (c *Client) PartnerData4GetPlan(ctx context.Context, notMustParams ...*gorequest.Params) (*PartnerData4GetPlanResult, error) {
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/partner/data4/getPlan", params)
+	if err != nil {
+		return newPartnerData4GetPlanResult(PartnerData4GetPlanResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PartnerData4GetPlanResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPartnerData4GetPlanResult(response, request.ResponseBody, request, err)
+	return newPartnerData4GetPlanResult(response, request.ResponseBody, request), err
 }

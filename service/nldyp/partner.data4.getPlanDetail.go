@@ -35,24 +35,24 @@ type PartnerData4GetPlanDetailResult struct {
 	Result PartnerData4GetPlanDetailResponse // 结果
 	Body   []byte                            // 内容
 	Http   gorequest.Response                // 请求
-	Err    error                             // 错误
 }
 
-func newPartnerData4GetPlanDetailResult(result PartnerData4GetPlanDetailResponse, body []byte, http gorequest.Response, err error) *PartnerData4GetPlanDetailResult {
-	return &PartnerData4GetPlanDetailResult{Result: result, Body: body, Http: http, Err: err}
+func newPartnerData4GetPlanDetailResult(result PartnerData4GetPlanDetailResponse, body []byte, http gorequest.Response) *PartnerData4GetPlanDetailResult {
+	return &PartnerData4GetPlanDetailResult{Result: result, Body: body, Http: http}
 }
 
 // PartnerData4GetPlanDetail 获取影城单个排期详情
 // https://docs.apipost.cn/preview/fa101f4865dc783f/66e7c2e894fda4a6?target_id=05639c5c-080f-43f4-b94d-e4b8bb14130e
-func (c *Client) PartnerData4GetPlanDetail(ctx context.Context, cinemaId int, featureAppNo string) *PartnerData4GetPlanDetailResult {
+func (c *Client) PartnerData4GetPlanDetail(ctx context.Context, notMustParams ...*gorequest.Params) (*PartnerData4GetPlanDetailResult, error) {
 	// 参数
-	params := gorequest.NewParams()
-	params.Set("cinemaId", cinemaId)
-	params.Set("featureAppNo", featureAppNo)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/partner/data4/getPlanDetail", params)
+	if err != nil {
+		return newPartnerData4GetPlanDetailResult(PartnerData4GetPlanDetailResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PartnerData4GetPlanDetailResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPartnerData4GetPlanDetailResult(response, request.ResponseBody, request, err)
+	return newPartnerData4GetPlanDetailResult(response, request.ResponseBody, request), err
 }

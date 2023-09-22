@@ -33,22 +33,24 @@ type PartnerData4GetCinemaResult struct {
 	Result PartnerData4GetCinemaResponse // 结果
 	Body   []byte                        // 内容
 	Http   gorequest.Response            // 请求
-	Err    error                         // 错误
 }
 
-func newPartnerData4GetCinemaResult(result PartnerData4GetCinemaResponse, body []byte, http gorequest.Response, err error) *PartnerData4GetCinemaResult {
-	return &PartnerData4GetCinemaResult{Result: result, Body: body, Http: http, Err: err}
+func newPartnerData4GetCinemaResult(result PartnerData4GetCinemaResponse, body []byte, http gorequest.Response) *PartnerData4GetCinemaResult {
+	return &PartnerData4GetCinemaResult{Result: result, Body: body, Http: http}
 }
 
 // PartnerData4GetCinema 获取影院
 // https://docs.apipost.cn/preview/fa101f4865dc783f/66e7c2e894fda4a6?target_id=a1db1066-f346-4f9a-bffe-b892b3c73a1d
-func (c *Client) PartnerData4GetCinema(ctx context.Context) *PartnerData4GetCinemaResult {
+func (c *Client) PartnerData4GetCinema(ctx context.Context, notMustParams ...*gorequest.Params) (*PartnerData4GetCinemaResult, error) {
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/partner/data4/getCinema", params)
+	if err != nil {
+		return newPartnerData4GetCinemaResult(PartnerData4GetCinemaResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PartnerData4GetCinemaResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPartnerData4GetCinemaResult(response, request.ResponseBody, request, err)
+	return newPartnerData4GetCinemaResult(response, request.ResponseBody, request), err
 }

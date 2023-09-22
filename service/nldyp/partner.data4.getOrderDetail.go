@@ -30,23 +30,24 @@ type PartnerData4GetOrderDetailResult struct {
 	Result PartnerData4GetOrderDetailResponse // 结果
 	Body   []byte                             // 内容
 	Http   gorequest.Response                 // 请求
-	Err    error                              // 错误
 }
 
-func newPartnerData4GetOrderDetailResult(result PartnerData4GetOrderDetailResponse, body []byte, http gorequest.Response, err error) *PartnerData4GetOrderDetailResult {
-	return &PartnerData4GetOrderDetailResult{Result: result, Body: body, Http: http, Err: err}
+func newPartnerData4GetOrderDetailResult(result PartnerData4GetOrderDetailResponse, body []byte, http gorequest.Response) *PartnerData4GetOrderDetailResult {
+	return &PartnerData4GetOrderDetailResult{Result: result, Body: body, Http: http}
 }
 
 // PartnerData4GetOrderDetail 获取订单详情
 // https://docs.apipost.cn/preview/fa101f4865dc783f/66e7c2e894fda4a6?target_id=0888fc18-6ac7-4d37-a1c5-f26e136b381a
-func (c *Client) PartnerData4GetOrderDetail(ctx context.Context, orderNo string) *PartnerData4GetOrderDetailResult {
+func (c *Client) PartnerData4GetOrderDetail(ctx context.Context, notMustParams ...*gorequest.Params) (*PartnerData4GetOrderDetailResult, error) {
 	// 参数
-	params := gorequest.NewParams()
-	params["orderNo"] = orderNo // 平台订单号
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/partner/data4/getOrderDetail", params)
+	if err != nil {
+		return newPartnerData4GetOrderDetailResult(PartnerData4GetOrderDetailResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PartnerData4GetOrderDetailResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPartnerData4GetOrderDetailResult(response, request.ResponseBody, request, err)
+	return newPartnerData4GetOrderDetailResult(response, request.ResponseBody, request), err
 }
