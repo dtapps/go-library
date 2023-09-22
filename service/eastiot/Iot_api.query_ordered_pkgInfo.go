@@ -26,24 +26,24 @@ type IotApiQueryOrderedPkgInfoResult struct {
 	Result IotApiQueryOrderedPkgInfoResponse // 结果
 	Body   []byte                            // 内容
 	Http   gorequest.Response                // 请求
-	Err    error                             // 错误
 }
 
-func newIotApiQueryOrderedPkgInfoResult(result IotApiQueryOrderedPkgInfoResponse, body []byte, http gorequest.Response, err error) *IotApiQueryOrderedPkgInfoResult {
-	return &IotApiQueryOrderedPkgInfoResult{Result: result, Body: body, Http: http, Err: err}
+func newIotApiQueryOrderedPkgInfoResult(result IotApiQueryOrderedPkgInfoResponse, body []byte, http gorequest.Response) *IotApiQueryOrderedPkgInfoResult {
+	return &IotApiQueryOrderedPkgInfoResult{Result: result, Body: body, Http: http}
 }
 
 // IotApiQueryOrderedPkgInfo 查询流量卡已订购流量包
 // https://www.showdoc.com.cn/916774523755909/5092045889939625
-func (c *Client) IotApiQueryOrderedPkgInfo(ctx context.Context, simId string) *IotApiQueryOrderedPkgInfoResult {
+func (c *Client) IotApiQueryOrderedPkgInfo(ctx context.Context, notMustParams ...*gorequest.Params) (*IotApiQueryOrderedPkgInfoResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("simId", simId)
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/Api/IotApi/queryOrderedPkgInfo", params, http.MethodPost)
+	if err != nil {
+		return newIotApiQueryOrderedPkgInfoResult(IotApiQueryOrderedPkgInfoResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response IotApiQueryOrderedPkgInfoResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newIotApiQueryOrderedPkgInfoResult(response, request.ResponseBody, request, err)
+	return newIotApiQueryOrderedPkgInfoResult(response, request.ResponseBody, request), err
 }

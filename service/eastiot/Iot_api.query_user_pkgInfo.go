@@ -31,20 +31,24 @@ type IotApiQueryUserPkgInfoResult struct {
 	Result IotApiQueryUserPkgInfoResponse // 结果
 	Body   []byte                         // 内容
 	Http   gorequest.Response             // 请求
-	Err    error                          // 错误
 }
 
-func newIotApiQueryUserPkgInfoResult(result IotApiQueryUserPkgInfoResponse, body []byte, http gorequest.Response, err error) *IotApiQueryUserPkgInfoResult {
-	return &IotApiQueryUserPkgInfoResult{Result: result, Body: body, Http: http, Err: err}
+func newIotApiQueryUserPkgInfoResult(result IotApiQueryUserPkgInfoResponse, body []byte, http gorequest.Response) *IotApiQueryUserPkgInfoResult {
+	return &IotApiQueryUserPkgInfoResult{Result: result, Body: body, Http: http}
 }
 
 // IotApiQueryUserPkgInfo 账户可用流量包查询
 // https://www.showdoc.com.cn/916774523755909/4850094776758927
-func (c *Client) IotApiQueryUserPkgInfo(ctx context.Context) *IotApiQueryUserPkgInfoResult {
+func (c *Client) IotApiQueryUserPkgInfo(ctx context.Context, notMustParams ...*gorequest.Params) (*IotApiQueryUserPkgInfoResult, error) {
+	// 参数
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/Api/IotApi/queryUserPkgInfo", map[string]interface{}{}, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/Api/IotApi/queryUserPkgInfo", params, http.MethodPost)
+	if err != nil {
+		return newIotApiQueryUserPkgInfoResult(IotApiQueryUserPkgInfoResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response IotApiQueryUserPkgInfoResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newIotApiQueryUserPkgInfoResult(response, request.ResponseBody, request, err)
+	return newIotApiQueryUserPkgInfoResult(response, request.ResponseBody, request), err
 }

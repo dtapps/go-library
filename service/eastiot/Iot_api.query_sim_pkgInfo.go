@@ -32,25 +32,24 @@ type IotApiQuerySimPkgInfoResult struct {
 	Result IotApiQuerySimPkgInfoResponse // 结果
 	Body   []byte                        // 内容
 	Http   gorequest.Response            // 请求
-	Err    error                         // 错误
 }
 
-func newIotApiQuerySimPkgInfoResult(result IotApiQuerySimPkgInfoResponse, body []byte, http gorequest.Response, err error) *IotApiQuerySimPkgInfoResult {
-	return &IotApiQuerySimPkgInfoResult{Result: result, Body: body, Http: http, Err: err}
+func newIotApiQuerySimPkgInfoResult(result IotApiQuerySimPkgInfoResponse, body []byte, http gorequest.Response) *IotApiQuerySimPkgInfoResult {
+	return &IotApiQuerySimPkgInfoResult{Result: result, Body: body, Http: http}
 }
 
 // IotApiQuerySimPkgInfo 流量卡可用流量包查询
 // https://www.showdoc.com.cn/916774523755909/4880284631482420
-func (c *Client) IotApiQuerySimPkgInfo(ctx context.Context, simId string, sd int) *IotApiQuerySimPkgInfoResult {
+func (c *Client) IotApiQuerySimPkgInfo(ctx context.Context, notMustParams ...*gorequest.Params) (*IotApiQuerySimPkgInfoResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("simId", simId)
-	param.Set("sd", sd)
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/Api/IotApi/querySimPkgInfo", params, http.MethodPost)
+	if err != nil {
+		return newIotApiQuerySimPkgInfoResult(IotApiQuerySimPkgInfoResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response IotApiQuerySimPkgInfoResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newIotApiQuerySimPkgInfoResult(response, request.ResponseBody, request, err)
+	return newIotApiQuerySimPkgInfoResult(response, request.ResponseBody, request), err
 }
