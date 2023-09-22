@@ -49,28 +49,24 @@ type WaiMaiMeituanOrderIdResult struct {
 	Result WaiMaiMeituanOrderIdResponse // 结果
 	Body   []byte                       // 内容
 	Http   gorequest.Response           // 请求
-	Err    error                        // 错误
 }
 
-func newWaiMaiMeituanOrderIdResult(result WaiMaiMeituanOrderIdResponse, body []byte, http gorequest.Response, err error) *WaiMaiMeituanOrderIdResult {
-	return &WaiMaiMeituanOrderIdResult{Result: result, Body: body, Http: http, Err: err}
+func newWaiMaiMeituanOrderIdResult(result WaiMaiMeituanOrderIdResponse, body []byte, http gorequest.Response) *WaiMaiMeituanOrderIdResult {
+	return &WaiMaiMeituanOrderIdResult{Result: result, Body: body, Http: http}
 }
 
 // WaiMaiMeituanOrderId 美团联盟外卖/闪购/优选/酒店订单查询API（订单号版）
 // https://www.dingdanxia.com/doc/179/173
-func (c *Client) WaiMaiMeituanOrderId(ctx context.Context, orderId string, Type int) *WaiMaiMeituanOrderIdResult {
+func (c *Client) WaiMaiMeituanOrderId(ctx context.Context, notMustParams ...*gorequest.Params) (*WaiMaiMeituanOrderIdResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("orderid", orderId) // 订单号
-	if Type <= 0 {
-		Type = 4
-	}
-	param.Set("type", Type) // 2-酒店 4-外卖 6-闪购 8-优选 默认4
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/waimai/meituan_orderid", params, http.MethodPost)
+	if err != nil {
+		return newWaiMaiMeituanOrderIdResult(WaiMaiMeituanOrderIdResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response WaiMaiMeituanOrderIdResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newWaiMaiMeituanOrderIdResult(response, request.ResponseBody, request, err)
+	return newWaiMaiMeituanOrderIdResult(response, request.ResponseBody, request), err
 }

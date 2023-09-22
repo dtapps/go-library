@@ -31,22 +31,24 @@ type WaiMaiMeituanYouxuanGoodsResult struct {
 	Result WaiMaiMeituanYouxuanGoodsResponse // 结果
 	Body   []byte                            // 内容
 	Http   gorequest.Response                // 请求
-	Err    error                             // 错误
 }
 
-func newWaiMaiMeituanYouxuanGoodsResult(result WaiMaiMeituanYouxuanGoodsResponse, body []byte, http gorequest.Response, err error) *WaiMaiMeituanYouxuanGoodsResult {
-	return &WaiMaiMeituanYouxuanGoodsResult{Result: result, Body: body, Http: http, Err: err}
+func newWaiMaiMeituanYouxuanGoodsResult(result WaiMaiMeituanYouxuanGoodsResponse, body []byte, http gorequest.Response) *WaiMaiMeituanYouxuanGoodsResult {
+	return &WaiMaiMeituanYouxuanGoodsResult{Result: result, Body: body, Http: http}
 }
 
 // WaiMaiMeituanYouxuanGoods 优选商品查询API【2022年1月17日暂停数据访问】
 // https://www.dingdanxia.com/doc/235/173
-func (c *Client) WaiMaiMeituanYouxuanGoods(ctx context.Context, notMustParams ...*gorequest.Params) *WaiMaiMeituanYouxuanGoodsResult {
+func (c *Client) WaiMaiMeituanYouxuanGoods(ctx context.Context, notMustParams ...*gorequest.Params) (*WaiMaiMeituanYouxuanGoodsResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/waimai/meituan_youxuan_goods", params, http.MethodPost)
+	if err != nil {
+		return newWaiMaiMeituanYouxuanGoodsResult(WaiMaiMeituanYouxuanGoodsResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response WaiMaiMeituanYouxuanGoodsResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newWaiMaiMeituanYouxuanGoodsResult(response, request.ResponseBody, request, err)
+	return newWaiMaiMeituanYouxuanGoodsResult(response, request.ResponseBody, request), err
 }

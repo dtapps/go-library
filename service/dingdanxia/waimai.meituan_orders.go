@@ -32,22 +32,24 @@ type WaiMaiMeituanOrdersResult struct {
 	Result WaiMaiMeituanOrdersResponse // 结果
 	Body   []byte                      // 内容
 	Http   gorequest.Response          // 请求
-	Err    error                       // 错误
 }
 
-func newWaiMaiMeituanOrdersResult(result WaiMaiMeituanOrdersResponse, body []byte, http gorequest.Response, err error) *WaiMaiMeituanOrdersResult {
-	return &WaiMaiMeituanOrdersResult{Result: result, Body: body, Http: http, Err: err}
+func newWaiMaiMeituanOrdersResult(result WaiMaiMeituanOrdersResponse, body []byte, http gorequest.Response) *WaiMaiMeituanOrdersResult {
+	return &WaiMaiMeituanOrdersResult{Result: result, Body: body, Http: http}
 }
 
 // WaiMaiMeituanOrders 美团联盟外卖/闪购/优选/酒店订单查询API
 // https://www.dingdanxia.com/doc/176/173
-func (c *Client) WaiMaiMeituanOrders(ctx context.Context, notMustParams ...*gorequest.Params) *WaiMaiMeituanOrdersResult {
+func (c *Client) WaiMaiMeituanOrders(ctx context.Context, notMustParams ...*gorequest.Params) (*WaiMaiMeituanOrdersResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/waimai/meituan_orders", params, http.MethodPost)
+	if err != nil {
+		return newWaiMaiMeituanOrdersResult(WaiMaiMeituanOrdersResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response WaiMaiMeituanOrdersResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newWaiMaiMeituanOrdersResult(response, request.ResponseBody, request, err)
+	return newWaiMaiMeituanOrdersResult(response, request.ResponseBody, request), err
 }

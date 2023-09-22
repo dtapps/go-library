@@ -28,26 +28,24 @@ type WaiMaiMeituanSgPrivilegeResult struct {
 	Result WaiMaiMeituanSgPrivilegeResponse // 结果
 	Body   []byte                           // 内容
 	Http   gorequest.Response               // 请求
-	Err    error                            // 错误
 }
 
-func newWaiMaiMeituanSgPrivilegeResult(result WaiMaiMeituanSgPrivilegeResponse, body []byte, http gorequest.Response, err error) *WaiMaiMeituanSgPrivilegeResult {
-	return &WaiMaiMeituanSgPrivilegeResult{Result: result, Body: body, Http: http, Err: err}
+func newWaiMaiMeituanSgPrivilegeResult(result WaiMaiMeituanSgPrivilegeResponse, body []byte, http gorequest.Response) *WaiMaiMeituanSgPrivilegeResult {
+	return &WaiMaiMeituanSgPrivilegeResult{Result: result, Body: body, Http: http}
 }
 
 // WaiMaiMeituanSgPrivilege 美团闪购CPS推广API接口
 // https://www.dingdanxia.com/doc/195/173
-func (c *Client) WaiMaiMeituanSgPrivilege(ctx context.Context, sid string, generateWeApp, qrcode bool) *WaiMaiMeituanSgPrivilegeResult {
+func (c *Client) WaiMaiMeituanSgPrivilege(ctx context.Context, notMustParams ...*gorequest.Params) (*WaiMaiMeituanSgPrivilegeResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("sid", sid)                       // 渠道方用户唯一标识,渠道可自定义,长度不超过50，参数中不能包含dingdanxia，用于向用户返佣,支持小写字母和数字的格式,其它字符可能造成无法正常跟单
-	param.Set("generate_we_app", generateWeApp) // 是否生成小程序推广信息
-	param.Set("qrcode", qrcode)                 // 是否生成二维码海报
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/waimai/meituan_sg_privilege", params, http.MethodPost)
+	if err != nil {
+		return newWaiMaiMeituanSgPrivilegeResult(WaiMaiMeituanSgPrivilegeResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response WaiMaiMeituanSgPrivilegeResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newWaiMaiMeituanSgPrivilegeResult(response, request.ResponseBody, request, err)
+	return newWaiMaiMeituanSgPrivilegeResult(response, request.ResponseBody, request), err
 }

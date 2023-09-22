@@ -29,22 +29,24 @@ type TbkActivityinfoResult struct {
 	Result TbkActivityinfoResponse // 结果
 	Body   []byte                  // 内容
 	Http   gorequest.Response      // 请求
-	Err    error                   // 错误
 }
 
-func newTbkActivityinfoResult(result TbkActivityinfoResponse, body []byte, http gorequest.Response, err error) *TbkActivityinfoResult {
-	return &TbkActivityinfoResult{Result: result, Body: body, Http: http, Err: err}
+func newTbkActivityinfoResult(result TbkActivityinfoResponse, body []byte, http gorequest.Response) *TbkActivityinfoResult {
+	return &TbkActivityinfoResult{Result: result, Body: body, Http: http}
 }
 
 // TbkActivityinfo 官方活动转链,饿了么/口碑活动转链
 // https://www.dingdanxia.com/doc/122/173
-func (c *Client) TbkActivityinfo(ctx context.Context, notMustParams ...*gorequest.Params) *TbkActivityinfoResult {
+func (c *Client) TbkActivityinfo(ctx context.Context, notMustParams ...*gorequest.Params) (*TbkActivityinfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/tbk/activityinfo", params, http.MethodPost)
+	if err != nil {
+		return newTbkActivityinfoResult(TbkActivityinfoResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response TbkActivityinfoResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newTbkActivityinfoResult(response, request.ResponseBody, request, err)
+	return newTbkActivityinfoResult(response, request.ResponseBody, request), err
 }

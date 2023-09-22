@@ -32,21 +32,23 @@ type JdJyOrderDetailsResult struct {
 	Result JdJyOrderDetailsResponse // 结果
 	Body   []byte                   // 内容
 	Http   gorequest.Response       // 请求
-	Err    error                    // 错误
 }
 
-func newJdJyOrderDetailsResult(result JdJyOrderDetailsResponse, body []byte, http gorequest.Response, err error) *JdJyOrderDetailsResult {
-	return &JdJyOrderDetailsResult{Result: result, Body: body, Http: http, Err: err}
+func newJdJyOrderDetailsResult(result JdJyOrderDetailsResponse, body []byte, http gorequest.Response) *JdJyOrderDetailsResult {
+	return &JdJyOrderDetailsResult{Result: result, Body: body, Http: http}
 }
 
 // JdJyOrderDetails 【官方不维护】 京佣订单
-func (c *Client) JdJyOrderDetails(ctx context.Context, notMustParams ...*gorequest.Params) *JdJyOrderDetailsResult {
+func (c *Client) JdJyOrderDetails(ctx context.Context, notMustParams ...*gorequest.Params) (*JdJyOrderDetailsResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/jd/jy_order_details", params, http.MethodPost)
+	if err != nil {
+		return newJdJyOrderDetailsResult(JdJyOrderDetailsResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response JdJyOrderDetailsResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newJdJyOrderDetailsResult(response, request.ResponseBody, request, err)
+	return newJdJyOrderDetailsResult(response, request.ResponseBody, request), err
 }

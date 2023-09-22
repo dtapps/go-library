@@ -29,27 +29,24 @@ type WaiMaiMeituanPrivilegeResult struct {
 	Result WaiMaiMeituanPrivilegeResponse // 结果
 	Body   []byte                         // 内容
 	Http   gorequest.Response             // 请求
-	Err    error                          // 错误
 }
 
-func newWaiMaiMeituanPrivilegeResult(result WaiMaiMeituanPrivilegeResponse, body []byte, http gorequest.Response, err error) *WaiMaiMeituanPrivilegeResult {
-	return &WaiMaiMeituanPrivilegeResult{Result: result, Body: body, Http: http, Err: err}
+func newWaiMaiMeituanPrivilegeResult(result WaiMaiMeituanPrivilegeResponse, body []byte, http gorequest.Response) *WaiMaiMeituanPrivilegeResult {
+	return &WaiMaiMeituanPrivilegeResult{Result: result, Body: body, Http: http}
 }
 
 // WaiMaiMeituanPrivilege 美团外卖CPS推广API接口
 // https://www.dingdanxia.com/doc/174/173
-func (c *Client) WaiMaiMeituanPrivilege(ctx context.Context, sid string, generateWeApp bool, channels int, qrcode bool) *WaiMaiMeituanPrivilegeResult {
+func (c *Client) WaiMaiMeituanPrivilege(ctx context.Context, notMustParams ...*gorequest.Params) (*WaiMaiMeituanPrivilegeResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("sid", sid)                       // 渠道方用户唯一标识,渠道可自定义,长度不超过50，参数中不能包含dingdanxia，用于向用户返佣,支持小写字母和数字的格式,其它字符可能造成无法正常跟单
-	param.Set("generate_we_app", generateWeApp) // 是否生成小程序推广信息
-	param.Set("channels", channels)             // 推广渠道 1-小程序推广,2-公众号推广,3-app推广,4-社群推广 默认1 ，请务必选择对应渠道推广，选择错误会影响佣金比例
-	param.Set("qrcode", qrcode)                 // 二维码图片
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/waimai/meituan_privilege", params, http.MethodPost)
+	if err != nil {
+		return newWaiMaiMeituanPrivilegeResult(WaiMaiMeituanPrivilegeResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response WaiMaiMeituanPrivilegeResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newWaiMaiMeituanPrivilegeResult(response, request.ResponseBody, request, err)
+	return newWaiMaiMeituanPrivilegeResult(response, request.ResponseBody, request), err
 }
