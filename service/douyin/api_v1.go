@@ -440,15 +440,14 @@ type AnalysisV1Result struct {
 	Result AnalysisV1Response // 结果
 	Body   []byte             // 内容
 	Http   gorequest.Response // 请求
-	Err    error              // 错误
 }
 
-func newAnalysisV1Result(result AnalysisV1Response, body []byte, http gorequest.Response, err error) *AnalysisV1Result {
-	return &AnalysisV1Result{Result: result, Body: body, Http: http, Err: err}
+func newAnalysisV1Result(result AnalysisV1Response, body []byte, http gorequest.Response) *AnalysisV1Result {
+	return &AnalysisV1Result{Result: result, Body: body, Http: http}
 }
 
 // AnalysisV1 抖音解析 https://github.com/iawia002/lux/issues/1184
-func (c *Client) AnalysisV1(ctx context.Context, content string) *AnalysisV1Result {
+func (c *Client) AnalysisV1(ctx context.Context, content string) (*AnalysisV1Result, error) {
 
 	// 提取url
 	var url string
@@ -457,26 +456,29 @@ func (c *Client) AnalysisV1(ctx context.Context, content string) *AnalysisV1Resu
 	} else if strings.Contains(content, "iesdouyin.com") {
 		url = xurls.Relaxed.FindString(content)
 	} else {
-		return newAnalysisV1Result(AnalysisV1Response{}, nil, gorequest.Response{}, errors.New("url为空"))
+		return newAnalysisV1Result(AnalysisV1Response{}, nil, gorequest.Response{}), errors.New("url为空")
 	}
 
 	// 重定向信息
 	request302, err := c.request302(url)
 	if err != nil {
-		return newAnalysisV1Result(AnalysisV1Response{}, nil, gorequest.Response{}, err)
+		return newAnalysisV1Result(AnalysisV1Response{}, nil, gorequest.Response{}), err
 	}
 
 	// 提取编号
 	itemIds := regexp.MustCompile(`\d+`).FindStringSubmatch(request302)
 	if len(itemIds) < 1 {
-		return newAnalysisV1Result(AnalysisV1Response{}, nil, gorequest.Response{}, errors.New("参数错误"))
+		return newAnalysisV1Result(AnalysisV1Response{}, nil, gorequest.Response{}), errors.New("参数错误")
 	}
 
 	// 请求
-	request, err := c.request(ctx, "https://www.iesdouyin.com/aweme/v1/web/aweme/detail/?aweme_id="+itemIds[0], map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(ctx, "https://www.iesdouyin.com/aweme/v1/web/aweme/detail/?aweme_id="+itemIds[0], nil, http.MethodGet)
+	if err != nil {
+		return newAnalysisV1Result(AnalysisV1Response{}, request.ResponseBody, request), err
+	}
 
 	// 定义
 	var response AnalysisV1Response
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return newAnalysisV1Result(response, request.ResponseBody, request, err)
+	return newAnalysisV1Result(response, request.ResponseBody, request), err
 }

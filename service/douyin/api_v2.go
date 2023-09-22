@@ -177,15 +177,14 @@ type AnalysisV2Result struct {
 	Result AnalysisV2Response // 结果
 	Body   []byte             // 内容
 	Http   gorequest.Response // 请求
-	Err    error              // 错误
 }
 
-func newAnalysisV2Result(result AnalysisV2Response, body []byte, http gorequest.Response, err error) *AnalysisV2Result {
-	return &AnalysisV2Result{Result: result, Body: body, Http: http, Err: err}
+func newAnalysisV2Result(result AnalysisV2Response, body []byte, http gorequest.Response) *AnalysisV2Result {
+	return &AnalysisV2Result{Result: result, Body: body, Http: http}
 }
 
 // AnalysisV2 抖音解析
-func (c *Client) AnalysisV2(ctx context.Context, content string) *AnalysisV2Result {
+func (c *Client) AnalysisV2(ctx context.Context, content string) (*AnalysisV2Result, error) {
 
 	// 提取url
 	var url string
@@ -194,26 +193,29 @@ func (c *Client) AnalysisV2(ctx context.Context, content string) *AnalysisV2Resu
 	} else if strings.Contains(content, "iesdouyin.com") {
 		url = xurls.Relaxed.FindString(content)
 	} else {
-		return newAnalysisV2Result(AnalysisV2Response{}, nil, gorequest.Response{}, errors.New("url为空"))
+		return newAnalysisV2Result(AnalysisV2Response{}, nil, gorequest.Response{}), errors.New("url为空")
 	}
 
 	// 重定向信息
 	request302, err := c.request302(url)
 	if err != nil {
-		return newAnalysisV2Result(AnalysisV2Response{}, nil, gorequest.Response{}, err)
+		return newAnalysisV2Result(AnalysisV2Response{}, nil, gorequest.Response{}), err
 	}
 
 	// 提取编号
 	itemIds := regexp.MustCompile(`\d+`).FindStringSubmatch(request302)
 	if len(itemIds) < 1 {
-		return newAnalysisV2Result(AnalysisV2Response{}, nil, gorequest.Response{}, errors.New("参数错误"))
+		return newAnalysisV2Result(AnalysisV2Response{}, nil, gorequest.Response{}), errors.New("参数错误")
 	}
 
 	// 请求
-	request, err := c.request(ctx, "https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids="+itemIds[0], map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(ctx, "https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids="+itemIds[0], nil, http.MethodGet)
+	if err != nil {
+		return newAnalysisV2Result(AnalysisV2Response{}, request.ResponseBody, request), err
+	}
 
 	// 定义
 	var response AnalysisV2Response
 	err = json.Unmarshal(request.ResponseBody, &response)
-	return newAnalysisV2Result(response, request.ResponseBody, request, err)
+	return newAnalysisV2Result(response, request.ResponseBody, request), err
 }
