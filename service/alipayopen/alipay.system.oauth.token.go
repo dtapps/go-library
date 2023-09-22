@@ -19,32 +19,24 @@ type AlipaySystemOauthTokenResponse struct {
 }
 
 type AlipaySystemOauthTokenResult struct {
-	Result   AlipaySystemOauthTokenResponse // 结果
-	Body     []byte                         // 内容
-	Http     gorequest.Response             // 请求
-	ApiError ApiError                       // 接口错误
+	Result AlipaySystemOauthTokenResponse // 结果
+	Body   []byte                         // 内容
+	Http   gorequest.Response             // 请求
 }
 
-func newAlipaySystemOauthTokenResult(result AlipaySystemOauthTokenResponse, body []byte, http gorequest.Response, apiError ApiError) *AlipaySystemOauthTokenResult {
-	return &AlipaySystemOauthTokenResult{Result: result, Body: body, Http: http, ApiError: apiError}
+func newAlipaySystemOauthTokenResult(result AlipaySystemOauthTokenResponse, body []byte, http gorequest.Response) *AlipaySystemOauthTokenResult {
+	return &AlipaySystemOauthTokenResult{Result: result, Body: body, Http: http}
 }
 
 // AlipaySystemOauthToken 换取授权访问令牌
 // https://opendocs.alipay.com/open/02xtla
-func (c *Client) AlipaySystemOauthToken(ctx context.Context, grantType, code, refreshToken string) (*AlipaySystemOauthTokenResult, error) {
+func (c *Client) AlipaySystemOauthToken(ctx context.Context, notMustParams ...*gorequest.Params) (*AlipaySystemOauthTokenResult, ApiError, error) {
 	// 参数
-	params := gorequest.NewParams()
-	params.Set("grant_type", grantType)
-	if code != "" {
-		params.Set("code", code)
-	}
-	if refreshToken != "" {
-		params.Set("refresh_token", refreshToken)
-	}
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, c.newParamsWithType("alipay.system.oauth.token", params))
 	if err != nil {
-		return nil, err
+		return newAlipaySystemOauthTokenResult(AlipaySystemOauthTokenResponse{}, request.ResponseBody, request), ApiError{}, err
 	}
 	// 定义
 	var response AlipaySystemOauthTokenResponse
@@ -52,5 +44,5 @@ func (c *Client) AlipaySystemOauthToken(ctx context.Context, grantType, code, re
 	// 错误
 	var apiError ApiError
 	err = gojson.Unmarshal(request.ResponseBody, &apiError)
-	return newAlipaySystemOauthTokenResult(response, request.ResponseBody, request, apiError), err
+	return newAlipaySystemOauthTokenResult(response, request.ResponseBody, request), apiError, err
 }

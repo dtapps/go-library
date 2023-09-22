@@ -19,26 +19,24 @@ type AlipayUserInfoShareResponse struct {
 }
 
 type AlipayUserInfoShareResult struct {
-	Result   AlipayUserInfoShareResponse // 结果
-	Body     []byte                      // 内容
-	Http     gorequest.Response          // 请求
-	ApiError ApiError                    // 接口错误
+	Result AlipayUserInfoShareResponse // 结果
+	Body   []byte                      // 内容
+	Http   gorequest.Response          // 请求
 }
 
-func newAlipayUserInfoShareResult(result AlipayUserInfoShareResponse, body []byte, http gorequest.Response, apiError ApiError) *AlipayUserInfoShareResult {
-	return &AlipayUserInfoShareResult{Result: result, Body: body, Http: http, ApiError: apiError}
+func newAlipayUserInfoShareResult(result AlipayUserInfoShareResponse, body []byte, http gorequest.Response) *AlipayUserInfoShareResult {
+	return &AlipayUserInfoShareResult{Result: result, Body: body, Http: http}
 }
 
 // AlipayUserInfoShare 换取授权访问令牌
 // https://opendocs.alipay.com/open/02xtlb
-func (c *Client) AlipayUserInfoShare(ctx context.Context, authToken string) (*AlipayUserInfoShareResult, error) {
+func (c *Client) AlipayUserInfoShare(ctx context.Context, notMustParams ...*gorequest.Params) (*AlipayUserInfoShareResult, ApiError, error) {
 	// 参数
-	params := gorequest.NewParams()
-	params.Set("auth_token", authToken)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, c.newParamsWithType("alipay.user.info.share", params))
 	if err != nil {
-		return nil, err
+		return newAlipayUserInfoShareResult(AlipayUserInfoShareResponse{}, request.ResponseBody, request), ApiError{}, err
 	}
 	// 定义
 	var response AlipayUserInfoShareResponse
@@ -46,5 +44,5 @@ func (c *Client) AlipayUserInfoShare(ctx context.Context, authToken string) (*Al
 	// 错误
 	var apiError ApiError
 	err = gojson.Unmarshal(request.ResponseBody, &apiError)
-	return newAlipayUserInfoShareResult(response, request.ResponseBody, request, apiError), err
+	return newAlipayUserInfoShareResult(response, request.ResponseBody, request), apiError, err
 }
