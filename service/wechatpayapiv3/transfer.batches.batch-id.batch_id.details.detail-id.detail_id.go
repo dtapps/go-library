@@ -29,25 +29,24 @@ type TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult struct {
 	Result TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResponse // 结果
 	Body   []byte                                                       // 内容
 	Http   gorequest.Response                                           // 请求
-	Err    error                                                        // 错误
 }
 
-func newTransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult(result TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResponse, body []byte, http gorequest.Response, err error) *TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult {
-	return &TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult{Result: result, Body: body, Http: http, Err: err}
+func newTransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult(result TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResponse, body []byte, http gorequest.Response) *TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult {
+	return &TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult{Result: result, Body: body, Http: http}
 }
 
 // TransferBatchesBatchIdBatchIdDetailsDetailIdDetailId 通过微信明细单号查询明细单
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-detail/get-transfer-detail-by-no.html
-func (c *Client) TransferBatchesBatchIdBatchIdDetailsDetailIdDetailId(ctx context.Context, batchId string, detailId string) *TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult {
+func (c *Client) TransferBatchesBatchIdBatchIdDetailsDetailIdDetailId(ctx context.Context, batchId string, detailId string, notMustParams ...*gorequest.Params) (*TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult, error) {
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/transfer/batches/batch-id/"+batchId+"details/detail-id/"+detailId, params, http.MethodGet, false)
 	if err != nil {
-		return newTransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult(TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResponse{}, request.ResponseBody, request, err)
+		return newTransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult(TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newTransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult(response, request.ResponseBody, request, err)
+	return newTransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult(response, request.ResponseBody, request), err
 }

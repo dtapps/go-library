@@ -29,25 +29,24 @@ type TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult stru
 	Result TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResponse // 结果
 	Body   []byte                                                                   // 内容
 	Http   gorequest.Response                                                       // 请求
-	Err    error                                                                    // 错误
 }
 
-func newTransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult(result TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResponse, body []byte, http gorequest.Response, err error) *TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult {
-	return &TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult{Result: result, Body: body, Http: http, Err: err}
+func newTransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult(result TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResponse, body []byte, http gorequest.Response) *TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult {
+	return &TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult{Result: result, Body: body, Http: http}
 }
 
 // TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNo 通过商家明细单号查询明细单
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-detail/get-transfer-detail-by-out-no.html
-func (c *Client) TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNo(ctx context.Context, outBatchNo, outDetailNo string, notMustParams ...*gorequest.Params) *TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult {
+func (c *Client) TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNo(ctx context.Context, outBatchNo, outDetailNo string, notMustParams ...*gorequest.Params) (*TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/transfer/batches/out-batch-no/"+outBatchNo+"/details/out-detail-no/"+outDetailNo, params, http.MethodGet, false)
 	if err != nil {
-		return newTransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult(TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResponse{}, request.ResponseBody, request, err)
+		return newTransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult(TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newTransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult(response, request.ResponseBody, request, err)
+	return newTransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult(response, request.ResponseBody, request), err
 }

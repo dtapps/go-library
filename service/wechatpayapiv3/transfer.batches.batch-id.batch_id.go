@@ -39,25 +39,24 @@ type TransferBatchesBatchIdBatchIdResult struct {
 	Result TransferBatchesBatchIdBatchIdResponse // 结果
 	Body   []byte                                // 内容
 	Http   gorequest.Response                    // 请求
-	Err    error                                 // 错误
 }
 
-func newTransferBatchesBatchIdBatchIdResult(result TransferBatchesBatchIdBatchIdResponse, body []byte, http gorequest.Response, err error) *TransferBatchesBatchIdBatchIdResult {
-	return &TransferBatchesBatchIdBatchIdResult{Result: result, Body: body, Http: http, Err: err}
+func newTransferBatchesBatchIdBatchIdResult(result TransferBatchesBatchIdBatchIdResponse, body []byte, http gorequest.Response) *TransferBatchesBatchIdBatchIdResult {
+	return &TransferBatchesBatchIdBatchIdResult{Result: result, Body: body, Http: http}
 }
 
 // TransferBatchesBatchIdBatchId 通过微信批次单号查询批次单
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/get-transfer-batch-by-no.html
-func (c *Client) TransferBatchesBatchIdBatchId(ctx context.Context, batchId string, notMustParams ...*gorequest.Params) *TransferBatchesBatchIdBatchIdResult {
+func (c *Client) TransferBatchesBatchIdBatchId(ctx context.Context, batchId string, notMustParams ...*gorequest.Params) (*TransferBatchesBatchIdBatchIdResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/transfer/batches/batch-id/"+batchId, params, http.MethodGet, false)
 	if err != nil {
-		return newTransferBatchesBatchIdBatchIdResult(TransferBatchesBatchIdBatchIdResponse{}, request.ResponseBody, request, err)
+		return newTransferBatchesBatchIdBatchIdResult(TransferBatchesBatchIdBatchIdResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response TransferBatchesBatchIdBatchIdResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newTransferBatchesBatchIdBatchIdResult(response, request.ResponseBody, request, err)
+	return newTransferBatchesBatchIdBatchIdResult(response, request.ResponseBody, request), err
 }

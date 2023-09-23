@@ -53,25 +53,24 @@ type RefundDomesticRefundsResult struct {
 	Result RefundDomesticRefundsResponse // 结果
 	Body   []byte                        // 内容
 	Http   gorequest.Response            // 请求
-	Err    error                         // 错误
 }
 
-func newRefundDomesticRefundsResult(result RefundDomesticRefundsResponse, body []byte, http gorequest.Response, err error) *RefundDomesticRefundsResult {
-	return &RefundDomesticRefundsResult{Result: result, Body: body, Http: http, Err: err}
+func newRefundDomesticRefundsResult(result RefundDomesticRefundsResponse, body []byte, http gorequest.Response) *RefundDomesticRefundsResult {
+	return &RefundDomesticRefundsResult{Result: result, Body: body, Http: http}
 }
 
 // RefundDomesticRefunds 申请退款API
 // https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter6_1_26.shtml
-func (c *Client) RefundDomesticRefunds(ctx context.Context, notMustParams ...*gorequest.Params) *RefundDomesticRefundsResult {
+func (c *Client) RefundDomesticRefunds(ctx context.Context, notMustParams ...*gorequest.Params) (*RefundDomesticRefundsResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/refund/domestic/refunds", params, http.MethodPost, false)
 	if err != nil {
-		return newRefundDomesticRefundsResult(RefundDomesticRefundsResponse{}, request.ResponseBody, request, err)
+		return newRefundDomesticRefundsResult(RefundDomesticRefundsResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response RefundDomesticRefundsResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newRefundDomesticRefundsResult(response, request.ResponseBody, request, err)
+	return newRefundDomesticRefundsResult(response, request.ResponseBody, request), err
 }

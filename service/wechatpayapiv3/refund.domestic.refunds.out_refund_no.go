@@ -54,23 +54,24 @@ type RefundDomesticRefundsOutRefundNoResult struct {
 	Result RefundDomesticRefundsOutRefundNoResponse // 结果
 	Body   []byte                                   // 内容
 	Http   gorequest.Response                       // 请求
-	Err    error                                    // 错误
 }
 
-func newRefundDomesticRefundsOutRefundNoResult(result RefundDomesticRefundsOutRefundNoResponse, body []byte, http gorequest.Response, err error) *RefundDomesticRefundsOutRefundNoResult {
-	return &RefundDomesticRefundsOutRefundNoResult{Result: result, Body: body, Http: http, Err: err}
+func newRefundDomesticRefundsOutRefundNoResult(result RefundDomesticRefundsOutRefundNoResponse, body []byte, http gorequest.Response) *RefundDomesticRefundsOutRefundNoResult {
+	return &RefundDomesticRefundsOutRefundNoResult{Result: result, Body: body, Http: http}
 }
 
 // RefundDomesticRefundsOutRefundNo 查询单笔退款API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_10.shtml
-func (c *Client) RefundDomesticRefundsOutRefundNo(ctx context.Context, outRefundNo string) *RefundDomesticRefundsOutRefundNoResult {
+func (c *Client) RefundDomesticRefundsOutRefundNo(ctx context.Context, outRefundNo string, notMustParams ...*gorequest.Params) (*RefundDomesticRefundsOutRefundNoResult, error) {
+	// 参数
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/refund/domestic/refunds/%s", outRefundNo), nil, http.MethodGet, true)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/refund/domestic/refunds/%s", outRefundNo), params, http.MethodGet, true)
 	if err != nil {
-		return newRefundDomesticRefundsOutRefundNoResult(RefundDomesticRefundsOutRefundNoResponse{}, request.ResponseBody, request, err)
+		return newRefundDomesticRefundsOutRefundNoResult(RefundDomesticRefundsOutRefundNoResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response RefundDomesticRefundsOutRefundNoResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newRefundDomesticRefundsOutRefundNoResult(response, request.ResponseBody, request, err)
+	return newRefundDomesticRefundsOutRefundNoResult(response, request.ResponseBody, request), err
 }

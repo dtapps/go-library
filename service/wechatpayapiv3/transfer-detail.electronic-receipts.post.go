@@ -22,25 +22,24 @@ type TransferDetailElectronicReceiptsPostResult struct {
 	Result TransferDetailElectronicReceiptsPostResponse // 结果
 	Body   []byte                                       // 内容
 	Http   gorequest.Response                           // 请求
-	Err    error                                        // 错误
 }
 
-func newTransferDetailElectronicReceiptsPostResult(result TransferDetailElectronicReceiptsPostResponse, body []byte, http gorequest.Response, err error) *TransferDetailElectronicReceiptsPostResult {
-	return &TransferDetailElectronicReceiptsPostResult{Result: result, Body: body, Http: http, Err: err}
+func newTransferDetailElectronicReceiptsPostResult(result TransferDetailElectronicReceiptsPostResponse, body []byte, http gorequest.Response) *TransferDetailElectronicReceiptsPostResult {
+	return &TransferDetailElectronicReceiptsPostResult{Result: result, Body: body, Http: http}
 }
 
 // TransferDetailElectronicReceiptsPost 受理转账明细电子回单API
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/electronic-receipt-api/create-electronic-receipt.html
-func (c *Client) TransferDetailElectronicReceiptsPost(ctx context.Context, notMustParams ...*gorequest.Params) *TransferDetailElectronicReceiptsPostResult {
+func (c *Client) TransferDetailElectronicReceiptsPost(ctx context.Context, notMustParams ...*gorequest.Params) (*TransferDetailElectronicReceiptsPostResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/transfer-detail/electronic-receipts", params, http.MethodPost, false)
 	if err != nil {
-		return newTransferDetailElectronicReceiptsPostResult(TransferDetailElectronicReceiptsPostResponse{}, request.ResponseBody, request, err)
+		return newTransferDetailElectronicReceiptsPostResult(TransferDetailElectronicReceiptsPostResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response TransferDetailElectronicReceiptsPostResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newTransferDetailElectronicReceiptsPostResult(response, request.ResponseBody, request, err)
+	return newTransferDetailElectronicReceiptsPostResult(response, request.ResponseBody, request), err
 }

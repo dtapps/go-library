@@ -56,22 +56,23 @@ type PayTransactionsOutTradeNoResult struct {
 	Result PayTransactionsOutTradeNoResponse // 结果
 	Body   []byte                            // 内容
 	Http   gorequest.Response                // 请求
-	Err    error                             // 错误
 }
 
-func newPayTransactionsOutTradeNoResult(result PayTransactionsOutTradeNoResponse, body []byte, http gorequest.Response, err error) *PayTransactionsOutTradeNoResult {
-	return &PayTransactionsOutTradeNoResult{Result: result, Body: body, Http: http, Err: err}
+func newPayTransactionsOutTradeNoResult(result PayTransactionsOutTradeNoResponse, body []byte, http gorequest.Response) *PayTransactionsOutTradeNoResult {
+	return &PayTransactionsOutTradeNoResult{Result: result, Body: body, Http: http}
 }
 
 // PayTransactionsOutTradeNo 商户订单号查询 https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_2.shtml
-func (c *Client) PayTransactionsOutTradeNo(ctx context.Context, outTradeNo string) *PayTransactionsOutTradeNoResult {
+func (c *Client) PayTransactionsOutTradeNo(ctx context.Context, outTradeNo string, notMustParams ...*gorequest.Params) *PayTransactionsOutTradeNoResult {
+	// 参数
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/pay/transactions/out-trade-no/%s?mchid=%s", outTradeNo, c.GetMchId()), nil, http.MethodGet, true)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/pay/transactions/out-trade-no/%s?mchid=%s", outTradeNo, c.GetMchId()), params, http.MethodGet, true)
 	if err != nil {
-		return newPayTransactionsOutTradeNoResult(PayTransactionsOutTradeNoResponse{}, request.ResponseBody, request, err)
+		return newPayTransactionsOutTradeNoResult(PayTransactionsOutTradeNoResponse{}, request.ResponseBody, request)
 	}
 	// 定义
 	var response PayTransactionsOutTradeNoResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPayTransactionsOutTradeNoResult(response, request.ResponseBody, request, err)
+	return newPayTransactionsOutTradeNoResult(response, request.ResponseBody, request)
 }

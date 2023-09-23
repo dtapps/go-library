@@ -55,25 +55,24 @@ type MerchantServiceComplaintsV2Result struct {
 	Result MerchantServiceComplaintsV2Response // 结果
 	Body   []byte                              // 内容
 	Http   gorequest.Response                  // 请求
-	Err    error                               // 错误
 }
 
-func newMerchantServiceComplaintsV2Result(result MerchantServiceComplaintsV2Response, body []byte, http gorequest.Response, err error) *MerchantServiceComplaintsV2Result {
-	return &MerchantServiceComplaintsV2Result{Result: result, Body: body, Http: http, Err: err}
+func newMerchantServiceComplaintsV2Result(result MerchantServiceComplaintsV2Response, body []byte, http gorequest.Response) *MerchantServiceComplaintsV2Result {
+	return &MerchantServiceComplaintsV2Result{Result: result, Body: body, Http: http}
 }
 
 // MerchantServiceComplaintsV2 查询投诉单列表API
 // https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter10_2_11.shtml
-func (c *Client) MerchantServiceComplaintsV2(ctx context.Context, notMustParams ...*gorequest.Params) *MerchantServiceComplaintsV2Result {
+func (c *Client) MerchantServiceComplaintsV2(ctx context.Context, notMustParams ...*gorequest.Params) (*MerchantServiceComplaintsV2Result, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/merchant-service/complaints-v2", params, http.MethodGet, false)
 	if err != nil {
-		return newMerchantServiceComplaintsV2Result(MerchantServiceComplaintsV2Response{}, request.ResponseBody, request, err)
+		return newMerchantServiceComplaintsV2Result(MerchantServiceComplaintsV2Response{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response MerchantServiceComplaintsV2Response
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newMerchantServiceComplaintsV2Result(response, request.ResponseBody, request, err)
+	return newMerchantServiceComplaintsV2Result(response, request.ResponseBody, request), err
 }

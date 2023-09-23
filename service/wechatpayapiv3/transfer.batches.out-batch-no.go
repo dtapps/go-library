@@ -39,25 +39,24 @@ type TransferBatchesOutBatchNoResult struct {
 	Result TransferBatchesOutBatchNoResponse // 结果
 	Body   []byte                            // 内容
 	Http   gorequest.Response                // 请求
-	Err    error                             // 错误
 }
 
-func newTransferBatchesOutBatchNoResult(result TransferBatchesOutBatchNoResponse, body []byte, http gorequest.Response, err error) *TransferBatchesOutBatchNoResult {
-	return &TransferBatchesOutBatchNoResult{Result: result, Body: body, Http: http, Err: err}
+func newTransferBatchesOutBatchNoResult(result TransferBatchesOutBatchNoResponse, body []byte, http gorequest.Response) *TransferBatchesOutBatchNoResult {
+	return &TransferBatchesOutBatchNoResult{Result: result, Body: body, Http: http}
 }
 
 // TransferBatchesOutBatchNo 通过微信批次单号查询批次单
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/get-transfer-batch-by-no.html
-func (c *Client) TransferBatchesOutBatchNo(ctx context.Context, notMustParams ...*gorequest.Params) *TransferBatchesOutBatchNoResult {
+func (c *Client) TransferBatchesOutBatchNo(ctx context.Context, notMustParams ...*gorequest.Params) (*TransferBatchesOutBatchNoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/transfer/batches/out-batch-no", params, http.MethodGet, false)
 	if err != nil {
-		return newTransferBatchesOutBatchNoResult(TransferBatchesOutBatchNoResponse{}, request.ResponseBody, request, err)
+		return newTransferBatchesOutBatchNoResult(TransferBatchesOutBatchNoResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response TransferBatchesOutBatchNoResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newTransferBatchesOutBatchNoResult(response, request.ResponseBody, request, err)
+	return newTransferBatchesOutBatchNoResult(response, request.ResponseBody, request), err
 }

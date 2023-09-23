@@ -23,25 +23,24 @@ type TransferBillReceiptResult struct {
 	Result TransferBillReceiptResponse // 结果
 	Body   []byte                      // 内容
 	Http   gorequest.Response          // 请求
-	Err    error                       // 错误
 }
 
-func newTransferBillReceiptResult(result TransferBillReceiptResponse, body []byte, http gorequest.Response, err error) *TransferBillReceiptResult {
-	return &TransferBillReceiptResult{Result: result, Body: body, Http: http, Err: err}
+func newTransferBillReceiptResult(result TransferBillReceiptResponse, body []byte, http gorequest.Response) *TransferBillReceiptResult {
+	return &TransferBillReceiptResult{Result: result, Body: body, Http: http}
 }
 
 // TransferBillReceipt 转账账单电子回单申请受理接口
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/electronic-signature/create-electronic-signature.html
-func (c *Client) TransferBillReceipt(ctx context.Context, notMustParams ...*gorequest.Params) *TransferBillReceiptResult {
+func (c *Client) TransferBillReceipt(ctx context.Context, notMustParams ...*gorequest.Params) (*TransferBillReceiptResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/transfer/bill-receipt", params, http.MethodPost, false)
 	if err != nil {
-		return newTransferBillReceiptResult(TransferBillReceiptResponse{}, request.ResponseBody, request, err)
+		return newTransferBillReceiptResult(TransferBillReceiptResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response TransferBillReceiptResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newTransferBillReceiptResult(response, request.ResponseBody, request, err)
+	return newTransferBillReceiptResult(response, request.ResponseBody, request), err
 }

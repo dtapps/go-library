@@ -23,25 +23,24 @@ type TransferBillReceiptOutBatchNoResult struct {
 	Result TransferBillReceiptOutBatchNoResponse // 结果
 	Body   []byte                                // 内容
 	Http   gorequest.Response                    // 请求
-	Err    error                                 // 错误
 }
 
-func newTransferBillReceiptOutBatchNoResult(result TransferBillReceiptOutBatchNoResponse, body []byte, http gorequest.Response, err error) *TransferBillReceiptOutBatchNoResult {
-	return &TransferBillReceiptOutBatchNoResult{Result: result, Body: body, Http: http, Err: err}
+func newTransferBillReceiptOutBatchNoResult(result TransferBillReceiptOutBatchNoResponse, body []byte, http gorequest.Response) *TransferBillReceiptOutBatchNoResult {
+	return &TransferBillReceiptOutBatchNoResult{Result: result, Body: body, Http: http}
 }
 
 // TransferBillReceiptOutBatchNo 查询转账账单电子回单接口
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/electronic-signature/get-electronic-signature-by-out-no.html
-func (c *Client) TransferBillReceiptOutBatchNo(ctx context.Context, outBatchNo string, notMustParams ...*gorequest.Params) *TransferBillReceiptOutBatchNoResult {
+func (c *Client) TransferBillReceiptOutBatchNo(ctx context.Context, outBatchNo string, notMustParams ...*gorequest.Params) (*TransferBillReceiptOutBatchNoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/transfer/bill-receipt/"+outBatchNo, params, http.MethodGet, false)
 	if err != nil {
-		return newTransferBillReceiptOutBatchNoResult(TransferBillReceiptOutBatchNoResponse{}, request.ResponseBody, request, err)
+		return newTransferBillReceiptOutBatchNoResult(TransferBillReceiptOutBatchNoResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response TransferBillReceiptOutBatchNoResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newTransferBillReceiptOutBatchNoResult(response, request.ResponseBody, request, err)
+	return newTransferBillReceiptOutBatchNoResult(response, request.ResponseBody, request), err
 }

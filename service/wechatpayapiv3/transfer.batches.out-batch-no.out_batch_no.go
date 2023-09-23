@@ -39,25 +39,24 @@ type TransferBatchesOutBatchNoOutBatchNoResult struct {
 	Result TransferBatchesOutBatchNoOutBatchNoResponse // 结果
 	Body   []byte                                      // 内容
 	Http   gorequest.Response                          // 请求
-	Err    error                                       // 错误
 }
 
-func newTransferBatchesOutBatchNoOutBatchNoResult(result TransferBatchesOutBatchNoOutBatchNoResponse, body []byte, http gorequest.Response, err error) *TransferBatchesOutBatchNoOutBatchNoResult {
-	return &TransferBatchesOutBatchNoOutBatchNoResult{Result: result, Body: body, Http: http, Err: err}
+func newTransferBatchesOutBatchNoOutBatchNoResult(result TransferBatchesOutBatchNoOutBatchNoResponse, body []byte, http gorequest.Response) *TransferBatchesOutBatchNoOutBatchNoResult {
+	return &TransferBatchesOutBatchNoOutBatchNoResult{Result: result, Body: body, Http: http}
 }
 
 // TransferBatchesOutBatchNoOutBatchNo 通过商家批次单号查询批次单
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/get-transfer-batch-by-out-no.html
-func (c *Client) TransferBatchesOutBatchNoOutBatchNo(ctx context.Context, outBatchNo string, notMustParams ...*gorequest.Params) *TransferBatchesOutBatchNoOutBatchNoResult {
+func (c *Client) TransferBatchesOutBatchNoOutBatchNo(ctx context.Context, outBatchNo string, notMustParams ...*gorequest.Params) (*TransferBatchesOutBatchNoOutBatchNoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/transfer/batches/out-batch-no/"+outBatchNo, params, http.MethodGet, false)
 	if err != nil {
-		return newTransferBatchesOutBatchNoOutBatchNoResult(TransferBatchesOutBatchNoOutBatchNoResponse{}, request.ResponseBody, request, err)
+		return newTransferBatchesOutBatchNoOutBatchNoResult(TransferBatchesOutBatchNoOutBatchNoResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response TransferBatchesOutBatchNoOutBatchNoResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newTransferBatchesOutBatchNoOutBatchNoResult(response, request.ResponseBody, request, err)
+	return newTransferBatchesOutBatchNoOutBatchNoResult(response, request.ResponseBody, request), err
 }

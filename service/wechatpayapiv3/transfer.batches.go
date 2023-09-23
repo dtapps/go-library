@@ -17,26 +17,25 @@ type TransferBatchesResult struct {
 	Result TransferBatchesResponse // 结果
 	Body   []byte                  // 内容
 	Http   gorequest.Response      // 请求
-	Err    error                   // 错误
 }
 
-func newTransferBatchesResult(result TransferBatchesResponse, body []byte, http gorequest.Response, err error) *TransferBatchesResult {
-	return &TransferBatchesResult{Result: result, Body: body, Http: http, Err: err}
+func newTransferBatchesResult(result TransferBatchesResponse, body []byte, http gorequest.Response) *TransferBatchesResult {
+	return &TransferBatchesResult{Result: result, Body: body, Http: http}
 }
 
 // TransferBatches 发起商家转账
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/initiate-batch-transfer.html
-func (c *Client) TransferBatches(ctx context.Context, notMustParams ...*gorequest.Params) *TransferBatchesResult {
+func (c *Client) TransferBatches(ctx context.Context, notMustParams ...*gorequest.Params) (*TransferBatchesResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", c.GetAppId())
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/transfer/batches", params, http.MethodPost, false)
 	if err != nil {
-		return newTransferBatchesResult(TransferBatchesResponse{}, request.ResponseBody, request, err)
+		return newTransferBatchesResult(TransferBatchesResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response TransferBatchesResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newTransferBatchesResult(response, request.ResponseBody, request, err)
+	return newTransferBatchesResult(response, request.ResponseBody, request), err
 }
