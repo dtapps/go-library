@@ -47,23 +47,25 @@ type PromoterProductGenerateResult struct {
 	Result PromoterProductGenerateResponse // 结果
 	Body   []byte                          // 内容
 	Http   gorequest.Response              // 请求
-	Err    error                           // 错误
 }
 
-func newPromoterProductGenerateResult(result PromoterProductGenerateResponse, body []byte, http gorequest.Response, err error) *PromoterProductGenerateResult {
-	return &PromoterProductGenerateResult{Result: result, Body: body, Http: http, Err: err}
+func newPromoterProductGenerateResult(result PromoterProductGenerateResponse, body []byte, http gorequest.Response) *PromoterProductGenerateResult {
+	return &PromoterProductGenerateResult{Result: result, Body: body, Http: http}
 }
 
 // PromoterProductGenerate 获取商品推广素材
 // https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/product/category.html#_4-%E8%8E%B7%E5%8F%96%E5%95%86%E5%93%81%E6%8E%A8%E5%B9%BF%E7%B4%A0%E6%9D%90
-func (c *Client) PromoterProductGenerate(ctx context.Context, notMustParams ...*gorequest.Params) *PromoterProductGenerateResult {
+func (c *Client) PromoterProductGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (*PromoterProductGenerateResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("pid", c.GetPid())
 	// 请求
 	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/promoter/product/generate?access_token=%s", c.getAccessToken(ctx)), params, http.MethodPost)
+	if err != nil {
+		return newPromoterProductGenerateResult(PromoterProductGenerateResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PromoterProductGenerateResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPromoterProductGenerateResult(response, request.ResponseBody, request, err)
+	return newPromoterProductGenerateResult(response, request.ResponseBody, request), err
 }

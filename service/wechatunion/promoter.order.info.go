@@ -47,27 +47,24 @@ type PromoterOrderInfoResult struct {
 	Result PromoterOrderInfoResponse // 结果
 	Body   []byte                    // 内容
 	Http   gorequest.Response        // 请求
-	Err    error                     // 错误
 }
 
-func newPromoterOrderInfoResult(result PromoterOrderInfoResponse, body []byte, http gorequest.Response, err error) *PromoterOrderInfoResult {
-	return &PromoterOrderInfoResult{Result: result, Body: body, Http: http, Err: err}
+func newPromoterOrderInfoResult(result PromoterOrderInfoResponse, body []byte, http gorequest.Response) *PromoterOrderInfoResult {
+	return &PromoterOrderInfoResult{Result: result, Body: body, Http: http}
 }
 
 // PromoterOrderInfo 根据订单ID查询订单详情
 // https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/order/order-info.html#_1-%E6%A0%B9%E6%8D%AE%E8%AE%A2%E5%8D%95ID%E6%9F%A5%E8%AF%A2%E8%AE%A2%E5%8D%95%E8%AF%A6%E6%83%85
-func (c *Client) PromoterOrderInfo(ctx context.Context, orderId ...string) *PromoterOrderInfoResult {
+func (c *Client) PromoterOrderInfo(ctx context.Context, notMustParams ...*gorequest.Params) (*PromoterOrderInfoResult, error) {
 	// 参数
-	params := gorequest.NewParamsWith()
-	var orderIdList []any
-	for _, v := range orderId {
-		orderIdList = append(orderIdList, v)
-	}
-	params.Set("orderIdList", orderIdList)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/promoter/order/info?access_token=%s", c.getAccessToken(ctx)), params, http.MethodPost)
+	if err != nil {
+		return newPromoterOrderInfoResult(PromoterOrderInfoResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PromoterOrderInfoResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPromoterOrderInfoResult(response, request.ResponseBody, request, err)
+	return newPromoterOrderInfoResult(response, request.ResponseBody, request), err
 }

@@ -11,7 +11,7 @@ func (c *Client) GetAccessToken(ctx context.Context) string {
 	}
 	newCache := c.cache.redisClient.NewSimpleStringCache(c.cache.redisClient.NewStringOperation(), time.Second*7000)
 	newCache.DBGetter = func() string {
-		token := c.CgiBinToken(ctx)
+		token, _ := c.CgiBinToken(ctx)
 		return token.Result.AccessToken
 	}
 	return newCache.GetCache(ctx, c.getAccessTokenCacheKeyName())

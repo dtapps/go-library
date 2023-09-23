@@ -130,24 +130,26 @@ type PromoterProductSelectResult struct {
 	Result PromoterProductSelectResponse // 结果
 	Body   []byte                        // 内容
 	Http   gorequest.Response            // 请求
-	Err    error                         // 错误
 }
 
-func newPromoterProductSelectResult(result PromoterProductSelectResponse, body []byte, http gorequest.Response, err error) *PromoterProductSelectResult {
-	return &PromoterProductSelectResult{Result: result, Body: body, Http: http, Err: err}
+func newPromoterProductSelectResult(result PromoterProductSelectResponse, body []byte, http gorequest.Response) *PromoterProductSelectResult {
+	return &PromoterProductSelectResult{Result: result, Body: body, Http: http}
 }
 
 // PromoterProductSelect
 // 查询联盟精选商品
 // 支持开发者根据多种筛选条件获取联盟精选的商品列表及详情，筛选条件包括商品价格、商品佣金、商品累计销量、佣金比例、是否含有联盟券、配送方式、发货地区
 // https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/product/category.html#3.%E6%9F%A5%E8%AF%A2%E8%81%94%E7%9B%9F%E7%B2%BE%E9%80%89%E5%95%86%E5%93%81
-func (c *Client) PromoterProductSelect(ctx context.Context, notMustParams ...*gorequest.Params) *PromoterProductSelectResult {
+func (c *Client) PromoterProductSelect(ctx context.Context, notMustParams ...*gorequest.Params) (*PromoterProductSelectResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/promoter/product/select?access_token=%s", c.getAccessToken(ctx)), params, http.MethodGet)
+	if err != nil {
+		return newPromoterProductSelectResult(PromoterProductSelectResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PromoterProductSelectResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPromoterProductSelectResult(response, request.ResponseBody, request, err)
+	return newPromoterProductSelectResult(response, request.ResponseBody, request), err
 }

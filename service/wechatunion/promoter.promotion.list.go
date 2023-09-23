@@ -25,24 +25,26 @@ type PromotionListResult struct {
 	Result PromotionListResponse // 结果
 	Body   []byte                // 内容
 	Http   gorequest.Response    // 请求
-	Err    error                 // 错误
 }
 
-func newPromotionListResult(result PromotionListResponse, body []byte, http gorequest.Response, err error) *PromotionListResult {
-	return &PromotionListResult{Result: result, Body: body, Http: http, Err: err}
+func newPromotionListResult(result PromotionListResponse, body []byte, http gorequest.Response) *PromotionListResult {
+	return &PromotionListResult{Result: result, Body: body, Http: http}
 }
 
 // PromotionList 获取推广位列表
 // https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/promotion.html#_4-%E8%8E%B7%E5%8F%96%E6%8E%A8%E5%B9%BF%E4%BD%8D%E5%88%97%E8%A1%A8
-func (c *Client) PromotionList(ctx context.Context, start int, limit int) *PromotionListResult {
+func (c *Client) PromotionList(ctx context.Context, start int, limit int, notMustParams ...*gorequest.Params) (*PromotionListResult, error) {
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("start", start) // 偏移
 	params.Set("limit", limit) // 每页条数
 	// 请求
 	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/promoter/promotion/list?access_token%s", c.getAccessToken(ctx)), params, http.MethodGet)
+	if err != nil {
+		return newPromotionListResult(PromotionListResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PromotionListResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPromotionListResult(response, request.ResponseBody, request, err)
+	return newPromotionListResult(response, request.ResponseBody, request), err
 }
