@@ -37,9 +37,13 @@ func newWaiMaiMeituanPrivilegeResult(result WaiMaiMeituanPrivilegeResponse, body
 
 // WaiMaiMeituanPrivilege 美团外卖CPS推广API接口
 // https://www.dingdanxia.com/doc/174/173
-func (c *Client) WaiMaiMeituanPrivilege(ctx context.Context, notMustParams ...*gorequest.Params) (*WaiMaiMeituanPrivilegeResult, error) {
+func (c *Client) WaiMaiMeituanPrivilege(ctx context.Context, sid string, generateWeApp bool, channels int, qrcode bool, notMustParams ...*gorequest.Params) (*WaiMaiMeituanPrivilegeResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("sid", sid)                       // 渠道方用户唯一标识,渠道可自定义,长度不超过50，参数中不能包含dingdanxia，用于向用户返佣,支持小写字母和数字的格式,其它字符可能造成无法正常跟单
+	params.Set("generate_we_app", generateWeApp) // 是否生成小程序推广信息
+	params.Set("channels", channels)             // 推广渠道 1-小程序推广,2-公众号推广,3-app推广,4-社群推广 默认1 ，请务必选择对应渠道推广，选择错误会影响佣金比例
+	params.Set("qrcode", qrcode)                 // 二维码图片
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/waimai/meituan_privilege", params, http.MethodPost)
 	if err != nil {
