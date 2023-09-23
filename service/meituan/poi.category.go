@@ -31,9 +31,10 @@ func newPoiCategoryResult(result PoiCategoryResponse, body []byte, http goreques
 
 // PoiCategory 基础数据 - 品类接口
 // https://openapi.meituan.com/#api-0.%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE-GetHttpsOpenapiMeituanComPoiDistrictCityid1
-func (c *Client) PoiCategory(ctx context.Context, notMustParams ...*gorequest.Params) (*PoiCategoryResult, error) {
+func (c *Client) PoiCategory(ctx context.Context, cityID int, notMustParams ...*gorequest.Params) (*PoiCategoryResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("cityid", cityID)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/poi/category", params, http.MethodGet)
 	if err != nil {
