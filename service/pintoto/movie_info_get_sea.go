@@ -6,10 +6,6 @@ import (
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
-type GetSeat struct {
-	ShowId string `json:"showId"` // 场次标识
-}
-
 type GetSeatResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
@@ -36,24 +32,24 @@ type GetSeatResult struct {
 	Result GetSeatResponse    // 结果
 	Body   []byte             // 内容
 	Http   gorequest.Response // 请求
-	Err    error              // 错误
 }
 
-func newGetSeatResult(result GetSeatResponse, body []byte, http gorequest.Response, err error) *GetSeatResult {
-	return &GetSeatResult{Result: result, Body: body, Http: http, Err: err}
+func newGetSeatResult(result GetSeatResponse, body []byte, http gorequest.Response) *GetSeatResult {
+	return &GetSeatResult{Result: result, Body: body, Http: http}
 }
 
 // GetSeat 座位 https://www.showdoc.com.cn/1154868044931571/5866824368760475
-func (c *Client) GetSeat(ctx context.Context, showId string) *GetSeatResult {
+func (c *Client) GetSeat(ctx context.Context, showId string, notMustParams ...*gorequest.Params) (*GetSeatResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("showId", showId)
-	// 转换
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("showId", showId)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-seat", params)
+	if err != nil {
+		return newGetSeatResult(GetSeatResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response GetSeatResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newGetSeatResult(response, request.ResponseBody, request, err)
+	return newGetSeatResult(response, request.ResponseBody, request), err
 }

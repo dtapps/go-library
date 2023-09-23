@@ -22,23 +22,24 @@ type GetCityAreaResult struct {
 	Result GetCityAreaResponse // 结果
 	Body   []byte              // 内容
 	Http   gorequest.Response  // 请求
-	Err    error               // 错误
 }
 
-func newGetCityAreaResult(result GetCityAreaResponse, body []byte, http gorequest.Response, err error) *GetCityAreaResult {
-	return &GetCityAreaResult{Result: result, Body: body, Http: http, Err: err}
+func newGetCityAreaResult(result GetCityAreaResponse, body []byte, http gorequest.Response) *GetCityAreaResult {
+	return &GetCityAreaResult{Result: result, Body: body, Http: http}
 }
 
 // GetCityArea 城市下区域
 // https://www.showdoc.com.cn/1154868044931571/6243539682553126
-func (c *Client) GetCityArea(ctx context.Context, cityId int) *GetCityAreaResult {
-	// 测试
-	param := gorequest.NewParams()
-	param.Set("cityId", cityId)
-	params := gorequest.NewParamsWith(param)
+func (c *Client) GetCityArea(ctx context.Context, cityId int, notMustParams ...*gorequest.Params) (*GetCityAreaResult, error) {
+	// 参数
+	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("cityId", cityId)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-city-area", params)
+	if err != nil {
+		return newGetCityAreaResult(GetCityAreaResponse{}, request.ResponseBody, request), err
+	}
 	var response GetCityAreaResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newGetCityAreaResult(response, request.ResponseBody, request, err)
+	return newGetCityAreaResult(response, request.ResponseBody, request), err
 }

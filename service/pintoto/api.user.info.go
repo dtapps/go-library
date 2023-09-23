@@ -22,18 +22,23 @@ type ApiUserInfoResult struct {
 	Result ApiUserInfoResponse // 结果
 	Body   []byte              // 内容
 	Http   gorequest.Response  // 请求
-	Err    error               // 错误
 }
 
-func newApiUserInfoResult(result ApiUserInfoResponse, body []byte, http gorequest.Response, err error) *ApiUserInfoResult {
-	return &ApiUserInfoResult{Result: result, Body: body, Http: http, Err: err}
+func newApiUserInfoResult(result ApiUserInfoResponse, body []byte, http gorequest.Response) *ApiUserInfoResult {
+	return &ApiUserInfoResult{Result: result, Body: body, Http: http}
 }
 
 // ApiUserInfo 账号信息查询 https://www.showdoc.com.cn/1154868044931571/6269224958928211
-func (c *Client) ApiUserInfo(ctx context.Context) *ApiUserInfoResult {
-	request, err := c.request(ctx, apiUrl+"/api/user/info", map[string]interface{}{})
+func (c *Client) ApiUserInfo(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiUserInfoResult, error) {
+	// 参数
+	params := gorequest.NewParamsWith(notMustParams...)
+	// 请求
+	request, err := c.request(ctx, apiUrl+"/api/user/info", params)
+	if err != nil {
+		return newApiUserInfoResult(ApiUserInfoResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response ApiUserInfoResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newApiUserInfoResult(response, request.ResponseBody, request, err)
+	return newApiUserInfoResult(response, request.ResponseBody, request), err
 }

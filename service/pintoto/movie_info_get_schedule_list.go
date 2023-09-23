@@ -39,24 +39,24 @@ type GetScheduleListResult struct {
 	Result GetScheduleListResponse // 结果
 	Body   []byte                  // 内容
 	Http   gorequest.Response      // 请求
-	Err    error                   // 错误
 }
 
-func newGetScheduleListResult(result GetScheduleListResponse, body []byte, http gorequest.Response, err error) *GetScheduleListResult {
-	return &GetScheduleListResult{Result: result, Body: body, Http: http, Err: err}
+func newGetScheduleListResult(result GetScheduleListResponse, body []byte, http gorequest.Response) *GetScheduleListResult {
+	return &GetScheduleListResult{Result: result, Body: body, Http: http}
 }
 
 // GetScheduleList 场次排期 https://www.showdoc.com.cn/1154868044931571/5866708808899217
-func (c *Client) GetScheduleList(ctx context.Context, cinemaId int) *GetScheduleListResult {
+func (c *Client) GetScheduleList(ctx context.Context, cinemaId int, notMustParams ...*gorequest.Params) (*GetScheduleListResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("cinemaId", cinemaId)
-	// 转换
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("cinemaId", cinemaId)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-schedule-list", params)
+	if err != nil {
+		return newGetScheduleListResult(GetScheduleListResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response GetScheduleListResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newGetScheduleListResult(response, request.ResponseBody, request, err)
+	return newGetScheduleListResult(response, request.ResponseBody, request), err
 }

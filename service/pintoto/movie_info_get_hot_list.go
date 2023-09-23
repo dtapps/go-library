@@ -35,24 +35,24 @@ type GetHotListResult struct {
 	Result GetHotListResponse // 结果
 	Body   []byte             // 内容
 	Http   gorequest.Response // 请求
-	Err    error              // 错误
 }
 
-func newGetHotListResult(result GetHotListResponse, body []byte, http gorequest.Response, err error) *GetHotListResult {
-	return &GetHotListResult{Result: result, Body: body, Http: http, Err: err}
+func newGetHotListResult(result GetHotListResponse, body []byte, http gorequest.Response) *GetHotListResult {
+	return &GetHotListResult{Result: result, Body: body, Http: http}
 }
 
 // GetHotList 正在热映 https://www.showdoc.com.cn/1154868044931571/5866125707634369
-func (c *Client) GetHotList(ctx context.Context, cityId int) *GetHotListResult {
+func (c *Client) GetHotList(ctx context.Context, cityId int, notMustParams ...*gorequest.Params) (*GetHotListResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("cityId", cityId)
-	// 转换
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("cityId", cityId)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-hot-list", params)
+	if err != nil {
+		return newGetHotListResult(GetHotListResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response GetHotListResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newGetHotListResult(response, request.ResponseBody, request, err)
+	return newGetHotListResult(response, request.ResponseBody, request), err
 }

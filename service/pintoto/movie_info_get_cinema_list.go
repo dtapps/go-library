@@ -30,24 +30,24 @@ type GetCinemaListResult struct {
 	Result GetCinemaListResponse // 结果
 	Body   []byte                // 内容
 	Http   gorequest.Response    // 请求
-	Err    error                 // 错误
 }
 
-func newGetCinemaListResult(result GetCinemaListResponse, body []byte, http gorequest.Response, err error) *GetCinemaListResult {
-	return &GetCinemaListResult{Result: result, Body: body, Http: http, Err: err}
+func newGetCinemaListResult(result GetCinemaListResponse, body []byte, http gorequest.Response) *GetCinemaListResult {
+	return &GetCinemaListResult{Result: result, Body: body, Http: http}
 }
 
 // GetCinemaList 影院列表 https://www.showdoc.com.cn/1154868044931571/5866426126744792
-func (c *Client) GetCinemaList(ctx context.Context, cityId int) *GetCinemaListResult {
+func (c *Client) GetCinemaList(ctx context.Context, cityId int, notMustParams ...*gorequest.Params) (*GetCinemaListResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("cityId", cityId)
-	// 转换
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("cityId", cityId)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-cinema-list", params)
+	if err != nil {
+		return newGetCinemaListResult(GetCinemaListResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response GetCinemaListResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newGetCinemaListResult(response, request.ResponseBody, request, err)
+	return newGetCinemaListResult(response, request.ResponseBody, request), err
 }

@@ -25,18 +25,23 @@ type GetCityListResult struct {
 	Result GetCityListResponse // 结果
 	Body   []byte              // 内容
 	Http   gorequest.Response  // 请求
-	Err    error               // 错误
 }
 
-func newGetCityListResult(result GetCityListResponse, body []byte, http gorequest.Response, err error) *GetCityListResult {
-	return &GetCityListResult{Result: result, Body: body, Http: http, Err: err}
+func newGetCityListResult(result GetCityListResponse, body []byte, http gorequest.Response) *GetCityListResult {
+	return &GetCityListResult{Result: result, Body: body, Http: http}
 }
 
 // GetCityList 城市列表
 // https://www.showdoc.com.cn/1154868044931571/5865562425538244
-func (c *Client) GetCityList(ctx context.Context) *GetCityListResult {
-	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-city-list", map[string]interface{}{})
+func (c *Client) GetCityList(ctx context.Context, notMustParams ...*gorequest.Params) (*GetCityListResult, error) {
+	// 参数
+	params := gorequest.NewParamsWith(notMustParams...)
+	// 请求
+	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-city-list", params)
+	if err != nil {
+		return newGetCityListResult(GetCityListResponse{}, request.ResponseBody, request), err
+	}
 	var response GetCityListResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newGetCityListResult(response, request.ResponseBody, request, err)
+	return newGetCityListResult(response, request.ResponseBody, request), err
 }

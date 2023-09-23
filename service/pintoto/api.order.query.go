@@ -38,23 +38,24 @@ type ApiOrderQueryResult struct {
 	Result ApiOrderQueryResponse // 结果
 	Body   []byte                // 内容
 	Http   gorequest.Response    // 请求
-	Err    error                 // 错误
 }
 
-func newApiOrderQueryResult(result ApiOrderQueryResponse, body []byte, http gorequest.Response, err error) *ApiOrderQueryResult {
-	return &ApiOrderQueryResult{Result: result, Body: body, Http: http, Err: err}
+func newApiOrderQueryResult(result ApiOrderQueryResponse, body []byte, http gorequest.Response) *ApiOrderQueryResult {
+	return &ApiOrderQueryResult{Result: result, Body: body, Http: http}
 }
 
 // ApiOrderQuery 订单查询 https://www.showdoc.com.cn/1154868044931571/5965244588489845
-func (c *Client) ApiOrderQuery(ctx context.Context, thirdOrderId string) *ApiOrderQueryResult {
-	// 测试
-	param := gorequest.NewParams()
-	param.Set("thirdOrderId", thirdOrderId)
-	params := gorequest.NewParamsWith(param)
+func (c *Client) ApiOrderQuery(ctx context.Context, thirdOrderId string, notMustParams ...*gorequest.Params) (*ApiOrderQueryResult, error) {
+	// 参数
+	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("thirdOrderId", thirdOrderId)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/api/order/query", params)
+	if err != nil {
+		return newApiOrderQueryResult(ApiOrderQueryResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response ApiOrderQueryResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newApiOrderQueryResult(response, request.ResponseBody, request, err)
+	return newApiOrderQueryResult(response, request.ResponseBody, request), err
 }

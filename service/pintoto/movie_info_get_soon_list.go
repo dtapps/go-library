@@ -35,24 +35,24 @@ type GetSoonListResult struct {
 	Result GetSoonListResponse // 结果
 	Body   []byte              // 内容
 	Http   gorequest.Response  // 请求
-	Err    error               // 错误
 }
 
-func newGetSoonListResult(result GetSoonListResponse, body []byte, http gorequest.Response, err error) *GetSoonListResult {
-	return &GetSoonListResult{Result: result, Body: body, Http: http, Err: err}
+func newGetSoonListResult(result GetSoonListResponse, body []byte, http gorequest.Response) *GetSoonListResult {
+	return &GetSoonListResult{Result: result, Body: body, Http: http}
 }
 
 // GetSoonList 即将上映 https://www.showdoc.com.cn/1154868044931571/5866125707634369
-func (c *Client) GetSoonList(ctx context.Context, cityId int) *GetSoonListResult {
+func (c *Client) GetSoonList(ctx context.Context, cityId int, notMustParams ...*gorequest.Params) (*GetSoonListResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("cityId", cityId)
-	// 转换
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("cityId", cityId)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/movieapi/movie-info/get-soon-list", params)
+	if err != nil {
+		return newGetSoonListResult(GetSoonListResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response GetSoonListResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newGetSoonListResult(response, request.ResponseBody, request, err)
+	return newGetSoonListResult(response, request.ResponseBody, request), err
 }
