@@ -95,10 +95,11 @@ func newGeocodeRegeoResult(result GeocodeRegeoResponse, body []byte, http gorequ
 
 // GeocodeRegeo 逆地理编码
 // https://lbs.amap.com/api/webservice/guide/api/georegeo
-func (c *Client) GeocodeRegeo(ctx context.Context, notMustParams ...*gorequest.Params) (*GeocodeRegeoResult, error) {
+func (c *Client) GeocodeRegeo(ctx context.Context, location string, notMustParams ...*gorequest.Params) (*GeocodeRegeoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("key", c.GetKey())
+	params.Set("location", location)
 	params.Set("output", "JSON")
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/geocode/regeo", params, http.MethodGet)
