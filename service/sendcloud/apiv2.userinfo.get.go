@@ -44,26 +44,27 @@ type ApiV2UserinfoGetResult struct {
 	Result ApiV2UserinfoGetResponse // 结果
 	Body   []byte                   // 内容
 	Http   gorequest.Response       // 请求
-	Err    error                    // 错误
 }
 
-func newApiV2UserinfoGetResult(result ApiV2UserinfoGetResponse, body []byte, http gorequest.Response, err error) *ApiV2UserinfoGetResult {
-	return &ApiV2UserinfoGetResult{Result: result, Body: body, Http: http, Err: err}
+func newApiV2UserinfoGetResult(result ApiV2UserinfoGetResponse, body []byte, http gorequest.Response) *ApiV2UserinfoGetResult {
+	return &ApiV2UserinfoGetResult{Result: result, Body: body, Http: http}
 }
 
 // ApiV2UserinfoGet 获取单个订单信息。
 // 仅能获取自己购买的订单。
 // http://doc.cqmeihu.cn/sales/ApiV2UserinfoGet-info.html
-func (c *Client) ApiV2UserinfoGet(ctx context.Context) *ApiV2UserinfoGetResult {
+func (c *Client) ApiV2UserinfoGet(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiV2UserinfoGetResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("apiUser", c.GetApiUser())
-	param.Set("apiKey", c.GetApiKey())
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("apiUser", c.GetApiUser())
+	params.Set("apiKey", c.GetApiKey())
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/apiv2/userinfo/get", params, http.MethodGet)
+	if err != nil {
+		return newApiV2UserinfoGetResult(ApiV2UserinfoGetResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response ApiV2UserinfoGetResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newApiV2UserinfoGetResult(response, request.ResponseBody, request, err)
+	return newApiV2UserinfoGetResult(response, request.ResponseBody, request), err
 }
