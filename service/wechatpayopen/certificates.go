@@ -26,23 +26,22 @@ type CertificatesResult struct {
 	Result CertificatesResponse // 结果
 	Body   []byte               // 内容
 	Http   gorequest.Response   // 请求
-	Err    error                // 错误
 }
 
-func newCertificatesResult(result CertificatesResponse, body []byte, http gorequest.Response, err error) *CertificatesResult {
-	return &CertificatesResult{Result: result, Body: body, Http: http, Err: err}
+func newCertificatesResult(result CertificatesResponse, body []byte, http gorequest.Response) *CertificatesResult {
+	return &CertificatesResult{Result: result, Body: body, Http: http}
 }
 
 // Certificates 获取平台证书列表
 // https://pay.weixin.qq.com/wiki/doc/apiv3/apis/wechatpay5_1.shtml
-func (c *Client) Certificates(ctx context.Context) *CertificatesResult {
+func (c *Client) Certificates(ctx context.Context) (*CertificatesResult, error) {
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/certificates", nil, http.MethodGet)
 	if err != nil {
-		return newCertificatesResult(CertificatesResponse{}, request.ResponseBody, request, err)
+		return newCertificatesResult(CertificatesResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
 	var response CertificatesResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newCertificatesResult(response, request.ResponseBody, request, err)
+	return newCertificatesResult(response, request.ResponseBody, request), err
 }

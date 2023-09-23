@@ -14,26 +14,24 @@ type BillFundFlowBillGetResponse struct {
 }
 
 type BillFundFlowBillGetResult struct {
-	Result   BillFundFlowBillGetResponse // 结果
-	Body     []byte                      // 内容
-	Http     gorequest.Response          // 请求
-	Err      error                       // 错误
-	ApiError ApiError                    // 接口错误
+	Result BillFundFlowBillGetResponse // 结果
+	Body   []byte                      // 内容
+	Http   gorequest.Response          // 请求
 }
 
-func newBillFundFlowBillGetResult(result BillFundFlowBillGetResponse, body []byte, http gorequest.Response, err error, apiError ApiError) *BillFundFlowBillGetResult {
-	return &BillFundFlowBillGetResult{Result: result, Body: body, Http: http, Err: err, ApiError: apiError}
+func newBillFundFlowBillGetResult(result BillFundFlowBillGetResponse, body []byte, http gorequest.Response) *BillFundFlowBillGetResult {
+	return &BillFundFlowBillGetResult{Result: result, Body: body, Http: http}
 }
 
 // BillFundFlowBillGet 申请资金账单API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_7.shtml
-func (c *Client) BillFundFlowBillGet(ctx context.Context, notMustParams ...*gorequest.Params) *BillFundFlowBillGetResult {
+func (c *Client) BillFundFlowBillGet(ctx context.Context, notMustParams ...*gorequest.Params) (*BillFundFlowBillGetResult, ApiError, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/bill/fundflowbill", params, http.MethodGet)
 	if err != nil {
-		return newBillFundFlowBillGetResult(BillFundFlowBillGetResponse{}, request.ResponseBody, request, err, ApiError{})
+		return newBillFundFlowBillGetResult(BillFundFlowBillGetResponse{}, request.ResponseBody, request), ApiError{}, err
 	}
 	// 定义
 	var response BillFundFlowBillGetResponse
@@ -41,5 +39,5 @@ func (c *Client) BillFundFlowBillGet(ctx context.Context, notMustParams ...*gore
 	// 错误
 	var apiError ApiError
 	err = gojson.Unmarshal(request.ResponseBody, &apiError)
-	return newBillFundFlowBillGetResult(response, request.ResponseBody, request, err, apiError)
+	return newBillFundFlowBillGetResult(response, request.ResponseBody, request), apiError, err
 }

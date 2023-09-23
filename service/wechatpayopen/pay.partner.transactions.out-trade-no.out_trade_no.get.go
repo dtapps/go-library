@@ -37,26 +37,24 @@ type PayPartnerTransactionsOutTradeNoOutTradeNoGetResponse struct {
 }
 
 type PayPartnerTransactionsOutTradeNoOutTradeNoGetResult struct {
-	Result   PayPartnerTransactionsOutTradeNoOutTradeNoGetResponse // 结果
-	Body     []byte                                                // 内容
-	Http     gorequest.Response                                    // 请求
-	Err      error                                                 // 错误
-	ApiError ApiError                                              // 接口错误
+	Result PayPartnerTransactionsOutTradeNoOutTradeNoGetResponse // 结果
+	Body   []byte                                                // 内容
+	Http   gorequest.Response                                    // 请求
 }
 
-func newPayPartnerTransactionsOutTradeNoOutTradeNoGetResult(result PayPartnerTransactionsOutTradeNoOutTradeNoGetResponse, body []byte, http gorequest.Response, err error, apiError ApiError) *PayPartnerTransactionsOutTradeNoOutTradeNoGetResult {
-	return &PayPartnerTransactionsOutTradeNoOutTradeNoGetResult{Result: result, Body: body, Http: http, Err: err, ApiError: apiError}
+func newPayPartnerTransactionsOutTradeNoOutTradeNoGetResult(result PayPartnerTransactionsOutTradeNoOutTradeNoGetResponse, body []byte, http gorequest.Response) *PayPartnerTransactionsOutTradeNoOutTradeNoGetResult {
+	return &PayPartnerTransactionsOutTradeNoOutTradeNoGetResult{Result: result, Body: body, Http: http}
 }
 
 // PayPartnerTransactionsOutTradeNoOutTradeNoGet 商户订单号查询
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_2.shtml
-func (c *Client) PayPartnerTransactionsOutTradeNoOutTradeNoGet(ctx context.Context, outTradeNo string) *PayPartnerTransactionsOutTradeNoOutTradeNoGetResult {
+func (c *Client) PayPartnerTransactionsOutTradeNoOutTradeNoGet(ctx context.Context, outTradeNo string) (*PayPartnerTransactionsOutTradeNoOutTradeNoGetResult, ApiError, error) {
 	// 参数
 	params := gorequest.NewParams()
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/pay/partner/transactions/out-trade-no/"+outTradeNo+"?sp_mchid="+c.GetSpMchId()+"&sub_mchid="+c.GetSubMchId(), params, http.MethodGet)
 	if err != nil {
-		return newPayPartnerTransactionsOutTradeNoOutTradeNoGetResult(PayPartnerTransactionsOutTradeNoOutTradeNoGetResponse{}, request.ResponseBody, request, err, ApiError{})
+		return newPayPartnerTransactionsOutTradeNoOutTradeNoGetResult(PayPartnerTransactionsOutTradeNoOutTradeNoGetResponse{}, request.ResponseBody, request), ApiError{}, err
 	}
 	// 定义
 	var response PayPartnerTransactionsOutTradeNoOutTradeNoGetResponse
@@ -64,5 +62,5 @@ func (c *Client) PayPartnerTransactionsOutTradeNoOutTradeNoGet(ctx context.Conte
 	// 错误
 	var apiError ApiError
 	err = gojson.Unmarshal(request.ResponseBody, &apiError)
-	return newPayPartnerTransactionsOutTradeNoOutTradeNoGetResult(response, request.ResponseBody, request, err, apiError)
+	return newPayPartnerTransactionsOutTradeNoOutTradeNoGetResult(response, request.ResponseBody, request), apiError, err
 }

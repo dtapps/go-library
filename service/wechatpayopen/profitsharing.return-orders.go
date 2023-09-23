@@ -23,27 +23,25 @@ type ProfitSharingReturnOrdersResponse struct {
 }
 
 type ProfitSharingReturnOrdersResult struct {
-	Result   ProfitSharingReturnOrdersResponse // 结果
-	Body     []byte                            // 内容
-	Http     gorequest.Response                // 请求
-	Err      error                             // 错误
-	ApiError ApiError                          // 接口错误
+	Result ProfitSharingReturnOrdersResponse // 结果
+	Body   []byte                            // 内容
+	Http   gorequest.Response                // 请求
 }
 
-func newProfitSharingReturnOrdersResult(result ProfitSharingReturnOrdersResponse, body []byte, http gorequest.Response, err error, apiError ApiError) *ProfitSharingReturnOrdersResult {
-	return &ProfitSharingReturnOrdersResult{Result: result, Body: body, Http: http, Err: err, ApiError: apiError}
+func newProfitSharingReturnOrdersResult(result ProfitSharingReturnOrdersResponse, body []byte, http gorequest.Response) *ProfitSharingReturnOrdersResult {
+	return &ProfitSharingReturnOrdersResult{Result: result, Body: body, Http: http}
 }
 
 // ProfitSharingReturnOrders 请求分账回退API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_3.shtml
-func (c *Client) ProfitSharingReturnOrders(ctx context.Context, notMustParams ...*gorequest.Params) *ProfitSharingReturnOrdersResult {
+func (c *Client) ProfitSharingReturnOrders(ctx context.Context, notMustParams ...*gorequest.Params) (*ProfitSharingReturnOrdersResult, ApiError, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/profitsharing/return-orders", params, http.MethodPost)
 	if err != nil {
-		return newProfitSharingReturnOrdersResult(ProfitSharingReturnOrdersResponse{}, request.ResponseBody, request, err, ApiError{})
+		return newProfitSharingReturnOrdersResult(ProfitSharingReturnOrdersResponse{}, request.ResponseBody, request), ApiError{}, err
 	}
 	// 定义
 	var response ProfitSharingReturnOrdersResponse
@@ -51,5 +49,5 @@ func (c *Client) ProfitSharingReturnOrders(ctx context.Context, notMustParams ..
 	// 错误
 	var apiError ApiError
 	err = gojson.Unmarshal(request.ResponseBody, &apiError)
-	return newProfitSharingReturnOrdersResult(response, request.ResponseBody, request, err, apiError)
+	return newProfitSharingReturnOrdersResult(response, request.ResponseBody, request), apiError, err
 }

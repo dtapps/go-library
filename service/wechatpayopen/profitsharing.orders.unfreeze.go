@@ -27,20 +27,18 @@ type ProfitSharingOrdersUnfreezeResponse struct {
 }
 
 type ProfitSharingOrdersUnfreezeResult struct {
-	Result   ProfitSharingOrdersUnfreezeResponse // 结果
-	Body     []byte                              // 内容
-	Http     gorequest.Response                  // 请求
-	Err      error                               // 错误
-	ApiError ApiError                            // 接口错误
+	Result ProfitSharingOrdersUnfreezeResponse // 结果
+	Body   []byte                              // 内容
+	Http   gorequest.Response                  // 请求
 }
 
-func newProfitSharingOrdersUnfreezeResult(result ProfitSharingOrdersUnfreezeResponse, body []byte, http gorequest.Response, err error, apiError ApiError) *ProfitSharingOrdersUnfreezeResult {
-	return &ProfitSharingOrdersUnfreezeResult{Result: result, Body: body, Http: http, Err: err, ApiError: apiError}
+func newProfitSharingOrdersUnfreezeResult(result ProfitSharingOrdersUnfreezeResponse, body []byte, http gorequest.Response) *ProfitSharingOrdersUnfreezeResult {
+	return &ProfitSharingOrdersUnfreezeResult{Result: result, Body: body, Http: http}
 }
 
 // ProfitSharingOrdersUnfreeze 解冻剩余资金API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_5.shtml
-func (c *Client) ProfitSharingOrdersUnfreeze(ctx context.Context, transactionId, outOrderNo, description string) *ProfitSharingOrdersUnfreezeResult {
+func (c *Client) ProfitSharingOrdersUnfreeze(ctx context.Context, transactionId, outOrderNo, description string) (*ProfitSharingOrdersUnfreezeResult, ApiError, error) {
 	// 参数
 	params := gorequest.NewParams()
 	params.Set("sub_mchid", c.GetSubMchId())    // 子商户号
@@ -50,7 +48,7 @@ func (c *Client) ProfitSharingOrdersUnfreeze(ctx context.Context, transactionId,
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/profitsharing/orders/unfreeze", params, http.MethodPost)
 	if err != nil {
-		return newProfitSharingOrdersUnfreezeResult(ProfitSharingOrdersUnfreezeResponse{}, request.ResponseBody, request, err, ApiError{})
+		return newProfitSharingOrdersUnfreezeResult(ProfitSharingOrdersUnfreezeResponse{}, request.ResponseBody, request), ApiError{}, err
 	}
 	// 定义
 	var response ProfitSharingOrdersUnfreezeResponse
@@ -58,5 +56,5 @@ func (c *Client) ProfitSharingOrdersUnfreeze(ctx context.Context, transactionId,
 	// 错误
 	var apiError ApiError
 	err = gojson.Unmarshal(request.ResponseBody, &apiError)
-	return newProfitSharingOrdersUnfreezeResult(response, request.ResponseBody, request, err, apiError)
+	return newProfitSharingOrdersUnfreezeResult(response, request.ResponseBody, request), apiError, err
 }

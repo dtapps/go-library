@@ -53,26 +53,24 @@ type PayPartnerTransactionsIdResponse struct {
 }
 
 type PayPartnerTransactionsIdResult struct {
-	Result   PayPartnerTransactionsIdResponse // 结果
-	Body     []byte                           // 内容
-	Http     gorequest.Response               // 请求
-	Err      error                            // 错误
-	ApiError ApiError                         // 接口错误
+	Result PayPartnerTransactionsIdResponse // 结果
+	Body   []byte                           // 内容
+	Http   gorequest.Response               // 请求
 }
 
-func newPayPartnerTransactionsIdResult(result PayPartnerTransactionsIdResponse, body []byte, http gorequest.Response, err error, apiError ApiError) *PayPartnerTransactionsIdResult {
-	return &PayPartnerTransactionsIdResult{Result: result, Body: body, Http: http, Err: err, ApiError: apiError}
+func newPayPartnerTransactionsIdResult(result PayPartnerTransactionsIdResponse, body []byte, http gorequest.Response) *PayPartnerTransactionsIdResult {
+	return &PayPartnerTransactionsIdResult{Result: result, Body: body, Http: http}
 }
 
 // PayPartnerTransactionsId 微信支付订单号查询
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_2.shtml
-func (c *Client) PayPartnerTransactionsId(ctx context.Context, transactionId string) *PayPartnerTransactionsIdResult {
+func (c *Client) PayPartnerTransactionsId(ctx context.Context, transactionId string) (*PayPartnerTransactionsIdResult, ApiError, error) {
 	// 参数
 	params := gorequest.NewParams()
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/pay/partner/transactions/id/%s?sp_mchid=%s&sub_mchid=%s", transactionId, c.GetSpMchId(), c.GetSubMchId()), params, http.MethodGet)
 	if err != nil {
-		return newPayPartnerTransactionsIdResult(PayPartnerTransactionsIdResponse{}, request.ResponseBody, request, err, ApiError{})
+		return newPayPartnerTransactionsIdResult(PayPartnerTransactionsIdResponse{}, request.ResponseBody, request), ApiError{}, err
 	}
 	// 定义
 	var response PayPartnerTransactionsIdResponse
@@ -80,5 +78,5 @@ func (c *Client) PayPartnerTransactionsId(ctx context.Context, transactionId str
 	// 错误
 	var apiError ApiError
 	err = gojson.Unmarshal(request.ResponseBody, &apiError)
-	return newPayPartnerTransactionsIdResult(response, request.ResponseBody, request, err, apiError)
+	return newPayPartnerTransactionsIdResult(response, request.ResponseBody, request), apiError, err
 }

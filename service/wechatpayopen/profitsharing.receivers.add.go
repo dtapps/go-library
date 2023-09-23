@@ -17,20 +17,18 @@ type ProfitSharingReceiversAddResponse struct {
 }
 
 type ProfitSharingReceiversAddResult struct {
-	Result   ProfitSharingReceiversAddResponse // 结果
-	Body     []byte                            // 内容
-	Http     gorequest.Response                // 请求
-	Err      error                             // 错误
-	ApiError ApiError                          // 接口错误
+	Result ProfitSharingReceiversAddResponse // 结果
+	Body   []byte                            // 内容
+	Http   gorequest.Response                // 请求
 }
 
-func newProfitSharingReceiversAddResult(result ProfitSharingReceiversAddResponse, body []byte, http gorequest.Response, err error, apiError ApiError) *ProfitSharingReceiversAddResult {
-	return &ProfitSharingReceiversAddResult{Result: result, Body: body, Http: http, Err: err, ApiError: apiError}
+func newProfitSharingReceiversAddResult(result ProfitSharingReceiversAddResponse, body []byte, http gorequest.Response) *ProfitSharingReceiversAddResult {
+	return &ProfitSharingReceiversAddResult{Result: result, Body: body, Http: http}
 }
 
 // ProfitSharingReceiversAdd 添加分账接收方API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_8.shtml
-func (c *Client) ProfitSharingReceiversAdd(ctx context.Context, Type, account, name, relationType, customRelation string) *ProfitSharingReceiversAddResult {
+func (c *Client) ProfitSharingReceiversAdd(ctx context.Context, Type, account, name, relationType, customRelation string) (*ProfitSharingReceiversAddResult, ApiError, error) {
 	// 参数
 	params := gorequest.NewParams()
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
@@ -56,7 +54,7 @@ func (c *Client) ProfitSharingReceiversAdd(ctx context.Context, Type, account, n
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/profitsharing/receivers/delete", params, http.MethodPost)
 	if err != nil {
-		return newProfitSharingReceiversAddResult(ProfitSharingReceiversAddResponse{}, request.ResponseBody, request, err, ApiError{})
+		return newProfitSharingReceiversAddResult(ProfitSharingReceiversAddResponse{}, request.ResponseBody, request), ApiError{}, err
 	}
 	// 定义
 	var response ProfitSharingReceiversAddResponse
@@ -64,5 +62,5 @@ func (c *Client) ProfitSharingReceiversAdd(ctx context.Context, Type, account, n
 	// 错误
 	var apiError ApiError
 	err = gojson.Unmarshal(request.ResponseBody, &apiError)
-	return newProfitSharingReceiversAddResult(response, request.ResponseBody, request, err, apiError)
+	return newProfitSharingReceiversAddResult(response, request.ResponseBody, request), apiError, err
 }

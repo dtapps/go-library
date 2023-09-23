@@ -14,27 +14,25 @@ type BillTradeBillGetResponse struct {
 }
 
 type BillTradeBillGetResult struct {
-	Result   BillTradeBillGetResponse // 结果
-	Body     []byte                   // 内容
-	Http     gorequest.Response       // 请求
-	Err      error                    // 错误
-	ApiError ApiError                 // 接口错误
+	Result BillTradeBillGetResponse // 结果
+	Body   []byte                   // 内容
+	Http   gorequest.Response       // 请求
 }
 
-func newBillTradeBillGetResult(result BillTradeBillGetResponse, body []byte, http gorequest.Response, err error, apiError ApiError) *BillTradeBillGetResult {
-	return &BillTradeBillGetResult{Result: result, Body: body, Http: http, Err: err, ApiError: apiError}
+func newBillTradeBillGetResult(result BillTradeBillGetResponse, body []byte, http gorequest.Response) *BillTradeBillGetResult {
+	return &BillTradeBillGetResult{Result: result, Body: body, Http: http}
 }
 
 // BillTradeBillGet 申请交易账单API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_6.shtml
-func (c *Client) BillTradeBillGet(ctx context.Context, notMustParams ...*gorequest.Params) *BillTradeBillGetResult {
+func (c *Client) BillTradeBillGet(ctx context.Context, notMustParams ...*gorequest.Params) (*BillTradeBillGetResult, ApiError, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/bill/tradebill", params, http.MethodGet)
 	if err != nil {
-		return newBillTradeBillGetResult(BillTradeBillGetResponse{}, request.ResponseBody, request, err, ApiError{})
+		return newBillTradeBillGetResult(BillTradeBillGetResponse{}, request.ResponseBody, request), ApiError{}, err
 	}
 	// 定义
 	var response BillTradeBillGetResponse
@@ -42,5 +40,5 @@ func (c *Client) BillTradeBillGet(ctx context.Context, notMustParams ...*goreque
 	// 错误
 	var apiError ApiError
 	err = gojson.Unmarshal(request.ResponseBody, &apiError)
-	return newBillTradeBillGetResult(response, request.ResponseBody, request, err, apiError)
+	return newBillTradeBillGetResult(response, request.ResponseBody, request), apiError, err
 }

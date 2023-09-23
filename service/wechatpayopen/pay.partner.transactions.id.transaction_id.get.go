@@ -38,20 +38,18 @@ type PayPartnerTransactionsIdTransactionIdGetResponse struct {
 }
 
 type PayPartnerTransactionsIdTransactionIdGetResult struct {
-	Result   PayPartnerTransactionsIdTransactionIdGetResponse // 结果
-	Body     []byte                                           // 内容
-	Http     gorequest.Response                               // 请求
-	Err      error                                            // 错误
-	ApiError ApiError                                         // 接口错误
+	Result PayPartnerTransactionsIdTransactionIdGetResponse // 结果
+	Body   []byte                                           // 内容
+	Http   gorequest.Response                               // 请求
 }
 
-func newPayPartnerTransactionsIdTransactionIdGetResult(result PayPartnerTransactionsIdTransactionIdGetResponse, body []byte, http gorequest.Response, err error, apiError ApiError) *PayPartnerTransactionsIdTransactionIdGetResult {
-	return &PayPartnerTransactionsIdTransactionIdGetResult{Result: result, Body: body, Http: http, Err: err, ApiError: apiError}
+func newPayPartnerTransactionsIdTransactionIdGetResult(result PayPartnerTransactionsIdTransactionIdGetResponse, body []byte, http gorequest.Response) *PayPartnerTransactionsIdTransactionIdGetResult {
+	return &PayPartnerTransactionsIdTransactionIdGetResult{Result: result, Body: body, Http: http}
 }
 
 // PayPartnerTransactionsIdTransactionIdGet 微信支付订单号查询
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_2.shtml
-func (c *Client) PayPartnerTransactionsIdTransactionIdGet(ctx context.Context, transactionId string, notMustParams ...*gorequest.Params) *PayPartnerTransactionsIdTransactionIdGetResult {
+func (c *Client) PayPartnerTransactionsIdTransactionIdGet(ctx context.Context, transactionId string, notMustParams ...*gorequest.Params) (*PayPartnerTransactionsIdTransactionIdGetResult, ApiError, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sp_mchid", c.GetSpMchId())   // 服务商户号
@@ -59,7 +57,7 @@ func (c *Client) PayPartnerTransactionsIdTransactionIdGet(ctx context.Context, t
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/pay/partner/transactions/id/"+transactionId, params, http.MethodGet)
 	if err != nil {
-		return newPayPartnerTransactionsIdTransactionIdGetResult(PayPartnerTransactionsIdTransactionIdGetResponse{}, request.ResponseBody, request, err, ApiError{})
+		return newPayPartnerTransactionsIdTransactionIdGetResult(PayPartnerTransactionsIdTransactionIdGetResponse{}, request.ResponseBody, request), ApiError{}, err
 	}
 	// 定义
 	var response PayPartnerTransactionsIdTransactionIdGetResponse
@@ -67,5 +65,5 @@ func (c *Client) PayPartnerTransactionsIdTransactionIdGet(ctx context.Context, t
 	// 错误
 	var apiError ApiError
 	err = gojson.Unmarshal(request.ResponseBody, &apiError)
-	return newPayPartnerTransactionsIdTransactionIdGetResult(response, request.ResponseBody, request, err, apiError)
+	return newPayPartnerTransactionsIdTransactionIdGetResult(response, request.ResponseBody, request), apiError, err
 }

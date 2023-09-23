@@ -51,27 +51,25 @@ type RefundDomesticRefundsResponse struct {
 }
 
 type RefundDomesticRefundsResult struct {
-	Result   RefundDomesticRefundsResponse // 结果
-	Body     []byte                        // 内容
-	Http     gorequest.Response            // 请求
-	Err      error                         // 错误
-	ApiError ApiError                      // 接口错误
+	Result RefundDomesticRefundsResponse // 结果
+	Body   []byte                        // 内容
+	Http   gorequest.Response            // 请求
 }
 
-func newRefundDomesticRefundsResult(result RefundDomesticRefundsResponse, body []byte, http gorequest.Response, err error, apiError ApiError) *RefundDomesticRefundsResult {
-	return &RefundDomesticRefundsResult{Result: result, Body: body, Http: http, Err: err, ApiError: apiError}
+func newRefundDomesticRefundsResult(result RefundDomesticRefundsResponse, body []byte, http gorequest.Response) *RefundDomesticRefundsResult {
+	return &RefundDomesticRefundsResult{Result: result, Body: body, Http: http}
 }
 
 // RefundDomesticRefunds 申请退款API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_9.shtml
-func (c *Client) RefundDomesticRefunds(ctx context.Context, notMustParams ...*gorequest.Params) *RefundDomesticRefundsResult {
+func (c *Client) RefundDomesticRefunds(ctx context.Context, notMustParams ...*gorequest.Params) (*RefundDomesticRefundsResult, ApiError, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/refund/domestic/refunds", params, http.MethodPost)
 	if err != nil {
-		return newRefundDomesticRefundsResult(RefundDomesticRefundsResponse{}, request.ResponseBody, request, err, ApiError{})
+		return newRefundDomesticRefundsResult(RefundDomesticRefundsResponse{}, request.ResponseBody, request), ApiError{}, err
 	}
 	// 定义
 	var response RefundDomesticRefundsResponse
@@ -79,5 +77,5 @@ func (c *Client) RefundDomesticRefunds(ctx context.Context, notMustParams ...*go
 	// 错误
 	var apiError ApiError
 	err = gojson.Unmarshal(request.ResponseBody, &apiError)
-	return newRefundDomesticRefundsResult(response, request.ResponseBody, request, err, apiError)
+	return newRefundDomesticRefundsResult(response, request.ResponseBody, request), apiError, err
 }

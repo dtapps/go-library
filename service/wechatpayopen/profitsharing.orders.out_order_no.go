@@ -27,20 +27,18 @@ type ProfitSharingOrdersOutOrderNoResponse struct {
 }
 
 type ProfitSharingOrdersOutOrderNoResult struct {
-	Result   ProfitSharingOrdersOutOrderNoResponse // 结果
-	Body     []byte                                // 内容
-	Http     gorequest.Response                    // 请求
-	Err      error                                 // 错误
-	ApiError ApiError                              // 接口错误
+	Result ProfitSharingOrdersOutOrderNoResponse // 结果
+	Body   []byte                                // 内容
+	Http   gorequest.Response                    // 请求
 }
 
-func newProfitSharingOrdersOutOrderNoResult(result ProfitSharingOrdersOutOrderNoResponse, body []byte, http gorequest.Response, err error, apiError ApiError) *ProfitSharingOrdersOutOrderNoResult {
-	return &ProfitSharingOrdersOutOrderNoResult{Result: result, Body: body, Http: http, Err: err, ApiError: apiError}
+func newProfitSharingOrdersOutOrderNoResult(result ProfitSharingOrdersOutOrderNoResponse, body []byte, http gorequest.Response) *ProfitSharingOrdersOutOrderNoResult {
+	return &ProfitSharingOrdersOutOrderNoResult{Result: result, Body: body, Http: http}
 }
 
 // ProfitSharingOrdersOutOrderNo 查询分账结果API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_2.shtml
-func (c *Client) ProfitSharingOrdersOutOrderNo(ctx context.Context, transactionId, outOrderNo string) *ProfitSharingOrdersOutOrderNoResult {
+func (c *Client) ProfitSharingOrdersOutOrderNo(ctx context.Context, transactionId, outOrderNo string) (*ProfitSharingOrdersOutOrderNoResult, ApiError, error) {
 	// 参数
 	params := gorequest.NewParams()
 	params.Set("sub_mchid", c.GetSubMchId())    // 子商户号
@@ -49,7 +47,7 @@ func (c *Client) ProfitSharingOrdersOutOrderNo(ctx context.Context, transactionI
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/profitsharing/orders/"+outOrderNo, params, http.MethodGet)
 	if err != nil {
-		return newProfitSharingOrdersOutOrderNoResult(ProfitSharingOrdersOutOrderNoResponse{}, request.ResponseBody, request, err, ApiError{})
+		return newProfitSharingOrdersOutOrderNoResult(ProfitSharingOrdersOutOrderNoResponse{}, request.ResponseBody, request), ApiError{}, err
 	}
 	// 定义
 	var response ProfitSharingOrdersOutOrderNoResponse
@@ -57,5 +55,5 @@ func (c *Client) ProfitSharingOrdersOutOrderNo(ctx context.Context, transactionI
 	// 错误
 	var apiError ApiError
 	err = gojson.Unmarshal(request.ResponseBody, &apiError)
-	return newProfitSharingOrdersOutOrderNoResult(response, request.ResponseBody, request, err, apiError)
+	return newProfitSharingOrdersOutOrderNoResult(response, request.ResponseBody, request), apiError, err
 }

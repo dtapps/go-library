@@ -52,26 +52,24 @@ type RefundDomesticRefundsOutRefundNoGetResponse struct {
 }
 
 type RefundDomesticRefundsOutRefundNoGetResult struct {
-	Result   RefundDomesticRefundsOutRefundNoGetResponse // 结果
-	Body     []byte                                      // 内容
-	Http     gorequest.Response                          // 请求
-	Err      error                                       // 错误
-	ApiError ApiError                                    // 接口错误
+	Result RefundDomesticRefundsOutRefundNoGetResponse // 结果
+	Body   []byte                                      // 内容
+	Http   gorequest.Response                          // 请求
 }
 
-func newRefundDomesticRefundsOutRefundNoGetResult(result RefundDomesticRefundsOutRefundNoGetResponse, body []byte, http gorequest.Response, err error, apiError ApiError) *RefundDomesticRefundsOutRefundNoGetResult {
-	return &RefundDomesticRefundsOutRefundNoGetResult{Result: result, Body: body, Http: http, Err: err, ApiError: apiError}
+func newRefundDomesticRefundsOutRefundNoGetResult(result RefundDomesticRefundsOutRefundNoGetResponse, body []byte, http gorequest.Response) *RefundDomesticRefundsOutRefundNoGetResult {
+	return &RefundDomesticRefundsOutRefundNoGetResult{Result: result, Body: body, Http: http}
 }
 
 // RefundDomesticRefundsOutRefundNoGet 查询单笔退款API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_10.shtml
-func (c *Client) RefundDomesticRefundsOutRefundNoGet(ctx context.Context, outRefundNo string, notMustParams ...*gorequest.Params) *RefundDomesticRefundsOutRefundNoGetResult {
+func (c *Client) RefundDomesticRefundsOutRefundNoGet(ctx context.Context, outRefundNo string, notMustParams ...*gorequest.Params) (*RefundDomesticRefundsOutRefundNoGetResult, ApiError, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/refund/domestic/refunds/"+outRefundNo, params, http.MethodGet)
 	if err != nil {
-		return newRefundDomesticRefundsOutRefundNoGetResult(RefundDomesticRefundsOutRefundNoGetResponse{}, request.ResponseBody, request, err, ApiError{})
+		return newRefundDomesticRefundsOutRefundNoGetResult(RefundDomesticRefundsOutRefundNoGetResponse{}, request.ResponseBody, request), ApiError{}, err
 	}
 	// 定义
 	var response RefundDomesticRefundsOutRefundNoGetResponse
@@ -79,5 +77,5 @@ func (c *Client) RefundDomesticRefundsOutRefundNoGet(ctx context.Context, outRef
 	// 错误
 	var apiError ApiError
 	err = gojson.Unmarshal(request.ResponseBody, &apiError)
-	return newRefundDomesticRefundsOutRefundNoGetResult(response, request.ResponseBody, request, err, apiError)
+	return newRefundDomesticRefundsOutRefundNoGetResult(response, request.ResponseBody, request), apiError, err
 }

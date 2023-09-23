@@ -12,20 +12,18 @@ type PayPartnerTransactionsJsapiResponse struct {
 }
 
 type PayPartnerTransactionsJsapiResult struct {
-	Result   PayPartnerTransactionsJsapiResponse // 结果
-	Body     []byte                              // 内容
-	Http     gorequest.Response                  // 请求
-	Err      error                               // 错误
-	ApiError ApiError                            // 接口错误
+	Result PayPartnerTransactionsJsapiResponse // 结果
+	Body   []byte                              // 内容
+	Http   gorequest.Response                  // 请求
 }
 
-func newPayPartnerTransactionsJsapiResult(result PayPartnerTransactionsJsapiResponse, body []byte, http gorequest.Response, err error, apiError ApiError) *PayPartnerTransactionsJsapiResult {
-	return &PayPartnerTransactionsJsapiResult{Result: result, Body: body, Http: http, Err: err, ApiError: apiError}
+func newPayPartnerTransactionsJsapiResult(result PayPartnerTransactionsJsapiResponse, body []byte, http gorequest.Response) *PayPartnerTransactionsJsapiResult {
+	return &PayPartnerTransactionsJsapiResult{Result: result, Body: body, Http: http}
 }
 
 // PayPartnerTransactionsJsapi JSAPI下单
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_1.shtml
-func (c *Client) PayPartnerTransactionsJsapi(ctx context.Context, notMustParams ...*gorequest.Params) *PayPartnerTransactionsJsapiResult {
+func (c *Client) PayPartnerTransactionsJsapi(ctx context.Context, notMustParams ...*gorequest.Params) (*PayPartnerTransactionsJsapiResult, ApiError, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sp_appid", c.GetSpAppid())   // 服务商应用ID
@@ -35,7 +33,7 @@ func (c *Client) PayPartnerTransactionsJsapi(ctx context.Context, notMustParams 
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/v3/pay/partner/transactions/jsapi", params, http.MethodPost)
 	if err != nil {
-		return newPayPartnerTransactionsJsapiResult(PayPartnerTransactionsJsapiResponse{}, request.ResponseBody, request, err, ApiError{})
+		return newPayPartnerTransactionsJsapiResult(PayPartnerTransactionsJsapiResponse{}, request.ResponseBody, request), ApiError{}, err
 	}
 	// 结果
 	var response PayPartnerTransactionsJsapiResponse
@@ -43,5 +41,5 @@ func (c *Client) PayPartnerTransactionsJsapi(ctx context.Context, notMustParams 
 	// 错误
 	var apiError ApiError
 	err = gojson.Unmarshal(request.ResponseBody, &apiError)
-	return newPayPartnerTransactionsJsapiResult(response, request.ResponseBody, request, err, apiError)
+	return newPayPartnerTransactionsJsapiResult(response, request.ResponseBody, request), apiError, err
 }
