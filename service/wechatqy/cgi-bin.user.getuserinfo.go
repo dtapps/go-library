@@ -21,22 +21,24 @@ type CgiBinUserGetUserInfoResult struct {
 	Result CgiBinUserGetUserInfoResponse // 结果
 	Body   []byte                        // 内容
 	Http   gorequest.Response            // 请求
-	Err    error                         // 错误
 }
 
-func newCgiBinUserGetUserInfoResult(result CgiBinUserGetUserInfoResponse, body []byte, http gorequest.Response, err error) *CgiBinUserGetUserInfoResult {
-	return &CgiBinUserGetUserInfoResult{Result: result, Body: body, Http: http, Err: err}
+func newCgiBinUserGetUserInfoResult(result CgiBinUserGetUserInfoResponse, body []byte, http gorequest.Response) *CgiBinUserGetUserInfoResult {
+	return &CgiBinUserGetUserInfoResult{Result: result, Body: body, Http: http}
 }
 
 // CgiBinUserGetUserInfo 获取访问用户身份
 // https://open.work.weixin.qq.com/api/doc/90000/90135/91023
-func (c *Client) CgiBinUserGetUserInfo(ctx context.Context, code, accessToken string) *CgiBinUserGetUserInfoResult {
+func (c *Client) CgiBinUserGetUserInfo(ctx context.Context, accessToken, code string, notMustParams ...*gorequest.Params) (*CgiBinUserGetUserInfoResult, error) {
 	// 参数
-	params := gorequest.NewParamsWith()
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/cgi-bin/user/getuserinfo?access_token=%s&code=%s", accessToken, code), params, http.MethodGet)
+	if err != nil {
+		return newCgiBinUserGetUserInfoResult(CgiBinUserGetUserInfoResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response CgiBinUserGetUserInfoResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newCgiBinUserGetUserInfoResult(response, request.ResponseBody, request, err)
+	return newCgiBinUserGetUserInfoResult(response, request.ResponseBody, request), err
 }
