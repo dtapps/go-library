@@ -17,24 +17,25 @@ type RestPowerDelCardResult struct {
 	Result RestPowerDelCardResponse // 结果
 	Body   []byte                   // 内容
 	Http   gorequest.Response       // 请求
-	Err    error                    // 错误
 }
 
-func newRestPowerDelCardResult(result RestPowerDelCardResponse, body []byte, http gorequest.Response, err error) *RestPowerDelCardResult {
-	return &RestPowerDelCardResult{Result: result, Body: body, Http: http, Err: err}
+func newRestPowerDelCardResult(result RestPowerDelCardResponse, body []byte, http gorequest.Response) *RestPowerDelCardResult {
+	return &RestPowerDelCardResult{Result: result, Body: body, Http: http}
 }
 
 // RestPowerDelCard 删除电费充值卡
 // https://open.wikeyun.cn/#/apiDocument/9/document/330
-func (c *Client) RestPowerDelCard(ctx context.Context, cardId string) *RestPowerDelCardResult {
+func (c *Client) RestPowerDelCard(ctx context.Context, cardId string, notMustParams ...*gorequest.Params) (*RestPowerDelCardResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("card_id", cardId)
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("card_id", cardId)
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/rest/Power/delCard", params)
+	if err != nil {
+		return newRestPowerDelCardResult(RestPowerDelCardResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response RestPowerDelCardResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newRestPowerDelCardResult(response, request.ResponseBody, request, err)
+	return newRestPowerDelCardResult(response, request.ResponseBody, request), err
 }

@@ -36,24 +36,25 @@ type RestRechargeMobileInfoResult struct {
 	Result RestRechargeMobileInfoResponse // 结果
 	Body   []byte                         // 内容
 	Http   gorequest.Response             // 请求
-	Err    error                          // 错误
 }
 
-func newRestRechargeMobileInfoResult(result RestRechargeMobileInfoResponse, body []byte, http gorequest.Response, err error) *RestRechargeMobileInfoResult {
-	return &RestRechargeMobileInfoResult{Result: result, Body: body, Http: http, Err: err}
+func newRestRechargeMobileInfoResult(result RestRechargeMobileInfoResponse, body []byte, http gorequest.Response) *RestRechargeMobileInfoResult {
+	return &RestRechargeMobileInfoResult{Result: result, Body: body, Http: http}
 }
 
 // RestRechargeMobileInfo 查询手机归属地信息以及是否携号转网
 // https://open.wikeyun.cn/#/apiDocument/9/document/374
-func (c *Client) RestRechargeMobileInfo(ctx context.Context, orderNumber string) *RestRechargeMobileInfoResult {
+func (c *Client) RestRechargeMobileInfo(ctx context.Context, orderNumber string, notMustParams ...*gorequest.Params) (*RestRechargeMobileInfoResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("order_number", orderNumber) // 平台单号
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("order_number", orderNumber) // 平台单号
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/rest/Recharge/mobileInfo", params)
+	if err != nil {
+		return newRestRechargeMobileInfoResult(RestRechargeMobileInfoResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response RestRechargeMobileInfoResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newRestRechargeMobileInfoResult(response, request.ResponseBody, request, err)
+	return newRestRechargeMobileInfoResult(response, request.ResponseBody, request), err
 }

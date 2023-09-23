@@ -19,23 +19,25 @@ type RestPowerPushOrderResult struct {
 	Result RestPowerPushOrderResponse // 结果
 	Body   []byte                     // 内容
 	Http   gorequest.Response         // 请求
-	Err    error                      // 错误
 }
 
-func newRestPowerPushOrderResult(result RestPowerPushOrderResponse, body []byte, http gorequest.Response, err error) *RestPowerPushOrderResult {
-	return &RestPowerPushOrderResult{Result: result, Body: body, Http: http, Err: err}
+func newRestPowerPushOrderResult(result RestPowerPushOrderResponse, body []byte, http gorequest.Response) *RestPowerPushOrderResult {
+	return &RestPowerPushOrderResult{Result: result, Body: body, Http: http}
 }
 
 // RestPowerPushOrder 电费充值API
 // https://open.wikeyun.cn/#/apiDocument/9/document/311
-func (c *Client) RestPowerPushOrder(ctx context.Context, notMustParams ...*gorequest.Params) *RestPowerPushOrderResult {
+func (c *Client) RestPowerPushOrder(ctx context.Context, notMustParams ...*gorequest.Params) (*RestPowerPushOrderResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("store_id", c.GetStoreId()) // 店铺ID
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/rest/Power/pushOrder", params)
+	if err != nil {
+		return newRestPowerPushOrderResult(RestPowerPushOrderResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response RestPowerPushOrderResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newRestPowerPushOrderResult(response, request.ResponseBody, request, err)
+	return newRestPowerPushOrderResult(response, request.ResponseBody, request), err
 }

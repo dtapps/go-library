@@ -26,23 +26,25 @@ type RestPowerAddCardResult struct {
 	Result RestPowerAddCardResponse // 结果
 	Body   []byte                   // 内容
 	Http   gorequest.Response       // 请求
-	Err    error                    // 错误
 }
 
-func newRestPowerAddCardResult(result RestPowerAddCardResponse, body []byte, http gorequest.Response, err error) *RestPowerAddCardResult {
-	return &RestPowerAddCardResult{Result: result, Body: body, Http: http, Err: err}
+func newRestPowerAddCardResult(result RestPowerAddCardResponse, body []byte, http gorequest.Response) *RestPowerAddCardResult {
+	return &RestPowerAddCardResult{Result: result, Body: body, Http: http}
 }
 
 // RestPowerAddCard 添加电费充值卡
 // https://open.wikeyun.cn/#/apiDocument/9/document/326
-func (c *Client) RestPowerAddCard(ctx context.Context, notMustParams ...*gorequest.Params) *RestPowerAddCardResult {
+func (c *Client) RestPowerAddCard(ctx context.Context, notMustParams ...*gorequest.Params) (*RestPowerAddCardResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("store_id", c.GetStoreId()) // 店铺ID
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/rest/Power/addCard", params)
+	if err != nil {
+		return newRestPowerAddCardResult(RestPowerAddCardResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response RestPowerAddCardResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newRestPowerAddCardResult(response, request.ResponseBody, request, err)
+	return newRestPowerAddCardResult(response, request.ResponseBody, request), err
 }
