@@ -24,20 +24,24 @@ type SnsUserinfoResult struct {
 	Result SnsUserinfoResponse // 结果
 	Body   []byte              // 内容
 	Http   gorequest.Response  // 请求
-	Err    error               // 错误
 }
 
-func newSnsUserinfoResult(result SnsUserinfoResponse, body []byte, http gorequest.Response, err error) *SnsUserinfoResult {
-	return &SnsUserinfoResult{Result: result, Body: body, Http: http, Err: err}
+func newSnsUserinfoResult(result SnsUserinfoResponse, body []byte, http gorequest.Response) *SnsUserinfoResult {
+	return &SnsUserinfoResult{Result: result, Body: body, Http: http}
 }
 
 // SnsUserinfo 拉取用户信息(需scope为 snsapi_userinfo)
 // https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html#0
-func (c *Client) SnsUserinfo(ctx context.Context, accessToken, openid string) *SnsUserinfoResult {
+func (c *Client) SnsUserinfo(ctx context.Context, accessToken, openid string, notMustParams ...*gorequest.Params) (*SnsUserinfoResult, error) {
+	// 参数
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN", accessToken, openid), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN", accessToken, openid), params, http.MethodGet)
+	if err != nil {
+		return newSnsUserinfoResult(SnsUserinfoResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response SnsUserinfoResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newSnsUserinfoResult(response, request.ResponseBody, request, err)
+	return newSnsUserinfoResult(response, request.ResponseBody, request), err
 }

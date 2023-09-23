@@ -24,7 +24,7 @@ type ShareResult struct {
 }
 
 func newShareResult(result ShareResponse, err error) *ShareResult {
-	return &ShareResult{Result: result, Err: err}
+	return &ShareResult{Result: result}
 }
 
 func (c *Client) Share(ctx context.Context, url string) *ShareResult {

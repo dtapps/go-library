@@ -31,20 +31,24 @@ type CgiBinUserInfoResult struct {
 	Result CgiBinUserInfoResponse // 结果
 	Body   []byte                 // 内容
 	Http   gorequest.Response     // 请求
-	Err    error                  // 错误
 }
 
-func newCgiBinUserInfoResult(result CgiBinUserInfoResponse, body []byte, http gorequest.Response, err error) *CgiBinUserInfoResult {
-	return &CgiBinUserInfoResult{Result: result, Body: body, Http: http, Err: err}
+func newCgiBinUserInfoResult(result CgiBinUserInfoResponse, body []byte, http gorequest.Response) *CgiBinUserInfoResult {
+	return &CgiBinUserInfoResult{Result: result, Body: body, Http: http}
 }
 
 // CgiBinUserInfo 获取用户基本信息(UnionID机制)
 // https://developers.weixin.qq.com/doc/offiaccount/User_Management/Get_users_basic_information_UnionID.html#UinonId
-func (c *Client) CgiBinUserInfo(ctx context.Context, openid string) *CgiBinUserInfoResult {
+func (c *Client) CgiBinUserInfo(ctx context.Context, openid string, notMustParams ...*gorequest.Params) (*CgiBinUserInfoResult, error) {
+	// 参数
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN", c.getAccessToken(ctx), openid), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN", c.getAccessToken(ctx), openid), params, http.MethodGet)
+	if err != nil {
+		return newCgiBinUserInfoResult(CgiBinUserInfoResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response CgiBinUserInfoResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newCgiBinUserInfoResult(response, request.ResponseBody, request, err)
+	return newCgiBinUserInfoResult(response, request.ResponseBody, request), err
 }

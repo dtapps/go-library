@@ -12,7 +12,7 @@ func (c *Client) GetJsapiTicket(ctx context.Context) string {
 	}
 	newCache := c.cache.redisClient.NewSimpleStringCache(c.cache.redisClient.NewStringOperation(), time.Second*7000)
 	newCache.DBGetter = func() string {
-		token := c.CgiBinTicketGetTicket(ctx, "jsapi")
+		token, _ := c.CgiBinTicketGetTicket(ctx, "jsapi")
 		return token.Result.Ticket
 	}
 	return newCache.GetCache(ctx, c.getJsapiTicketCacheKeyName())
