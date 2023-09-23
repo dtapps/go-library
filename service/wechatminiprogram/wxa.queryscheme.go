@@ -29,22 +29,24 @@ type WxaQuerySchemeResult struct {
 	Result WxaQuerySchemeResponse // 结果
 	Body   []byte                 // 内容
 	Http   gorequest.Response     // 请求
-	Err    error                  // 错误
 }
 
-func newWxaQuerySchemeResult(result WxaQuerySchemeResponse, body []byte, http gorequest.Response, err error) *WxaQuerySchemeResult {
-	return &WxaQuerySchemeResult{Result: result, Body: body, Http: http, Err: err}
+func newWxaQuerySchemeResult(result WxaQuerySchemeResponse, body []byte, http gorequest.Response) *WxaQuerySchemeResult {
+	return &WxaQuerySchemeResult{Result: result, Body: body, Http: http}
 }
 
 // WxaQueryScheme 查询小程序 scheme 码，及长期有效 quota
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/url-scheme/urlscheme.query.html
-func (c *Client) WxaQueryScheme(ctx context.Context, notMustParams ...*gorequest.Params) *WxaQuerySchemeResult {
+func (c *Client) WxaQueryScheme(ctx context.Context, notMustParams ...*gorequest.Params) (*WxaQuerySchemeResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/queryscheme?access_token=%s", c.getAccessToken(ctx)), params, http.MethodPost)
+	if err != nil {
+		return newWxaQuerySchemeResult(WxaQuerySchemeResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response WxaQuerySchemeResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newWxaQuerySchemeResult(response, request.ResponseBody, request, err)
+	return newWxaQuerySchemeResult(response, request.ResponseBody, request), err
 }

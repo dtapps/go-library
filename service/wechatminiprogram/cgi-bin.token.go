@@ -23,17 +23,22 @@ type CgiBinTokenResult struct {
 }
 
 func newCgiBinTokenResult(result CgiBinTokenResponse, body []byte, http gorequest.Response, err error) *CgiBinTokenResult {
-	return &CgiBinTokenResult{Result: result, Body: body, Http: http, Err: err}
+	return &CgiBinTokenResult{Result: result, Body: body, Http: http}
 }
 
 // CgiBinToken
 // 接口调用凭证
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/access-token/auth.getAccessToken.html
-func (c *Client) CgiBinToken(ctx context.Context) *CgiBinTokenResult {
+func (c *Client) CgiBinToken(ctx context.Context, notMustParams ...*gorequest.Params) (*CgiBinTokenResult, error) {
+	// 参数
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", c.GetAppId(), c.GetAppSecret()), map[string]interface{}{}, http.MethodGet)
+	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", c.GetAppId(), c.GetAppSecret()), params, http.MethodGet)
+	if err != nil {
+		return newCgiBinTokenResult(CgiBinTokenResponse{}, request.ResponseBody, request, err), err
+	}
 	// 定义
 	var response CgiBinTokenResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newCgiBinTokenResult(response, request.ResponseBody, request, err)
+	return newCgiBinTokenResult(response, request.ResponseBody, request, err), err
 }

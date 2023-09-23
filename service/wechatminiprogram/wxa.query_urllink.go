@@ -36,24 +36,24 @@ type WxaQueryUrlLinkResult struct {
 	Result WxaQueryUrlLinkResponse // 结果
 	Body   []byte                  // 内容
 	Http   gorequest.Response      // 请求
-	Err    error                   // 错误
 }
 
-func newWxaQueryUrlLinkResult(result WxaQueryUrlLinkResponse, body []byte, http gorequest.Response, err error) *WxaQueryUrlLinkResult {
-	return &WxaQueryUrlLinkResult{Result: result, Body: body, Http: http, Err: err}
+func newWxaQueryUrlLinkResult(result WxaQueryUrlLinkResponse, body []byte, http gorequest.Response) *WxaQueryUrlLinkResult {
+	return &WxaQueryUrlLinkResult{Result: result, Body: body, Http: http}
 }
 
 // WxaQueryUrlLink 查询小程序 url_link 配置，及长期有效 quota
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/url-link/urllink.query.html
-func (c *Client) WxaQueryUrlLink(ctx context.Context, urlLink string) *WxaQueryUrlLinkResult {
+func (c *Client) WxaQueryUrlLink(ctx context.Context, notMustParams ...*gorequest.Params) (*WxaQueryUrlLinkResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("url_link", urlLink)
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/query_urllink?access_token=%s", c.getAccessToken(ctx)), params, http.MethodPost)
+	if err != nil {
+		return newWxaQueryUrlLinkResult(WxaQueryUrlLinkResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response WxaQueryUrlLinkResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newWxaQueryUrlLinkResult(response, request.ResponseBody, request, err)
+	return newWxaQueryUrlLinkResult(response, request.ResponseBody, request), err
 }

@@ -28,23 +28,25 @@ type WxaApiFeedbackListResult struct {
 	Result WxaApiFeedbackListResponse // 结果
 	Body   []byte                     // 内容
 	Http   gorequest.Response         // 请求
-	Err    error                      // 错误
 }
 
-func newWxaApiFeedbackListResult(result WxaApiFeedbackListResponse, body []byte, http gorequest.Response, err error) *WxaApiFeedbackListResult {
-	return &WxaApiFeedbackListResult{Result: result, Body: body, Http: http, Err: err}
+func newWxaApiFeedbackListResult(result WxaApiFeedbackListResponse, body []byte, http gorequest.Response) *WxaApiFeedbackListResult {
+	return &WxaApiFeedbackListResult{Result: result, Body: body, Http: http}
 }
 
 // WxaApiFeedbackList 获取用户反馈列表
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/operation/operation.getFeedback.html
-func (c *Client) WxaApiFeedbackList(ctx context.Context, notMustParams ...*gorequest.Params) *WxaApiFeedbackListResult {
+func (c *Client) WxaApiFeedbackList(ctx context.Context, notMustParams ...*gorequest.Params) (*WxaApiFeedbackListResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("access_token", c.getAccessToken(ctx))
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/wxaapi/feedback/list", params, http.MethodGet)
+	if err != nil {
+		return newWxaApiFeedbackListResult(WxaApiFeedbackListResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response WxaApiFeedbackListResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newWxaApiFeedbackListResult(response, request.ResponseBody, request, err)
+	return newWxaApiFeedbackListResult(response, request.ResponseBody, request), err
 }

@@ -26,24 +26,24 @@ type WxaBusinessGetUserPhoneNumberResult struct {
 	Result WxaBusinessGetUserPhoneNumberResponse // 结果
 	Body   []byte                                // 内容
 	Http   gorequest.Response                    // 请求
-	Err    error                                 // 错误
 }
 
-func newWxaBusinessGetUserPhoneNumberResult(result WxaBusinessGetUserPhoneNumberResponse, body []byte, http gorequest.Response, err error) *WxaBusinessGetUserPhoneNumberResult {
-	return &WxaBusinessGetUserPhoneNumberResult{Result: result, Body: body, Http: http, Err: err}
+func newWxaBusinessGetUserPhoneNumberResult(result WxaBusinessGetUserPhoneNumberResponse, body []byte, http gorequest.Response) *WxaBusinessGetUserPhoneNumberResult {
+	return &WxaBusinessGetUserPhoneNumberResult{Result: result, Body: body, Http: http}
 }
 
 // WxaBusinessGetUserPhoneNumber code换取用户手机号。 每个code只能使用一次，code的有效期为5min
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/phonenumber/phonenumber.getPhoneNumber.html
-func (c *Client) WxaBusinessGetUserPhoneNumber(ctx context.Context, code string) *WxaBusinessGetUserPhoneNumberResult {
+func (c *Client) WxaBusinessGetUserPhoneNumber(ctx context.Context, notMustParams ...*gorequest.Params) (*WxaBusinessGetUserPhoneNumberResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("code", code)
-	params := gorequest.NewParamsWith(param)
+	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/wxa/business/getuserphonenumber?access_token=%s", c.getAccessToken(ctx)), params, http.MethodPost)
+	if err != nil {
+		return newWxaBusinessGetUserPhoneNumberResult(WxaBusinessGetUserPhoneNumberResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response WxaBusinessGetUserPhoneNumberResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newWxaBusinessGetUserPhoneNumberResult(response, request.ResponseBody, request, err)
+	return newWxaBusinessGetUserPhoneNumberResult(response, request.ResponseBody, request), err
 }
