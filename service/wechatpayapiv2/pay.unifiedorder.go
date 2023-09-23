@@ -30,17 +30,16 @@ type PayUnifiedOrderResult struct {
 	Result PayUnifiedOrderResponse // 结果
 	Body   []byte                  // 内容
 	Http   gorequest.Response      // 请求
-	Err    error                   // 错误
 }
 
-func newPayUnifiedOrderResult(result PayUnifiedOrderResponse, body []byte, http gorequest.Response, err error) *PayUnifiedOrderResult {
-	return &PayUnifiedOrderResult{Result: result, Body: body, Http: http, Err: err}
+func newPayUnifiedOrderResult(result PayUnifiedOrderResponse, body []byte, http gorequest.Response) *PayUnifiedOrderResult {
+	return &PayUnifiedOrderResult{Result: result, Body: body, Http: http}
 }
 
 // PayUnifiedOrder
 // 小程序支付 - 统一下单
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1
-func (c *Client) PayUnifiedOrder(ctx context.Context, notMustParams ...*gorequest.Params) *PayUnifiedOrderResult {
+func (c *Client) PayUnifiedOrder(ctx context.Context, notMustParams ...*gorequest.Params) (*PayUnifiedOrderResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", c.GetAppId())                  // 小程序ID
@@ -50,8 +49,11 @@ func (c *Client) PayUnifiedOrder(ctx context.Context, notMustParams ...*goreques
 	params.Set("sign", c.getMd5Sign(params))
 	// 	请求
 	request, err := c.request(ctx, apiUrl+"/pay/unifiedorder", params, false, nil)
+	if err != nil {
+		return newPayUnifiedOrderResult(PayUnifiedOrderResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PayUnifiedOrderResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return newPayUnifiedOrderResult(response, request.ResponseBody, request, err)
+	return newPayUnifiedOrderResult(response, request.ResponseBody, request), err
 }

@@ -46,19 +46,18 @@ type PayOrderQueryResult struct {
 	Result PayOrderQueryResponse // 结果
 	Body   []byte                // 内容
 	Http   gorequest.Response    // 请求
-	Err    error                 // 错误
 }
 
-func newPayOrderQueryResult(result PayOrderQueryResponse, body []byte, http gorequest.Response, err error) *PayOrderQueryResult {
-	return &PayOrderQueryResult{Result: result, Body: body, Http: http, Err: err}
+func newPayOrderQueryResult(result PayOrderQueryResponse, body []byte, http gorequest.Response) *PayOrderQueryResult {
+	return &PayOrderQueryResult{Result: result, Body: body, Http: http}
 }
 
 // PayOrderQuery
 // 小程序支付 - 查询订单
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_2
-func (c *Client) PayOrderQuery(ctx context.Context, transactionId, outTradeNo string) *PayOrderQueryResult {
+func (c *Client) PayOrderQuery(ctx context.Context, transactionId, outTradeNo string, notMustParams ...*gorequest.Params) (*PayOrderQueryResult, error) {
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", c.GetAppId())  // 小程序ID
 	params.Set("mch_id", c.GetMchId()) // 商户号
 	if transactionId != "" {
@@ -72,8 +71,11 @@ func (c *Client) PayOrderQuery(ctx context.Context, transactionId, outTradeNo st
 	params.Set("sign", c.getMd5Sign(params))
 	// 	请求
 	request, err := c.request(ctx, apiUrl+"/pay/orderquery", params, false, nil)
+	if err != nil {
+		return newPayOrderQueryResult(PayOrderQueryResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PayOrderQueryResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return newPayOrderQueryResult(response, request.ResponseBody, request, err)
+	return newPayOrderQueryResult(response, request.ResponseBody, request), err
 }

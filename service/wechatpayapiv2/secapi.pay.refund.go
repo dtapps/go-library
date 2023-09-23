@@ -44,18 +44,17 @@ type SecApiPayRefundResult struct {
 	Result SecApiPayRefundResponse // 结果
 	Body   []byte                  // 内容
 	Http   gorequest.Response      // 请求
-	Err    error                   // 错误
 }
 
-func newSecApiPayRefundResult(result SecApiPayRefundResponse, body []byte, http gorequest.Response, err error) *SecApiPayRefundResult {
-	return &SecApiPayRefundResult{Result: result, Body: body, Http: http, Err: err}
+func newSecApiPayRefundResult(result SecApiPayRefundResponse, body []byte, http gorequest.Response) *SecApiPayRefundResult {
+	return &SecApiPayRefundResult{Result: result, Body: body, Http: http}
 }
 
 // SecApiPayRefund
 // 小程序支付 - 申请退款
 // 需要证书
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_4
-func (c *Client) SecApiPayRefund(ctx context.Context, notMustParams ...*gorequest.Params) *SecApiPayRefundResult {
+func (c *Client) SecApiPayRefund(ctx context.Context, notMustParams ...*gorequest.Params) (*SecApiPayRefundResult, error) {
 	cert, err := c.P12ToPem()
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -66,8 +65,11 @@ func (c *Client) SecApiPayRefund(ctx context.Context, notMustParams ...*goreques
 	params.Set("sign", c.getMd5Sign(params))
 	// 	请求
 	request, err := c.request(ctx, apiUrl+"/secapi/pay/refund", params, true, cert)
+	if err != nil {
+		return newSecApiPayRefundResult(SecApiPayRefundResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response SecApiPayRefundResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return newSecApiPayRefundResult(response, request.ResponseBody, request, err)
+	return newSecApiPayRefundResult(response, request.ResponseBody, request), err
 }

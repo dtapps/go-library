@@ -49,17 +49,16 @@ type PayRefundQueryResult struct {
 	Result PayRefundQueryResponse // 结果
 	Body   []byte                 // 内容
 	Http   gorequest.Response     // 请求
-	Err    error                  // 错误
 }
 
-func newPayRefundQueryResult(result PayRefundQueryResponse, body []byte, http gorequest.Response, err error) *PayRefundQueryResult {
-	return &PayRefundQueryResult{Result: result, Body: body, Http: http, Err: err}
+func newPayRefundQueryResult(result PayRefundQueryResponse, body []byte, http gorequest.Response) *PayRefundQueryResult {
+	return &PayRefundQueryResult{Result: result, Body: body, Http: http}
 }
 
 // PayRefundQuery
 // 小程序支付 - 查询退款
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1
-func (c *Client) PayRefundQuery(ctx context.Context, notMustParams ...*gorequest.Params) *PayRefundQueryResult {
+func (c *Client) PayRefundQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*PayRefundQueryResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", c.GetAppId())                  // 小程序ID
@@ -69,8 +68,11 @@ func (c *Client) PayRefundQuery(ctx context.Context, notMustParams ...*gorequest
 	params.Set("sign", c.getMd5Sign(params))
 	// 	请求
 	request, err := c.request(ctx, apiUrl+"/pay/unifiedorder", params, false, nil)
+	if err != nil {
+		return newPayRefundQueryResult(PayRefundQueryResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PayRefundQueryResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return newPayRefundQueryResult(response, request.ResponseBody, request, err)
+	return newPayRefundQueryResult(response, request.ResponseBody, request), err
 }

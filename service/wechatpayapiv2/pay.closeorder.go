@@ -26,19 +26,18 @@ type PayCloseOrderResult struct {
 	Result PayCloseOrderResponse // 结果
 	Body   []byte                // 内容
 	Http   gorequest.Response    // 请求
-	Err    error                 // 错误
 }
 
-func newPayCloseOrderResult(result PayCloseOrderResponse, body []byte, http gorequest.Response, err error) *PayCloseOrderResult {
-	return &PayCloseOrderResult{Result: result, Body: body, Http: http, Err: err}
+func newPayCloseOrderResult(result PayCloseOrderResponse, body []byte, http gorequest.Response) *PayCloseOrderResult {
+	return &PayCloseOrderResult{Result: result, Body: body, Http: http}
 }
 
 // PayCloseOrder
 // 小程序支付 - 关闭订单
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_3
-func (c *Client) PayCloseOrder(ctx context.Context, outTradeNo string) *PayCloseOrderResult {
+func (c *Client) PayCloseOrder(ctx context.Context, outTradeNo string, notMustParams ...*gorequest.Params) (*PayCloseOrderResult, error) {
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", c.GetAppId())                  // 小程序ID
 	params.Set("mch_id", c.GetMchId())                 // 商户号
 	params.Set("out_trade_no", outTradeNo)             // 商户订单号
@@ -47,8 +46,11 @@ func (c *Client) PayCloseOrder(ctx context.Context, outTradeNo string) *PayClose
 	params.Set("sign", c.getMd5Sign(params))
 	// 	请求
 	request, err := c.request(ctx, apiUrl+"/pay/closeorder", params, false, nil)
+	if err != nil {
+		return newPayCloseOrderResult(PayCloseOrderResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PayCloseOrderResponse
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	return newPayCloseOrderResult(response, request.ResponseBody, request, err)
+	return newPayCloseOrderResult(response, request.ResponseBody, request), err
 }
