@@ -28,9 +28,10 @@ func newGdpIndexResult(result GdpIndexResponse, body []byte, http gorequest.Resp
 
 // GdpIndex 地区生产总值指数（1978＝100）接口
 // https://gddata.gd.gov.cn/opdata/index?chooseValue=apiForm&id=29000%2F03600017&sourceType
-func (c *Client) GdpIndex(ctx context.Context, notMustParams ...*gorequest.Params) (*GdpIndexResult, error) {
+func (c *Client) GdpIndex(ctx context.Context, year string, notMustParams ...*gorequest.Params) (*GdpIndexResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("year", year) // 统计年份
 	// 请求
 	request, err := c.request(ctx, apiUrl+fmt.Sprintf("MjkwMDBfMDM2MDAwMTc=?token=%s", c.GetToken()), params, http.GET)
 	if err != nil {
