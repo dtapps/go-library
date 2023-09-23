@@ -38,9 +38,10 @@ func newPartnerData4GetOrderDetailResult(result PartnerData4GetOrderDetailRespon
 
 // PartnerData4GetOrderDetail 获取订单详情
 // https://docs.apipost.cn/preview/fa101f4865dc783f/66e7c2e894fda4a6?target_id=0888fc18-6ac7-4d37-a1c5-f26e136b381a
-func (c *Client) PartnerData4GetOrderDetail(ctx context.Context, notMustParams ...*gorequest.Params) (*PartnerData4GetOrderDetailResult, error) {
+func (c *Client) PartnerData4GetOrderDetail(ctx context.Context, orderNo string, notMustParams ...*gorequest.Params) (*PartnerData4GetOrderDetailResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("orderNo", orderNo) // 平台订单号
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/partner/data4/getOrderDetail", params)
 	if err != nil {
