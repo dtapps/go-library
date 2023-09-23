@@ -51,22 +51,24 @@ type PddDdkOauthCmsUrlGenerateResult struct {
 	Result PddDdkOauthCmsUrlGenerateResponse // 结果
 	Body   []byte                            // 内容
 	Http   gorequest.Response                // 请求
-	Err    error                             // 错误
 }
 
-func newPddDdkOauthCmsUrlGenerateResult(result PddDdkOauthCmsUrlGenerateResponse, body []byte, http gorequest.Response, err error) *PddDdkOauthCmsUrlGenerateResult {
-	return &PddDdkOauthCmsUrlGenerateResult{Result: result, Body: body, Http: http, Err: err}
+func newPddDdkOauthCmsUrlGenerateResult(result PddDdkOauthCmsUrlGenerateResponse, body []byte, http gorequest.Response) *PddDdkOauthCmsUrlGenerateResult {
+	return &PddDdkOauthCmsUrlGenerateResult{Result: result, Body: body, Http: http}
 }
 
 // UrlGenerate 生成商城推广链接接口
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.cms.prom.url.generate
-func (c *PddDdkOauthCmsApi) UrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) *PddDdkOauthCmsUrlGenerateResult {
+func (c *PddDdkOauthCmsApi) UrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthCmsUrlGenerateResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.cms.prom.url.generate", notMustParams...)
 	// 请求
 	request, err := c.client.request(ctx, params)
+	if err != nil {
+		return newPddDdkOauthCmsUrlGenerateResult(PddDdkOauthCmsUrlGenerateResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PddDdkOauthCmsUrlGenerateResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPddDdkOauthCmsUrlGenerateResult(response, request.ResponseBody, request, err)
+	return newPddDdkOauthCmsUrlGenerateResult(response, request.ResponseBody, request), err
 }

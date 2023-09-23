@@ -51,22 +51,24 @@ type PddDdkOauthRpPromUrlGenerateResult struct {
 	Result PddDdkOauthRpPromUrlGenerateResponse // 结果
 	Body   []byte                               // 内容
 	Http   gorequest.Response                   // 请求
-	Err    error                                // 错误
 }
 
-func newPddDdkOauthRpPromUrlGenerateResult(result PddDdkOauthRpPromUrlGenerateResponse, body []byte, http gorequest.Response, err error) *PddDdkOauthRpPromUrlGenerateResult {
-	return &PddDdkOauthRpPromUrlGenerateResult{Result: result, Body: body, Http: http, Err: err}
+func newPddDdkOauthRpPromUrlGenerateResult(result PddDdkOauthRpPromUrlGenerateResponse, body []byte, http gorequest.Response) *PddDdkOauthRpPromUrlGenerateResult {
+	return &PddDdkOauthRpPromUrlGenerateResult{Result: result, Body: body, Http: http}
 }
 
 // PromUrlGenerate 生成营销工具推广链接
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.rp.prom.url.generate
-func (c *PddDdkOauthRpApi) PromUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) *PddDdkOauthRpPromUrlGenerateResult {
+func (c *PddDdkOauthRpApi) PromUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthRpPromUrlGenerateResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.rp.prom.url.generate", notMustParams...)
 	// 请求
 	request, err := c.client.request(ctx, params)
+	if err != nil {
+		return newPddDdkOauthRpPromUrlGenerateResult(PddDdkOauthRpPromUrlGenerateResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PddDdkOauthRpPromUrlGenerateResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPddDdkOauthRpPromUrlGenerateResult(response, request.ResponseBody, request, err)
+	return newPddDdkOauthRpPromUrlGenerateResult(response, request.ResponseBody, request), err
 }

@@ -63,22 +63,24 @@ type OrderListIncrementGetResult struct {
 	Result OrderListIncrementGetResponse // 结果
 	Body   []byte                        // 内容
 	Http   gorequest.Response            // 请求
-	Err    error                         // 错误
 }
 
-func newOrderListIncrementGetResult(result OrderListIncrementGetResponse, body []byte, http gorequest.Response, err error) *OrderListIncrementGetResult {
-	return &OrderListIncrementGetResult{Result: result, Body: body, Http: http, Err: err}
+func newOrderListIncrementGetResult(result OrderListIncrementGetResponse, body []byte, http gorequest.Response) *OrderListIncrementGetResult {
+	return &OrderListIncrementGetResult{Result: result, Body: body, Http: http}
 }
 
 // OrderListIncrementGet 最后更新时间段增量同步推广订单信息
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.order.list.increment.get
-func (c *Client) OrderListIncrementGet(ctx context.Context, notMustParams ...*gorequest.Params) *OrderListIncrementGetResult {
+func (c *Client) OrderListIncrementGet(ctx context.Context, notMustParams ...*gorequest.Params) (*OrderListIncrementGetResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.order.list.increment.get", notMustParams...)
 	// 请求
 	request, err := c.request(ctx, params)
+	if err != nil {
+		return newOrderListIncrementGetResult(OrderListIncrementGetResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response OrderListIncrementGetResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newOrderListIncrementGetResult(response, request.ResponseBody, request, err)
+	return newOrderListIncrementGetResult(response, request.ResponseBody, request), err
 }

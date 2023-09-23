@@ -47,23 +47,25 @@ type GoodsPromotionUrlGenerateResult struct {
 	Result GoodsPromotionUrlGenerateResponse // 结果
 	Body   []byte                            // 内容
 	Http   gorequest.Response                // 请求
-	Err    error                             // 错误
 }
 
-func newGoodsPromotionUrlGenerateResult(result GoodsPromotionUrlGenerateResponse, body []byte, http gorequest.Response, err error) *GoodsPromotionUrlGenerateResult {
-	return &GoodsPromotionUrlGenerateResult{Result: result, Body: body, Http: http, Err: err}
+func newGoodsPromotionUrlGenerateResult(result GoodsPromotionUrlGenerateResponse, body []byte, http gorequest.Response) *GoodsPromotionUrlGenerateResult {
+	return &GoodsPromotionUrlGenerateResult{Result: result, Body: body, Http: http}
 }
 
 // GoodsPromotionUrlGenerate 多多进宝推广链接生成
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.promotion.url.generate
-func (c *Client) GoodsPromotionUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) *GoodsPromotionUrlGenerateResult {
+func (c *Client) GoodsPromotionUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (*GoodsPromotionUrlGenerateResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.promotion.url.generate", notMustParams...)
 	params.Set("p_id", c.GetPid())
 	// 请求
 	request, err := c.request(ctx, params)
+	if err != nil {
+		return newGoodsPromotionUrlGenerateResult(GoodsPromotionUrlGenerateResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response GoodsPromotionUrlGenerateResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newGoodsPromotionUrlGenerateResult(response, request.ResponseBody, request, err)
+	return newGoodsPromotionUrlGenerateResult(response, request.ResponseBody, request), err
 }

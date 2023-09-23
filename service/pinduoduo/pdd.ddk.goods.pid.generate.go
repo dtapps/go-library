@@ -22,22 +22,24 @@ type GoodsPidGenerateResult struct {
 	Result GoodsPidGenerateResponse // 结果
 	Body   []byte                   // 内容
 	Http   gorequest.Response       // 请求
-	Err    error                    // 错误
 }
 
-func newGoodsPidGenerateResult(result GoodsPidGenerateResponse, body []byte, http gorequest.Response, err error) *GoodsPidGenerateResult {
-	return &GoodsPidGenerateResult{Result: result, Body: body, Http: http, Err: err}
+func newGoodsPidGenerateResult(result GoodsPidGenerateResponse, body []byte, http gorequest.Response) *GoodsPidGenerateResult {
+	return &GoodsPidGenerateResult{Result: result, Body: body, Http: http}
 }
 
 // GoodsPidGenerate 创建多多进宝推广位
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.pid.generate
-func (c *Client) GoodsPidGenerate(ctx context.Context, notMustParams ...*gorequest.Params) *GoodsPidGenerateResult {
+func (c *Client) GoodsPidGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (*GoodsPidGenerateResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.pid.generate", notMustParams...)
 	// 请求
 	request, err := c.request(ctx, params)
+	if err != nil {
+		return newGoodsPidGenerateResult(GoodsPidGenerateResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response GoodsPidGenerateResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newGoodsPidGenerateResult(response, request.ResponseBody, request, err)
+	return newGoodsPidGenerateResult(response, request.ResponseBody, request), err
 }

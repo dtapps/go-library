@@ -59,22 +59,24 @@ type PddDdkOauthGoodsPidGenerateResult struct {
 	Result PddDdkOauthGoodsPidGenerateResponse // 结果
 	Body   []byte                              // 内容
 	Http   gorequest.Response                  // 请求
-	Err    error                               // 错误
 }
 
-func newPddDdkOauthGoodsPidGenerateResult(result PddDdkOauthGoodsPidGenerateResponse, body []byte, http gorequest.Response, err error) *PddDdkOauthGoodsPidGenerateResult {
-	return &PddDdkOauthGoodsPidGenerateResult{Result: result, Body: body, Http: http, Err: err}
+func newPddDdkOauthGoodsPidGenerateResult(result PddDdkOauthGoodsPidGenerateResponse, body []byte, http gorequest.Response) *PddDdkOauthGoodsPidGenerateResult {
+	return &PddDdkOauthGoodsPidGenerateResult{Result: result, Body: body, Http: http}
 }
 
 // PidGenerate 多多进宝推广位创建接口
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.goods.pid.generate
-func (c *PddDdkOauthGoodsApi) PidGenerate(ctx context.Context, notMustParams ...*gorequest.Params) *PddDdkOauthGoodsPidGenerateResult {
+func (c *PddDdkOauthGoodsApi) PidGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthGoodsPidGenerateResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.goods.pid.generate", notMustParams...)
 	// 请求
 	request, err := c.client.request(ctx, params)
+	if err != nil {
+		return newPddDdkOauthGoodsPidGenerateResult(PddDdkOauthGoodsPidGenerateResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PddDdkOauthGoodsPidGenerateResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPddDdkOauthGoodsPidGenerateResult(response, request.ResponseBody, request, err)
+	return newPddDdkOauthGoodsPidGenerateResult(response, request.ResponseBody, request), err
 }

@@ -59,22 +59,24 @@ type PddDdkOauthResourceUrlGenResult struct {
 	Result PddDdkOauthResourceUrlGenResponse // 结果
 	Body   []byte                            // 内容
 	Http   gorequest.Response                // 请求
-	Err    error                             // 错误
 }
 
-func newPddDdkOauthResourceUrlGenResult(result PddDdkOauthResourceUrlGenResponse, body []byte, http gorequest.Response, err error) *PddDdkOauthResourceUrlGenResult {
-	return &PddDdkOauthResourceUrlGenResult{Result: result, Body: body, Http: http, Err: err}
+func newPddDdkOauthResourceUrlGenResult(result PddDdkOauthResourceUrlGenResponse, body []byte, http gorequest.Response) *PddDdkOauthResourceUrlGenResult {
+	return &PddDdkOauthResourceUrlGenResult{Result: result, Body: body, Http: http}
 }
 
 // UrlGen 拼多多主站频道推广接口
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.resource.url.gen
-func (c *PddDdkOauthResourceApi) UrlGen(ctx context.Context, notMustParams ...*gorequest.Params) *PddDdkOauthResourceUrlGenResult {
+func (c *PddDdkOauthResourceApi) UrlGen(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthResourceUrlGenResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.resource.url.gen", notMustParams...)
 	// 请求
 	request, err := c.client.request(ctx, params)
+	if err != nil {
+		return newPddDdkOauthResourceUrlGenResult(PddDdkOauthResourceUrlGenResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PddDdkOauthResourceUrlGenResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPddDdkOauthResourceUrlGenResult(response, request.ResponseBody, request, err)
+	return newPddDdkOauthResourceUrlGenResult(response, request.ResponseBody, request), err
 }

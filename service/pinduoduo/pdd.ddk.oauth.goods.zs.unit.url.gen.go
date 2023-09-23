@@ -59,22 +59,24 @@ type PddDdkOauthGoodsZsUnitUrlGenResult struct {
 	Result PddDdkOauthGoodsZsUnitUrlGenResponse // 结果
 	Body   []byte                               // 内容
 	Http   gorequest.Response                   // 请求
-	Err    error                                // 错误
 }
 
-func newPddDdkOauthGoodsZsUnitUrlGenResult(result PddDdkOauthGoodsZsUnitUrlGenResponse, body []byte, http gorequest.Response, err error) *PddDdkOauthGoodsZsUnitUrlGenResult {
-	return &PddDdkOauthGoodsZsUnitUrlGenResult{Result: result, Body: body, Http: http, Err: err}
+func newPddDdkOauthGoodsZsUnitUrlGenResult(result PddDdkOauthGoodsZsUnitUrlGenResponse, body []byte, http gorequest.Response) *PddDdkOauthGoodsZsUnitUrlGenResult {
+	return &PddDdkOauthGoodsZsUnitUrlGenResult{Result: result, Body: body, Http: http}
 }
 
 // ZsUnitUrlGen 生成招商推广链接
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.goods.zs.unit.url.gen
-func (c *PddDdkOauthGoodsApi) ZsUnitUrlGen(ctx context.Context, notMustParams ...*gorequest.Params) *PddDdkOauthGoodsZsUnitUrlGenResult {
+func (c *PddDdkOauthGoodsApi) ZsUnitUrlGen(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthGoodsZsUnitUrlGenResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.goods.zs.unit.url.gen", notMustParams...)
 	// 请求
 	request, err := c.client.request(ctx, params)
+	if err != nil {
+		return newPddDdkOauthGoodsZsUnitUrlGenResult(PddDdkOauthGoodsZsUnitUrlGenResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PddDdkOauthGoodsZsUnitUrlGenResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPddDdkOauthGoodsZsUnitUrlGenResult(response, request.ResponseBody, request, err)
+	return newPddDdkOauthGoodsZsUnitUrlGenResult(response, request.ResponseBody, request), err
 }

@@ -59,22 +59,24 @@ type PddDdkOauthPidMediaIdBindResult struct {
 	Result PddDdkOauthPidMediaIdBindResponse // 结果
 	Body   []byte                            // 内容
 	Http   gorequest.Response                // 请求
-	Err    error                             // 错误
 }
 
-func newPddDdkOauthPidMediaIdBindResult(result PddDdkOauthPidMediaIdBindResponse, body []byte, http gorequest.Response, err error) *PddDdkOauthPidMediaIdBindResult {
-	return &PddDdkOauthPidMediaIdBindResult{Result: result, Body: body, Http: http, Err: err}
+func newPddDdkOauthPidMediaIdBindResult(result PddDdkOauthPidMediaIdBindResponse, body []byte, http gorequest.Response) *PddDdkOauthPidMediaIdBindResult {
+	return &PddDdkOauthPidMediaIdBindResult{Result: result, Body: body, Http: http}
 }
 
 // MediaIdBind 批量绑定推广位的媒体id
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.pid.mediaid.bind
-func (c *PddDdkOauthPidApi) MediaIdBind(ctx context.Context, notMustParams ...*gorequest.Params) *PddDdkOauthPidMediaIdBindResult {
+func (c *PddDdkOauthPidApi) MediaIdBind(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthPidMediaIdBindResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.pid.mediaid.bind", notMustParams...)
 	// 请求
 	request, err := c.client.request(ctx, params)
+	if err != nil {
+		return newPddDdkOauthPidMediaIdBindResult(PddDdkOauthPidMediaIdBindResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PddDdkOauthPidMediaIdBindResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPddDdkOauthPidMediaIdBindResult(response, request.ResponseBody, request, err)
+	return newPddDdkOauthPidMediaIdBindResult(response, request.ResponseBody, request), err
 }

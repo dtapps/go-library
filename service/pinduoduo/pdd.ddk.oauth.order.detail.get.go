@@ -59,22 +59,24 @@ type PddDdkOauthOrderDetailGetResult struct {
 	Result PddDdkOauthOrderDetailGetResponse // 结果
 	Body   []byte                            // 内容
 	Http   gorequest.Response                // 请求
-	Err    error                             // 错误
 }
 
-func newPddDdkOauthOrderDetailGetResult(result PddDdkOauthOrderDetailGetResponse, body []byte, http gorequest.Response, err error) *PddDdkOauthOrderDetailGetResult {
-	return &PddDdkOauthOrderDetailGetResult{Result: result, Body: body, Http: http, Err: err}
+func newPddDdkOauthOrderDetailGetResult(result PddDdkOauthOrderDetailGetResponse, body []byte, http gorequest.Response) *PddDdkOauthOrderDetailGetResult {
+	return &PddDdkOauthOrderDetailGetResult{Result: result, Body: body, Http: http}
 }
 
 // DetailGet 获取订单详情
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.order.detail.get
-func (c *PddDdkOauthOrderApi) DetailGet(ctx context.Context, notMustParams ...*gorequest.Params) *PddDdkOauthOrderDetailGetResult {
+func (c *PddDdkOauthOrderApi) DetailGet(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthOrderDetailGetResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.order.detail.get", notMustParams...)
 	// 请求
 	request, err := c.client.request(ctx, params)
+	if err != nil {
+		return newPddDdkOauthOrderDetailGetResult(PddDdkOauthOrderDetailGetResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PddDdkOauthOrderDetailGetResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPddDdkOauthOrderDetailGetResult(response, request.ResponseBody, request, err)
+	return newPddDdkOauthOrderDetailGetResult(response, request.ResponseBody, request), err
 }

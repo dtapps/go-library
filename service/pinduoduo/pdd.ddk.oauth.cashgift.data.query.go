@@ -40,22 +40,24 @@ type PddDdkOauthCashGiftDataQueryResult struct {
 	Result PddDdkOauthCashGiftDataQueryResponse // 结果
 	Body   []byte                               // 内容
 	Http   gorequest.Response                   // 请求
-	Err    error                                // 错误
 }
 
-func newPddDdkOauthCashGiftDataQueryResult(result PddDdkOauthCashGiftDataQueryResponse, body []byte, http gorequest.Response, err error) *PddDdkOauthCashGiftDataQueryResult {
-	return &PddDdkOauthCashGiftDataQueryResult{Result: result, Body: body, Http: http, Err: err}
+func newPddDdkOauthCashGiftDataQueryResult(result PddDdkOauthCashGiftDataQueryResponse, body []byte, http gorequest.Response) *PddDdkOauthCashGiftDataQueryResult {
+	return &PddDdkOauthCashGiftDataQueryResult{Result: result, Body: body, Http: http}
 }
 
 // DataQuery 查询多多礼金效果数据
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.cashgift.data.query
-func (c *PddDdkOauthCashGiftApi) DataQuery(ctx context.Context, notMustParams ...*gorequest.Params) *PddDdkOauthCashGiftDataQueryResult {
+func (c *PddDdkOauthCashGiftApi) DataQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthCashGiftDataQueryResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.cashgift.data.query", notMustParams...)
 	// 请求
 	request, err := c.client.request(ctx, params)
+	if err != nil {
+		return newPddDdkOauthCashGiftDataQueryResult(PddDdkOauthCashGiftDataQueryResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PddDdkOauthCashGiftDataQueryResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPddDdkOauthCashGiftDataQueryResult(response, request.ResponseBody, request, err)
+	return newPddDdkOauthCashGiftDataQueryResult(response, request.ResponseBody, request), err
 }

@@ -53,26 +53,27 @@ type CmsPromUrlGenerateResult struct {
 	Result CmsPromUrlGenerateResponse // 结果
 	Body   []byte                     // 内容
 	Http   gorequest.Response         // 请求
-	Err    error                      // 错误
-	Error  CmsPromUrlGenerateError    // 错误结果
 }
 
-func newCmsPromUrlGenerateResult(result CmsPromUrlGenerateResponse, body []byte, http gorequest.Response, err error, error CmsPromUrlGenerateError) *CmsPromUrlGenerateResult {
-	return &CmsPromUrlGenerateResult{Result: result, Body: body, Http: http, Err: err, Error: error}
+func newCmsPromUrlGenerateResult(result CmsPromUrlGenerateResponse, body []byte, http gorequest.Response) *CmsPromUrlGenerateResult {
+	return &CmsPromUrlGenerateResult{Result: result, Body: body, Http: http}
 }
 
 // CmsPromUrlGenerate 生成商城-频道推广链接
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.cms.prom.url.generate
-func (c *Client) CmsPromUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) *CmsPromUrlGenerateResult {
+func (c *Client) CmsPromUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (*CmsPromUrlGenerateResult, CmsPromUrlGenerateError, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.cms.prom.url.generate", notMustParams...)
 	params.Set("p_id_list", []string{c.GetPid()})
 	// 请求
 	request, err := c.request(ctx, params)
+	if err != nil {
+		return newCmsPromUrlGenerateResult(CmsPromUrlGenerateResponse{}, request.ResponseBody, request), CmsPromUrlGenerateError{}, err
+	}
 	// 定义
 	var response CmsPromUrlGenerateResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
 	var responseError CmsPromUrlGenerateError
 	err = gojson.Unmarshal(request.ResponseBody, &responseError)
-	return newCmsPromUrlGenerateResult(response, request.ResponseBody, request, err, responseError)
+	return newCmsPromUrlGenerateResult(response, request.ResponseBody, request), responseError, err
 }

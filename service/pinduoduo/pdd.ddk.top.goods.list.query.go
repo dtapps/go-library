@@ -51,23 +51,25 @@ type TopGoodsListQueryResult struct {
 	Result TopGoodsListQueryResponse // 结果
 	Body   []byte                    // 内容
 	Http   gorequest.Response        // 请求
-	Err    error                     // 错误
 }
 
-func newTopGoodsListQueryResult(result TopGoodsListQueryResponse, body []byte, http gorequest.Response, err error) *TopGoodsListQueryResult {
-	return &TopGoodsListQueryResult{Result: result, Body: body, Http: http, Err: err}
+func newTopGoodsListQueryResult(result TopGoodsListQueryResponse, body []byte, http gorequest.Response) *TopGoodsListQueryResult {
+	return &TopGoodsListQueryResult{Result: result, Body: body, Http: http}
 }
 
 // TopGoodsListQuery 多多客获取爆款排行商品接口
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.top.goods.list.query
-func (c *Client) TopGoodsListQuery(ctx context.Context, notMustParams ...*gorequest.Params) *TopGoodsListQueryResult {
+func (c *Client) TopGoodsListQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*TopGoodsListQueryResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.top.goods.list.query", notMustParams...)
 	params.Set("p_id", c.GetPid())
 	// 请求
 	request, err := c.request(ctx, params)
+	if err != nil {
+		return newTopGoodsListQueryResult(TopGoodsListQueryResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response TopGoodsListQueryResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newTopGoodsListQueryResult(response, request.ResponseBody, request, err)
+	return newTopGoodsListQueryResult(response, request.ResponseBody, request), err
 }

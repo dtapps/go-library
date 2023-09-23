@@ -89,23 +89,25 @@ type GoodsDetailResult struct {
 	Result GoodsDetailResponse // 结果
 	Body   []byte              // 内容
 	Http   gorequest.Response  // 请求
-	Err    error               // 错误
 }
 
-func newGoodsDetailResult(result GoodsDetailResponse, body []byte, http gorequest.Response, err error) *GoodsDetailResult {
-	return &GoodsDetailResult{Result: result, Body: body, Http: http, Err: err}
+func newGoodsDetailResult(result GoodsDetailResponse, body []byte, http gorequest.Response) *GoodsDetailResult {
+	return &GoodsDetailResult{Result: result, Body: body, Http: http}
 }
 
 // GoodsDetail 多多进宝商品详情查询
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.detail
-func (c *Client) GoodsDetail(ctx context.Context, notMustParams ...*gorequest.Params) *GoodsDetailResult {
+func (c *Client) GoodsDetail(ctx context.Context, notMustParams ...*gorequest.Params) (*GoodsDetailResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.detail", notMustParams...)
 	params.Set("pid", c.GetPid())
 	// 请求
 	request, err := c.request(ctx, params)
+	if err != nil {
+		return newGoodsDetailResult(GoodsDetailResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response GoodsDetailResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newGoodsDetailResult(response, request.ResponseBody, request, err)
+	return newGoodsDetailResult(response, request.ResponseBody, request), err
 }

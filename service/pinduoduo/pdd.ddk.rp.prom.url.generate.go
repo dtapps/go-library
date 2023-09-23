@@ -57,26 +57,27 @@ type RpPromUrlGenerateResult struct {
 	Result RpPromUrlGenerateResponse // 结果
 	Body   []byte                    // 内容
 	Http   gorequest.Response        // 请求
-	Err    error                     // 错误
-	Error  RpPromUrlGenerateError    // 错误结果
 }
 
-func newRpPromUrlGenerateResult(result RpPromUrlGenerateResponse, body []byte, http gorequest.Response, err error, error RpPromUrlGenerateError) *RpPromUrlGenerateResult {
-	return &RpPromUrlGenerateResult{Result: result, Body: body, Http: http, Err: err, Error: error}
+func newRpPromUrlGenerateResult(result RpPromUrlGenerateResponse, body []byte, http gorequest.Response) *RpPromUrlGenerateResult {
+	return &RpPromUrlGenerateResult{Result: result, Body: body, Http: http}
 }
 
 // RpPromUrlGenerate 生成营销工具推广链接
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.rp.prom.url.generate
-func (c *Client) RpPromUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) *RpPromUrlGenerateResult {
+func (c *Client) RpPromUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (*RpPromUrlGenerateResult, RpPromUrlGenerateError, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.rp.prom.url.generate", notMustParams...)
 	params.Set("p_id_list", []string{c.GetPid()})
 	// 请求
 	request, err := c.request(ctx, params)
+	if err != nil {
+		return newRpPromUrlGenerateResult(RpPromUrlGenerateResponse{}, request.ResponseBody, request), RpPromUrlGenerateError{}, err
+	}
 	// 定义
 	var response RpPromUrlGenerateResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
 	var responseError RpPromUrlGenerateError
 	err = gojson.Unmarshal(request.ResponseBody, &responseError)
-	return newRpPromUrlGenerateResult(response, request.ResponseBody, request, err, responseError)
+	return newRpPromUrlGenerateResult(response, request.ResponseBody, request), responseError, err
 }

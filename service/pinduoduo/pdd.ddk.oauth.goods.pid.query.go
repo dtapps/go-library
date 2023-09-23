@@ -59,22 +59,24 @@ type PddDdkOauthGoodsPidQueryResult struct {
 	Result PddDdkOauthGoodsPidQueryResponse // 结果
 	Body   []byte                           // 内容
 	Http   gorequest.Response               // 请求
-	Err    error                            // 错误
 }
 
-func newPddDdkOauthGoodsPidQueryResult(result PddDdkOauthGoodsPidQueryResponse, body []byte, http gorequest.Response, err error) *PddDdkOauthGoodsPidQueryResult {
-	return &PddDdkOauthGoodsPidQueryResult{Result: result, Body: body, Http: http, Err: err}
+func newPddDdkOauthGoodsPidQueryResult(result PddDdkOauthGoodsPidQueryResponse, body []byte, http gorequest.Response) *PddDdkOauthGoodsPidQueryResult {
+	return &PddDdkOauthGoodsPidQueryResult{Result: result, Body: body, Http: http}
 }
 
 // PidQuery 多多客已生成推广位信息查询
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.goods.pid.query
-func (c *PddDdkOauthGoodsApi) PidQuery(ctx context.Context, notMustParams ...*gorequest.Params) *PddDdkOauthGoodsPidQueryResult {
+func (c *PddDdkOauthGoodsApi) PidQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthGoodsPidQueryResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.goods.pid.query", notMustParams...)
 	// 请求
 	request, err := c.client.request(ctx, params)
+	if err != nil {
+		return newPddDdkOauthGoodsPidQueryResult(PddDdkOauthGoodsPidQueryResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PddDdkOauthGoodsPidQueryResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPddDdkOauthGoodsPidQueryResult(response, request.ResponseBody, request, err)
+	return newPddDdkOauthGoodsPidQueryResult(response, request.ResponseBody, request), err
 }

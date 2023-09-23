@@ -59,23 +59,24 @@ type OrderDetailGetResult struct {
 	Result OrderDetailGetResponse // 结果
 	Body   []byte                 // 内容
 	Http   gorequest.Response     // 请求
-	Err    error                  // 错误
 }
 
-func newOrderDetailGetResult(result OrderDetailGetResponse, body []byte, http gorequest.Response, err error) *OrderDetailGetResult {
-	return &OrderDetailGetResult{Result: result, Body: body, Http: http, Err: err}
+func newOrderDetailGetResult(result OrderDetailGetResponse, body []byte, http gorequest.Response) *OrderDetailGetResult {
+	return &OrderDetailGetResult{Result: result, Body: body, Http: http}
 }
 
 // OrderDetailGet 多多进宝商品查询 https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.order.detail.get
-func (c *Client) OrderDetailGet(ctx context.Context, orderSn string) *OrderDetailGetResult {
+func (c *Client) OrderDetailGet(ctx context.Context, orderSn string, notMustParams ...*gorequest.Params) (*OrderDetailGetResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("order_sn", orderSn)
-	params := NewParamsWithType("pdd.ddk.order.detail.get", param)
+	params := NewParamsWithType("pdd.ddk.order.detail.get", notMustParams...)
+	params.Set("order_sn", orderSn)
 	// 请求
 	request, err := c.request(ctx, params)
+	if err != nil {
+		return newOrderDetailGetResult(OrderDetailGetResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response OrderDetailGetResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newOrderDetailGetResult(response, request.ResponseBody, request, err)
+	return newOrderDetailGetResult(response, request.ResponseBody, request), err
 }

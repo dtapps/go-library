@@ -42,26 +42,27 @@ type ResourceUrlGenResult struct {
 	Result ResourceUrlGenResponse // 结果
 	Body   []byte                 // 内容
 	Http   gorequest.Response     // 请求
-	Err    error                  // 错误
-	Error  ResourceUrlGenError    // 错误结果
 }
 
-func newResourceUrlGenResult(result ResourceUrlGenResponse, body []byte, http gorequest.Response, err error, error ResourceUrlGenError) *ResourceUrlGenResult {
-	return &ResourceUrlGenResult{Result: result, Body: body, Http: http, Err: err, Error: error}
+func newResourceUrlGenResult(result ResourceUrlGenResponse, body []byte, http gorequest.Response) *ResourceUrlGenResult {
+	return &ResourceUrlGenResult{Result: result, Body: body, Http: http}
 }
 
 // ResourceUrlGen 生成多多进宝频道推广
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.pid.generate
-func (c *Client) ResourceUrlGen(ctx context.Context, notMustParams ...*gorequest.Params) *ResourceUrlGenResult {
+func (c *Client) ResourceUrlGen(ctx context.Context, notMustParams ...*gorequest.Params) (*ResourceUrlGenResult, ResourceUrlGenError, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.resource.url.gen", notMustParams...)
 	params.Set("pid", c.GetPid())
 	// 请求
 	request, err := c.request(ctx, params)
+	if err != nil {
+		return newResourceUrlGenResult(ResourceUrlGenResponse{}, request.ResponseBody, request), ResourceUrlGenError{}, err
+	}
 	// 定义
 	var response ResourceUrlGenResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
 	var responseError ResourceUrlGenError
 	err = gojson.Unmarshal(request.ResponseBody, &responseError)
-	return newResourceUrlGenResult(response, request.ResponseBody, request, err, responseError)
+	return newResourceUrlGenResult(response, request.ResponseBody, request), responseError, err
 }

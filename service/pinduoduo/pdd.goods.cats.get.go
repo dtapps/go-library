@@ -21,24 +21,25 @@ type GoodsCatsGetResult struct {
 	Result GoodsCatsGetResponse // 结果
 	Body   []byte               // 内容
 	Http   gorequest.Response   // 请求
-	Err    error                // 错误
 }
 
-func newGoodsCatsGetResult(result GoodsCatsGetResponse, body []byte, http gorequest.Response, err error) *GoodsCatsGetResult {
-	return &GoodsCatsGetResult{Result: result, Body: body, Http: http, Err: err}
+func newGoodsCatsGetResult(result GoodsCatsGetResponse, body []byte, http gorequest.Response) *GoodsCatsGetResult {
+	return &GoodsCatsGetResult{Result: result, Body: body, Http: http}
 }
 
 // GoodsCatsGet 商品标准类目接口
 // https://open.pinduoduo.com/application/document/api?id=pdd.goods.cats.get
-func (c *Client) GoodsCatsGet(ctx context.Context, parentOptId int) *GoodsCatsGetResult {
+func (c *Client) GoodsCatsGet(ctx context.Context, parentOptId int, notMustParams ...*gorequest.Params) (*GoodsCatsGetResult, error) {
 	// 参数
-	param := gorequest.NewParams()
-	param.Set("parent_cat_id", parentOptId)
-	params := NewParamsWithType("pdd.goods.cats.get", param)
+	params := NewParamsWithType("pdd.goods.cats.get", notMustParams...)
+	params.Set("parent_opt_id", parentOptId)
 	// 请求
 	request, err := c.request(ctx, params)
+	if err != nil {
+		return newGoodsCatsGetResult(GoodsCatsGetResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response GoodsCatsGetResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newGoodsCatsGetResult(response, request.ResponseBody, request, err)
+	return newGoodsCatsGetResult(response, request.ResponseBody, request), err
 }

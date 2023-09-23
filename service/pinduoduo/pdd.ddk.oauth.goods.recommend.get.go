@@ -59,22 +59,24 @@ type PddDdkOauthGoodsRecommendGetResult struct {
 	Result PddDdkOauthGoodsRecommendGetResponse // 结果
 	Body   []byte                               // 内容
 	Http   gorequest.Response                   // 请求
-	Err    error                                // 错误
 }
 
-func newPddDdkOauthGoodsRecommendGetResult(result PddDdkOauthGoodsRecommendGetResponse, body []byte, http gorequest.Response, err error) *PddDdkOauthGoodsRecommendGetResult {
-	return &PddDdkOauthGoodsRecommendGetResult{Result: result, Body: body, Http: http, Err: err}
+func newPddDdkOauthGoodsRecommendGetResult(result PddDdkOauthGoodsRecommendGetResponse, body []byte, http gorequest.Response) *PddDdkOauthGoodsRecommendGetResult {
+	return &PddDdkOauthGoodsRecommendGetResult{Result: result, Body: body, Http: http}
 }
 
 // RecommendGet 运营频道商品查询API
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.goods.recommend.get
-func (c *PddDdkOauthGoodsApi) RecommendGet(ctx context.Context, notMustParams ...*gorequest.Params) *PddDdkOauthGoodsRecommendGetResult {
+func (c *PddDdkOauthGoodsApi) RecommendGet(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthGoodsRecommendGetResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.goods.recommend.get", notMustParams...)
 	// 请求
 	request, err := c.client.request(ctx, params)
+	if err != nil {
+		return newPddDdkOauthGoodsRecommendGetResult(PddDdkOauthGoodsRecommendGetResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PddDdkOauthGoodsRecommendGetResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPddDdkOauthGoodsRecommendGetResult(response, request.ResponseBody, request, err)
+	return newPddDdkOauthGoodsRecommendGetResult(response, request.ResponseBody, request), err
 }

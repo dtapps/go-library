@@ -59,22 +59,24 @@ type PddDdkOauthMemberAuthorityQueryResult struct {
 	Result PddDdkOauthMemberAuthorityQueryResponse // 结果
 	Body   []byte                                  // 内容
 	Http   gorequest.Response                      // 请求
-	Err    error                                   // 错误
 }
 
-func newPddDdkOauthMemberAuthorityQueryResult(result PddDdkOauthMemberAuthorityQueryResponse, body []byte, http gorequest.Response, err error) *PddDdkOauthMemberAuthorityQueryResult {
-	return &PddDdkOauthMemberAuthorityQueryResult{Result: result, Body: body, Http: http, Err: err}
+func newPddDdkOauthMemberAuthorityQueryResult(result PddDdkOauthMemberAuthorityQueryResponse, body []byte, http gorequest.Response) *PddDdkOauthMemberAuthorityQueryResult {
+	return &PddDdkOauthMemberAuthorityQueryResult{Result: result, Body: body, Http: http}
 }
 
 // AuthorityQuery 查询是否绑定备案
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.member.authority.query
-func (c *PddDdkOauthMemberApi) AuthorityQuery(ctx context.Context, notMustParams ...*gorequest.Params) *PddDdkOauthMemberAuthorityQueryResult {
+func (c *PddDdkOauthMemberApi) AuthorityQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthMemberAuthorityQueryResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.member.authority.query", notMustParams...)
 	// 请求
 	request, err := c.client.request(ctx, params)
+	if err != nil {
+		return newPddDdkOauthMemberAuthorityQueryResult(PddDdkOauthMemberAuthorityQueryResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response PddDdkOauthMemberAuthorityQueryResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPddDdkOauthMemberAuthorityQueryResult(response, request.ResponseBody, request, err)
+	return newPddDdkOauthMemberAuthorityQueryResult(response, request.ResponseBody, request), err
 }

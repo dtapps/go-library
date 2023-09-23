@@ -71,23 +71,25 @@ type GoodsRecommendGetResult struct {
 	Result GoodsRecommendGetResponse // 结果
 	Body   []byte                    // 内容
 	Http   gorequest.Response        // 请求
-	Err    error                     // 错误
 }
 
-func newGoodsRecommendGetResult(result GoodsRecommendGetResponse, body []byte, http gorequest.Response, err error) *GoodsRecommendGetResult {
-	return &GoodsRecommendGetResult{Result: result, Body: body, Http: http, Err: err}
+func newGoodsRecommendGetResult(result GoodsRecommendGetResponse, body []byte, http gorequest.Response) *GoodsRecommendGetResult {
+	return &GoodsRecommendGetResult{Result: result, Body: body, Http: http}
 }
 
 // GoodsRecommendGet 多多进宝商品推荐API
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.recommend.get
-func (c *Client) GoodsRecommendGet(ctx context.Context, notMustParams ...*gorequest.Params) *GoodsRecommendGetResult {
+func (c *Client) GoodsRecommendGet(ctx context.Context, notMustParams ...*gorequest.Params) (*GoodsRecommendGetResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.recommend.get", notMustParams...)
 	params.Set("pid", c.GetPid())
 	// 请求
 	request, err := c.request(ctx, params)
+	if err != nil {
+		return newGoodsRecommendGetResult(GoodsRecommendGetResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response GoodsRecommendGetResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newGoodsRecommendGetResult(response, request.ResponseBody, request, err)
+	return newGoodsRecommendGetResult(response, request.ResponseBody, request), err
 }
