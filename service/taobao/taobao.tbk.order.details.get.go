@@ -74,22 +74,24 @@ type TbkOrderDetailsGetResult struct {
 	Result TbkOrderDetailsGetResponse // 结果
 	Body   []byte                     // 内容
 	Http   gorequest.Response         // 请求
-	Err    error                      // 错误
 }
 
-func newTbkOrderDetailsGetResult(result TbkOrderDetailsGetResponse, body []byte, http gorequest.Response, err error) *TbkOrderDetailsGetResult {
-	return &TbkOrderDetailsGetResult{Result: result, Body: body, Http: http, Err: err}
+func newTbkOrderDetailsGetResult(result TbkOrderDetailsGetResponse, body []byte, http gorequest.Response) *TbkOrderDetailsGetResult {
+	return &TbkOrderDetailsGetResult{Result: result, Body: body, Http: http}
 }
 
 // TbkOrderDetailsGet 淘宝客-推广者-所有订单查询
 // https://open.taobao.com/api.htm?docId=43328&docType=2&scopeId=16175
-func (c *Client) TbkOrderDetailsGet(ctx context.Context, notMustParams ...*gorequest.Params) *TbkOrderDetailsGetResult {
+func (c *Client) TbkOrderDetailsGet(ctx context.Context, notMustParams ...*gorequest.Params) (*TbkOrderDetailsGetResult, error) {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.order.details.get", notMustParams...)
 	// 请求
 	request, err := c.request(ctx, params)
+	if err != nil {
+		return newTbkOrderDetailsGetResult(TbkOrderDetailsGetResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response TbkOrderDetailsGetResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newTbkOrderDetailsGetResult(response, request.ResponseBody, request, err)
+	return newTbkOrderDetailsGetResult(response, request.ResponseBody, request), err
 }

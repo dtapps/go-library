@@ -50,22 +50,24 @@ type TbkItemInfoGetResult struct {
 	Result TbkItemInfoGetResponse // 结果
 	Body   []byte                 // 内容
 	Http   gorequest.Response     // 请求
-	Err    error                  // 错误
 }
 
-func newTbkItemInfoGetResult(result TbkItemInfoGetResponse, body []byte, http gorequest.Response, err error) *TbkItemInfoGetResult {
-	return &TbkItemInfoGetResult{Result: result, Body: body, Http: http, Err: err}
+func newTbkItemInfoGetResult(result TbkItemInfoGetResponse, body []byte, http gorequest.Response) *TbkItemInfoGetResult {
+	return &TbkItemInfoGetResult{Result: result, Body: body, Http: http}
 }
 
 // TbkItemInfoGet 淘宝客-公用-淘宝客商品详情查询(简版)
 // https://open.taobao.com/api.htm?docId=24518&docType=2&source=search
-func (c *Client) TbkItemInfoGet(ctx context.Context, notMustParams ...*gorequest.Params) *TbkItemInfoGetResult {
+func (c *Client) TbkItemInfoGet(ctx context.Context, notMustParams ...*gorequest.Params) (*TbkItemInfoGetResult, error) {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.item.info.get", notMustParams...)
 	// 请求
 	request, err := c.request(ctx, params)
+	if err != nil {
+		return newTbkItemInfoGetResult(TbkItemInfoGetResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response TbkItemInfoGetResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newTbkItemInfoGetResult(response, request.ResponseBody, request, err)
+	return newTbkItemInfoGetResult(response, request.ResponseBody, request), err
 }

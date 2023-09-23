@@ -54,23 +54,25 @@ type TbkDgOptimusMaterialResult struct {
 	Result TbkDgOptimusMaterialResponse // 结果
 	Body   []byte                       // 内容
 	Http   gorequest.Response           // 请求
-	Err    error                        // 错误
 }
 
-func newTbkDgOptimusMaterialResult(result TbkDgOptimusMaterialResponse, body []byte, http gorequest.Response, err error) *TbkDgOptimusMaterialResult {
-	return &TbkDgOptimusMaterialResult{Result: result, Body: body, Http: http, Err: err}
+func newTbkDgOptimusMaterialResult(result TbkDgOptimusMaterialResponse, body []byte, http gorequest.Response) *TbkDgOptimusMaterialResult {
+	return &TbkDgOptimusMaterialResult{Result: result, Body: body, Http: http}
 }
 
 // TbkDgOptimusMaterial 淘宝客-推广者-物料精选
 // https://open.taobao.com/api.htm?docId=33947&docType=2&source=search
-func (c *Client) TbkDgOptimusMaterial(ctx context.Context, notMustParams ...*gorequest.Params) *TbkDgOptimusMaterialResult {
+func (c *Client) TbkDgOptimusMaterial(ctx context.Context, notMustParams ...*gorequest.Params) (*TbkDgOptimusMaterialResult, error) {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.dg.optimus.material", notMustParams...)
 	params.Set("adzone_id", c.GetAdzoneId())
 	// 请求
 	request, err := c.request(ctx, params)
+	if err != nil {
+		return newTbkDgOptimusMaterialResult(TbkDgOptimusMaterialResponse{}, request.ResponseBody, request), err
+	}
 	// 定义
 	var response TbkDgOptimusMaterialResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newTbkDgOptimusMaterialResult(response, request.ResponseBody, request, err)
+	return newTbkDgOptimusMaterialResult(response, request.ResponseBody, request), err
 }
