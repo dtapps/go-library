@@ -22,8 +22,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	client.SetContentTypeXml()
 
 	// 设置参数
-	client.SetParams(param.ToMap())
-	param.DeepCopy()
+	client.SetParams(param.ToMapAndReset())
 
 	// 设置证书
 	if certStatus {

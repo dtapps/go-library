@@ -60,6 +60,20 @@ func (p *Params) ToMap() map[string]interface{} {
 	return result
 }
 
+// ToMapAndReset 返回 map[string]interface{} 然后清空原始数据
+func (p *Params) ToMapAndReset() map[string]interface{} {
+	result := make(map[string]interface{})
+
+	p.m.Range(func(key, value interface{}) bool {
+		result[key.(string)] = value
+		return true
+	})
+
+	p.Reset() // 清空原始数据
+
+	return result
+}
+
 // HasData 判断是否有数据
 func (p *Params) HasData() bool {
 	hasData := false
@@ -86,5 +100,14 @@ func (p *Params) DeepCopy() *Params {
 		return true
 	})
 
+	p.Reset() // 清空原始数据
+
 	return newParams
+}
+
+// Reset 清空结构体
+func (p *Params) Reset() {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	p.m = sync.Map{}
 }

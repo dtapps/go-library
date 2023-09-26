@@ -12,39 +12,39 @@ type Headers struct {
 
 // NewHeaders 新建头部信息
 func NewHeaders() *Headers {
-	P := &Headers{}
-	return P
+	h := &Headers{}
+	return h
 }
 
 // NewNewHeadersWith 头部信息使用
 func NewNewHeadersWith(headers ...*Headers) *Headers {
-	p := NewHeaders()
+	h := NewHeaders()
 	for _, v := range headers {
-		p.SetHeaders(v)
+		h.SetHeaders(v)
 	}
-	return p
+	return h
 }
 
 // Set 设置头部信息
-func (p *Headers) Set(key string, value any) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	p.m.Store(key, value)
+func (h *Headers) Set(key string, value any) {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	h.m.Store(key, value)
 }
 
 // SetHeaders 批量设置头部信息
-func (p *Headers) SetHeaders(headers *Headers) {
+func (h *Headers) SetHeaders(headers *Headers) {
 	headers.m.Range(func(key, value interface{}) bool {
-		p.Set(key.(string), value.(string))
+		h.Set(key.(string), value.(string))
 		return true
 	})
 }
 
 // ToMap 返回 map[string]interface{}
-func (p *Headers) ToMap() map[string]interface{} {
+func (h *Headers) ToMap() map[string]interface{} {
 	result := make(map[string]interface{})
 
-	p.m.Range(func(key, value interface{}) bool {
+	h.m.Range(func(key, value interface{}) bool {
 		result[key.(string)] = value
 		return true
 	})
@@ -52,11 +52,25 @@ func (p *Headers) ToMap() map[string]interface{} {
 	return result
 }
 
+// ToMapAndReset 返回 map[string]interface{} 然后清空原始数据
+func (h *Headers) ToMapAndReset() map[string]interface{} {
+	result := make(map[string]interface{})
+
+	h.m.Range(func(key, value interface{}) bool {
+		result[key.(string)] = value
+		return true
+	})
+
+	h.Reset() // 清空原始数据
+
+	return result
+}
+
 // HasData 判断是否有数据
-func (p *Headers) HasData() bool {
+func (h *Headers) HasData() bool {
 	hasData := false
 
-	p.m.Range(func(_, _ interface{}) bool {
+	h.m.Range(func(_, _ interface{}) bool {
 		hasData = true
 		// 返回 false 停止遍历
 		return false
@@ -66,17 +80,26 @@ func (p *Headers) HasData() bool {
 }
 
 // DeepCopy 深度复制
-func (p *Headers) DeepCopy() *Headers {
+func (h *Headers) DeepCopy() *Headers {
 	newHeaders := NewHeaders()
 
-	p.m.Range(func(key, value interface{}) bool {
+	h.m.Range(func(key, value interface{}) bool {
 		// 深度复制数据并存储到新参数集合
 		newValue := deepCopy(value)
 		newHeaders.Set(key.(string), newValue)
 		// 清空原始数据
-		p.m.Delete(key)
+		h.m.Delete(key)
 		return true
 	})
 
+	h.Reset() // 清空原始数据
+
 	return newHeaders
+}
+
+// Reset 清空结构体
+func (h *Headers) Reset() {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	h.m = sync.Map{}
 }

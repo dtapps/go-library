@@ -32,8 +32,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	client.SetUserAgent(gorequest.GetRandomUserAgentSystem())
 
 	// 设置参数
-	client.SetParams(param.ToMap())
-	param.DeepCopy()
+	client.SetParams(param.ToMapAndReset())
 
 	// 发起请求
 	request, err := client.Post(ctx)
@@ -67,8 +66,7 @@ func (c *Client) requestCache(ctx context.Context, url string, param *gorequest.
 	client.SetUserAgent(gorequest.GetRandomUserAgentSystem())
 
 	// 设置参数
-	client.SetParams(param.ToMap())
-	param.DeepCopy()
+	client.SetParams(param.ToMapAndReset())
 
 	// 发起请求
 	request, err := client.Request(ctx)

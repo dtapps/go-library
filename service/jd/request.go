@@ -23,8 +23,7 @@ func (c *Client) request(ctx context.Context, param *gorequest.Params) (goreques
 	client.SetContentTypeForm()
 
 	// 设置参数
-	client.SetParams(param.ToMap())
-	param.DeepCopy()
+	client.SetParams(param.ToMapAndReset())
 
 	// 发起请求
 	request, err := client.Post(ctx)
