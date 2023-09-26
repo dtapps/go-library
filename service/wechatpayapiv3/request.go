@@ -40,6 +40,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 
 	// 设置参数
 	client.SetParams(param.ToMap())
+	param.DeepCopy()
 
 	// 设置头部
 	client.SetHeader("Authorization", "WECHATPAY2-SHA256-RSA2048 "+authorization)

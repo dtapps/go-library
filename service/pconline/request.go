@@ -19,6 +19,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 
 	// 设置参数
 	client.SetParams(param.ToMap())
+	param.DeepCopy()
 
 	// 发起请求
 	request, err := client.Get(ctx)

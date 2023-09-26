@@ -31,6 +31,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 
 	// 设置参数
 	client.SetParams(param.ToMap())
+	param.DeepCopy()
 
 	// 设置用户代理
 	client.SetUserAgent(gorequest.GetRandomUserAgentSystem())
