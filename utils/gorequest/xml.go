@@ -7,15 +7,14 @@ import (
 	"io"
 )
 
-// MarshalXML 结构体转xml
-func (p *Params) MarshalXML() (reader io.Reader, err error) {
+func ToXml(params map[string]interface{}) (reader io.Reader, err error) {
 	buffer := bytes.NewBuffer(make([]byte, 0))
 
 	if _, err = io.WriteString(buffer, "<xml>"); err != nil {
 		return
 	}
 
-	for k, v := range p.ToMap() {
+	for k, v := range params {
 		switch {
 		case k == "detail":
 			if _, err = io.WriteString(buffer, "<detail><![CDATA["); err != nil {

@@ -36,7 +36,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	client.SetContentTypeForm()
 
 	// 设置参数
-	client.SetParams(newParams)
+	client.SetParams(newParams.ToMap())
 
 	// 发起请求
 	request, err := client.Request(ctx)

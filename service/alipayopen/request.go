@@ -19,7 +19,7 @@ func (c *Client) request(ctx context.Context, param *gorequest.Params) (goreques
 	}
 
 	// 设置参数
-	client.SetParams(params)
+	client.SetParams(params.ToMap())
 
 	// 设置用户代理
 	client.SetUserAgent(gorequest.GetRandomUserAgentSystem())

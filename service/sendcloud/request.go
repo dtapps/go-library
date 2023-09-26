@@ -13,7 +13,11 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	//params["userkey"] = gomd5.ToUpper(fmt.Sprintf("%s%s", c.signStr, c.key))
 
 	// 创建请求
-	client := c.client
+	client := c.requestClient
+	if !c.requestClientStatus {
+		c.DefaultHttp()
+		client = c.requestClient
+	}
 
 	// 设置请求地址
 	client.SetUri(url)
@@ -25,7 +29,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	client.SetContentTypeForm()
 
 	// 设置参数
-	client.SetParams(param)
+	client.SetParams(param.ToMap())
 
 	// 发起请求
 	request, err := client.Request(ctx)
