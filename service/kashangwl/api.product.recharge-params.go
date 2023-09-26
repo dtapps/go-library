@@ -29,9 +29,8 @@ func newApiProductRechargeParamsResult(result ApiProductRechargeParamsResponse, 
 	return &ApiProductRechargeParamsResult{Result: result, Body: body, Http: http}
 }
 
-// ApiProductRechargeParams 接口说明
-// 获取商品的充值参数（仅支持充值类商品）
-// http://doc.cqmeihu.cn/sales/ProductParams.html
+// ApiProductRechargeParams 获取商品的充值参数（仅支持充值类商品）
+// http://doc.cqmeihu.cn/sales/recharge-params.html
 func (c *Client) ApiProductRechargeParams(ctx context.Context, notMustParams ...gorequest.Params) (*ApiProductRechargeParamsResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

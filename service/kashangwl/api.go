@@ -19,7 +19,7 @@ func (c *Client) CacheGet(ctx context.Context, _method string, notMustParams ...
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.requestCache(ctx, apiUrl+_method, params, http.GET)
+	request, err := c.requestCache(ctx, apiUrlCache+_method, params, http.GET)
 	// 定义
 	return request.ResponseBody, err
 }
@@ -28,7 +28,7 @@ func (c *Client) CachePost(ctx context.Context, _method string, notMustParams ..
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.requestCache(ctx, apiUrl+_method, params, http.POST)
+	request, err := c.requestCache(ctx, apiUrlCache+_method, params, http.POST)
 	// 定义
 	return request.ResponseBody, err
 }
