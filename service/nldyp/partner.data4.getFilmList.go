@@ -42,7 +42,7 @@ func newPartnerData4GetFilmListResult(result PartnerData4GetFilmListResponse, bo
 
 // PartnerData4GetFilmList 获取影片
 // https://docs.apipost.cn/preview/fa101f4865dc783f/66e7c2e894fda4a6?target_id=b13d7051-6a31-49d4-ba49-42e423da41d3
-func (c *Client) PartnerData4GetFilmList(ctx context.Context, notMustParams ...*gorequest.Params) (*PartnerData4GetFilmListResult, error) {
+func (c *Client) PartnerData4GetFilmList(ctx context.Context, notMustParams ...gorequest.Params) (*PartnerData4GetFilmListResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

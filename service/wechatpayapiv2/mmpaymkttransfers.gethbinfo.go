@@ -50,7 +50,7 @@ func newMmpaymkttransfersGethbinfoResult(result MmpaymkttransfersGethbinfoRespon
 // MmpaymkttransfersGethbinfo
 // 现金红包 - 查询红包记录
 // https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon_sl.php?chapter=13_6&index=5
-func (c *Client) MmpaymkttransfersGethbinfo(ctx context.Context, notMustParams ...*gorequest.Params) (*MmpaymkttransfersGethbinfoResult, error) {
+func (c *Client) MmpaymkttransfersGethbinfo(ctx context.Context, notMustParams ...gorequest.Params) (*MmpaymkttransfersGethbinfoResult, error) {
 	cert, err := c.P12ToPem()
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

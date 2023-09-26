@@ -25,7 +25,7 @@ func newPromotionDelResult(result PromotionDelResponse, body []byte, http gorequ
 
 // PromotionDel 删除某个推广位
 // https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/promotion.html#_3-%E7%BC%96%E8%BE%91%E6%8E%A8%E5%B9%BF%E4%BD%8D
-func (c *Client) PromotionDel(ctx context.Context, promotionSourcePid, promotionSourceName string, notMustParams ...*gorequest.Params) (*PromotionDelResult, error) {
+func (c *Client) PromotionDel(ctx context.Context, promotionSourcePid, promotionSourceName string, notMustParams ...gorequest.Params) (*PromotionDelResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("promotionSourcePid", promotionSourcePid)   // 推广位PID

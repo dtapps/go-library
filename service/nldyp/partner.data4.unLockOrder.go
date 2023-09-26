@@ -27,7 +27,7 @@ func newPartnerData4UnLockOrderResult(result PartnerData4UnLockOrderResponse, bo
 
 // PartnerData4UnLockOrder 释放锁座
 // https://docs.apipost.cn/preview/fa101f4865dc783f/66e7c2e894fda4a6?target_id=43074323-fd3d-4c14-9a17-a447101b410f
-func (c *Client) PartnerData4UnLockOrder(ctx context.Context, notMustParams ...*gorequest.Params) (*PartnerData4UnLockOrderResult, error) {
+func (c *Client) PartnerData4UnLockOrder(ctx context.Context, notMustParams ...gorequest.Params) (*PartnerData4UnLockOrderResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

@@ -36,7 +36,7 @@ func newWxaApiFeedbackListResult(result WxaApiFeedbackListResponse, body []byte,
 
 // WxaApiFeedbackList 获取用户反馈列表
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/operation/operation.getFeedback.html
-func (c *Client) WxaApiFeedbackList(ctx context.Context, notMustParams ...*gorequest.Params) (*WxaApiFeedbackListResult, error) {
+func (c *Client) WxaApiFeedbackList(ctx context.Context, notMustParams ...gorequest.Params) (*WxaApiFeedbackListResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("access_token", c.getAccessToken(ctx))

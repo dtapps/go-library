@@ -26,7 +26,7 @@ func newSnsJsCode2sessionResult(result SnsJsCode2sessionResponse, body []byte, h
 	return &SnsJsCode2sessionResult{Result: result, Body: body, Http: http}
 }
 
-func (c *Client) SnsJsCode2session(ctx context.Context, jsCode string, notMustParams ...*gorequest.Params) (*SnsJsCode2sessionResult, error) {
+func (c *Client) SnsJsCode2session(ctx context.Context, jsCode string, notMustParams ...gorequest.Params) (*SnsJsCode2sessionResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

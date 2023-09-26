@@ -27,7 +27,7 @@ func newPartnerData4SellTicketResult(result PartnerData4SellTicketResponse, body
 
 // PartnerData4SellTicket 售票
 // https://docs.apipost.cn/preview/fa101f4865dc783f/66e7c2e894fda4a6?target_id=edd25537-3425-49e0-b6b5-373ebe4e919c
-func (c *Client) PartnerData4SellTicket(ctx context.Context, orderId, orderNo, notifyUrl string, notMustParams ...*gorequest.Params) (*PartnerData4SellTicketResult, error) {
+func (c *Client) PartnerData4SellTicket(ctx context.Context, orderId, orderNo, notifyUrl string, notMustParams ...gorequest.Params) (*PartnerData4SellTicketResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("orderId", orderId) // 订单 id

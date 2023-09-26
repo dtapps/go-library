@@ -43,7 +43,7 @@ func newDataBankBranch2Result(result DataBankBranch2Response, body []byte, http 
 
 // DataBankBranch2 代理商通过联行号来查支行信息
 // https://www.yuque.com/leshuazf/doc/dbmxyi#QYl0c
-func (c *Client) DataBankBranch2(ctx context.Context, notMustParams ...*gorequest.Params) (*DataBankBranch2Result, error) {
+func (c *Client) DataBankBranch2(ctx context.Context, notMustParams ...gorequest.Params) (*DataBankBranch2Result, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

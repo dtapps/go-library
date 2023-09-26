@@ -29,7 +29,7 @@ func newGoodsCatsGetResult(result GoodsCatsGetResponse, body []byte, http gorequ
 
 // GoodsCatsGet 商品标准类目接口
 // https://open.pinduoduo.com/application/document/api?id=pdd.goods.cats.get
-func (c *Client) GoodsCatsGet(ctx context.Context, parentOptId int, notMustParams ...*gorequest.Params) (*GoodsCatsGetResult, error) {
+func (c *Client) GoodsCatsGet(ctx context.Context, parentOptId int, notMustParams ...gorequest.Params) (*GoodsCatsGetResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.goods.cats.get", notMustParams...)
 	params.Set("parent_opt_id", parentOptId)

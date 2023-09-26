@@ -5,7 +5,7 @@ import (
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
-func (c *Client) request(ctx context.Context, url string, param *gorequest.Params) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param gorequest.Params) (gorequest.Response, error) {
 
 	// 创建请求
 	client := c.requestClient
@@ -18,7 +18,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	client.SetUri(url)
 
 	// 设置参数
-	client.SetParams(param.ToMapAndReset())
+	client.SetParams(param)
 
 	// 发起请求
 	request, err := client.Get(ctx)

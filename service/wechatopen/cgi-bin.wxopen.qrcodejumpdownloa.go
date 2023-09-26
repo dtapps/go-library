@@ -26,7 +26,7 @@ func newCgiBinWxOpenQrCodeJumpDownloadResult(result CgiBinWxOpenQrCodeJumpDownlo
 
 // CgiBinWxOpenQrCodeJumpDownload 获取校验文件名称及内容
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumpdownload.html
-func (c *Client) CgiBinWxOpenQrCodeJumpDownload(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*CgiBinWxOpenQrCodeJumpDownloadResult, error) {
+func (c *Client) CgiBinWxOpenQrCodeJumpDownload(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*CgiBinWxOpenQrCodeJumpDownloadResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

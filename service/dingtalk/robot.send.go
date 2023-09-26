@@ -26,7 +26,7 @@ func newRobotSendResult(result RobotSendResponse, body []byte, http gorequest.Re
 
 // RobotSend 自定义机器人
 // https://open.dingtalk.com/document/group/custom-robot-access
-func (c *Client) RobotSend(ctx context.Context, notMustParams ...*gorequest.Params) (*RobotSendResult, error) {
+func (c *Client) RobotSend(ctx context.Context, notMustParams ...gorequest.Params) (*RobotSendResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 时间

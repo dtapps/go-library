@@ -28,7 +28,7 @@ func newPartnerData4GetAddressListsResult(result PartnerData4GetAddressListsResp
 
 // PartnerData4GetAddressLists 获取地区
 // https://docs.apipost.cn/preview/fa101f4865dc783f/66e7c2e894fda4a6?target_id=85053df1-09b5-4042-aeed-c7e10f3cdddc
-func (c *Client) PartnerData4GetAddressLists(ctx context.Context, notMustParams ...*gorequest.Params) (*PartnerData4GetAddressListsResult, error) {
+func (c *Client) PartnerData4GetAddressLists(ctx context.Context, notMustParams ...gorequest.Params) (*PartnerData4GetAddressListsResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

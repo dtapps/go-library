@@ -40,7 +40,7 @@ func newLocationIpResult(result LocationIpResponse, body []byte, http gorequest.
 
 // LocationIp 普通IP定位
 // https://lbsyun.baidu.com/index.php?title=webapi/ip-api
-func (c *Client) LocationIp(ctx context.Context, ip string, notMustParams ...*gorequest.Params) (*LocationIpResult, error) {
+func (c *Client) LocationIp(ctx context.Context, ip string, notMustParams ...gorequest.Params) (*LocationIpResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("ak", c.GetAk())

@@ -42,7 +42,7 @@ func newGetHotListResult(result GetHotListResponse, body []byte, http gorequest.
 }
 
 // GetHotList 正在热映 https://www.showdoc.com.cn/1154868044931571/5866125707634369
-func (c *Client) GetHotList(ctx context.Context, cityId int, notMustParams ...*gorequest.Params) (*GetHotListResult, error) {
+func (c *Client) GetHotList(ctx context.Context, cityId int, notMustParams ...gorequest.Params) (*GetHotListResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("cityId", cityId)

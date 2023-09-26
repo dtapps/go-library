@@ -37,7 +37,7 @@ func newTransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult(result Transf
 
 // TransferBatchesBatchIdBatchIdDetailsDetailIdDetailId 通过微信明细单号查询明细单
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-detail/get-transfer-detail-by-no.html
-func (c *Client) TransferBatchesBatchIdBatchIdDetailsDetailIdDetailId(ctx context.Context, batchId string, detailId string, notMustParams ...*gorequest.Params) (*TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult, error) {
+func (c *Client) TransferBatchesBatchIdBatchIdDetailsDetailIdDetailId(ctx context.Context, batchId string, detailId string, notMustParams ...gorequest.Params) (*TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

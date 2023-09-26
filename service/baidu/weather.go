@@ -85,7 +85,7 @@ func newWeatherResult(result WeatherResponse, body []byte, http gorequest.Respon
 
 // Weather 国内天气查询服务
 // https://lbsyun.baidu.com/index.php?title=webapi/weather
-func (c *Client) Weather(ctx context.Context, districtId string, notMustParams ...*gorequest.Params) (*WeatherResult, error) {
+func (c *Client) Weather(ctx context.Context, districtId string, notMustParams ...gorequest.Params) (*WeatherResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("ak", c.GetAk())

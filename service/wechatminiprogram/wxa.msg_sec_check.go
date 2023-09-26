@@ -39,7 +39,7 @@ func newWxaMsgSecCheckResult(result WxaMsgSecCheckResponse, body []byte, http go
 
 // WxaMsgSecCheck 文本内容安全识别
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.getUnlimited.html
-func (c *Client) WxaMsgSecCheck(ctx context.Context, notMustParams ...*gorequest.Params) (*WxaMsgSecCheckResult, error) {
+func (c *Client) WxaMsgSecCheck(ctx context.Context, notMustParams ...gorequest.Params) (*WxaMsgSecCheckResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

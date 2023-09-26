@@ -33,7 +33,7 @@ func newIpResult(result IpResponse, body []byte, http gorequest.Response) *IpRes
 
 // Ip 接口 https://whois.pconline.com.cn/
 // ip=xxx
-func (c *Client) Ip(ctx context.Context, ip string, notMustParams ...*gorequest.Params) (*IpResult, error) { // 参数
+func (c *Client) Ip(ctx context.Context, ip string, notMustParams ...gorequest.Params) (*IpResult, error) { // 参数
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

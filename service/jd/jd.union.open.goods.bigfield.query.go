@@ -58,7 +58,7 @@ func newUnionOpenGoodsBigfieldQueryResult(responce UnionOpenGoodsBigfieldQueryRe
 
 // UnionOpenGoodsBigfieldQuery 商品详情查询接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.goods.bigfield.query
-func (c *Client) UnionOpenGoodsBigfieldQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*UnionOpenGoodsBigfieldQueryResult, error) {
+func (c *Client) UnionOpenGoodsBigfieldQuery(ctx context.Context, notMustParams ...gorequest.Params) (*UnionOpenGoodsBigfieldQueryResult, error) {
 	// 参数
 	params := NewParamsWithType("jd.union.open.goods.bigfield.query", notMustParams...)
 	// 请求

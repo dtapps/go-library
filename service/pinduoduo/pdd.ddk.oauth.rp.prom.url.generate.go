@@ -59,7 +59,7 @@ func newPddDdkOauthRpPromUrlGenerateResult(result PddDdkOauthRpPromUrlGenerateRe
 
 // PromUrlGenerate 生成营销工具推广链接
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.rp.prom.url.generate
-func (c *PddDdkOauthRpApi) PromUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthRpPromUrlGenerateResult, error) {
+func (c *PddDdkOauthRpApi) PromUrlGenerate(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthRpPromUrlGenerateResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.rp.prom.url.generate", notMustParams...)
 	// 请求

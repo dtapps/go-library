@@ -25,7 +25,7 @@ func newWxaBindTesterResult(result WxaBindTesterResponse, body []byte, http gore
 
 // WxaBindTester 绑定微信用户为体验者
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_AdminManagement/Admin.html
-func (c *Client) WxaBindTester(ctx context.Context, authorizerAccessToken, wechatid string, notMustParams ...*gorequest.Params) (*WxaBindTesterResult, error) {
+func (c *Client) WxaBindTester(ctx context.Context, authorizerAccessToken, wechatid string, notMustParams ...gorequest.Params) (*WxaBindTesterResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("wechatid", wechatid)

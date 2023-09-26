@@ -28,7 +28,7 @@ func newSnsJsCode2sessionResult(result SnsJsCode2sessionResponse, body []byte, h
 
 // SnsJsCode2session 登录凭证校验
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html
-func (c *Client) SnsJsCode2session(ctx context.Context, jsCode string, notMustParams ...*gorequest.Params) (*SnsJsCode2sessionResult, error) {
+func (c *Client) SnsJsCode2session(ctx context.Context, jsCode string, notMustParams ...gorequest.Params) (*SnsJsCode2sessionResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

@@ -42,7 +42,7 @@ func newTxChOngZhiResult(result TxChOngZhiResponse, body []byte, http gorequest.
 }
 
 // TxChOngZhi 流量充值接口
-func (c *Client) TxChOngZhi(ctx context.Context, notMustParams ...*gorequest.Params) (*TxChOngZhiResult, error) {
+func (c *Client) TxChOngZhi(ctx context.Context, notMustParams ...gorequest.Params) (*TxChOngZhiResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 签名

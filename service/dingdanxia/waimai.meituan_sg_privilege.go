@@ -36,7 +36,7 @@ func newWaiMaiMeituanSgPrivilegeResult(result WaiMaiMeituanSgPrivilegeResponse, 
 
 // WaiMaiMeituanSgPrivilege 美团闪购CPS推广API接口
 // https://www.dingdanxia.com/doc/195/173
-func (c *Client) WaiMaiMeituanSgPrivilege(ctx context.Context, sid string, generateWeApp, qrcode bool, notMustParams ...*gorequest.Params) (*WaiMaiMeituanSgPrivilegeResult, error) {
+func (c *Client) WaiMaiMeituanSgPrivilege(ctx context.Context, sid string, generateWeApp, qrcode bool, notMustParams ...gorequest.Params) (*WaiMaiMeituanSgPrivilegeResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sid", sid)                       // 渠道方用户唯一标识,渠道可自定义,长度不超过50，参数中不能包含dingdanxia，用于向用户返佣,支持小写字母和数字的格式,其它字符可能造成无法正常跟单

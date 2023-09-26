@@ -30,7 +30,7 @@ func newAlipaySystemOauthTokenResult(result AlipaySystemOauthTokenResponse, body
 
 // AlipaySystemOauthToken 换取授权访问令牌
 // https://opendocs.alipay.com/open/02xtla
-func (c *Client) AlipaySystemOauthToken(ctx context.Context, grantType, code, refreshToken string, notMustParams ...*gorequest.Params) (*AlipaySystemOauthTokenResult, ApiError, error) {
+func (c *Client) AlipaySystemOauthToken(ctx context.Context, grantType, code, refreshToken string, notMustParams ...gorequest.Params) (*AlipaySystemOauthTokenResult, ApiError, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("grant_type", grantType)

@@ -97,7 +97,7 @@ func newGoodsDetailResult(result GoodsDetailResponse, body []byte, http goreques
 
 // GoodsDetail 多多进宝商品详情查询
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.detail
-func (c *Client) GoodsDetail(ctx context.Context, notMustParams ...*gorequest.Params) (*GoodsDetailResult, error) {
+func (c *Client) GoodsDetail(ctx context.Context, notMustParams ...gorequest.Params) (*GoodsDetailResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.detail", notMustParams...)
 	params.Set("pid", c.GetPid())

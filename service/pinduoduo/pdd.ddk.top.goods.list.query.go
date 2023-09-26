@@ -59,7 +59,7 @@ func newTopGoodsListQueryResult(result TopGoodsListQueryResponse, body []byte, h
 
 // TopGoodsListQuery 多多客获取爆款排行商品接口
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.top.goods.list.query
-func (c *Client) TopGoodsListQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*TopGoodsListQueryResult, error) {
+func (c *Client) TopGoodsListQuery(ctx context.Context, notMustParams ...gorequest.Params) (*TopGoodsListQueryResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.top.goods.list.query", notMustParams...)
 	params.Set("p_id", c.GetPid())

@@ -30,7 +30,7 @@ func newGetCityAreaResult(result GetCityAreaResponse, body []byte, http goreques
 
 // GetCityArea 城市下区域
 // https://www.showdoc.com.cn/1154868044931571/6243539682553126
-func (c *Client) GetCityArea(ctx context.Context, cityId int, notMustParams ...*gorequest.Params) (*GetCityAreaResult, error) {
+func (c *Client) GetCityArea(ctx context.Context, cityId int, notMustParams ...gorequest.Params) (*GetCityAreaResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("cityId", cityId)

@@ -33,7 +33,7 @@ func newPromotionListResult(result PromotionListResponse, body []byte, http gore
 
 // PromotionList 获取推广位列表
 // https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/promotion.html#_4-%E8%8E%B7%E5%8F%96%E6%8E%A8%E5%B9%BF%E4%BD%8D%E5%88%97%E8%A1%A8
-func (c *Client) PromotionList(ctx context.Context, start int, limit int, notMustParams ...*gorequest.Params) (*PromotionListResult, error) {
+func (c *Client) PromotionList(ctx context.Context, start int, limit int, notMustParams ...gorequest.Params) (*PromotionListResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("start", start) // 偏移

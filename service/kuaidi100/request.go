@@ -6,7 +6,7 @@ import (
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
-func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, method string) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param gorequest.Params, method string) (gorequest.Response, error) {
 
 	newParams := gorequest.NewParams()
 
@@ -36,7 +36,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	client.SetContentTypeForm()
 
 	// 设置参数
-	client.SetParams(newParams.ToMap())
+	client.SetParams(newParams)
 
 	// 发起请求
 	request, err := client.Request(ctx)

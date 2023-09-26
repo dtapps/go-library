@@ -23,7 +23,7 @@ func newApiOrderCreateResult(result ApiOrderCreateResponse, body []byte, http go
 }
 
 // ApiOrderCreate 下单api https://www.showdoc.com.cn/1154868044931571/5891022916496848
-func (c *Client) ApiOrderCreate(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiOrderCreateResult, error) {
+func (c *Client) ApiOrderCreate(ctx context.Context, notMustParams ...gorequest.Params) (*ApiOrderCreateResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

@@ -32,7 +32,7 @@ func newSnsUserinfoResult(result SnsUserinfoResponse, body []byte, http goreques
 
 // SnsUserinfo 拉取用户信息(需scope为 snsapi_userinfo)
 // https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html#0
-func (c *Client) SnsUserinfo(ctx context.Context, accessToken, openid string, notMustParams ...*gorequest.Params) (*SnsUserinfoResult, error) {
+func (c *Client) SnsUserinfo(ctx context.Context, accessToken, openid string, notMustParams ...gorequest.Params) (*SnsUserinfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

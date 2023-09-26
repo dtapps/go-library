@@ -31,7 +31,7 @@ func newDataCubeGetWeAnAlySisAppidWeeklyRetainInfoResult(result DataCubeGetWeAnA
 
 // DataCubeGetWeAnAlySisAppidWeeklyRetainInfo 获取用户访问小程序周留存
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/visit-retain/getWeeklyRetain.html
-func (c *Client) DataCubeGetWeAnAlySisAppidWeeklyRetainInfo(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (*DataCubeGetWeAnAlySisAppidWeeklyRetainInfoResult, error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidWeeklyRetainInfo(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlySisAppidWeeklyRetainInfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("begin_date", beginDate)

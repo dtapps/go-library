@@ -9,9 +9,9 @@ import (
 	"strconv"
 )
 
-func (c *Client) getSign(p *gorequest.Params) string {
+func (c *Client) getSign(p gorequest.Params) string {
 	var keys []string
-	for k := range p.ToMap() {
+	for k := range p {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)

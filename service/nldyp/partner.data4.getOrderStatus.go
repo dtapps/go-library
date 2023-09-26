@@ -47,7 +47,7 @@ func newPartnerData4GetOrderStatusResult(result PartnerData4GetOrderStatusRespon
 
 // PartnerData4GetOrderStatus 查询秒出票订单状态
 // https://docs.apipost.cn/preview/fa101f4865dc783f/66e7c2e894fda4a6?target_id=fce3fbc1-28e1-4757-8665-ffa316a60bfb
-func (c *Client) PartnerData4GetOrderStatus(ctx context.Context, notMustParams ...*gorequest.Params) (*PartnerData4GetOrderStatusResult, error) {
+func (c *Client) PartnerData4GetOrderStatus(ctx context.Context, notMustParams ...gorequest.Params) (*PartnerData4GetOrderStatusResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

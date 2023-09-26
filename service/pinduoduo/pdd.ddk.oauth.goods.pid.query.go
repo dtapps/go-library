@@ -67,7 +67,7 @@ func newPddDdkOauthGoodsPidQueryResult(result PddDdkOauthGoodsPidQueryResponse, 
 
 // PidQuery 多多客已生成推广位信息查询
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.goods.pid.query
-func (c *PddDdkOauthGoodsApi) PidQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthGoodsPidQueryResult, error) {
+func (c *PddDdkOauthGoodsApi) PidQuery(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthGoodsPidQueryResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.goods.pid.query", notMustParams...)
 	// 请求

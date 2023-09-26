@@ -29,7 +29,7 @@ func newApiOrderCreateSoonOrderResult(result ApiOrderCreateSoonOrderResponse, bo
 }
 
 // ApiOrderCreateSoonOrder 秒出单下单 https://www.showdoc.com.cn/1154868044931571/6437295495912025
-func (c *Client) ApiOrderCreateSoonOrder(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiOrderCreateSoonOrderResult, error) {
+func (c *Client) ApiOrderCreateSoonOrder(ctx context.Context, notMustParams ...gorequest.Params) (*ApiOrderCreateSoonOrderResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

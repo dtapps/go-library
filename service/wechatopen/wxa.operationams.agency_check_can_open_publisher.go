@@ -25,7 +25,7 @@ func newWxaOperationamsAgencyCheckCanOpenPublisherResult(result WxaOperationamsA
 
 // WxaOperationamsAgencyCheckCanOpenPublisher 检测是否能开通流量主
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/open/AgencyCheckCanOpenPublisher.html
-func (c *Client) WxaOperationamsAgencyCheckCanOpenPublisher(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaOperationamsAgencyCheckCanOpenPublisherResult, error) {
+func (c *Client) WxaOperationamsAgencyCheckCanOpenPublisher(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaOperationamsAgencyCheckCanOpenPublisherResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

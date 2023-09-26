@@ -35,7 +35,7 @@ func newTbkShopGetResult(result TbkShopGetResponse, body []byte, http gorequest.
 
 // TbkShopGet 淘宝客-推广者-店铺搜索
 // https://open.taobao.com/api.htm?docId=24521&docType=2
-func (c *Client) TbkShopGet(ctx context.Context, notMustParams ...*gorequest.Params) (*TbkShopGetResult, error) {
+func (c *Client) TbkShopGet(ctx context.Context, notMustParams ...gorequest.Params) (*TbkShopGetResult, error) {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.shop.get", notMustParams...)
 	// 请求

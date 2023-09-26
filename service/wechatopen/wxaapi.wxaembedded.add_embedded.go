@@ -24,7 +24,7 @@ func newWxaApiWxaembeddedAddEmbeddedResult(result WxaApiWxaembeddedAddEmbeddedRe
 
 // WxaApiWxaembeddedAddEmbedded 添加半屏小程序
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/embedded-management/addEmbedded.html
-func (c *Client) WxaApiWxaembeddedAddEmbedded(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaApiWxaembeddedAddEmbeddedResult, error) {
+func (c *Client) WxaApiWxaembeddedAddEmbedded(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaApiWxaembeddedAddEmbeddedResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

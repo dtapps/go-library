@@ -36,7 +36,7 @@ func newUnionOpenPromotionBySubUnionIdGetResult(responce UnionOpenPromotionBySub
 
 // UnionOpenPromotionBySubUnionIdGet 社交媒体获取推广链接接口【申请】
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.promotion.bysubunionid.get
-func (c *Client) UnionOpenPromotionBySubUnionIdGet(ctx context.Context, notMustParams ...*gorequest.Params) (*UnionOpenPromotionBySubUnionIdGetResult, error) {
+func (c *Client) UnionOpenPromotionBySubUnionIdGet(ctx context.Context, notMustParams ...gorequest.Params) (*UnionOpenPromotionBySubUnionIdGetResult, error) {
 	// 参数
 	params := NewParamsWithType("jd.union.open.promotion.bysubunionid.get", notMustParams...)
 	// 请求

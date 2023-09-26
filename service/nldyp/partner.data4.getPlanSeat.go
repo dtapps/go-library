@@ -37,7 +37,7 @@ func newPartnerData4GetPlanSeatResult(result PartnerData4GetPlanSeatResponse, bo
 
 // PartnerData4GetPlanSeat 获取实时座位图
 // https://docs.apipost.cn/preview/fa101f4865dc783f/66e7c2e894fda4a6?target_id=b245efe6-f728-450a-92f4-a93669c1d555
-func (c *Client) PartnerData4GetPlanSeat(ctx context.Context, cinemaId int, featureAppNo string, notMustParams ...*gorequest.Params) (*PartnerData4GetPlanSeatResult, error) {
+func (c *Client) PartnerData4GetPlanSeat(ctx context.Context, cinemaId int, featureAppNo string, notMustParams ...gorequest.Params) (*PartnerData4GetPlanSeatResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("cinemaId", cinemaId)

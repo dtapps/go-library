@@ -24,7 +24,7 @@ func newRestPowerEditCardResult(result RestPowerEditCardResponse, body []byte, h
 
 // RestPowerEditCard 编辑电费充值卡
 // https://open.wikeyun.cn/#/apiDocument/9/document/329
-func (c *Client) RestPowerEditCard(ctx context.Context, notMustParams ...*gorequest.Params) (*RestPowerEditCardResult, error) {
+func (c *Client) RestPowerEditCard(ctx context.Context, notMustParams ...gorequest.Params) (*RestPowerEditCardResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

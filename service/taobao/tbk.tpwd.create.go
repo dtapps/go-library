@@ -28,7 +28,7 @@ func newTbkTPwdCreateResult(result TbkTPwdCreateResponse, body []byte, http gore
 
 // TbkTPwdCreate 淘宝客-公用-淘口令生成
 // https://open.taobao.com/api.htm?docId=31127&docType=2&source=search
-func (c *Client) TbkTPwdCreate(ctx context.Context, notMustParams ...*gorequest.Params) (*TbkTPwdCreateResult, error) {
+func (c *Client) TbkTPwdCreate(ctx context.Context, notMustParams ...gorequest.Params) (*TbkTPwdCreateResult, error) {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.tpwd.create", notMustParams...)
 	// 请求

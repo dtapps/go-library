@@ -82,7 +82,7 @@ func newCgiBinComponentApiGetAuthorizerInfoResult(result CgiBinComponentApiGetAu
 
 // CgiBinComponentApiGetAuthorizerInfo 获取授权帐号详情
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/api_get_authorizer_info.html
-func (c *Client) CgiBinComponentApiGetAuthorizerInfo(ctx context.Context, authorizerAppid, componentAccessToken string, notMustParams ...*gorequest.Params) (*CgiBinComponentApiGetAuthorizerInfoResult, error) {
+func (c *Client) CgiBinComponentApiGetAuthorizerInfo(ctx context.Context, authorizerAppid, componentAccessToken string, notMustParams ...gorequest.Params) (*CgiBinComponentApiGetAuthorizerInfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("component_appid", c.config.componentAppId) // 第三方平台appid

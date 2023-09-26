@@ -9,9 +9,9 @@ import (
 	"sort"
 )
 
-func (c *Client) getSign(appSecret string, p *gorequest.Params) string {
+func (c *Client) getSign(appSecret string, p gorequest.Params) string {
 	var keys []string
-	for k := range p.ToMap() {
+	for k := range p {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
@@ -27,11 +27,11 @@ func (c *Client) getSign(appSecret string, p *gorequest.Params) string {
 }
 
 // 获取请求数据
-func (c *Client) getRequestData(param *gorequest.Params) string {
+func (c *Client) getRequestData(param gorequest.Params) string {
 	// 公共参数
 	args := url.Values{}
 	// 请求参数
-	for key, val := range param.ToMap() {
+	for key, val := range param {
 		args.Set(key, gostring.GetString(val))
 	}
 	return args.Encode()

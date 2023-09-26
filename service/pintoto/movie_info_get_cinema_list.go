@@ -37,7 +37,7 @@ func newGetCinemaListResult(result GetCinemaListResponse, body []byte, http gore
 }
 
 // GetCinemaList 影院列表 https://www.showdoc.com.cn/1154868044931571/5866426126744792
-func (c *Client) GetCinemaList(ctx context.Context, cityId int, notMustParams ...*gorequest.Params) (*GetCinemaListResult, error) {
+func (c *Client) GetCinemaList(ctx context.Context, cityId int, notMustParams ...gorequest.Params) (*GetCinemaListResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("cityId", cityId)

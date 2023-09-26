@@ -25,7 +25,7 @@ func newPromotionUpdResult(result PromotionUpdResponse, body []byte, http gorequ
 
 // PromotionUpd 编辑推广位
 // https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/promotion.html#_3-%E7%BC%96%E8%BE%91%E6%8E%A8%E5%B9%BF%E4%BD%8D
-func (c *Client) PromotionUpd(ctx context.Context, notMustParams ...*gorequest.Params) (*PromotionUpdResult, error) {
+func (c *Client) PromotionUpd(ctx context.Context, notMustParams ...gorequest.Params) (*PromotionUpdResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

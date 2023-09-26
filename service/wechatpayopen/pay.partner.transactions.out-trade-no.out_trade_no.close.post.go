@@ -18,7 +18,7 @@ func newPayPartnerTransactionsOutTradeNoOutTradeNoClosePostResult(body []byte, h
 
 // PayPartnerTransactionsOutTradeNoOutTradeNoClosePost 关闭订单API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_3.shtml
-func (c *Client) PayPartnerTransactionsOutTradeNoOutTradeNoClosePost(ctx context.Context, outTradeNo string, notMustParams ...*gorequest.Params) (*PayPartnerTransactionsOutTradeNoOutTradeNoClosePostResult, ApiError, error) {
+func (c *Client) PayPartnerTransactionsOutTradeNoOutTradeNoClosePost(ctx context.Context, outTradeNo string, notMustParams ...gorequest.Params) (*PayPartnerTransactionsOutTradeNoOutTradeNoClosePostResult, ApiError, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sp_mchid", c.GetSpMchId())   // 服务商户号

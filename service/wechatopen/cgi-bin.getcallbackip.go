@@ -23,7 +23,7 @@ func NewCgiBinGetCallBackIpResult(result CgiBinGetCallBackIpResponse, body []byt
 
 // CgiBinGetCallBackIp 获取微信callback IP地址
 // https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_the_WeChat_server_IP_address.html
-func (c *Client) CgiBinGetCallBackIp(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*CgiBinGetCallBackIpResult, error) {
+func (c *Client) CgiBinGetCallBackIp(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*CgiBinGetCallBackIpResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

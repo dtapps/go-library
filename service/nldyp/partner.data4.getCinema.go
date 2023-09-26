@@ -41,7 +41,7 @@ func newPartnerData4GetCinemaResult(result PartnerData4GetCinemaResponse, body [
 
 // PartnerData4GetCinema 获取影院
 // https://docs.apipost.cn/preview/fa101f4865dc783f/66e7c2e894fda4a6?target_id=a1db1066-f346-4f9a-bffe-b892b3c73a1d
-func (c *Client) PartnerData4GetCinema(ctx context.Context, notMustParams ...*gorequest.Params) (*PartnerData4GetCinemaResult, error) {
+func (c *Client) PartnerData4GetCinema(ctx context.Context, notMustParams ...gorequest.Params) (*PartnerData4GetCinemaResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

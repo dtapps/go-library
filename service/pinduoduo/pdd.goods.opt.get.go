@@ -29,7 +29,7 @@ func newGoodsOptGetResult(result GoodsOptGetResponse, body []byte, http goreques
 
 // GoodsOptGet 查询商品标签列表
 // https://open.pinduoduo.com/application/document/api?id=pdd.goods.opt.get
-func (c *Client) GoodsOptGet(ctx context.Context, parentOptId int, notMustParams ...*gorequest.Params) (*GoodsOptGetResult, error) {
+func (c *Client) GoodsOptGet(ctx context.Context, parentOptId int, notMustParams ...gorequest.Params) (*GoodsOptGetResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.goods.opt.get", notMustParams...)
 	params.Set("parent_opt_id", parentOptId)

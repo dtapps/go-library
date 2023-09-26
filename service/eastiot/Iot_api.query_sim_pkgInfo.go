@@ -40,7 +40,7 @@ func newIotApiQuerySimPkgInfoResult(result IotApiQuerySimPkgInfoResponse, body [
 
 // IotApiQuerySimPkgInfo 流量卡可用流量包查询
 // https://www.showdoc.com.cn/916774523755909/4880284631482420
-func (c *Client) IotApiQuerySimPkgInfo(ctx context.Context, simId string, sd int, notMustParams ...*gorequest.Params) (*IotApiQuerySimPkgInfoResult, error) {
+func (c *Client) IotApiQuerySimPkgInfo(ctx context.Context, simId string, sd int, notMustParams ...gorequest.Params) (*IotApiQuerySimPkgInfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("simId", simId)

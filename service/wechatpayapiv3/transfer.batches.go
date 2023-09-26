@@ -25,7 +25,7 @@ func newTransferBatchesResult(result TransferBatchesResponse, body []byte, http 
 
 // TransferBatches 发起商家转账
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/initiate-batch-transfer.html
-func (c *Client) TransferBatches(ctx context.Context, notMustParams ...*gorequest.Params) (*TransferBatchesResult, error) {
+func (c *Client) TransferBatches(ctx context.Context, notMustParams ...gorequest.Params) (*TransferBatchesResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", c.GetAppId())

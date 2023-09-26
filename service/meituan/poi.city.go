@@ -28,7 +28,7 @@ func newPoiCityResult(result PoiCityResponse, body []byte, http gorequest.Respon
 
 // PoiCity 基础数据 - 开放城市接口
 // https://openapi.meituan.com/#api-0.%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE-GetHttpsOpenapiMeituanComPoiCity
-func (c *Client) PoiCity(ctx context.Context, notMustParams ...*gorequest.Params) (*PoiCityResult, error) {
+func (c *Client) PoiCity(ctx context.Context, notMustParams ...gorequest.Params) (*PoiCityResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

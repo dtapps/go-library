@@ -25,7 +25,7 @@ func newRestPowerDelCardResult(result RestPowerDelCardResponse, body []byte, htt
 
 // RestPowerDelCard 删除电费充值卡
 // https://open.wikeyun.cn/#/apiDocument/9/document/330
-func (c *Client) RestPowerDelCard(ctx context.Context, cardId string, notMustParams ...*gorequest.Params) (*RestPowerDelCardResult, error) {
+func (c *Client) RestPowerDelCard(ctx context.Context, cardId string, notMustParams ...gorequest.Params) (*RestPowerDelCardResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("card_id", cardId)

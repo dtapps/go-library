@@ -46,7 +46,7 @@ func newGetScheduleListResult(result GetScheduleListResponse, body []byte, http 
 }
 
 // GetScheduleList 场次排期 https://www.showdoc.com.cn/1154868044931571/5866708808899217
-func (c *Client) GetScheduleList(ctx context.Context, cinemaId int, notMustParams ...*gorequest.Params) (*GetScheduleListResult, error) {
+func (c *Client) GetScheduleList(ctx context.Context, cinemaId int, notMustParams ...gorequest.Params) (*GetScheduleListResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("cinemaId", cinemaId)

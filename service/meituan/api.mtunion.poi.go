@@ -46,7 +46,7 @@ func newApiMtUnionPoiResult(result ApiMtUnionPoiResponse, body []byte, http gore
 
 // ApiMtUnionPoi 门店POI查询（新版）
 // https://union.meituan.com/v2/apiDetail?id=32
-func (c *Client) ApiMtUnionPoi(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiMtUnionPoiResult, error) {
+func (c *Client) ApiMtUnionPoi(ctx context.Context, notMustParams ...gorequest.Params) (*ApiMtUnionPoiResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s

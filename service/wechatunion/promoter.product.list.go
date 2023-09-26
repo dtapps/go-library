@@ -139,7 +139,7 @@ func newPromoterProductListResult(result PromoterProductListResponse, body []byt
 
 // PromoterProductList 查询全量商品
 // https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/product/category.html#_2-%E6%9F%A5%E8%AF%A2%E5%85%A8%E9%87%8F%E5%95%86%E5%93%81
-func (c *Client) PromoterProductList(ctx context.Context, notMustParams ...*gorequest.Params) (*PromoterProductListResult, error) {
+func (c *Client) PromoterProductList(ctx context.Context, notMustParams ...gorequest.Params) (*PromoterProductListResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

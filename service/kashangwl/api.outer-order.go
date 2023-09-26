@@ -52,7 +52,7 @@ func newApiOuterOrderResult(result ApiOuterOrderResponse, body []byte, http gore
 // ApiOuterOrder 使用外部订单号获取单个订单信息
 // 仅能获取自己购买的订单
 // http://doc.cqmeihu.cn/sales/outer-order-info.html
-func (c *Client) ApiOuterOrder(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiOuterOrderResult, error) {
+func (c *Client) ApiOuterOrder(ctx context.Context, notMustParams ...gorequest.Params) (*ApiOuterOrderResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

@@ -39,7 +39,7 @@ func newGetSeatResult(result GetSeatResponse, body []byte, http gorequest.Respon
 }
 
 // GetSeat 座位 https://www.showdoc.com.cn/1154868044931571/5866824368760475
-func (c *Client) GetSeat(ctx context.Context, showId string, notMustParams ...*gorequest.Params) (*GetSeatResult, error) {
+func (c *Client) GetSeat(ctx context.Context, showId string, notMustParams ...gorequest.Params) (*GetSeatResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("showId", showId)

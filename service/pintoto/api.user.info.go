@@ -29,7 +29,7 @@ func newApiUserInfoResult(result ApiUserInfoResponse, body []byte, http goreques
 }
 
 // ApiUserInfo 账号信息查询 https://www.showdoc.com.cn/1154868044931571/6269224958928211
-func (c *Client) ApiUserInfo(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiUserInfoResult, error) {
+func (c *Client) ApiUserInfo(ctx context.Context, notMustParams ...gorequest.Params) (*ApiUserInfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

@@ -27,7 +27,7 @@ func newRestPowerPushOrderResult(result RestPowerPushOrderResponse, body []byte,
 
 // RestPowerPushOrder 电费充值API
 // https://open.wikeyun.cn/#/apiDocument/9/document/311
-func (c *Client) RestPowerPushOrder(ctx context.Context, notMustParams ...*gorequest.Params) (*RestPowerPushOrderResult, error) {
+func (c *Client) RestPowerPushOrder(ctx context.Context, notMustParams ...gorequest.Params) (*RestPowerPushOrderResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("store_id", c.GetStoreId()) // 店铺ID

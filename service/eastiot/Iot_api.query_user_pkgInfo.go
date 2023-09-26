@@ -39,7 +39,7 @@ func newIotApiQueryUserPkgInfoResult(result IotApiQueryUserPkgInfoResponse, body
 
 // IotApiQueryUserPkgInfo 账户可用流量包查询
 // https://www.showdoc.com.cn/916774523755909/4850094776758927
-func (c *Client) IotApiQueryUserPkgInfo(ctx context.Context, notMustParams ...*gorequest.Params) (*IotApiQueryUserPkgInfoResult, error) {
+func (c *Client) IotApiQueryUserPkgInfo(ctx context.Context, notMustParams ...gorequest.Params) (*IotApiQueryUserPkgInfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

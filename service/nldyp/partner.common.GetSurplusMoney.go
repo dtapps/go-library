@@ -28,7 +28,7 @@ func newPartnerCommonGetSurplusMoneyResult(result PartnerCommonGetSurplusMoneyRe
 
 // PartnerCommonGetSurplusMoney 释放锁座
 // https://docs.apipost.cn/preview/fa101f4865dc783f/66e7c2e894fda4a6?target_id=802c4269-60c5-4d61-bda2-ec82cae60930
-func (c *Client) PartnerCommonGetSurplusMoney(ctx context.Context, notMustParams ...*gorequest.Params) (*PartnerCommonGetSurplusMoneyResult, error) {
+func (c *Client) PartnerCommonGetSurplusMoney(ctx context.Context, notMustParams ...gorequest.Params) (*PartnerCommonGetSurplusMoneyResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

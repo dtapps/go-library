@@ -25,7 +25,7 @@ func newDebugCgiBinTicketCheckResult(result DebugCgiBinTicketCheckResponse, body
 
 // DebugCgiBinTicketCheck 判断ticket是否合法
 // https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=jsapisign
-func (c *Client) DebugCgiBinTicketCheck(ctx context.Context, notMustParams ...*gorequest.Params) (*DebugCgiBinTicketCheckResult, error) {
+func (c *Client) DebugCgiBinTicketCheck(ctx context.Context, notMustParams ...gorequest.Params) (*DebugCgiBinTicketCheckResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

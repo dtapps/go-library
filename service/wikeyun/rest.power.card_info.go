@@ -33,7 +33,7 @@ func newPowerCardInfoResult(result PowerCardInfoResponse, body []byte, http gore
 
 // PowerCardInfo 电费充值卡详情
 // https://open.wikeyun.cn/#/apiDocument/9/document/333
-func (c *Client) PowerCardInfo(ctx context.Context, notMustParams ...*gorequest.Params) (*PowerCardInfoResult, error) {
+func (c *Client) PowerCardInfo(ctx context.Context, notMustParams ...gorequest.Params) (*PowerCardInfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

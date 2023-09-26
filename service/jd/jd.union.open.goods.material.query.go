@@ -119,7 +119,7 @@ func newUnionOpenGoodsMaterialQueryResult(responce UnionOpenGoodsMaterialQueryRe
 
 // UnionOpenGoodsMaterialQuery 猜你喜欢商品推荐
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.goods.material.query
-func (c *Client) UnionOpenGoodsMaterialQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*UnionOpenGoodsMaterialQueryResult, error) {
+func (c *Client) UnionOpenGoodsMaterialQuery(ctx context.Context, notMustParams ...gorequest.Params) (*UnionOpenGoodsMaterialQueryResult, error) {
 	// 参数
 	params := NewParamsWithType("jd.union.open.goods.material.query", notMustParams...)
 	// 请求

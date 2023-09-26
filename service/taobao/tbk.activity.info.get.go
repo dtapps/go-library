@@ -34,7 +34,7 @@ func newTbkActivityInfoGetResult(result TbkActivityInfoGetResponse, body []byte,
 
 // TbkActivityInfoGet 淘宝客-推广者-官方活动转链
 // https://open.taobao.com/api.htm?spm=a219a.7386797.0.0.5a83669a7rURsF&source=search&docId=48340&docType=2
-func (c *Client) TbkActivityInfoGet(ctx context.Context, notMustParams ...*gorequest.Params) (*TbkActivityInfoGetResult, error) {
+func (c *Client) TbkActivityInfoGet(ctx context.Context, notMustParams ...gorequest.Params) (*TbkActivityInfoGetResult, error) {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.activity.info.get", notMustParams...)
 	params.Set("adzone_id", c.GetAdzoneId())

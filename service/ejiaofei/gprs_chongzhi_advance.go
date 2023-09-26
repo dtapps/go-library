@@ -46,7 +46,7 @@ func newGprsChOngZhiAdvanceResult(result GprsChOngZhiAdvanceResponse, body []byt
 }
 
 // GprsChOngZhiAdvance 流量充值接口
-func (c *Client) GprsChOngZhiAdvance(ctx context.Context, notMustParams ...*gorequest.Params) (*GprsChOngZhiAdvanceResult, error) {
+func (c *Client) GprsChOngZhiAdvance(ctx context.Context, notMustParams ...gorequest.Params) (*GprsChOngZhiAdvanceResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 签名

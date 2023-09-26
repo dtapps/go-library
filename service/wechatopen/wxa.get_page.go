@@ -25,7 +25,7 @@ func newWxaGetPageResult(result WxaGetPageResponse, body []byte, http gorequest.
 
 // WxaGetPage 获取已上传的代码的页面列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_page.html
-func (c *Client) WxaGetPage(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaGetPageResult, error) {
+func (c *Client) WxaGetPage(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaGetPageResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

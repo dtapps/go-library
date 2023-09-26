@@ -29,7 +29,7 @@ func newCgiBinUserGetResult(result CgiBinUserGetResponse, body []byte, http gore
 
 // CgiBinUserGet 获取用户列表
 // https://developers.weixin.qq.com/doc/offiaccount/User_Management/Getting_a_User_List.html
-func (c *Client) CgiBinUserGet(ctx context.Context, nextOpenid string, notMustParams ...*gorequest.Params) (*CgiBinUserGetResult, error) {
+func (c *Client) CgiBinUserGet(ctx context.Context, nextOpenid string, notMustParams ...gorequest.Params) (*CgiBinUserGetResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

@@ -57,7 +57,7 @@ func newWaiMaiMeituanOrderIdResult(result WaiMaiMeituanOrderIdResponse, body []b
 
 // WaiMaiMeituanOrderId 美团联盟外卖/闪购/优选/酒店订单查询API（订单号版）
 // https://www.dingdanxia.com/doc/179/173
-func (c *Client) WaiMaiMeituanOrderId(ctx context.Context, orderId string, Type int, notMustParams ...*gorequest.Params) (*WaiMaiMeituanOrderIdResult, error) {
+func (c *Client) WaiMaiMeituanOrderId(ctx context.Context, orderId string, Type int, notMustParams ...gorequest.Params) (*WaiMaiMeituanOrderIdResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("orderid", orderId) // 订单号

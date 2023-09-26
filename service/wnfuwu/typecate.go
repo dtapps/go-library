@@ -32,7 +32,7 @@ func newTypecateResult(result TypecateResponse, body []byte, http gorequest.Resp
 
 // Typecate 获取产品类型和产品分类
 // https://www.showdoc.com.cn/dyr/9227005390454727
-func (c *Client) Typecate(ctx context.Context, notMustParams ...*gorequest.Params) (*TypecateResult, error) {
+func (c *Client) Typecate(ctx context.Context, notMustParams ...gorequest.Params) (*TypecateResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserId())

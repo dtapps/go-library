@@ -6,7 +6,7 @@ import (
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
-func (c *Client) request(ctx context.Context, param *gorequest.Params) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, param gorequest.Params) (gorequest.Response, error) {
 
 	// 签名
 	c.Sign(param)
@@ -19,7 +19,7 @@ func (c *Client) request(ctx context.Context, param *gorequest.Params) (goreques
 	}
 
 	// 设置参数
-	client.SetParams(param.ToMapAndReset())
+	client.SetParams(param)
 
 	// 发起请求
 	request, err := client.Get(ctx)

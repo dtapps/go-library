@@ -24,35 +24,35 @@ import (
 
 // Response 返回内容
 type Response struct {
-	RequestId             string                 //【请求】编号
-	RequestUri            string                 //【请求】链接
-	RequestParams         map[string]interface{} //【请求】参数
-	RequestMethod         string                 //【请求】方式
-	RequestHeader         map[string]interface{} //【请求】头部
-	RequestCookie         string                 //【请求】Cookie
-	RequestTime           time.Time              //【请求】时间
-	ResponseHeader        http.Header            //【返回】头部
-	ResponseStatus        string                 //【返回】状态
-	ResponseStatusCode    int                    //【返回】状态码
-	ResponseBody          []byte                 //【返回】内容
-	ResponseContentLength int64                  //【返回】大小
-	ResponseTime          time.Time              //【返回】时间
+	RequestId             string      //【请求】编号
+	RequestUri            string      //【请求】链接
+	RequestParams         Params      //【请求】参数
+	RequestMethod         string      //【请求】方式
+	RequestHeader         Headers     //【请求】头部
+	RequestCookie         string      //【请求】Cookie
+	RequestTime           time.Time   //【请求】时间
+	ResponseHeader        http.Header //【返回】头部
+	ResponseStatus        string      //【返回】状态
+	ResponseStatusCode    int         //【返回】状态码
+	ResponseBody          []byte      //【返回】内容
+	ResponseContentLength int64       //【返回】大小
+	ResponseTime          time.Time   //【返回】时间
 }
 
 // App 实例
 type App struct {
-	Uri                          string                 // 全局请求地址，没有设置url才会使用
-	Error                        error                  // 错误
-	httpUri                      string                 // 请求地址
-	httpMethod                   string                 // 请求方法
-	httpHeader                   map[string]interface{} // 请求头
-	httpParams                   map[string]interface{} // 请求参数
-	httpCookie                   string                 // Cookie
-	responseContent              Response               // 返回内容
-	httpContentType              string                 // 请求内容类型
-	debug                        bool                   // 是否开启调试模式
-	p12Cert                      *tls.Certificate       // p12证书内容
-	tlsMinVersion, tlsMaxVersion uint16                 // TLS版本
+	Uri                          string           // 全局请求地址，没有设置url才会使用
+	Error                        error            // 错误
+	httpUri                      string           // 请求地址
+	httpMethod                   string           // 请求方法
+	httpHeader                   Headers          // 请求头
+	httpParams                   Params           // 请求参数
+	httpCookie                   string           // Cookie
+	responseContent              Response         // 返回内容
+	httpContentType              string           // 请求内容类型
+	debug                        bool             // 是否开启调试模式
+	p12Cert                      *tls.Certificate // p12证书内容
+	tlsMinVersion, tlsMaxVersion uint16           // TLS版本
 	config                       struct {
 		systemOs     string // 系统类型
 		systemKernel string // 系统内核
@@ -64,8 +64,8 @@ type App struct {
 // NewHttp 实例化
 func NewHttp() *App {
 	app := &App{
-		httpHeader: make(map[string]interface{}),
-		httpParams: make(map[string]interface{}),
+		httpHeader: NewHeaders(),
+		httpParams: NewParams(),
 	}
 	app.setConfig()
 	return app
@@ -88,13 +88,13 @@ func (app *App) SetMethod(method string) {
 
 // SetHeader 设置请求头
 func (app *App) SetHeader(key, value string) {
-	app.httpHeader[key] = value
+	app.httpHeader.Set(key, value)
 }
 
 // SetHeaders 批量设置请求头
-func (app *App) SetHeaders(headers map[string]interface{}) {
+func (app *App) SetHeaders(headers Headers) {
 	for key, value := range headers {
-		app.httpHeader[key] = value
+		app.httpHeader.Set(key, value)
 	}
 }
 
@@ -106,7 +106,7 @@ func (app *App) SetTlsVersion(minVersion, maxVersion uint16) {
 
 // SetAuthToken 设置身份验证令牌
 func (app *App) SetAuthToken(token string) {
-	app.httpHeader["Authorization"] = fmt.Sprintf("Bearer %s", token)
+	app.httpHeader.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 }
 
 // SetUserAgent 设置用户代理，空字符串就随机设置
@@ -114,7 +114,7 @@ func (app *App) SetUserAgent(ua string) {
 	if ua == "" {
 		ua = GetRandomUserAgent()
 	}
-	app.httpHeader["User-Agent"] = ua
+	app.httpHeader.Set("User-Agent", ua)
 }
 
 // SetContentTypeJson 设置JSON格式
@@ -134,13 +134,13 @@ func (app *App) SetContentTypeXml() {
 
 // SetParam 设置请求参数
 func (app *App) SetParam(key string, value interface{}) {
-	app.httpParams[key] = value
+	app.httpParams.Set(key, value)
 }
 
 // SetParams 批量设置请求参数
-func (app *App) SetParams(params map[string]interface{}) {
+func (app *App) SetParams(params Params) {
 	for key, value := range params {
-		app.httpParams[key] = value
+		app.httpParams.Set(key, value)
 	}
 }
 
@@ -186,8 +186,8 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	httpResponse.RequestTime = gotime.Current().Time
 	httpResponse.RequestUri = app.httpUri
 	httpResponse.RequestMethod = app.httpMethod
-	httpResponse.RequestParams = app.httpParams
-	httpResponse.RequestHeader = app.httpHeader
+	httpResponse.RequestParams = app.httpParams.DeepCopy()
+	httpResponse.RequestHeader = app.httpHeader.DeepCopy()
 	httpResponse.RequestCookie = app.httpCookie
 
 	// 判断网址
@@ -231,7 +231,7 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	}
 
 	// SDK版本
-	httpResponse.RequestHeader["Sdk-User-Agent"] = fmt.Sprintf(userAgentFormat, app.config.systemOs, app.config.systemKernel, app.config.goVersion) + "/" + go_library.Version()
+	httpResponse.RequestHeader.Set("Sdk-User-Agent", fmt.Sprintf(userAgentFormat, app.config.systemOs, app.config.systemKernel, app.config.goVersion)+"/"+go_library.Version())
 
 	// 请求类型
 	if app.httpContentType == "" {
@@ -239,11 +239,11 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	}
 	switch app.httpContentType {
 	case httpParamsModeJson:
-		httpResponse.RequestHeader["Content-Type"] = "application/json"
+		httpResponse.RequestHeader.Set("Content-Type", "application/json")
 	case httpParamsModeForm:
-		httpResponse.RequestHeader["Content-Type"] = "application/x-www-form-urlencoded"
+		httpResponse.RequestHeader.Set("Content-Type", "application/x-www-form-urlencoded")
 	case httpParamsModeXml:
-		httpResponse.RequestHeader["Content-Type"] = "text/xml"
+		httpResponse.RequestHeader.Set("Content-Type", "text/xml")
 	}
 
 	// 跟踪编号
@@ -251,7 +251,7 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	if httpResponse.RequestId == "" {
 		httpResponse.RequestId = gostring.GetUuId()
 	}
-	httpResponse.RequestHeader["X-Request-Id"] = httpResponse.RequestId
+	httpResponse.RequestHeader.Set("X-Request-Id", httpResponse.RequestId)
 
 	// 请求内容
 	var reqBody io.Reader

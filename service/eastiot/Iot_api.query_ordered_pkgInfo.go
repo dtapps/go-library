@@ -34,7 +34,7 @@ func newIotApiQueryOrderedPkgInfoResult(result IotApiQueryOrderedPkgInfoResponse
 
 // IotApiQueryOrderedPkgInfo 查询流量卡已订购流量包
 // https://www.showdoc.com.cn/916774523755909/5092045889939625
-func (c *Client) IotApiQueryOrderedPkgInfo(ctx context.Context, simId string, notMustParams ...*gorequest.Params) (*IotApiQueryOrderedPkgInfoResult, error) {
+func (c *Client) IotApiQueryOrderedPkgInfo(ctx context.Context, simId string, notMustParams ...gorequest.Params) (*IotApiQueryOrderedPkgInfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("simId", simId)

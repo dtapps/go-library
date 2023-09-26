@@ -63,7 +63,7 @@ func newMerchantServiceComplaintsV2Result(result MerchantServiceComplaintsV2Resp
 
 // MerchantServiceComplaintsV2 查询投诉单列表API
 // https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter10_2_11.shtml
-func (c *Client) MerchantServiceComplaintsV2(ctx context.Context, notMustParams ...*gorequest.Params) (*MerchantServiceComplaintsV2Result, error) {
+func (c *Client) MerchantServiceComplaintsV2(ctx context.Context, notMustParams ...gorequest.Params) (*MerchantServiceComplaintsV2Result, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

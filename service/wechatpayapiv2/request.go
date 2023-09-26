@@ -6,7 +6,7 @@ import (
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
-func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, certStatus bool, cert *tls.Certificate) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param gorequest.Params, certStatus bool, cert *tls.Certificate) (gorequest.Response, error) {
 
 	// 创建请求
 	client := c.requestClient
@@ -22,7 +22,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	client.SetContentTypeXml()
 
 	// 设置参数
-	client.SetParams(param.ToMapAndReset())
+	client.SetParams(param)
 
 	// 设置证书
 	if certStatus {

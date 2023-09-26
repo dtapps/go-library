@@ -30,7 +30,7 @@ func newDataCubeGetWeAnAlysIsAppidVisitDistributionResult(result DataCubeGetWeAn
 
 // DataCubeGetWeAnAlysIsAppidVisitDistribution 获取用户小程序访问分布数据
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/others/getVisitDistribution.html
-func (c *Client) DataCubeGetWeAnAlysIsAppidVisitDistribution(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (*DataCubeGetWeAnAlysIsAppidVisitDistributionResult, error) {
+func (c *Client) DataCubeGetWeAnAlysIsAppidVisitDistribution(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlysIsAppidVisitDistributionResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("begin_date", beginDate)

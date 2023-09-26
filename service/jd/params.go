@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func NewParamsWithType(_method string, params ...*gorequest.Params) *gorequest.Params {
+func NewParamsWithType(_method string, params ...gorequest.Params) gorequest.Params {
 	p := gorequest.NewParamsWith(params...)
 	p.Set("method", _method)
 	hh, _ := time.ParseDuration("8h")
@@ -22,11 +22,11 @@ func NewParamsWithType(_method string, params ...*gorequest.Params) *gorequest.P
 	return p
 }
 
-func (c *Client) Sign(p *gorequest.Params) {
+func (c *Client) Sign(p gorequest.Params) {
 	p.Set("app_key", c.GetAppKey())
 	// 排序所有的 key
 	var keys []string
-	for key := range p.ToMap() {
+	for key := range p {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
@@ -38,7 +38,7 @@ func (c *Client) Sign(p *gorequest.Params) {
 	p.Set("sign", createSign(signStr))
 }
 
-func SetCustomParameters(p *gorequest.Params, uid string, sid string) *gorequest.Params {
+func SetCustomParameters(p gorequest.Params, uid string, sid string) gorequest.Params {
 	p.Set("custom_parameters", map[string]interface{}{
 		"uid": uid,
 		"sid": sid,

@@ -55,7 +55,7 @@ func newPayOrderQueryResult(result PayOrderQueryResponse, body []byte, http gore
 // PayOrderQuery
 // 小程序支付 - 查询订单
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_2
-func (c *Client) PayOrderQuery(ctx context.Context, transactionId, outTradeNo string, notMustParams ...*gorequest.Params) (*PayOrderQueryResult, error) {
+func (c *Client) PayOrderQuery(ctx context.Context, transactionId, outTradeNo string, notMustParams ...gorequest.Params) (*PayOrderQueryResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", c.GetAppId())  // 小程序ID

@@ -36,7 +36,7 @@ func newApiMtUnionSkuResult(result ApiMtUnionSkuResponse, body []byte, http gore
 
 // ApiMtUnionSku 商品列表查询（新版）
 // https://union.meituan.com/v2/apiDetail?id=31
-func (c *Client) ApiMtUnionSku(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiMtUnionSkuResult, error) {
+func (c *Client) ApiMtUnionSku(ctx context.Context, notMustParams ...gorequest.Params) (*ApiMtUnionSkuResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s

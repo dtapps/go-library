@@ -28,7 +28,7 @@ func newTbkDgNewuserOrderGetResult(result TbkDgNewuserOrderGetResponse, body []b
 
 // TbkDgNewuserOrderGet 淘宝客-推广者-新用户订单明细查询
 // https://open.taobao.com/api.htm?docId=33892&docType=2
-func (c *Client) TbkDgNewuserOrderGet(ctx context.Context, notMustParams ...*gorequest.Params) (*TbkDgNewuserOrderGetResult, error) {
+func (c *Client) TbkDgNewuserOrderGet(ctx context.Context, notMustParams ...gorequest.Params) (*TbkDgNewuserOrderGetResult, error) {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.dg.newuser.order.get", notMustParams...)
 	// 请求

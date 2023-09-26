@@ -78,7 +78,7 @@ func newTbkDgMaterialOptionalResult(result TbkDgMaterialOptionalResponse, body [
 
 // TbkDgMaterialOptional 淘宝客-推广者-物料搜索
 // https://open.taobao.com/api.htm?docId=35896&docType=2&source=search
-func (c *Client) TbkDgMaterialOptional(ctx context.Context, notMustParams ...*gorequest.Params) (*TbkDgMaterialOptionalResult, error) {
+func (c *Client) TbkDgMaterialOptional(ctx context.Context, notMustParams ...gorequest.Params) (*TbkDgMaterialOptionalResult, error) {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.dg.material.optional", notMustParams...)
 	params.Set("adzone_id", c.GetAdzoneId())

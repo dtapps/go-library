@@ -26,7 +26,7 @@ func newWebhookSendResult(result WebhookSendResponse, body []byte, http goreques
 }
 
 // WebhookSend https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN
-func (c *Client) WebhookSend(ctx context.Context, notMustParams ...*gorequest.Params) (*WebhookSendResult, error) {
+func (c *Client) WebhookSend(ctx context.Context, notMustParams ...gorequest.Params) (*WebhookSendResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

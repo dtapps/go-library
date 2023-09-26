@@ -32,7 +32,7 @@ func newApiProductRechargeParamsResult(result ApiProductRechargeParamsResponse, 
 // ApiProductRechargeParams 接口说明
 // 获取商品的充值参数（仅支持充值类商品）
 // http://doc.cqmeihu.cn/sales/ProductParams.html
-func (c *Client) ApiProductRechargeParams(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiProductRechargeParamsResult, error) {
+func (c *Client) ApiProductRechargeParams(ctx context.Context, notMustParams ...gorequest.Params) (*ApiProductRechargeParamsResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

@@ -5,10 +5,10 @@ import (
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
-func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, method string) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param gorequest.Params, method string) (gorequest.Response, error) {
 
 	// 认证
-	authorization, err := c.authorization(method, param.ToMap(), url)
+	authorization, err := c.authorization(method, param, url)
 	if err != nil {
 		return gorequest.Response{}, err
 	}
@@ -30,7 +30,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	client.SetContentTypeJson()
 
 	// 设置参数
-	client.SetParams(param.ToMapAndReset())
+	client.SetParams(param)
 
 	// 设置用户代理
 	client.SetUserAgent(gorequest.GetRandomUserAgentSystem())

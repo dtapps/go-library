@@ -5,7 +5,7 @@ import (
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
-func (c *Client) request(ctx context.Context, url string, param *gorequest.Params) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param gorequest.Params) (gorequest.Response, error) {
 
 	// 签名
 	params := c.Sign(param)
@@ -24,7 +24,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	client.SetContentTypeJson()
 
 	// 设置参数
-	client.SetParams(params.ToMap())
+	client.SetParams(params)
 
 	// 发起请求
 	request, err := client.Post(ctx)

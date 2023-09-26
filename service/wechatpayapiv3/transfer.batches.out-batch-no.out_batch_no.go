@@ -47,7 +47,7 @@ func newTransferBatchesOutBatchNoOutBatchNoResult(result TransferBatchesOutBatch
 
 // TransferBatchesOutBatchNoOutBatchNo 通过商家批次单号查询批次单
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/get-transfer-batch-by-out-no.html
-func (c *Client) TransferBatchesOutBatchNoOutBatchNo(ctx context.Context, outBatchNo string, notMustParams ...*gorequest.Params) (*TransferBatchesOutBatchNoOutBatchNoResult, error) {
+func (c *Client) TransferBatchesOutBatchNoOutBatchNo(ctx context.Context, outBatchNo string, notMustParams ...gorequest.Params) (*TransferBatchesOutBatchNoOutBatchNoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

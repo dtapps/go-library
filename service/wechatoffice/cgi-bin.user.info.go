@@ -39,7 +39,7 @@ func newCgiBinUserInfoResult(result CgiBinUserInfoResponse, body []byte, http go
 
 // CgiBinUserInfo 获取用户基本信息(UnionID机制)
 // https://developers.weixin.qq.com/doc/offiaccount/User_Management/Get_users_basic_information_UnionID.html#UinonId
-func (c *Client) CgiBinUserInfo(ctx context.Context, openid string, notMustParams ...*gorequest.Params) (*CgiBinUserInfoResult, error) {
+func (c *Client) CgiBinUserInfo(ctx context.Context, openid string, notMustParams ...gorequest.Params) (*CgiBinUserInfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

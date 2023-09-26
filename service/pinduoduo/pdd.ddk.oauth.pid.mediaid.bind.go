@@ -67,7 +67,7 @@ func newPddDdkOauthPidMediaIdBindResult(result PddDdkOauthPidMediaIdBindResponse
 
 // MediaIdBind 批量绑定推广位的媒体id
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.pid.mediaid.bind
-func (c *PddDdkOauthPidApi) MediaIdBind(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthPidMediaIdBindResult, error) {
+func (c *PddDdkOauthPidApi) MediaIdBind(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthPidMediaIdBindResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.pid.mediaid.bind", notMustParams...)
 	// 请求

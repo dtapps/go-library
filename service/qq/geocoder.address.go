@@ -45,7 +45,7 @@ func newGeocoderAddressResult(result GeocoderAddressResponse, body []byte, http 
 
 // GeocoderAddress 地址解析（地址转坐标）
 // https://lbs.qq.com/service/webService/webServiceGuide/webServiceGeocoder
-func (c *Client) GeocoderAddress(ctx context.Context, address string, notMustParams ...*gorequest.Params) (*GeocoderAddressResult, error) {
+func (c *Client) GeocoderAddress(ctx context.Context, address string, notMustParams ...gorequest.Params) (*GeocoderAddressResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("key", c.GetKey())

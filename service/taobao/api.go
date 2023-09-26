@@ -5,7 +5,7 @@ import (
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
-func (c *Client) Get(ctx context.Context, _method string, notMustParams ...*gorequest.Params) ([]byte, error) {
+func (c *Client) Get(ctx context.Context, _method string, notMustParams ...gorequest.Params) ([]byte, error) {
 	// 参数
 	params := NewParamsWithType(_method, notMustParams...)
 	// 请求

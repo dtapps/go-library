@@ -43,7 +43,7 @@ func newPartnerData4GetPlanResult(result PartnerData4GetPlanResponse, body []byt
 
 // PartnerData4GetPlan 获取影院排期
 // https://docs.apipost.cn/preview/fa101f4865dc783f/66e7c2e894fda4a6?target_id=1e0161fe-12ca-4a64-afb9-5c97431f1f70
-func (c *Client) PartnerData4GetPlan(ctx context.Context, notMustParams ...*gorequest.Params) (*PartnerData4GetPlanResult, error) {
+func (c *Client) PartnerData4GetPlan(ctx context.Context, notMustParams ...gorequest.Params) (*PartnerData4GetPlanResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

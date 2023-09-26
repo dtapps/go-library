@@ -28,7 +28,7 @@ func newCgiBinTokenResult(result CgiBinTokenResponse, body []byte, http goreques
 // CgiBinToken
 // 接口调用凭证
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/access-token/auth.getAccessToken.html
-func (c *Client) CgiBinToken(ctx context.Context, notMustParams ...*gorequest.Params) (*CgiBinTokenResult, error) {
+func (c *Client) CgiBinToken(ctx context.Context, notMustParams ...gorequest.Params) (*CgiBinTokenResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

@@ -25,7 +25,7 @@ func newPddDdkOauthCashGiftCreateResult(result PddDdkOauthCashGiftCreateResponse
 
 // Create 创建多多礼金
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.cashgift.create
-func (c *PddDdkOauthCashGiftApi) Create(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthCashGiftCreateResult, error) {
+func (c *PddDdkOauthCashGiftApi) Create(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthCashGiftCreateResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.cashgift.create", notMustParams...)
 	// 请求

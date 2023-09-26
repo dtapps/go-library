@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, method string, commonParams bool) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param gorequest.Params, method string, commonParams bool) (gorequest.Response, error) {
 
 	// 公共参数
 	if method == http.MethodPost {
@@ -17,7 +17,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	}
 
 	// 认证
-	authorization, err := c.authorization(method, param.ToMap(), url)
+	authorization, err := c.authorization(method, param, url)
 	if err != nil {
 		return gorequest.Response{}, err
 	}
@@ -39,7 +39,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	client.SetContentTypeJson()
 
 	// 设置参数
-	client.SetParams(param.ToMapAndReset())
+	client.SetParams(param)
 
 	// 设置头部
 	client.SetHeader("Authorization", "WECHATPAY2-SHA256-RSA2048 "+authorization)

@@ -6,7 +6,7 @@ import (
 )
 
 // 请求接口
-func (c *Client) request(ctx context.Context, url string, param *gorequest.Params) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param gorequest.Params) (gorequest.Response, error) {
 
 	// 签名
 	param.Set("sign", c.sign(param))
@@ -25,7 +25,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	client.SetContentTypeForm()
 
 	// 设置参数
-	client.SetParams(param.ToMapAndReset())
+	client.SetParams(param)
 
 	// 发起请求
 	request, err := client.Post(ctx)

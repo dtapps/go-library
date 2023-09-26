@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func (c *Client) request(ctx context.Context, url string, param *gorequest.Params) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param gorequest.Params) (gorequest.Response, error) {
 
 	// 公共参数
 	param.Set("timestamp", time.Now().UnixNano()/1e6)
@@ -32,7 +32,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	client.SetUserAgent(gorequest.GetRandomUserAgentSystem())
 
 	// 设置参数
-	client.SetParams(param.ToMapAndReset())
+	client.SetParams(param)
 
 	// 发起请求
 	request, err := client.Post(ctx)
@@ -48,7 +48,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	return request, err
 }
 
-func (c *Client) requestCache(ctx context.Context, url string, param *gorequest.Params, method string) (gorequest.Response, error) {
+func (c *Client) requestCache(ctx context.Context, url string, param gorequest.Params, method string) (gorequest.Response, error) {
 
 	// 创建请求
 	client := c.requestClient
@@ -66,7 +66,7 @@ func (c *Client) requestCache(ctx context.Context, url string, param *gorequest.
 	client.SetUserAgent(gorequest.GetRandomUserAgentSystem())
 
 	// 设置参数
-	client.SetParams(param.ToMapAndReset())
+	client.SetParams(param)
 
 	// 发起请求
 	request, err := client.Request(ctx)

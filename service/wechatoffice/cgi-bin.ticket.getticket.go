@@ -27,7 +27,7 @@ func newCgiBinTicketGetTicketResult(result CgiBinTicketGetTicketResponse, body [
 
 // CgiBinTicketGetTicket 获取api_ticket
 // https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html
-func (c *Client) CgiBinTicketGetTicket(ctx context.Context, Type string, notMustParams ...*gorequest.Params) (*CgiBinTicketGetTicketResult, error) {
+func (c *Client) CgiBinTicketGetTicket(ctx context.Context, Type string, notMustParams ...gorequest.Params) (*CgiBinTicketGetTicketResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

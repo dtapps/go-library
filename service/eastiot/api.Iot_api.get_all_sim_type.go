@@ -29,7 +29,7 @@ func newIotApiGetAllSimTypeResult(result IotApiGetAllSimTypeResponse, body []byt
 
 // IotApiGetAllSimType 卡类型列表查询
 // https://www.showdoc.com.cn/916774523755909/4858492092033167
-func (c *Client) IotApiGetAllSimType(ctx context.Context, notMustParams ...*gorequest.Params) (*IotApiGetAllSimTypeResult, error) {
+func (c *Client) IotApiGetAllSimType(ctx context.Context, notMustParams ...gorequest.Params) (*IotApiGetAllSimTypeResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

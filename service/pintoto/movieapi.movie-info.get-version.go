@@ -24,7 +24,7 @@ func newGetVersionResult(result GetVersionResponse, body []byte, http gorequest.
 }
 
 // GetVersion 获取同步版本号 https://www.showdoc.com.cn/1154868044931571/6566701084841699
-func (c *Client) GetVersion(ctx context.Context, notMustParams ...*gorequest.Params) (*GetVersionResult, error) {
+func (c *Client) GetVersion(ctx context.Context, notMustParams ...gorequest.Params) (*GetVersionResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

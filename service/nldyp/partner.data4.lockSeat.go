@@ -30,7 +30,7 @@ func newPartnerData4LockSeatResult(result PartnerData4LockSeatResponse, body []b
 
 // PartnerData4LockSeat 锁座（支持多座区下单）
 // https://docs.apipost.cn/preview/fa101f4865dc783f/66e7c2e894fda4a6?target_id=ac7d2885-c575-4efa-8438-03175f8978a9
-func (c *Client) PartnerData4LockSeat(ctx context.Context, notMustParams ...*gorequest.Params) (*PartnerData4LockSeatResult, error) {
+func (c *Client) PartnerData4LockSeat(ctx context.Context, notMustParams ...gorequest.Params) (*PartnerData4LockSeatResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

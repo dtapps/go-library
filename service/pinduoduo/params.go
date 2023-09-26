@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func NewParamsWithType(_type string, params ...*gorequest.Params) *gorequest.Params {
+func NewParamsWithType(_type string, params ...gorequest.Params) gorequest.Params {
 	p := gorequest.NewParamsWith(params...)
 	p.Set("type", _type)
 	p.Set("timestamp", strconv.FormatInt(time.Now().Unix(), 10))
@@ -18,11 +18,11 @@ func NewParamsWithType(_type string, params ...*gorequest.Params) *gorequest.Par
 	return p
 }
 
-func (c *Client) Sign(p *gorequest.Params) {
+func (c *Client) Sign(p gorequest.Params) {
 	p.Set("client_id", c.GetClientId())
 	// 排序所有的 key
 	var keys []string
-	for key := range p.ToMap() {
+	for key := range p {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
@@ -34,7 +34,7 @@ func (c *Client) Sign(p *gorequest.Params) {
 	p.Set("sign", createSign(signStr))
 }
 
-func SetCustomParameters(p *gorequest.Params, uid string, sid string) *gorequest.Params {
+func SetCustomParameters(p gorequest.Params, uid string, sid string) gorequest.Params {
 	p.Set("custom_parameters", map[string]interface{}{
 		"uid": uid,
 		"sid": sid,
@@ -43,7 +43,7 @@ func SetCustomParameters(p *gorequest.Params, uid string, sid string) *gorequest
 }
 
 // SetGoodsSignList 设置商品goodsSign列表
-func SetGoodsSignList(p *gorequest.Params, goodsSign string) *gorequest.Params {
+func SetGoodsSignList(p gorequest.Params, goodsSign string) gorequest.Params {
 	p.Set("goods_sign_list", []string{goodsSign})
 	return p
 }

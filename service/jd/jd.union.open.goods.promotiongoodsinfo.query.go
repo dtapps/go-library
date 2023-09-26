@@ -57,7 +57,7 @@ func newUnionOpenGoodsPromotionGoodsInfoQueryResult(responce UnionOpenGoodsPromo
 
 // UnionOpenGoodsPromotionGoodsInfoQuery 根据skuid查询商品信息接口
 // https://union.jd.com/openplatform/api/v2?apiName=jd.union.open.goods.promotiongoodsinfo.query
-func (c *Client) UnionOpenGoodsPromotionGoodsInfoQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*UnionOpenGoodsPromotionGoodsInfoQueryResult, error) {
+func (c *Client) UnionOpenGoodsPromotionGoodsInfoQuery(ctx context.Context, notMustParams ...gorequest.Params) (*UnionOpenGoodsPromotionGoodsInfoQueryResult, error) {
 	// 参数
 	params := NewParamsWithType("jd.union.open.goods.promotiongoodsinfo.query", notMustParams...)
 	// 请求

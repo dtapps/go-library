@@ -25,7 +25,7 @@ func newWxaSubmitAuditResult(result WxaSubmitAuditResponse, body []byte, http go
 
 // WxaSubmitAudit 提交审核
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/submit_audit.html
-func (c *Client) WxaSubmitAudit(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaSubmitAuditResult, error) {
+func (c *Client) WxaSubmitAudit(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaSubmitAuditResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

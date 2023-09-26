@@ -37,7 +37,7 @@ func newGetShowListResult(result GetShowListResponse, body []byte, http goreques
 }
 
 // GetShowList 包含某电影的影院 https://www.showdoc.com.cn/1154868044931571/6067372188376779
-func (c *Client) GetShowList(ctx context.Context, notMustParams ...*gorequest.Params) (*GetShowListResult, error) {
+func (c *Client) GetShowList(ctx context.Context, notMustParams ...gorequest.Params) (*GetShowListResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

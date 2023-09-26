@@ -33,7 +33,7 @@ func newGeocodingResult(result GeocodingResponse, body []byte, http gorequest.Re
 
 // Geocoding 地理编码服务
 // https://lbsyun.baidu.com/index.php?title=webapi/guide/webservice-geocoding
-func (c *Client) Geocoding(ctx context.Context, address string, notMustParams ...*gorequest.Params) (*GeocodingResult, error) {
+func (c *Client) Geocoding(ctx context.Context, address string, notMustParams ...gorequest.Params) (*GeocodingResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("ak", c.GetAk())

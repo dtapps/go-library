@@ -29,7 +29,7 @@ func newPartnerData4GetCityListsResult(result PartnerData4GetCityListsResponse, 
 
 // PartnerData4GetCityLists 获取城市
 // https://docs.apipost.cn/preview/fa101f4865dc783f/66e7c2e894fda4a6?target_id=d8842641-00bd-4bb4-a031-fb6d89908742
-func (c *Client) PartnerData4GetCityLists(ctx context.Context, notMustParams ...*gorequest.Params) (*PartnerData4GetCityListsResult, error) {
+func (c *Client) PartnerData4GetCityLists(ctx context.Context, notMustParams ...gorequest.Params) (*PartnerData4GetCityListsResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

@@ -37,7 +37,7 @@ func newTbkActivityinfoResult(result TbkActivityinfoResponse, body []byte, http 
 
 // TbkActivityinfo 官方活动转链,饿了么/口碑活动转链
 // https://www.dingdanxia.com/doc/122/173
-func (c *Client) TbkActivityinfo(ctx context.Context, notMustParams ...*gorequest.Params) (*TbkActivityinfoResult, error) {
+func (c *Client) TbkActivityinfo(ctx context.Context, notMustParams ...gorequest.Params) (*TbkActivityinfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

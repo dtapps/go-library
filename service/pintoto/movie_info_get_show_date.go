@@ -26,7 +26,7 @@ func newGetShowDateResult(result GetShowDateResponse, body []byte, http goreques
 }
 
 // GetShowDate 包含某电影的日期 https://www.showdoc.com.cn/1154868044931571/6091788579441818
-func (c *Client) GetShowDate(ctx context.Context, cityId, filmId int, notMustParams ...*gorequest.Params) (*GetShowDateResult, error) {
+func (c *Client) GetShowDate(ctx context.Context, cityId, filmId int, notMustParams ...gorequest.Params) (*GetShowDateResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("cityId", cityId)

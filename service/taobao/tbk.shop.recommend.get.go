@@ -33,7 +33,7 @@ func newTbkShopRecommendGetResult(result TbkShopRecommendGetResponse, body []byt
 
 // TbkShopRecommendGet 淘宝客-公用-店铺关联推荐
 // https://open.taobao.com/api.htm?docId=24522&docType=2
-func (c *Client) TbkShopRecommendGet(ctx context.Context, notMustParams ...*gorequest.Params) (*TbkShopRecommendGetResult, error) {
+func (c *Client) TbkShopRecommendGet(ctx context.Context, notMustParams ...gorequest.Params) (*TbkShopRecommendGetResult, error) {
 	// 参数
 	params := NewParamsWithType("taobao.tbk.shop.recommend.get", notMustParams...)
 	// 请求

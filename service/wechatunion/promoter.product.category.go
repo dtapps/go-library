@@ -29,7 +29,7 @@ func newPromoterProductCategoryResult(result PromoterProductCategoryResponse, bo
 
 // PromoterProductCategory 获取联盟商品类目列表及类目ID
 // https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/product/category.html#_1-%E8%8E%B7%E5%8F%96%E8%81%94%E7%9B%9F%E5%95%86%E5%93%81%E7%B1%BB%E7%9B%AE%E5%88%97%E8%A1%A8%E5%8F%8A%E7%B1%BB%E7%9B%AEID
-func (c *Client) PromoterProductCategory(ctx context.Context, notMustParams ...*gorequest.Params) (*PromoterProductCategoryResult, error) {
+func (c *Client) PromoterProductCategory(ctx context.Context, notMustParams ...gorequest.Params) (*PromoterProductCategoryResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

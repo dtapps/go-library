@@ -21,7 +21,7 @@ type respSign struct {
 }
 
 // 签名
-func (c *Client) sign(param *gorequest.Params) respSign {
+func (c *Client) sign(param gorequest.Params) respSign {
 	// 默认参数
 	v := "1.0"
 	format := "json"
@@ -33,7 +33,7 @@ func (c *Client) sign(param *gorequest.Params) respSign {
 	param.Set("timestamp", timestamp)    // unix时间戳（秒单位）
 	// 排序所有的 key
 	var keys []string
-	for key := range param.ToMap() {
+	for key := range param {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)

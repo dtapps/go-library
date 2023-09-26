@@ -29,7 +29,7 @@ func newDataMccResult(result DataMccResponse, body []byte, http gorequest.Respon
 
 // DataMcc 代理商通过MccCode来查商户类别明细
 // https://www.yuque.com/leshuazf/doc/dbmxyi#jRTHN
-func (c *Client) DataMcc(ctx context.Context, notMustParams ...*gorequest.Params) (*DataMccResult, error) {
+func (c *Client) DataMcc(ctx context.Context, notMustParams ...gorequest.Params) (*DataMccResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

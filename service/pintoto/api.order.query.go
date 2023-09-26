@@ -45,7 +45,7 @@ func newApiOrderQueryResult(result ApiOrderQueryResponse, body []byte, http gore
 }
 
 // ApiOrderQuery 订单查询 https://www.showdoc.com.cn/1154868044931571/5965244588489845
-func (c *Client) ApiOrderQuery(ctx context.Context, thirdOrderId string, notMustParams ...*gorequest.Params) (*ApiOrderQueryResult, error) {
+func (c *Client) ApiOrderQuery(ctx context.Context, thirdOrderId string, notMustParams ...gorequest.Params) (*ApiOrderQueryResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("thirdOrderId", thirdOrderId)

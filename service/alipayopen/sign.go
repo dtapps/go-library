@@ -30,10 +30,10 @@ func (c *Client) rsaSign(signContent string, hash crypto.Hash) (string, error) {
 	return sign, nil
 }
 
-func (c *Client) sign(ctx context.Context, params *gorequest.Params) *gorequest.Params {
+func (c *Client) sign(ctx context.Context, params gorequest.Params) gorequest.Params {
 	// 排序
 	var keys []string
-	for key := range params.ToMap() {
+	for key := range params {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)

@@ -27,7 +27,7 @@ func newIotApiQueryUserBalanceResult(result IotApiQueryUserBalanceResponse, body
 
 // IotApiQueryUserBalance 余额查询
 // https://www.showdoc.com.cn/916774523755909/4857910459512420
-func (c *Client) IotApiQueryUserBalance(ctx context.Context, notMustParams ...*gorequest.Params) (*IotApiQueryUserBalanceResult, error) {
+func (c *Client) IotApiQueryUserBalance(ctx context.Context, notMustParams ...gorequest.Params) (*IotApiQueryUserBalanceResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

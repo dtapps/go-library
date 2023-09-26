@@ -32,7 +32,7 @@ func newDataCubeGetWeAnAlySisAppidMonthlyVisitTrendResult(result DataCubeGetWeAn
 
 // DataCubeGetWeAnAlySisAppidMonthlyVisitTrend 获取用户访问小程序数据月趋势
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/visit-trend/getMonthlyVisitTrend.html
-func (c *Client) DataCubeGetWeAnAlySisAppidMonthlyVisitTrend(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (*DataCubeGetWeAnAlySisAppidMonthlyVisitTrendResult, error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidMonthlyVisitTrend(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlySisAppidMonthlyVisitTrendResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("begin_date", beginDate)

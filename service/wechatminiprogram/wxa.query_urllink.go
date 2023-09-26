@@ -44,7 +44,7 @@ func newWxaQueryUrlLinkResult(result WxaQueryUrlLinkResponse, body []byte, http 
 
 // WxaQueryUrlLink 查询小程序 url_link 配置，及长期有效 quota
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/url-link/urllink.query.html
-func (c *Client) WxaQueryUrlLink(ctx context.Context, notMustParams ...*gorequest.Params) (*WxaQueryUrlLinkResult, error) {
+func (c *Client) WxaQueryUrlLink(ctx context.Context, notMustParams ...gorequest.Params) (*WxaQueryUrlLinkResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

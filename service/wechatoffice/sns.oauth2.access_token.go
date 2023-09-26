@@ -28,7 +28,7 @@ func newSnsOauth2AccessTokenResult(result SnsOauth2AccessTokenResponse, body []b
 
 // SnsOauth2AccessToken 通过code换取网页授权access_token
 // https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html#0
-func (c *Client) SnsOauth2AccessToken(ctx context.Context, code string, notMustParams ...*gorequest.Params) (*SnsOauth2AccessTokenResult, error) {
+func (c *Client) SnsOauth2AccessToken(ctx context.Context, code string, notMustParams ...gorequest.Params) (*SnsOauth2AccessTokenResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

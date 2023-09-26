@@ -54,7 +54,7 @@ func newCgiBinAccountGetAccountBasicInfoResult(result CgiBinAccountGetAccountBas
 
 // CgiBinAccountGetAccountBasicInfo 获取基本信息
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_Basic_Info/Mini_Program_Information_Settings.html
-func (c *Client) CgiBinAccountGetAccountBasicInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*CgiBinAccountGetAccountBasicInfoResult, error) {
+func (c *Client) CgiBinAccountGetAccountBasicInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*CgiBinAccountGetAccountBasicInfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

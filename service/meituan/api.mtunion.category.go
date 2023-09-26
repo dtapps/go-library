@@ -31,7 +31,7 @@ func newApiMtUnionCategoryResult(result ApiMtUnionCategoryResponse, body []byte,
 
 // ApiMtUnionCategory 商品类目查询（新版）
 // https://union.meituan.com/v2/apiDetail?id=30
-func (c *Client) ApiMtUnionCategory(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiMtUnionCategoryResult, error) {
+func (c *Client) ApiMtUnionCategory(ctx context.Context, notMustParams ...gorequest.Params) (*ApiMtUnionCategoryResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s

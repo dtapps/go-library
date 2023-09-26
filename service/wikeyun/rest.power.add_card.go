@@ -34,7 +34,7 @@ func newRestPowerAddCardResult(result RestPowerAddCardResponse, body []byte, htt
 
 // RestPowerAddCard 添加电费充值卡
 // https://open.wikeyun.cn/#/apiDocument/9/document/326
-func (c *Client) RestPowerAddCard(ctx context.Context, notMustParams ...*gorequest.Params) (*RestPowerAddCardResult, error) {
+func (c *Client) RestPowerAddCard(ctx context.Context, notMustParams ...gorequest.Params) (*RestPowerAddCardResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("store_id", c.GetStoreId()) // 店铺ID

@@ -23,7 +23,7 @@ func newPayPartnerTransactionsNativePostResult(result PayPartnerTransactionsNati
 
 // PayPartnerTransactionsNativePost Native下单API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_1.shtml
-func (c *Client) PayPartnerTransactionsNativePost(ctx context.Context, notMustParams ...*gorequest.Params) (*PayPartnerTransactionsNativePostResult, ApiError, error) {
+func (c *Client) PayPartnerTransactionsNativePost(ctx context.Context, notMustParams ...gorequest.Params) (*PayPartnerTransactionsNativePostResult, ApiError, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sp_appid", c.GetSpAppid())   // 服务商应用ID

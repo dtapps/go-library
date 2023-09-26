@@ -42,7 +42,7 @@ func newGetSoonListResult(result GetSoonListResponse, body []byte, http goreques
 }
 
 // GetSoonList 即将上映 https://www.showdoc.com.cn/1154868044931571/5866125707634369
-func (c *Client) GetSoonList(ctx context.Context, cityId int, notMustParams ...*gorequest.Params) (*GetSoonListResult, error) {
+func (c *Client) GetSoonList(ctx context.Context, cityId int, notMustParams ...gorequest.Params) (*GetSoonListResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("cityId", cityId)

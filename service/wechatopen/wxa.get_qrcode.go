@@ -24,7 +24,7 @@ func newWxaGetQrcodeResult(result WxaGetQrcodeResponse, body []byte, http gorequ
 
 // WxaGetQrcode 获取体验版二维码
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_qrcode.html
-func (c *Client) WxaGetQrcode(ctx context.Context, authorizerAccessToken, path string, notMustParams ...*gorequest.Params) (*WxaGetQrcodeResult, error) {
+func (c *Client) WxaGetQrcode(ctx context.Context, authorizerAccessToken, path string, notMustParams ...gorequest.Params) (*WxaGetQrcodeResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	if path != "" {

@@ -30,7 +30,7 @@ func newAlipayUserInfoShareResult(result AlipayUserInfoShareResponse, body []byt
 
 // AlipayUserInfoShare 换取授权访问令牌
 // https://opendocs.alipay.com/open/02xtlb
-func (c *Client) AlipayUserInfoShare(ctx context.Context, authToken string, notMustParams ...*gorequest.Params) (*AlipayUserInfoShareResult, ApiError, error) {
+func (c *Client) AlipayUserInfoShare(ctx context.Context, authToken string, notMustParams ...gorequest.Params) (*AlipayUserInfoShareResult, ApiError, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("auth_token", authToken)

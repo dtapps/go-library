@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (c *Client) Get(ctx context.Context, _method string, commonParams bool, notMustParams ...*gorequest.Params) ([]byte, error) {
+func (c *Client) Get(ctx context.Context, _method string, commonParams bool, notMustParams ...gorequest.Params) ([]byte, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
@@ -15,7 +15,7 @@ func (c *Client) Get(ctx context.Context, _method string, commonParams bool, not
 	return request.ResponseBody, err
 }
 
-func (c *Client) Post(ctx context.Context, _method string, commonParams bool, notMustParams ...*gorequest.Params) ([]byte, error) {
+func (c *Client) Post(ctx context.Context, _method string, commonParams bool, notMustParams ...gorequest.Params) ([]byte, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

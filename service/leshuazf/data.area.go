@@ -30,7 +30,7 @@ func newDataAreaResult(result DataAreaResponse, body []byte, http gorequest.Resp
 
 // DataArea 代理商通过地区信息来查地区详细信息
 // https://www.yuque.com/leshuazf/doc/dbmxyi#YwJl7
-func (c *Client) DataArea(ctx context.Context, notMustParams ...*gorequest.Params) (*DataAreaResult, error) {
+func (c *Client) DataArea(ctx context.Context, notMustParams ...gorequest.Params) (*DataAreaResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

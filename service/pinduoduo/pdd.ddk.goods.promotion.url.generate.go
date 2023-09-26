@@ -55,7 +55,7 @@ func newGoodsPromotionUrlGenerateResult(result GoodsPromotionUrlGenerateResponse
 
 // GoodsPromotionUrlGenerate 多多进宝推广链接生成
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.promotion.url.generate
-func (c *Client) GoodsPromotionUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (*GoodsPromotionUrlGenerateResult, error) {
+func (c *Client) GoodsPromotionUrlGenerate(ctx context.Context, notMustParams ...gorequest.Params) (*GoodsPromotionUrlGenerateResult, error) {
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.promotion.url.generate", notMustParams...)
 	params.Set("p_id", c.GetPid())

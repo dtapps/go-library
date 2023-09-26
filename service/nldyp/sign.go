@@ -12,12 +12,12 @@ import (
 	"strings"
 )
 
-func (c *Client) Sign(p *gorequest.Params) *gorequest.Params {
+func (c *Client) Sign(p gorequest.Params) gorequest.Params {
 	p.Set("vendor", c.GetVendor())
 	p.Set("ts", gotime.Current().Timestamp())
 	// 排序所有的 key
 	var keys []string
-	for key := range p.ToMap() {
+	for key := range p {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)

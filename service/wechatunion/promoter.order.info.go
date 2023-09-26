@@ -55,7 +55,7 @@ func newPromoterOrderInfoResult(result PromoterOrderInfoResponse, body []byte, h
 
 // PromoterOrderInfo 根据订单ID查询订单详情
 // https://developers.weixin.qq.com/doc/ministore/union/access-guidelines/promoter/api/order/order-info.html#_1-%E6%A0%B9%E6%8D%AE%E8%AE%A2%E5%8D%95ID%E6%9F%A5%E8%AF%A2%E8%AE%A2%E5%8D%95%E8%AF%A6%E6%83%85
-func (c *Client) PromoterOrderInfo(ctx context.Context, notMustParams ...*gorequest.Params) (*PromoterOrderInfoResult, error) {
+func (c *Client) PromoterOrderInfo(ctx context.Context, notMustParams ...gorequest.Params) (*PromoterOrderInfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

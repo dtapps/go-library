@@ -37,7 +37,7 @@ func newRestPowerQueryResult(result RestPowerQueryResponse, body []byte, http go
 
 // RestPowerQuery 电费订单查询
 // https://open.wikeyun.cn/#/apiDocument/9/document/313
-func (c *Client) RestPowerQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*RestPowerQueryResult, error) {
+func (c *Client) RestPowerQuery(ctx context.Context, notMustParams ...gorequest.Params) (*RestPowerQueryResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("store_id", c.GetStoreId())

@@ -44,7 +44,7 @@ func newRestRechargeMobileInfoResult(result RestRechargeMobileInfoResponse, body
 
 // RestRechargeMobileInfo 查询手机归属地信息以及是否携号转网
 // https://open.wikeyun.cn/#/apiDocument/9/document/374
-func (c *Client) RestRechargeMobileInfo(ctx context.Context, orderNumber string, notMustParams ...*gorequest.Params) (*RestRechargeMobileInfoResult, error) {
+func (c *Client) RestRechargeMobileInfo(ctx context.Context, orderNumber string, notMustParams ...gorequest.Params) (*RestRechargeMobileInfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("order_number", orderNumber) // 平台单号

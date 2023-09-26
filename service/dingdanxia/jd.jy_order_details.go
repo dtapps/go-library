@@ -39,7 +39,7 @@ func newJdJyOrderDetailsResult(result JdJyOrderDetailsResponse, body []byte, htt
 }
 
 // JdJyOrderDetails 【官方不维护】 京佣订单
-func (c *Client) JdJyOrderDetails(ctx context.Context, notMustParams ...*gorequest.Params) (*JdJyOrderDetailsResult, error) {
+func (c *Client) JdJyOrderDetails(ctx context.Context, notMustParams ...gorequest.Params) (*JdJyOrderDetailsResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

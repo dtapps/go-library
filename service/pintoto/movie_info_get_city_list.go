@@ -33,7 +33,7 @@ func newGetCityListResult(result GetCityListResponse, body []byte, http goreques
 
 // GetCityList 城市列表
 // https://www.showdoc.com.cn/1154868044931571/5865562425538244
-func (c *Client) GetCityList(ctx context.Context, notMustParams ...*gorequest.Params) (*GetCityListResult, error) {
+func (c *Client) GetCityList(ctx context.Context, notMustParams ...gorequest.Params) (*GetCityListResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求

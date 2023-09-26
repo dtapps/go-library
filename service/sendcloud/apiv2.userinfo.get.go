@@ -53,7 +53,7 @@ func newApiV2UserinfoGetResult(result ApiV2UserinfoGetResponse, body []byte, htt
 // ApiV2UserinfoGet 获取单个订单信息。
 // 仅能获取自己购买的订单。
 // http://doc.cqmeihu.cn/sales/ApiV2UserinfoGet-info.html
-func (c *Client) ApiV2UserinfoGet(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiV2UserinfoGetResult, error) {
+func (c *Client) ApiV2UserinfoGet(ctx context.Context, notMustParams ...gorequest.Params) (*ApiV2UserinfoGetResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("apiUser", c.GetApiUser())
