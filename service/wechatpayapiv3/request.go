@@ -17,7 +17,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	}
 
 	// 认证
-	authorization, err := c.authorization(method, param, url)
+	authorization, err := c.authorization(method, param.ToMap(), url)
 	if err != nil {
 		return gorequest.Response{}, err
 	}
@@ -31,9 +31,6 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 
 	// 设置请求地址
 	client.SetUri(url)
-
-	client.SetHeader("app_id", c.GetAppId())
-	client.SetHeader("mch_id", c.GetMchId())
 
 	// 设置方式
 	client.SetMethod(method)

@@ -8,7 +8,7 @@ import (
 func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, method string) (gorequest.Response, error) {
 
 	// 认证
-	authorization, err := c.authorization(method, param, url)
+	authorization, err := c.authorization(method, param.ToMap(), url)
 	if err != nil {
 		return gorequest.Response{}, err
 	}
@@ -22,11 +22,6 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 
 	// 设置请求地址
 	client.SetUri(url)
-
-	client.SetHeader("sp_appid", c.GetSpAppid())
-	client.SetHeader("sp_mch_id", c.GetSpMchId())
-	client.SetHeader("sub_appid", c.GetSubAppid())
-	client.SetHeader("sub_mch_id", c.GetSubMchId())
 
 	// 设置方式
 	client.SetMethod(method)
