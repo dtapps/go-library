@@ -212,7 +212,7 @@ github.com/qiniu/go-sdk/v7/internal/hostprovider
 github.com/qiniu/go-sdk/v7/internal/log
 github.com/qiniu/go-sdk/v7/reqid
 github.com/qiniu/go-sdk/v7/storage
-# github.com/redis/go-redis/v9 v9.2.0
+# github.com/redis/go-redis/v9 v9.2.1
 ## explicit; go 1.18
 github.com/redis/go-redis/v9
 github.com/redis/go-redis/v9/internal
