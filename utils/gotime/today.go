@@ -66,6 +66,13 @@ func SetCurrentUnix(ts int64) Pro {
 	return p
 }
 
+// SetCurrentMillisecondUnix 设置当前的时间 毫秒Unix时间戳
+func SetCurrentMillisecondUnix(ts int64) Pro {
+	p := NewPro()
+	p.Time = time.Unix(ts/1000, 0)
+	return p
+}
+
 // Now 今天此刻
 func (p Pro) Now() time.Time {
 	return p.Time
