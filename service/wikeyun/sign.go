@@ -3,8 +3,8 @@ package wikeyun
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/gostring"
 	"sort"
 	"strconv"
 	"strings"
@@ -39,7 +39,7 @@ func (c *Client) sign(param gorequest.Params) respSign {
 	sort.Strings(keys)
 	signStr := c.GetAppSecret()
 	for _, key := range keys {
-		signStr += key + getString(param.Get(key))
+		signStr += key + gostring.GetString(param.Get(key))
 	}
 	signStr += c.GetAppSecret()
 	return respSign{
@@ -58,20 +58,4 @@ func (c *Client) createSign(signStr string) string {
 	h.Write([]byte(signStr))
 	cipherStr := h.Sum(nil)
 	return strings.ToUpper(hex.EncodeToString(cipherStr))
-}
-
-func getString(i interface{}) string {
-	switch v := i.(type) {
-	case string:
-		return v
-	case []byte:
-		return string(v)
-	case int:
-		return strconv.Itoa(v)
-	case bool:
-		return strconv.FormatBool(v)
-	default:
-		bytes, _ := gojson.Marshal(v)
-		return string(bytes)
-	}
 }

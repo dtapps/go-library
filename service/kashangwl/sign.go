@@ -4,12 +4,11 @@ import (
 	"bytes"
 	"crypto/md5"
 	"encoding/hex"
-	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/gostring"
 	"io"
 	"net/url"
 	"sort"
-	"strconv"
 	"strings"
 )
 
@@ -39,21 +38,7 @@ func (c *Client) getRequestData(param gorequest.Params) string {
 	args := url.Values{}
 	// 请求参数
 	for key, val := range param {
-		args.Set(key, c.getString(val))
+		args.Set(key, gostring.GetString(val))
 	}
 	return args.Encode()
-}
-
-func (c *Client) getString(i interface{}) string {
-	switch v := i.(type) {
-	case string:
-		return v
-	case int:
-		return strconv.Itoa(v)
-	case bool:
-		return strconv.FormatBool(v)
-	default:
-		marshal, _ := gojson.Marshal(v)
-		return string(marshal)
-	}
 }

@@ -6,11 +6,10 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/gostring"
 	"log"
 	"sort"
-	"strconv"
 	"strings"
 )
 
@@ -30,10 +29,10 @@ func (c *Client) rsaSign(signContent string, hash crypto.Hash) (string, error) {
 	return sign, nil
 }
 
-func (c *Client) sign(ctx context.Context, params gorequest.Params) gorequest.Params {
+func (c *Client) sign(ctx context.Context, param gorequest.Params) gorequest.Params {
 	// 排序
 	var keys []string
-	for key := range params {
+	for key := range param {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
@@ -42,7 +41,7 @@ func (c *Client) sign(ctx context.Context, params gorequest.Params) gorequest.Pa
 	var signStr = ""
 	for _, key := range keys {
 		if key != "" {
-			signStr += fmt.Sprintf("%s=%s&", key, c.getString(params.Get(key)))
+			signStr += fmt.Sprintf("%s=%s&", key, gostring.GetString(param.Get(key)))
 		}
 	}
 
@@ -54,23 +53,7 @@ func (c *Client) sign(ctx context.Context, params gorequest.Params) gorequest.Pa
 		log.Printf("签名失败：%s\n", err)
 		return nil
 	}
-	params.Set("sign", sign)
+	param.Set("sign", sign)
 
-	return params
-}
-
-func (c *Client) getString(i interface{}) string {
-	switch v := i.(type) {
-	case string:
-		return v
-	case []byte:
-		return string(v)
-	case int:
-		return strconv.Itoa(v)
-	case bool:
-		return strconv.FormatBool(v)
-	default:
-		bytes, _ := gojson.Marshal(v)
-		return string(bytes)
-	}
+	return param
 }

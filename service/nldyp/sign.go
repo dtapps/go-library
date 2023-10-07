@@ -4,11 +4,10 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/gostring"
 	"github.com/dtapps/go-library/utils/gotime"
 	"sort"
-	"strconv"
 	"strings"
 )
 
@@ -23,26 +22,10 @@ func (c *Client) Sign(p gorequest.Params) gorequest.Params {
 	sort.Strings(keys)
 	signStr := ""
 	for _, key := range keys {
-		signStr += key + getString(p.Get(key))
+		signStr += key + gostring.GetString(p.Get(key))
 	}
 	p.Set("sign", createSign(fmt.Sprintf("%s%s%s", c.GetVendor(), p.Get("ts"), signStr)))
 	return p
-}
-
-func getString(i interface{}) string {
-	switch v := i.(type) {
-	case string:
-		return v
-	case []byte:
-		return string(v)
-	case int:
-		return strconv.Itoa(v)
-	case bool:
-		return strconv.FormatBool(v)
-	default:
-		bytes, _ := gojson.Marshal(v)
-		return string(bytes)
-	}
 }
 
 // 签名
