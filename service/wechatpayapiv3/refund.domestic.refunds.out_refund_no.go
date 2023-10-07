@@ -2,7 +2,6 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
@@ -66,7 +65,7 @@ func (c *Client) RefundDomesticRefundsOutRefundNo(ctx context.Context, outRefund
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/refund/domestic/refunds/%s", outRefundNo), params, http.MethodGet, true)
+	request, err := c.request(ctx, apiUrl+"/v3/refund/domestic/refunds/"+outRefundNo, params, http.MethodGet, true)
 	if err != nil {
 		return newRefundDomesticRefundsOutRefundNoResult(RefundDomesticRefundsOutRefundNoResponse{}, request.ResponseBody, request), err
 	}

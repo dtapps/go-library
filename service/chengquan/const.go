@@ -12,7 +12,8 @@ const (
 )
 
 const (
-	version = "1.0.0"
+	version     = "1.0.0"
+	CodeSuccess = 7000
 )
 
 func StateInfo[codeT int | int8 | int16 | int32 | int64 | uint | uint8 | uint16 | uint32 | uint64 | string](state codeT) string {
