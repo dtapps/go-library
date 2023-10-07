@@ -14,12 +14,6 @@ func (c *Client) ConfigSLogClientFun(apiSLogFun golog.ApiSLogFun) {
 	}
 }
 
-// SetHttp 配置请求
-func (c *Client) SetHttp(app *gorequest.App) {
-	c.requestClient = app
-	c.requestClientStatus = true
-}
-
 // DefaultHttp 默认请求
 func (c *Client) DefaultHttp() {
 	c.requestClient = gorequest.NewHttp()
