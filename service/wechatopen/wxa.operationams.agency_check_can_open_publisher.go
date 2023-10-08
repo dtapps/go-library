@@ -9,7 +9,7 @@ import (
 
 type WxaOperationamsAgencyCheckCanOpenPublisherResponse struct {
 	Ret    int    `json:"ret"`
-	ErrMsg string `json:"err_msg"`
+	ErrMsg string `json:"err_msg,omitempty"`
 	Status int    `json:"status"`
 }
 
@@ -23,7 +23,8 @@ func newWxaOperationamsAgencyCheckCanOpenPublisherResult(result WxaOperationamsA
 	return &WxaOperationamsAgencyCheckCanOpenPublisherResult{Result: result, Body: body, Http: http}
 }
 
-// WxaOperationamsAgencyCheckCanOpenPublisher 检测是否能开通流量主
+// WxaOperationamsAgencyCheckCanOpenPublisher
+// 检测是否能开通流量主
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/open/AgencyCheckCanOpenPublisher.html
 func (c *Client) WxaOperationamsAgencyCheckCanOpenPublisher(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaOperationamsAgencyCheckCanOpenPublisherResult, error) {
 	// 参数

@@ -16,16 +16,27 @@ type SupplierBalanceResponse struct {
 	} `json:"data"`
 }
 
+type SupplierBalanceResult struct {
+	Result SupplierBalanceResponse // 结果
+	Body   []byte                  // 内容
+	Http   gorequest.Response      // 请求
+}
+
+func newSupplierBalanceResult(result SupplierBalanceResponse, body []byte, http gorequest.Response) *SupplierBalanceResult {
+	return &SupplierBalanceResult{Result: result, Body: body, Http: http}
+}
+
 // SupplierBalance 用户余额查询接口
-func (c *Client) SupplierBalance(ctx context.Context, notMustParams ...gorequest.Params) (body []byte, response SupplierBalanceResponse, err error) {
+func (c *Client) SupplierBalance(ctx context.Context, notMustParams ...gorequest.Params) (*SupplierBalanceResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
 	request, err := c.request(ctx, "api/order/supplierBalance", params, http.MethodPost)
 	if err != nil {
-		return nil, SupplierBalanceResponse{}, err
+		return newSupplierBalanceResult(SupplierBalanceResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
+	var response SupplierBalanceResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return request.ResponseBody, response, err
+	return newSupplierBalanceResult(response, request.ResponseBody, request), err
 }

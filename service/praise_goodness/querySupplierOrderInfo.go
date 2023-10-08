@@ -21,19 +21,30 @@ type QuerySupplierOrderInfoResponse struct {
 	} `json:"data"`
 }
 
+type QuerySupplierOrderInfoResult struct {
+	Result QuerySupplierOrderInfoResponse // 结果
+	Body   []byte                         // 内容
+	Http   gorequest.Response             // 请求
+}
+
+func newQuerySupplierOrderInfoResult(result QuerySupplierOrderInfoResponse, body []byte, http gorequest.Response) *QuerySupplierOrderInfoResult {
+	return &QuerySupplierOrderInfoResult{Result: result, Body: body, Http: http}
+}
+
 // QuerySupplierOrderInfo 订单查询接口
-func (c *Client) QuerySupplierOrderInfo(ctx context.Context, tradeId string, notMustParams ...gorequest.Params) (body []byte, response QuerySupplierOrderInfoResponse, err error) {
+func (c *Client) QuerySupplierOrderInfo(ctx context.Context, tradeId string, notMustParams ...gorequest.Params) (*QuerySupplierOrderInfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("trade_id", tradeId)
 	// 请求
 	request, err := c.request(ctx, "api/order/querySupplierOrderInfo", params, http.MethodPost)
 	if err != nil {
-		return nil, QuerySupplierOrderInfoResponse{}, err
+		return newQuerySupplierOrderInfoResult(QuerySupplierOrderInfoResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
+	var response QuerySupplierOrderInfoResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return request.ResponseBody, response, err
+	return newQuerySupplierOrderInfoResult(response, request.ResponseBody, request), err
 }
 
 func (QuerySupplierOrderInfoResponse) GetStatusDesc(status int) string {

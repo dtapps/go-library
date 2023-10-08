@@ -9,7 +9,7 @@ import (
 
 type WxaOperationamsAgencyCreatePublisherResponse struct {
 	Ret    int    `json:"ret"`
-	ErrMsg string `json:"err_msg"`
+	ErrMsg string `json:"err_msg,omitempty"`
 }
 
 type WxaOperationamsAgencyCreatePublisherResult struct {
@@ -22,13 +22,14 @@ func newWxaOperationamsAgencyCreatePublisherResult(result WxaOperationamsAgencyC
 	return &WxaOperationamsAgencyCreatePublisherResult{Result: result, Body: body, Http: http}
 }
 
-// WxaOperationamsAgencyCreatePublisher 检测是否能开通流量主
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/open/AgencyCheckCanOpenPublisher.html
+// WxaOperationamsAgencyCreatePublisher
+// 开通流量主
+// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/open/AgencyCreatePublisher.html
 func (c *Client) WxaOperationamsAgencyCreatePublisher(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaOperationamsAgencyCreatePublisherResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/operationams?action=agency_check_can_open_publisher&access_token="+authorizerAccessToken, params, http.MethodPost)
+	request, err := c.request(ctx, apiUrl+"/wxa/operationams?action=agency_create_publisher&access_token="+authorizerAccessToken, params, http.MethodPost)
 	if err != nil {
 		return newWxaOperationamsAgencyCreatePublisherResult(WxaOperationamsAgencyCreatePublisherResponse{}, request.ResponseBody, request), err
 	}
