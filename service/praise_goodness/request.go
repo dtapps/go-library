@@ -1,16 +1,17 @@
-package chengquan
+package praise_goodness
 
 import (
 	"context"
 	"github.com/dtapps/go-library/utils/gorequest"
-	"github.com/dtapps/go-library/utils/gotime"
+	"strconv"
+	"time"
 )
 
 func (c *Client) request(ctx context.Context, url string, param gorequest.Params, method string) (gorequest.Response, error) {
 
 	// 公共参数
-	param.Set("timestamp", gotime.Current().TimestampWithMillisecond()) // 时间戳，以毫秒为单位。校验开发者与橙券的时间差，橙券允许开发者请求最大时间误差为3分钟 (3*60*1000)
-	param.Set("app_id", c.GetAppID())                                   // 商户账号，由橙券提供，如：13105356515
+	param.Set("times", strconv.FormatInt(time.Now().Unix(), 10)) // 创建时间，秒级时间戳
+	param.Set("mch_id", c.GetMchID())                            // 商户编号 (平台提供)
 
 	// 签名
 	param.Set("sign", c.sign(ctx, param))
