@@ -2,6 +2,7 @@ package wnfuwu
 
 import (
 	"context"
+	"errors"
 	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
@@ -58,4 +59,17 @@ func (c *Client) Check(ctx context.Context, notMustParams ...gorequest.Params) (
 	var response CheckResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newCheckResult(response, request.ResponseBody, request), err
+}
+
+// ParsingContent 解析内容
+func (cr *CheckResult) ParsingContent() (CheckResponseContent, error) {
+	checksContent := CheckResponseContent{}
+	err := gojson.Unmarshal(cr.Body, &checksContent)
+	if err != nil {
+		return CheckResponseContent{}, err
+	}
+	if len(checksContent.Data) <= 0 {
+		return CheckResponseContent{}, errors.New("接口查询异常")
+	}
+	return checksContent, err
 }

@@ -53,3 +53,13 @@ func (c *Client) Recharge(ctx context.Context, notMustParams ...gorequest.Params
 	err = gojson.Unmarshal(request.ResponseBody, &response)
 	return newRechargeResult(response, request.ResponseBody, request), err
 }
+
+// ParsingContent 解析内容
+func (cr *RechargeResult) ParsingContent() (RechargeResponseContent, error) {
+	checksContent := RechargeResponseContent{}
+	err := gojson.Unmarshal(cr.Body, &checksContent)
+	if err != nil {
+		return RechargeResponseContent{}, err
+	}
+	return checksContent, err
+}
