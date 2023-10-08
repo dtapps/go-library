@@ -11,8 +11,6 @@ func (c *Client) ConfigSLogClientFun(apiSLogFun golog.ApiSLogFun) {
 	if apiSLog != nil {
 		c.slog.client = apiSLog
 		c.slog.status = true
-
-		c.cacheSlog.client = apiSLog
 	}
 }
 

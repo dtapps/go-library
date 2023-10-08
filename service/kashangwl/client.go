@@ -24,10 +24,6 @@ type Client struct {
 		status bool           // 状态
 		client *golog.ApiSLog // 日志服务
 	}
-	cacheSlog struct {
-		status bool           // 状态
-		client *golog.ApiSLog // 日志服务
-	}
 }
 
 // NewClient 创建实例化
@@ -37,8 +33,6 @@ func NewClient(config *ClientConfig) (*Client, error) {
 
 	c.config.customerId = config.CustomerId
 	c.config.customerKey = config.CustomerKey
-
-	c.cacheSlog.status = config.CacheLogStatus
 
 	return c, nil
 }

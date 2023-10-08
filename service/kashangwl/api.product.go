@@ -10,7 +10,7 @@ type ApiProductResponse struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
 	Data    struct {
-		Id                      int    `json:"id"`                        // 商品编号
+		Id                      int64  `json:"id"`                        // 商品编号
 		ProductName             string `json:"product_name,omitempty"`    // 商品名称
 		Name                    string `json:"name"`                      // 规格名称
 		Price                   string `json:"price"`                     // 售价
