@@ -1,9 +1,16 @@
-package chengquan
+package aswzk
 
 import (
 	"github.com/dtapps/go-library/utils/golog"
 	"github.com/dtapps/go-library/utils/gorequest"
 )
+
+// ConfigApp 配置
+func (c *Client) ConfigApp(userID string, apiKey string) *Client {
+	c.config.userID = userID
+	c.config.apiKey = apiKey
+	return c
+}
 
 // ConfigSLogClientFun 日志配置
 func (c *Client) ConfigSLogClientFun(apiSLogFun golog.ApiSLogFun) {
@@ -14,16 +21,16 @@ func (c *Client) ConfigSLogClientFun(apiSLogFun golog.ApiSLogFun) {
 	}
 }
 
+// SetHttp 配置请求
+func (c *Client) SetHttp(app *gorequest.App) {
+	c.requestClient = app
+	c.requestClientStatus = true
+	c.requestClient.Uri = apiUrl
+}
+
 // DefaultHttp 默认请求
 func (c *Client) DefaultHttp() {
 	c.requestClient = gorequest.NewHttp()
 	c.requestClientStatus = true
-}
-
-func (c *Client) ConfigClient(config *ClientConfig) {
-	c.config.apiURL = config.ApiURL
-	c.config.appID = config.AppID
-	c.config.appKey = config.AppKey
-	c.config.aesKey = config.AesKey
-	c.config.aesIv = config.AesKey
+	c.requestClient.Uri = apiUrl
 }
