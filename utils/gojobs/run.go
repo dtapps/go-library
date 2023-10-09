@@ -83,7 +83,7 @@ func (c *Client) Run(ctx context.Context, task jobs_gorm_model.Task, taskResultC
 		return
 	}
 
-	c.GormTaskLogRecord(ctx, task, runId, taskResultCode, taskResultDesc)
+	c.TaskLogRecord(ctx, task, runId, taskResultCode, taskResultDesc)
 
 	switch taskResultCode {
 	case 0:

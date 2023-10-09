@@ -55,6 +55,10 @@ type Client struct {
 		status bool        // 状态
 		client *golog.SLog // 日志服务
 	}
+	runSlog struct {
+		status bool        // 状态
+		client *golog.SLog // 日志服务
+	}
 }
 
 // NewClient 创建实例
@@ -96,7 +100,6 @@ func NewClient(config *ClientConfig) (*Client, error) {
 		c.gormClient = gormClient
 
 		c.autoMigrateTask(ctx)
-		c.autoMigrateTaskLog(ctx)
 	} else {
 		return nil, gormClientFunNoConfig
 	}
