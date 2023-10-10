@@ -248,7 +248,7 @@ github.com/shirou/gopsutil/process
 # github.com/sirupsen/logrus v1.9.3
 ## explicit; go 1.13
 github.com/sirupsen/logrus
-# github.com/tencentyun/cos-go-sdk-v5 v0.7.43
+# github.com/tencentyun/cos-go-sdk-v5 v0.7.44
 ## explicit; go 1.12
 github.com/tencentyun/cos-go-sdk-v5
 # github.com/tklauser/go-sysconf v0.3.12

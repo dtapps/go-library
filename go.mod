@@ -24,7 +24,7 @@ require (
 	github.com/saracen/go7z v0.0.0-20191010121135-9c09b6bd7fda
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/sirupsen/logrus v1.9.3
-	github.com/tencentyun/cos-go-sdk-v5 v0.7.43
+	github.com/tencentyun/cos-go-sdk-v5 v0.7.44
 	go.mongodb.org/mongo-driver v1.12.1
 	golang.org/x/crypto v0.14.0
 	golang.org/x/text v0.13.0
