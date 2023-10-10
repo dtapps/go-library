@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
+	"github.com/dtapps/go-library/utils/gotime"
 )
 
 // 请求接口
@@ -20,7 +21,8 @@ func (c *Client) request(ctx context.Context, url string, param gorequest.Params
 	}
 
 	// 设置请求地址
-	client.SetUri(fmt.Sprintf("%s?user_id=%s&sign=%s", url, c.GetUserID(), sign))
+	timestamp := gotime.Current().Timestamp()
+	client.SetUri(fmt.Sprintf("%s?user_id=%s&timestamp=%v&sign=%s", url, c.GetUserID(), timestamp, sign))
 
 	// 设置方式
 	client.SetMethod(method)

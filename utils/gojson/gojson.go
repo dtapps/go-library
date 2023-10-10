@@ -1,6 +1,9 @@
 package gojson
 
-import "github.com/dtapps/go-library/utils/gojson/json"
+import (
+	"github.com/dtapps/go-library/utils/gojson/json"
+	"strings"
+)
 
 func Marshal(v any) ([]byte, error) {
 	return json.Marshal(v)
@@ -52,4 +55,23 @@ func JsonDecodesNoError(data string) []string {
 	var dat []string
 	_ = json.Unmarshal([]byte(data), &dat)
 	return dat
+}
+
+func ParseQueryString(input string) map[string]interface{} {
+	paramMap := make(map[string]interface{})
+	keyValuePairs := strings.Split(input, "&")
+	for _, pair := range keyValuePairs {
+		parts := strings.Split(pair, "=")
+		if len(parts) == 2 {
+			key := parts[0]
+			value := parts[1]
+			paramMap[key] = value
+		}
+	}
+	return paramMap
+}
+
+func IsValidJSON(s string) bool {
+	var js map[string]interface{}
+	return json.Unmarshal([]byte(s), &js) == nil
 }
