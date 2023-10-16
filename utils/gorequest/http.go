@@ -197,6 +197,7 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	if httpResponse.RequestUri == "" {
 		app.Error = errors.New("没有设置Uri")
 		if app.debug {
+			log.Printf("{trace_id=%s}--------\n", gotrace_id.GetTraceIdContext(ctx))
 			log.Printf("{trace_id=%s}请求异常：%v\n", gotrace_id.GetTraceIdContext(ctx), app.Error)
 		}
 		return httpResponse, app.Error
@@ -333,8 +334,8 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 		log.Printf("{trace_id=%s}请求Uri：%s\n", gotrace_id.GetTraceIdContext(ctx), httpResponse.RequestUri)
 		log.Printf("{trace_id=%s}请求Method：%s\n", gotrace_id.GetTraceIdContext(ctx), httpResponse.RequestMethod)
 		log.Printf("{trace_id=%s}请求ContentType：%s\n", gotrace_id.GetTraceIdContext(ctx), app.httpContentType)
-		log.Printf("{trace_id=%s}请求Params Get：%s\n", gotrace_id.GetTraceIdContext(ctx), req.URL.RawQuery)
-		log.Printf("{trace_id=%s}请求Params Post：%s\n", gotrace_id.GetTraceIdContext(ctx), reqBody)
+		log.Printf("{trace_id=%s}请求Params Get：%v\n", gotrace_id.GetTraceIdContext(ctx), req.URL.RawQuery)
+		log.Printf("{trace_id=%s}请求Params Post：%+v\n", gotrace_id.GetTraceIdContext(ctx), reqBody)
 		log.Printf("{trace_id=%s}请求Header：%s\n", gotrace_id.GetTraceIdContext(ctx), req.Header)
 	}
 
@@ -386,7 +387,8 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 		log.Printf("{trace_id=%s}返回StatusCode：%v\n", gotrace_id.GetTraceIdContext(ctx), httpResponse.ResponseStatusCode)
 		log.Printf("{trace_id=%s}返回Header：%s\n", gotrace_id.GetTraceIdContext(ctx), httpResponse.ResponseHeader)
 		log.Printf("{trace_id=%s}返回Body：%s\n", gotrace_id.GetTraceIdContext(ctx), httpResponse.ResponseBody)
-		log.Printf("{trace_id=%s}返回ContentLength：%v\n\n", gotrace_id.GetTraceIdContext(ctx), httpResponse.ResponseContentLength)
+		log.Printf("{trace_id=%s}返回ContentLength：%v\n", gotrace_id.GetTraceIdContext(ctx), httpResponse.ResponseContentLength)
+		log.Printf("{trace_id=%s}--------\n", gotrace_id.GetTraceIdContext(ctx))
 	}
 
 	return httpResponse, err

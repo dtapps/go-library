@@ -1,7 +1,7 @@
-package wnfuwu
+package youmi
 
 const (
-	LogTable = "wnfuwu"
+	LogTable = "youmi"
 )
 
 const (

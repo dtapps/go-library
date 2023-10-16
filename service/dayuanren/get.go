@@ -1,4 +1,4 @@
-package wnfuwu
+package dayuanren
 
 func (c *Client) GetApiURL() string {
 	return c.config.apiURL

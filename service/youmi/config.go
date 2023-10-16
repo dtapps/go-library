@@ -1,4 +1,4 @@
-package wnfuwu
+package youmi
 
 import (
 	"github.com/dtapps/go-library/utils/golog"

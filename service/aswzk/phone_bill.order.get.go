@@ -13,10 +13,11 @@ type PhoneBillOrderQueryResponse struct {
 	Data struct {
 		RechargeAccount string  `json:"recharge_account"` // 充值账号
 		RechargeMoney   float64 `json:"recharge_money"`   // 充值金额
-		RechargeType    string  `json:"recharge_type"`    // 充值联系
+		RechargeType    string  `json:"recharge_type"`    // 充值类型
 		OrderNo         string  `json:"order_no"`         // 订单编号
 		Remark          string  `json:"remark"`           // 订单备注
 		OrderStatus     string  `json:"order_status"`     // 订单状态
+		OrderCost       float64 `json:"order_cost"`       // 订单成本价
 	} `json:"data"`
 	Time    int    `json:"time"`
 	TraceId string `json:"trace_id"`

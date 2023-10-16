@@ -1,7 +1,7 @@
-package wnfuwu
+package dayuanren
 
 const (
-	LogTable = "wnfuwu"
+	LogTable = "dayuanren"
 )
 
 const (
