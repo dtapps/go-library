@@ -197,8 +197,8 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	if httpResponse.RequestUri == "" {
 		app.Error = errors.New("没有设置Uri")
 		if app.debug {
-			log.Printf("{trace_id=%s}--------\n", gotrace_id.GetTraceIdContext(ctx))
-			log.Printf("{trace_id=%s}请求异常：%v\n", gotrace_id.GetTraceIdContext(ctx), app.Error)
+			log.Printf("{%s}------------------------\n", gotrace_id.GetTraceIdContext(ctx))
+			log.Printf("{%s}请求异常：%v\n", httpResponse.RequestUri, app.Error)
 		}
 		return httpResponse, app.Error
 	}
@@ -262,7 +262,7 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 		if err != nil {
 			app.Error = errors.New(fmt.Sprintf("解析出错 %s", err))
 			if app.debug {
-				log.Printf("{trace_id=%s}请求异常：%v\n", gotrace_id.GetTraceIdContext(ctx), app.Error)
+				log.Printf("{%s}请求异常：%v\n", httpResponse.RequestUri, app.Error)
 			}
 			return httpResponse, app.Error
 		}
@@ -285,7 +285,7 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 		if err != nil {
 			app.Error = errors.New(fmt.Sprintf("解析XML出错 %s", err))
 			if app.debug {
-				log.Printf("{trace_id=%s}请求异常：%v\n", gotrace_id.GetTraceIdContext(ctx), app.Error)
+				log.Printf("{%s}请求异常：%v\n", httpResponse.RequestUri, app.Error)
 			}
 			return httpResponse, app.Error
 		}
@@ -296,7 +296,7 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	if err != nil {
 		app.Error = errors.New(fmt.Sprintf("创建请求出错 %s", err))
 		if app.debug {
-			log.Printf("{trace_id=%s}请求异常：%v\n", gotrace_id.GetTraceIdContext(ctx), app.Error)
+			log.Printf("{%s}请求异常：%v\n", httpResponse.RequestUri, app.Error)
 		}
 		return httpResponse, app.Error
 	}
@@ -330,13 +330,10 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	}
 
 	if app.debug {
-		log.Printf("{trace_id=%s}请求Time：%s\n", gotrace_id.GetTraceIdContext(ctx), httpResponse.RequestTime)
-		log.Printf("{trace_id=%s}请求Uri：%s\n", gotrace_id.GetTraceIdContext(ctx), httpResponse.RequestUri)
-		log.Printf("{trace_id=%s}请求Method：%s\n", gotrace_id.GetTraceIdContext(ctx), httpResponse.RequestMethod)
-		log.Printf("{trace_id=%s}请求ContentType：%s\n", gotrace_id.GetTraceIdContext(ctx), app.httpContentType)
-		log.Printf("{trace_id=%s}请求Params Get：%v\n", gotrace_id.GetTraceIdContext(ctx), req.URL.RawQuery)
-		log.Printf("{trace_id=%s}请求Params Post：%+v\n", gotrace_id.GetTraceIdContext(ctx), reqBody)
-		log.Printf("{trace_id=%s}请求Header：%s\n", gotrace_id.GetTraceIdContext(ctx), req.Header)
+		log.Printf("{%s}请求Uri：%s %s\n", httpResponse.RequestUri, httpResponse.RequestMethod, httpResponse.RequestUri)
+		log.Printf("{%s}请求Params Get：%+v\n", httpResponse.RequestUri, req.URL.RawQuery)
+		log.Printf("{%s}请求Params Post：%+v\n", httpResponse.RequestUri, reqBody)
+		log.Printf("{%s}请求Header：%+v\n", httpResponse.RequestUri, req.Header)
 	}
 
 	// 发送请求
@@ -344,7 +341,7 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	if err != nil {
 		app.Error = errors.New(fmt.Sprintf("请求出错 %s", err))
 		if app.debug {
-			log.Printf("{trace_id=%s}请求异常：%v\n", gotrace_id.GetTraceIdContext(ctx), app.Error)
+			log.Printf("{%s}请求异常：%v\n", httpResponse.RequestUri, app.Error)
 		}
 		return httpResponse, app.Error
 	}
@@ -368,7 +365,7 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	if err != nil {
 		app.Error = errors.New(fmt.Sprintf("解析内容出错 %s", err))
 		if app.debug {
-			log.Printf("{trace_id=%s}请求异常：%v\n", gotrace_id.GetTraceIdContext(ctx), app.Error)
+			log.Printf("{%s}请求异常：%v\n", httpResponse.RequestUri, app.Error)
 		}
 		return httpResponse, app.Error
 	}
@@ -382,13 +379,10 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	httpResponse.ResponseContentLength = resp.ContentLength
 
 	if app.debug {
-		log.Printf("{trace_id=%s}返回Time：%s\n", gotrace_id.GetTraceIdContext(ctx), httpResponse.ResponseTime)
-		log.Printf("{trace_id=%s}返回Status：%s\n", gotrace_id.GetTraceIdContext(ctx), httpResponse.ResponseStatus)
-		log.Printf("{trace_id=%s}返回StatusCode：%v\n", gotrace_id.GetTraceIdContext(ctx), httpResponse.ResponseStatusCode)
-		log.Printf("{trace_id=%s}返回Header：%s\n", gotrace_id.GetTraceIdContext(ctx), httpResponse.ResponseHeader)
-		log.Printf("{trace_id=%s}返回Body：%s\n", gotrace_id.GetTraceIdContext(ctx), httpResponse.ResponseBody)
-		log.Printf("{trace_id=%s}返回ContentLength：%v\n", gotrace_id.GetTraceIdContext(ctx), httpResponse.ResponseContentLength)
-		log.Printf("{trace_id=%s}--------\n", gotrace_id.GetTraceIdContext(ctx))
+		log.Printf("{%s}返回Status：%s\n", httpResponse.RequestUri, httpResponse.ResponseStatus)
+		log.Printf("{%s}返回Header：%+v\n", httpResponse.RequestUri, httpResponse.ResponseHeader)
+		log.Printf("{%s}返回Body：%s\n", httpResponse.RequestUri, httpResponse.ResponseBody)
+		log.Printf("{%s}------------------------\n", gotrace_id.GetTraceIdContext(ctx))
 	}
 
 	return httpResponse, err
