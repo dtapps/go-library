@@ -30,6 +30,8 @@ func newRestRechargePushOrderResult(result RestRechargePushOrderResponse, body [
 // money = 充值金额，目前有50，100，200三种，具体联系客服咨询
 // recharge_type = 类型 1快充 0慢充
 // notify_url = 回调通知地址，用于订单状态通知
+// change = 失败更换渠道充值 0 否 1是 不传系统根据设置判断
+// source = 是否强制渠道，因为每个渠道价格不同，不同用户提交的业务不同，默认不强制，具体渠道价格联系客服
 // https://open.wikeyun.cn/#/apiDocument/9/document/298
 func (c *Client) RestRechargePushOrder(ctx context.Context, mobile string, orderNo string, money int64, rechargeType int64, notifyUrl string, notMustParams ...gorequest.Params) (*RestRechargePushOrderResult, error) {
 	// 参数

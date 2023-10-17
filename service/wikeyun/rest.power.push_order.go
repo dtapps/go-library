@@ -30,6 +30,8 @@ func newRestPowerPushOrderResult(result RestPowerPushOrderResponse, body []byte,
 // order_no = 第三方单号
 // amount = 充值金额，支持100,200,300,400,500,600,800,1000
 // recharge_type = 类型 1快充 0慢充
+// notify_url = 回调通知地址，用于订单状态通知
+// change = 是否开启更换渠道补单，1开启0关闭
 // https://open.wikeyun.cn/#/apiDocument/9/document/311
 func (c *Client) RestPowerPushOrder(ctx context.Context, cardID int64, orderNo string, amount int64, rechargeType int64, notMustParams ...gorequest.Params) (*RestPowerPushOrderResult, error) {
 	// 参数

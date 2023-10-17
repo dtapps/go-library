@@ -36,6 +36,8 @@ func newRestPowerQueryResult(result RestPowerQueryResponse, body []byte, http go
 }
 
 // RestPowerQuery 电费订单查询
+// order_number = 平台单号，平台商户单号二选一
+// order_no = 商户单号
 // https://open.wikeyun.cn/#/apiDocument/9/document/313
 func (c *Client) RestPowerQuery(ctx context.Context, notMustParams ...gorequest.Params) (*RestPowerQueryResult, error) {
 	// 参数

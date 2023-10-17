@@ -37,6 +37,8 @@ func newRestPowerAddCardResult(result RestPowerAddCardResponse, body []byte, htt
 // province = 省份，带省
 // city = 城市，带市
 // type = 0国家电网 1南方电网
+// remark = 备注
+// user_ext = 南网必填，请输入用户信息，身份证后六位 / 营业执照后六位 / 银行卡后六位 ，三者选任意一个即可
 // https://open.wikeyun.cn/#/apiDocument/9/document/326
 func (c *Client) RestPowerAddCard(ctx context.Context, cardNum string, province string, city string, Type int64, notMustParams ...gorequest.Params) (*RestPowerAddCardResult, error) {
 	// 参数
