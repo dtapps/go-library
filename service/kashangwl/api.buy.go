@@ -38,7 +38,13 @@ func newApiBuyResult(result ApiBuyResponse, body []byte, http gorequest.Response
 
 // ApiBuy 购买商品
 // product_id = 商品编号
+// recharge_account = 充值账号
+// recharge_template_input_items = 模板充值参数
 // quantity = 购买数量
+// notify_url = 异步通知地址
+// outer_order_id = 外部订单号
+// safe_cost = 安全进价
+// client_ip = 购买的用户真实IP
 // http://doc.cqmeihu.cn/sales/buy.html
 func (c *Client) ApiBuy(ctx context.Context, productID int64, quantity int64, notMustParams ...gorequest.Params) (*ApiBuyResult, error) {
 	// 参数
