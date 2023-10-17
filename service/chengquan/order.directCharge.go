@@ -32,11 +32,22 @@ func newOrderDirectChargeResult(result OrderDirectChargeResponse, body []byte, h
 }
 
 // OrderDirectCharge 直充下单接口
+// order_no = 商户提交的订单号，最长32位(商户保证其唯一性)
+// recharge_number = 充值账号
+// product_id = 充值产品编号
+// amount = 充值数量（加油卡，视频业务默认为1，其它业务按照实际情况传递）。数量范围1-99999
+// ip = 充值ip（仅腾讯业务需要，根据实际情况进行传递）
+// oil_phone_account = 加油卡充值时用户的手机号
+// notify_url = 橙券主动通知订单结果地址
 // https://chengquan.cn/rechargeInterface/directCharge.html
-func (c *Client) OrderDirectCharge(ctx context.Context, notMustParams ...gorequest.Params) (*OrderDirectChargeResult, error) {
+func (c *Client) OrderDirectCharge(ctx context.Context, orderNo string, rechargeNumber string, productID int64, amount int64, notMustParams ...gorequest.Params) (*OrderDirectChargeResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("version", version) // 版本号
+	params.Set("order_no", orderNo)               // 商户提交的订单号，最长32位(商户保证其唯一性)
+	params.Set("recharge_number", rechargeNumber) // 充值账号
+	params.Set("product_id", productID)           // 充值产品编号
+	params.Set("amount", amount)                  // 充值数量（加油卡，视频业务默认为1，其它业务按照实际情况传递）。数量范围1-99999
+	params.Set("version", version)                // 版本号
 	// 请求
 	request, err := c.request(ctx, "/rder/directCharge", params, http.MethodPost)
 	if err != nil {

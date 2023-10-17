@@ -32,12 +32,17 @@ func newOrderTelPayResult(result OrderTelPayResponse, body []byte, http goreques
 }
 
 // OrderTelPay 话费下单接口
+// order_no = 商户提交的订单号，最长32位(商户保证其唯一性)
+// recharge_number = 充值手机号码
+// price = 充值面值(单位：分)
+// notify_url = 橙券主动通知订单结果地址
 // https://www.chengquan.cn/rechargeInterface/tel.html
-func (c *Client) OrderTelPay(ctx context.Context, orderNo string, rechargeNumber string, notMustParams ...gorequest.Params) (*OrderTelPayResult, error) {
+func (c *Client) OrderTelPay(ctx context.Context, orderNo string, rechargeNumber string, price int64, notMustParams ...gorequest.Params) (*OrderTelPayResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("order_no", orderNo)               // 商户提交的订单号，最长32位(商户保证其唯一性)
 	params.Set("recharge_number", rechargeNumber) // 充值手机号码
+	params.Set("price", price)                    // 充值面值(单位：分)
 	// 请求
 	request, err := c.request(ctx, "/order/tel/pay", params, http.MethodPost)
 	if err != nil {
