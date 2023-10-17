@@ -3,7 +3,6 @@ package ejiaofei
 import (
 	"context"
 	"encoding/xml"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -42,13 +41,22 @@ func newTxChOngZhiResult(result TxChOngZhiResponse, body []byte, http gorequest.
 }
 
 // TxChOngZhi 流量充值接口
-func (c *Client) TxChOngZhi(ctx context.Context, notMustParams ...gorequest.Params) (*TxChOngZhiResult, error) {
+// orderid = 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
+// account = QQ号 需要充值的QQ号
+// productid = 产品id 可以通过2.5查询
+// amount = 购买数量
+// ip = 可以为空
+func (c *Client) TxChOngZhi(ctx context.Context, orderid string, account string, productid int64, amount int64, notMustParams ...gorequest.Params) (*TxChOngZhiResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	// 签名
-	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vproductid%vamount%vip%vtimes%v", c.GetUserId(), c.GetPwd(), params.Get("orderid"), params.Get("account"), params.Get("productid"), params.Get("amount"), params.Get("ip"), params.Get("times"))
+	params.Set("userid", c.GetUserId()) // 用户编号
+	params.Set("pwd", c.GetPwd())       // 加密密码
+	params.Set("orderid", orderid)      // 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
+	params.Set("account", account)      // QQ号 需要充值的QQ号
+	params.Set("productid", productid)  // 产品id 可以通过2.5查询
+	params.Set("amount", amount)        // 购买数量
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/txchongzhi.do", params, http.MethodGet)
+	request, err := c.requestXml(ctx, apiUrl+"/txchongzhi.do", params, http.MethodGet)
 	if err != nil {
 		return newTxChOngZhiResult(TxChOngZhiResponse{}, request.ResponseBody, request), err
 	}

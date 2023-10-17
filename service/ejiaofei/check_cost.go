@@ -3,7 +3,6 @@ package ejiaofei
 import (
 	"context"
 	"encoding/xml"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -28,14 +27,15 @@ func newCheckCostResult(result CheckCostResponse, body []byte, http gorequest.Re
 }
 
 // CheckCost 会员订单成本价查询接口
-// orderID 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
-func (c *Client) CheckCost(ctx context.Context, notMustParams ...gorequest.Params) (*CheckCostResult, error) {
+// orderid 用户订单号	用户提交订单号
+func (c *Client) CheckCost(ctx context.Context, orderid string, notMustParams ...gorequest.Params) (*CheckCostResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	// 签名
-	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%v", c.GetUserId(), c.GetPwd(), params.Get("orderid"))
+	params.Set("userid", c.GetUserId()) // 用户编号
+	params.Set("pwd", c.GetPwd())       // 加密密码
+	params.Set("orderid", orderid)      // 用户订单号	用户提交订单号
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/checkCost.do", params, http.MethodGet)
+	request, err := c.requestXml(ctx, apiUrl+"/checkCost.do", params, http.MethodGet)
 	if err != nil {
 		return newCheckCostResult(CheckCostResponse{}, request.ResponseBody, request), err
 	}

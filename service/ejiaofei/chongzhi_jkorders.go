@@ -3,7 +3,6 @@ package ejiaofei
 import (
 	"context"
 	"encoding/xml"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -33,16 +32,22 @@ func newChOngZhiJkOrdersResult(result ChOngZhiJkOrdersResponse, body []byte, htt
 }
 
 // ChOngZhiJkOrders 话费充值接口
-// orderID 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
-// face 充值面值	以元为单位，包含10、20、30、50、100、200、300、500 移动联通电信
-// account 手机号码	需要充值的手机号码
-func (c *Client) ChOngZhiJkOrders(ctx context.Context, notMustParams ...gorequest.Params) (*ChOngZhiJkOrdersResult, error) {
+// orderid = 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
+// face = 充值面值 以元为单位，包含10、20、30、50、100、200、300、500 移动联通电信
+// account = 手机号码 需要充值的手机号码
+// amount = 购买数量 只能为1
+// operator = 运营商可指定当前手机号的运营商信息进行充值,为空则自动匹配号段对应的运营商进行充值; 具体对应的运营商信息表3.3
+func (c *Client) ChOngZhiJkOrders(ctx context.Context, orderid string, face int64, account string, amount int64, notMustParams ...gorequest.Params) (*ChOngZhiJkOrdersResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	// 签名
-	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%vface%vaccount%vamount1", c.GetUserId(), c.GetPwd(), params.Get("orderid"), params.Get("face"), params.Get("account"), params.Get("amount"))
+	params.Set("userid", c.GetUserId()) // 用户编号
+	params.Set("pwd", c.GetPwd())       // 加密密码
+	params.Set("orderid", orderid)      // 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
+	params.Set("face", face)            // 充值面值 以元为单位，包含10、20、30、50、100、200、300、500 移动联通电信
+	params.Set("account", account)      // 手机号码 需要充值的手机号码
+	params.Set("amount", amount)        // 购买数量 只能为1
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/chongzhi_jkorders.do", params, http.MethodGet)
+	request, err := c.requestXml(ctx, apiUrl+"/chongzhi_jkorders.do", params, http.MethodGet)
 	if err != nil {
 		return newChOngZhiJkOrdersResult(ChOngZhiJkOrdersResponse{}, request.ResponseBody, request), err
 	}

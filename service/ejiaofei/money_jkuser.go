@@ -3,7 +3,6 @@ package ejiaofei
 import (
 	"context"
 	"encoding/xml"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -26,11 +25,13 @@ func newMoneyJkUserResult(result MoneyJkUserResponse, body []byte, http goreques
 }
 
 // MoneyJkUser 用户余额查询
-func (c *Client) MoneyJkUser(ctx context.Context) (*MoneyJkUserResult, error) {
-	// 签名
-	c.config.signStr = fmt.Sprintf("userid%vpwd%v", c.GetUserId(), c.GetPwd())
+func (c *Client) MoneyJkUser(ctx context.Context, notMustParams ...gorequest.Params) (*MoneyJkUserResult, error) {
+	// 参数
+	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("userid", c.GetUserId()) // 用户编号
+	params.Set("pwd", c.GetPwd())       // 加密密码
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/money_jkuser.do", nil, http.MethodGet)
+	request, err := c.requestXml(ctx, apiUrl+"/money_jkuser.do", params, http.MethodGet)
 	if err != nil {
 		return newMoneyJkUserResult(MoneyJkUserResponse{}, request.ResponseBody, request), err
 	}

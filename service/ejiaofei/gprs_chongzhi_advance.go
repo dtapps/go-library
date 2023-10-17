@@ -3,7 +3,6 @@ package ejiaofei
 import (
 	"context"
 	"encoding/xml"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -46,13 +45,25 @@ func newGprsChOngZhiAdvanceResult(result GprsChOngZhiAdvanceResponse, body []byt
 }
 
 // GprsChOngZhiAdvance 流量充值接口
-func (c *Client) GprsChOngZhiAdvance(ctx context.Context, notMustParams ...gorequest.Params) (*GprsChOngZhiAdvanceResult, error) {
+// orderid = 用户提交的订单号	用户提交的订单号，最长32位（用户保证其唯一性）
+// account = 充值手机号	需要充值的手机号
+// gprs = 充值流量值	单位：MB（具体流量值请咨询商务）
+// area = 充值流量范围	0 全国流量，1 省内流量
+// effecttime = 生效日期	0 即时生效，1次日生效，2 次月生效
+// validity = 流量有效期	传入月数，0为当月有效
+func (c *Client) GprsChOngZhiAdvance(ctx context.Context, orderid string, account string, gprs int64, area int64, effectTime int64, validity int64, notMustParams ...gorequest.Params) (*GprsChOngZhiAdvanceResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	// 签名
-	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%vaccount%vgprs%varea%veffecttime%vvalidity%vtimes%v", c.GetUserId(), c.GetPwd(), params.Get("orderid"), params.Get("account"), params.Get("gprs"), params.Get("area"), params.Get("effecttime"), params.Get("validity"), params.Get("times"))
+	params.Set("userid", c.GetUserId())  // 用户编号
+	params.Set("pwd", c.GetPwd())        // 加密密码
+	params.Set("orderid", orderid)       // 用户提交的订单号	用户提交的订单号，最长32位（用户保证其唯一性）
+	params.Set("account", account)       // 充值手机号	需要充值的手机号
+	params.Set("gprs", gprs)             // 充值流量值	单位：MB（具体流量值请咨询商务）
+	params.Set("area", area)             // 充值流量范围	0 全国流量，1 省内流量
+	params.Set("effecttime", effectTime) // 生效日期	0 即时生效，1次日生效，2 次月生效
+	params.Set("validity", validity)     // 流量有效期	传入月数，0为当月有效
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/gprsChongzhiAdvance.do", params, http.MethodGet)
+	request, err := c.requestXml(ctx, apiUrl+"/gprsChongzhiAdvance.do", params, http.MethodGet)
 	if err != nil {
 		return newGprsChOngZhiAdvanceResult(GprsChOngZhiAdvanceResponse{}, request.ResponseBody, request), err
 	}

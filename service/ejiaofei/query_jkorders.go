@@ -3,7 +3,6 @@ package ejiaofei
 import (
 	"context"
 	"encoding/xml"
-	"fmt"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"net/http"
 )
@@ -33,14 +32,15 @@ func newQueryJkOrdersResult(result QueryJkOrdersResponse, body []byte, http gore
 }
 
 // QueryJkOrders 通用查询接口
-// orderId 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
-func (c *Client) QueryJkOrders(ctx context.Context, notMustParams ...gorequest.Params) (*QueryJkOrdersResult, error) {
+// orderid = 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
+func (c *Client) QueryJkOrders(ctx context.Context, orderid string, notMustParams ...gorequest.Params) (*QueryJkOrdersResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	// 签名
-	c.config.signStr = fmt.Sprintf("userid%vpwd%vorderid%v", c.GetUserId(), c.GetPwd(), params.Get("orderid"))
+	params.Set("userid", c.GetUserId()) // 用户编号
+	params.Set("pwd", c.GetPwd())       // 加密密码
+	params.Set("orderid", orderid)      // 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/query_jkorders.do", params, http.MethodGet)
+	request, err := c.requestXml(ctx, apiUrl+"/query_jkorders.do", params, http.MethodGet)
 	if err != nil {
 		return newQueryJkOrdersResult(QueryJkOrdersResponse{}, request.ResponseBody, request), err
 	}
