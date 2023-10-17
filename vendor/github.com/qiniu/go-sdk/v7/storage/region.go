@@ -3,12 +3,13 @@ package storage
 import (
 	"context"
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/qiniu/go-sdk/v7/auth"
 	"github.com/qiniu/go-sdk/v7/client"
 	"github.com/qiniu/go-sdk/v7/internal/clientv2"
 	"github.com/qiniu/go-sdk/v7/internal/hostprovider"
-	"strings"
-	"time"
 )
 
 // 存储所在的地区，例如华东，华南，华北
@@ -277,6 +278,8 @@ func GetRegionWithOptions(ak, bucket string, options UCApiOptions) (*Region, err
 }
 
 // 使用 v4
+//
+//lint:ignore U1000 Used by test case
 func getRegionGroup(ak, bucket string) (*RegionGroup, error) {
 	return getRegionByV4(ak, bucket, DefaultUCApiOptions())
 }
@@ -312,7 +315,7 @@ func GetRegionsInfoWithOptions(mac *auth.Credentials, options UCApiOptions) ([]R
 		RetryMax:           options.RetryMax,
 		HostFreezeDuration: options.HostFreezeDuration,
 	}, mac)
-	_, qErr := clientv2.DoAndDecodeJsonResponse(c, clientv2.RequestParams{
+	qErr := clientv2.DoAndDecodeJsonResponse(c, clientv2.RequestParams{
 		Context:     context.Background(),
 		Method:      clientv2.RequestMethodGet,
 		Url:         reqUrl,
@@ -361,7 +364,7 @@ func getUCClient(config ucClientConfig, mac *auth.Credentials) clientv2.Client {
 				ShouldRetry:   nil,
 			},
 			ShouldFreezeHost:   nil,
-			HostFreezeDuration: 0,
+			HostFreezeDuration: config.HostFreezeDuration,
 			HostProvider:       hostprovider.NewWithHosts(hosts),
 		}),
 		clientv2.NewSimpleRetryInterceptor(clientv2.RetryConfig{

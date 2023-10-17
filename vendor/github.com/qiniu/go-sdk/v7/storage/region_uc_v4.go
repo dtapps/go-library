@@ -4,13 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/qiniu/go-sdk/v7/internal/clientv2"
-	"golang.org/x/sync/singleflight"
 	"math"
 	"os"
 	"path/filepath"
 	"sync"
 	"time"
+
+	"golang.org/x/sync/singleflight"
+
+	"github.com/qiniu/go-sdk/v7/internal/clientv2"
 )
 
 type ucQueryV4Ret struct {
@@ -137,14 +139,14 @@ func getRegionByV4(ak, bucket string, options UCApiOptions) (*RegionGroup, error
 		}()
 	}
 
-	regionID := fmt.Sprintf("%s:%s", ak, bucket)
+	regionCacheKey := makeRegionCacheKey(ak, bucket)
 	//check from cache
-	if v, ok := regionV4Cache.Load(regionID); ok && time.Now().Before(v.(regionV4CacheValue).Deadline) {
+	if v, ok := regionV4Cache.Load(regionCacheKey); ok && time.Now().Before(v.(regionV4CacheValue).Deadline) {
 		cacheValue, _ := v.(regionV4CacheValue)
 		return NewRegionGroup(cacheValue.getRegions()...), nil
 	}
 
-	newRegion, err, _ := ucQueryV4Group.Do(regionID, func() (interface{}, error) {
+	newRegion, err, _ := ucQueryV4Group.Do(regionCacheKey, func() (interface{}, error) {
 		reqURL := fmt.Sprintf("%s/v4/query?ak=%s&bucket=%s", getUcHost(options.UseHttps), ak, bucket)
 
 		var ret ucQueryV4Ret
@@ -153,7 +155,7 @@ func getRegionByV4(ak, bucket string, options UCApiOptions) (*RegionGroup, error
 			RetryMax:           options.RetryMax,
 			HostFreezeDuration: options.HostFreezeDuration,
 		}, nil)
-		_, err := clientv2.DoAndDecodeJsonResponse(c, clientv2.RequestParams{
+		err := clientv2.DoAndDecodeJsonResponse(c, clientv2.RequestParams{
 			Context:     context.Background(),
 			Method:      clientv2.RequestMethodGet,
 			Url:         reqURL,
@@ -165,7 +167,7 @@ func getRegionByV4(ak, bucket string, options UCApiOptions) (*RegionGroup, error
 		}
 
 		ttl := math.MaxInt32
-		regions := make([]*Region, 0, 0)
+		regions := make([]*Region, 0)
 		for _, host := range ret.Hosts {
 			if ttl > host.TTL {
 				ttl = host.TTL
@@ -181,7 +183,7 @@ func getRegionByV4(ak, bucket string, options UCApiOptions) (*RegionGroup, error
 			})
 		}
 
-		regionV4Cache.Store(regionID, regionV4CacheValue{
+		regionV4Cache.Store(regionCacheKey, regionV4CacheValue{
 			Regions:  regions,
 			Deadline: time.Now().Add(time.Duration(ttl) * time.Second),
 		})

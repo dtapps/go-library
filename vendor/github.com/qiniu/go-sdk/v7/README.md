@@ -6,7 +6,7 @@ github.com/qiniu/go-sdk
 [![Go Report Card](https://goreportcard.com/badge/github.com/qiniu/go-sdk)](https://goreportcard.com/report/github.com/qiniu/go-sdk)
 [![GitHub release](https://img.shields.io/github/v/tag/qiniu/go-sdk.svg?label=release)](https://github.com/qiniu/go-sdk/releases)
 [![codecov](https://codecov.io/gh/qiniu/go-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/qiniu/go-sdk)
-[![GoDoc](https://godoc.org/github.com/qiniu/go-sdk?status.svg)](https://godoc.org/github.com/qiniu/go-sdk)
+[![GoDoc](https://godoc.org/github.com/qiniu/go-sdk/v7?status.svg)](https://godoc.org/github.com/qiniu/go-sdk/v7)
 
 [![Qiniu Logo](http://open.qiniudn.com/logo.png)](http://qiniu.com/)
 
@@ -17,7 +17,7 @@ github.com/qiniu/go-sdk
 在您的项目中的 `go.mod` 文件内添加这行代码
 
 ```
-require github.com/qiniu/go-sdk/v7 v7.17.1
+require github.com/qiniu/go-sdk/v7 v7.18.0
 ```
 
 并且在项目中使用 `"github.com/qiniu/go-sdk/v7"` 引用 Qiniu Go SDK。

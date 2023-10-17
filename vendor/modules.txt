@@ -199,7 +199,7 @@ github.com/pelletier/go-toml/v2/internal/characters
 github.com/pelletier/go-toml/v2/internal/danger
 github.com/pelletier/go-toml/v2/internal/tracker
 github.com/pelletier/go-toml/v2/unstable
-# github.com/qiniu/go-sdk/v7 v7.17.1
+# github.com/qiniu/go-sdk/v7 v7.18.0
 ## explicit; go 1.14
 github.com/qiniu/go-sdk/v7
 github.com/qiniu/go-sdk/v7/auth
