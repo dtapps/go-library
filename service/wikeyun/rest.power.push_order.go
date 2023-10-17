@@ -26,11 +26,19 @@ func newRestPowerPushOrderResult(result RestPowerPushOrderResponse, body []byte,
 }
 
 // RestPowerPushOrder 电费充值API
+// cardId = 充值卡ID，通过创建充值卡接口获取
+// order_no = 第三方单号
+// amount = 充值金额，支持100,200,300,400,500,600,800,1000
+// recharge_type = 类型 1快充 0慢充
 // https://open.wikeyun.cn/#/apiDocument/9/document/311
-func (c *Client) RestPowerPushOrder(ctx context.Context, notMustParams ...gorequest.Params) (*RestPowerPushOrderResult, error) {
+func (c *Client) RestPowerPushOrder(ctx context.Context, cardID int64, orderNo string, amount int64, rechargeType int64, notMustParams ...gorequest.Params) (*RestPowerPushOrderResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("store_id", c.GetStoreId()) // 店铺ID
+	params.Set("cardId", cardID)              // 充值卡ID，通过创建充值卡接口获取
+	params.Set("store_id", c.GetStoreId())    // 店铺ID
+	params.Set("order_no", orderNo)           // 第三方单号
+	params.Set("amount", amount)              // 充值金额，支持100,200,300,400,500,600,800,1000
+	params.Set("recharge_type", rechargeType) //  类型 1快充 0慢充
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/rest/Power/pushOrder", params)
 	if err != nil {

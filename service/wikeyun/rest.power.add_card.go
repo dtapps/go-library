@@ -33,11 +33,19 @@ func newRestPowerAddCardResult(result RestPowerAddCardResponse, body []byte, htt
 }
 
 // RestPowerAddCard 添加电费充值卡
+// card_num = 用户电费户号
+// province = 省份，带省
+// city = 城市，带市
+// type = 0国家电网 1南方电网
 // https://open.wikeyun.cn/#/apiDocument/9/document/326
-func (c *Client) RestPowerAddCard(ctx context.Context, notMustParams ...gorequest.Params) (*RestPowerAddCardResult, error) {
+func (c *Client) RestPowerAddCard(ctx context.Context, cardNum string, province string, city string, Type int64, notMustParams ...gorequest.Params) (*RestPowerAddCardResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("store_id", c.GetStoreId()) // 店铺ID
+	params.Set("card_num", cardNum)        // 用户电费户号
+	params.Set("province", province)       // 省份，带省
+	params.Set("city", city)               // 城市，带市
+	params.Set("type", Type)               // 0国家电网 1南方电网
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/rest/Power/addCard", params)
 	if err != nil {

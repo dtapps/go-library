@@ -23,6 +23,7 @@ func newRestPowerCancelResult(result RestPowerCancelResponse, body []byte, http 
 }
 
 // RestPowerCancel 电费订单取消
+// order_number = 取消的单号，多个用英文逗号隔开
 // https://open.wikeyun.cn/#/apiDocument/9/document/323
 func (c *Client) RestPowerCancel(ctx context.Context, orderNumber string, notMustParams ...gorequest.Params) (*RestPowerCancelResult, error) {
 	// 参数

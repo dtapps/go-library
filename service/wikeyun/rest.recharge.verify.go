@@ -23,8 +23,11 @@ func newRestRechargeVerifyResult(result RestRechargeVerifyResponse, body []byte,
 }
 
 // RestRechargeVerify 话费充值验证
+// mobile = 需要充值的手机号
+// amount = 需要充值的金额
+// recharge_type = 充值类型
 // https://open.wikeyun.cn/#/apiDocument/9/document/405
-func (c *Client) RestRechargeVerify(ctx context.Context, mobile string, amount int64, rechargeType int, notMustParams ...gorequest.Params) (*RestRechargeVerifyResult, error) {
+func (c *Client) RestRechargeVerify(ctx context.Context, mobile string, amount int64, rechargeType int64, notMustParams ...gorequest.Params) (*RestRechargeVerifyResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("mobile", mobile)              // 需要充值的手机号

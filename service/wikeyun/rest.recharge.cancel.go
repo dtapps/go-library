@@ -23,6 +23,7 @@ func newRestRechargeCancelResult(result RestRechargeCancelResponse, body []byte,
 }
 
 // RestRechargeCancel 话费订单取消
+// order_number = 取消的单号，多个用英文逗号隔开
 // https://open.wikeyun.cn/#/apiDocument/9/document/300
 func (c *Client) RestRechargeCancel(ctx context.Context, orderNumber string, notMustParams ...gorequest.Params) (*RestRechargeCancelResult, error) {
 	// 参数
