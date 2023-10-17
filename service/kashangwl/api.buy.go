@@ -37,10 +37,14 @@ func newApiBuyResult(result ApiBuyResponse, body []byte, http gorequest.Response
 }
 
 // ApiBuy 购买商品
+// product_id = 商品编号
+// quantity = 购买数量
 // http://doc.cqmeihu.cn/sales/buy.html
-func (c *Client) ApiBuy(ctx context.Context, notMustParams ...gorequest.Params) (*ApiBuyResult, error) {
+func (c *Client) ApiBuy(ctx context.Context, productID int64, quantity int64, notMustParams ...gorequest.Params) (*ApiBuyResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("product_id", productID) // 商品编号
+	params.Set("quantity", quantity)    // 购买数量
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/api/buy", params)
 	if err != nil {

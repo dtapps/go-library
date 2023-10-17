@@ -49,12 +49,13 @@ func newApiOrderResult(result ApiOrderResponse, body []byte, http gorequest.Resp
 	return &ApiOrderResult{Result: result, Body: body, Http: http}
 }
 
-// ApiOrder 获取单个订单信息。
-// 仅能获取自己购买的订单。
+// ApiOrder 获取单个订单信息。仅能获取自己购买的订单。
+// order_id = 订单号
 // http://doc.cqmeihu.cn/sales/order-info.html
-func (c *Client) ApiOrder(ctx context.Context, notMustParams ...gorequest.Params) (*ApiOrderResult, error) {
+func (c *Client) ApiOrder(ctx context.Context, orderID int64, notMustParams ...gorequest.Params) (*ApiOrderResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("order_id", orderID) // 订单号
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/api/order", params)
 	if err != nil {

@@ -35,10 +35,12 @@ func newApiProductResult(result ApiProductResponse, body []byte, http gorequest.
 }
 
 // ApiProduct 获取单个商品信息
+// product_id = 商品编号
 // http://doc.cqmeihu.cn/sales/product-info.html
-func (c *Client) ApiProduct(ctx context.Context, notMustParams ...gorequest.Params) (*ApiProductResult, error) {
+func (c *Client) ApiProduct(ctx context.Context, productID int64, notMustParams ...gorequest.Params) (*ApiProductResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("product_id", productID) // 商品编号
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/api/product", params)
 	if err != nil {
