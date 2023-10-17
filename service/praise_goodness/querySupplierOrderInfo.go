@@ -32,10 +32,12 @@ func newQuerySupplierOrderInfoResult(result QuerySupplierOrderInfoResponse, body
 }
 
 // QuerySupplierOrderInfo 订单查询接口
-func (c *Client) QuerySupplierOrderInfo(ctx context.Context, tradeId string, notMustParams ...gorequest.Params) (*QuerySupplierOrderInfoResult, error) {
+// trade_id = 商户订单号
+func (c *Client) QuerySupplierOrderInfo(ctx context.Context, tradeID string, notMustParams ...gorequest.Params) (*QuerySupplierOrderInfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("trade_id", tradeId)
+	params.Set("mch_id", c.GetMchID()) // 商户编号 (平台提供)
+	params.Set("trade_id", tradeID)    // 商户订单号
 	// 请求
 	request, err := c.request(ctx, "api/order/querySupplierOrderInfo", params, http.MethodPost)
 	if err != nil {

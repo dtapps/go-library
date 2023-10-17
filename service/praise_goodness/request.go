@@ -11,7 +11,6 @@ func (c *Client) request(ctx context.Context, url string, param gorequest.Params
 
 	// 公共参数
 	param.Set("times", strconv.FormatInt(time.Now().Unix(), 10)) // 创建时间，秒级时间戳
-	param.Set("mch_id", c.GetMchID())                            // 商户编号 (平台提供)
 
 	// 签名
 	param.Set("sign", c.sign(ctx, param))

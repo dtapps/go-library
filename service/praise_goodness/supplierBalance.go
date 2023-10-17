@@ -30,6 +30,7 @@ func newSupplierBalanceResult(result SupplierBalanceResponse, body []byte, http 
 func (c *Client) SupplierBalance(ctx context.Context, notMustParams ...gorequest.Params) (*SupplierBalanceResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("mch_id", c.GetMchID()) // 商户编号 (平台提供)
 	// 请求
 	request, err := c.request(ctx, "api/order/supplierBalance", params, http.MethodPost)
 	if err != nil {
