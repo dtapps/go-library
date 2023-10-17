@@ -38,6 +38,10 @@ func newRechargeResult(result RechargeResponse, body []byte, http gorequest.Resp
 }
 
 // Recharge 充值提交接口
+// out_trade_num = 商户订单号
+// product_id = 产品ID
+// mobile = 充值号码
+// notify_url = 回调地址
 // https://www.showdoc.com.cn/dyr/9227003154511692
 func (c *Client) Recharge(ctx context.Context, outTradeNum string, productID int64, mobile string, notifyUrl string, notMustParams ...gorequest.Params) (*RechargeResult, error) {
 	// 参数

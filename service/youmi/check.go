@@ -45,6 +45,7 @@ func newCheckResult(result CheckResponse, body []byte, http gorequest.Response) 
 }
 
 // Check 自发查询订单状态
+// out_trade_nums = 商户订单号；多个用英文,分割
 // https://www.showdoc.com.cn/dyr/9227006175502841
 func (c *Client) Check(ctx context.Context, outTradeNums string, notMustParams ...gorequest.Params) (*CheckResult, error) {
 	// 参数
