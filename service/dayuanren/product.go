@@ -54,6 +54,8 @@ func newProductResult(result ProductResponse, body []byte, http gorequest.Respon
 }
 
 // Product 获取产品
+// type = 产品类型ID
+// cate_id = 分类ID
 // https://www.showdoc.com.cn/dyr/9227005691961526
 func (c *Client) Product(ctx context.Context, notMustParams ...gorequest.Params) (*ProductResult, error) {
 	// 参数
