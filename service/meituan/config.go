@@ -6,10 +6,10 @@ import (
 )
 
 // ConfigSLogClientFun 日志配置
-func (c *Client) ConfigSLogClientFun(sLogFun golog.SLogFun) {
-	sLog := sLogFun()
-	if sLog != nil {
-		c.slog.client = sLog
+func (c *Client) ConfigSLogClientFun(apiSLogFun golog.ApiSLogFun) {
+	apiSLog := apiSLogFun()
+	if apiSLog != nil {
+		c.slog.client = apiSLog
 		c.slog.status = true
 	}
 }

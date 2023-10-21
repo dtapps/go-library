@@ -12,39 +12,6 @@ import (
 	"io/ioutil"
 )
 
-// GinClientFun *GinClient 驱动
-type GinClientFun func() *GinClient
-
-// GinClient 框架
-type GinClient struct {
-	ipService *goip.Client // IP服务
-	config    struct {
-		systemHostname      string  // 主机名
-		systemOs            string  // 系统类型
-		systemVersion       string  // 系统版本
-		systemKernel        string  // 系统内核
-		systemKernelVersion string  // 系统内核版本
-		systemBootTime      uint64  // 系统开机时间
-		cpuCores            int     // CPU核数
-		cpuModelName        string  // CPU型号名称
-		cpuMhz              float64 // CPU兆赫
-		systemInsideIp      string  // 内网ip
-		systemOutsideIp     string  // 外网ip
-		goVersion           string  // go版本
-		sdkVersion          string  // sdk版本
-	}
-	slog struct {
-		status bool  // 状态
-		client *SLog // 日志服务
-	}
-}
-
-// GinClientConfig 框架实例配置
-type GinClientConfig struct {
-	IpService *goip.Client // IP服务
-	CurrentIp string       // 当前IP
-}
-
 // NewGinClient 创建框架实例化
 func NewGinClient(ctx context.Context, config *GinClientConfig) (*GinClient, error) {
 

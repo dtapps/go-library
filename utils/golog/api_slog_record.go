@@ -2,64 +2,12 @@ package golog
 
 import (
 	"context"
-	"github.com/dtapps/go-library"
 	"github.com/dtapps/go-library/utils/dorm"
-	"github.com/dtapps/go-library/utils/goip"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"github.com/dtapps/go-library/utils/gotrace_id"
 	"github.com/dtapps/go-library/utils/gourl"
-	"runtime"
 	"time"
 )
-
-type ApiSLog struct {
-	systemConfig struct {
-		systemHostname  string // 主机名
-		systemOs        string // 系统类型
-		systemKernel    string // 系统内核
-		systemInsideIp  string // 内网ip
-		systemOutsideIp string // 外网ip
-		goVersion       string // go版本
-		sdkVersion      string // sdk版本
-	}
-	slog struct {
-		status bool  // 状态
-		client *SLog // 日志服务
-	}
-}
-
-func NewApiSlog(ctx context.Context) *ApiSLog {
-
-	sl := &ApiSLog{}
-
-	sl.setConfig(ctx)
-
-	return sl
-}
-
-func (sl *ApiSLog) setConfig(ctx context.Context) {
-
-	info := getSystem()
-
-	sl.systemConfig.systemHostname = info.SystemHostname
-	sl.systemConfig.systemOs = info.SystemOs
-	sl.systemConfig.systemKernel = info.SystemKernel
-
-	sl.systemConfig.systemInsideIp = goip.GetInsideIp(ctx)
-
-	sl.systemConfig.sdkVersion = go_library.Version()
-	sl.systemConfig.goVersion = runtime.Version()
-
-}
-
-// ConfigSLogClientFun 日志配置
-func (sl *ApiSLog) ConfigSLogClientFun(sLogFun SLogFun) {
-	sLog := sLogFun()
-	if sLog != nil {
-		sl.slog.client = sLog
-		sl.slog.status = true
-	}
-}
 
 // 结构体
 type apiSLog struct {
