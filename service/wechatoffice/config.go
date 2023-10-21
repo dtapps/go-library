@@ -13,10 +13,10 @@ func (c *Client) ConfigApp(appId, appSecret string) *Client {
 }
 
 // ConfigSLogClientFun 日志配置
-func (c *Client) ConfigSLogClientFun(apiSLogFun golog.ApiSLogFun) {
-	apiSLog := apiSLogFun()
-	if apiSLog != nil {
-		c.slog.client = apiSLog
+func (c *Client) ConfigSLogClientFun(sLogFun golog.SLogFun) {
+	sLog := sLogFun()
+	if sLog != nil {
+		c.slog.client = sLog
 		c.slog.status = true
 	}
 }
