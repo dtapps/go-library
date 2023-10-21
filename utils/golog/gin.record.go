@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// 模型
+// 结构体
 type ginSLog struct {
 	TraceId            string                 `json:"trace_id,omitempty"`             //【系统】跟踪编号
 	RequestTime        time.Time              `json:"request_time,omitempty"`         //【请求】时间
@@ -55,8 +55,7 @@ func (c *GinClient) record(msg string, data ginSLog) {
 	data.SystemOs = c.config.systemOs             //【系统】系统类型
 	data.SystemArch = c.config.systemKernel       //【系统】系统架构
 
-	c.slog.client.WithLogger().Info(msg,
-		"trace_id", data.TraceId,
+	c.slog.client.WithTraceIdStr(data.TraceId).Info(msg,
 		"request_time", data.RequestTime,
 		"request_uri", data.RequestUri,
 		"request_url", data.RequestUrl,

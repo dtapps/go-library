@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-// 模型
+// 结构体
 type ginSLogCustom struct {
 	LogTime            time.Time `json:"log_time,omitempty"`             //【记日志录】时间
 	TraceId            string    `json:"trace_id,omitempty"`             //【系统】跟踪编号
@@ -89,9 +89,8 @@ func (o *GinCustomClientGinRecordOperation) CustomInfo(customId any, customType 
 }
 
 func (o *GinCustomClientGinRecordOperation) CreateData() {
-	o.slogClient.WithLogger().Info("custom",
+	o.slogClient.WithTraceIdStr(o.data.TraceId).Info("custom",
 		"log_time", o.data.LogTime,
-		"trace_id", o.data.TraceId,
 		"request_uri", o.data.RequestUri,
 		"request_url", o.data.RequestUrl,
 		"request_api", o.data.RequestApi,
@@ -121,9 +120,8 @@ func (o *GinCustomClientGinRecordOperation) CreateData() {
 }
 
 func (o *GinCustomClientGinRecordOperation) CreateDataNoError() {
-	o.slogClient.WithLogger().Info("custom",
+	o.slogClient.WithTraceIdStr(o.data.TraceId).Info("custom",
 		"log_time", o.data.LogTime,
-		"trace_id", o.data.TraceId,
 		"request_uri", o.data.RequestUri,
 		"request_url", o.data.RequestUrl,
 		"request_api", o.data.RequestApi,
