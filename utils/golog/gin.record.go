@@ -22,7 +22,7 @@ type ginSLog struct {
 	RequestUa          string                 `json:"request_ua,omitempty"`           //【请求】请求UA
 	RequestReferer     string                 `json:"request_referer,omitempty"`      //【请求】请求referer
 	RequestBody        string                 `json:"request_body,omitempty"`         //【请求】请求主体
-	RequestUrlQuery    string                 `json:"request_url_query,omitempty"`    //【请求】请求URL参数
+	RequestUrlQuery    map[string][]string    `json:"request_url_query,omitempty"`    //【请求】请求URL参数
 	RequestIp          string                 `json:"request_ip,omitempty"`           //【请求】请求客户端Ip
 	RequestIpCountry   string                 `json:"request_ip_country,omitempty"`   //【请求】请求客户端城市
 	RequestIpProvince  string                 `json:"request_ip_province,omitempty"`  //【请求】请求客户端省份
@@ -30,7 +30,7 @@ type ginSLog struct {
 	RequestIpIsp       string                 `json:"request_ip_isp,omitempty"`       //【请求】请求客户端运营商
 	RequestIpLongitude float64                `json:"request_ip_longitude,omitempty"` //【请求】请求客户端经度
 	RequestIpLatitude  float64                `json:"request_ip_latitude,omitempty"`  //【请求】请求客户端纬度
-	RequestHeader      string                 `json:"request_header,omitempty"`       //【请求】请求头
+	RequestHeader      map[string][]string    `json:"request_header,omitempty"`       //【请求】请求头
 	RequestAllContent  map[string]interface{} `json:"request_all_content,omitempty"`  // 【请求】请求全部内容
 	ResponseTime       time.Time              `json:"response_time,omitempty"`        //【返回】时间
 	ResponseCode       int                    `json:"response_code,omitempty"`        //【返回】状态码
@@ -89,7 +89,7 @@ func (c *GinClient) record(msg string, data ginSLog) {
 	)
 }
 
-func (c *GinClient) recordJson(ginCtx *gin.Context, traceId string, requestTime time.Time, requestBody []byte, paramsBody gorequest.Params, responseCode int, responseBody string, startTime, endTime int64, ipInfo goip.AnalyseResult) {
+func (c *GinClient) recordJson(ginCtx *gin.Context, traceId string, requestTime time.Time, paramsBody gorequest.Params, startTime, endTime int64, ipInfo goip.AnalyseResult) {
 
 	data := ginSLog{
 		TraceId:            traceId,                                                      //【系统】跟踪编号
@@ -100,7 +100,7 @@ func (c *GinClient) recordJson(ginCtx *gin.Context, traceId string, requestTime 
 		RequestProto:       ginCtx.Request.Proto,                                         //【请求】请求协议
 		RequestUa:          ginCtx.Request.UserAgent(),                                   //【请求】请求UA
 		RequestReferer:     ginCtx.Request.Referer(),                                     //【请求】请求referer
-		RequestUrlQuery:    dorm.JsonEncodeNoError(ginCtx.Request.URL.Query()),           //【请求】请求URL参数
+		RequestUrlQuery:    ginCtx.Request.URL.Query(),                                   //【请求】请求URL参数
 		RequestIp:          ipInfo.Ip,                                                    //【请求】请求客户端Ip
 		RequestIpCountry:   ipInfo.Country,                                               //【请求】请求客户端城市
 		RequestIpProvince:  ipInfo.Province,                                              //【请求】请求客户端省份
@@ -108,21 +108,15 @@ func (c *GinClient) recordJson(ginCtx *gin.Context, traceId string, requestTime 
 		RequestIpIsp:       ipInfo.Isp,                                                   //【请求】请求客户端运营商
 		RequestIpLatitude:  ipInfo.LocationLatitude,                                      //【请求】请求客户端纬度
 		RequestIpLongitude: ipInfo.LocationLongitude,                                     //【请求】请求客户端经度
-		RequestHeader:      dorm.JsonEncodeNoError(ginCtx.Request.Header),                //【请求】请求头
+		RequestHeader:      ginCtx.Request.Header,                                        //【请求】请求头
 		RequestAllContent:  paramsBody,                                                   //【请求】请求全部内容
 		ResponseTime:       gotime.Current().Time,                                        //【返回】时间
-		ResponseCode:       responseCode,                                                 //【返回】状态码
-		ResponseData:       responseBody,                                                 //【返回】数据
 		CostTime:           endTime - startTime,                                          //【系统】花费时间
 	}
 	if ginCtx.Request.TLS == nil {
 		data.RequestUri = "http://" + ginCtx.Request.Host + ginCtx.Request.RequestURI //【请求】请求链接
 	} else {
 		data.RequestUri = "https://" + ginCtx.Request.Host + ginCtx.Request.RequestURI //【请求】请求链接
-	}
-
-	if len(requestBody) > 0 {
-		data.RequestBody = dorm.JsonEncodeNoError(dorm.JsonDecodeNoError(requestBody)) //【请求】请求主体
 	}
 
 	c.record("json", data)
@@ -139,7 +133,7 @@ func (c *GinClient) recordXml(ginCtx *gin.Context, traceId string, requestTime t
 		RequestProto:       ginCtx.Request.Proto,                                         //【请求】请求协议
 		RequestUa:          ginCtx.Request.UserAgent(),                                   //【请求】请求UA
 		RequestReferer:     ginCtx.Request.Referer(),                                     //【请求】请求referer
-		RequestUrlQuery:    dorm.JsonEncodeNoError(ginCtx.Request.URL.Query()),           //【请求】请求URL参数
+		RequestUrlQuery:    ginCtx.Request.URL.Query(),                                   //【请求】请求URL参数
 		RequestIp:          ipInfo.Ip,                                                    //【请求】请求客户端Ip
 		RequestIpCountry:   ipInfo.Country,                                               //【请求】请求客户端城市
 		RequestIpProvince:  ipInfo.Province,                                              //【请求】请求客户端省份
@@ -147,7 +141,7 @@ func (c *GinClient) recordXml(ginCtx *gin.Context, traceId string, requestTime t
 		RequestIpIsp:       ipInfo.Isp,                                                   //【请求】请求客户端运营商
 		RequestIpLatitude:  ipInfo.LocationLatitude,                                      //【请求】请求客户端纬度
 		RequestIpLongitude: ipInfo.LocationLongitude,                                     //【请求】请求客户端经度
-		RequestHeader:      dorm.JsonEncodeNoError(ginCtx.Request.Header),                //【请求】请求头
+		RequestHeader:      ginCtx.Request.Header,                                        //【请求】请求头
 		RequestAllContent:  paramsBody,                                                   //【请求】请求全部内容
 		ResponseTime:       gotime.Current().Time,                                        //【返回】时间
 		ResponseCode:       responseCode,                                                 //【返回】状态码

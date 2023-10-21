@@ -94,9 +94,6 @@ func (c *GinClient) Middleware() gin.HandlerFunc {
 		startTime := gotime.Current().TimestampWithMillisecond()
 		requestTime := gotime.Current().Time
 
-		// 获取
-		requestBody, _ := ioutil.ReadAll(ginCtx.Request.Body)
-
 		// 获取全部内容
 		paramsBody := gorequest.NewParams()
 		queryParams := ginCtx.Request.URL.Query() // 请求URL参数
@@ -119,33 +116,13 @@ func (c *GinClient) Middleware() gin.HandlerFunc {
 		// 重新赋值
 		ginCtx.Request.Body = ioutil.NopCloser(bytes.NewBuffer(rawData))
 
-		blw := &bodyLogWriter{body: bytes.NewBufferString(""), ResponseWriter: ginCtx.Writer}
-		ginCtx.Writer = blw
-
 		// 处理请求
 		ginCtx.Next()
-
-		// 响应
-		responseCode := ginCtx.Writer.Status()
-		responseBody := blw.body.String()
 
 		//结束时间
 		endTime := gotime.Current().TimestampWithMillisecond()
 
 		go func() {
-
-			var dataJson = true
-
-			// 解析请求内容
-			var jsonBody map[string]interface{}
-
-			// 判断是否有内容
-			if len(requestBody) > 0 {
-				err := gojson.Unmarshal(requestBody, &jsonBody)
-				if err != nil {
-					dataJson = false
-				}
-			}
 
 			clientIp := gorequest.ClientIp(ginCtx.Request)
 			var info = goip.AnalyseResult{}
@@ -157,13 +134,7 @@ func (c *GinClient) Middleware() gin.HandlerFunc {
 			var traceId = gotrace_id.GetGinTraceId(ginCtx)
 
 			// 记录
-			if c.slog.status {
-				if dataJson {
-					c.recordJson(ginCtx, traceId, requestTime, requestBody, paramsBody, responseCode, responseBody, startTime, endTime, info)
-				} else {
-					c.recordXml(ginCtx, traceId, requestTime, requestBody, paramsBody, responseCode, responseBody, startTime, endTime, info)
-				}
-			}
+			c.recordJson(ginCtx, traceId, requestTime, paramsBody, startTime, endTime, info)
 
 		}()
 	}
