@@ -75,6 +75,7 @@ func (c *GinClient) record(msg string, data ginSLog) {
 		"request_ip_longitude", data.RequestIpLongitude,
 		"request_ip_latitude", data.RequestIpLatitude,
 		"request_header", data.RequestHeader,
+		"request_all_content", data.RequestAllContent,
 		"response_time", data.ResponseTime,
 		"response_code", data.ResponseCode,
 		"response_msg", data.ResponseMsg,
