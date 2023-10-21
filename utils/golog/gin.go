@@ -95,10 +95,29 @@ func (c *GinClient) Middleware() gin.HandlerFunc {
 		requestTime := gotime.Current().Time
 
 		// 获取
-		data, _ := ioutil.ReadAll(ginCtx.Request.Body)
+		requestBody, _ := ioutil.ReadAll(ginCtx.Request.Body)
 
-		// 复用
-		ginCtx.Request.Body = ioutil.NopCloser(bytes.NewBuffer(data))
+		// 获取全部内容
+		paramsBody := gorequest.NewParams()
+		queryParams := ginCtx.Request.URL.Query() // 请求URL参数
+		for key, values := range queryParams {
+			for _, value := range values {
+				paramsBody.Set(key, value)
+			}
+		}
+		var dataMap map[string]interface{}
+		rawData, _ := ginCtx.GetRawData() // 请求内容参数
+		if gojson.IsValidJSON(string(rawData)) {
+			dataMap = gojson.JsonDecodeNoError(string(rawData))
+		} else {
+			dataMap = gojson.ParseQueryString(string(rawData))
+		}
+		for key, value := range dataMap {
+			paramsBody.Set(key, value)
+		}
+
+		// 重新赋值
+		ginCtx.Request.Body = ioutil.NopCloser(bytes.NewBuffer(rawData))
 
 		blw := &bodyLogWriter{body: bytes.NewBufferString(""), ResponseWriter: ginCtx.Writer}
 		ginCtx.Writer = blw
@@ -121,8 +140,8 @@ func (c *GinClient) Middleware() gin.HandlerFunc {
 			var jsonBody map[string]interface{}
 
 			// 判断是否有内容
-			if len(data) > 0 {
-				err := gojson.Unmarshal(data, &jsonBody)
+			if len(requestBody) > 0 {
+				err := gojson.Unmarshal(requestBody, &jsonBody)
 				if err != nil {
 					dataJson = false
 				}
@@ -140,9 +159,9 @@ func (c *GinClient) Middleware() gin.HandlerFunc {
 			// 记录
 			if c.slog.status {
 				if dataJson {
-					c.recordJson(ginCtx, traceId, requestTime, data, responseCode, responseBody, startTime, endTime, info)
+					c.recordJson(ginCtx, traceId, requestTime, requestBody, paramsBody, responseCode, responseBody, startTime, endTime, info)
 				} else {
-					c.recordXml(ginCtx, traceId, requestTime, data, responseCode, responseBody, startTime, endTime, info)
+					c.recordXml(ginCtx, traceId, requestTime, requestBody, paramsBody, responseCode, responseBody, startTime, endTime, info)
 				}
 			}
 
