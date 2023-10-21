@@ -8,7 +8,7 @@ github.com/aliyun/aliyun-oss-go-sdk/oss
 ## explicit; go 1.16
 github.com/allegro/bigcache/v3
 github.com/allegro/bigcache/v3/queue
-# github.com/baidubce/bce-sdk-go v0.9.157
+# github.com/baidubce/bce-sdk-go v0.9.158
 ## explicit; go 1.11
 github.com/baidubce/bce-sdk-go/auth
 github.com/baidubce/bce-sdk-go/bce
@@ -163,7 +163,7 @@ github.com/klauspost/cpuid/v2
 # github.com/leodido/go-urn v1.2.4
 ## explicit; go 1.16
 github.com/leodido/go-urn
-# github.com/mattn/go-isatty v0.0.19
+# github.com/mattn/go-isatty v0.0.20
 ## explicit; go 1.15
 github.com/mattn/go-isatty
 # github.com/mattn/go-sqlite3 v2.0.3+incompatible
@@ -199,7 +199,7 @@ github.com/pelletier/go-toml/v2/internal/characters
 github.com/pelletier/go-toml/v2/internal/danger
 github.com/pelletier/go-toml/v2/internal/tracker
 github.com/pelletier/go-toml/v2/unstable
-# github.com/qiniu/go-sdk/v7 v7.18.0
+# github.com/qiniu/go-sdk/v7 v7.18.2
 ## explicit; go 1.14
 github.com/qiniu/go-sdk/v7
 github.com/qiniu/go-sdk/v7/auth
@@ -248,7 +248,7 @@ github.com/shirou/gopsutil/process
 # github.com/sirupsen/logrus v1.9.3
 ## explicit; go 1.13
 github.com/sirupsen/logrus
-# github.com/tencentyun/cos-go-sdk-v5 v0.7.44
+# github.com/tencentyun/cos-go-sdk-v5 v0.7.45
 ## explicit; go 1.12
 github.com/tencentyun/cos-go-sdk-v5
 # github.com/tklauser/go-sysconf v0.3.12
