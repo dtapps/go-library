@@ -6,7 +6,7 @@ import (
 	"github.com/dtapps/go-library/utils/gorequest"
 )
 
-type PowerCardInfoResponse struct {
+type RestPowerCardInfoResponse struct {
 	Code string `json:"code"`
 	Msg  string `json:"msg"`
 	Time string `json:"time"`
@@ -21,30 +21,30 @@ type PowerCardInfoResponse struct {
 	} `json:"data"`
 }
 
-type PowerCardInfoResult struct {
-	Result PowerCardInfoResponse // 结果
-	Body   []byte                // 内容
-	Http   gorequest.Response    // 请求
+type RestPowerCardInfoResult struct {
+	Result RestPowerCardInfoResponse // 结果
+	Body   []byte                    // 内容
+	Http   gorequest.Response        // 请求
 }
 
-func newPowerCardInfoResult(result PowerCardInfoResponse, body []byte, http gorequest.Response) *PowerCardInfoResult {
-	return &PowerCardInfoResult{Result: result, Body: body, Http: http}
+func newRestPowerCardInfoResult(result RestPowerCardInfoResponse, body []byte, http gorequest.Response) *RestPowerCardInfoResult {
+	return &RestPowerCardInfoResult{Result: result, Body: body, Http: http}
 }
 
-// PowerCardInfo 电费充值卡详情
+// RestPowerCardInfo 电费充值卡详情
 // card_id = 充值卡ID
 // https://open.wikeyun.cn/#/apiDocument/9/document/333
-func (c *Client) PowerCardInfo(ctx context.Context, cardID int64, notMustParams ...gorequest.Params) (*PowerCardInfoResult, error) {
+func (c *Client) RestPowerCardInfo(ctx context.Context, cardID int64, notMustParams ...gorequest.Params) (*RestPowerCardInfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("card_id", cardID) // 充值卡ID
 	// 请求
 	request, err := c.request(ctx, apiUrl+"/rest/Power/cardInfo", params)
 	if err != nil {
-		return newPowerCardInfoResult(PowerCardInfoResponse{}, request.ResponseBody, request), err
+		return newRestPowerCardInfoResult(RestPowerCardInfoResponse{}, request.ResponseBody, request), err
 	}
 	// 定义
-	var response PowerCardInfoResponse
+	var response RestPowerCardInfoResponse
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPowerCardInfoResult(response, request.ResponseBody, request), err
+	return newRestPowerCardInfoResult(response, request.ResponseBody, request), err
 }

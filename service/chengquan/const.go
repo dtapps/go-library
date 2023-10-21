@@ -3,11 +3,6 @@ package chengquan
 import "fmt"
 
 const (
-	ApiUrl     = "https://api.chengquan.cn"
-	ApiTestUrl = "http://test.api.chengquan.vip:11140"
-)
-
-const (
 	LogTable = "chengquan"
 )
 

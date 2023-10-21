@@ -11,14 +11,15 @@ type RestPowerAddCardResponse struct {
 	Msg  string `json:"msg"`
 	Time string `json:"time"`
 	Data struct {
-		CardNum    string `json:"card_num"`
-		StoreId    string `json:"store_id"`
-		CreateTime int    `json:"create_time"`
-		Type       int    `json:"type"` // 缴费单位
+		CardNum    string `json:"card_num"`    // 用户电费户号
+		StoreId    string `json:"store_id"`    // 店铺ID
+		CreateTime int    `json:"create_time"` // 创建时间
+		Type       int    `json:"type"`        // 0国家电网 1南方电网
 		CmsUid     int    `json:"cms_uid"`
-		Province   string `json:"province"` // 缴费省份
-		City       string `json:"city"`     // 缴费城市
-		Id         string `json:"id"`       // 缴费卡编号
+		Province   string `json:"province"` // 省份，带省。
+		City       string `json:"city"`     // 城市，带市
+		Id         string `json:"id"`       // 充值卡ID，用于电费推单
+		Remark     string `json:"remark"`   // 备注
 	} `json:"data"`
 }
 
