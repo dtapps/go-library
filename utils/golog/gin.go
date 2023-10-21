@@ -140,9 +140,9 @@ func (c *GinClient) Middleware() gin.HandlerFunc {
 			// 记录
 			if c.slog.status {
 				if dataJson {
-					c.gormRecordJson(ginCtx, traceId, requestTime, data, responseCode, responseBody, startTime, endTime, info)
+					c.recordJson(ginCtx, traceId, requestTime, data, responseCode, responseBody, startTime, endTime, info)
 				} else {
-					c.gormRecordXml(ginCtx, traceId, requestTime, data, responseCode, responseBody, startTime, endTime, info)
+					c.recordXml(ginCtx, traceId, requestTime, data, responseCode, responseBody, startTime, endTime, info)
 				}
 			}
 

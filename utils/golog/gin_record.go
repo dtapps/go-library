@@ -3,7 +3,6 @@ package golog
 import (
 	"github.com/dtapps/go-library/utils/dorm"
 	"github.com/dtapps/go-library/utils/goip"
-	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gotime"
 	"github.com/dtapps/go-library/utils/gourl"
 	"github.com/gin-gonic/gin"
@@ -44,8 +43,8 @@ type ginSLog struct {
 	SdkVersion         string    `json:"sdk_version,omitempty"`          //【程序】Sdk版本
 }
 
-// gormRecord 记录日志
-func (c *GinClient) gormRecord(data ginSLog) {
+// record 记录日志
+func (c *GinClient) record(msg string, data ginSLog) {
 
 	data.SystemHostName = c.config.systemHostname //【系统】主机名
 	data.SystemInsideIp = c.config.systemInsideIp //【系统】内网ip
@@ -54,10 +53,41 @@ func (c *GinClient) gormRecord(data ginSLog) {
 	data.SystemOs = c.config.systemOs             //【系统】系统类型
 	data.SystemArch = c.config.systemKernel       //【系统】系统架构
 
-	c.slog.client.WithLogger().Info(gojson.JsonEncodeNoError(data))
+	c.slog.client.WithLogger().Info(msg,
+		"trace_id", data.TraceId,
+		"request_time", data.RequestTime,
+		"request_uri", data.RequestUri,
+		"request_url", data.RequestUrl,
+		"request_api", data.RequestApi,
+		"request_method", data.RequestMethod,
+		"request_proto", data.RequestProto,
+		"request_ua", data.RequestUa,
+		"request_referer", data.RequestReferer,
+		"request_body", data.RequestBody,
+		"request_url_query", data.RequestUrlQuery,
+		"request_ip", data.RequestIp,
+		"request_ip_country", data.RequestIpCountry,
+		"request_ip_province", data.RequestIpProvince,
+		"request_ip_city", data.RequestIpCity,
+		"request_ip_isp", data.RequestIpIsp,
+		"request_ip_longitude", data.RequestIpLongitude,
+		"request_ip_latitude", data.RequestIpLatitude,
+		"request_header", data.RequestHeader,
+		"response_time", data.ResponseTime,
+		"response_code", data.ResponseCode,
+		"response_msg", data.ResponseMsg,
+		"response_data", data.ResponseData,
+		"cost_time", data.CostTime,
+		"system_host_name", data.SystemHostName,
+		"system_inside_ip", data.SystemInsideIp,
+		"system_os", data.SystemOs,
+		"system_arch", data.SystemArch,
+		"go_version", data.GoVersion,
+		"sdk_version", data.SdkVersion,
+	)
 }
 
-func (c *GinClient) gormRecordJson(ginCtx *gin.Context, traceId string, requestTime time.Time, requestBody []byte, responseCode int, responseBody string, startTime, endTime int64, ipInfo goip.AnalyseResult) {
+func (c *GinClient) recordJson(ginCtx *gin.Context, traceId string, requestTime time.Time, requestBody []byte, responseCode int, responseBody string, startTime, endTime int64, ipInfo goip.AnalyseResult) {
 
 	data := ginSLog{
 		TraceId:            traceId,                                                      //【系统】跟踪编号
@@ -92,10 +122,10 @@ func (c *GinClient) gormRecordJson(ginCtx *gin.Context, traceId string, requestT
 		data.RequestBody = dorm.JsonEncodeNoError(dorm.JsonDecodeNoError(requestBody)) //【请求】请求主体
 	}
 
-	c.gormRecord(data)
+	c.record("json", data)
 }
 
-func (c *GinClient) gormRecordXml(ginCtx *gin.Context, traceId string, requestTime time.Time, requestBody []byte, responseCode int, responseBody string, startTime, endTime int64, ipInfo goip.AnalyseResult) {
+func (c *GinClient) recordXml(ginCtx *gin.Context, traceId string, requestTime time.Time, requestBody []byte, responseCode int, responseBody string, startTime, endTime int64, ipInfo goip.AnalyseResult) {
 
 	data := ginSLog{
 		TraceId:            traceId,                                                      //【系统】跟踪编号
@@ -130,5 +160,5 @@ func (c *GinClient) gormRecordXml(ginCtx *gin.Context, traceId string, requestTi
 		data.RequestBody = dorm.XmlEncodeNoError(dorm.XmlDecodeNoError(requestBody)) //【请求】请求内容
 	}
 
-	c.gormRecord(data)
+	c.record("xml", data)
 }

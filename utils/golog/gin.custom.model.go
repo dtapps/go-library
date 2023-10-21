@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/dtapps/go-library/utils/dorm"
 	"github.com/dtapps/go-library/utils/goip"
-	"github.com/dtapps/go-library/utils/gojson"
 	"github.com/dtapps/go-library/utils/gorequest"
 	"github.com/dtapps/go-library/utils/gotime"
 	"github.com/dtapps/go-library/utils/gotrace_id"
@@ -90,9 +89,65 @@ func (o *GinCustomClientGinRecordOperation) CustomInfo(customId any, customType 
 }
 
 func (o *GinCustomClientGinRecordOperation) CreateData() {
-	o.slogClient.WithLogger().Info(gojson.JsonEncodeNoError(o.data))
+	o.slogClient.WithLogger().Info("custom",
+		"log_time", o.data.LogTime,
+		"trace_id", o.data.TraceId,
+		"request_uri", o.data.RequestUri,
+		"request_url", o.data.RequestUrl,
+		"request_api", o.data.RequestApi,
+		"request_method", o.data.RequestMethod,
+		"request_proto", o.data.RequestProto,
+		"request_ua", o.data.RequestUa,
+		"request_referer", o.data.RequestReferer,
+		"request_url_query", o.data.RequestUrlQuery,
+		"request_header", o.data.RequestHeader,
+		"request_ip", o.data.RequestIp,
+		"request_ip_country", o.data.RequestIpCountry,
+		"request_ip_province", o.data.RequestIpProvince,
+		"request_ip_city", o.data.RequestIpCity,
+		"request_ip_isp", o.data.RequestIpIsp,
+		"request_ip_longitude", o.data.RequestIpLongitude,
+		"request_ip_latitude", o.data.RequestIpLatitude,
+		"system_host_name", o.data.SystemHostName,
+		"system_inside_ip", o.data.SystemInsideIp,
+		"system_os", o.data.SystemOs,
+		"system_arch", o.data.SystemArch,
+		"go_version", o.data.GoVersion,
+		"sdk_version", o.data.SdkVersion,
+		"custom_id", o.data.CustomId,
+		"custom_type", o.data.CustomType,
+		"custom_content", o.data.CustomContent,
+	)
 }
 
 func (o *GinCustomClientGinRecordOperation) CreateDataNoError() {
-	o.slogClient.WithLogger().Info(gojson.JsonEncodeNoError(o.data))
+	o.slogClient.WithLogger().Info("custom",
+		"log_time", o.data.LogTime,
+		"trace_id", o.data.TraceId,
+		"request_uri", o.data.RequestUri,
+		"request_url", o.data.RequestUrl,
+		"request_api", o.data.RequestApi,
+		"request_method", o.data.RequestMethod,
+		"request_proto", o.data.RequestProto,
+		"request_ua", o.data.RequestUa,
+		"request_referer", o.data.RequestReferer,
+		"request_url_query", o.data.RequestUrlQuery,
+		"request_header", o.data.RequestHeader,
+		"request_ip", o.data.RequestIp,
+		"request_ip_country", o.data.RequestIpCountry,
+		"request_ip_province", o.data.RequestIpProvince,
+		"request_ip_city", o.data.RequestIpCity,
+		"request_ip_isp", o.data.RequestIpIsp,
+		"request_ip_longitude", o.data.RequestIpLongitude,
+		"request_ip_latitude", o.data.RequestIpLatitude,
+		"system_host_name", o.data.SystemHostName,
+		"system_inside_ip", o.data.SystemInsideIp,
+		"system_os", o.data.SystemOs,
+		"system_arch", o.data.SystemArch,
+		"go_version", o.data.GoVersion,
+		"sdk_version", o.data.SdkVersion,
+		"custom_id", o.data.CustomId,
+		"custom_type", o.data.CustomType,
+		"custom_content", o.data.CustomContent,
+	)
 }

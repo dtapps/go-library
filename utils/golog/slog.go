@@ -20,7 +20,6 @@ type SLogConfig struct {
 	MaxAge       int    // 文件最多保存多少天 0=不删除
 	LocalTime    bool   // 采用本地时间
 	Compress     bool   // 是否压缩日志
-	JsonFormat   bool   // 是否输出为json格式
 	ShowLine     bool   // 显示代码行
 	LogSaveFile  bool   // 是否保存到文件
 	LogInConsole bool   // 是否同时输出到控制台
@@ -61,31 +60,17 @@ func NewSlog(ctx context.Context, config *SLogConfig) *SLog {
 			Compress:   sl.config.Compress,                    // 是否压缩日志
 		}
 
-		// 是否json格式输出
-		if sl.config.JsonFormat {
-			if sl.config.LogInConsole {
-				sl.jsonHandler = slog.NewJSONHandler(io.MultiWriter(os.Stdout, &lumberjackLogger), &opts)
-			} else {
-				sl.jsonHandler = slog.NewJSONHandler(&lumberjackLogger, &opts)
-			}
-			sl.logger = slog.New(sl.jsonHandler)
+		// json格式输出
+		if sl.config.LogInConsole {
+			sl.jsonHandler = slog.NewJSONHandler(io.MultiWriter(os.Stdout, &lumberjackLogger), &opts)
 		} else {
-			if sl.config.LogInConsole {
-				sl.textHandler = slog.NewTextHandler(io.MultiWriter(os.Stdout, &lumberjackLogger), &opts)
-			} else {
-				sl.textHandler = slog.NewTextHandler(&lumberjackLogger, &opts)
-			}
-			sl.logger = slog.New(sl.textHandler)
+			sl.jsonHandler = slog.NewJSONHandler(&lumberjackLogger, &opts)
 		}
+		sl.logger = slog.New(sl.jsonHandler)
 	} else {
-		// 是否json格式输出
-		if sl.config.JsonFormat {
-			sl.jsonHandler = slog.NewJSONHandler(os.Stdout, &opts)
-			sl.logger = slog.New(sl.jsonHandler)
-		} else {
-			sl.textHandler = slog.NewTextHandler(os.Stdout, &opts)
-			sl.logger = slog.New(sl.textHandler)
-		}
+		// json格式输出
+		sl.jsonHandler = slog.NewJSONHandler(os.Stdout, &opts)
+		sl.logger = slog.New(sl.jsonHandler)
 	}
 
 	return sl
@@ -93,45 +78,24 @@ func NewSlog(ctx context.Context, config *SLogConfig) *SLog {
 
 // WithLogger 跟踪编号
 func (sl *SLog) WithLogger() *slog.Logger {
-	if sl.config.JsonFormat {
-		logger := slog.New(sl.jsonHandler)
-		return logger
-	} else {
-		logger := slog.New(sl.textHandler)
-		return logger
-	}
+	logger := slog.New(sl.jsonHandler)
+	return logger
 }
 
 // WithTraceId 跟踪编号
 func (sl *SLog) WithTraceId(ctx context.Context) *slog.Logger {
-	if sl.config.JsonFormat {
-		jsonHandler := sl.jsonHandler.WithAttrs([]slog.Attr{
-			slog.String("trace_id", gotrace_id.GetTraceIdContext(ctx)),
-		})
-		logger := slog.New(jsonHandler)
-		return logger
-	} else {
-		textHandler := sl.textHandler.WithAttrs([]slog.Attr{
-			slog.String("trace_id", gotrace_id.GetTraceIdContext(ctx)),
-		})
-		logger := slog.New(textHandler)
-		return logger
-	}
+	jsonHandler := sl.jsonHandler.WithAttrs([]slog.Attr{
+		slog.String("trace_id", gotrace_id.GetTraceIdContext(ctx)),
+	})
+	logger := slog.New(jsonHandler)
+	return logger
 }
 
 // WithTraceIdStr 跟踪编号
 func (sl *SLog) WithTraceIdStr(traceId string) *slog.Logger {
-	if sl.config.JsonFormat {
-		jsonHandler := sl.jsonHandler.WithAttrs([]slog.Attr{
-			slog.String("trace_id", traceId),
-		})
-		logger := slog.New(jsonHandler)
-		return logger
-	} else {
-		textHandler := sl.textHandler.WithAttrs([]slog.Attr{
-			slog.String("trace_id", traceId),
-		})
-		logger := slog.New(textHandler)
-		return logger
-	}
+	jsonHandler := sl.jsonHandler.WithAttrs([]slog.Attr{
+		slog.String("trace_id", traceId),
+	})
+	logger := slog.New(jsonHandler)
+	return logger
 }
