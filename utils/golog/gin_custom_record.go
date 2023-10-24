@@ -32,12 +32,6 @@ type ginSLogCustom struct {
 	RequestIpIsp       string    `json:"request_ip_isp,omitempty"`       //【请求】请求客户端运营商
 	RequestIpLongitude float64   `json:"request_ip_longitude,omitempty"` //【请求】请求客户端经度
 	RequestIpLatitude  float64   `json:"request_ip_latitude,omitempty"`  //【请求】请求客户端纬度
-	SystemHostName     string    `json:"system_host_name,omitempty"`     //【系统】主机名
-	SystemInsideIp     string    `json:"system_inside_ip,omitempty"`     //【系统】内网ip
-	SystemOs           string    `json:"system_os,omitempty"`            //【系统】系统类型
-	SystemArch         string    `json:"system_arch,omitempty"`          //【系统】系统架构
-	GoVersion          string    `json:"go_version,omitempty"`           //【程序】Go版本
-	SdkVersion         string    `json:"sdk_version,omitempty"`          //【程序】Sdk版本
 	CustomId           string    `json:"custom_id,omitempty"`            //【日志】自定义编号
 	CustomType         string    `json:"custom_type,omitempty"`          //【日志】自定义类型
 	CustomContent      string    `json:"custom_content,omitempty"`       //【日志】自定义内容
@@ -72,12 +66,6 @@ func (c *GinCustomClient) GinRecord(ginCtx *gin.Context) *GinCustomClientGinReco
 	operation.data.RequestUrlQuery = dorm.JsonEncodeNoError(ginCtx.Request.URL.Query())      //【请求】请求URL参数
 	operation.data.RequestHeader = dorm.JsonEncodeNoError(ginCtx.Request.Header)             //【请求】请求头
 	operation.data.RequestIp = gorequest.ClientIp(ginCtx.Request)                            //【请求】请求客户端Ip
-	operation.data.SystemHostName = c.config.systemHostname                                  //【系统】主机名
-	operation.data.SystemInsideIp = c.config.systemInsideIp                                  //【系统】内网ip
-	operation.data.SystemOs = c.config.systemOs                                              //【系统】系统类型
-	operation.data.SystemArch = c.config.systemKernel                                        //【系统】系统架构
-	operation.data.GoVersion = c.config.goVersion                                            //【程序】Go版本
-	operation.data.SdkVersion = c.config.sdkVersion                                          //【程序】Sdk版本
 	return operation
 }
 
@@ -107,12 +95,6 @@ func (o *GinCustomClientGinRecordOperation) CreateData() {
 		"request_ip_isp", o.data.RequestIpIsp,
 		"request_ip_longitude", o.data.RequestIpLongitude,
 		"request_ip_latitude", o.data.RequestIpLatitude,
-		"system_host_name", o.data.SystemHostName,
-		"system_inside_ip", o.data.SystemInsideIp,
-		"system_os", o.data.SystemOs,
-		"system_arch", o.data.SystemArch,
-		"go_version", o.data.GoVersion,
-		"sdk_version", o.data.SdkVersion,
 		"custom_id", o.data.CustomId,
 		"custom_type", o.data.CustomType,
 		"custom_content", o.data.CustomContent,
@@ -138,12 +120,6 @@ func (o *GinCustomClientGinRecordOperation) CreateDataNoError() {
 		"request_ip_isp", o.data.RequestIpIsp,
 		"request_ip_longitude", o.data.RequestIpLongitude,
 		"request_ip_latitude", o.data.RequestIpLatitude,
-		"system_host_name", o.data.SystemHostName,
-		"system_inside_ip", o.data.SystemInsideIp,
-		"system_os", o.data.SystemOs,
-		"system_arch", o.data.SystemArch,
-		"go_version", o.data.GoVersion,
-		"sdk_version", o.data.SdkVersion,
 		"custom_id", o.data.CustomId,
 		"custom_type", o.data.CustomType,
 		"custom_content", o.data.CustomContent,

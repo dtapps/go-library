@@ -37,23 +37,10 @@ type ginSLog struct {
 	ResponseMsg        string                 `json:"response_msg,omitempty"`         //【返回】描述
 	ResponseData       string                 `json:"response_data,omitempty"`        //【返回】数据
 	CostTime           int64                  `json:"cost_time,omitempty"`            //【系统】花费时间
-	SystemHostName     string                 `json:"system_host_name,omitempty"`     //【系统】主机名
-	SystemInsideIp     string                 `json:"system_inside_ip,omitempty"`     //【系统】内网ip
-	SystemOs           string                 `json:"system_os,omitempty"`            //【系统】系统类型
-	SystemArch         string                 `json:"system_arch,omitempty"`          //【系统】系统架构
-	GoVersion          string                 `json:"go_version,omitempty"`           //【程序】Go版本
-	SdkVersion         string                 `json:"sdk_version,omitempty"`          //【程序】Sdk版本
 }
 
 // record 记录日志
 func (c *GinClient) record(msg string, data ginSLog) {
-
-	data.SystemHostName = c.config.systemHostname //【系统】主机名
-	data.SystemInsideIp = c.config.systemInsideIp //【系统】内网ip
-	data.GoVersion = c.config.goVersion           //【程序】Go版本
-	data.SdkVersion = c.config.sdkVersion         //【程序】Sdk版本
-	data.SystemOs = c.config.systemOs             //【系统】系统类型
-	data.SystemArch = c.config.systemKernel       //【系统】系统架构
 
 	c.slog.client.WithTraceIdStr(data.TraceId).Info(msg,
 		"request_time", data.RequestTime,
@@ -80,16 +67,10 @@ func (c *GinClient) record(msg string, data ginSLog) {
 		"response_msg", data.ResponseMsg,
 		"response_data", data.ResponseData,
 		"cost_time", data.CostTime,
-		"system_host_name", data.SystemHostName,
-		"system_inside_ip", data.SystemInsideIp,
-		"system_os", data.SystemOs,
-		"system_arch", data.SystemArch,
-		"go_version", data.GoVersion,
-		"sdk_version", data.SdkVersion,
 	)
 }
 
-func (c *GinClient) recordJson(ginCtx *gin.Context, traceId string, requestTime time.Time, paramsBody gorequest.Params, startTime, endTime int64, ipInfo goip.AnalyseResult) {
+func (c *GinClient) recordJson(ginCtx *gin.Context, traceId string, requestTime time.Time, paramsBody gorequest.Params, responseCode int, responseBody string, startTime, endTime int64, ipInfo goip.AnalyseResult) {
 
 	data := ginSLog{
 		TraceId:            traceId,                                                      //【系统】跟踪编号
@@ -111,6 +92,8 @@ func (c *GinClient) recordJson(ginCtx *gin.Context, traceId string, requestTime 
 		RequestHeader:      ginCtx.Request.Header,                                        //【请求】请求头
 		RequestAllContent:  paramsBody,                                                   //【请求】请求全部内容
 		ResponseTime:       gotime.Current().Time,                                        //【返回】时间
+		ResponseCode:       responseCode,                                                 //【返回】状态码
+		ResponseData:       responseBody,                                                 //【返回】数据
 		CostTime:           endTime - startTime,                                          //【系统】花费时间
 	}
 	if ginCtx.Request.TLS == nil {

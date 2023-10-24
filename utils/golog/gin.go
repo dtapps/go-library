@@ -14,22 +14,8 @@ import (
 
 // NewGinClient 创建框架实例化
 func NewGinClient(ctx context.Context, config *GinClientConfig) (*GinClient, error) {
-
 	c := &GinClient{}
-
-	if config.CurrentIp != "" && config.CurrentIp != "0.0.0.0" {
-		c.config.systemOutsideIp = config.CurrentIp
-	}
-	c.config.systemOutsideIp = goip.IsIp(c.config.systemOutsideIp)
-	if c.config.systemOutsideIp == "" {
-		return nil, currentIpNoConfig
-	}
-
 	c.ipService = config.IpService
-
-	// 配置信息
-	c.setConfig(ctx)
-
 	return c, nil
 }
 
@@ -83,10 +69,17 @@ func (c *GinClient) Middleware() gin.HandlerFunc {
 		// 重新赋值
 		ginCtx.Request.Body = ioutil.NopCloser(bytes.NewBuffer(rawData))
 
+		blw := &bodyLogWriter{body: bytes.NewBufferString(""), ResponseWriter: ginCtx.Writer}
+		ginCtx.Writer = blw
+
 		// 处理请求
 		ginCtx.Next()
 
-		//结束时间
+		// 响应
+		responseCode := ginCtx.Writer.Status()
+		responseBody := blw.body.String()
+
+		// 结束时间
 		endTime := gotime.Current().TimestampWithMillisecond()
 
 		go func() {
@@ -101,7 +94,7 @@ func (c *GinClient) Middleware() gin.HandlerFunc {
 			var traceId = gotrace_id.GetGinTraceId(ginCtx)
 
 			// 记录
-			c.recordJson(ginCtx, traceId, requestTime, paramsBody, startTime, endTime, info)
+			c.recordJson(ginCtx, traceId, requestTime, paramsBody, responseCode, responseBody, startTime, endTime, info)
 
 		}()
 	}
