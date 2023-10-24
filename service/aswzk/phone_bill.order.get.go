@@ -11,15 +11,15 @@ type PhoneBillOrderQueryResponse struct {
 	Code int    `json:"code"`
 	Info string `json:"info"`
 	Data struct {
-		RechargeAccount string  `json:"recharge_account"` // 充值账号
-		RechargeMoney   float64 `json:"recharge_money"`   // 充值金额
-		RechargeType    string  `json:"recharge_type"`    // 充值类型
-		OrderID         string  `json:"order_id"`         // 订单编号
-		OrderNo         string  `json:"order_no"`         // 商户订单编号
-		Remark          string  `json:"remark"`           // 订单备注
-		OrderStatus     string  `json:"order_status"`     // 订单状态
-		OrderCost       float64 `json:"order_cost"`       // 订单成本价
-		Reason          string  `json:"reason,omitempty"` // 失败原因
+		RechargeAccount string  `json:"recharge_account"`          // 充值账号
+		RechargeMoney   float64 `json:"recharge_money"`            // 充值金额
+		RechargeType    string  `json:"recharge_type"`             // 充值类型
+		RechargeReason  string  `json:"recharge_reason,omitempty"` // 充值失败原因
+		OrderID         string  `json:"order_id"`                  // 订单编号
+		OrderNo         string  `json:"order_no"`                  // 商户订单编号
+		Remark          string  `json:"remark"`                    // 订单备注
+		OrderStatus     string  `json:"order_status"`              // 订单状态
+		OrderCost       float64 `json:"order_cost,omitempty"`      // 订单成本价
 	} `json:"data"`
 	Time    int    `json:"time"`
 	TraceId string `json:"trace_id"`
