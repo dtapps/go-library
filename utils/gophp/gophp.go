@@ -2,6 +2,7 @@ package gophp
 
 import (
 	"github.com/dtapps/go-library/utils/gophp/serialize"
+	"reflect"
 	"strconv"
 	"strings"
 	"unicode"
@@ -116,4 +117,33 @@ func StrPad(input string, padLength int, padString string) string {
 		return input
 	}
 	return output[:padLength-len(input)] + input
+}
+
+// Empty checks if a variable is empty (nil, zero value, or empty string).
+func Empty(value interface{}) bool {
+	if value == nil {
+		return true
+	}
+
+	// Use reflection to check if the value is the zero value for its type.
+	val := reflect.ValueOf(value)
+	switch val.Kind() {
+	case reflect.Array, reflect.Chan, reflect.Map, reflect.Slice, reflect.String:
+		return val.Len() == 0
+	case reflect.Bool:
+		return !val.Bool()
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return val.Int() == 0
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+		return val.Uint() == 0
+	case reflect.Float32, reflect.Float64:
+		return val.Float() == 0
+	}
+
+	// If the type is not recognized, consider it non-empty.
+	return false
+}
+
+func Isset(value interface{}) bool {
+	return value != nil
 }
