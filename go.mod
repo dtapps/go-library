@@ -32,7 +32,7 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gorm.io/datatypes v1.2.0
 	gorm.io/driver/mysql v1.5.2
-	gorm.io/driver/postgres v1.5.3
+	gorm.io/driver/postgres v1.5.4
 	gorm.io/gen v0.3.23
 	gorm.io/gorm v1.25.5
 )
