@@ -12,7 +12,7 @@ import (
 
 // 结构体
 type ginSLog struct {
-	TraceId            string                 `json:"trace_id,omitempty"`             //【系统】跟踪编号
+	TraceID            string                 `json:"trace_id,omitempty"`             //【系统】跟踪编号
 	RequestTime        time.Time              `json:"request_time,omitempty"`         //【请求】时间
 	RequestUri         string                 `json:"request_uri,omitempty"`          //【请求】请求链接 域名+路径+参数
 	RequestUrl         string                 `json:"request_url,omitempty"`          //【请求】请求链接 域名+路径
@@ -23,7 +23,7 @@ type ginSLog struct {
 	RequestReferer     string                 `json:"request_referer,omitempty"`      //【请求】请求referer
 	RequestBody        string                 `json:"request_body,omitempty"`         //【请求】请求主体
 	RequestUrlQuery    map[string][]string    `json:"request_url_query,omitempty"`    //【请求】请求URL参数
-	RequestIp          string                 `json:"request_ip,omitempty"`           //【请求】请求客户端Ip
+	RequestIP          string                 `json:"request_ip,omitempty"`           //【请求】请求客户端Ip
 	RequestIpCountry   string                 `json:"request_ip_country,omitempty"`   //【请求】请求客户端城市
 	RequestIpProvince  string                 `json:"request_ip_province,omitempty"`  //【请求】请求客户端省份
 	RequestIpCity      string                 `json:"request_ip_city,omitempty"`      //【请求】请求客户端城市
@@ -41,8 +41,7 @@ type ginSLog struct {
 
 // record 记录日志
 func (c *GinClient) record(msg string, data ginSLog) {
-
-	c.slog.client.WithTraceIdStr(data.TraceId).Info(msg,
+	c.slog.client.WithTraceIdStr(data.TraceID).Info(msg,
 		"request_time", data.RequestTime,
 		"request_uri", data.RequestUri,
 		"request_url", data.RequestUrl,
@@ -53,7 +52,7 @@ func (c *GinClient) record(msg string, data ginSLog) {
 		"request_referer", data.RequestReferer,
 		"request_body", data.RequestBody,
 		"request_url_query", data.RequestUrlQuery,
-		"request_ip", data.RequestIp,
+		"request_ip", data.RequestIP,
 		"request_ip_country", data.RequestIpCountry,
 		"request_ip_province", data.RequestIpProvince,
 		"request_ip_city", data.RequestIpCity,
@@ -71,9 +70,8 @@ func (c *GinClient) record(msg string, data ginSLog) {
 }
 
 func (c *GinClient) recordJson(ginCtx *gin.Context, traceId string, requestTime time.Time, paramsBody gorequest.Params, responseCode int, responseBody string, startTime, endTime int64, ipInfo goip.AnalyseResult) {
-
 	data := ginSLog{
-		TraceId:            traceId,                                                      //【系统】跟踪编号
+		TraceID:            traceId,                                                      //【系统】跟踪编号
 		RequestTime:        requestTime,                                                  //【请求】时间
 		RequestUrl:         ginCtx.Request.RequestURI,                                    //【请求】请求链接
 		RequestApi:         gourl.UriFilterExcludeQueryString(ginCtx.Request.RequestURI), //【请求】请求接口
@@ -82,7 +80,7 @@ func (c *GinClient) recordJson(ginCtx *gin.Context, traceId string, requestTime 
 		RequestUa:          ginCtx.Request.UserAgent(),                                   //【请求】请求UA
 		RequestReferer:     ginCtx.Request.Referer(),                                     //【请求】请求referer
 		RequestUrlQuery:    ginCtx.Request.URL.Query(),                                   //【请求】请求URL参数
-		RequestIp:          ipInfo.Ip,                                                    //【请求】请求客户端Ip
+		RequestIP:          ipInfo.Ip,                                                    //【请求】请求客户端Ip
 		RequestIpCountry:   ipInfo.Country,                                               //【请求】请求客户端城市
 		RequestIpProvince:  ipInfo.Province,                                              //【请求】请求客户端省份
 		RequestIpCity:      ipInfo.City,                                                  //【请求】请求客户端城市
@@ -101,14 +99,12 @@ func (c *GinClient) recordJson(ginCtx *gin.Context, traceId string, requestTime 
 	} else {
 		data.RequestUri = "https://" + ginCtx.Request.Host + ginCtx.Request.RequestURI //【请求】请求链接
 	}
-
 	c.record("json", data)
 }
 
 func (c *GinClient) recordXml(ginCtx *gin.Context, traceId string, requestTime time.Time, requestBody []byte, paramsBody gorequest.Params, responseCode int, responseBody string, startTime, endTime int64, ipInfo goip.AnalyseResult) {
-
 	data := ginSLog{
-		TraceId:            traceId,                                                      //【系统】跟踪编号
+		TraceID:            traceId,                                                      //【系统】跟踪编号
 		RequestTime:        requestTime,                                                  //【请求】时间
 		RequestUrl:         ginCtx.Request.RequestURI,                                    //【请求】请求链接
 		RequestApi:         gourl.UriFilterExcludeQueryString(ginCtx.Request.RequestURI), //【请求】请求接口
@@ -117,7 +113,7 @@ func (c *GinClient) recordXml(ginCtx *gin.Context, traceId string, requestTime t
 		RequestUa:          ginCtx.Request.UserAgent(),                                   //【请求】请求UA
 		RequestReferer:     ginCtx.Request.Referer(),                                     //【请求】请求referer
 		RequestUrlQuery:    ginCtx.Request.URL.Query(),                                   //【请求】请求URL参数
-		RequestIp:          ipInfo.Ip,                                                    //【请求】请求客户端Ip
+		RequestIP:          ipInfo.Ip,                                                    //【请求】请求客户端Ip
 		RequestIpCountry:   ipInfo.Country,                                               //【请求】请求客户端城市
 		RequestIpProvince:  ipInfo.Province,                                              //【请求】请求客户端省份
 		RequestIpCity:      ipInfo.City,                                                  //【请求】请求客户端城市
@@ -136,10 +132,8 @@ func (c *GinClient) recordXml(ginCtx *gin.Context, traceId string, requestTime t
 	} else {
 		data.RequestUri = "https://" + ginCtx.Request.Host + ginCtx.Request.RequestURI //【请求】请求链接
 	}
-
 	if len(requestBody) > 0 {
 		data.RequestBody = dorm.XmlEncodeNoError(dorm.XmlDecodeNoError(requestBody)) //【请求】请求内容
 	}
-
 	c.record("xml", data)
 }
