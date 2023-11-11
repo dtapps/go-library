@@ -22,7 +22,7 @@ func NewUptraceMysqlClient(ctx context.Context, config *UptraceClientConfig) (*U
 		return nil, errors.New(fmt.Sprintf("加载驱动失败：%v", err))
 	}
 
-	c.Db = bun.NewDB(sqlDb, mysqldialect.New())
+	c.db = bun.NewDB(sqlDb, mysqldialect.New())
 
 	return c, nil
 }

@@ -27,7 +27,7 @@ func NewZormPostgresClient(ctx context.Context, config *ZormClientConfig) (*Zorm
 		// 避免数据库主动断开连接,造成死连接.MySQL默认wait_timeout 28800秒(8小时)
 		DefaultTxOptions: nil, // 事务隔离级别的默认配置,默认为nil
 	}
-	c.Db, err = zorm.NewDBDao(dbConfig)
+	c.db, err = zorm.NewDBDao(dbConfig)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("连接失败：%v", err))
 	}

@@ -14,7 +14,7 @@ func NewUptracePgsqlClient(ctx context.Context, config *UptraceClientConfig) (*U
 
 	sqlDb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(c.config.Dns)))
 
-	c.Db = bun.NewDB(sqlDb, pgdialect.New())
+	c.db = bun.NewDB(sqlDb, pgdialect.New())
 
 	return c, nil
 }

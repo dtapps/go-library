@@ -18,6 +18,6 @@ type UptraceClientConfig struct {
 // UptraceClient
 // https://bun.uptrace.dev/
 type UptraceClient struct {
-	Db     *bun.DB              // 驱动
+	db     *bun.DB              // 驱动
 	config *UptraceClientConfig // 配置
 }
