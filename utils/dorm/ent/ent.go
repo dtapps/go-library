@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/dtapps/go-library/utils/dorm/ent/user"
+	"github.com/dtapps/go-library/utils/dorm/ent/test"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -73,7 +73,7 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			user.Table: user.ValidColumn,
+			test.Table: test.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

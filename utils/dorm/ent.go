@@ -2,7 +2,6 @@ package dorm
 
 import (
 	"github.com/dtapps/go-library/utils/dorm/ent"
-	_ "github.com/go-sql-driver/mysql"
 )
 
 // EntClientFun *EntClient 驱动
@@ -18,7 +17,8 @@ type EntClientConfig struct {
 }
 
 // EntClient
-// https://Ent.io/
+// https://entgo.io/zh/docs/getting-started
+// https://ent.ryansu.tech/#/zh-cn/getting-started
 type EntClient struct {
 	db     *ent.Client      // 驱动
 	config *EntClientConfig // 配置

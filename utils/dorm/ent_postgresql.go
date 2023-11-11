@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/dtapps/go-library/utils/dorm/ent"
+	_ "github.com/lib/pq"
 )
 
 func NewEntPostgresqlClient(ctx context.Context, config *EntClientConfig) (*EntClient, error) {

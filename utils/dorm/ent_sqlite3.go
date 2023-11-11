@@ -5,17 +5,17 @@ import (
 	"errors"
 	"fmt"
 	"github.com/dtapps/go-library/utils/dorm/ent"
-	_ "github.com/lib/pq"
+	_ "github.com/mattn/go-sqlite3"
 )
 
-const EntPostgresDriver = "postgres"
+const EntSqlite3Driver = "sqlite3"
 
-func NewEntPostgresClient(ctx context.Context, config *EntClientConfig) (*EntClient, error) {
+func NewEntSqlite3Client(ctx context.Context, config *EntClientConfig) (*EntClient, error) {
 
 	var err error
 	c := &EntClient{config: config}
 
-	c.db, err = ent.Open(EntPostgresDriver, c.config.Dns)
+	c.db, err = ent.Open(EntSqlite3Driver, c.config.Dns)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("连接失败：%v", err))
 	}

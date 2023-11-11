@@ -16,7 +16,7 @@ type XormClientConfig struct {
 }
 
 // XormClient
-// https://xorm.io/
+// https://xorm.io/zh/
 type XormClient struct {
 	db     *xorm.Engine      // 驱动
 	config *XormClientConfig // 配置
