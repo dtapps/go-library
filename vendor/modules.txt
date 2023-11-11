@@ -1,3 +1,31 @@
+# ariga.io/atlas v0.15.0
+## explicit; go 1.20
+ariga.io/atlas/schemahcl
+ariga.io/atlas/sql/internal/specutil
+ariga.io/atlas/sql/internal/sqlx
+ariga.io/atlas/sql/migrate
+ariga.io/atlas/sql/mysql
+ariga.io/atlas/sql/mysql/internal/mysqlversion
+ariga.io/atlas/sql/postgres
+ariga.io/atlas/sql/postgres/internal/postgresop
+ariga.io/atlas/sql/schema
+ariga.io/atlas/sql/sqlclient
+ariga.io/atlas/sql/sqlite
+ariga.io/atlas/sql/sqlspec
+ariga.io/atlas/sql/sqltool
+# entgo.io/ent v0.12.4
+## explicit; go 1.20
+entgo.io/ent
+entgo.io/ent/dialect
+entgo.io/ent/dialect/entsql
+entgo.io/ent/dialect/sql
+entgo.io/ent/dialect/sql/schema
+entgo.io/ent/dialect/sql/sqlgraph
+entgo.io/ent/entql
+entgo.io/ent/schema
+entgo.io/ent/schema/edge
+entgo.io/ent/schema/field
+entgo.io/ent/schema/index
 # gitee.com/chunanyong/zorm v1.7.3
 ## explicit; go 1.13
 gitee.com/chunanyong/zorm
@@ -5,6 +33,9 @@ gitee.com/chunanyong/zorm/decimal
 # github.com/MercuryEngineering/CookieMonster v0.0.0-20180304172713-1584578b3403
 ## explicit
 github.com/MercuryEngineering/CookieMonster
+# github.com/agext/levenshtein v1.2.3
+## explicit
+github.com/agext/levenshtein
 # github.com/aliyun/aliyun-oss-go-sdk v3.0.1+incompatible
 ## explicit
 github.com/aliyun/aliyun-oss-go-sdk/oss
@@ -12,6 +43,11 @@ github.com/aliyun/aliyun-oss-go-sdk/oss
 ## explicit; go 1.16
 github.com/allegro/bigcache/v3
 github.com/allegro/bigcache/v3/queue
+# github.com/apparentlymart/go-textseg/v13 v13.0.0
+## explicit; go 1.16
+# github.com/apparentlymart/go-textseg/v15 v15.0.0
+## explicit; go 1.16
+github.com/apparentlymart/go-textseg/v15/textseg
 # github.com/baidubce/bce-sdk-go v0.9.159
 ## explicit; go 1.11
 github.com/baidubce/bce-sdk-go/auth
@@ -90,6 +126,9 @@ github.com/gin-gonic/gin/render
 ## explicit; go 1.12
 github.com/go-ole/go-ole
 github.com/go-ole/go-ole/oleutil
+# github.com/go-openapi/inflect v0.19.0
+## explicit
+github.com/go-openapi/inflect
 # github.com/go-playground/locales v0.14.1
 ## explicit; go 1.17
 github.com/go-playground/locales
@@ -121,15 +160,57 @@ github.com/goccy/go-json/internal/runtime
 # github.com/golang/snappy v0.0.4
 ## explicit
 github.com/golang/snappy
+# github.com/google/go-cmp v0.6.0
+## explicit; go 1.13
+github.com/google/go-cmp/cmp
+github.com/google/go-cmp/cmp/internal/diff
+github.com/google/go-cmp/cmp/internal/flags
+github.com/google/go-cmp/cmp/internal/function
+github.com/google/go-cmp/cmp/internal/value
 # github.com/google/go-querystring v1.1.0
 ## explicit; go 1.10
 github.com/google/go-querystring/query
+# github.com/google/uuid v1.4.0
+## explicit
+github.com/google/uuid
+# github.com/hashicorp/hcl/v2 v2.19.1
+## explicit; go 1.18
+github.com/hashicorp/hcl/v2
+github.com/hashicorp/hcl/v2/ext/customdecode
+github.com/hashicorp/hcl/v2/ext/tryfunc
+github.com/hashicorp/hcl/v2/gohcl
+github.com/hashicorp/hcl/v2/hclparse
+github.com/hashicorp/hcl/v2/hclsyntax
+github.com/hashicorp/hcl/v2/hclwrite
+github.com/hashicorp/hcl/v2/json
+# github.com/jackc/chunkreader/v2 v2.0.1
+## explicit; go 1.12
+github.com/jackc/chunkreader/v2
+# github.com/jackc/pgconn v1.14.1
+## explicit; go 1.12
+github.com/jackc/pgconn
+github.com/jackc/pgconn/internal/ctxwatch
+github.com/jackc/pgconn/stmtcache
+# github.com/jackc/pgio v1.0.0
+## explicit; go 1.12
+github.com/jackc/pgio
 # github.com/jackc/pgpassfile v1.0.0
 ## explicit; go 1.12
 github.com/jackc/pgpassfile
+# github.com/jackc/pgproto3/v2 v2.3.2
+## explicit; go 1.12
+github.com/jackc/pgproto3/v2
 # github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a
 ## explicit; go 1.14
 github.com/jackc/pgservicefile
+# github.com/jackc/pgtype v1.14.0
+## explicit; go 1.13
+github.com/jackc/pgtype
+# github.com/jackc/pgx/v4 v4.18.1
+## explicit; go 1.13
+github.com/jackc/pgx/v4
+github.com/jackc/pgx/v4/internal/sanitize
+github.com/jackc/pgx/v4/stdlib
 # github.com/jackc/pgx/v5 v5.5.0
 ## explicit; go 1.19
 github.com/jackc/pgx/v5
@@ -183,6 +264,9 @@ github.com/lib/pq/scram
 github.com/mattn/go-isatty
 # github.com/mattn/go-sqlite3 v1.14.18
 ## explicit; go 1.16
+# github.com/mitchellh/go-wordwrap v1.0.1
+## explicit; go 1.14
+github.com/mitchellh/go-wordwrap
 # github.com/mitchellh/mapstructure v1.5.0
 ## explicit; go 1.14
 github.com/mitchellh/mapstructure
@@ -252,6 +336,9 @@ github.com/saracen/go7z/headers
 # github.com/saracen/solidblock v0.0.0-20190426153529-45df20abab6f
 ## explicit
 github.com/saracen/solidblock
+# github.com/segmentio/fasthash v1.0.3
+## explicit; go 1.11
+github.com/segmentio/fasthash/fnv1a
 # github.com/shirou/gopsutil v3.21.11+incompatible
 ## explicit
 github.com/shirou/gopsutil/cpu
@@ -316,6 +403,19 @@ github.com/ugorji/go/codec
 github.com/ulikunitz/xz/internal/hash
 github.com/ulikunitz/xz/internal/xlog
 github.com/ulikunitz/xz/lzma
+# github.com/upper/db/v4 v4.7.0
+## explicit; go 1.15
+github.com/upper/db/v4
+github.com/upper/db/v4/adapter/mysql
+github.com/upper/db/v4/adapter/postgresql
+github.com/upper/db/v4/internal/adapter
+github.com/upper/db/v4/internal/cache
+github.com/upper/db/v4/internal/immutable
+github.com/upper/db/v4/internal/reflectx
+github.com/upper/db/v4/internal/sqladapter
+github.com/upper/db/v4/internal/sqladapter/compat
+github.com/upper/db/v4/internal/sqladapter/exql
+github.com/upper/db/v4/internal/sqlbuilder
 # github.com/uptrace/bun v1.1.16
 ## explicit; go 1.19
 github.com/uptrace/bun
@@ -360,6 +460,16 @@ github.com/youmark/pkcs8
 # github.com/yusufpapurcu/wmi v1.2.3
 ## explicit; go 1.16
 github.com/yusufpapurcu/wmi
+# github.com/zclconf/go-cty v1.14.1
+## explicit; go 1.18
+github.com/zclconf/go-cty/cty
+github.com/zclconf/go-cty/cty/convert
+github.com/zclconf/go-cty/cty/ctystrings
+github.com/zclconf/go-cty/cty/function
+github.com/zclconf/go-cty/cty/function/stdlib
+github.com/zclconf/go-cty/cty/gocty
+github.com/zclconf/go-cty/cty/json
+github.com/zclconf/go-cty/cty/set
 # go.mongodb.org/mongo-driver v1.13.0
 ## explicit; go 1.13
 go.mongodb.org/mongo-driver/bson
