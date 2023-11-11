@@ -1,6 +1,7 @@
 package dorm
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	_ "github.com/lib/pq"
@@ -9,7 +10,7 @@ import (
 
 const XormPostgresDriver = "postgres"
 
-func NewXormPostgresClient(config *XormClientConfig) (*XormClient, error) {
+func NewXormPostgresClient(ctx context.Context, config *XormClientConfig) (*XormClient, error) {
 
 	var err error
 	c := &XormClient{config: config}

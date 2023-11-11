@@ -1,6 +1,7 @@
 package dorm
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
@@ -9,7 +10,7 @@ import (
 
 const XormMysqlDriver = "mysql"
 
-func NewXormMysqlClient(config *XormClientConfig) (*XormClient, error) {
+func NewXormMysqlClient(ctx context.Context, config *XormClientConfig) (*XormClient, error) {
 
 	var err error
 	c := &XormClient{config: config}

@@ -1,13 +1,14 @@
 package dorm
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	_ "github.com/lib/pq"
 	"xorm.io/xorm"
 )
 
-func NewXormPostgresqlClient(config *XormClientConfig) (*XormClient, error) {
+func NewXormPostgresqlClient(ctx context.Context, config *XormClientConfig) (*XormClient, error) {
 
 	var err error
 	c := &XormClient{config: config}
