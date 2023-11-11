@@ -1,12 +1,13 @@
 package dorm
 
 import (
+	"context"
 	"gorm.io/driver/postgres"
 	"gorm.io/gen"
 	"gorm.io/gorm"
 )
 
-func NewGormGenPostgresClient(config *GormGenClientConfig) (*GormGenClient, error) {
+func NewGormGenPostgresClient(ctx context.Context, config *GormGenClientConfig) (*GormGenClient, error) {
 
 	c := &GormGenClient{config: config}
 

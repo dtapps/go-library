@@ -1,6 +1,7 @@
 package dorm
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"github.com/dtapps/go-library/utils/gotime"
@@ -10,7 +11,7 @@ import (
 	"time"
 )
 
-func NewGormMysqlClient(config *GormClientConfig) (*GormClient, error) {
+func NewGormMysqlClient(ctx context.Context, config *GormClientConfig) (*GormClient, error) {
 
 	var err error
 	c := &GormClient{config: config}

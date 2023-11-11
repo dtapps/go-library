@@ -1,12 +1,13 @@
 package dorm
 
 import (
+	"context"
 	"gorm.io/driver/mysql"
 	"gorm.io/gen"
 	"gorm.io/gorm"
 )
 
-func NewGormGenMysqlClient(config *GormGenClientConfig) (*GormGenClient, error) {
+func NewGormGenMysqlClient(ctx context.Context, config *GormGenClientConfig) (*GormGenClient, error) {
 
 	c := &GormGenClient{config: config}
 
