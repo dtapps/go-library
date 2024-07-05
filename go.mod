@@ -1,4 +1,4 @@
-module github.com/dtapps/go-library
+module go.dtapp.net/library
 
 go 1.21
 
