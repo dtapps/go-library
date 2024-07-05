@@ -1,7 +1,7 @@
 package gostring
 
 import (
-	"math/rand"
+	"math/rand/v2"
 	"time"
 )
 
@@ -44,11 +44,12 @@ func GenerateRandomNumber(start, end, count int, dFun func(num int) bool) []int 
 	nums := make([]int, 0)
 
 	// 随机数生成器，加入时间戳保证每次生成的随机数不一样
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	seed := time.Now().UnixNano()                          // rand内部运算的随机数
+	r := rand.New(rand.NewPCG(uint64(seed), uint64(seed))) // rand计算得到的随机数
 	for len(nums) < count {
 
 		// 生成随机数
-		num := r.Intn(end-start) + start
+		num := r.IntN(end-start) + start
 
 		// 查重
 		exist := false

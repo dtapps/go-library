@@ -1,7 +1,7 @@
 package gostring
 
 import (
-	"math/rand"
+	"math/rand/v2"
 	"time"
 )
 
@@ -19,7 +19,9 @@ func GenerateRandomStringFunc(length, count int, dFun func(num string) bool) []s
 	startStr := "1"
 	endStr := "9"
 	alphabet := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	rand.Seed(time.Now().UnixNano())
+
+	seed := time.Now().UnixNano()                     // rand内部运算的随机数
+	rand.New(rand.NewPCG(uint64(seed), uint64(seed))) // rand计算得到的随机数
 
 	for {
 		if fI+2 > length {
@@ -50,7 +52,7 @@ func GenerateRandomStringNumber(start, end, count int, alphabet string, length i
 		// 生成随机字符串
 		str := make([]byte, length)
 		for i := range str {
-			str[i] = alphabet[rand.Intn(len(alphabet))]
+			str[i] = alphabet[rand.IntN(len(alphabet))]
 		}
 
 		// 查重

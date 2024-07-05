@@ -1,7 +1,7 @@
 package gostring
 
 import (
-	"github.com/dtapps/go-library/utils/gotime"
+	"go.dtapp.net/library/utils/gotime"
 )
 
 // GenerateId 生成18位编号

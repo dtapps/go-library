@@ -5,7 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gojson"
+	"go.dtapp.net/gojson"
 	"strconv"
 	"strings"
 	"unicode/utf8"

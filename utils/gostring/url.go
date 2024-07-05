@@ -1,7 +1,13 @@
 package gostring
 
 import (
+	"bytes"
 	"strings"
+)
+
+const (
+	prefixHTTP  = "http://"
+	prefixHTTPS = "https://"
 )
 
 // CompleteUrlHttp 补全 URL
@@ -9,19 +15,27 @@ func CompleteUrlHttp(url string) string {
 	if url == "" {
 		return url
 	}
-	if strings.HasPrefix(url, "http://") {
+
+	if strings.HasPrefix(url, prefixHTTP) {
 		return url
 	}
+
+	var buffer bytes.Buffer
+
 	if strings.HasPrefix(url, "//") {
-		url = "http:" + url
+		buffer.WriteString("http:")
+		buffer.WriteString(url)
 	} else if strings.HasPrefix(url, "://") {
-		url = "http" + url
-	} else if strings.HasPrefix(url, "https://") {
-		url = Replace(url, "https://", "http://")
+		buffer.WriteString("http")
+		buffer.WriteString(url)
+	} else if strings.HasPrefix(url, prefixHTTPS) {
+		buffer.WriteString(Replace(url, prefixHTTPS, prefixHTTP))
 	} else {
-		url = "http://" + url
+		buffer.WriteString(prefixHTTP)
+		buffer.WriteString(url)
 	}
-	return url
+
+	return buffer.String()
 }
 
 // CompleteUrlHttps 补全 URL
@@ -29,17 +43,25 @@ func CompleteUrlHttps(url string) string {
 	if url == "" {
 		return url
 	}
-	if strings.HasPrefix(url, "https://") {
+
+	if strings.HasPrefix(url, prefixHTTPS) {
 		return url
 	}
+
+	var buffer bytes.Buffer
+
 	if strings.HasPrefix(url, "//") {
-		url = "https:" + url
+		buffer.WriteString("https:")
+		buffer.WriteString(url)
 	} else if strings.HasPrefix(url, "://") {
-		url = "https" + url
-	} else if strings.HasPrefix(url, "http://") {
-		url = Replace(url, "http://", "https://")
+		buffer.WriteString("https")
+		buffer.WriteString(url)
+	} else if strings.HasPrefix(url, prefixHTTP) {
+		buffer.WriteString(Replace(url, prefixHTTP, prefixHTTPS))
 	} else {
-		url = "https://" + url
+		buffer.WriteString(prefixHTTPS)
+		buffer.WriteString(url)
 	}
-	return url
+
+	return buffer.String()
 }
