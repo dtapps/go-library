@@ -1,6 +1,7 @@
 package gostorage
 
 import (
+	"context"
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/services/bos"
 	"io"
@@ -18,8 +19,7 @@ type Baidu struct {
 
 // NewBaidu 初始化
 // https://cloud.baidu.com/doc/BOS/s/4jwvyry1p
-// https://github.com/baidubce/bce-sdk-go
-func NewBaidu(accessKey string, secretAccessKey, endpoint, bucketName string) *Baidu {
+func NewBaidu(ctx context.Context, accessKey string, secretAccessKey, endpoint, bucketName string) *Baidu {
 	app := &Baidu{AccessKey: accessKey, SecretAccessKey: secretAccessKey, Endpoint: endpoint, BucketName: bucketName}
 	clientConfig := bos.BosClientConfiguration{
 		Ak:               accessKey,
@@ -41,7 +41,7 @@ func (c *Baidu) Bucket(name string) *Baidu {
 // @param file 文件流
 // @param filePath 文件路径
 // @param fileName 文件名称
-func (c *Baidu) PutObject(file io.Reader, filePath, fileName string) (resp FileInfo, err error) {
+func (c *Baidu) PutObject(ctx context.Context, file io.Reader, filePath, fileName string) (resp FileInfo, err error) {
 	objectKey := filePath
 	if fileName != "" {
 		objectKey = filePath + "/" + fileName

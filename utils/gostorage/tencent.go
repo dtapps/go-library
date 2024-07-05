@@ -21,8 +21,7 @@ type Tencent struct {
 
 // NewTencent 初始化
 // https://cloud.tencent.com/document/product/436/31215
-// https://github.com/tencentyun/cos-go-sdk-v5
-func NewTencent(secretID, secretKey, regions, bucketName string) *Tencent {
+func NewTencent(ctx context.Context, secretID, secretKey, regions, bucketName string) *Tencent {
 	app := &Tencent{SecretID: secretID, SecretKey: secretKey, Regions: regions, BucketName: bucketName}
 	u, _ := url.Parse(fmt.Sprintf("https://%s.cos.%s.myqcloud.com", bucketName, regions))
 	su, _ := url.Parse(fmt.Sprintf("https://cos.%s.myqcloud.com", regions))
@@ -38,20 +37,20 @@ func NewTencent(secretID, secretKey, regions, bucketName string) *Tencent {
 }
 
 // Bucket 存储空间
-func (c *Tencent) Bucket(name string) *Tencent {
-	return NewTencent(c.SecretID, c.SecretKey, c.Regions, name)
+func (c *Tencent) Bucket(ctx context.Context, name string) *Tencent {
+	return NewTencent(ctx, c.SecretID, c.SecretKey, c.Regions, name)
 }
 
 // PutObject 上传文件流
 // @param file 文件流
 // @param filePath 文件路径
 // @param fileName 文件名称
-func (c *Tencent) PutObject(file io.Reader, filePath, fileName string) (resp FileInfo, err error) {
+func (c *Tencent) PutObject(ctx context.Context, file io.Reader, filePath, fileName string) (resp FileInfo, err error) {
 	objectKey := filePath
 	if fileName != "" {
 		objectKey = filePath + "/" + fileName
 	}
-	_, err = c.client.Object.Put(context.Background(), objectKey, file, nil)
+	_, err = c.client.Object.Put(ctx, objectKey, file, nil)
 	resp.Path = filePath
 	resp.Name = fileName
 	resp.Url = objectKey

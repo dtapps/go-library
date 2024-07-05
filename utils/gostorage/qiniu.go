@@ -19,8 +19,7 @@ type Qiniu struct {
 
 // NewQiniu 初始化
 // https://developer.qiniu.com/kodo/1238/go
-// https://github.com/qiniu/go-sdk
-func NewQiniu(accessKey string, secretKey string, bucketName string) *Qiniu {
+func NewQiniu(ctx context.Context, accessKey string, secretKey string, bucketName string) *Qiniu {
 	app := &Qiniu{AccessKey: accessKey, SecretKey: secretKey, BucketName: bucketName}
 	app.client = qbox.NewMac(accessKey, secretKey)
 	app.bucket.Scope = bucketName
@@ -38,7 +37,7 @@ func (c *Qiniu) Bucket(name string) *Qiniu {
 // @param file 文件流
 // @param filePath 文件路径
 // @param fileName 文件名称
-func (c *Qiniu) PutObject(file io.Reader, filePath, fileName, acl string) (resp FileInfo, err error) {
+func (c *Qiniu) PutObject(ctx context.Context, file io.Reader, filePath, fileName, acl string) (resp FileInfo, err error) {
 	objectKey := filePath
 	if fileName != "" {
 		objectKey = filePath + "/" + fileName
@@ -56,7 +55,7 @@ func (c *Qiniu) PutObject(file io.Reader, filePath, fileName, acl string) (resp 
 	ret := storage.PutRet{}
 	putExtra := storage.PutExtra{}
 
-	err = formUploader.Put(context.Background(), &ret, c.upToken, objectKey, file, -1, &putExtra)
+	err = formUploader.Put(ctx, &ret, c.upToken, objectKey, file, -1, &putExtra)
 
 	resp.Path = filePath
 	resp.Name = fileName

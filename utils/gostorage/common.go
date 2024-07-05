@@ -2,7 +2,7 @@ package gostorage
 
 // FileInfo 上传文件的信息
 type FileInfo struct {
-	Path string // 文件路径
-	Name string // 文件名称
-	Url  string // 文件地址
+	Path string `json:"path"` // 文件路径
+	Name string `json:"name"` // 文件名称
+	Url  string `json:"url"`  // 文件地址
 }

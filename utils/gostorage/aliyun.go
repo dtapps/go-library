@@ -1,6 +1,7 @@
 package gostorage
 
 import (
+	"context"
 	"errors"
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"io"
@@ -27,8 +28,7 @@ type AliYun struct {
 
 // NewAliYun 初始化
 // https://help.aliyun.com/document_detail/32144.html
-// https://github.com/aliyun/aliyun-oss-go-sdk
-func NewAliYun(config *AliYunConfig) (*AliYun, error) {
+func NewAliYun(ctx context.Context, config *AliYunConfig) (*AliYun, error) {
 	app := &AliYun{}
 	app.accessKeyId = config.AccessKeyId
 	app.accessKeySecret = config.AccessKeySecret
@@ -59,7 +59,7 @@ func NewAliYun(config *AliYunConfig) (*AliYun, error) {
 // @param file 文件流
 // @param filePath 文件路径
 // @param fileName 文件名称
-func (c *AliYun) PutObject(file io.Reader, filePath, fileName string) (resp FileInfo, err error) {
+func (c *AliYun) PutObject(ctx context.Context, file io.Reader, filePath, fileName string) (resp FileInfo, err error) {
 	objectKey := filePath
 	if fileName != "" {
 		objectKey = filePath + "/" + fileName
@@ -75,7 +75,7 @@ func (c *AliYun) PutObject(file io.Reader, filePath, fileName string) (resp File
 // @param localFile 本地文件路径
 // @param filePath 文件路径
 // @param fileName 文件名称
-func (c *AliYun) PutLocalFile(localFilePath, filePath, fileName string) (resp FileInfo, err error) {
+func (c *AliYun) PutLocalFile(ctx context.Context, localFilePath, filePath, fileName string) (resp FileInfo, err error) {
 	if localFilePath == "" {
 		return FileInfo{}, errors.New("localFilePath 不能为空")
 	}
