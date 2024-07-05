@@ -1,7 +1,7 @@
 package gotime
 
 import (
-	"log"
+	"log/slog"
 	"strconv"
 	"strings"
 	"time"
@@ -9,15 +9,19 @@ import (
 
 // Current 获取当前的时间
 func Current() Pro {
+
+	var err error
 	p := NewPro()
-	p.loc, p.Error = time.LoadLocation("Asia/Shanghai")
-	if p.Error != nil {
-		// Docker部署golang应用时时区问题 https://www.ddhigh.com/2018/03/01/golang-docker-timezone.html
-		log.Printf("【gotime】时区错误：%v\n", p.Error)
+
+	p.loc, err = time.LoadLocation("Asia/Shanghai")
+	if err != nil {
+		// TODO 时区错误
+		slog.Error("时区错误", "err", err.Error())
 		p.Time = time.Now().Add(time.Hour * 8)
 	} else {
 		p.Time = time.Now().In(p.loc)
 	}
+
 	return p
 }
 
@@ -31,9 +35,15 @@ func SetCurrent(sTime time.Time) Pro {
 // SetCurrentParse 设置当前的时间
 func SetCurrentParse(str string) Pro {
 
+	var err error
 	p := NewPro()
 
-	p.loc, p.Error = time.LoadLocation("Asia/Shanghai")
+	p.loc, err = time.LoadLocation("Asia/Shanghai")
+	if err != nil {
+		// TODO 时区错误
+		slog.Error("时区错误", "err", err.Error())
+		p.Time = time.Now().Add(time.Hour * 8)
+	}
 
 	layout := DateTimeFormat
 	if str == "" || str == "0" || str == "0000-00-00 00:00:00" || str == "0000-00-00" || str == "00:00:00" {
@@ -83,9 +93,23 @@ func (p Pro) Format() string {
 	return p.Time.Format(DateTimeFormat)
 }
 
+// FormatFilter 今天此刻格式化 带 过滤无效时间
+func (p Pro) FormatFilter() string {
+	if strings.Contains(p.Time.Format(DateTimeFormat), "0001-01-01") {
+		return ""
+	} else {
+		return p.Time.Format(DateTimeFormat)
+	}
+}
+
 // ToDateFormat 今天此刻日期
 func (p Pro) ToDateFormat() string {
 	return p.Time.Format(DateFormat)
+}
+
+// ToDateFormatTime 今天此刻日期
+func (p Pro) ToDateFormatTime() time.Time {
+	return SetCurrentParse(p.Time.Format(DateFormat)).Time
 }
 
 // ToTimeFormat 今天此刻时间

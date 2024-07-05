@@ -13,9 +13,6 @@ const (
 	RFC1036Format       = "Mon, 02 Jan 06 15:04:05 -0700"
 	RFC7231Format       = "Mon, 02 Jan 2006 15:04:05 GMT"
 	DayDateTimeFormat   = "Mon, Jan 2, 2006 3:04 PM"
-	DateTimeFormat      = "2006-01-02 15:04:05"
-	DateFormat          = "2006-01-02"
-	TimeFormat          = "15:04:05"
 	ShortDateTimeFormat = "20060102150405"
 	ShortDateFormat     = "20060102"
 	ShortTimeFormat     = "150405"
@@ -23,9 +20,8 @@ const (
 
 // Pro 结构体
 type Pro struct {
-	Time  time.Time
-	loc   *time.Location
-	Error error
+	Time time.Time
+	loc  *time.Location
 }
 
 // NewPro 初始化结构体
