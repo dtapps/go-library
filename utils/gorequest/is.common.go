@@ -2,18 +2,8 @@ package gorequest
 
 import (
 	"errors"
-	"github.com/gin-gonic/gin"
 	"strings"
 )
-
-func IsWechatMiniProgramRequest(ginCtx *gin.Context, appid string) error {
-	referer := ginCtx.Request.Referer()
-	userAgent := ginCtx.Request.UserAgent()
-	if referer == "" {
-		return errors.New("网络请求没有达到要求")
-	}
-	return isWechatMiniProgramRequestReferer(userAgent, referer, appid)
-}
 
 // https://developers.weixin.qq.com/miniprogram/dev/framework/ability/network.html#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6
 func isWechatMiniProgramRequestReferer(userAgent, referer string, appid string) error {

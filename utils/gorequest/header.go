@@ -1,8 +1,6 @@
 package gorequest
 
-import (
-	"net/url"
-)
+import "net/url"
 
 // Headers 头部信息
 type Headers map[string]string
