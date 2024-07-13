@@ -15,6 +15,7 @@ replace go.dtapp.net/library/utils/gorandom => ../../utils/gorandom
 replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 
 require (
+	go.dtapp.net/library/utils/gojson v0.0.0-00010101000000-000000000000
 	go.dtapp.net/library/utils/gorequest v0.0.0-00010101000000-000000000000
 	go.opentelemetry.io/otel v1.28.0
 	go.opentelemetry.io/otel/trace v1.28.0
@@ -36,7 +37,6 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
-	go.dtapp.net/library/utils/gojson v0.0.0-00010101000000-000000000000 // indirect
 	go.dtapp.net/library/utils/gorandom v0.0.0-00010101000000-000000000000 // indirect
 	go.dtapp.net/library/utils/gostring v0.0.0-00010101000000-000000000000 // indirect
 	go.dtapp.net/library/utils/gotime v0.0.0-00010101000000-000000000000 // indirect

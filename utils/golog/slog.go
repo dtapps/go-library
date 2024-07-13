@@ -2,6 +2,7 @@ package golog
 
 import (
 	"go.dtapp.net/library/utils/gotime"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"io"
 	"log/slog"
 	"os"

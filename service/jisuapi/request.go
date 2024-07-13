@@ -2,6 +2,8 @@ package jisuapi
 
 import (
 	"context"
+	"encoding/json"
+	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
@@ -38,7 +40,7 @@ func (c *Client) request(ctx context.Context, url string, param gorequest.Params
 	}
 
 	// 解析响应
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	if err != nil {
 		c.TraceRecordError(err)
 		c.TraceSetStatus(codes.Error, err.Error())
