@@ -2,8 +2,6 @@ module go.dtapp.net/library/utils/gostorage
 
 go 1.22.4
 
-replace go.dtapp.net/library => ../..
-
 require (
 	github.com/aliyun/aliyun-oss-go-sdk v3.0.2+incompatible
 	github.com/baidubce/bce-sdk-go v0.9.184

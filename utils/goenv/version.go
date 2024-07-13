@@ -1,3 +1,3 @@
-package gomd5
+package goenv
 
 const Version = "1.0.2"

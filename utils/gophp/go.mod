@@ -2,8 +2,6 @@ module go.dtapp.net/library/utils/gophp
 
 go 1.22.4
 
-replace go.dtapp.net/library => ../..
-
 replace go.dtapp.net/library/utils/gostring => ../../utils/gostring
 
 replace go.dtapp.net/library/utils/gotime => ../../utils/gotime

@@ -2,8 +2,6 @@ module go.dtapp.net/library/utils/gojson
 
 go 1.22.4
 
-replace go.dtapp.net/library => ../..
-
 require (
 	github.com/basgys/goxml2json v1.1.0
 	github.com/bytedance/sonic v1.11.9
