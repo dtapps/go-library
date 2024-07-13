@@ -1,7 +1,7 @@
 package wechatopen
 
 const (
-	apiUrl = "https://api.weixin.qq.com"
+	apiUrl = "https://api.weixin.qq.com/"
 )
 
 const (

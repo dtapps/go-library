@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -34,16 +33,17 @@ func newWxaApiWxAembeddedGetOwnListResult(result WxaApiWxAembeddedGetOwnListResp
 // WxaApiWxAembeddedGetOwnList 获取半屏小程序授权列表
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/embedded-management/getOwnList.html
 func (c *Client) WxaApiWxAembeddedGetOwnList(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaApiWxAembeddedGetOwnListResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "wxaapi/wxaembedded/get_own_list")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxaapi/wxaembedded/get_own_list?access_token="+authorizerAccessToken, params, http.MethodGet)
-	if err != nil {
-		return newWxaApiWxAembeddedGetOwnListResult(WxaApiWxAembeddedGetOwnListResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaApiWxAembeddedGetOwnListResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, "wxaapi/wxaembedded/get_own_list?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
 	return newWxaApiWxAembeddedGetOwnListResult(response, request.ResponseBody, request), err
 }
 
@@ -54,6 +54,7 @@ func (resp *WxaApiWxAembeddedGetOwnListResult) ErrcodeInfo() string {
 		return "半屏小程序系统错误"
 	case 89409:
 		return "获取半屏小程序列表参数错误"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -24,15 +23,16 @@ func NewGetCallBackIpResult(result GetCallBackIpResponse, body []byte, http gore
 // CgiBinGetApiDomainIp 获取微信API接口 IP地址
 // https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_the_WeChat_server_IP_address.html
 func (c *Client) CgiBinGetApiDomainIp(ctx context.Context, componentAccessToken string, notMustParams ...gorequest.Params) (*GetCallBackIpResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "cgi-bin/get_api_domain_ip")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/get_api_domain_ip?access_token="+componentAccessToken, params, http.MethodGet)
-	if err != nil {
-		return NewGetCallBackIpResult(GetCallBackIpResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response GetCallBackIpResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, "cgi-bin/get_api_domain_ip?access_token="+componentAccessToken, params, http.MethodGet, &response)
 	return NewGetCallBackIpResult(response, request.ResponseBody, request), err
 }

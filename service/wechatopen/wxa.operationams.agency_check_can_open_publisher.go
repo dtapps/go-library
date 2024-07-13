@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -27,16 +26,17 @@ func newWxaOperationamsAgencyCheckCanOpenPublisherResult(result WxaOperationamsA
 // 检测是否能开通流量主
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/open/AgencyCheckCanOpenPublisher.html
 func (c *Client) WxaOperationamsAgencyCheckCanOpenPublisher(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaOperationamsAgencyCheckCanOpenPublisherResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "wxa/operationams")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/operationams?action=agency_check_can_open_publisher&access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newWxaOperationamsAgencyCheckCanOpenPublisherResult(WxaOperationamsAgencyCheckCanOpenPublisherResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaOperationamsAgencyCheckCanOpenPublisherResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, "wxa/operationams?action=agency_check_can_open_publisher&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaOperationamsAgencyCheckCanOpenPublisherResult(response, request.ResponseBody, request), err
 }
 
@@ -53,6 +53,7 @@ func (resp *WxaOperationamsAgencyCheckCanOpenPublisherResult) ErrcodeInfo() stri
 		return "操作过快"
 	case 2056:
 		return "服务商未在变现专区开通账户"
+	default:
+		return resp.Result.ErrMsg
 	}
-	return "系统繁忙"
 }

@@ -2,8 +2,8 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -55,15 +55,16 @@ func newCgiBinAccountGetAccountBasicInfoResult(result CgiBinAccountGetAccountBas
 // CgiBinAccountGetAccountBasicInfo 获取基本信息
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_Basic_Info/Mini_Program_Information_Settings.html
 func (c *Client) CgiBinAccountGetAccountBasicInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*CgiBinAccountGetAccountBasicInfoResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "cgi-bin/account/getaccountbasicinfo")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/account/getaccountbasicinfo?access_token="+authorizerAccessToken, params, http.MethodGet)
-	if err != nil {
-		return newCgiBinAccountGetAccountBasicInfoResult(CgiBinAccountGetAccountBasicInfoResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response CgiBinAccountGetAccountBasicInfoResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, fmt.Sprintf("cgi-bin/account/getaccountbasicinfo?access_token=%s", authorizerAccessToken), params, http.MethodGet, &response)
 	return newCgiBinAccountGetAccountBasicInfoResult(response, request.ResponseBody, request), err
 }

@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -25,16 +24,17 @@ func newCgiBinComponentSetPrivacySettingResult(result CgiBinComponentSetPrivacyS
 // CgiBinComponentSetPrivacySetting 配置小程序用户隐私保护指引
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/privacy_config/set_privacy_setting.html
 func (c *Client) CgiBinComponentSetPrivacySetting(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*CgiBinComponentSetPrivacySettingResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "cgi-bin/component/setprivacysetting")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/setprivacysetting?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newCgiBinComponentSetPrivacySettingResult(CgiBinComponentSetPrivacySettingResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response CgiBinComponentSetPrivacySettingResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, "cgi-bin/component/setprivacysetting?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newCgiBinComponentSetPrivacySettingResult(response, request.ResponseBody, request), err
 }
 
@@ -53,6 +53,7 @@ func (resp *CgiBinComponentSetPrivacySettingResult) ErrcodeInfo() string {
 		return "现网隐私协议不存在"
 	case 86075:
 		return "现网隐私协议的ext_file_media_id禁止修改"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -35,16 +34,17 @@ func newWxaGetTemplateDraftListResult(result WxaGetTemplateDraftListResponse, bo
 // WxaGetTemplateDraftList 获取代码草稿列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/gettemplatedraftlist.html
 func (c *Client) WxaGetTemplateDraftList(ctx context.Context, componentAccessToken string, notMustParams ...gorequest.Params) (*WxaGetTemplateDraftListResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "wxa/gettemplatedraftlist")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/gettemplatedraftlist?access_token="+componentAccessToken, params, http.MethodGet)
-	if err != nil {
-		return newWxaGetTemplateDraftListResult(WxaGetTemplateDraftListResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaGetTemplateDraftListResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, "wxa/gettemplatedraftlist?access_token="+componentAccessToken, params, http.MethodGet, &response)
 	return newWxaGetTemplateDraftListResult(response, request.ResponseBody, request), err
 }
 
@@ -53,6 +53,7 @@ func (resp *WxaGetTemplateDraftListResult) ErrcodeInfo() string {
 	switch resp.Result.Errcode {
 	case 85064:
 		return "找不到模板"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

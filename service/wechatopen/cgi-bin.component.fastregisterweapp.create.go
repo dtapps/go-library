@@ -3,8 +3,7 @@ package wechatopen
 import (
 	"context"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -26,16 +25,17 @@ func newCgiBinComponentFastRegisterWeAppCreateResult(result CgiBinComponentFastR
 // CgiBinComponentFastRegisterWeAppCreate 快速注册企业小程序
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/register-management/fast-registration-ent/registerMiniprogram.html
 func (c *Client) CgiBinComponentFastRegisterWeAppCreate(ctx context.Context, componentAccessToken string, notMustParams ...gorequest.Params) (*CgiBinComponentFastRegisterWeAppCreateResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "cgi-bin/component/fastregisterweapp")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/fastregisterweapp?action=create&component_access_token="+componentAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newCgiBinComponentFastRegisterWeAppCreateResult(CgiBinComponentFastRegisterWeAppCreateResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response CgiBinComponentFastRegisterWeAppCreateResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, "cgi-bin/component/fastregisterweapp?action=create&component_access_token="+componentAccessToken, params, http.MethodPost, &response)
 	return newCgiBinComponentFastRegisterWeAppCreateResult(response, request.ResponseBody, request), err
 }
 
@@ -64,8 +64,9 @@ func (resp *CgiBinComponentFastRegisterWeAppCreateResult) ErrcodeInfo() string {
 		return "第三方权限集不全，请补充权限集后重试"
 	case 89255:
 		return "code参数无效，请检查 code 长度以及内容是否正确；注意code_type的值不同需要传的 code 长度不一样"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }
 
 // StatusInfo 状态描述

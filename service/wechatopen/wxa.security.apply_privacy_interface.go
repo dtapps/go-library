@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -26,16 +25,17 @@ func newWxaSecurityApplyPrivacyInterfaceResult(result WxaSecurityApplyPrivacyInt
 // WxaSecurityApplyPrivacyInterface 申请接口
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/apply_api/apply_privacy_interface.html
 func (c *Client) WxaSecurityApplyPrivacyInterface(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaSecurityApplyPrivacyInterfaceResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "wxa/security/apply_privacy_interface")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/security/apply_privacy_interface?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newWxaSecurityApplyPrivacyInterfaceResult(WxaSecurityApplyPrivacyInterfaceResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaSecurityApplyPrivacyInterfaceResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, "wxa/security/apply_privacy_interface?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaSecurityApplyPrivacyInterfaceResult(response, request.ResponseBody, request), err
 }
 
@@ -56,6 +56,7 @@ func (resp *WxaSecurityApplyPrivacyInterfaceResult) ErrcodeInfo() string {
 		return "该帐号不可申请，请检查类目是否符合"
 	case 61037:
 		return "需要以ntf-8的编码格式提交"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

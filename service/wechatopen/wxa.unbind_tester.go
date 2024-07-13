@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -25,19 +24,20 @@ func newWxaUnbindTesterResult(result WxaUnbindTesterResponse, body []byte, http 
 // WxaUnbindTester 解除绑定体验者
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_AdminManagement/unbind_tester.html
 func (c *Client) WxaUnbindTester(ctx context.Context, authorizerAccessToken, wechatid, userstr string, notMustParams ...gorequest.Params) (*WxaUnbindTesterResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "wxa/unbind_tester")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	if wechatid != "" {
 		params.Set("wechatid", wechatid)
 	}
 	params.Set("userstr", userstr)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/unbind_tester?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newWxaUnbindTesterResult(WxaUnbindTesterResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaUnbindTesterResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, "wxa/unbind_tester?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaUnbindTesterResult(response, request.ResponseBody, request), err
 }

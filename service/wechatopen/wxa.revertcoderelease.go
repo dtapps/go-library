@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -31,16 +30,17 @@ func newWxaRevertCodeReleaseResult(result WxaRevertCodeReleaseResponse, body []b
 // WxaRevertCodeRelease 小程序版本回退
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/revertCodeRelease.html
 func (c *Client) WxaRevertCodeRelease(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaRevertCodeReleaseResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "wxa/revertcoderelease")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/revertcoderelease?access_token="+authorizerAccessToken, params, http.MethodGet)
-	if err != nil {
-		return newWxaRevertCodeReleaseResult(WxaRevertCodeReleaseResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaRevertCodeReleaseResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, "wxa/revertcoderelease?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
 	return newWxaRevertCodeReleaseResult(response, request.ResponseBody, request), err
 }
 
@@ -49,6 +49,7 @@ func (resp *WxaRevertCodeReleaseResult) ErrcodeInfo() string {
 	switch resp.Result.Errcode {
 	case 40001:
 		return "获取 access_token 时 AppSecret 错误，或者 access_token 无效。请开发者认真比对 AppSecret 的正确性，或查看是否正在为恰当的公众号调用接口"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

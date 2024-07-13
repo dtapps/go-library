@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -34,17 +33,18 @@ func newWxaBusinessGetUserPhoneNumberResult(result WxaBusinessGetUserPhoneNumber
 // WxaBusinessGetUserPhoneNumber code换取用户手机号。 每个 code 只能使用一次，code的有效期为5min
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/phonenumber/phonenumber.getPhoneNumber.html
 func (c *Client) WxaBusinessGetUserPhoneNumber(ctx context.Context, authorizerAccessToken, code string, notMustParams ...gorequest.Params) (*WxaBusinessGetUserPhoneNumberResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "wxa/business/getuserphonenumber")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("code", code)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/business/getuserphonenumber?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newWxaBusinessGetUserPhoneNumberResult(WxaBusinessGetUserPhoneNumberResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaBusinessGetUserPhoneNumberResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, "wxa/business/getuserphonenumber?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaBusinessGetUserPhoneNumberResult(response, request.ResponseBody, request), err
 }
 
@@ -77,6 +77,7 @@ func (resp *WxaBusinessGetUserPhoneNumberResult) ErrcodeInfo() string {
 		return "请勿频繁提交，待上一次操作完成后再提交"
 	case 9402203:
 		return `标准模板ext_json错误，传了不合法的参数， 如果是标准模板库的模板，则ext_json支持的参数仅为{"extAppid":'', "ext": {}, "window": {}}`
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

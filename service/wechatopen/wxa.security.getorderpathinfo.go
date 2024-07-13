@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -35,17 +34,18 @@ func newWxaSecurityGetOrderPathInfoResult(result WxaSecurityGetOrderPathInfoResp
 // WxaSecurityGetOrderPathInfo 获取订单页 path 信息
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/basic-info-management/getOrderPathInfo.html
 func (c *Client) WxaSecurityGetOrderPathInfo(ctx context.Context, authorizerAccessToken string, infoType int, notMustParams ...gorequest.Params) (*WxaSecurityGetOrderPathInfoResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "wxa/security/getorderpathinfo")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("info_type", infoType)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/security/getorderpathinfo?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newWxaSecurityGetOrderPathInfoResult(WxaSecurityGetOrderPathInfoResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaSecurityGetOrderPathInfoResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, "wxa/security/getorderpathinfo?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaSecurityGetOrderPathInfoResult(response, request.ResponseBody, request), err
 }
 
@@ -54,6 +54,7 @@ func (resp *WxaSecurityGetOrderPathInfoResult) ErrcodeInfo() string {
 	switch resp.Result.Errcode {
 	case 61041:
 		return "订单页 path 未设置"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

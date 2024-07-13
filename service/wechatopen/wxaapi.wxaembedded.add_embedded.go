@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -25,16 +24,17 @@ func newWxaApiWxaembeddedAddEmbeddedResult(result WxaApiWxaembeddedAddEmbeddedRe
 // WxaApiWxaembeddedAddEmbedded 添加半屏小程序
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/embedded-management/addEmbedded.html
 func (c *Client) WxaApiWxaembeddedAddEmbedded(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaApiWxaembeddedAddEmbeddedResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "wxaapi/wxaembedded/add_embedded")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxaapi/wxaembedded/add_embedded?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newWxaApiWxaembeddedAddEmbeddedResult(WxaApiWxaembeddedAddEmbeddedResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaApiWxaembeddedAddEmbeddedResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, "wxaapi/wxaembedded/add_embedded?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaApiWxaembeddedAddEmbeddedResult(response, request.ResponseBody, request), err
 }
 
@@ -81,6 +81,7 @@ func (resp *WxaApiWxaembeddedAddEmbeddedResult) ErrcodeInfo() string {
 		return "授权次数到达上限"
 	case 89419:
 		return "获取半屏小程序每日授权次数失败"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

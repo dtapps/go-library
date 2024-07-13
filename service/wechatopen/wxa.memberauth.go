@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -28,16 +27,17 @@ func newWxaMemberAuthResult(result WxaMemberAuthResponse, body []byte, http gore
 // WxaMemberAuth 获取体验者列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_AdminManagement/memberauth.html
 func (c *Client) WxaMemberAuth(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaMemberAuthResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "wxa/memberauth")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("action", "get_experiencer")
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/memberauth?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newWxaMemberAuthResult(WxaMemberAuthResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaMemberAuthResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, "wxa/memberauth?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaMemberAuthResult(response, request.ResponseBody, request), err
 }

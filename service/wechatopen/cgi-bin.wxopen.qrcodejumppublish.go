@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -25,17 +24,18 @@ func newCgiBinWxOpenQrCodeJumpPublishResult(result CgiBinWxOpenQrCodeJumpPublish
 // CgiBinWxOpenQrCodeJumpPublish 发布已设置的二维码规则
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumppublish.html
 func (c *Client) CgiBinWxOpenQrCodeJumpPublish(ctx context.Context, authorizerAccessToken, prefix string, notMustParams ...gorequest.Params) (*CgiBinWxOpenQrCodeJumpPublishResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "cgi-bin/wxopen/qrcodejumppublish")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("prefix", prefix)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/wxopen/qrcodejumppublish?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newCgiBinWxOpenQrCodeJumpPublishResult(CgiBinWxOpenQrCodeJumpPublishResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response CgiBinWxOpenQrCodeJumpPublishResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, "cgi-bin/wxopen/qrcodejumppublish?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newCgiBinWxOpenQrCodeJumpPublishResult(response, request.ResponseBody, request), err
 }
 
@@ -52,6 +52,7 @@ func (resp *CgiBinWxOpenQrCodeJumpPublishResult) ErrcodeInfo() string {
 		return "数据异常，请删除后重新添加"
 	case 886000:
 		return "本月发布次数达到上线（100次）"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -44,15 +43,16 @@ func newWxaMediaCheckAsyncResult(result WxaMediaCheckAsyncResponse, body []byte,
 // WxaMediaCheckAsync 音视频内容安全识别
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/sec-center/sec-check/mediaCheckAsync.html
 func (c *Client) WxaMediaCheckAsync(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaMediaCheckAsyncResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "wxa/media_check_async")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/media_check_async?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newWxaMediaCheckAsyncResult(WxaMediaCheckAsyncResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaMediaCheckAsyncResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, "wxa/media_check_async?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaMediaCheckAsyncResult(response, request.ResponseBody, request), err
 }

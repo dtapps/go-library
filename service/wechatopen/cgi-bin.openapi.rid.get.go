@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -33,18 +32,19 @@ func newCgiBinOpenapiRidGetResult(result CgiBinOpenapiRidGetResponse, body []byt
 // CgiBinOpenapiRidGet 查询rid信息
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/openapi/getRidInfo.html
 func (c *Client) CgiBinOpenapiRidGet(ctx context.Context, authorizerAccessToken, rid string, notMustParams ...gorequest.Params) (*CgiBinOpenapiRidGetResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "cgi-bin/openapi/rid/get")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	if rid != "" {
 		params.Set("rid", rid)
 	}
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/openapi/rid/get?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newCgiBinOpenapiRidGetResult(CgiBinOpenapiRidGetResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response CgiBinOpenapiRidGetResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, "cgi-bin/openapi/rid/get?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newCgiBinOpenapiRidGetResult(response, request.ResponseBody, request), err
 }

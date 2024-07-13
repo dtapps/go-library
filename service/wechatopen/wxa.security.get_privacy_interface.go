@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -36,16 +35,17 @@ func newWxaSecurityGetPrivacyInterfaceResult(result WxaSecurityGetPrivacyInterfa
 // WxaSecurityGetPrivacyInterface 获取接口列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/apply_api/get_privacy_interface.html
 func (c *Client) WxaSecurityGetPrivacyInterface(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaSecurityGetPrivacyInterfaceResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "wxa/security/get_privacy_interface")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/security/get_privacy_interface?access_token="+authorizerAccessToken, params, http.MethodGet)
-	if err != nil {
-		return newWxaSecurityGetPrivacyInterfaceResult(WxaSecurityGetPrivacyInterfaceResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaSecurityGetPrivacyInterfaceResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, "wxa/security/get_privacy_interface?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
 	return newWxaSecurityGetPrivacyInterfaceResult(response, request.ResponseBody, request), err
 }
 
@@ -54,6 +54,7 @@ func (resp *WxaSecurityGetPrivacyInterfaceResult) ErrcodeInfo() string {
 	switch resp.Result.Errcode {
 	case 61031:
 		return "审核中，请不要重复申请"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

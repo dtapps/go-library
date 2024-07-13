@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -29,17 +28,18 @@ func newWxaGetAuditStatusResult(result WxaGetAuditStatusResponse, body []byte, h
 // WxaGetAuditStatus 查询指定发布审核单的审核状态
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_auditstatus.html
 func (c *Client) WxaGetAuditStatus(ctx context.Context, authorizerAccessToken string, auditid int64, notMustParams ...gorequest.Params) (*WxaGetAuditStatusResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "wxa/get_auditstatus")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("auditid", auditid)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/get_auditstatus?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newWxaGetAuditStatusResult(WxaGetAuditStatusResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaGetAuditStatusResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, "wxa/get_auditstatus?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaGetAuditStatusResult(response, request.ResponseBody, request), err
 }
 
@@ -52,6 +52,7 @@ func (resp *WxaGetAuditStatusResult) ErrcodeInfo() string {
 		return "不存在第三方的已经提交的代码"
 	case 85012:
 		return "无效的审核 id"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

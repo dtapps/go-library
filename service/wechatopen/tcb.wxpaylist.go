@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -33,16 +32,17 @@ func newTckWxPayListResult(result TckWxPayListResponse, body []byte, http gorequ
 // TckWxPayList 获取授权绑定的商户号列表
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/cloudbase-common/wechatpay/getWechatPayList.html
 func (c *Client) TckWxPayList(ctx context.Context, componentAccessToken string, notMustParams ...gorequest.Params) (*TckWxPayListResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "tcb/wxpaylist")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/tcb/wxpaylist?access_token="+componentAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newTckWxPayListResult(TckWxPayListResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response TckWxPayListResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, "tcb/wxpaylist?access_token="+componentAccessToken, params, http.MethodPost, &response)
 	return newTckWxPayListResult(response, request.ResponseBody, request), err
 }
 
@@ -53,6 +53,7 @@ func (resp *TckWxPayListResult) ErrcodeInfo() string {
 		return "找不到草稿"
 	case 85065:
 		return "模板库已满"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

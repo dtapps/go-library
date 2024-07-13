@@ -5,9 +5,9 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/base64"
+	"encoding/json"
 	"errors"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 	"strings"
 )
@@ -31,21 +31,21 @@ func newSnsComponentJsCode2sessionResult(result SnsComponentJsCode2sessionRespon
 // SnsComponentJsCode2session 小程序登录
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/others/WeChat_login.html
 func (c *Client) SnsComponentJsCode2session(ctx context.Context, componentAccessToken, authorizerAppid, jsCode string, notMustParams ...gorequest.Params) (*SnsComponentJsCode2sessionResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, "sns/component/jscode2session")
+	defer span.End()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("appid", authorizerAppid)                       // 小程序的 appId
-	params.Set("js_code", jsCode)                              // wx.login 获取的 code
-	params.Set("grant_type", "authorization_code")             // 填 authorization_code
-	params.Set("component_appid", c.config.componentAppId)     // 第三方平台 appid
-	params.Set("component_access_token", componentAccessToken) // 第三方平台的component_access_token
+	params.Set("appid", authorizerAppid)                 // 小程序的 AppID
+	params.Set("grant_type", "authorization_code")       // 填 authorization_code
+	params.Set("component_appid", c.GetComponentAppId()) // 第三方平台 appid
+	params.Set("js_code", jsCode)                        // wx.login 获取的 code
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/sns/component/jscode2session", params, http.MethodGet)
-	if err != nil {
-		return newSnsComponentJsCode2sessionResult(SnsComponentJsCode2sessionResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response SnsComponentJsCode2sessionResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, span, "sns/component/jscode2session?component_access_token="+componentAccessToken, params, http.MethodGet, &response)
 	return newSnsComponentJsCode2sessionResult(response, request.ResponseBody, request), err
 }
 
@@ -104,7 +104,7 @@ func (r *SnsComponentJsCode2sessionResult) UserInfo(param UserInfo) *UserInfoRes
 	if err != nil {
 		return newUserInfoResult(response, err)
 	}
-	err = gojson.Unmarshal(cipherText, &response)
+	err = json.Unmarshal(cipherText, &response)
 	if err != nil {
 		return newUserInfoResult(response, err)
 	}
@@ -136,7 +136,7 @@ func DecryptionUserInfo(param UserInfo) *UserInfoResult {
 	if err != nil {
 		return newUserInfoResult(response, err)
 	}
-	err = gojson.Unmarshal(cipherText, &response)
+	err = json.Unmarshal(cipherText, &response)
 	if err != nil {
 		return newUserInfoResult(response, err)
 	}
