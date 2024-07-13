@@ -2,8 +2,7 @@ package pinduoduo
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type OrderListRangeGetResponse struct {
@@ -72,15 +71,16 @@ func newOrderListRangeGetResult(result OrderListRangeGetResponse, body []byte, h
 // OrderListRangeGet 用时间段查询推广订单接口
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.order.list.range.get
 func (c *Client) OrderListRangeGet(ctx context.Context, notMustParams ...gorequest.Params) (*OrderListRangeGetResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "pdd.ddk.order.list.range.get")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := NewParamsWithType("pdd.ddk.order.list.range.get", notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, params)
-	if err != nil {
-		return newOrderListRangeGetResult(OrderListRangeGetResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response OrderListRangeGetResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, params, &response)
 	return newOrderListRangeGetResult(response, request.ResponseBody, request), err
 }

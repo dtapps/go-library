@@ -2,8 +2,7 @@ package pinduoduo
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type PddDdkOauthCashGiftDataQueryResponse struct {
@@ -46,18 +45,19 @@ func newPddDdkOauthCashGiftDataQueryResult(result PddDdkOauthCashGiftDataQueryRe
 	return &PddDdkOauthCashGiftDataQueryResult{Result: result, Body: body, Http: http}
 }
 
-// DataQuery 查询多多礼金效果数据
+// OauthCashGiftDataQuery 查询多多礼金效果数据
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.cashgift.data.query
-func (c *PddDdkOauthCashGiftApi) DataQuery(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthCashGiftDataQueryResult, error) {
+func (c *Client) OauthCashGiftDataQuery(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthCashGiftDataQueryResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "pdd.ddk.oauth.cashgift.data.query")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.cashgift.data.query", notMustParams...)
+
 	// 请求
-	request, err := c.client.request(ctx, params)
-	if err != nil {
-		return newPddDdkOauthCashGiftDataQueryResult(PddDdkOauthCashGiftDataQueryResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response PddDdkOauthCashGiftDataQueryResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, params, &response)
 	return newPddDdkOauthCashGiftDataQueryResult(response, request.ResponseBody, request), err
 }

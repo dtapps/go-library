@@ -2,8 +2,7 @@ package pinduoduo
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type GoodsOptGetResponse struct {
@@ -30,16 +29,17 @@ func newGoodsOptGetResult(result GoodsOptGetResponse, body []byte, http goreques
 // GoodsOptGet 查询商品标签列表
 // https://open.pinduoduo.com/application/document/api?id=pdd.goods.opt.get
 func (c *Client) GoodsOptGet(ctx context.Context, parentOptId int, notMustParams ...gorequest.Params) (*GoodsOptGetResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "pdd.goods.opt.get")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := NewParamsWithType("pdd.goods.opt.get", notMustParams...)
 	params.Set("parent_opt_id", parentOptId)
+
 	// 请求
-	request, err := c.request(ctx, params)
-	if err != nil {
-		return newGoodsOptGetResult(GoodsOptGetResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response GoodsOptGetResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, params, &response)
 	return newGoodsOptGetResult(response, request.ResponseBody, request), err
 }

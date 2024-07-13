@@ -2,8 +2,8 @@ package pinduoduo
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gojson"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type CmsPromUrlGenerateResponse struct {
@@ -62,17 +62,18 @@ func newCmsPromUrlGenerateResult(result CmsPromUrlGenerateResponse, body []byte,
 // CmsPromUrlGenerate 生成商城-频道推广链接
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.cms.prom.url.generate
 func (c *Client) CmsPromUrlGenerate(ctx context.Context, notMustParams ...gorequest.Params) (*CmsPromUrlGenerateResult, CmsPromUrlGenerateError, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "pdd.ddk.cms.prom.url.generate")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := NewParamsWithType("pdd.ddk.cms.prom.url.generate", notMustParams...)
 	params.Set("p_id_list", []string{c.GetPid()})
+
 	// 请求
-	request, err := c.request(ctx, params)
-	if err != nil {
-		return newCmsPromUrlGenerateResult(CmsPromUrlGenerateResponse{}, request.ResponseBody, request), CmsPromUrlGenerateError{}, err
-	}
-	// 定义
 	var response CmsPromUrlGenerateResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, params, &response)
 	var responseError CmsPromUrlGenerateError
 	err = gojson.Unmarshal(request.ResponseBody, &responseError)
 	return newCmsPromUrlGenerateResult(response, request.ResponseBody, request), responseError, err

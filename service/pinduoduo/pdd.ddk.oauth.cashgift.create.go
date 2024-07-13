@@ -2,8 +2,7 @@ package pinduoduo
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type PddDdkOauthCashGiftCreateResponse struct {
@@ -23,18 +22,19 @@ func newPddDdkOauthCashGiftCreateResult(result PddDdkOauthCashGiftCreateResponse
 	return &PddDdkOauthCashGiftCreateResult{Result: result, Body: body, Http: http}
 }
 
-// Create 创建多多礼金
+// OauthCashGiftCreate 创建多多礼金
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.cashgift.create
-func (c *PddDdkOauthCashGiftApi) Create(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthCashGiftCreateResult, error) {
+func (c *Client) OauthCashGiftCreate(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthCashGiftCreateResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "pdd.ddk.oauth.cashgift.create")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.cashgift.create", notMustParams...)
+
 	// 请求
-	request, err := c.client.request(ctx, params)
-	if err != nil {
-		return newPddDdkOauthCashGiftCreateResult(PddDdkOauthCashGiftCreateResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response PddDdkOauthCashGiftCreateResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, params, &response)
 	return newPddDdkOauthCashGiftCreateResult(response, request.ResponseBody, request), err
 }

@@ -2,8 +2,7 @@ package pinduoduo
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type PddDdkOauthCmsUrlGenerateResponse struct {
@@ -57,18 +56,19 @@ func newPddDdkOauthCmsUrlGenerateResult(result PddDdkOauthCmsUrlGenerateResponse
 	return &PddDdkOauthCmsUrlGenerateResult{Result: result, Body: body, Http: http}
 }
 
-// UrlGenerate 生成商城推广链接接口
+// OauthCmsUrlGenerate 生成商城推广链接接口
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.cms.prom.url.generate
-func (c *PddDdkOauthCmsApi) UrlGenerate(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthCmsUrlGenerateResult, error) {
+func (c *Client) OauthCmsUrlGenerate(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthCmsUrlGenerateResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "pdd.ddk.oauth.cms.prom.url.generate")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.cms.prom.url.generate", notMustParams...)
+
 	// 请求
-	request, err := c.client.request(ctx, params)
-	if err != nil {
-		return newPddDdkOauthCmsUrlGenerateResult(PddDdkOauthCmsUrlGenerateResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response PddDdkOauthCmsUrlGenerateResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, params, &response)
 	return newPddDdkOauthCmsUrlGenerateResult(response, request.ResponseBody, request), err
 }

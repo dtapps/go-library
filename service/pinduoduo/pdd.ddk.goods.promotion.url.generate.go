@@ -2,8 +2,7 @@ package pinduoduo
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type GoodsPromotionUrlGenerateResponse struct {
@@ -56,16 +55,17 @@ func newGoodsPromotionUrlGenerateResult(result GoodsPromotionUrlGenerateResponse
 // GoodsPromotionUrlGenerate 多多进宝推广链接生成
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.promotion.url.generate
 func (c *Client) GoodsPromotionUrlGenerate(ctx context.Context, notMustParams ...gorequest.Params) (*GoodsPromotionUrlGenerateResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "pdd.ddk.goods.promotion.url.generate")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.promotion.url.generate", notMustParams...)
 	params.Set("p_id", c.GetPid())
+
 	// 请求
-	request, err := c.request(ctx, params)
-	if err != nil {
-		return newGoodsPromotionUrlGenerateResult(GoodsPromotionUrlGenerateResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response GoodsPromotionUrlGenerateResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, params, &response)
 	return newGoodsPromotionUrlGenerateResult(response, request.ResponseBody, request), err
 }

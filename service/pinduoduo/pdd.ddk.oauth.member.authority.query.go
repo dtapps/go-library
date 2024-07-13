@@ -2,8 +2,7 @@ package pinduoduo
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type PddDdkOauthMemberAuthorityQueryResponse struct {
@@ -65,18 +64,19 @@ func newPddDdkOauthMemberAuthorityQueryResult(result PddDdkOauthMemberAuthorityQ
 	return &PddDdkOauthMemberAuthorityQueryResult{Result: result, Body: body, Http: http}
 }
 
-// AuthorityQuery 查询是否绑定备案
+// OauthMemberAuthorityQuery 查询是否绑定备案
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.member.authority.query
-func (c *PddDdkOauthMemberApi) AuthorityQuery(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthMemberAuthorityQueryResult, error) {
+func (c *Client) OauthMemberAuthorityQuery(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthMemberAuthorityQueryResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "pdd.ddk.oauth.member.authority.query")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.member.authority.query", notMustParams...)
+
 	// 请求
-	request, err := c.client.request(ctx, params)
-	if err != nil {
-		return newPddDdkOauthMemberAuthorityQueryResult(PddDdkOauthMemberAuthorityQueryResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response PddDdkOauthMemberAuthorityQueryResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, params, &response)
 	return newPddDdkOauthMemberAuthorityQueryResult(response, request.ResponseBody, request), err
 }

@@ -2,8 +2,7 @@ package pinduoduo
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type PddDdkOauthPidMediaIdBindResponse struct {
@@ -65,18 +64,19 @@ func newPddDdkOauthPidMediaIdBindResult(result PddDdkOauthPidMediaIdBindResponse
 	return &PddDdkOauthPidMediaIdBindResult{Result: result, Body: body, Http: http}
 }
 
-// MediaIdBind 批量绑定推广位的媒体id
+// OauthPidMediaIdBind 批量绑定推广位的媒体id
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.pid.mediaid.bind
-func (c *PddDdkOauthPidApi) MediaIdBind(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthPidMediaIdBindResult, error) {
+func (c *Client) OauthPidMediaIdBind(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthPidMediaIdBindResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "pdd.ddk.oauth.pid.mediaid.bind")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.pid.mediaid.bind", notMustParams...)
+
 	// 请求
-	request, err := c.client.request(ctx, params)
-	if err != nil {
-		return newPddDdkOauthPidMediaIdBindResult(PddDdkOauthPidMediaIdBindResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response PddDdkOauthPidMediaIdBindResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, params, &response)
 	return newPddDdkOauthPidMediaIdBindResult(response, request.ResponseBody, request), err
 }

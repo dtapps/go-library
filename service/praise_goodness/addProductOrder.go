@@ -2,8 +2,7 @@ package praise_goodness
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -33,6 +32,11 @@ func newAddProductOrderResult(result AddProductOrderResponse, body []byte, http 
 // area = 归属地，填省份，如:山东，北京 ，内蒙古，黑龙江，重庆 填:auto,系统自动识别归属地
 // notifyurl = 回调通知地址
 func (c *Client) AddProductOrder(ctx context.Context, Type int64, mobile string, tradeID string, amount int64, official int64, area string, notifyurl string, notMustParams ...gorequest.Params) (*AddProductOrderResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "api/order/addProductOrder")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("mch_id", c.GetMchID()) // 商户编号 (平台提供)
@@ -43,13 +47,11 @@ func (c *Client) AddProductOrder(ctx context.Context, Type int64, mobile string,
 	params.Set("official", official)   // 运营商 1 :中国移动 2 :中国联通 3 :中国电信
 	params.Set("area", area)           // 归属地，填省份，如:山东，北京 ，内蒙古，黑龙江，重庆 填:auto,系统自动识别归属地
 	params.Set("notifyurl", notifyurl) // 回调通知地址
-	// 请求
-	request, err := c.request(ctx, "api/order/addProductOrder", params, http.MethodPost)
-	if err != nil {
-		return newAddProductOrderResult(AddProductOrderResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
+
+	// 响应
 	var response AddProductOrderResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+
+	// 请求
+	request, err := c.request(ctx, "api/order/addProductOrder", params, http.MethodPost, &response)
 	return newAddProductOrderResult(response, request.ResponseBody, request), err
 }

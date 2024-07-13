@@ -2,12 +2,12 @@ package meituan
 
 import (
 	"context"
-	"github.com/gin-gonic/gin"
+	"go.dtapp.net/library/utils/gojson"
 	"net/http"
 )
 
-// ResponseServeHttpOrder 返回参数
-type ResponseServeHttpOrder struct {
+// ServeHttpOrderHttpRequest 请求参数
+type ServeHttpOrderHttpRequest struct {
 	Smstitle            string `json:"smstitle,omitempty"`            // 订单标题
 	Quantity            string `json:"quantity,omitempty"`            // 订单数量
 	Orderid             string `json:"orderid,omitempty"`             // 订单id
@@ -36,26 +36,25 @@ type ResponseServeHttpOrder struct {
 	EncryptionVoucherId string `json:"encryptionVoucherId,omitempty"` // 消费券加密券ID
 }
 
-// ServeHttpOrder 订单回推接口（新版）
+// ServeHttpOrderHttpResponse 返回参数
+type ServeHttpOrderHttpResponse struct {
+	Errcode int    `json:"errcode"`
+	Errmsg  string `json:"errmsg"`
+}
+
+// ServeHttpOrderHttp 订单回推接口（新版）
 // https://union.meituan.com/v2/apiDetail?id=22
-func (c *Client) ServeHttpOrder(ctx context.Context, gCtx *gin.Context) (validateJson ResponseServeHttpOrder, err error) {
-	// 声明接收的变量
-	err = gCtx.ShouldBind(&validateJson)
+func (c *Client) ServeHttpOrderHttp(ctx context.Context, w http.ResponseWriter, r *http.Request) (validateJson ServeHttpOrderHttpRequest, err error) {
+	err = gojson.NewDecoder(r.Body).Decode(&validateJson)
 	return
 }
 
-// Success 数据正常
-func (r *ResponseServeHttpOrder) Success(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"errcode": 0,
-		"errmsg":  "ok",
-	})
+// Success 返回正常
+func (r *ServeHttpOrderHttpRequest) Success() ServeHttpOrderHttpResponse {
+	return ServeHttpOrderHttpResponse{0, "ok"}
 }
 
-// Error 数据错误
-func (r *ResponseServeHttpOrder) Error(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"errcode": 1,
-		"errmsg":  "err",
-	})
+// Error 返回错误
+func (r *ServeHttpOrderHttpRequest) Error() ServeHttpOrderHttpResponse {
+	return ServeHttpOrderHttpResponse{1, "err"}
 }

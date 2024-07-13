@@ -2,8 +2,7 @@ package pinduoduo
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type GoodsSearchResponse struct {
@@ -94,16 +93,17 @@ func newGoodsSearchResult(result GoodsSearchResponse, body []byte, http goreques
 // GoodsSearch 多多进宝商品查询
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.search
 func (c *Client) GoodsSearch(ctx context.Context, notMustParams ...gorequest.Params) (*GoodsSearchResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "pdd.ddk.goods.search")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.search", notMustParams...)
 	params.Set("pid", c.GetPid())
+
 	// 请求
-	request, err := c.request(ctx, params)
-	if err != nil {
-		return newGoodsSearchResult(GoodsSearchResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response GoodsSearchResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, params, &response)
 	return newGoodsSearchResult(response, request.ResponseBody, request), err
 }

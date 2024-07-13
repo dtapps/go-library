@@ -2,8 +2,7 @@ package meituan
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -28,16 +27,17 @@ func newPoiDistrictResult(result PoiDistrictResponse, body []byte, http goreques
 // PoiDistrict 基础数据 - 城市的行政区接口
 // https://openapi.meituan.com/#api-0.%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE-GetHttpsOpenapiMeituanComPoiDistrictCityid1
 func (c *Client) PoiDistrict(ctx context.Context, cityID int, notMustParams ...gorequest.Params) (*PoiDistrictResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "poi/district")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("cityid", cityID)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/poi/district", params, http.MethodGet)
-	if err != nil {
-		return newPoiDistrictResult(PoiDistrictResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response PoiDistrictResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "poi/district", params, http.MethodGet, &response)
 	return newPoiDistrictResult(response, request.ResponseBody, request), err
 }

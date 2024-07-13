@@ -2,8 +2,7 @@ package meituan
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -66,17 +65,18 @@ func newApiOrderResult(result ApiOrderResponse, body []byte, http gorequest.Resp
 // ApiOrder 单订单查询接口（新版）
 // https://union.meituan.com/v2/apiDetail?id=24
 func (c *Client) ApiOrder(ctx context.Context, notMustParams ...gorequest.Params) (*ApiOrderResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "api/order")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appkey", c.GetAppKey())
 	params.Set("sign", c.getSign(c.GetSecret(), params))
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/api/order", params, http.MethodGet)
-	if err != nil {
-		return newApiOrderResult(ApiOrderResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response ApiOrderResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "api/order", params, http.MethodGet, &response)
 	return newApiOrderResult(response, request.ResponseBody, request), err
 }

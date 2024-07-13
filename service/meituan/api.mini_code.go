@@ -2,8 +2,7 @@ package meituan
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -26,17 +25,18 @@ func newApiMiniCodeResult(result ApiMiniCodeResponse, body []byte, http goreques
 // ApiMiniCode 小程序生成二维码（新版）
 // https://union.meituan.com/v2/apiDetail?id=26
 func (c *Client) ApiMiniCode(ctx context.Context, notMustParams ...gorequest.Params) (*ApiMiniCodeResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "api/miniCode")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appkey", c.GetAppKey()) // 媒体名称，可在推广者备案-媒体管理中查询
 	params.Set("sign", c.getSign(c.GetSecret(), params))
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/api/miniCode", params, http.MethodGet)
-	if err != nil {
-		return newApiMiniCodeResult(ApiMiniCodeResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response ApiMiniCodeResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "api/miniCode", params, http.MethodGet, &response)
 	return newApiMiniCodeResult(response, request.ResponseBody, request), err
 }

@@ -1,7 +1,7 @@
 package meituan
 
 const (
-	apiUrl = "https://openapi.meituan.com"
+	apiUrl = "https://openapi.meituan.com/"
 )
 
 const (

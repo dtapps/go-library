@@ -2,8 +2,7 @@ package pinduoduo
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type PddDdkOauthGoodsDetailResponse struct {
@@ -65,18 +64,19 @@ func newPddDdkOauthGoodsDetailResult(result PddDdkOauthGoodsDetailResponse, body
 	return &PddDdkOauthGoodsDetailResult{Result: result, Body: body, Http: http}
 }
 
-// Detail 多多进宝商品详情查询
+// OauthGoodsDetail 多多进宝商品详情查询
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.goods.detail
-func (c *PddDdkOauthGoodsApi) Detail(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthGoodsDetailResult, error) {
+func (c *Client) OauthGoodsDetail(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthGoodsDetailResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "pdd.ddk.oauth.goods.detail")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.goods.detail", notMustParams...)
+
 	// 请求
-	request, err := c.client.request(ctx, params)
-	if err != nil {
-		return newPddDdkOauthGoodsDetailResult(PddDdkOauthGoodsDetailResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response PddDdkOauthGoodsDetailResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, params, &response)
 	return newPddDdkOauthGoodsDetailResult(response, request.ResponseBody, request), err
 }

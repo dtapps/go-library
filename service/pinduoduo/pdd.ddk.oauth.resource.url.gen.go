@@ -2,8 +2,7 @@ package pinduoduo
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type PddDdkOauthResourceUrlGenResponse struct {
@@ -65,18 +64,19 @@ func newPddDdkOauthResourceUrlGenResult(result PddDdkOauthResourceUrlGenResponse
 	return &PddDdkOauthResourceUrlGenResult{Result: result, Body: body, Http: http}
 }
 
-// UrlGen 拼多多主站频道推广接口
+// OauthResourceUrlGen 拼多多主站频道推广接口
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.resource.url.gen
-func (c *PddDdkOauthResourceApi) UrlGen(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthResourceUrlGenResult, error) {
+func (c *Client) OauthResourceUrlGen(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthResourceUrlGenResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "pdd.ddk.oauth.resource.url.gen")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.resource.url.gen", notMustParams...)
+
 	// 请求
-	request, err := c.client.request(ctx, params)
-	if err != nil {
-		return newPddDdkOauthResourceUrlGenResult(PddDdkOauthResourceUrlGenResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response PddDdkOauthResourceUrlGenResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, params, &response)
 	return newPddDdkOauthResourceUrlGenResult(response, request.ResponseBody, request), err
 }

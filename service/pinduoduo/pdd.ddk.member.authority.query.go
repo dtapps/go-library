@@ -2,8 +2,7 @@ package pinduoduo
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type MemberAuthorityQueryResponse struct {
@@ -26,16 +25,17 @@ func newMemberAuthorityQueryResult(result MemberAuthorityQueryResponse, body []b
 // MemberAuthorityQuery 查询是否绑定备案
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.search
 func (c *Client) MemberAuthorityQuery(ctx context.Context, notMustParams ...gorequest.Params) (*MemberAuthorityQueryResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "pdd.ddk.member.authority.query")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := NewParamsWithType("pdd.ddk.member.authority.query", notMustParams...)
 	params.Set("pid", c.GetPid())
+
 	// 请求
-	request, err := c.request(ctx, params)
-	if err != nil {
-		return newMemberAuthorityQueryResult(MemberAuthorityQueryResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response MemberAuthorityQueryResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, params, &response)
 	return newMemberAuthorityQueryResult(response, request.ResponseBody, request), err
 }

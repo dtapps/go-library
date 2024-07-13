@@ -1,9 +1,9 @@
 package pinduoduo
 
 import (
-	"github.com/dtapps/go-library/utils/godecimal"
-	"github.com/dtapps/go-library/utils/golog"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/godecimal"
+	"go.dtapp.net/library/utils/gorequest"
+	"go.opentelemetry.io/otel/trace"
 	"strings"
 )
 
@@ -17,30 +17,30 @@ type ClientConfig struct {
 
 // Client 实例
 type Client struct {
-	requestClient       *gorequest.App // 请求服务
-	requestClientStatus bool           // 请求服务状态
-	config              struct {
+	config struct {
 		clientId     string // POP分配给应用的client_id
 		clientSecret string // POP分配给应用的client_secret
 		mediaId      string // 媒体ID
 		pid          string // 推广位
 	}
-	slog struct {
-		status bool           // 状态
-		client *golog.ApiSLog // 日志服务
-	}
+	httpClient *gorequest.App // HTTP请求客户端
+	clientIP   string         // 客户端IP
+	trace      bool           // OpenTelemetry链路追踪
+	span       trace.Span     // OpenTelemetry链路追踪
 }
 
 // NewClient 创建实例化
 func NewClient(config *ClientConfig) (*Client, error) {
-
 	c := &Client{}
+
+	c.httpClient = gorequest.NewHttp()
 
 	c.config.clientId = config.ClientId
 	c.config.clientSecret = config.ClientSecret
 	c.config.mediaId = config.MediaId
 	c.config.pid = config.Pid
 
+	c.trace = true
 	return c, nil
 }
 
