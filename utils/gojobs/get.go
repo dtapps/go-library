@@ -7,20 +7,25 @@ import (
 
 // GetDb 获取数据库驱动
 func (c *Client) GetDb() *gorm.DB {
-	return c.gormClient.GetDb()
+	return c.gormConfig.client
 }
 
-// GetRedis 获取缓存数据库驱动
-func (c *Client) GetRedis() *redis.Client {
-	return c.cache.redisClient.GetDb()
+// GetGormDb 获取数据库驱动
+func (c *Client) GetGormDb() *gorm.DB {
+	return c.gormConfig.client
 }
 
-// GetCurrentIp 获取当前ip
+// GetRedisDb 获取缓存数据库驱动
+func (c *Client) GetRedisDb() *redis.Client {
+	return c.redisConfig.client
+}
+
+// GetCurrentIp 获取当前IP
 func (c *Client) GetCurrentIp() string {
-	return c.config.systemOutsideIp
+	return c.config.systemOutsideIP
 }
 
 // GetSubscribeAddress 获取订阅地址
 func (c *Client) GetSubscribeAddress() string {
-	return c.cache.cornKeyPrefix + "_" + c.cache.cornKeyCustom
+	return c.redisConfig.cornKeyPrefix + "_" + c.redisConfig.cornKeyCustom
 }

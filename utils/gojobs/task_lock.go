@@ -3,16 +3,15 @@ package gojobs
 import (
 	"context"
 	"errors"
-	"github.com/dtapps/go-library/utils/gojobs/jobs_gorm_model"
 )
 
 type TaskLockOperation struct {
-	client *Client              // 实例
-	task   jobs_gorm_model.Task // 任务
+	client *Client        // 实例
+	task   *GormModelTask // 任务
 }
 
-func (c *Client) NewLock(task jobs_gorm_model.Task) (*TaskLockOperation, error) {
-	if task.Id == 0 {
+func (c *Client) NewLock(task *GormModelTask) (*TaskLockOperation, error) {
+	if task.ID == 0 {
 		return nil, errors.New("任务数据不正常")
 	}
 	return &TaskLockOperation{
