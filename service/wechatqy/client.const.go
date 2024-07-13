@@ -1,7 +1,7 @@
 package wechatqy
 
 const (
-	apiUrl = "https://qyapi.weixin.qq.com"
+	apiUrl = "https://qyapi.weixin.qq.com/"
 )
 
 const (
