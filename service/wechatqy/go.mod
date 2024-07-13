@@ -2,8 +2,6 @@ module go.dtapp.net/library/service/wechatqy
 
 go 1.22.4
 
-replace go.dtapp.net/library => ../..
-
 replace go.dtapp.net/library/utils/gojson => ../../utils/gojson
 
 replace go.dtapp.net/library/utils/gotime => ../../utils/gotime
