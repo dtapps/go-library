@@ -2,9 +2,8 @@ package wechatpayapiv2
 
 import (
 	"context"
-	"encoding/xml"
-	"github.com/dtapps/go-library/utils/gorandom"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorandom"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type PayUnifiedOrderResponse struct {
@@ -40,20 +39,22 @@ func newPayUnifiedOrderResult(result PayUnifiedOrderResponse, body []byte, http 
 // 小程序支付 - 统一下单
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1
 func (c *Client) PayUnifiedOrder(ctx context.Context, notMustParams ...gorequest.Params) (*PayUnifiedOrderResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "pay/unifiedorder")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", c.GetAppId())                  // 小程序ID
 	params.Set("mch_id", c.GetMchId())                 // 商户号
 	params.Set("nonce_str", gorandom.Alphanumeric(32)) // 随机字符串
+
 	// 签名
 	params.Set("sign", c.getMd5Sign(params))
+
 	// 	请求
-	request, err := c.request(ctx, apiUrl+"/pay/unifiedorder", params, false, nil)
-	if err != nil {
-		return newPayUnifiedOrderResult(PayUnifiedOrderResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response PayUnifiedOrderResponse
-	err = xml.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "pay/unifiedorder", params, false, nil, &response)
 	return newPayUnifiedOrderResult(response, request.ResponseBody, request), err
 }

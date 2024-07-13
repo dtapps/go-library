@@ -2,9 +2,8 @@ package wechatpayapiv2
 
 import (
 	"context"
-	"encoding/xml"
-	"github.com/dtapps/go-library/utils/gorandom"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorandom"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type PayCloseOrderResponse struct {
@@ -36,21 +35,23 @@ func newPayCloseOrderResult(result PayCloseOrderResponse, body []byte, http gore
 // 小程序支付 - 关闭订单
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_3
 func (c *Client) PayCloseOrder(ctx context.Context, outTradeNo string, notMustParams ...gorequest.Params) (*PayCloseOrderResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "pay/closeorder")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", c.GetAppId())                  // 小程序ID
 	params.Set("mch_id", c.GetMchId())                 // 商户号
 	params.Set("out_trade_no", outTradeNo)             // 商户订单号
 	params.Set("nonce_str", gorandom.Alphanumeric(32)) // 随机字符串
+
 	// 签名
 	params.Set("sign", c.getMd5Sign(params))
+
 	// 	请求
-	request, err := c.request(ctx, apiUrl+"/pay/closeorder", params, false, nil)
-	if err != nil {
-		return newPayCloseOrderResult(PayCloseOrderResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response PayCloseOrderResponse
-	err = xml.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "pay/closeorder", params, false, nil, &response)
 	return newPayCloseOrderResult(response, request.ResponseBody, request), err
 }

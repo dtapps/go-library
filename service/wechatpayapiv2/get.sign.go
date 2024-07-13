@@ -3,7 +3,7 @@ package wechatpayapiv2
 import (
 	"bytes"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gomd5"
+	"go.dtapp.net/library/utils/gomd5"
 	"sort"
 	"strings"
 )
