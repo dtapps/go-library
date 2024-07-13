@@ -2,8 +2,8 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -48,15 +48,16 @@ func newTransferBatchesOutBatchNoOutBatchNoResult(result TransferBatchesOutBatch
 // TransferBatchesOutBatchNoOutBatchNo 通过商家批次单号查询批次单
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/get-transfer-batch-by-out-no.html
 func (c *Client) TransferBatchesOutBatchNoOutBatchNo(ctx context.Context, outBatchNo string, notMustParams ...gorequest.Params) (*TransferBatchesOutBatchNoOutBatchNoResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, fmt.Sprintf("v3/transfer/batches/out-batch-no/%s", outBatchNo))
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/transfer/batches/out-batch-no/"+outBatchNo, params, http.MethodGet, false)
-	if err != nil {
-		return newTransferBatchesOutBatchNoOutBatchNoResult(TransferBatchesOutBatchNoOutBatchNoResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response TransferBatchesOutBatchNoOutBatchNoResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, fmt.Sprintf("v3/transfer/batches/out-batch-no/%s", outBatchNo), params, http.MethodGet, false, &response)
 	return newTransferBatchesOutBatchNoOutBatchNoResult(response, request.ResponseBody, request), err
 }

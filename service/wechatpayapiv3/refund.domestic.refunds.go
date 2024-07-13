@@ -2,8 +2,7 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -62,15 +61,16 @@ func newRefundDomesticRefundsResult(result RefundDomesticRefundsResponse, body [
 // RefundDomesticRefunds 申请退款API
 // https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter6_1_26.shtml
 func (c *Client) RefundDomesticRefunds(ctx context.Context, notMustParams ...gorequest.Params) (*RefundDomesticRefundsResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "v3/refund/domestic/refunds")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/refund/domestic/refunds", params, http.MethodPost, false)
-	if err != nil {
-		return newRefundDomesticRefundsResult(RefundDomesticRefundsResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response RefundDomesticRefundsResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "v3/refund/domestic/refunds", params, http.MethodPost, false, &response)
 	return newRefundDomesticRefundsResult(response, request.ResponseBody, request), err
 }

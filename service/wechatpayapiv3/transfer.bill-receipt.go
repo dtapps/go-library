@@ -2,8 +2,7 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 	"time"
 )
@@ -32,15 +31,16 @@ func newTransferBillReceiptResult(result TransferBillReceiptResponse, body []byt
 // TransferBillReceipt 转账账单电子回单申请受理接口
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/electronic-signature/create-electronic-signature.html
 func (c *Client) TransferBillReceipt(ctx context.Context, notMustParams ...gorequest.Params) (*TransferBillReceiptResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "v3/transfer/bill-receipt")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/transfer/bill-receipt", params, http.MethodPost, false)
-	if err != nil {
-		return newTransferBillReceiptResult(TransferBillReceiptResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response TransferBillReceiptResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "v3/transfer/bill-receipt", params, http.MethodPost, false, &response)
 	return newTransferBillReceiptResult(response, request.ResponseBody, request), err
 }

@@ -2,8 +2,7 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -26,16 +25,17 @@ func newTransferBatchesResult(result TransferBatchesResponse, body []byte, http 
 // TransferBatches 发起商家转账
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/initiate-batch-transfer.html
 func (c *Client) TransferBatches(ctx context.Context, notMustParams ...gorequest.Params) (*TransferBatchesResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "v3/transfer/batches")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", c.GetAppId())
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/transfer/batches", params, http.MethodPost, false)
-	if err != nil {
-		return newTransferBatchesResult(TransferBatchesResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response TransferBatchesResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "v3/transfer/batches", params, http.MethodPost, false, &response)
 	return newTransferBatchesResult(response, request.ResponseBody, request), err
 }

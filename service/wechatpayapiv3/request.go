@@ -2,11 +2,17 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gojson"
+	"go.dtapp.net/library/utils/gorequest"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	"net/http"
 )
 
-func (c *Client) request(ctx context.Context, url string, param gorequest.Params, method string, commonParams bool) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param gorequest.Params, method string, commonParams bool, response any) (gorequest.Response, error) {
+
+	// 请求地址
+	uri := apiUrl + url
 
 	// 公共参数
 	if method == http.MethodPost {
@@ -17,47 +23,50 @@ func (c *Client) request(ctx context.Context, url string, param gorequest.Params
 	}
 
 	// 认证
-	authorization, err := c.authorization(method, param, url)
+	authorization, err := c.authorization(method, param, uri)
 	if err != nil {
+		c.TraceRecordError(err)
+		c.TraceSetStatus(codes.Error, err.Error())
 		return gorequest.Response{}, err
-	}
-
-	// 创建请求
-	client := c.requestClient
-	if !c.requestClientStatus {
-		c.DefaultHttp()
-		client = c.requestClient
 	}
 
 	// 设置请求地址
-	client.SetUri(url)
+	c.httpClient.SetUri(uri)
 
 	// 设置方式
-	client.SetMethod(method)
+	c.httpClient.SetMethod(method)
 
 	// 设置JSON格式
-	client.SetContentTypeJson()
+	c.httpClient.SetContentTypeJson()
 
 	// 设置参数
-	client.SetParams(param)
+	c.httpClient.SetParams(param)
 
 	// 设置头部
-	client.SetHeader("Authorization", "WECHATPAY2-SHA256-RSA2048 "+authorization)
-	client.SetHeader("Accept", "application/json")
-	client.SetHeader("Accept-Language", "zh-CN")
+	c.httpClient.SetHeader("Authorization", "WECHATPAY2-SHA256-RSA2048 "+authorization)
+	c.httpClient.SetHeader("Accept", "application/json")
+	c.httpClient.SetHeader("Accept-Language", "zh-CN")
 	if url == "https://api.mch.weixin.qq.com/v3/merchant-service/complaints-v2" {
-		client.SetHeader("Wechatpay-Serial", c.GetMchSslSerialNo())
+		c.httpClient.SetHeader("Wechatpay-Serial", c.GetMchSslSerialNo())
 	}
 
+	// OpenTelemetry链路追踪
+	c.TraceSetAttributes(attribute.String("http.url", uri))
+	c.TraceSetAttributes(attribute.String("http.params", gojson.JsonEncodeNoError(param)))
+
 	// 发起请求
-	request, err := client.Request(ctx)
+	request, err := c.httpClient.Request(ctx)
 	if err != nil {
+		c.TraceRecordError(err)
+		c.TraceSetStatus(codes.Error, err.Error())
 		return gorequest.Response{}, err
 	}
 
-	// 记录日志
-	if c.slog.status {
-		go c.slog.client.Middleware(ctx, request)
+	// 解析响应
+	err = gojson.Unmarshal(request.ResponseBody, &response)
+	if err != nil {
+		c.TraceRecordError(err)
+		c.TraceSetStatus(codes.Error, err.Error())
 	}
 
 	return request, err

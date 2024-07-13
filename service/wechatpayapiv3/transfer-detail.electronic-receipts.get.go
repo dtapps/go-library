@@ -2,8 +2,7 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -31,15 +30,16 @@ func newTransferDetailElectronicReceiptsGetResult(result TransferDetailElectroni
 // TransferDetailElectronicReceiptsGet 查询转账明细电子回单受理结果API
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/electronic-receipt-api/query-electronic-receipt.html
 func (c *Client) TransferDetailElectronicReceiptsGet(ctx context.Context, notMustParams ...gorequest.Params) (*TransferDetailElectronicReceiptsGetResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "v3/transfer-detail/electronic-receipts")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/transfer-detail/electronic-receipts", params, http.MethodGet, false)
-	if err != nil {
-		return newTransferDetailElectronicReceiptsGetResult(TransferDetailElectronicReceiptsGetResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response TransferDetailElectronicReceiptsGetResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "v3/transfer-detail/electronic-receipts", params, http.MethodGet, false, &response)
 	return newTransferDetailElectronicReceiptsGetResult(response, request.ResponseBody, request), err
 }

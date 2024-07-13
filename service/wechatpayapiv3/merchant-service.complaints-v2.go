@@ -2,8 +2,7 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -64,15 +63,16 @@ func newMerchantServiceComplaintsV2Result(result MerchantServiceComplaintsV2Resp
 // MerchantServiceComplaintsV2 查询投诉单列表API
 // https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter10_2_11.shtml
 func (c *Client) MerchantServiceComplaintsV2(ctx context.Context, notMustParams ...gorequest.Params) (*MerchantServiceComplaintsV2Result, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "v3/merchant-service/complaints-v2")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/merchant-service/complaints-v2", params, http.MethodGet, false)
-	if err != nil {
-		return newMerchantServiceComplaintsV2Result(MerchantServiceComplaintsV2Response{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response MerchantServiceComplaintsV2Response
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "v3/merchant-service/complaints-v2", params, http.MethodGet, false, &response)
 	return newMerchantServiceComplaintsV2Result(response, request.ResponseBody, request), err
 }

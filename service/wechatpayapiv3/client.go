@@ -1,15 +1,15 @@
 package wechatpayapiv3
 
 import (
-	"github.com/dtapps/go-library/utils/golog"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
+	"go.opentelemetry.io/otel/trace"
 )
 
 // ClientConfig 实例配置
 type ClientConfig struct {
-	AppId          string `json:"app_id"` // 小程序或者公众号唯一凭证
+	AppId          string // 小程序或者公众号唯一凭证
 	AppSecret      string // 小程序或者公众号唯一凭证密钥
-	MchId          string `json:"mch_id"` // 微信支付的商户id
+	MchId          string // 微信支付的商户id
 	AesKey         string // 私钥
 	ApiV3          string // API v3密钥
 	MchSslSerialNo string // pem 证书号
@@ -18,9 +18,7 @@ type ClientConfig struct {
 
 // Client 实例
 type Client struct {
-	requestClient       *gorequest.App // 请求服务
-	requestClientStatus bool           // 请求服务状态
-	config              struct {
+	config struct {
 		appId          string // 小程序或者公众号唯一凭证
 		appSecret      string // 小程序或者公众号唯一凭证密钥
 		mchId          string // 微信支付的商户id
@@ -29,16 +27,17 @@ type Client struct {
 		mchSslSerialNo string // pem 证书号
 		mchSslKey      string // pem key 内容
 	}
-	slog struct {
-		status bool           // 状态
-		client *golog.ApiSLog // 日志服务
-	}
+	httpClient *gorequest.App // HTTP请求客户端
+	clientIP   string         // 客户端IP
+	trace      bool           // OpenTelemetry链路追踪
+	span       trace.Span     // OpenTelemetry链路追踪
 }
 
 // NewClient 创建实例化
 func NewClient(config *ClientConfig) (*Client, error) {
-
 	c := &Client{}
+
+	c.httpClient = gorequest.NewHttp()
 
 	c.config.appId = config.AppId
 	c.config.appSecret = config.AppSecret
@@ -48,5 +47,6 @@ func NewClient(config *ClientConfig) (*Client, error) {
 	c.config.mchSslSerialNo = config.MchSslSerialNo
 	c.config.mchSslKey = config.MchSslKey
 
+	c.trace = true
 	return c, nil
 }

@@ -2,45 +2,60 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/gin-gonic/gin"
+	"encoding/xml"
+	"go.dtapp.net/library/utils/gojson"
+	"go.opentelemetry.io/otel/codes"
+	"net/http"
 )
 
-// PayTransactionsJsapiNotifyGinRequest JSAPI下单 - 回调通知 - 请求参数
-type PayTransactionsJsapiNotifyGinRequest struct {
-	Id           string `form:"id" json:"status" xml:"id" uri:"id" binding:"required"`                                         // 通知ID
-	CreateTime   string `form:"create_time" json:"create_time" xml:"create_time" uri:"create_time" binding:"required"`         // 通知创建时间
-	EventType    string `form:"event_type" json:"event_type" xml:"event_type" uri:"event_type" binding:"required"`             // 通知类型
-	ResourceType string `form:"resource_type" json:"resource_type" xml:"resource_type" uri:"resource_type" binding:"required"` // 通知数据类型
+// PayTransactionsJsapiNotifyHttpRequest JSAPI下单 - 回调通知 - 请求参数
+type PayTransactionsJsapiNotifyHttpRequest struct {
+	Id           string `json:"status" xml:"id"`                   // 通知ID
+	CreateTime   string `json:"create_time" xml:"create_time"`     // 通知创建时间
+	EventType    string `json:"event_type" xml:"event_type"`       // 通知类型
+	ResourceType string `json:"resource_type" xml:"resource_type"` // 通知数据类型
 	Resource     struct {
-		Algorithm      string `form:"algorithm" json:"algorithm" xml:"algorithm" uri:"algorithm" binding:"required"`                          // 加密算法类型
-		Ciphertext     string `form:"ciphertext" json:"ciphertext" xml:"ciphertext" uri:"ciphertext" binding:"required"`                      // 数据密文
-		AssociatedData string `form:"associated_data" json:"associated_data" xml:"associated_data" uri:"associated_data" binding:"omitempty"` // 附加数据
-		OriginalType   string `form:"original_type" json:"original_type" xml:"original_type" uri:"original_type" binding:"required"`          // 原始类型
-		Nonce          string `form:"nonce" json:"nonce" xml:"nonce" uri:"nonce" binding:"required"`                                          // 随机串
-	} `form:"resource" json:"resource" xml:"resource" uri:"resource" binding:"required"` // 通知数据
-	Summary string `form:"summary" json:"summary" xml:"summary" uri:"summary" binding:"required"` // 回调摘要
+		Algorithm      string `json:"algorithm" xml:"algorithm"`                                 // 加密算法类型
+		Ciphertext     string `json:"ciphertext" xml:"ciphertext"`                               // 数据密文
+		AssociatedData string `json:"associated_data,omitempty" xml:"associated_data,omitempty"` // 附加数据
+		OriginalType   string `json:"original_type" xml:"original_type"`                         // 原始类型
+		Nonce          string `json:"nonce" xml:"nonce"`                                         // 随机串
+	} `json:"resource" xml:"resource"` // 通知数据
+	Summary string `json:"summary" xml:"summary"` // 回调摘要
 }
 
-// PayTransactionsJsapiNotifyGin JSAPI下单 - 回调通知
+// PayTransactionsJsapiNotifyHttp JSAPI下单 - 回调通知
 // https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_5_1.shtml
-func (c *Client) PayTransactionsJsapiNotifyGin(ctx context.Context, ginCtx *gin.Context) (validateJson PayTransactionsJsapiNotifyGinRequest, response PayTransactionsJsapiNotifyGinResponse, gcm []byte, err error) {
+func (c *Client) PayTransactionsJsapiNotifyHttp(ctx context.Context, w http.ResponseWriter, r *http.Request) (validateXml PayTransactionsJsapiNotifyHttpRequest, response PayTransactionsJsapiNotifyHttpResponse, gcm []byte, err error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "PayTransactionsJsapiNotifyHttp")
+	defer c.TraceEndSpan()
 
 	// 解析
-	err = ginCtx.ShouldBind(&validateJson)
-
-	gcm, err = c.decryptGCM(c.GetApiV3(), validateJson.Resource.Nonce, validateJson.Resource.Ciphertext, validateJson.Resource.AssociatedData)
+	err = xml.NewDecoder(r.Body).Decode(&validateXml)
 	if err != nil {
-		return validateJson, response, gcm, err
+		c.TraceRecordError(err)
+		c.TraceSetStatus(codes.Error, err.Error())
+	}
+
+	gcm, err = c.decryptGCM(c.GetApiV3(), validateXml.Resource.Nonce, validateXml.Resource.Ciphertext, validateXml.Resource.AssociatedData)
+	if err != nil {
+		c.TraceRecordError(err)
+		c.TraceSetStatus(codes.Error, err.Error())
+		return validateXml, response, gcm, err
 	}
 
 	err = gojson.Unmarshal(gcm, &response)
-
-	return validateJson, response, gcm, err
+	if err != nil {
+		c.TraceRecordError(err)
+		c.TraceSetStatus(codes.Error, err.Error())
+	}
+	return validateXml, response, gcm, err
 }
 
-// PayTransactionsJsapiNotifyGinResponse JSAPI下单 - 回调通知 - 解密后数据
-type PayTransactionsJsapiNotifyGinResponse struct {
+// PayTransactionsJsapiNotifyHttpResponse JSAPI下单 - 回调通知 - 解密后数据
+type PayTransactionsJsapiNotifyHttpResponse struct {
 	Appid          string `json:"appid"`            // 应用ID
 	Mchid          string `json:"mchid"`            // 商户号
 	OutTradeNo     string `json:"out_trade_no"`     // 商户订单号

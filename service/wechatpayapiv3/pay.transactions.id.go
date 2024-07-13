@@ -3,8 +3,7 @@ package wechatpayapiv3
 import (
 	"context"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -64,15 +63,16 @@ func newPayTransactionsIdResult(result PayTransactionsIdResponse, body []byte, h
 
 // PayTransactionsId 微信支付订单号查询 https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_2.shtml
 func (c *Client) PayTransactionsId(ctx context.Context, transactionId string, notMustParams ...gorequest.Params) (*PayTransactionsIdResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, fmt.Sprintf("v3/pay/transactions/id/%s?mchid=%s", transactionId, c.GetMchId()))
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/pay/transactions/id/%s?mchid=%s", transactionId, c.GetMchId()), params, http.MethodGet, true)
-	if err != nil {
-		return newPayTransactionsIdResult(PayTransactionsIdResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response PayTransactionsIdResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, fmt.Sprintf("v3/pay/transactions/id/%s?mchid=%s", transactionId, c.GetMchId()), params, http.MethodGet, true, &response)
 	return newPayTransactionsIdResult(response, request.ResponseBody, request), err
 }
