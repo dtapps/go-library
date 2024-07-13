@@ -3,10 +3,9 @@ package qqwry
 import (
 	"encoding/binary"
 	"errors"
-	"github.com/dtapps/go-library/utils/gostring"
+	"go.dtapp.net/library/utils/gostring"
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"net"
-	"strings"
 )
 
 // QueryResult 返回
@@ -17,17 +16,19 @@ type QueryResult struct {
 }
 
 // Query ip地址查询对应归属地信息
-func (c *Client) Query(ipAddress net.IP) (result QueryResult, err error) {
+func (c *Client) Query(ipAddress string) (result QueryResult, err error) {
 
 	c.Offset = 0
 
+	ip := net.ParseIP(ipAddress)
+
 	// 偏移
-	offset = c.searchIndex(binary.BigEndian.Uint32(ipAddress.To4()))
+	offset = c.searchIndex(binary.BigEndian.Uint32(ip.To4()))
 	if offset <= 0 {
 		return QueryResult{}, errors.New("搜索失败")
 	}
 
-	result.Ip = ipAddress.String()
+	result.Ip = ip.String()
 
 	c.Offset = offset + c.ItemLen
 
@@ -51,13 +52,4 @@ func (c *Client) Query(ipAddress net.IP) (result QueryResult, err error) {
 	result.Area = gostring.SpaceAndLineBreak(result.Area)
 
 	return result, nil
-}
-
-// QueryIP ip地址查询对应归属地信息
-func (c *Client) QueryIP(ipAddressStr string) (result QueryResult, err error) {
-	arrIpv4 := strings.Split(ipAddressStr, ".")
-	if len(arrIpv4) == 4 {
-		return c.Query(net.ParseIP(ipAddressStr))
-	}
-	return QueryResult{}, errors.New("不是IPV4")
 }

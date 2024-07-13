@@ -2,7 +2,7 @@ package qqwry
 
 import (
 	"encoding/binary"
-	"log"
+	"errors"
 	"os"
 )
 
@@ -15,6 +15,7 @@ var (
 	end     uint32
 )
 
+// 文件流
 var datBuff []byte
 
 type Client struct {
@@ -34,28 +35,13 @@ func New(filepath string) (*Client, error) {
 	}
 
 	buf := datBuff[0:8]
-	start := binary.LittleEndian.Uint32(buf[:4])
-	end := binary.LittleEndian.Uint32(buf[4:])
+	start = binary.LittleEndian.Uint32(buf[:4])
+	end = binary.LittleEndian.Uint32(buf[4:])
 
 	num := int64((end-start)/7 + 1)
-	log.Printf("qqwry.dat 共加载：%d 条ip记录\n", num)
-
-	return c, nil
-}
-
-func NewBuff(file []byte) (*Client, error) {
-
-	var _ error
-	c := &Client{}
-
-	datBuff = file
-
-	buf := datBuff[0:8]
-	start := binary.LittleEndian.Uint32(buf[:4])
-	end := binary.LittleEndian.Uint32(buf[4:])
-
-	num := int64((end-start)/7 + 1)
-	log.Printf("qqwry.dat 共加载：%d 条ip记录\n", num)
+	if num == 0 {
+		return nil, errors.New("没有数据")
+	}
 
 	return c, nil
 }

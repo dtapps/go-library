@@ -1,7 +1,7 @@
 package goip
 
 import (
-	"github.com/dtapps/go-library/utils/gostring"
+	"go.dtapp.net/library/utils/gostring"
 	"net"
 	"strings"
 )
