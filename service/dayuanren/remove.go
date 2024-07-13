@@ -2,8 +2,7 @@ package dayuanren
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type RemoveResponse struct {
@@ -26,17 +25,18 @@ func newRemoveResult(result RemoveResponse, body []byte, http gorequest.Response
 // out_trade_num = 商户订单号；多个用英文,分割
 // https://www.showdoc.com.cn/dyr/9745453200292104
 func (c *Client) Remove(ctx context.Context, outTradeNums string, notMustParams ...gorequest.Params) (*RemoveResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "index/remove")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserID())        // 账户ID
 	params.Set("out_trade_nums", outTradeNums) // 商户订单号；多个用英文,分割
+
 	// 请求
-	request, err := c.request(ctx, c.GetApiURL()+"index/remove", params)
-	if err != nil {
-		return newRemoveResult(RemoveResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response RemoveResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "index/remove", params, &response)
 	return newRemoveResult(response, request.ResponseBody, request), err
 }

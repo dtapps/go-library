@@ -2,8 +2,7 @@ package dayuanren
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type ElecityResponse struct {
@@ -36,17 +35,19 @@ func newElecityResult(result ElecityResponse, body []byte, http gorequest.Respon
 
 // Elecity 电费支持地区查询
 // https://www.showdoc.com.cn/dyr/9227008514209156
+// https://www.kancloud.cn/boyanyun/boyanyun_huafei/3097256
 func (c *Client) Elecity(ctx context.Context, notMustParams ...gorequest.Params) (*ElecityResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "index/elecity")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserID()) // 账号ID
+
 	// 请求
-	request, err := c.request(ctx, c.GetApiURL()+"index/elecity", params)
-	if err != nil {
-		return newElecityResult(ElecityResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response ElecityResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "index/elecity", params, &response)
 	return newElecityResult(response, request.ResponseBody, request), err
 }
