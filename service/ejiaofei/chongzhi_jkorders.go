@@ -3,7 +3,7 @@ package ejiaofei
 import (
 	"context"
 	"encoding/xml"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -38,6 +38,11 @@ func newChOngZhiJkOrdersResult(result ChOngZhiJkOrdersResponse, body []byte, htt
 // amount = 购买数量 只能为1
 // operator = 运营商可指定当前手机号的运营商信息进行充值,为空则自动匹配号段对应的运营商进行充值; 具体对应的运营商信息表3.3
 func (c *Client) ChOngZhiJkOrders(ctx context.Context, orderid string, face int64, account string, amount int64, notMustParams ...gorequest.Params) (*ChOngZhiJkOrdersResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "chongzhi_jkorders")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserId()) // 用户编号
@@ -46,13 +51,11 @@ func (c *Client) ChOngZhiJkOrders(ctx context.Context, orderid string, face int6
 	params.Set("face", face)            // 充值面值 以元为单位，包含10、20、30、50、100、200、300、500 移动联通电信
 	params.Set("account", account)      // 手机号码 需要充值的手机号码
 	params.Set("amount", amount)        // 购买数量 只能为1
-	// 请求
-	request, err := c.requestXml(ctx, apiUrl+"/chongzhi_jkorders.do", params, http.MethodGet)
-	if err != nil {
-		return newChOngZhiJkOrdersResult(ChOngZhiJkOrdersResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
+
+	// 响应
 	var response ChOngZhiJkOrdersResponse
-	err = xml.Unmarshal(request.ResponseBody, &response)
+
+	// 请求
+	request, err := c.requestXml(ctx, "chongzhi_jkorders.do", params, http.MethodGet, &response)
 	return newChOngZhiJkOrdersResult(response, request.ResponseBody, request), err
 }

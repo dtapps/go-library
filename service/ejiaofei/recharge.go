@@ -3,8 +3,8 @@ package ejiaofei
 import (
 	"context"
 	"encoding/xml"
-	"github.com/dtapps/go-library/utils/gorequest"
-	"github.com/dtapps/go-library/utils/gotime"
+	"go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/library/utils/gotime"
 	"net/http"
 )
 
@@ -40,6 +40,11 @@ func newRechargeResult(result RechargeResponse, body []byte, http gorequest.Resp
 // oilType = 加油卡类型（300-中石化，310-中石油）
 // operator = 运营商
 func (c *Client) Recharge(ctx context.Context, rechargeType int64, orderId string, account string, face int64, notMustParams ...gorequest.Params) (*RechargeResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "recharge")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("rechargeType", rechargeType)              // 充值类型（1-话费，2-流量，3-加油卡） 由鼎信商务提供
@@ -49,13 +54,11 @@ func (c *Client) Recharge(ctx context.Context, rechargeType int64, orderId strin
 	params.Set("timeStamp", gotime.Current().Timestamp()) // 时间戳 时间戳(北京时间)，只允许当前服务器时间正负五分钟内的请求
 	params.Set("appSecret", c.GetPwd())                   // 加密密码 由鼎信商务提供
 	params.Set("face", face)                              // 充值面值 话费以元为单位，包含10、20、30、50、100、200、300、500 移动联通电信; 加油卡以元为单位，包含50、100、200、500、800、1000、2000; 流量待定
-	// 请求
-	request, err := c.requestJson(ctx, apiUrl+"/recharge.do", params, http.MethodGet)
-	if err != nil {
-		return newRechargeResult(RechargeResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
+
+	// 响应
 	var response RechargeResponse
-	err = xml.Unmarshal(request.ResponseBody, &response)
+
+	// 请求
+	request, err := c.requestJson(ctx, "recharge.do", params, http.MethodGet, &response)
 	return newRechargeResult(response, request.ResponseBody, request), err
 }

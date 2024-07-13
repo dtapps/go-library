@@ -2,8 +2,7 @@ package ejiaofei
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -30,18 +29,21 @@ func newFindOrderResult(result FindOrderResponse, body []byte, http gorequest.Re
 // FindOrder 订单查询接口
 // orderId = 用户提交的订单号	是	用户提交的订单号，最长32位（用户保证其唯一性）
 func (c *Client) FindOrder(ctx context.Context, orderID string, notMustParams ...gorequest.Params) (*FindOrderResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "findOrder")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appId", c.GetUserId())  // 用户编号 由鼎信商务提供
 	params.Set("appSecret", c.GetPwd()) // 加密密码 由鼎信商务提供
 	params.Set("orderId", orderID)      // 用户提交的订单号  用户提交的订单号，最长32位（用户保证其唯一性）
-	// 请求
-	request, err := c.requestJson(ctx, apiUrl+"/findOrder.do", params, http.MethodGet)
-	if err != nil {
-		return newFindOrderResult(FindOrderResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
+
+	// 响应
 	var response FindOrderResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+
+	// 请求
+	request, err := c.requestJson(ctx, "findOrder.do", params, http.MethodGet, &response)
 	return newFindOrderResult(response, request.ResponseBody, request), err
 }

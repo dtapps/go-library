@@ -2,9 +2,9 @@ package ejiaofei
 
 import (
 	"fmt"
-	"github.com/dtapps/go-library/utils/gomd5"
-	"github.com/dtapps/go-library/utils/gorequest"
-	"github.com/dtapps/go-library/utils/gostring"
+	"go.dtapp.net/library/utils/gomd5"
+	"go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/library/utils/gostring"
 	"sort"
 )
 

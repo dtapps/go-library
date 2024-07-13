@@ -3,7 +3,7 @@ package ejiaofei
 import (
 	"context"
 	"encoding/xml"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -29,18 +29,21 @@ func newCheckCostResult(result CheckCostResponse, body []byte, http gorequest.Re
 // CheckCost 会员订单成本价查询接口
 // orderid 用户订单号	用户提交订单号
 func (c *Client) CheckCost(ctx context.Context, orderid string, notMustParams ...gorequest.Params) (*CheckCostResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "checkCost")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserId()) // 用户编号
 	params.Set("pwd", c.GetPwd())       // 加密密码
 	params.Set("orderid", orderid)      // 用户订单号	用户提交订单号
-	// 请求
-	request, err := c.requestXml(ctx, apiUrl+"/checkCost.do", params, http.MethodGet)
-	if err != nil {
-		return newCheckCostResult(CheckCostResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
+
+	// 响应
 	var response CheckCostResponse
-	err = xml.Unmarshal(request.ResponseBody, &response)
+
+	// 请求
+	request, err := c.requestXml(ctx, "checkCost.do", params, http.MethodGet, &response)
 	return newCheckCostResult(response, request.ResponseBody, request), err
 }

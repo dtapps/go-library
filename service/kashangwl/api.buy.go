@@ -2,8 +2,7 @@ package kashangwl
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type ApiBuyResponse struct {
@@ -47,17 +46,18 @@ func newApiBuyResult(result ApiBuyResponse, body []byte, http gorequest.Response
 // client_ip = 购买的用户真实IP
 // http://doc.cqmeihu.cn/sales/buy.html
 func (c *Client) ApiBuy(ctx context.Context, productID int64, quantity int64, notMustParams ...gorequest.Params) (*ApiBuyResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "api/buy")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("product_id", productID) // 商品编号
 	params.Set("quantity", quantity)    // 购买数量
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/api/buy", params)
-	if err != nil {
-		return newApiBuyResult(ApiBuyResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response ApiBuyResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "api/buy", params, &response)
 	return newApiBuyResult(response, request.ResponseBody, request), err
 }

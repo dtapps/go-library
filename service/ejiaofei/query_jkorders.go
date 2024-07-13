@@ -3,7 +3,7 @@ package ejiaofei
 import (
 	"context"
 	"encoding/xml"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -34,18 +34,21 @@ func newQueryJkOrdersResult(result QueryJkOrdersResponse, body []byte, http gore
 // QueryJkOrders 通用查询接口
 // orderid = 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
 func (c *Client) QueryJkOrders(ctx context.Context, orderid string, notMustParams ...gorequest.Params) (*QueryJkOrdersResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "query_jkorders")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserId()) // 用户编号
 	params.Set("pwd", c.GetPwd())       // 加密密码
 	params.Set("orderid", orderid)      // 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
-	// 请求
-	request, err := c.requestXml(ctx, apiUrl+"/query_jkorders.do", params, http.MethodGet)
-	if err != nil {
-		return newQueryJkOrdersResult(QueryJkOrdersResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
+
+	// 响应
 	var response QueryJkOrdersResponse
-	err = xml.Unmarshal(request.ResponseBody, &response)
+
+	// 请求
+	request, err := c.requestXml(ctx, "query_jkorders.do", params, http.MethodGet, &response)
 	return newQueryJkOrdersResult(response, request.ResponseBody, request), err
 }

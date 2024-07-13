@@ -2,8 +2,7 @@ package aswzk
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -27,15 +26,16 @@ func newPhoneBillOrderResult(result PhoneBillOrderResponse, body []byte, http go
 
 // PhoneBillOrder 话费订单下单
 func (c *Client) PhoneBillOrder(ctx context.Context, notMustParams ...gorequest.Params) (*PhoneBillOrderResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "phone_bill/order")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/phone_bill/order", params, http.MethodPost)
-	if err != nil {
-		return newPhoneBillOrderResult(PhoneBillOrderResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response PhoneBillOrderResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "phone_bill/order", params, http.MethodPost, &response)
 	return newPhoneBillOrderResult(response, request.ResponseBody, request), err
 }

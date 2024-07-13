@@ -2,8 +2,7 @@ package aswzk
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -20,7 +19,7 @@ type PhoneBillOrderQueryResponse struct {
 		Remark          string  `json:"remark"`                    // 订单备注
 		OrderStatus     string  `json:"order_status"`              // 订单状态
 		OrderCost       float64 `json:"order_cost,omitempty"`      // 订单成本价
-	} `json:"data"`
+	} `json:"data,omitempty"`
 	Time    int    `json:"time"`
 	TraceId string `json:"trace_id"`
 }
@@ -37,17 +36,18 @@ func newPhoneBillOrderQueryResult(result PhoneBillOrderQueryResponse, body []byt
 
 // PhoneBillOrderQuery 话费订单查询
 func (c *Client) PhoneBillOrderQuery(ctx context.Context, orderID, orderNo string, notMustParams ...gorequest.Params) (*PhoneBillOrderQueryResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "phone_bill/order")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("order_id", orderID) // 订单编号
 	params.Set("order_no", orderNo) // 商户订单编号
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/phone_bill/order", params, http.MethodGet)
-	if err != nil {
-		return newPhoneBillOrderQueryResult(PhoneBillOrderQueryResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response PhoneBillOrderQueryResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "phone_bill/order", params, http.MethodGet, &response)
 	return newPhoneBillOrderQueryResult(response, request.ResponseBody, request), err
 }
