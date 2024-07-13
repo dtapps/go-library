@@ -2,8 +2,7 @@ package wechatpayopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -24,22 +23,21 @@ func newPayPartnerTransactionsJsapiResult(result PayPartnerTransactionsJsapiResp
 // PayPartnerTransactionsJsapi JSAPI下单
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_1.shtml
 func (c *Client) PayPartnerTransactionsJsapi(ctx context.Context, notMustParams ...gorequest.Params) (*PayPartnerTransactionsJsapiResult, ApiError, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "v3/pay/partner/transactions/jsapi")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sp_appid", c.GetSpAppid())   // 服务商应用ID
 	params.Set("sp_mchid", c.GetSpMchId())   // 服务商户号
 	params.Set("sub_appid", c.GetSubAppid()) // 子商户应用ID
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/pay/partner/transactions/jsapi", params, http.MethodPost)
-	if err != nil {
-		return newPayPartnerTransactionsJsapiResult(PayPartnerTransactionsJsapiResponse{}, request.ResponseBody, request), ApiError{}, err
-	}
-	// 结果
 	var response PayPartnerTransactionsJsapiResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
-	// 错误
 	var apiError ApiError
-	err = gojson.Unmarshal(request.ResponseBody, &apiError)
+	request, err := c.request(ctx, "v3/pay/partner/transactions/jsapi", params, http.MethodPost, &response, &apiError)
 	return newPayPartnerTransactionsJsapiResult(response, request.ResponseBody, request), apiError, err
 }

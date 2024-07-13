@@ -3,8 +3,7 @@ package wechatpayopen
 import (
 	"context"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -27,19 +26,18 @@ func newMerchantFundDayEndBalanceResult(result MerchantFundDayEndBalanceResponse
 // accountType 账户类型 BASIC：基本账户 OPERATION：运营账户 FEES：手续费账户
 // date 日期 示例值：2019-08-17
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_7_4.shtml
-func (c *Client) MerchantFundDayEndBalance(ctx context.Context, accountType, date string) (*MerchantFundDayEndBalanceResult, ApiError, error) {
+func (c *Client) MerchantFundDayEndBalance(ctx context.Context, accountType, date string, notMustParams ...gorequest.Params) (*MerchantFundDayEndBalanceResult, ApiError, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, fmt.Sprintf("v3/merchant/fund/dayendbalance/%s?date=%s", accountType, date))
+	defer c.TraceEndSpan()
+
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/merchant/fund/dayendbalance/%s?date=%s", accountType, date), params, http.MethodGet)
-	if err != nil {
-		return newMerchantFundDayEndBalanceResult(MerchantFundDayEndBalanceResponse{}, request.ResponseBody, request), ApiError{}, err
-	}
-	// 定义
 	var response MerchantFundDayEndBalanceResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
-	// 错误
 	var apiError ApiError
-	err = gojson.Unmarshal(request.ResponseBody, &apiError)
+	request, err := c.request(ctx, fmt.Sprintf("v3/merchant/fund/dayendbalance/%s?date=%s", accountType, date), params, http.MethodGet, &response, &apiError)
 	return newMerchantFundDayEndBalanceResult(response, request.ResponseBody, request), apiError, err
 }

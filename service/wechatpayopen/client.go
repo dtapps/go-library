@@ -1,14 +1,14 @@
 package wechatpayopen
 
 import (
-	"github.com/dtapps/go-library/utils/golog"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
+	"go.opentelemetry.io/otel/trace"
 )
 
 // ClientConfig 实例配置
 type ClientConfig struct {
-	SpAppid        string `json:"sp_appid"`  // 服务商应用ID
-	SpMchId        string `json:"sp_mch_id"` // 服务商户号
+	SpAppid        string // 服务商应用ID
+	SpMchId        string // 服务商户号
 	ApiV2          string // APIv2密钥
 	ApiV3          string // APIv3密钥
 	SerialNo       string // 序列号
@@ -19,9 +19,7 @@ type ClientConfig struct {
 
 // Client 实例
 type Client struct {
-	requestClient       *gorequest.App // 请求服务
-	requestClientStatus bool           // 请求服务状态
-	config              struct {
+	config struct {
 		spAppid        string // 服务商应用ID
 		spMchId        string // 服务商户号
 		subAppid       string // 子商户应用ID
@@ -33,16 +31,17 @@ type Client struct {
 		mchSslCer      string // pem 内容
 		mchSslKey      string // pem key 内容
 	}
-	slog struct {
-		status bool           // 状态
-		client *golog.ApiSLog // 日志服务
-	}
+	httpClient *gorequest.App // HTTP请求客户端
+	clientIP   string         // 客户端IP
+	trace      bool           // OpenTelemetry链路追踪
+	span       trace.Span     // OpenTelemetry链路追踪
 }
 
 // NewClient 创建实例化
 func NewClient(config *ClientConfig) (*Client, error) {
-
 	c := &Client{}
+
+	c.httpClient = gorequest.NewHttp()
 
 	c.config.spAppid = config.SpAppid
 	c.config.spMchId = config.SpMchId
@@ -53,5 +52,6 @@ func NewClient(config *ClientConfig) (*Client, error) {
 	c.config.mchSslCer = config.MchSslCer
 	c.config.mchSslKey = config.MchSslKey
 
+	c.trace = true
 	return c, nil
 }

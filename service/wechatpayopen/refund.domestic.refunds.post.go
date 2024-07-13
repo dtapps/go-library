@@ -2,8 +2,7 @@ package wechatpayopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 	"time"
 )
@@ -64,19 +63,18 @@ func newRefundDomesticRefundsPostResult(result RefundDomesticRefundsPostResponse
 // RefundDomesticRefundsPost 申请退款API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_9.shtml
 func (c *Client) RefundDomesticRefundsPost(ctx context.Context, outRefundNo string, notMustParams ...gorequest.Params) (*RefundDomesticRefundsPostResult, ApiError, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "v3/refund/domestic/refunds")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/refund/domestic/refunds", params, http.MethodPost)
-	if err != nil {
-		return newRefundDomesticRefundsPostResult(RefundDomesticRefundsPostResponse{}, request.ResponseBody, request), ApiError{}, err
-	}
-	// 定义
 	var response RefundDomesticRefundsPostResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
-	// 错误
 	var apiError ApiError
-	err = gojson.Unmarshal(request.ResponseBody, &apiError)
+	request, err := c.request(ctx, "v3/refund/domestic/refunds", params, http.MethodPost, &response, &apiError)
 	return newRefundDomesticRefundsPostResult(response, request.ResponseBody, request), apiError, err
 }

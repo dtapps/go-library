@@ -2,8 +2,7 @@ package wechatpayopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 	"time"
 )
@@ -34,14 +33,17 @@ func newCertificatesResult(result CertificatesResponse, body []byte, http gorequ
 
 // Certificates 获取平台证书列表
 // https://pay.weixin.qq.com/wiki/doc/apiv3/apis/wechatpay5_1.shtml
-func (c *Client) Certificates(ctx context.Context) (*CertificatesResult, error) {
+func (c *Client) Certificates(ctx context.Context, notMustParams ...gorequest.Params) (*CertificatesResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "v3/certificates")
+	defer c.TraceEndSpan()
+
+	// 参数
+	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/certificates", nil, http.MethodGet)
-	if err != nil {
-		return newCertificatesResult(CertificatesResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response CertificatesResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "v3/certificates", params, http.MethodGet, &response, nil)
 	return newCertificatesResult(response, request.ResponseBody, request), err
 }

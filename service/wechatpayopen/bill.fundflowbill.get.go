@@ -2,8 +2,7 @@ package wechatpayopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -26,18 +25,17 @@ func newBillFundFlowBillGetResult(result BillFundFlowBillGetResponse, body []byt
 // BillFundFlowBillGet 申请资金账单API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_7.shtml
 func (c *Client) BillFundFlowBillGet(ctx context.Context, notMustParams ...gorequest.Params) (*BillFundFlowBillGetResult, ApiError, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "v3/bill/fundflowbill")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/bill/fundflowbill", params, http.MethodGet)
-	if err != nil {
-		return newBillFundFlowBillGetResult(BillFundFlowBillGetResponse{}, request.ResponseBody, request), ApiError{}, err
-	}
-	// 定义
 	var response BillFundFlowBillGetResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
-	// 错误
 	var apiError ApiError
-	err = gojson.Unmarshal(request.ResponseBody, &apiError)
+	request, err := c.request(ctx, "v3/bill/fundflowbill", params, http.MethodGet, &response, &apiError)
 	return newBillFundFlowBillGetResult(response, request.ResponseBody, request), apiError, err
 }

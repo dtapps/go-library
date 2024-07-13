@@ -2,8 +2,7 @@ package wechatpayopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -26,19 +25,18 @@ func newBillTradeBillGetResult(result BillTradeBillGetResponse, body []byte, htt
 // BillTradeBillGet 申请交易账单API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_6.shtml
 func (c *Client) BillTradeBillGet(ctx context.Context, notMustParams ...gorequest.Params) (*BillTradeBillGetResult, ApiError, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "v3/bill/tradebill")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/bill/tradebill", params, http.MethodGet)
-	if err != nil {
-		return newBillTradeBillGetResult(BillTradeBillGetResponse{}, request.ResponseBody, request), ApiError{}, err
-	}
-	// 定义
 	var response BillTradeBillGetResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
-	// 错误
 	var apiError ApiError
-	err = gojson.Unmarshal(request.ResponseBody, &apiError)
+	request, err := c.request(ctx, "v3/bill/tradebill", params, http.MethodGet, &response, &apiError)
 	return newBillTradeBillGetResult(response, request.ResponseBody, request), apiError, err
 }
