@@ -5,9 +5,5 @@ const (
 )
 
 const (
-	apiUrl = "https://router.wikeyun.cn"
-)
-
-const (
 	LogTable = "wikeyun"
 )

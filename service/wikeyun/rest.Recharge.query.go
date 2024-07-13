@@ -2,8 +2,7 @@ package wikeyun
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type RestRechargeQueryResponse struct {
@@ -41,17 +40,18 @@ func newRestRechargeQueryResult(result RestRechargeQueryResponse, body []byte, h
 // order_no = 商户单号
 // https://open.wikeyun.cn/#/apiDocument/9/document/299
 func (c *Client) RestRechargeQuery(ctx context.Context, notMustParams ...gorequest.Params) (*RestRechargeQueryResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "rest/Recharge/query")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("store_id", c.GetStoreId()) // 店铺ID
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/rest/Recharge/query", params)
-	if err != nil {
-		return newRestRechargeQueryResult(RestRechargeQueryResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response RestRechargeQueryResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "rest/Recharge/query", params, &response)
 	return newRestRechargeQueryResult(response, request.ResponseBody, request), err
 }
 

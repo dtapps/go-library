@@ -2,8 +2,7 @@ package wikeyun
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type RestPowerAddCardResponse struct {
@@ -42,6 +41,11 @@ func newRestPowerAddCardResult(result RestPowerAddCardResponse, body []byte, htt
 // user_ext = 南网必填，请输入用户信息，身份证后六位 / 营业执照后六位 / 银行卡后六位 ，三者选任意一个即可
 // https://open.wikeyun.cn/#/apiDocument/9/document/326
 func (c *Client) RestPowerAddCard(ctx context.Context, cardNum string, province string, city string, Type int64, notMustParams ...gorequest.Params) (*RestPowerAddCardResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "rest/Power/addCard")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("store_id", c.GetStoreId()) // 店铺ID
@@ -49,13 +53,9 @@ func (c *Client) RestPowerAddCard(ctx context.Context, cardNum string, province 
 	params.Set("province", province)       // 省份，带省
 	params.Set("city", city)               // 城市，带市
 	params.Set("type", Type)               // 0国家电网 1南方电网
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/rest/Power/addCard", params)
-	if err != nil {
-		return newRestPowerAddCardResult(RestPowerAddCardResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response RestPowerAddCardResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "rest/Power/addCard", params, &response)
 	return newRestPowerAddCardResult(response, request.ResponseBody, request), err
 }

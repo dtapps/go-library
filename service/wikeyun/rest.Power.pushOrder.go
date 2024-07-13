@@ -2,8 +2,7 @@ package wikeyun
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type RestPowerPushOrderResponse struct {
@@ -34,6 +33,11 @@ func newRestPowerPushOrderResult(result RestPowerPushOrderResponse, body []byte,
 // change = 是否开启更换渠道补单，1开启0关闭
 // https://open.wikeyun.cn/#/apiDocument/9/document/311
 func (c *Client) RestPowerPushOrder(ctx context.Context, cardID int64, orderNo string, amount int64, rechargeType int64, notMustParams ...gorequest.Params) (*RestPowerPushOrderResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "rest/Power/pushOrder")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("cardId", cardID)              // 充值卡ID，通过创建充值卡接口获取
@@ -41,13 +45,9 @@ func (c *Client) RestPowerPushOrder(ctx context.Context, cardID int64, orderNo s
 	params.Set("order_no", orderNo)           // 第三方单号
 	params.Set("amount", amount)              // 充值金额，支持100,200,300,400,500,600,800,1000
 	params.Set("recharge_type", rechargeType) //  类型 1快充 0慢充
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/rest/Power/pushOrder", params)
-	if err != nil {
-		return newRestPowerPushOrderResult(RestPowerPushOrderResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response RestPowerPushOrderResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "rest/Power/pushOrder", params, &response)
 	return newRestPowerPushOrderResult(response, request.ResponseBody, request), err
 }

@@ -2,8 +2,7 @@ package wikeyun
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type RestPowerCancelResponse struct {
@@ -26,16 +25,17 @@ func newRestPowerCancelResult(result RestPowerCancelResponse, body []byte, http 
 // order_number = 取消的单号，多个用英文逗号隔开
 // https://open.wikeyun.cn/#/apiDocument/9/document/323
 func (c *Client) RestPowerCancel(ctx context.Context, orderNumber string, notMustParams ...gorequest.Params) (*RestPowerCancelResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "rest/Power/cancel")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("order_number", orderNumber) // 取消的单号，多个用英文逗号隔开
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/rest/Power/cancel", params)
-	if err != nil {
-		return newRestPowerCancelResult(RestPowerCancelResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response RestPowerCancelResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "rest/Power/cancel", params, &response)
 	return newRestPowerCancelResult(response, request.ResponseBody, request), err
 }

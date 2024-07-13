@@ -2,8 +2,7 @@ package wikeyun
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type RestPowerDelCardResponse struct {
@@ -27,16 +26,17 @@ func newRestPowerDelCardResult(result RestPowerDelCardResponse, body []byte, htt
 // card_id = 充值卡ID
 // https://open.wikeyun.cn/#/apiDocument/9/document/330
 func (c *Client) RestPowerDelCard(ctx context.Context, cardID int64, notMustParams ...gorequest.Params) (*RestPowerDelCardResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "rest/Power/delCard")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("card_id", cardID)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/rest/Power/delCard", params)
-	if err != nil {
-		return newRestPowerDelCardResult(RestPowerDelCardResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response RestPowerDelCardResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "rest/Power/delCard", params, &response)
 	return newRestPowerDelCardResult(response, request.ResponseBody, request), err
 }

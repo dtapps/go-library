@@ -2,8 +2,7 @@ package wikeyun
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type RestRechargeVerifyResponse struct {
@@ -28,18 +27,19 @@ func newRestRechargeVerifyResult(result RestRechargeVerifyResponse, body []byte,
 // recharge_type = 充值类型
 // https://open.wikeyun.cn/#/apiDocument/9/document/405
 func (c *Client) RestRechargeVerify(ctx context.Context, mobile string, amount int64, rechargeType int64, notMustParams ...gorequest.Params) (*RestRechargeVerifyResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "rest/Recharge/verify")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("mobile", mobile)              // 需要充值的手机号
 	params.Set("amount", amount)              //	需要充值的金额
 	params.Set("recharge_type", rechargeType) // 充值类型
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/rest/Recharge/verify", params)
-	if err != nil {
-		return newRestRechargeVerifyResult(RestRechargeVerifyResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response RestRechargeVerifyResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "rest/Recharge/verify", params, &response)
 	return newRestRechargeVerifyResult(response, request.ResponseBody, request), err
 }

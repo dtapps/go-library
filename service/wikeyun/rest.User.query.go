@@ -2,8 +2,7 @@ package wikeyun
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type RestUserQueryResponse struct {
@@ -30,15 +29,16 @@ func newRestUserQueryResult(result RestUserQueryResponse, body []byte, http gore
 // RestUserQuery 用户信息
 // https://open.wikeyun.cn/#/apiDocument/10/document/336
 func (c *Client) RestUserQuery(ctx context.Context, notMustParams ...gorequest.Params) (*RestUserQueryResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "rest/User/query")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/rest/User/query", params)
-	if err != nil {
-		return newRestUserQueryResult(RestUserQueryResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response RestUserQueryResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "rest/User/query", params, &response)
 	return newRestUserQueryResult(response, request.ResponseBody, request), err
 }

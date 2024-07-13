@@ -2,8 +2,7 @@ package wikeyun
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type RestPowerEditCardResponse struct {
@@ -32,6 +31,11 @@ func newRestPowerEditCardResult(result RestPowerEditCardResponse, body []byte, h
 // user_ext = 南网必填，请输入用户信息，身份证后六位 / 营业执照后六位 / 银行卡后六位 ，三者选任意一个即可
 // https://open.wikeyun.cn/#/apiDocument/9/document/329
 func (c *Client) RestPowerEditCard(ctx context.Context, cardID int64, cardNum string, province string, city string, Type int64, notMustParams ...gorequest.Params) (*RestPowerEditCardResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "rest/Power/editCard")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("card_id", cardID)    // 充值卡ID
@@ -39,13 +43,9 @@ func (c *Client) RestPowerEditCard(ctx context.Context, cardID int64, cardNum st
 	params.Set("province", province) // 省份
 	params.Set("city", city)         // 城市
 	params.Set("type", Type)         // 0国家电网 1南方电网
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/rest/Power/editCard", params)
-	if err != nil {
-		return newRestPowerEditCardResult(RestPowerEditCardResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response RestPowerEditCardResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "rest/Power/editCard", params, &response)
 	return newRestPowerEditCardResult(response, request.ResponseBody, request), err
 }

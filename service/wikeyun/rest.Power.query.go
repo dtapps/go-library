@@ -2,8 +2,7 @@ package wikeyun
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type RestPowerQueryResponse struct {
@@ -40,17 +39,18 @@ func newRestPowerQueryResult(result RestPowerQueryResponse, body []byte, http go
 // order_no = 商户单号
 // https://open.wikeyun.cn/#/apiDocument/9/document/313
 func (c *Client) RestPowerQuery(ctx context.Context, notMustParams ...gorequest.Params) (*RestPowerQueryResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "rest/Power/query")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("store_id", c.GetStoreId()) // 店铺ID
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/rest/Power/query", params)
-	if err != nil {
-		return newRestPowerQueryResult(RestPowerQueryResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response RestPowerQueryResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "rest/Power/query", params, &response)
 	return newRestPowerQueryResult(response, request.ResponseBody, request), err
 }
 
@@ -82,4 +82,12 @@ func (resp RestPowerQueryResponse) GetStatusDesc(status int) string {
 		return "取消中"
 	}
 	return "待支付"
+}
+
+func (resp RestPowerQueryResponse) IsRecharging(status int) bool {
+	switch status {
+	case 1:
+		return true
+	}
+	return false
 }

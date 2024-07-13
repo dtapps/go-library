@@ -2,8 +2,7 @@ package wikeyun
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type RestRechargePushOrderResponse struct {
@@ -34,6 +33,11 @@ func newRestRechargePushOrderResult(result RestRechargePushOrderResponse, body [
 // source = 是否强制渠道，因为每个渠道价格不同，不同用户提交的业务不同，默认不强制，具体渠道价格联系客服
 // https://open.wikeyun.cn/#/apiDocument/9/document/298
 func (c *Client) RestRechargePushOrder(ctx context.Context, mobile string, orderNo string, money int64, rechargeType int64, notifyUrl string, notMustParams ...gorequest.Params) (*RestRechargePushOrderResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "rest/Recharge/pushOrder")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("store_id", c.GetStoreId())    // 店铺ID
@@ -42,13 +46,9 @@ func (c *Client) RestRechargePushOrder(ctx context.Context, mobile string, order
 	params.Set("money", money)                // 充值金额，目前有50，100，200三种，具体联系客服咨询
 	params.Set("recharge_type", rechargeType) // 类型 1快充 0慢充
 	params.Set("notify_url", notifyUrl)       // 回调通知地址，用于订单状态通知
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/rest/Recharge/pushOrder", params)
-	if err != nil {
-		return newRestRechargePushOrderResult(RestRechargePushOrderResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response RestRechargePushOrderResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "rest/Recharge/pushOrder", params, &response)
 	return newRestRechargePushOrderResult(response, request.ResponseBody, request), err
 }

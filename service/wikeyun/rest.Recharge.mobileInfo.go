@@ -2,8 +2,7 @@ package wikeyun
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type RestRechargeMobileInfoResponse struct {
@@ -46,16 +45,17 @@ func newRestRechargeMobileInfoResult(result RestRechargeMobileInfoResponse, body
 // mobile = 手机号
 // https://open.wikeyun.cn/#/apiDocument/9/document/374
 func (c *Client) RestRechargeMobileInfo(ctx context.Context, mobile string, notMustParams ...gorequest.Params) (*RestRechargeMobileInfoResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx = c.TraceStartSpan(ctx, "rest/Recharge/mobileInfo")
+	defer c.TraceEndSpan()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("mobile", mobile) // 手机号
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/rest/Recharge/mobileInfo", params)
-	if err != nil {
-		return newRestRechargeMobileInfoResult(RestRechargeMobileInfoResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response RestRechargeMobileInfoResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "rest/Recharge/mobileInfo", params, &response)
 	return newRestRechargeMobileInfoResult(response, request.ResponseBody, request), err
 }
