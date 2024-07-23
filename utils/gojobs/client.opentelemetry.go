@@ -10,12 +10,12 @@ import (
 
 // NewTraceStartSpan 开始OpenTelemetry链路追踪状态
 func NewTraceStartSpan(ctx context.Context, spanName string) (context.Context, trace.Span) {
-	return gorequest.TraceNewSpan(ctx, "go.dtapp.net/gojobs", "", spanName, Version, trace.SpanKindClient)
+	return gorequest.TraceNewSpan(ctx, "go.dtapp.net/library/utils/gojobs", "", spanName, Version, trace.SpanKindClient)
 }
 
 // TraceStartSpan 开始OpenTelemetry链路追踪状态
 func TraceStartSpan(ctx context.Context, spanName string) (context.Context, trace.Span) {
-	return gorequest.TraceNewSpan(ctx, "go.dtapp.net/gojobs", "gojobs.", spanName, Version, trace.SpanKindClient)
+	return gorequest.TraceNewSpan(ctx, "go.dtapp.net/library/utils/gojobs", "gojobs.", spanName, Version, trace.SpanKindClient)
 }
 
 // TraceEndSpan 结束OpenTelemetry链路追踪状态

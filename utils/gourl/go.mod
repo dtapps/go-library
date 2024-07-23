@@ -1,3 +1,3 @@
 module go.dtapp.net/library/utils/gourl
 
-go 1.22
+go 1.22.4

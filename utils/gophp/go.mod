@@ -8,9 +8,8 @@ replace go.dtapp.net/library/utils/gotime => ../../utils/gotime
 
 replace go.dtapp.net/library/utils/gorandom => ../../utils/gorandom
 
-require go.dtapp.net/library/utils/gostring v0.0.0-00010101000000-000000000000
-
 require (
-	go.dtapp.net/library/utils/gorandom v0.0.0-00010101000000-000000000000 // indirect
-	go.dtapp.net/library/utils/gotime v0.0.0-00010101000000-000000000000 // indirect
+go.dtapp.net/library/utils/gostring v1.0.18
+	go.dtapp.net/library/utils/gorandom v1.0.4 // indirect
+	go.dtapp.net/library/utils/gotime v1.0.11 // indirect
 )
