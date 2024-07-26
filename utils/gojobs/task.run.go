@@ -13,7 +13,7 @@ import (
 // Run 运行
 func (c *Client) Run(ctx context.Context, task GormModelTask, taskResultCode int, taskResultDesc string) {
 
-	runId := TraceGetTraceID(ctx)
+	runId := gorequest.TraceGetTraceID(ctx)
 	if runId == "" {
 		runId = gorequest.GetRequestIDContext(ctx)
 		if runId == "" {

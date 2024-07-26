@@ -2,6 +2,7 @@ package gojobs
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/redis/go-redis/v9"
 	"go.dtapp.net/library/utils/gojson"
@@ -45,7 +46,7 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 
 	// 解析任务
 	var task GormModelTask
-	err := gojson.Unmarshal([]byte(message), &task)
+	err := json.Unmarshal([]byte(message), &task)
 	if err != nil {
 		return
 	}
@@ -60,8 +61,8 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 
 		// 需要返回的结构
 		result := TaskHelperRunSingleTaskResponse{
-			TraceID:   span.SpanContext().TraceID().String(),
-			SpanID:    span.SpanContext().SpanID().String(),
+			TraceID:   gorequest.TraceSpanGetTraceID(span),
+			SpanID:    gorequest.TraceSpanGetSpanID(span),
 			RequestID: gorequest.GetRequestIDContext(ctx),
 		}
 

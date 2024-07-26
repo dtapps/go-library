@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 	"go.dtapp.net/library/utils/gorequest"
-	"go.dtapp.net/library/utils/gostring"
 	"go.opentelemetry.io/otel/codes"
 	"log/slog"
 	"math/rand"
+	"strings"
 	"time"
 )
 
@@ -37,7 +37,7 @@ func (c *Client) GetIssueAddress(ctx context.Context, workers []string, v *GormM
 	if len(workers) == 1 {
 		if appointIPStatus {
 			// 判断是否指定某ip执行
-			if gostring.Contains(workers[0], currentIP) {
+			if strings.Contains(workers[0], currentIP) {
 				slog.InfoContext(ctx, fmt.Sprintf("只有一个客户端在线，指定某ip执行：%v %v", workers[0], currentIP))
 				return workers[0], nil
 			}
@@ -52,7 +52,7 @@ func (c *Client) GetIssueAddress(ctx context.Context, workers []string, v *GormM
 	// 优先处理指定某ip执行
 	if appointIPStatus {
 		for wk, wv := range workers {
-			if gostring.Contains(wv, currentIP) {
+			if strings.Contains(wv, currentIP) {
 				slog.InfoContext(ctx, fmt.Sprintf("优先处理指定某ip执行：%v %v", workers[wk], currentIP))
 				return workers[wk], nil
 			}

@@ -6,8 +6,6 @@ replace go.dtapp.net/library/utils/gojson => ../../utils/gojson
 
 replace go.dtapp.net/library/utils/gotime => ../../utils/gotime
 
-replace go.dtapp.net/library/utils/gourl => ../../utils/gourl
-
 replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 
 replace go.dtapp.net/library/utils/gostring => ../../utils/gostring
@@ -15,11 +13,11 @@ replace go.dtapp.net/library/utils/gostring => ../../utils/gostring
 replace go.dtapp.net/library/utils/gorandom => ../../utils/gorandom
 
 require (
-	github.com/redis/go-redis/v9 v9.6.0
+	github.com/redis/go-redis/v9 v9.6.1
 	github.com/robfig/cron/v3 v3.0.1
-	go.dtapp.net/library/utils/gojson v1.0.5
-	go.dtapp.net/library/utils/gorequest v1.0.74
-	go.dtapp.net/library/utils/gostring v1.0.18
+	go.dtapp.net/library/utils/gojson v1.0.6
+	go.dtapp.net/library/utils/gorequest v1.0.76
+	go.dtapp.net/library/utils/gostring v1.0.19
 	go.dtapp.net/library/utils/gotime v1.0.11
 	go.opentelemetry.io/otel v1.28.0
 	go.opentelemetry.io/otel/trace v1.28.0
