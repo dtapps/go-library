@@ -1,6 +1,6 @@
 module go.dtapp.net/library/utils/gorequest
 
-go 1.22.4
+go 1.22.5
 
 replace go.dtapp.net/library/utils/gojson => ../../utils/gojson
 

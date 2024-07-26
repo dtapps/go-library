@@ -253,7 +253,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	// 请求编号
 	httpResponse.RequestID = GetRequestIDContext(ctx)
 	if httpResponse.RequestID != "" {
-		httpResponse.RequestHeader.Set(xRequestID, httpResponse.RequestID)
+		httpResponse.RequestHeader.Set(XRequestID, httpResponse.RequestID)
 	}
 
 	// 请求内容
