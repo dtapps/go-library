@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
+	"runtime"
 )
 
 func EntAnnotations(table string, comment string) []schema.Annotation {
@@ -31,7 +32,7 @@ func EntApiLogFields() []ent.Field {
 		field.String("trace_id").Optional().Comment("跟踪编号").Annotations(entsql.WithComments(true)),
 
 		field.String("id").StorageKey("request_id").Comment("请求编号").Annotations(entsql.WithComments(true)), // 用 request_id 覆盖 框架的 id
-		field.Time("request_time").Comment("请求时间").Annotations(entsql.WithComments(true)),
+		field.Time("request_time").Immutable().Comment("请求时间").Annotations(entsql.WithComments(true)),
 		field.String("request_host").Optional().Comment("请求主机").Annotations(entsql.WithComments(true)),
 		field.String("request_path").Optional().Comment("请求地址").Annotations(entsql.WithComments(true)),
 		field.String("request_query").Optional().Comment("请求参数").Annotations(entsql.WithComments(true)),
@@ -44,13 +45,13 @@ func EntApiLogFields() []ent.Field {
 		field.String("request_header").Optional().Comment("请求头").Annotations(entsql.WithComments(true)),
 		field.Int64("request_cost_time").Optional().Comment("请求消耗时长").Annotations(entsql.WithComments(true)),
 
-		field.Time("response_time").Optional().Comment("响应时间").Annotations(entsql.WithComments(true)),
+		field.Time("response_time").Optional().Immutable().Comment("响应时间").Annotations(entsql.WithComments(true)),
 		field.String("response_header").Optional().Comment("响应头").Annotations(entsql.WithComments(true)),
 		field.Int("response_status_code").Optional().Comment("响应状态").Annotations(entsql.WithComments(true)),
 		field.String("response_body").Optional().Comment("响应内容").Annotations(entsql.WithComments(true)),
 
-		field.String("go_version").Optional().Comment("go版本").Annotations(entsql.WithComments(true)),
-		field.String("sdk_version").Optional().Comment("sdk版本").Annotations(entsql.WithComments(true)),
+		field.String("go_version").Optional().Immutable().Default(runtime.Version()).Comment("go版本").Annotations(entsql.WithComments(true)),
+		field.String("sdk_version").Optional().Immutable().Default(Version).Comment("sdk版本").Annotations(entsql.WithComments(true)),
 	}
 }
 
@@ -73,7 +74,7 @@ func EntGinLogFields() []ent.Field {
 		field.String("trace_id").Optional().Comment("跟踪编号").Annotations(entsql.WithComments(true)),
 
 		field.String("id").StorageKey("request_id").Comment("请求编号").Annotations(entsql.WithComments(true)), // 用 request_id 覆盖 框架的 id
-		field.Time("request_time").Comment("请求时间").Annotations(entsql.WithComments(true)),
+		field.Time("request_time").Immutable().Comment("请求时间").Annotations(entsql.WithComments(true)),
 		field.String("request_host").Optional().Comment("请求主机").Annotations(entsql.WithComments(true)),
 		field.String("request_path").Optional().Comment("请求地址").Annotations(entsql.WithComments(true)),
 		field.String("request_query").Optional().Comment("请求参数").Annotations(entsql.WithComments(true)),
@@ -86,13 +87,13 @@ func EntGinLogFields() []ent.Field {
 		field.String("request_header").Optional().Comment("请求头").Annotations(entsql.WithComments(true)),
 		field.Int64("request_cost_time").Optional().Comment("请求消耗时长").Annotations(entsql.WithComments(true)),
 
-		field.Time("response_time").Optional().Comment("响应时间").Annotations(entsql.WithComments(true)),
+		field.Time("response_time").Optional().Immutable().Comment("响应时间").Annotations(entsql.WithComments(true)),
 		field.String("response_header").Optional().Comment("响应头").Annotations(entsql.WithComments(true)),
 		field.Int("response_status_code").Optional().Comment("响应状态").Annotations(entsql.WithComments(true)),
 		field.String("response_body").Optional().Comment("响应内容").Annotations(entsql.WithComments(true)),
 
-		field.String("go_version").Optional().Comment("go版本").Annotations(entsql.WithComments(true)),
-		field.String("sdk_version").Optional().Comment("sdk版本").Annotations(entsql.WithComments(true)),
+		field.String("go_version").Optional().Immutable().Default(runtime.Version()).Comment("go版本").Annotations(entsql.WithComments(true)),
+		field.String("sdk_version").Optional().Immutable().Default(Version).Comment("sdk版本").Annotations(entsql.WithComments(true)),
 	}
 }
 
@@ -115,7 +116,7 @@ func EntHertzLogFields() []ent.Field {
 		field.String("trace_id").Optional().Comment("跟踪编号").Annotations(entsql.WithComments(true)),
 
 		field.String("id").StorageKey("request_id").Comment("请求编号").Annotations(entsql.WithComments(true)), // 用 request_id 覆盖 框架的 id
-		field.Time("request_time").Comment("请求时间").Annotations(entsql.WithComments(true)),
+		field.Time("request_time").Immutable().Comment("请求时间").Annotations(entsql.WithComments(true)),
 		field.String("request_host").Optional().Comment("请求主机").Annotations(entsql.WithComments(true)),
 		field.String("request_path").Optional().Comment("请求地址").Annotations(entsql.WithComments(true)),
 		field.String("request_query").Optional().Comment("请求参数").Annotations(entsql.WithComments(true)),
@@ -128,7 +129,7 @@ func EntHertzLogFields() []ent.Field {
 		field.String("request_header").Optional().Comment("请求头").Annotations(entsql.WithComments(true)),
 		field.Int64("request_cost_time").Optional().Comment("请求消耗时长").Annotations(entsql.WithComments(true)),
 
-		field.Time("response_time").Optional().Comment("响应时间").Annotations(entsql.WithComments(true)),
+		field.Time("response_time").Optional().Immutable().Comment("响应时间").Annotations(entsql.WithComments(true)),
 		field.String("response_header").Optional().Comment("响应头").Annotations(entsql.WithComments(true)),
 		field.Int("response_status_code").Optional().Comment("响应状态").Annotations(entsql.WithComments(true)),
 		field.String("response_body").Optional().Comment("响应内容").Annotations(entsql.WithComments(true)),
