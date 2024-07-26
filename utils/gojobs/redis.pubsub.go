@@ -10,6 +10,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
+	"log/slog"
 )
 
 type PubSubClient struct {
@@ -48,6 +49,9 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 	var task GormModelTask
 	err := json.Unmarshal([]byte(message), &task)
 	if err != nil {
+		slog.ErrorContext(ctx, "[DbRunSingleTask] json.Unmarshal",
+			slog.String("err", err.Error()),
+		)
 		return
 	}
 
@@ -88,6 +92,12 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 				span.SetStatus(codes.Error, "上下文没有运行编号")
 
 				span.End() // 结束OpenTelemetry链路追踪
+
+				slog.ErrorContext(ctx, "[DbRunSingleTask] no run_id",
+					slog.String("trace_id", result.TraceID),
+					slog.String("request_id", result.RequestID),
+					slog.String("run_id", result.RunID),
+				)
 				return
 			}
 		}
@@ -105,6 +115,10 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 				span.SetStatus(codes.Error, err.Error())
 
 				span.End() // 结束OpenTelemetry链路追踪
+
+				slog.ErrorContext(ctx, "[DbRunSingleTask] updateCallback",
+					slog.String("err", err.Error()),
+				)
 				return
 			}
 		}

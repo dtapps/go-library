@@ -330,13 +330,13 @@ func (th *TaskHelper) RunMultipleTask(rootCtx context.Context, wait int64, execu
 }
 
 type TaskHelperRunSingleTaskResponse struct {
-	RunID   string // 运行编号
-	RunCode int    // 运行状态
-	RunDesc string // 运行描述
+	RunID   string `json:"run_id"`   // 运行编号
+	RunCode int    `json:"run_code"` // 运行状态
+	RunDesc string `json:"run_desc"` // 运行描述
 
-	TraceID   string // 追踪编号
-	SpanID    string // 跨度编号
-	RequestID string // 请求编号
+	TraceID   string `json:"trace_id"`   // 追踪编号
+	SpanID    string `json:"span_id"`    // 跨度编号
+	RequestID string `json:"request_id"` // 请求编号
 }
 
 // RunSingleTask 运行单个任务
