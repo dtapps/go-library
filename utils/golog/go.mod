@@ -18,7 +18,7 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/hertz-contrib/requestid v1.1.0
 	go.dtapp.net/library/utils/gojson v1.0.6
-	go.dtapp.net/library/utils/gorequest v1.0.75
+	go.dtapp.net/library/utils/gorequest v1.0.76
 	go.dtapp.net/library/utils/gotime v1.0.11
 	go.opentelemetry.io/otel v1.28.0
 	go.opentelemetry.io/otel/trace v1.28.0
