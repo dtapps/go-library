@@ -162,3 +162,8 @@ func (hg *HertzGorm) Middleware() app.HandlerFunc {
 
 	}
 }
+
+// SetLogFunc 设置日志记录方法
+func (hg *HertzGorm) SetLogFunc(hertzLogFunc HertzLogFunc) {
+	hg.hertzLogFunc = hertzLogFunc
+}
