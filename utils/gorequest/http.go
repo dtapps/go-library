@@ -12,7 +12,6 @@ import (
 	cookiemonster "github.com/MercuryEngineering/CookieMonster"
 	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gotime"
-	"go.dtapp.net/library/utils/gourl"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel/attribute"
@@ -74,7 +73,7 @@ func NewHttp() *App {
 }
 
 // Get 发起 GET 请求
-func (c *App) Get(ctx context.Context, uri ...string) (httpResponse Response, err error) {
+func (c *App) Get(ctx context.Context, uri ...string) (Response, error) {
 	if len(uri) == 1 {
 		c.Uri = uri[0]
 	}
@@ -84,7 +83,7 @@ func (c *App) Get(ctx context.Context, uri ...string) (httpResponse Response, er
 }
 
 // Head 发起 HEAD 请求
-func (c *App) Head(ctx context.Context, uri ...string) (httpResponse Response, err error) {
+func (c *App) Head(ctx context.Context, uri ...string) (Response, error) {
 	if len(uri) == 1 {
 		c.Uri = uri[0]
 	}
@@ -94,7 +93,7 @@ func (c *App) Head(ctx context.Context, uri ...string) (httpResponse Response, e
 }
 
 // Post 发起 POST 请求
-func (c *App) Post(ctx context.Context, uri ...string) (httpResponse Response, err error) {
+func (c *App) Post(ctx context.Context, uri ...string) (Response, error) {
 	if len(uri) == 1 {
 		c.Uri = uri[0]
 	}
@@ -104,7 +103,7 @@ func (c *App) Post(ctx context.Context, uri ...string) (httpResponse Response, e
 }
 
 // Put 发起 PUT 请求
-func (c *App) Put(ctx context.Context, uri ...string) (httpResponse Response, err error) {
+func (c *App) Put(ctx context.Context, uri ...string) (Response, error) {
 	if len(uri) == 1 {
 		c.Uri = uri[0]
 	}
@@ -114,7 +113,7 @@ func (c *App) Put(ctx context.Context, uri ...string) (httpResponse Response, er
 }
 
 // Patch 发起 PATCH 请求
-func (c *App) Patch(ctx context.Context, uri ...string) (httpResponse Response, err error) {
+func (c *App) Patch(ctx context.Context, uri ...string) (Response, error) {
 	if len(uri) == 1 {
 		c.Uri = uri[0]
 	}
@@ -124,7 +123,7 @@ func (c *App) Patch(ctx context.Context, uri ...string) (httpResponse Response, 
 }
 
 // Delete 发起 DELETE 请求
-func (c *App) Delete(ctx context.Context, uri ...string) (httpResponse Response, err error) {
+func (c *App) Delete(ctx context.Context, uri ...string) (Response, error) {
 	if len(uri) == 1 {
 		c.Uri = uri[0]
 	}
@@ -134,7 +133,7 @@ func (c *App) Delete(ctx context.Context, uri ...string) (httpResponse Response,
 }
 
 // Connect 发起 CONNECT 请求
-func (c *App) Connect(ctx context.Context, uri ...string) (httpResponse Response, err error) {
+func (c *App) Connect(ctx context.Context, uri ...string) (Response, error) {
 	if len(uri) == 1 {
 		c.Uri = uri[0]
 	}
@@ -144,7 +143,7 @@ func (c *App) Connect(ctx context.Context, uri ...string) (httpResponse Response
 }
 
 // Options 发起 OPTIONS 请求
-func (c *App) Options(ctx context.Context, uri ...string) (httpResponse Response, err error) {
+func (c *App) Options(ctx context.Context, uri ...string) (Response, error) {
 	if len(uri) == 1 {
 		c.Uri = uri[0]
 	}
@@ -154,7 +153,7 @@ func (c *App) Options(ctx context.Context, uri ...string) (httpResponse Response
 }
 
 // Trace 发起 TRACE 请求
-func (c *App) Trace(ctx context.Context, uri ...string) (httpResponse Response, err error) {
+func (c *App) Trace(ctx context.Context, uri ...string) (Response, error) {
 	if len(uri) == 1 {
 		c.Uri = uri[0]
 	}
@@ -164,7 +163,7 @@ func (c *App) Trace(ctx context.Context, uri ...string) (httpResponse Response, 
 }
 
 // Request 发起请求
-func (c *App) Request(ctx context.Context) (httpResponse Response, err error) {
+func (c *App) Request(ctx context.Context) (Response, error) {
 	return request(c, ctx)
 }
 
@@ -332,8 +331,8 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	// OpenTelemetry链路追踪
 	TraceSetAttributes(ctx, attribute.String("request.time", httpResponse.RequestTime.Format(gotime.DateTimeFormat)))
 	TraceSetAttributes(ctx, attribute.String("request.uri", httpResponse.RequestUri))
-	TraceSetAttributes(ctx, attribute.String("request.url", gourl.UriParse(httpResponse.RequestUri).Url))
-	TraceSetAttributes(ctx, attribute.String("request.api", gourl.UriParse(httpResponse.RequestUri).Path))
+	TraceSetAttributes(ctx, attribute.String("request.url", NewUri(httpResponse.RequestUri).Parse().Url))
+	TraceSetAttributes(ctx, attribute.String("request.api", NewUri(httpResponse.RequestUri).Parse().Path))
 	TraceSetAttributes(ctx, attribute.String("request.method", httpResponse.RequestMethod))
 	TraceSetAttributes(ctx, attribute.String("request.cookie", httpResponse.RequestCookie))
 	TraceSetAttributes(ctx, attribute.String("request.header", gojson.JsonEncodeNoError(httpResponse.RequestHeader)))
@@ -352,8 +351,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	// 结束时间
 	end := time.Now().UTC()
 
-	// 请求消耗时长
-	httpResponse.RequestCostTime = end.Sub(start).Milliseconds()
+	httpResponse.RequestCostTime = end.Sub(start).Milliseconds() // 请求消耗时长
 
 	var reader io.ReadCloser
 	switch resp.Header.Get("Content-Encoding") {
@@ -401,26 +399,34 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 
 	// 调用日志记录函数
 	if c.logFunc != nil {
+		urlParse := NewUri(httpResponse.RequestUri).Parse() // 解析URL
+		requestBody, _ := io.ReadAll(req.Body)              // 提取请求体
 		c.logFunc(ctx, &LogResponse{
-			TraceID:            TraceGetSpanID(ctx),
+			TraceID: TraceGetSpanID(ctx),
+
 			RequestID:          httpResponse.RequestID,
 			RequestTime:        httpResponse.RequestTime,
-			RequestUri:         httpResponse.RequestUri,
-			RequestUrl:         gourl.UriParse(httpResponse.RequestUri).Url,
-			RequestApi:         gourl.UriParse(httpResponse.RequestUri).Path,
-			RequestMethod:      httpResponse.RequestMethod,
-			RequestParams:      gojson.JsonEncodeNoError(httpResponse.RequestParams),
+			RequestHost:        urlParse.Hostname,
+			RequestPath:        urlParse.Path,
+			RequestQuery:       gojson.JsonEncodeNoError(req.URL.Query()),
+			RequestMethod:      req.Method,
+			RequestScheme:      urlParse.Scheme,
+			RequestContentType: req.Header.Get("Content-Type"),
+			RequestClientIP:    c.clientIP,
+			RequestBody:        gojson.JsonEncodeNoError(requestBody),
+			RequestUserAgent:   req.Header.Get("User-Agent"),
 			RequestHeader:      gojson.JsonEncodeNoError(httpResponse.RequestHeader),
 			RequestCostTime:    httpResponse.RequestCostTime,
-			RequestIP:          c.clientIP,
+
+			ResponseTime:       httpResponse.ResponseTime,
 			ResponseHeader:     gojson.JsonEncodeNoError(httpResponse.ResponseHeader),
 			ResponseStatusCode: httpResponse.ResponseStatusCode,
 			ResponseBody:       string(httpResponse.ResponseBody),
 			ResponseBodyJson:   gojson.JsonEncodeNoError(gojson.JsonDecodeNoError(string(httpResponse.ResponseBody))),
 			ResponseBodyXml:    gojson.XmlEncodeNoError(gojson.XmlDecodeNoError(httpResponse.ResponseBody)),
-			ResponseTime:       httpResponse.ResponseTime,
-			GoVersion:          runtime.Version(),
-			SdkVersion:         Version,
+
+			GoVersion:  runtime.Version(),
+			SdkVersion: Version,
 		})
 	}
 

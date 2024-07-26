@@ -3,8 +3,8 @@ package gorequest
 import (
 	"context"
 	"encoding/json"
-	"go.dtapp.net/library/utils/gostring"
 	"regexp"
+	"strings"
 )
 
 func getIPV4_DtappNet(ctx context.Context) string {
@@ -52,7 +52,7 @@ func getIPV4_MyipIpipNet(ctx context.Context) string {
 	// 使用正则表达式查找IPv4地址
 	ipv4 := ipPattern.FindString(string(response.ResponseBody))
 
-	return gostring.SpaceAndLineBreak(ipv4)
+	return strings.Replace(strings.Replace(ipv4, " ", "", -1), "\n", "", -1)
 }
 
 func getIPV4_DdnsOrayCom(ctx context.Context) string {
@@ -71,7 +71,7 @@ func getIPV4_DdnsOrayCom(ctx context.Context) string {
 	// 使用正则表达式查找IPv4地址
 	ipv4 := ipPattern.FindString(string(response.ResponseBody))
 
-	return gostring.SpaceAndLineBreak(ipv4)
+	return strings.Replace(strings.Replace(ipv4, " ", "", -1), "\n", "", -1)
 }
 
 func getIPV4_Ip3322Net(ctx context.Context) string {
@@ -84,7 +84,7 @@ func getIPV4_Ip3322Net(ctx context.Context) string {
 		return ""
 	}
 
-	return gostring.SpaceAndLineBreak(string(response.ResponseBody))
+	return strings.Replace(strings.Replace(string(response.ResponseBody), " ", "", -1), "\n", "", -1)
 }
 
 func getIPV4_4IpwCn(ctx context.Context) string {
@@ -97,5 +97,5 @@ func getIPV4_4IpwCn(ctx context.Context) string {
 		return ""
 	}
 
-	return gostring.SpaceAndLineBreak(string(response.ResponseBody))
+	return strings.Replace(strings.Replace(string(response.ResponseBody), " ", "", -1), "\n", "", -1)
 }

@@ -7,10 +7,10 @@ import (
 	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
-	"go.dtapp.net/library/utils/gourl"
 	"go.opentelemetry.io/otel/attribute"
 	"io"
 	"net/http"
+	"runtime"
 	"time"
 )
 
@@ -116,7 +116,7 @@ func (gg *GinGorm) Middleware() gin.HandlerFunc {
 		log.RequestHost = g.Request.Host
 
 		// 请求地址
-		log.RequestPath = gourl.UriFilterExcludeQueryString(g.Request.RequestURI)
+		log.RequestPath = gorequest.NewUri(g.Request.RequestURI).UriFilterExcludeQueryString()
 
 		// 请求参数
 		log.RequestQuery = gojson.JsonEncodeNoError(gojson.ParseQueryString(g.Request.RequestURI))
@@ -163,12 +163,15 @@ func (gg *GinGorm) Middleware() gin.HandlerFunc {
 		span.SetAttributes(attribute.String("request.body", log.RequestBody))
 		span.SetAttributes(attribute.String("request.header", log.RequestHeader))
 		span.SetAttributes(attribute.Int64("request.cost_time", log.RequestCostTime))
+
 		span.SetAttributes(attribute.String("response.time", log.ResponseTime.Format(gotime.DateTimeFormat)))
 		span.SetAttributes(attribute.String("response.header", log.ResponseHeader))
 		span.SetAttributes(attribute.Int("response.status_code", log.ResponseStatusCode))
 		span.SetAttributes(attribute.String("response.body", log.ResponseBody))
 
 		// 调用Gin框架日志函数
+		log.GoVersion = runtime.Version()
+		log.SdkVersion = Version
 		if gg.ginLogFunc != nil {
 			gg.ginLogFunc(ctx, &log)
 		}

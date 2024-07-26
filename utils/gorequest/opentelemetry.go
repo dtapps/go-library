@@ -76,9 +76,9 @@ func TraceSpanGetTraceID(span trace.Span) (traceID string) {
 	if span != nil && span.IsRecording() {
 		traceID = span.SpanContext().TraceID().String()
 	}
-	//if traceID == trace.TraceID([16]byte{}).String() {
-	//	traceID = ""
-	//}
+	if traceID == trace.TraceID([16]byte{}).String() {
+		traceID = ""
+	}
 	return traceID
 }
 
@@ -92,8 +92,8 @@ func TraceSpanGetSpanID(span trace.Span) (spanID string) {
 	if span != nil && span.IsRecording() {
 		spanID = span.SpanContext().SpanID().String()
 	}
-	//if spanID == trace.SpanID([8]byte{}).String() {
-	//	spanID = ""
-	//}
+	if spanID == trace.SpanID([8]byte{}).String() {
+		spanID = ""
+	}
 	return spanID
 }

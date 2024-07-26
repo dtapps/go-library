@@ -47,9 +47,9 @@ func (u *UriParse) Parse() (resp ResponseUrlParse) {
 }
 
 // UriFilterExcludeQueryString 过滤掉url中的参数
-func (u *UriParse) UriFilterExcludeQueryString(uri string) string {
-	URL, _ := url.Parse(uri)
-	clearUri := strings.ReplaceAll(uri, URL.RawQuery, "")
+func (u *UriParse) UriFilterExcludeQueryString() string {
+	URL, _ := url.Parse(u.uri)
+	clearUri := strings.ReplaceAll(u.uri, URL.RawQuery, "")
 	clearUri = strings.TrimRight(clearUri, "?")
 	return strings.TrimRight(clearUri, "/")
 }

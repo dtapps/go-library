@@ -6,8 +6,6 @@ replace go.dtapp.net/library/utils/gojson => ../../utils/gojson
 
 replace go.dtapp.net/library/utils/gotime => ../../utils/gotime
 
-replace go.dtapp.net/library/utils/gourl => ../../utils/gourl
-
 replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 
 replace go.dtapp.net/library/utils/gostring => ../../utils/gostring
@@ -16,17 +14,15 @@ replace go.dtapp.net/library/utils/gorandom => ../../utils/gorandom
 
 require (
 	entgo.io/ent v0.13.1
-	github.com/cloudwego/hertz v0.9.1
+	github.com/cloudwego/hertz v0.9.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/hertz-contrib/requestid v1.1.0
-	go.dtapp.net/library/utils/gojson v1.0.5
-	go.dtapp.net/library/utils/gorequest v1.0.74
+	go.dtapp.net/library/utils/gojson v1.0.6
+	go.dtapp.net/library/utils/gorequest v1.0.75
 	go.dtapp.net/library/utils/gotime v1.0.11
-	go.dtapp.net/library/utils/gourl v1.0.1
 	go.opentelemetry.io/otel v1.28.0
 	go.opentelemetry.io/otel/trace v1.28.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
-	gorm.io/gorm v1.25.11
 )
 
 require (
@@ -51,8 +47,6 @@ require (
 	github.com/go-playground/validator/v10 v10.22.0 // indirect
 	github.com/goccy/go-json v0.10.3 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/jinzhu/inflection v1.0.0 // indirect
-	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.8 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
@@ -67,7 +61,7 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
 	go.dtapp.net/library/utils/gorandom v1.0.4 // indirect
-	go.dtapp.net/library/utils/gostring v1.0.18 // indirect
+	go.dtapp.net/library/utils/gostring v1.0.19 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace v0.53.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.53.0 // indirect
 	go.opentelemetry.io/otel/metric v1.28.0 // indirect

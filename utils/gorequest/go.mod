@@ -6,18 +6,15 @@ replace go.dtapp.net/library/utils/gojson => ../../utils/gojson
 
 replace go.dtapp.net/library/utils/gotime => ../../utils/gotime
 
-replace go.dtapp.net/library/utils/gourl => ../../utils/gourl
-
 replace go.dtapp.net/library/utils/gostring => ../../utils/gostring
 
 replace go.dtapp.net/library/utils/gorandom => ../../utils/gorandom
 
 require (
 	github.com/MercuryEngineering/CookieMonster v0.0.0-20180304172713-1584578b3403
-	go.dtapp.net/library/utils/gojson v1.0.5
-	go.dtapp.net/library/utils/gostring v1.0.18
+	go.dtapp.net/library/utils/gojson v1.0.6
+	go.dtapp.net/library/utils/gostring v1.0.19
 	go.dtapp.net/library/utils/gotime v1.0.11
-	go.dtapp.net/library/utils/gourl v1.0.1
 	go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace v0.53.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.53.0
 	go.opentelemetry.io/otel v1.28.0

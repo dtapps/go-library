@@ -10,6 +10,7 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
 	"go.opentelemetry.io/otel/attribute"
+	"runtime"
 	"strings"
 	"time"
 )
@@ -146,12 +147,15 @@ func (hg *HertzGorm) Middleware() app.HandlerFunc {
 		span.SetAttributes(attribute.String("request.body", log.RequestBody))
 		span.SetAttributes(attribute.String("request.header", log.RequestHeader))
 		span.SetAttributes(attribute.Int64("request.cost_time", log.RequestCostTime))
+
 		span.SetAttributes(attribute.String("response.time", log.ResponseTime.Format(gotime.DateTimeFormat)))
 		span.SetAttributes(attribute.String("response.header", log.ResponseHeader))
 		span.SetAttributes(attribute.Int("response.status_code", log.ResponseStatusCode))
 		span.SetAttributes(attribute.String("response.body", log.ResponseBody))
 
 		// 调用Hertz框架日志函数
+		log.GoVersion = runtime.Version()
+		log.SdkVersion = Version
 		if hg.hertzLogFunc != nil {
 			hg.hertzLogFunc(ctx, &log)
 		}
