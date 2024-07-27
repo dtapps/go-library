@@ -258,7 +258,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	}
 
 	// 请求内容
-	var reqBody io.Reader
+	var requestBody io.Reader
 
 	if httpResponse.RequestMethod != http.MethodGet && c.httpContentType == httpParamsModeJson {
 		jsonStr, err := json.Marshal(httpResponse.RequestParams)
@@ -269,7 +269,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 			return httpResponse, err
 		}
 		// 赋值
-		reqBody = bytes.NewBuffer(jsonStr)
+		requestBody = bytes.NewBuffer(jsonStr)
 	}
 
 	if httpResponse.RequestMethod != http.MethodGet && c.httpContentType == httpParamsModeForm {
@@ -279,11 +279,11 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 			form.Add(k, GetParamsString(v))
 		}
 		// 赋值
-		reqBody = strings.NewReader(form.Encode())
+		requestBody = strings.NewReader(form.Encode())
 	}
 
 	if c.httpContentType == httpParamsModeXml {
-		reqBody, err = ToXml(httpResponse.RequestParams)
+		requestBody, err = ToXml(httpResponse.RequestParams)
 		if err != nil {
 			TraceRecordError(ctx, err, trace.WithStackTrace(true))
 			TraceSetStatus(ctx, codes.Error, err.Error())
@@ -293,7 +293,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	}
 
 	// 创建请求
-	req, err := http.NewRequestWithContext(ctx, httpResponse.RequestMethod, httpResponse.RequestUri, reqBody)
+	req, err := http.NewRequestWithContext(ctx, httpResponse.RequestMethod, httpResponse.RequestUri, requestBody)
 	if err != nil {
 		TraceRecordError(ctx, err, trace.WithStackTrace(true))
 		TraceSetStatus(ctx, codes.Error, err.Error())
@@ -408,13 +408,6 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	// 调用日志记录函数
 	if c.logFunc != nil {
 		urlParse := NewUri(httpResponse.RequestUri).Parse() // 解析URL
-		requestBody, err := io.ReadAll(req.Body)            // 提取请求体
-		if err != nil {
-			slog.ErrorContext(ctx, "[gorequest] io.ReadAll",
-				slog.String("err", err.Error()),
-			)
-			requestBody = []byte{}
-		}
 		c.logFunc(ctx, &LogResponse{
 			TraceID: TraceGetSpanID(ctx),
 
