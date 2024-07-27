@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"github.com/gin-gonic/gin"
+	gin_requestid "go.dtapp.net/library/contrib/gin-requestid"
 	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
@@ -110,7 +111,7 @@ func (gg *GinGorm) Middleware() gin.HandlerFunc {
 		log.TraceID = gorequest.TraceSpanGetTraceID(span)
 
 		// 请求编号
-		log.RequestID = gorequest.GetRequestIDContext(ctx)
+		log.RequestID = gin_requestid.Get(g)
 
 		// 请求主机
 		log.RequestHost = g.Request.Host

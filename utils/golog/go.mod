@@ -1,6 +1,6 @@
 module go.dtapp.net/library/utils/golog
 
-go 1.22.4
+go 1.22.5
 
 replace go.dtapp.net/library/utils/gojson => ../../utils/gojson
 
@@ -12,13 +12,18 @@ replace go.dtapp.net/library/utils/gostring => ../../utils/gostring
 
 replace go.dtapp.net/library/utils/gorandom => ../../utils/gorandom
 
+replace go.dtapp.net/library/contrib/gin-requestid => ../../contrib/gin-requestid
+
+replace go.dtapp.net/library/contrib/hertz-requestid => ../../contrib/hertz-requestid
+
 require (
 	entgo.io/ent v0.13.1
 	github.com/cloudwego/hertz v0.9.2
 	github.com/gin-gonic/gin v1.10.0
-	github.com/hertz-contrib/requestid v1.1.0
+	go.dtapp.net/library/contrib/gin-requestid v1.0.0
+	go.dtapp.net/library/contrib/hertz-requestid v1.0.0
 	go.dtapp.net/library/utils/gojson v1.0.6
-	go.dtapp.net/library/utils/gorequest v1.0.76
+	go.dtapp.net/library/utils/gorequest v1.0.77
 	go.dtapp.net/library/utils/gotime v1.0.11
 	go.opentelemetry.io/otel v1.28.0
 	go.opentelemetry.io/otel/trace v1.28.0
@@ -38,7 +43,7 @@ require (
 	github.com/cloudwego/iasm v0.2.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
-	github.com/gabriel-vasile/mimetype v1.4.4 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.5 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect

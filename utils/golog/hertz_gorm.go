@@ -5,7 +5,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
-	"github.com/hertz-contrib/requestid"
+	hertz_requestid "go.dtapp.net/library/contrib/hertz-requestid"
 	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
@@ -76,7 +76,7 @@ func (hg *HertzGorm) Middleware() app.HandlerFunc {
 		log.TraceID = gorequest.TraceSpanGetTraceID(span)
 
 		// 请求编号
-		log.RequestID = requestid.Get(h)
+		log.RequestID = hertz_requestid.Get(h)
 
 		// 请求主机
 		log.RequestHost = string(h.Request.Host())

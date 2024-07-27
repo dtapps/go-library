@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	XRequestID = "X-Request-Id"
+	XRequestID = "X-Request-ID"
 	TNil       = "%!s(<nil>)"
 )
 
