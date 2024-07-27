@@ -18,6 +18,7 @@ import (
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/http/httptrace"
 	"net/url"
@@ -318,13 +319,15 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 
 	// 设置Cookie
 	if httpResponse.RequestCookie != "" {
-		cookies, _ := cookiemonster.ParseString(httpResponse.RequestCookie)
-		if len(cookies) > 0 {
-			for _, c := range cookies {
-				req.AddCookie(c)
+		cookies, err := cookiemonster.ParseString(httpResponse.RequestCookie)
+		if err == nil {
+			if len(cookies) > 0 {
+				for _, c := range cookies {
+					req.AddCookie(c)
+				}
+			} else {
+				req.Header.Set("Cookie", httpResponse.RequestCookie)
 			}
-		} else {
-			req.Header.Set("Cookie", httpResponse.RequestCookie)
 		}
 	}
 
@@ -356,7 +359,12 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	var reader io.ReadCloser
 	switch resp.Header.Get("Content-Encoding") {
 	case "gzip":
-		reader, _ = gzip.NewReader(resp.Body)
+		reader, err = gzip.NewReader(resp.Body)
+		if err != nil {
+			slog.ErrorContext(ctx, "[gorequest] gzip.NewReader",
+				slog.String("err", err.Error()),
+			)
+		}
 	case "deflate":
 		reader = flate.NewReader(resp.Body)
 	default:
@@ -400,7 +408,13 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	// 调用日志记录函数
 	if c.logFunc != nil {
 		urlParse := NewUri(httpResponse.RequestUri).Parse() // 解析URL
-		requestBody, _ := io.ReadAll(req.Body)              // 提取请求体
+		requestBody, err := io.ReadAll(req.Body)            // 提取请求体
+		if err != nil {
+			slog.ErrorContext(ctx, "[gorequest] io.ReadAll",
+				slog.String("err", err.Error()),
+			)
+			requestBody = []byte{}
+		}
 		c.logFunc(ctx, &LogResponse{
 			TraceID: TraceGetSpanID(ctx),
 
