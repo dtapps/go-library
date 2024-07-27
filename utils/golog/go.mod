@@ -20,10 +20,10 @@ require (
 	entgo.io/ent v0.13.1
 	github.com/cloudwego/hertz v0.9.2
 	github.com/gin-gonic/gin v1.10.0
-	go.dtapp.net/library/contrib/gin-requestid v1.0.0
-	go.dtapp.net/library/contrib/hertz-requestid v1.0.0
+	go.dtapp.net/library/contrib/gin-requestid v1.0.1
+	go.dtapp.net/library/contrib/hertz-requestid v1.0.1
 	go.dtapp.net/library/utils/gojson v1.0.6
-	go.dtapp.net/library/utils/gorequest v1.0.77
+	go.dtapp.net/library/utils/gorequest v1.0.78
 	go.dtapp.net/library/utils/gotime v1.0.11
 	go.opentelemetry.io/otel v1.28.0
 	go.opentelemetry.io/otel/trace v1.28.0

@@ -10,6 +10,7 @@ import (
 	"go.dtapp.net/library/utils/gotime"
 	"go.opentelemetry.io/otel/attribute"
 	"io"
+	"log/slog"
 	"net/http"
 	"runtime"
 	"time"
@@ -112,6 +113,23 @@ func (gg *GinGorm) Middleware() gin.HandlerFunc {
 
 		// 请求编号
 		log.RequestID = gin_requestid.Get(g)
+		if log.RequestID == "" {
+			slog.ErrorContext(ctx, "[gin_middleware]",
+				slog.String("gin_requestid.get", gin_requestid.Get(g)),
+			)
+			log.RequestID = gin_requestid.GetX(g)
+			if log.RequestID == "" {
+				slog.ErrorContext(ctx, "[gin_middleware]",
+					slog.String("gin_requestid.getx", gin_requestid.GetX(g)),
+				)
+				log.RequestID = gorequest.GetRequestIDContext(g)
+				if log.RequestID == "" {
+					slog.ErrorContext(ctx, "[gin_middleware]",
+						slog.String("context", gorequest.GetRequestIDContext(g)),
+					)
+				}
+			}
+		}
 
 		// 请求主机
 		log.RequestHost = g.Request.Host

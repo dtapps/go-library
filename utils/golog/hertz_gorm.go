@@ -10,6 +10,7 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
 	"go.opentelemetry.io/otel/attribute"
+	"log/slog"
 	"runtime"
 	"strings"
 	"time"
@@ -77,6 +78,23 @@ func (hg *HertzGorm) Middleware() app.HandlerFunc {
 
 		// 请求编号
 		log.RequestID = hertz_requestid.Get(h)
+		if log.RequestID == "" {
+			slog.ErrorContext(ctx, "[hertz_middleware]",
+				slog.String("hertz_requestid.get", hertz_requestid.Get(h)),
+			)
+			log.RequestID = hertz_requestid.GetX(h)
+			if log.RequestID == "" {
+				slog.ErrorContext(ctx, "[hertz_middleware]",
+					slog.String("hertz_requestid.getx", hertz_requestid.GetX(h)),
+				)
+				log.RequestID = gorequest.GetRequestIDContext(ctx)
+				if log.RequestID == "" {
+					slog.ErrorContext(ctx, "[hertz_middleware]",
+						slog.String("context", gorequest.GetRequestIDContext(ctx)),
+					)
+				}
+			}
+		}
 
 		// 请求主机
 		log.RequestHost = string(h.Request.Host())
