@@ -1,7 +1,7 @@
 package gojson
 
 import (
-	"go.dtapp.net/library/utils/gojson/json"
+	"encoding/json"
 	"io"
 	"strings"
 )
