@@ -17,13 +17,13 @@ replace go.dtapp.net/library/contrib/gin-requestid => ../../contrib/gin-requesti
 replace go.dtapp.net/library/contrib/hertz-requestid => ../../contrib/hertz-requestid
 
 require (
-	entgo.io/ent v0.13.1
+	entgo.io/ent v0.14.0
 	github.com/cloudwego/hertz v0.9.2
 	github.com/gin-gonic/gin v1.10.0
 	go.dtapp.net/library/contrib/gin-requestid v1.0.1
 	go.dtapp.net/library/contrib/hertz-requestid v1.0.1
-	go.dtapp.net/library/utils/gojson v1.0.6
-	go.dtapp.net/library/utils/gorequest v1.0.78
+	go.dtapp.net/library/utils/gojson v1.0.7
+	go.dtapp.net/library/utils/gorequest v1.0.80
 	go.dtapp.net/library/utils/gotime v1.0.11
 	go.opentelemetry.io/otel v1.28.0
 	go.opentelemetry.io/otel/trace v1.28.0
@@ -37,8 +37,8 @@ require (
 	github.com/basgys/goxml2json v1.1.0 // indirect
 	github.com/bytedance/go-tagexpr/v2 v2.9.11 // indirect
 	github.com/bytedance/gopkg v0.0.0-20240711085056-a03554c296f8 // indirect
-	github.com/bytedance/sonic v1.11.9 // indirect
-	github.com/bytedance/sonic/loader v0.1.1 // indirect
+	github.com/bytedance/sonic v1.12.0 // indirect
+	github.com/bytedance/sonic/loader v0.2.0 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
 	github.com/cloudwego/iasm v0.2.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
@@ -60,13 +60,13 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/nyaruka/phonenumbers v1.4.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
-	github.com/tidwall/gjson v1.17.1 // indirect
+	github.com/tidwall/gjson v1.17.3 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
 	go.dtapp.net/library/utils/gorandom v1.0.4 // indirect
-	go.dtapp.net/library/utils/gostring v1.0.19 // indirect
+	go.dtapp.net/library/utils/gostring v1.0.20 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace v0.53.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.53.0 // indirect
 	go.opentelemetry.io/otel/metric v1.28.0 // indirect
