@@ -1,5 +1,5 @@
 package wikeyun
 
-var (
-	Version = "1.0.40"
+const (
+	Version = "1.0.41"
 )

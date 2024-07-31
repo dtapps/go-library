@@ -1,5 +1,5 @@
 package ejiaofei
 
 const (
-	Version = "1.0.14"
+	Version = "1.0.15"
 )

@@ -1,5 +1,5 @@
 package wechatpayopen
 
 const (
-	Version = "1.0.34"
+	Version = "1.0.35"
 )
