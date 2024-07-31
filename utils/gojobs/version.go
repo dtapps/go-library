@@ -1,5 +1,5 @@
 package gojobs
 
 const (
-	Version = "1.0.160"
+	Version = "1.0.161"
 )

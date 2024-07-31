@@ -2,7 +2,6 @@ package gojobs
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/redis/go-redis/v9"
 	"go.dtapp.net/library/utils/gojson"
@@ -47,7 +46,7 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 
 	// 解析任务
 	var task GormModelTask
-	err := json.Unmarshal([]byte(message), &task)
+	err := gojson.Unmarshal([]byte(message), &task)
 	if err != nil {
 		slog.ErrorContext(ctx, "[DbRunSingleTask] json.Unmarshal",
 			slog.String("err", err.Error()),
