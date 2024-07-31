@@ -125,8 +125,8 @@ func EntHertzLogFields() []ent.Field {
 		field.String("response_header").Optional().Comment("响应头").Annotations(entsql.WithComments(true)),
 		field.Int("response_status_code").Optional().Comment("响应状态").Annotations(entsql.WithComments(true)),
 		field.String("response_body").Optional().Comment("响应内容").Annotations(entsql.WithComments(true)),
-		field.String("go_version").Optional().Comment("go版本").Annotations(entsql.WithComments(true)),
-		field.String("sdk_version").Optional().Comment("sdk版本").Annotations(entsql.WithComments(true)),
+		field.String("go_version").Optional().Immutable().Comment("go版本").Annotations(entsql.WithComments(true)),
+		field.String("sdk_version").Optional().Immutable().Comment("sdk版本").Annotations(entsql.WithComments(true)),
 	}
 }
 

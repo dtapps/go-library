@@ -23,7 +23,7 @@ require (
 	go.dtapp.net/library/contrib/gin-requestid v1.0.1
 	go.dtapp.net/library/contrib/hertz-requestid v1.0.1
 	go.dtapp.net/library/utils/gojson v1.0.7
-	go.dtapp.net/library/utils/gorequest v1.0.80
+	go.dtapp.net/library/utils/gorequest v1.0.81
 	go.dtapp.net/library/utils/gotime v1.0.11
 	go.opentelemetry.io/otel v1.28.0
 	go.opentelemetry.io/otel/trace v1.28.0
