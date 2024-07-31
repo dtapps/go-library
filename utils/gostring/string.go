@@ -4,8 +4,8 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
+	"go.dtapp.net/library/utils/gojson"
 	"strconv"
 	"strings"
 	"unicode/utf8"
@@ -183,7 +183,7 @@ func GetString(i interface{}) string {
 		return strconv.FormatBool(v)
 	default:
 
-		bytes, _ := json.Marshal(v)
+		bytes, _ := gojson.Marshal(v)
 		return string(bytes)
 	}
 }
