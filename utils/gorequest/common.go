@@ -1,8 +1,8 @@
 package gorequest
 
 import (
-	"encoding/json"
 	"fmt"
+	"go.dtapp.net/library/utils/gojson"
 )
 
 // GetParamsString 获取参数字符串
@@ -15,6 +15,6 @@ func GetParamsString(src interface{}) string {
 	case float32, float64:
 		return fmt.Sprint(src)
 	}
-	data, _ := json.Marshal(src)
+	data, _ := gojson.Marshal(src)
 	return string(data)
 }

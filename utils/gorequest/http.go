@@ -6,7 +6,6 @@ import (
 	"compress/gzip"
 	"context"
 	"crypto/tls"
-	"encoding/json"
 	"errors"
 	"fmt"
 	cookiemonster "github.com/MercuryEngineering/CookieMonster"
@@ -261,7 +260,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	var requestBody io.Reader
 
 	if httpResponse.RequestMethod != http.MethodGet && c.httpContentType == httpParamsModeJson {
-		jsonStr, err := json.Marshal(httpResponse.RequestParams)
+		jsonStr, err := gojson.Marshal(httpResponse.RequestParams)
 		if err != nil {
 			TraceRecordError(ctx, err, trace.WithStackTrace(true))
 			TraceSetStatus(ctx, codes.Error, err.Error())
