@@ -36,7 +36,7 @@ func EntTaskFields() []ent.Field {
 		field.String("type").Immutable().NotEmpty().Comment("类型").Annotations(entsql.WithComments(true)),
 		field.String("type_name").Optional().Comment("类型名称").Annotations(entsql.WithComments(true)),
 		field.String("created_ip").Optional().Default("0.0.0.0").Comment("创建外网IP").Annotations(entsql.WithComments(true)),
-		field.String("specify_ip").Immutable().Optional().Default("0.0.0.0").Comment("指定外网IP").Annotations(entsql.WithComments(true)),
+		field.String("specify_ip").Optional().Immutable().Default("0.0.0.0").Comment("指定外网IP").Annotations(entsql.WithComments(true)),
 		field.String("updated_ip").Optional().Default("0.0.0.0").Comment("更新外网IP").Annotations(entsql.WithComments(true)),
 		field.String("result").Optional().Comment("结果").Annotations(entsql.WithComments(true)),
 		field.Time("next_run_time").Optional().Comment("下次运行时间").Annotations(entsql.WithComments(true)),
