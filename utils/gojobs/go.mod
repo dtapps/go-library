@@ -13,6 +13,7 @@ replace go.dtapp.net/library/utils/gostring => ../../utils/gostring
 replace go.dtapp.net/library/utils/gorandom => ../../utils/gorandom
 
 require (
+	entgo.io/ent v0.14.0
 	github.com/redis/go-redis/v9 v9.6.1
 	github.com/robfig/cron/v3 v3.0.1
 	go.dtapp.net/library/utils/gojson v1.0.7
@@ -32,6 +33,7 @@ require (
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	go.dtapp.net/library/utils/gorandom v1.0.4 // indirect
