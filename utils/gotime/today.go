@@ -58,9 +58,9 @@ func SetCurrentParse(str string) Pro {
 	if _, err := strconv.ParseInt(str, 10, 64); err == nil {
 		switch len(str) {
 		case 8:
-			layout = ShortDateFormat
+			layout = FormatYearMonthDay
 		case 14:
-			layout = ShortDateTimeFormat
+			layout = FormatYearMonthDayHourMinuteSeconds
 		}
 	}
 	location, _ := time.ParseInLocation(layout, str, p.loc)

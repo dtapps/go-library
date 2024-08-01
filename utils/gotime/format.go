@@ -1,5 +1,20 @@
 package gotime
 
+// 时间格式化
+const (
+	FormatYearMonthDayHourMinuteSeconds = "20060102150405"
+	FormatYearMonthDayHourMinute        = "200601021504"
+	FormatYearMonthDayHour              = "2006010215"
+	FormatYearMonthDay                  = "20060102"
+	FormatYearMonth                     = "200601"
+	FormatYear                          = "2006"
+)
+
+// 时间格式化
+const (
+	FormatHourMinuteSeconds = "150405"
+)
+
 const (
 	DateTimeFormat        = "2006-01-02 15:04:05"
 	DateTimeSFormat       = "2006-01-0215:04:05"
