@@ -258,8 +258,10 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 
 	// 请求内容
 	var requestBody io.Reader
+	var requestBodyJsonStr string
 
 	if httpResponse.RequestMethod != http.MethodGet && c.httpContentType == httpParamsModeJson {
+		requestBodyJsonStr = gojson.JsonEncodeNoError(httpResponse.RequestParams)
 		jsonStr, err := gojson.Marshal(httpResponse.RequestParams)
 		if err != nil {
 			TraceRecordError(ctx, err, trace.WithStackTrace(true))
@@ -272,6 +274,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	}
 
 	if httpResponse.RequestMethod != http.MethodGet && c.httpContentType == httpParamsModeForm {
+		requestBodyJsonStr = gojson.JsonEncodeNoError(httpResponse.RequestParams)
 		// 携带 form 参数
 		form := url.Values{}
 		for k, v := range httpResponse.RequestParams {
@@ -282,6 +285,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	}
 
 	if c.httpContentType == httpParamsModeXml {
+		requestBodyJsonStr = gojson.JsonEncodeNoError(httpResponse.RequestParams)
 		requestBody, err = ToXml(httpResponse.RequestParams)
 		if err != nil {
 			TraceRecordError(ctx, err, trace.WithStackTrace(true))
@@ -419,7 +423,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 			RequestScheme:      urlParse.Scheme,
 			RequestContentType: req.Header.Get("Content-Type"),
 			RequestClientIP:    c.clientIP,
-			RequestBody:        gojson.JsonEncodeNoError(requestBody),
+			RequestBody:        requestBodyJsonStr,
 			RequestUserAgent:   req.Header.Get("User-Agent"),
 			RequestHeader:      gojson.JsonEncodeNoError(httpResponse.RequestHeader),
 			RequestCostTime:    httpResponse.RequestCostTime,
