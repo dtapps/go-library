@@ -9,12 +9,12 @@ import (
 // SetGinTraceId 设置跟踪编号 https://www.jianshu.com/p/2a1a74ad3c3a
 func SetGinTraceId() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		requestId := c.Request.Header.Get("X-Request-Id")
+		requestId := c.Request.Header.Get("X-Request-ID")
 		if requestId == "" {
 			requestId = gostring.GetUuId()
 		}
 		c.Set("trace_id", requestId)
-		c.Writer.Header().Set("X-Request-Id", requestId)
+		c.Writer.Header().Set("X-Request-ID", requestId)
 		c.Next()
 	}
 }
