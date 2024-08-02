@@ -2,8 +2,8 @@ package amap
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gojson"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -35,7 +35,7 @@ func (c *Client) Ip(ctx context.Context, ip string, notMustParams ...gorequest.P
 	params.Set("key", c.GetKey())
 	params.Set("ip", ip)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/ip", params, http.MethodGet)
+	request, err := c.request(ctx, "ip", params, http.MethodGet)
 	if err != nil {
 		return newIpResult(IpResponse{}, request.ResponseBody, request), err
 	}
