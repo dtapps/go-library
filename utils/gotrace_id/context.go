@@ -3,28 +3,35 @@ package gotrace_id
 import (
 	"context"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gostring"
 	"github.com/gin-gonic/gin"
+	"go.dtapp.net/library/utils/gostring"
 )
 
 // CustomTraceIdContext 自定义设置跟踪编号上下文
 func CustomTraceIdContext(ctx context.Context) context.Context {
-	return context.WithValue(ctx, "trace_id", gostring.GetUuId())
+	var traceId = gostring.GetUuId()
+	return context.WithValue(ctx, TraceIdKey, traceId)
 }
 
 // SetCustomTraceId 自定义设置跟踪编号上下文
 func SetCustomTraceId(ctx context.Context, traceId string) context.Context {
-	return context.WithValue(ctx, "trace_id", traceId)
+	return context.WithValue(ctx, TraceIdKey, traceId)
 }
 
 // SetGinTraceIdContext 设置跟踪编号上下文
 func SetGinTraceIdContext(ctx context.Context, c *gin.Context) context.Context {
-	return context.WithValue(ctx, "trace_id", GetGinTraceId(c))
+	var traceId = GetGinTraceId(c)
+	return context.WithValue(ctx, TraceIdKey, traceId)
 }
 
 // GetTraceIdContext 通过上下文获取跟踪编号
 func GetTraceIdContext(ctx context.Context) string {
-	traceId := fmt.Sprintf("%s", ctx.Value("trace_id"))
+	return CustomGetTraceIdContext(ctx, TraceIdKey)
+}
+
+// CustomGetTraceIdContext 通过自定义上下文获取跟踪编号
+func CustomGetTraceIdContext(ctx context.Context, key string) string {
+	traceId := fmt.Sprintf("%s", ctx.Value(key))
 	if traceId == Nil {
 		return ""
 	}
