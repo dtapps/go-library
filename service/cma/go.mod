@@ -1,8 +1,6 @@
-module go.dtapp.net/library/utils/library/service/cma
+module go.dtapp.net/library/service/cma
 
 go 1.22.5
-
-toolchain go1.23rc2
 
 replace go.dtapp.net/library/utils/gojson => ../../utils/gojson
 
