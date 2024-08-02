@@ -2,9 +2,8 @@ package caiyunapp
 
 import (
 	"context"
-	"fmt"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gojson"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -372,7 +371,11 @@ func (c *Client) Weather(ctx context.Context, location string, notMustParams ...
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, c.getApiUrl()+fmt.Sprintf("/%s/weather", location), params, http.MethodGet)
+	url := apiUrl + c.token + "/weather"
+	if location != "" {
+		url = apiUrl + c.token + "/" + location + "/weather"
+	}
+	request, err := c.request(ctx, url, params, http.MethodGet)
 	if err != nil {
 		return newWeatherResult(WeatherResponse{}, request.ResponseBody, request), err
 	}

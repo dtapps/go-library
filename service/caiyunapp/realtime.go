@@ -2,9 +2,8 @@ package caiyunapp
 
 import (
 	"context"
-	"fmt"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gojson"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -16,7 +15,7 @@ type RealtimeResponse struct {
 	Unit       string    `json:"unit"`
 	Tzshift    float64   `json:"tzshift"`
 	Timezone   string    `json:"timezone"`
-	ServerTime float64   `json:"server_time"`
+	ServerTime int64     `json:"server_time"`
 	Location   []float64 `json:"location"`
 	Result     struct {
 		Alert struct {
@@ -48,7 +47,6 @@ type RealtimeResponse struct {
 			Humidity    float64 `json:"humidity"`    // 地表2米湿度相对湿度(%)
 			Cloudrate   float64 `json:"cloudrate"`   // 总云量(0.0-1.0)
 			Skycon      string  `json:"skycon"`      // 天气现象
-			SkyconDesc  string  `json:"skycon_desc"` // 天气现象
 			Visibility  float64 `json:"visibility"`  // 地表水平能见度
 			Dswrf       float64 `json:"dswrf"`       // 向下短波辐射通量(W/M2)
 			Wind        struct {
@@ -116,7 +114,7 @@ func (c *Client) Realtime(ctx context.Context, location string, notMustParams ..
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, c.getApiUrl()+fmt.Sprintf("/%s/realtime", location), params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+c.token+"/"+location+"/realtime", params, http.MethodGet)
 	if err != nil {
 		return newRealtimeResult(RealtimeResponse{}, request.ResponseBody, request), err
 	}
