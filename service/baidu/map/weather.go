@@ -1,14 +1,14 @@
-package baidu
+package _map
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gojson"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
-type WeatherResponse struct {
-	Status int `json:"status"`
+type WeatherV1Response struct {
+	Status int64 `json:"status"`
 	Result struct {
 		Location struct {
 			Country  string `json:"country"`  // 国家名称
@@ -19,20 +19,20 @@ type WeatherResponse struct {
 		} `json:"location"` // 地理位置信息
 		Now struct {
 			Text      string  `json:"text"`       // 天气现象
-			Temp      int     `json:"temp"`       // 温度（℃）
-			FeelsLike int     `json:"feels_like"` // 体感温度(℃)
-			Rh        int     `json:"rh"`         // 相对湿度(%)
+			Temp      int64   `json:"temp"`       // 温度（℃）
+			FeelsLike int64   `json:"feels_like"` // 体感温度(℃)
+			Rh        int64   `json:"rh"`         // 相对湿度(%)
 			WindClass string  `json:"wind_class"` // 风力等级
 			WindDir   string  `json:"wind_dir"`   // 风向描述
 			Prec1h    float64 `json:"prec_1h"`    // 1小时累计降水量(mm)
-			Clouds    int     `json:"clouds"`     // 云量(%)
-			Vis       int     `json:"vis"`        // 能见度(m)
-			Aqi       int     `json:"aqi"`        // 空气质量指数数值
-			Pm25      int     `json:"pm25"`       // pm2.5浓度(μg/m3)
-			Pm10      int     `json:"pm10"`       // pm10浓度(μg/m3)
-			No2       int     `json:"no2"`        // 二氧化氮浓度(μg/m3)
-			So2       int     `json:"so2"`        // 二氧化硫浓度(μg/m3)
-			O3        int     `json:"o3"`         // 臭氧浓度(μg/m3)
+			Clouds    int64   `json:"clouds"`     // 云量(%)
+			Vis       int64   `json:"vis"`        // 能见度(m)
+			Aqi       int64   `json:"aqi"`        // 空气质量指数数值
+			Pm25      int64   `json:"pm25"`       // pm2.5浓度(μg/m3)
+			Pm10      int64   `json:"pm10"`       // pm10浓度(μg/m3)
+			No2       int64   `json:"no2"`        // 二氧化氮浓度(μg/m3)
+			So2       int64   `json:"so2"`        // 二氧化硫浓度(μg/m3)
+			O3        int64   `json:"o3"`         // 臭氧浓度(μg/m3)
 			Co        float64 `json:"co"`         // 一氧化碳浓度(mg/m3)
 			Uptime    string  `json:"uptime"`     // 数据更新时间，北京时间
 		} `json:"now"` // 实况数据
@@ -50,8 +50,8 @@ type WeatherResponse struct {
 		Forecasts []struct {
 			Date      string `json:"date"`       // 日期，北京时区
 			Week      string `json:"week"`       // 星期，北京时区
-			High      int    `json:"high"`       // 最高温度(℃)
-			Low       int    `json:"low"`        // 最低温度(℃)
+			High      int64  `json:"high"`       // 最高温度(℃)
+			Low       int64  `json:"low"`        // 最低温度(℃)
 			WcDay     string `json:"wc_day"`     // 白天风力
 			WcNight   string `json:"wc_night"`   // 晚上风力
 			WdDay     string `json:"wd_day"`     // 白天风向
@@ -61,43 +61,42 @@ type WeatherResponse struct {
 		} `json:"forecasts"` // 预报数据
 		ForecastHours []struct {
 			Text      string  `json:"text"`       // 天气现象
-			TempFc    int     `json:"temp_fc"`    // 温度(℃)
+			TempFc    int64   `json:"temp_fc"`    // 温度(℃)
 			WindClass string  `json:"wind_class"` // 风力等级
 			WindDir   string  `json:"wind_dir"`   // 风向描述
-			Rh        int     `json:"rh"`         // 相对湿度
+			Rh        int64   `json:"rh"`         // 相对湿度
 			Prec1h    float64 `json:"prec_1h"`    // 1小时累计降水量(mm)
-			Clouds    int     `json:"clouds"`     // 云量(%)
+			Clouds    int64   `json:"clouds"`     // 云量(%)
 			DataTime  string  `json:"data_time"`  // 数据时间
 		} `json:"forecast_hours"` // 未来24小时逐小时预报
 	} `json:"result"`
 	Message string `json:"message"`
 }
 
-type WeatherResult struct {
-	Result WeatherResponse    // 结果
+type WeatherV1Result struct {
+	Result WeatherV1Response  // 结果
 	Body   []byte             // 内容
 	Http   gorequest.Response // 请求
 }
 
-func newWeatherResult(result WeatherResponse, body []byte, http gorequest.Response) *WeatherResult {
-	return &WeatherResult{Result: result, Body: body, Http: http}
+func newWeatherV1Result(result WeatherV1Response, body []byte, http gorequest.Response) *WeatherV1Result {
+	return &WeatherV1Result{Result: result, Body: body, Http: http}
 }
 
-// Weather 国内天气查询服务
+// WeatherV1 国内天气查询服务
 // https://lbsyun.baidu.com/index.php?title=webapi/weather
-func (c *Client) Weather(ctx context.Context, districtId string, notMustParams ...gorequest.Params) (*WeatherResult, error) {
+func (c *Client) WeatherV1(ctx context.Context, notMustParams ...gorequest.Params) (*WeatherV1Result, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("ak", c.GetAk())
-	params.Set("district_id", districtId)
-	params.Set("output", "json")
+	params.Set("ak", c.ak)       // 开发者密钥
+	params.Set("output", "json") // 返回格式，目前支持json/xml
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/weather/v1/", params, http.MethodGet)
+	request, err := c.request(ctx, "weather/v1/", params, http.MethodGet)
 	if err != nil {
-		return newWeatherResult(WeatherResponse{}, request.ResponseBody, request), err
+		return newWeatherV1Result(WeatherV1Response{}, request.ResponseBody, request), err
 	}
 	// 定义
-	var response WeatherResponse
+	var response WeatherV1Response
 	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newWeatherResult(response, request.ResponseBody, request), err
+	return newWeatherV1Result(response, request.ResponseBody, request), err
 }

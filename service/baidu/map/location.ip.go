@@ -1,9 +1,9 @@
-package baidu
+package _map
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gojson"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -16,7 +16,7 @@ type LocationIpResponse struct {
 			District     string `json:"district"`
 			Street       string `json:"street"`
 			StreetNumber string `json:"street_number"`
-			CityCode     int    `json:"city_code"` // 百度城市代码
+			CityCode     int64  `json:"city_code"` // 百度城市代码
 			Adcode       string `json:"adcode"`
 		} `json:"address_detail"`
 		Address string `json:"address"` // 简要地址信息
@@ -43,10 +43,10 @@ func newLocationIpResult(result LocationIpResponse, body []byte, http gorequest.
 func (c *Client) LocationIp(ctx context.Context, ip string, notMustParams ...gorequest.Params) (*LocationIpResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("ak", c.GetAk())
+	params.Set("ak", c.ak)
 	params.Set("ip", ip)
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/location/ip", params, http.MethodGet)
+	request, err := c.request(ctx, "location/ip", params, http.MethodGet)
 	if err != nil {
 		return newLocationIpResult(LocationIpResponse{}, request.ResponseBody, request), err
 	}
