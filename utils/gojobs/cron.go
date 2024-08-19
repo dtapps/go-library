@@ -152,7 +152,7 @@ func (c *Cron) logTask(id cron.EntryID, content ...string) {
 	if c.option.log {
 		for _, v := range c.list {
 			if v.id == id {
-				slog.Info(fmt.Sprintf("%s [ID=%v]%s\n", v.name, id, content))
+				slog.Info(fmt.Sprintf("%s [ID=%v]%s", v.name, id, content))
 			}
 		}
 	}
@@ -164,7 +164,7 @@ func (c *Cron) PrintNameTask(id cron.EntryID, name string, content ...string) {
 }
 
 func (c *Cron) logNameTask(id cron.EntryID, name string, content ...string) {
-	slog.Info(fmt.Sprintf("%s [ID=%v]%s\n", name, id, content))
+	slog.Info(fmt.Sprintf("%s [ID=%v]%s", name, id, content))
 }
 
 // ListTask 任务列表

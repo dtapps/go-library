@@ -1,6 +1,6 @@
 module go.dtapp.net/library/utils/gojobs
 
-go 1.22.5
+go 1.23
 
 replace go.dtapp.net/library/utils/gojson => ../../utils/gojson
 
@@ -17,9 +17,9 @@ require (
 	github.com/redis/go-redis/v9 v9.6.1
 	github.com/robfig/cron/v3 v3.0.1
 	go.dtapp.net/library/utils/gojson v1.0.7
-	go.dtapp.net/library/utils/gorequest v1.0.81
+	go.dtapp.net/library/utils/gorequest v1.0.82
 	go.dtapp.net/library/utils/gostring v1.0.20
-	go.dtapp.net/library/utils/gotime v1.0.11
+	go.dtapp.net/library/utils/gotime v1.0.12
 	go.opentelemetry.io/otel v1.28.0
 	go.opentelemetry.io/otel/trace v1.28.0
 	gorm.io/gorm v1.25.11
@@ -40,6 +40,6 @@ require (
 	go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace v0.53.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.53.0 // indirect
 	go.opentelemetry.io/otel/metric v1.28.0 // indirect
-	golang.org/x/net v0.27.0 // indirect
-	golang.org/x/text v0.16.0 // indirect
+	golang.org/x/net v0.28.0 // indirect
+	golang.org/x/text v0.17.0 // indirect
 )
