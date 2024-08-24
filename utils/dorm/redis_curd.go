@@ -87,3 +87,72 @@ func (r *RedisClient) KeysValue(ctx context.Context, prefix string) *redis.Slice
 	}
 	return r.MGet(ctx, keys...)
 }
+
+// AddKeyToSet 将值添加到集合
+func (r *RedisClient) AddKeyToSet(ctx context.Context, setKey string, value interface{}) error {
+	return r.db.SAdd(ctx, setKey, value).Err()
+}
+
+// GetAllKeysInSet 获取集合的所有元素
+func (r *RedisClient) GetAllKeysInSet(ctx context.Context, setKey string) ([]string, error) {
+	return r.db.SMembers(ctx, setKey).Result()
+}
+
+// DoesKeyExistInSet 检查值是否存在于集合中
+func (r *RedisClient) DoesKeyExistInSet(ctx context.Context, setKey string, targetKey interface{}) (bool, error) {
+	return r.db.SIsMember(ctx, setKey, targetKey).Result()
+}
+
+// RemoveKeyFromSet 从集合中删除指定的元素
+func (r *RedisClient) RemoveKeyFromSet(ctx context.Context, setKey string, targetKey interface{}) error {
+	return r.db.SRem(ctx, setKey, targetKey).Err()
+}
+
+// DeleteKeysWithPrefix 根据前缀删除key
+func (r *RedisClient) DeleteKeysWithPrefix(ctx context.Context, prefix string) error {
+	// 获取所有符合给定模式的键
+	keys, err := r.db.Keys(ctx, prefix+"*").Result()
+	if err != nil {
+		return err
+	}
+
+	// 删除所有匹配的键
+	if len(keys) > 0 {
+		_, err := r.db.Del(ctx, keys...).Result()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// DeleteScanWithPrefix 根据前缀删除key
+func (r *RedisClient) DeleteScanWithPrefix(ctx context.Context, prefix string) error {
+	var cursor uint64
+	for {
+		// 使用 SCAN 迭代获取匹配模式的键
+		keys, nextCursor, err := r.db.Scan(ctx, cursor, prefix+"*", 10).Result()
+		if err != nil {
+			return err
+		}
+
+		// 删除当前迭代返回的键
+		if len(keys) > 0 {
+			_, err := r.db.Del(ctx, keys...).Result()
+			if err != nil {
+				return err
+			}
+		}
+
+		// 更新游标，继续迭代
+		cursor = nextCursor
+
+		// 如果迭代结束，退出循环
+		if cursor == 0 {
+			break
+		}
+	}
+
+	return nil
+}

@@ -1,8 +1,6 @@
 package dorm
 
-import (
-	"go.mongodb.org/mongo-driver/mongo"
-)
+import "go.mongodb.org/mongo-driver/mongo"
 
 // GetDb 获取驱动
 func (cs *MongoSessionOptions) GetDb() *mongo.Client {

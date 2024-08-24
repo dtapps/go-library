@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// NewGormGenMysqlClient 创建GormGenClient实例 mysql
 func NewGormGenMysqlClient(ctx context.Context, config *GormGenClientConfig) (*GormGenClient, error) {
 
 	c := &GormGenClient{config: config}

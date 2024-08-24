@@ -5,6 +5,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+// ListOperation  列表(list)类型数据操作
 type ListOperation struct {
 	db  *redis.Client
 	ctx context.Context

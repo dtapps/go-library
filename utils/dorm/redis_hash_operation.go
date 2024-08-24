@@ -5,6 +5,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+// HashOperation Hash类型数据操作
 type HashOperation struct {
 	db *redis.Client
 }

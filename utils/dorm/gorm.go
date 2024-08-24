@@ -1,6 +1,7 @@
 package dorm
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
@@ -12,10 +13,12 @@ import (
 // GormClientFun *GormClient 驱动
 type GormClientFun func() *GormClient
 
-// GormClientTableFun *GormClient 驱动
+// GormClientTableFun
+// *GormClient 驱动
 // string 表名
 type GormClientTableFun func() (*GormClient, string)
 
+// GormClientConfig 配置
 type GormClientConfig struct {
 	Dns                    string // 地址
 	LogStatus              bool   // 日志 - 状态
@@ -32,19 +35,20 @@ type GormClientConfig struct {
 type GormClient struct {
 	db     *gorm.DB          // 驱动
 	config *GormClientConfig // 配置
+	sqlDd  *sql.DB
 }
 
 type writer struct{}
 
 // 日志路径
-var logsUrl = ""
+var logsURL = ""
 
 func (w writer) Printf(format string, args ...interface{}) {
 
 	now := time.Now()
 	logFilePath := ""
 	if dir, err := os.Getwd(); err == nil {
-		logFilePath = dir + logsUrl
+		logFilePath = dir + logsURL
 	}
 	if err := os.MkdirAll(logFilePath, 0777); err != nil {
 		fmt.Println(err.Error())
