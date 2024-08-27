@@ -17,14 +17,14 @@ func NewKj(config ...requestid.Config) fiber.Handler {
 func New() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		// 从请求中获取ID
-		requestId := c.Get(HeaderXRequestID)
-		if requestId == "" {
-			requestId = uuid.New().String()
+		rid := c.Get(HeaderXRequestID)
+		if rid == "" {
+			rid = uuid.New().String()
 		}
 
 		// 设置id
-		c.Set(HeaderXRequestID, requestId)
-		c.Locals(HeaderXRequestID, requestId)
+		c.Set(HeaderXRequestID, rid)
+		c.Locals(HeaderXRequestID, rid)
 
 		// 继续
 		return c.Next()
@@ -38,5 +38,5 @@ func Get(c *fiber.Ctx) string {
 
 // GetX 返回请求标识符
 func GetX(c *fiber.Ctx) string {
-	return c.GetRespHeader(HeaderXRequestID)
+	return c.Locals(HeaderXRequestID).(string)
 }

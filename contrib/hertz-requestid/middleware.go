@@ -24,15 +24,15 @@ func New() app.HandlerFunc {
 
 	return func(ctx context.Context, c *app.RequestContext) {
 		// 从请求中获取ID
-		requestId := c.Request.Header.Get(HeaderXRequestID)
-		if requestId == "" {
-			requestId = uuid.New().String()
+		rid := c.Request.Header.Get(HeaderXRequestID)
+		if rid == "" {
+			rid = uuid.New().String()
 		}
 
 		// 设置id
-		c.Set(HeaderXRequestID, requestId)
-		c.Header(HeaderXRequestID, requestId)
-		ctx = context.WithValue(ctx, HeaderXRequestID, requestId)
+		c.Set(HeaderXRequestID, rid)
+		c.Header(HeaderXRequestID, rid)
+		ctx = context.WithValue(ctx, HeaderXRequestID, rid)
 
 		// 继续
 		c.Next(ctx)
