@@ -18,6 +18,11 @@ var fontContent embed.FS
 var fontPath = "simhei.ttf"
 var fontSize = 16.0
 
+const (
+	DefaultImgWidth  = 350
+	DefaultImgHeight = 70
+)
+
 func loadFontPath(dc *gg.Context) error {
 	// 设置字体和文本属性
 	err := dc.LoadFontFace(fontPath, fontSize)
@@ -52,17 +57,49 @@ type Operation struct {
 	dc  *gg.Context
 }
 
-// QrCodeText 生成条形码带文本
-func QrCodeText(ctx context.Context, textContent string, qcContent string) (*Operation, error) {
+// QrCode 生成条形码
+func QrCode(ctx context.Context, imgWidth int, imgHeight int, qcContent string) (*Operation, error) {
 
 	// 创建一个code128编码的 Barcode
 	barcodeImg, _ := code128.Encode(qcContent)
 
-	// 设置二维码图片的大小
-	barcodeImgWidth := 350
-	barcodeImgHeight := 70
-	ggBarcodeImgWidth := 350
-	ggBarcodeImgHeight := 70 + 25
+	// 条形码图片的大小
+	barcodeImgWidth := imgWidth
+	if barcodeImgWidth == 0 {
+		barcodeImgWidth = DefaultImgWidth
+	}
+	barcodeImgHeight := imgHeight
+	if barcodeImgHeight == 0 {
+		barcodeImgHeight = DefaultImgHeight
+	}
+
+	// 设置图片像素大小
+	qrCode, _ := barcode.Scale(barcodeImg, barcodeImgWidth, barcodeImgHeight)
+
+	// 使用 github.com/fogleman/gg 绘制文本
+	dc := gg.NewContext(barcodeImgWidth, barcodeImgHeight)
+	dc.DrawImage(qrCode, 0, 0)
+
+	return &Operation{ctx: ctx, dc: dc}, nil
+}
+
+// QrCodeText 生成条形码带文本
+func QrCodeText(ctx context.Context, imgWidth int, imgHeight int, textContent string, qcContent string) (*Operation, error) {
+
+	// 创建一个code128编码的 Barcode
+	barcodeImg, _ := code128.Encode(qcContent)
+
+	// 条形码图片的大小
+	barcodeImgWidth := imgWidth
+	if barcodeImgWidth == 0 {
+		barcodeImgWidth = DefaultImgWidth
+	}
+	barcodeImgHeight := imgHeight
+	if barcodeImgHeight == 0 {
+		barcodeImgHeight = DefaultImgHeight
+	}
+	ggBarcodeImgWidth := barcodeImgWidth
+	ggBarcodeImgHeight := barcodeImgHeight + 25
 
 	// 设置图片像素大小
 	qrCode, _ := barcode.Scale(barcodeImg, barcodeImgWidth, barcodeImgHeight)
@@ -84,15 +121,13 @@ func QrCodeText(ctx context.Context, textContent string, qcContent string) (*Ope
 	textWidth, textHeight := dc.MeasureString(textContent)
 
 	// 计算文本位置
-	//x := (float64(qrSize) - textWidth) / 2
-	//y := (float64(qrSize+qrSize) + textHeight - textHeight) / 2
 	x := (float64(ggBarcodeImgWidth) - textWidth) / 2
 	y := (float64(ggBarcodeImgHeight+ggBarcodeImgHeight) + textHeight - textHeight) / 2
 
 	// 绘制文本
 	dc.DrawStringAnchored(textContent, x, y-6, 0, 0)
 
-	return &Operation{ctx: ctx, dc: dc}, err
+	return &Operation{ctx: ctx, dc: dc}, nil
 }
 
 // SavePNG 保存图片
