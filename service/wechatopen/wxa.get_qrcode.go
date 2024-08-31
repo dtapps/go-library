@@ -6,24 +6,24 @@ import (
 	"net/http"
 )
 
-type WxaGetQrcodeResponse struct {
+type GetTrialQRCodeResponse struct {
 	Errcode int    `json:"errcode"`
 	Errmsg  string `json:"errmsg"`
 }
 
-type WxaGetQrcodeResult struct {
-	Result WxaGetQrcodeResponse // 结果
-	Body   []byte               // 内容
-	Http   gorequest.Response   // 请求
+type GetTrialQRCodeResult struct {
+	Result GetTrialQRCodeResponse // 结果
+	Body   []byte                 // 内容
+	Http   gorequest.Response     // 请求
 }
 
-func newWxaGetQrcodeResult(result WxaGetQrcodeResponse, body []byte, http gorequest.Response) *WxaGetQrcodeResult {
-	return &WxaGetQrcodeResult{Result: result, Body: body, Http: http}
+func newGetTrialQRCodeResult(result GetTrialQRCodeResponse, body []byte, http gorequest.Response) *GetTrialQRCodeResult {
+	return &GetTrialQRCodeResult{Result: result, Body: body, Http: http}
 }
 
-// WxaGetQrcode 获取体验版二维码
-// https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_qrcode.html
-func (c *Client) WxaGetQrcode(ctx context.Context, authorizerAccessToken, path string, notMustParams ...gorequest.Params) (*WxaGetQrcodeResult, error) {
+// GetTrialQRCode 获取体验版二维码
+// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/getTrialQRCode.html
+func (c *Client) GetTrialQRCode(ctx context.Context, authorizerAccessToken, path string, notMustParams ...gorequest.Params) (*GetTrialQRCodeResult, error) {
 
 	// OpenTelemetry链路追踪
 	ctx, span := TraceStartSpan(ctx, "wxa/get_qrcode")
@@ -36,12 +36,12 @@ func (c *Client) WxaGetQrcode(ctx context.Context, authorizerAccessToken, path s
 	}
 
 	// 请求
-	var response WxaGetQrcodeResponse
+	var response GetTrialQRCodeResponse
 	request, err := c.request(ctx, span, "wxa/get_qrcode?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
 
 	// 判断内容是否为图片
 	//if request.HeaderIsImg() == false {
 	//	err = json.Unmarshal(request.ResponseBody, &response)
 	//}
-	return newWxaGetQrcodeResult(response, request.ResponseBody, request), err
+	return newGetTrialQRCodeResult(response, request.ResponseBody, request), err
 }

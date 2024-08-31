@@ -6,24 +6,24 @@ import (
 	"net/http"
 )
 
-type WxaReleaseResponse struct {
+type ReleaseResponse struct {
 	Errcode int    `json:"errcode"` // 错误码
 	Errmsg  string `json:"errmsg"`  // 错误信息
 }
 
-type WxaReleaseResult struct {
-	Result WxaReleaseResponse // 结果
+type ReleaseResult struct {
+	Result ReleaseResponse    // 结果
 	Body   []byte             // 内容
 	Http   gorequest.Response // 请求
 }
 
-func newWxaReleaseResult(result WxaReleaseResponse, body []byte, http gorequest.Response) *WxaReleaseResult {
-	return &WxaReleaseResult{Result: result, Body: body, Http: http}
+func newReleaseResult(result ReleaseResponse, body []byte, http gorequest.Response) *ReleaseResult {
+	return &ReleaseResult{Result: result, Body: body, Http: http}
 }
 
-// WxaRelease 发布已通过审核的小程序
-// https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/release.html
-func (c *Client) WxaRelease(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaReleaseResult, error) {
+// Release 发布已通过审核的小程序
+// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/release.html
+func (c *Client) Release(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*ReleaseResult, error) {
 
 	// OpenTelemetry链路追踪
 	ctx, span := TraceStartSpan(ctx, "wxa/release")
@@ -33,13 +33,13 @@ func (c *Client) WxaRelease(ctx context.Context, authorizerAccessToken string, n
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response WxaReleaseResponse
+	var response ReleaseResponse
 	request, err := c.request(ctx, span, "wxa/release?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newWxaReleaseResult(response, request.ResponseBody, request), err
+	return newReleaseResult(response, request.ResponseBody, request), err
 }
 
 // ErrcodeInfo 错误描述
-func (resp *WxaReleaseResult) ErrcodeInfo() string {
+func (resp *ReleaseResult) ErrcodeInfo() string {
 	switch resp.Result.Errcode {
 	case 85019:
 		return "没有审核版本"

@@ -6,25 +6,25 @@ import (
 	"net/http"
 )
 
-type WxaSubmitAuditResponse struct {
+type SubmitAuditResponse struct {
 	Errcode int    `json:"errcode"`
 	Errmsg  string `json:"errmsg"`
 	Auditid int64  `json:"auditid"`
 }
 
-type WxaSubmitAuditResult struct {
-	Result WxaSubmitAuditResponse // 结果
-	Body   []byte                 // 内容
-	Http   gorequest.Response     // 请求
+type SubmitAuditResult struct {
+	Result SubmitAuditResponse // 结果
+	Body   []byte              // 内容
+	Http   gorequest.Response  // 请求
 }
 
-func newWxaSubmitAuditResult(result WxaSubmitAuditResponse, body []byte, http gorequest.Response) *WxaSubmitAuditResult {
-	return &WxaSubmitAuditResult{Result: result, Body: body, Http: http}
+func newSubmitAuditResult(result SubmitAuditResponse, body []byte, http gorequest.Response) *SubmitAuditResult {
+	return &SubmitAuditResult{Result: result, Body: body, Http: http}
 }
 
-// WxaSubmitAudit 提交审核
-// https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/submit_audit.html
-func (c *Client) WxaSubmitAudit(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaSubmitAuditResult, error) {
+// SubmitAudit 提交代码审核
+// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/submitAudit.html
+func (c *Client) SubmitAudit(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*SubmitAuditResult, error) {
 
 	// OpenTelemetry链路追踪
 	ctx, span := TraceStartSpan(ctx, "wxa/submit_audit")
@@ -34,7 +34,7 @@ func (c *Client) WxaSubmitAudit(ctx context.Context, authorizerAccessToken strin
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response WxaSubmitAuditResponse
+	var response SubmitAuditResponse
 	request, err := c.request(ctx, span, "wxa/submit_audit?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newWxaSubmitAuditResult(response, request.ResponseBody, request), err
+	return newSubmitAuditResult(response, request.ResponseBody, request), err
 }

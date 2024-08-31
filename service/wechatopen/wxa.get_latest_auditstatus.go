@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-type WxaGetLatestAuditStatusResponse struct {
+type GetLatestAuditStatusResponse struct {
 	Errcode         int    `json:"errcode"`           // 返回码
 	Errmsg          string `json:"errmsg"`            // 错误信息
 	Auditid         int    `json:"auditid"`           // 最新的审核 ID
@@ -18,19 +18,19 @@ type WxaGetLatestAuditStatusResponse struct {
 	SubmitAuditTime int64  `json:"submit_audit_time"` // 时间戳，提交审核的时间
 }
 
-type WxaGetLatestAuditStatusResult struct {
-	Result WxaGetLatestAuditStatusResponse // 结果
-	Body   []byte                          // 内容
-	Http   gorequest.Response              // 请求
+type GetLatestAuditStatusResult struct {
+	Result GetLatestAuditStatusResponse // 结果
+	Body   []byte                       // 内容
+	Http   gorequest.Response           // 请求
 }
 
-func newWxaGetLatestAuditStatusResult(result WxaGetLatestAuditStatusResponse, body []byte, http gorequest.Response) *WxaGetLatestAuditStatusResult {
-	return &WxaGetLatestAuditStatusResult{Result: result, Body: body, Http: http}
+func newGetLatestAuditStatusResult(result GetLatestAuditStatusResponse, body []byte, http gorequest.Response) *GetLatestAuditStatusResult {
+	return &GetLatestAuditStatusResult{Result: result, Body: body, Http: http}
 }
 
-// WxaGetLatestAuditStatus 查询最新一次提交的审核状态
-// https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_auditstatus.html
-func (c *Client) WxaGetLatestAuditStatus(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaGetLatestAuditStatusResult, error) {
+// GetLatestAuditStatus 查询最新一次审核单状态
+// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/getLatestAuditStatus.html
+func (c *Client) GetLatestAuditStatus(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GetLatestAuditStatusResult, error) {
 
 	// OpenTelemetry链路追踪
 	ctx, span := TraceStartSpan(ctx, "wxa/get_latest_auditstatus")
@@ -40,13 +40,13 @@ func (c *Client) WxaGetLatestAuditStatus(ctx context.Context, authorizerAccessTo
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response WxaGetLatestAuditStatusResponse
+	var response GetLatestAuditStatusResponse
 	request, err := c.request(ctx, span, "wxa/get_latest_auditstatus?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
-	return newWxaGetLatestAuditStatusResult(response, request.ResponseBody, request), err
+	return newGetLatestAuditStatusResult(response, request.ResponseBody, request), err
 }
 
 // ErrcodeInfo 错误描述
-func (resp *WxaGetLatestAuditStatusResult) ErrcodeInfo() string {
+func (resp *GetLatestAuditStatusResult) ErrcodeInfo() string {
 	switch resp.Result.Errcode {
 	case 86000:
 		return "不是由第三方代小程序进行调用"

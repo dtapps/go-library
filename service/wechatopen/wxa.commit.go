@@ -6,24 +6,24 @@ import (
 	"net/http"
 )
 
-type WxaCommitResponse struct {
+type CommitResponse struct {
 	Errcode int    `json:"errcode"`
 	Errmsg  string `json:"errmsg"`
 }
 
-type WxaCommitResult struct {
-	Result WxaCommitResponse  // 结果
+type CommitResult struct {
+	Result CommitResponse     // 结果
 	Body   []byte             // 内容
 	Http   gorequest.Response // 请求
 }
 
-func newWxaCommitResult(result WxaCommitResponse, body []byte, http gorequest.Response) *WxaCommitResult {
-	return &WxaCommitResult{Result: result, Body: body, Http: http}
+func newCommitResult(result CommitResponse, body []byte, http gorequest.Response) *CommitResult {
+	return &CommitResult{Result: result, Body: body, Http: http}
 }
 
-// WxaCommit 上传小程序代码并生成体验版
-// https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/commit.html
-func (c *Client) WxaCommit(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaCommitResult, error) {
+// Commit 上传代码并生成体验版
+// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/commit.html
+func (c *Client) Commit(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*CommitResult, error) {
 
 	// OpenTelemetry链路追踪
 	ctx, span := TraceStartSpan(ctx, "wxa/commit")
@@ -33,13 +33,13 @@ func (c *Client) WxaCommit(ctx context.Context, authorizerAccessToken string, no
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response WxaCommitResponse
+	var response CommitResponse
 	request, err := c.request(ctx, span, "wxa/commit?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newWxaCommitResult(response, request.ResponseBody, request), err
+	return newCommitResult(response, request.ResponseBody, request), err
 }
 
 // ErrcodeInfo 错误描述
-func (resp *WxaCommitResult) ErrcodeInfo() string {
+func (resp *CommitResult) ErrcodeInfo() string {
 	switch resp.Result.Errcode {
 	case 85013:
 		return "无效的自定义配置"
