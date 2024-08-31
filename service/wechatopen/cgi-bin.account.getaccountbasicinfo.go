@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-type CgiBinAccountGetAccountBasicInfoResponse struct {
+type GetAccountBasicInfoResponse struct {
 	Errcode        int    `json:"errcode"`         // 返回码
 	Errmsg         string `json:"errmsg"`          // 错误信息
 	Appid          string `json:"appid"`           // 帐号 appid
@@ -42,19 +42,19 @@ type CgiBinAccountGetAccountBasicInfoResponse struct {
 	Nickname          string `json:"nickname"`           // 小程序名称
 }
 
-type CgiBinAccountGetAccountBasicInfoResult struct {
-	Result CgiBinAccountGetAccountBasicInfoResponse // 结果
-	Body   []byte                                   // 内容
-	Http   gorequest.Response                       // 请求
+type GetAccountBasicInfoResult struct {
+	Result GetAccountBasicInfoResponse // 结果
+	Body   []byte                      // 内容
+	Http   gorequest.Response          // 请求
 }
 
-func newCgiBinAccountGetAccountBasicInfoResult(result CgiBinAccountGetAccountBasicInfoResponse, body []byte, http gorequest.Response) *CgiBinAccountGetAccountBasicInfoResult {
-	return &CgiBinAccountGetAccountBasicInfoResult{Result: result, Body: body, Http: http}
+func newGetAccountBasicInfoResult(result GetAccountBasicInfoResponse, body []byte, http gorequest.Response) *GetAccountBasicInfoResult {
+	return &GetAccountBasicInfoResult{Result: result, Body: body, Http: http}
 }
 
-// CgiBinAccountGetAccountBasicInfo 获取基本信息
-// https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_Basic_Info/Mini_Program_Information_Settings.html
-func (c *Client) CgiBinAccountGetAccountBasicInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*CgiBinAccountGetAccountBasicInfoResult, error) {
+// GetAccountBasicInfo 获取基本信息
+// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/basic-info-management/getAccountBasicInfo.html
+func (c *Client) GetAccountBasicInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GetAccountBasicInfoResult, error) {
 
 	// OpenTelemetry链路追踪
 	ctx, span := TraceStartSpan(ctx, "cgi-bin/account/getaccountbasicinfo")
@@ -64,7 +64,7 @@ func (c *Client) CgiBinAccountGetAccountBasicInfo(ctx context.Context, authorize
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response CgiBinAccountGetAccountBasicInfoResponse
+	var response GetAccountBasicInfoResponse
 	request, err := c.request(ctx, span, fmt.Sprintf("cgi-bin/account/getaccountbasicinfo?access_token=%s", authorizerAccessToken), params, http.MethodGet, &response)
-	return newCgiBinAccountGetAccountBasicInfoResult(response, request.ResponseBody, request), err
+	return newGetAccountBasicInfoResult(response, request.ResponseBody, request), err
 }

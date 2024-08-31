@@ -6,25 +6,25 @@ import (
 	"net/http"
 )
 
-type WxaBindTesterResponse struct {
+type BindTesterResponse struct {
 	Errcode int    `json:"errcode"` // 错误码
 	Errmsg  string `json:"errmsg"`  // 错误信息
 	Userstr string `json:"userstr"` // 人员对应的唯一字符串
 }
 
-type WxaBindTesterResult struct {
-	Result WxaBindTesterResponse // 结果
-	Body   []byte                // 内容
-	Http   gorequest.Response    // 请求
+type BindTesterResult struct {
+	Result BindTesterResponse // 结果
+	Body   []byte             // 内容
+	Http   gorequest.Response // 请求
 }
 
-func newWxaBindTesterResult(result WxaBindTesterResponse, body []byte, http gorequest.Response) *WxaBindTesterResult {
-	return &WxaBindTesterResult{Result: result, Body: body, Http: http}
+func newBindTesterResult(result BindTesterResponse, body []byte, http gorequest.Response) *BindTesterResult {
+	return &BindTesterResult{Result: result, Body: body, Http: http}
 }
 
-// WxaBindTester 绑定微信用户为体验者
-// https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_AdminManagement/Admin.html
-func (c *Client) WxaBindTester(ctx context.Context, authorizerAccessToken, wechatid string, notMustParams ...gorequest.Params) (*WxaBindTesterResult, error) {
+// BindTester 绑定体验者
+// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/member-management/bindTester.html
+func (c *Client) BindTester(ctx context.Context, authorizerAccessToken, wechatid string, notMustParams ...gorequest.Params) (*BindTesterResult, error) {
 
 	// OpenTelemetry链路追踪
 	ctx, span := TraceStartSpan(ctx, "wxa/bind_tester")
@@ -35,13 +35,13 @@ func (c *Client) WxaBindTester(ctx context.Context, authorizerAccessToken, wecha
 	params.Set("wechatid", wechatid)
 
 	// 请求
-	var response WxaBindTesterResponse
+	var response BindTesterResponse
 	request, err := c.request(ctx, span, "wxa/bind_tester?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newWxaBindTesterResult(response, request.ResponseBody, request), err
+	return newBindTesterResult(response, request.ResponseBody, request), err
 }
 
 // ErrcodeInfo 错误描述
-func (resp *WxaBindTesterResult) ErrcodeInfo() string {
+func (resp *BindTesterResult) ErrcodeInfo() string {
 	switch resp.Result.Errcode {
 	case 85001:
 		return "微信号不存在或微信号设置为不可搜索"
