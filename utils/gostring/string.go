@@ -8,6 +8,7 @@ import (
 	"go.dtapp.net/library/utils/gojson"
 	"strconv"
 	"strings"
+	"unicode"
 	"unicode/utf8"
 	"unsafe"
 )
@@ -186,4 +187,34 @@ func GetString(i interface{}) string {
 		bytes, _ := gojson.Marshal(v)
 		return string(bytes)
 	}
+}
+
+// IsNotChineseOrDigit 检查字符串包含中文字符或数字字符 则返回 true；否则返回 false。
+func IsNotChineseOrDigit(s string) bool {
+	for _, r := range s {
+		if unicode.IsDigit(r) || unicode.Is(unicode.Han, r) {
+			return true
+		}
+	}
+	return false
+}
+
+// IsNotChinese 检查字符串包含中文字符 则返回 true；否则返回 false。
+func IsNotChinese(s string) bool {
+	for _, r := range s {
+		if unicode.Is(unicode.Han, r) {
+			return true
+		}
+	}
+	return false
+}
+
+// IsNotDigit 检查字符串数字字符 则返回 true；否则返回 false。
+func IsNotDigit(s string) bool {
+	for _, r := range s {
+		if unicode.IsDigit(r) {
+			return true
+		}
+	}
+	return false
 }
