@@ -29,8 +29,9 @@ func EntAnnotations(table string, comment string) []schema.Annotation {
 // EntApiLogFields 请求日志模型
 func EntApiLogFields() []ent.Field {
 	return []ent.Field{
+		field.String("id").StorageKey("log_id").Comment("日志序号").Annotations(entsql.WithComments(true)), // 用 log_id 覆盖 框架的 id
 		field.String("trace_id").Optional().Immutable().Comment("跟踪编号").Annotations(entsql.WithComments(true)),
-		field.String("id").StorageKey("request_id").Comment("请求编号").Annotations(entsql.WithComments(true)), // 用 request_id 覆盖 框架的 id
+		field.String("request_id").Optional().Immutable().Comment("请求编号").Annotations(entsql.WithComments(true)),
 		field.Time("request_time").Immutable().Comment("请求时间").Annotations(entsql.WithComments(true)),
 		field.String("request_host").Optional().Immutable().Comment("请求主机").Annotations(entsql.WithComments(true)),
 		field.String("request_path").Optional().Immutable().Comment("请求地址").Annotations(entsql.WithComments(true)),
@@ -43,7 +44,7 @@ func EntApiLogFields() []ent.Field {
 		field.String("request_user_agent").Optional().Immutable().Comment("请求UA").Annotations(entsql.WithComments(true)),
 		field.String("request_header").Optional().Immutable().Comment("请求头").Annotations(entsql.WithComments(true)),
 		field.Int64("request_cost_time").Optional().Immutable().Comment("请求消耗时长").Annotations(entsql.WithComments(true)),
-		field.Time("response_time").Optional().Immutable().Comment("响应时间").Annotations(entsql.WithComments(true)),
+		field.Time("response_time").Immutable().Comment("响应时间").Annotations(entsql.WithComments(true)),
 		field.String("response_header").Optional().Immutable().Comment("响应头").Annotations(entsql.WithComments(true)),
 		field.Int("response_status_code").Optional().Immutable().Comment("响应状态").Annotations(entsql.WithComments(true)),
 		field.String("response_body").Optional().Immutable().Comment("响应内容").Annotations(entsql.WithComments(true)),
@@ -68,8 +69,9 @@ func EntApiLogIndexes() []ent.Index {
 // EntGinLogFields Gin框架日志模型
 func EntGinLogFields() []ent.Field {
 	return []ent.Field{
+		field.String("id").StorageKey("log_id").Comment("日志序号").Annotations(entsql.WithComments(true)), // 用 log_id 覆盖 框架的 id
 		field.String("trace_id").Optional().Immutable().Comment("跟踪编号").Annotations(entsql.WithComments(true)),
-		field.String("id").StorageKey("request_id").Comment("请求编号").Annotations(entsql.WithComments(true)), // 用 request_id 覆盖 框架的 id
+		field.String("request_id").Optional().Immutable().Comment("请求编号").Annotations(entsql.WithComments(true)),
 		field.Time("request_time").Immutable().Comment("请求时间").Annotations(entsql.WithComments(true)),
 		field.String("request_host").Optional().Immutable().Comment("请求主机").Annotations(entsql.WithComments(true)),
 		field.String("request_path").Optional().Immutable().Comment("请求地址").Annotations(entsql.WithComments(true)),
@@ -82,7 +84,7 @@ func EntGinLogFields() []ent.Field {
 		field.String("request_user_agent").Optional().Immutable().Comment("请求UA").Annotations(entsql.WithComments(true)),
 		field.String("request_header").Optional().Immutable().Comment("请求头").Annotations(entsql.WithComments(true)),
 		field.Int64("request_cost_time").Optional().Immutable().Comment("请求消耗时长").Annotations(entsql.WithComments(true)),
-		field.Time("response_time").Optional().Immutable().Comment("响应时间").Annotations(entsql.WithComments(true)),
+		field.Time("response_time").Immutable().Comment("响应时间").Annotations(entsql.WithComments(true)),
 		field.String("response_header").Optional().Immutable().Comment("响应头").Annotations(entsql.WithComments(true)),
 		field.Int("response_status_code").Optional().Immutable().Comment("响应状态").Annotations(entsql.WithComments(true)),
 		field.String("response_body").Optional().Immutable().Comment("响应内容").Annotations(entsql.WithComments(true)),
@@ -95,7 +97,7 @@ func EntGinLogFields() []ent.Field {
 func EntGinLogIndexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("trace_id"),
-		//index.Fields("request_id"),
+		index.Fields("request_id"),
 		index.Fields("request_time"),
 		index.Fields("request_path"),
 		index.Fields("request_method"),
@@ -107,8 +109,9 @@ func EntGinLogIndexes() []ent.Index {
 // EntHertzLogFields Hertz框架日志模型
 func EntHertzLogFields() []ent.Field {
 	return []ent.Field{
+		field.String("id").StorageKey("log_id").Comment("日志序号").Annotations(entsql.WithComments(true)), // 用 log_id 覆盖 框架的 id
 		field.String("trace_id").Optional().Immutable().Comment("跟踪编号").Annotations(entsql.WithComments(true)),
-		field.String("id").StorageKey("request_id").Comment("请求编号").Annotations(entsql.WithComments(true)), // 用 request_id 覆盖 框架的 id
+		field.String("request_id").Optional().Immutable().Comment("请求编号").Annotations(entsql.WithComments(true)),
 		field.Time("request_time").Immutable().Comment("请求时间").Annotations(entsql.WithComments(true)),
 		field.String("request_host").Optional().Immutable().Comment("请求主机").Annotations(entsql.WithComments(true)),
 		field.String("request_path").Optional().Immutable().Comment("请求地址").Annotations(entsql.WithComments(true)),
@@ -121,7 +124,7 @@ func EntHertzLogFields() []ent.Field {
 		field.String("request_user_agent").Optional().Immutable().Comment("请求UA").Annotations(entsql.WithComments(true)),
 		field.String("request_header").Optional().Immutable().Comment("请求头").Annotations(entsql.WithComments(true)),
 		field.Int64("request_cost_time").Optional().Immutable().Comment("请求消耗时长").Annotations(entsql.WithComments(true)),
-		field.Time("response_time").Optional().Immutable().Comment("响应时间").Annotations(entsql.WithComments(true)),
+		field.Time("response_time").Immutable().Comment("响应时间").Annotations(entsql.WithComments(true)),
 		field.String("response_header").Optional().Immutable().Comment("响应头").Annotations(entsql.WithComments(true)),
 		field.Int("response_status_code").Optional().Immutable().Comment("响应状态").Annotations(entsql.WithComments(true)),
 		field.String("response_body").Optional().Immutable().Comment("响应内容").Annotations(entsql.WithComments(true)),
@@ -134,7 +137,7 @@ func EntHertzLogFields() []ent.Field {
 func EntHertzLogIndexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("trace_id"),
-		//index.Fields("request_id"),
+		index.Fields("request_id"),
 		index.Fields("request_time"),
 		index.Fields("request_path"),
 		index.Fields("request_method"),
