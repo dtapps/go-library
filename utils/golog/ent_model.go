@@ -29,7 +29,7 @@ func EntAnnotations(table string, comment string) []schema.Annotation {
 // EntApiLogFields 请求日志模型
 func EntApiLogFields() []ent.Field {
 	return []ent.Field{
-		field.String("id").StorageKey("log_id").Comment("日志序号").Annotations(entsql.WithComments(true)), // 用 log_id 覆盖 框架的 id
+		field.Int64("id").StorageKey("log_id").Comment("日志序号").Annotations(entsql.WithComments(true)), // 用 log_id 覆盖 框架的 id
 		field.String("trace_id").Optional().Immutable().Comment("跟踪编号").Annotations(entsql.WithComments(true)),
 		field.String("request_id").Optional().Immutable().Comment("请求编号").Annotations(entsql.WithComments(true)),
 		field.Time("request_time").Immutable().Comment("请求时间").Annotations(entsql.WithComments(true)),
@@ -69,7 +69,7 @@ func EntApiLogIndexes() []ent.Index {
 // EntGinLogFields Gin框架日志模型
 func EntGinLogFields() []ent.Field {
 	return []ent.Field{
-		field.String("id").StorageKey("log_id").Comment("日志序号").Annotations(entsql.WithComments(true)), // 用 log_id 覆盖 框架的 id
+		field.Int64("id").StorageKey("log_id").Comment("日志序号").Annotations(entsql.WithComments(true)), // 用 log_id 覆盖 框架的 id
 		field.String("trace_id").Optional().Immutable().Comment("跟踪编号").Annotations(entsql.WithComments(true)),
 		field.String("request_id").Optional().Immutable().Comment("请求编号").Annotations(entsql.WithComments(true)),
 		field.Time("request_time").Immutable().Comment("请求时间").Annotations(entsql.WithComments(true)),
@@ -109,7 +109,7 @@ func EntGinLogIndexes() []ent.Index {
 // EntHertzLogFields Hertz框架日志模型
 func EntHertzLogFields() []ent.Field {
 	return []ent.Field{
-		field.String("id").StorageKey("log_id").Comment("日志序号").Annotations(entsql.WithComments(true)), // 用 log_id 覆盖 框架的 id
+		field.Int64("id").StorageKey("log_id").Comment("日志序号").Annotations(entsql.WithComments(true)), // 用 log_id 覆盖 框架的 id
 		field.String("trace_id").Optional().Immutable().Comment("跟踪编号").Annotations(entsql.WithComments(true)),
 		field.String("request_id").Optional().Immutable().Comment("请求编号").Annotations(entsql.WithComments(true)),
 		field.Time("request_time").Immutable().Comment("请求时间").Annotations(entsql.WithComments(true)),
