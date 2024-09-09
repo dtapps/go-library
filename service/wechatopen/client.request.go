@@ -27,6 +27,8 @@ func (c *Client) request(ctx context.Context, span trace.Span, url string, param
 	// 设置参数
 	c.httpClient.SetParams(param)
 
+	c.httpClient.SetHeader("authorizer_appid", c.GetAuthorizerAppid())
+
 	// OpenTelemetry链路追踪
 	span.SetAttributes(attribute.String("http.request.url", uri))
 	span.SetAttributes(attribute.String("http.request.method", method))

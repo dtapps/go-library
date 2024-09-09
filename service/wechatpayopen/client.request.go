@@ -33,6 +33,8 @@ func (c *Client) request(ctx context.Context, url string, param gorequest.Params
 	// 设置参数
 	c.httpClient.SetParams(param)
 
+	c.httpClient.SetHeader("sub_appid", c.GetSubAppid())
+
 	// 设置头部
 	c.httpClient.SetHeader("Authorization", authorization)
 	c.httpClient.SetHeader("Accept", "application/json")
