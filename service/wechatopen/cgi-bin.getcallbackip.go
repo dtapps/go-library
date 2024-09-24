@@ -25,7 +25,7 @@ func NewCgiBinGetCallBackIpResult(result CgiBinGetCallBackIpResponse, body []byt
 func (c *Client) CgiBinGetCallBackIp(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*CgiBinGetCallBackIpResult, error) {
 
 	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "cgi-bin/get_api_domain_ip")
+	ctx, span := TraceStartSpan(ctx, "cgi-bin/getcallbackip")
 	defer span.End()
 
 	// 参数
@@ -33,6 +33,6 @@ func (c *Client) CgiBinGetCallBackIp(ctx context.Context, authorizerAccessToken 
 
 	// 请求
 	var response CgiBinGetCallBackIpResponse
-	request, err := c.request(ctx, span, "cgi-bin/get_api_domain_ip?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
+	request, err := c.request(ctx, span, "cgi-bin/getcallbackip?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
 	return NewCgiBinGetCallBackIpResult(response, request.ResponseBody, request), err
 }
