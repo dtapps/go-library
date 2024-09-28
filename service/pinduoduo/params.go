@@ -21,7 +21,22 @@ func NewParamsWithType(_type string, params ...gorequest.Params) gorequest.Param
 }
 
 func (c *Client) Sign(p gorequest.Params) {
-	p.Set("client_id", c.GetClientId()) // 	POP分配给应用的client_id
+	if c.GetClientId() != "" {
+		p.Set("client_id", c.GetClientId()) // 	POP分配给应用的client_id
+	}
+	isFilterAccessToken := true
+	if c.GetAccessToken() != "" && len(c.GetAccessTokenScope()) > 0 {
+		for _, v := range c.GetAccessTokenScope() {
+			if v == p.Get("type") {
+				isFilterAccessToken = false
+				p.Set("access_token", c.GetAccessToken()) // 	通过code获取的access_token(无需授权的接口，该字段不参与sign签名运算)
+			}
+		}
+	}
+	if c.GetAccessToken() != "" && len(c.GetAccessTokenScope()) <= 0 {
+		isFilterAccessToken = false
+		p.Set("access_token", c.GetAccessToken()) // 	通过code获取的access_token(无需授权的接口，该字段不参与sign签名运算)
+	}
 	// 排序所有的 key
 	var keys []string
 	for key := range p {
@@ -30,7 +45,13 @@ func (c *Client) Sign(p gorequest.Params) {
 	sort.Strings(keys)
 	signStr := c.GetClientSecret()
 	for _, key := range keys {
-		signStr += key + gostring.GetString(p.Get(key))
+		if isFilterAccessToken {
+			if key != "access_token" {
+				signStr += key + gostring.GetString(p.Get(key))
+			}
+		} else {
+			signStr += key + gostring.GetString(p.Get(key))
+		}
 	}
 	signStr += c.GetClientSecret()
 	p.Set("sign", createSign(signStr))

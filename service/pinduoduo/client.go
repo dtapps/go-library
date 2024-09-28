@@ -18,10 +18,12 @@ type ClientConfig struct {
 // Client 实例
 type Client struct {
 	config struct {
-		clientId     string // POP分配给应用的client_id
-		clientSecret string // POP分配给应用的client_secret
-		mediaId      string // 媒体ID
-		pid          string // 推广位
+		clientId         string   // POP分配给应用的client_id
+		clientSecret     string   // POP分配给应用的client_secret
+		mediaId          string   // 媒体ID
+		pid              string   // 推广位
+		accessToken      string   // 通过code获取的access_token(无需授权的接口，该字段不参与sign签名运算)
+		accessTokenScope []string // 授权范围
 	}
 	httpClient *gorequest.App // HTTP请求客户端
 	clientIP   string         // 客户端IP
