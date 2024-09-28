@@ -69,14 +69,14 @@ func newPddDdkOauthGoodsSearchResult(result PddDdkOauthGoodsSearchResponse, body
 func (c *Client) OauthGoodsSearch(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthGoodsSearchResult, error) {
 
 	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "pdd.ddk.oauth.goods.search")
-	defer c.TraceEndSpan()
+	ctx, span := TraceStartSpan(ctx, "pdd.ddk.oauth.goods.search")
+	defer span.End()
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.goods.search", notMustParams...)
 
 	// 请求
 	var response PddDdkOauthGoodsSearchResponse
-	request, err := c.request(ctx, params, &response)
+	request, err := c.request(ctx, span, params, &response)
 	return newPddDdkOauthGoodsSearchResult(response, request.ResponseBody, request), err
 }

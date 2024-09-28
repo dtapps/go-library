@@ -64,8 +64,8 @@ func newCmsPromUrlGenerateResult(result CmsPromUrlGenerateResponse, body []byte,
 func (c *Client) CmsPromUrlGenerate(ctx context.Context, notMustParams ...gorequest.Params) (*CmsPromUrlGenerateResult, CmsPromUrlGenerateError, error) {
 
 	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "pdd.ddk.cms.prom.url.generate")
-	defer c.TraceEndSpan()
+	ctx, span := TraceStartSpan(ctx, "pdd.ddk.cms.prom.url.generate")
+	defer span.End()
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.cms.prom.url.generate", notMustParams...)
@@ -73,7 +73,7 @@ func (c *Client) CmsPromUrlGenerate(ctx context.Context, notMustParams ...gorequ
 
 	// 请求
 	var response CmsPromUrlGenerateResponse
-	request, err := c.request(ctx, params, &response)
+	request, err := c.request(ctx, span, params, &response)
 	var responseError CmsPromUrlGenerateError
 	err = gojson.Unmarshal(request.ResponseBody, &responseError)
 	return newCmsPromUrlGenerateResult(response, request.ResponseBody, request), responseError, err

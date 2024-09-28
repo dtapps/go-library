@@ -57,8 +57,8 @@ func newGoodsPromotionUrlGenerateResult(result GoodsPromotionUrlGenerateResponse
 func (c *Client) GoodsPromotionUrlGenerate(ctx context.Context, notMustParams ...gorequest.Params) (*GoodsPromotionUrlGenerateResult, error) {
 
 	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "pdd.ddk.goods.promotion.url.generate")
-	defer c.TraceEndSpan()
+	ctx, span := TraceStartSpan(ctx, "pdd.ddk.goods.promotion.url.generate")
+	defer span.End()
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.promotion.url.generate", notMustParams...)
@@ -66,6 +66,6 @@ func (c *Client) GoodsPromotionUrlGenerate(ctx context.Context, notMustParams ..
 
 	// 请求
 	var response GoodsPromotionUrlGenerateResponse
-	request, err := c.request(ctx, params, &response)
+	request, err := c.request(ctx, span, params, &response)
 	return newGoodsPromotionUrlGenerateResult(response, request.ResponseBody, request), err
 }

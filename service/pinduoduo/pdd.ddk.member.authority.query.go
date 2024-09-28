@@ -27,8 +27,8 @@ func newMemberAuthorityQueryResult(result MemberAuthorityQueryResponse, body []b
 func (c *Client) MemberAuthorityQuery(ctx context.Context, notMustParams ...gorequest.Params) (*MemberAuthorityQueryResult, error) {
 
 	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "pdd.ddk.member.authority.query")
-	defer c.TraceEndSpan()
+	ctx, span := TraceStartSpan(ctx, "pdd.ddk.member.authority.query")
+	defer span.End()
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.member.authority.query", notMustParams...)
@@ -36,6 +36,6 @@ func (c *Client) MemberAuthorityQuery(ctx context.Context, notMustParams ...gore
 
 	// 请求
 	var response MemberAuthorityQueryResponse
-	request, err := c.request(ctx, params, &response)
+	request, err := c.request(ctx, span, params, &response)
 	return newMemberAuthorityQueryResult(response, request.ResponseBody, request), err
 }

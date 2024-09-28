@@ -61,14 +61,14 @@ func newPddDdkOauthRpPromUrlGenerateResult(result PddDdkOauthRpPromUrlGenerateRe
 func (c *Client) OauthRpPromUrlGenerate(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthRpPromUrlGenerateResult, error) {
 
 	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "pdd.ddk.oauth.rp.prom.url.generate")
-	defer c.TraceEndSpan()
+	ctx, span := TraceStartSpan(ctx, "pdd.ddk.oauth.rp.prom.url.generate")
+	defer span.End()
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.rp.prom.url.generate", notMustParams...)
 
 	// 请求
 	var response PddDdkOauthRpPromUrlGenerateResponse
-	request, err := c.request(ctx, params, &response)
+	request, err := c.request(ctx, span, params, &response)
 	return newPddDdkOauthRpPromUrlGenerateResult(response, request.ResponseBody, request), err
 }

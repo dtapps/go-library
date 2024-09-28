@@ -31,8 +31,8 @@ func newGoodsCatsGetResult(result GoodsCatsGetResponse, body []byte, http gorequ
 func (c *Client) GoodsCatsGet(ctx context.Context, parentOptId int, notMustParams ...gorequest.Params) (*GoodsCatsGetResult, error) {
 
 	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "pdd.goods.cats.get")
-	defer c.TraceEndSpan()
+	ctx, span := TraceStartSpan(ctx, "pdd.goods.cats.get")
+	defer span.End()
 
 	// 参数
 	params := NewParamsWithType("pdd.goods.cats.get", notMustParams...)
@@ -40,6 +40,6 @@ func (c *Client) GoodsCatsGet(ctx context.Context, parentOptId int, notMustParam
 
 	// 请求
 	var response GoodsCatsGetResponse
-	request, err := c.request(ctx, params, &response)
+	request, err := c.request(ctx, span, params, &response)
 	return newGoodsCatsGetResult(response, request.ResponseBody, request), err
 }

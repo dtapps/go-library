@@ -53,8 +53,8 @@ func newResourceUrlGenResult(result ResourceUrlGenResponse, body []byte, http go
 func (c *Client) ResourceUrlGen(ctx context.Context, notMustParams ...gorequest.Params) (*ResourceUrlGenResult, ResourceUrlGenError, error) {
 
 	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "pdd.ddk.resource.url.gen")
-	defer c.TraceEndSpan()
+	ctx, span := TraceStartSpan(ctx, "pdd.ddk.resource.url.gen")
+	defer span.End()
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.resource.url.gen", notMustParams...)
@@ -62,7 +62,7 @@ func (c *Client) ResourceUrlGen(ctx context.Context, notMustParams ...gorequest.
 
 	// 请求
 	var response ResourceUrlGenResponse
-	request, err := c.request(ctx, params, &response)
+	request, err := c.request(ctx, span, params, &response)
 	var responseError ResourceUrlGenError
 	err = gojson.Unmarshal(request.ResponseBody, &responseError)
 	return newResourceUrlGenResult(response, request.ResponseBody, request), responseError, err

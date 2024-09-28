@@ -95,8 +95,8 @@ func newGoodsSearchResult(result GoodsSearchResponse, body []byte, http goreques
 func (c *Client) GoodsSearch(ctx context.Context, notMustParams ...gorequest.Params) (*GoodsSearchResult, error) {
 
 	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "pdd.ddk.goods.search")
-	defer c.TraceEndSpan()
+	ctx, span := TraceStartSpan(ctx, "pdd.ddk.goods.search")
+	defer span.End()
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.search", notMustParams...)
@@ -104,6 +104,6 @@ func (c *Client) GoodsSearch(ctx context.Context, notMustParams ...gorequest.Par
 
 	// 请求
 	var response GoodsSearchResponse
-	request, err := c.request(ctx, params, &response)
+	request, err := c.request(ctx, span, params, &response)
 	return newGoodsSearchResult(response, request.ResponseBody, request), err
 }

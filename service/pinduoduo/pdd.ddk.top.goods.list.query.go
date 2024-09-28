@@ -61,8 +61,8 @@ func newTopGoodsListQueryResult(result TopGoodsListQueryResponse, body []byte, h
 func (c *Client) TopGoodsListQuery(ctx context.Context, notMustParams ...gorequest.Params) (*TopGoodsListQueryResult, error) {
 
 	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "pdd.ddk.top.goods.list.query")
-	defer c.TraceEndSpan()
+	ctx, span := TraceStartSpan(ctx, "pdd.ddk.top.goods.list.query")
+	defer span.End()
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.top.goods.list.query", notMustParams...)
@@ -70,6 +70,6 @@ func (c *Client) TopGoodsListQuery(ctx context.Context, notMustParams ...goreque
 
 	// 请求
 	var response TopGoodsListQueryResponse
-	request, err := c.request(ctx, params, &response)
+	request, err := c.request(ctx, span, params, &response)
 	return newTopGoodsListQueryResult(response, request.ResponseBody, request), err
 }

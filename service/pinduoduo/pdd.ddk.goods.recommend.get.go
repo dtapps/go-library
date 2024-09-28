@@ -81,8 +81,8 @@ func newGoodsRecommendGetResult(result GoodsRecommendGetResponse, body []byte, h
 func (c *Client) GoodsRecommendGet(ctx context.Context, notMustParams ...gorequest.Params) (*GoodsRecommendGetResult, error) {
 
 	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "pdd.ddk.goods.recommend.get")
-	defer c.TraceEndSpan()
+	ctx, span := TraceStartSpan(ctx, "pdd.ddk.goods.recommend.get")
+	defer span.End()
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.recommend.get", notMustParams...)
@@ -90,6 +90,6 @@ func (c *Client) GoodsRecommendGet(ctx context.Context, notMustParams ...goreque
 
 	// 请求
 	var response GoodsRecommendGetResponse
-	request, err := c.request(ctx, params, &response)
+	request, err := c.request(ctx, span, params, &response)
 	return newGoodsRecommendGetResult(response, request.ResponseBody, request), err
 }

@@ -6,9 +6,10 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
+	"go.opentelemetry.io/otel/trace"
 )
 
-func (c *Client) request(ctx context.Context, param gorequest.Params, response any) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, span trace.Span, param gorequest.Params, response any) (gorequest.Response, error) {
 
 	// 请求地址
 	uri := apiUrl
@@ -23,22 +24,22 @@ func (c *Client) request(ctx context.Context, param gorequest.Params, response a
 	c.httpClient.SetParams(param)
 
 	// OpenTelemetry链路追踪
-	c.TraceSetAttributes(attribute.String("http.url", uri))
-	c.TraceSetAttributes(attribute.String("http.params", gojson.JsonEncodeNoError(param)))
+	span.SetAttributes(attribute.String("http.url", uri))
+	span.SetAttributes(attribute.String("http.params", gojson.JsonEncodeNoError(param)))
 
 	// 发起请求
 	request, err := c.httpClient.Get(ctx)
 	if err != nil {
-		c.TraceRecordError(err)
-		c.TraceSetStatus(codes.Error, err.Error())
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return gorequest.Response{}, err
 	}
 
 	// 解析响应
 	err = gojson.Unmarshal(request.ResponseBody, &response)
 	if err != nil {
-		c.TraceRecordError(err)
-		c.TraceSetStatus(codes.Error, err.Error())
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 	}
 
 	return request, err

@@ -68,8 +68,8 @@ func newOrderDetailGetResult(result OrderDetailGetResponse, body []byte, http go
 func (c *Client) OrderDetailGet(ctx context.Context, orderSn string, notMustParams ...gorequest.Params) (*OrderDetailGetResult, error) {
 
 	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "pdd.ddk.order.detail.get")
-	defer c.TraceEndSpan()
+	ctx, span := TraceStartSpan(ctx, "pdd.ddk.order.detail.get")
+	defer span.End()
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.order.detail.get", notMustParams...)
@@ -77,6 +77,6 @@ func (c *Client) OrderDetailGet(ctx context.Context, orderSn string, notMustPara
 
 	// 请求
 	var response OrderDetailGetResponse
-	request, err := c.request(ctx, params, &response)
+	request, err := c.request(ctx, span, params, &response)
 	return newOrderDetailGetResult(response, request.ResponseBody, request), err
 }

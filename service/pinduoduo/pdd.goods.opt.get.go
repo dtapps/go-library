@@ -31,8 +31,8 @@ func newGoodsOptGetResult(result GoodsOptGetResponse, body []byte, http goreques
 func (c *Client) GoodsOptGet(ctx context.Context, parentOptId int, notMustParams ...gorequest.Params) (*GoodsOptGetResult, error) {
 
 	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "pdd.goods.opt.get")
-	defer c.TraceEndSpan()
+	ctx, span := TraceStartSpan(ctx, "pdd.goods.opt.get")
+	defer span.End()
 
 	// 参数
 	params := NewParamsWithType("pdd.goods.opt.get", notMustParams...)
@@ -40,6 +40,6 @@ func (c *Client) GoodsOptGet(ctx context.Context, parentOptId int, notMustParams
 
 	// 请求
 	var response GoodsOptGetResponse
-	request, err := c.request(ctx, params, &response)
+	request, err := c.request(ctx, span, params, &response)
 	return newGoodsOptGetResult(response, request.ResponseBody, request), err
 }

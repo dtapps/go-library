@@ -26,14 +26,14 @@ func newPddDdkOauthCashGiftStatusUpdateResult(result PddDdkOauthCashGiftStatusUp
 func (c *Client) OauthCashGiftStatusUpdate(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthCashGiftStatusUpdateResult, error) {
 
 	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "pdd.ddk.oauth.cashgift.status.update")
-	defer c.TraceEndSpan()
+	ctx, span := TraceStartSpan(ctx, "pdd.ddk.oauth.cashgift.status.update")
+	defer span.End()
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.cashgift.status.update", notMustParams...)
 
 	// 请求
 	var response PddDdkOauthCashGiftStatusUpdateResponse
-	request, err := c.request(ctx, params, &response)
+	request, err := c.request(ctx, span, params, &response)
 	return newPddDdkOauthCashGiftStatusUpdateResult(response, request.ResponseBody, request), err
 }
