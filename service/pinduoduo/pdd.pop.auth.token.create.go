@@ -47,11 +47,10 @@ func (c *Client) PopAuthTokenCreate(ctx context.Context, code string, notMustPar
 	defer span.End()
 
 	// 参数
-	param := gorequest.NewParamsWith(notMustParams...)
+	params := NewParamsWithType("pdd.pop.auth.token.create", notMustParams...)
 	if code != "" {
-		param.Set("code", code) // 授权code，grantType==authorization_code 时需要
+		params.Set("code", code) // 授权code，grantType==authorization_code 时需要
 	}
-	params := NewParamsWithType("pdd.pop.auth.token.create", param)
 
 	// 请求
 	var response PddDdkPopAuthTokenCreateResponse

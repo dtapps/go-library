@@ -40,18 +40,17 @@ func newPddDdkPopAuthTokenRefreshResult(result PddDdkPopAuthTokenRefreshResponse
 
 // PopAuthTokenRefresh 刷新Access Token
 // https://open.pinduoduo.com/application/document/api?id=pdd.pop.auth.token.refresh
-func (c *Client) PopAuthTokenRefresh(ctx context.Context, refresh_token string, notMustParams ...gorequest.Params) (*PddDdkPopAuthTokenRefreshResult, error) {
+func (c *Client) PopAuthTokenRefresh(ctx context.Context, refreshToken string, notMustParams ...gorequest.Params) (*PddDdkPopAuthTokenRefreshResult, error) {
 
 	// OpenTelemetry链路追踪
 	ctx, span := TraceStartSpan(ctx, "pdd.pop.auth.token.refresh")
 	defer span.End()
 
 	// 参数
-	param := gorequest.NewParamsWith(notMustParams...)
-	if refresh_token != "" {
-		param.Set("refresh_token", refresh_token) // grantType==refresh_token 时需要
-	}
 	params := NewParamsWithType("pdd.pop.auth.token.refresh", notMustParams...)
+	if refreshToken != "" {
+		params.Set("refresh_token", refreshToken) // grantType==refresh_token 时需要
+	}
 
 	// 请求
 	var response PddDdkPopAuthTokenRefreshResponse
