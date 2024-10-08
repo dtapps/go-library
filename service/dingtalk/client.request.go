@@ -2,6 +2,7 @@ package dingtalk
 
 import (
 	"context"
+	"fmt"
 	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.opentelemetry.io/otel/attribute"
@@ -10,6 +11,10 @@ import (
 )
 
 func (c *Client) request(ctx context.Context, span trace.Span, url string, param gorequest.Params, method string, response any) (gorequest.Response, error) {
+
+	if gorequest.IsHttpURL(url) == false {
+		return gorequest.Response{}, fmt.Errorf("不是有效地址: %s", url)
+	}
 
 	// 设置请求地址
 	c.httpClient.SetUri(url)
