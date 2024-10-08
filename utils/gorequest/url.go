@@ -76,3 +76,22 @@ func ParseQuery(s string) map[string][]string {
 	m, _ := url.ParseQuery(urlParam)
 	return m
 }
+
+func IsHttpURL(s string) bool {
+	_, err := url.ParseRequestURI(s)
+	if err != nil {
+		// 解析失败，不是有效的URL
+		return false
+	}
+	return true
+}
+
+func IsURL(s string) bool {
+	u, err := url.Parse(s)
+	if err != nil {
+		// 解析失败，不是有效的URL
+		return false
+	}
+	// 检查是否有方案（scheme），例如 http, https 等
+	return u.Scheme != ""
+}
