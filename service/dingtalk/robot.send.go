@@ -28,28 +28,45 @@ func newRobotSendResult(result RobotSendResponse, body []byte, http gorequest.Re
 
 // RobotSend 发送消息
 // https://open.dingtalk.com/document/group/custom-robot-access
-func (c *Client) RobotSend(ctx context.Context, access_token string, notMustParams ...gorequest.Params) (*RobotSendResult, error) {
+func (c *Client) RobotSend(ctx context.Context, accessToken string, notMustParams ...gorequest.Params) (*RobotSendResult, error) {
 
 	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "robot/send")
-	defer c.TraceEndSpan()
+	ctx, span := TraceStartSpan(ctx, "robot/send")
+	defer span.End()
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response RobotSendResponse
-	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/robot/send?access_token=%s", access_token), params, http.MethodPost, &response)
+	request, err := c.request(ctx, span, apiUrl+fmt.Sprintf("/robot/send?access_token=%s", accessToken), params, http.MethodPost, &response)
+	return newRobotSendResult(response, request.ResponseBody, request), err
+}
+
+// RobotSendURL 发送消息
+// https://open.dingtalk.com/document/group/custom-robot-access
+func (c *Client) RobotSendURL(ctx context.Context, url string, notMustParams ...gorequest.Params) (*RobotSendResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, url)
+	defer span.End()
+
+	// 参数
+	params := gorequest.NewParamsWith(notMustParams...)
+
+	// 请求
+	var response RobotSendResponse
+	request, err := c.request(ctx, span, url, params, http.MethodPost, &response)
 	return newRobotSendResult(response, request.ResponseBody, request), err
 }
 
 // RobotSendSign 发送消息签名版
 // https://open.dingtalk.com/document/group/custom-robot-access
-func (c *Client) RobotSendSign(ctx context.Context, access_token string, secret string, notMustParams ...gorequest.Params) (*RobotSendResult, error) {
+func (c *Client) RobotSendSign(ctx context.Context, accessToken string, secret string, notMustParams ...gorequest.Params) (*RobotSendResult, error) {
 
 	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "robot/send")
-	defer c.TraceEndSpan()
+	ctx, span := TraceStartSpan(ctx, "robot/send")
+	defer span.End()
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -58,7 +75,26 @@ func (c *Client) RobotSendSign(ctx context.Context, access_token string, secret 
 
 	// 请求
 	var response RobotSendResponse
-	request, err := c.request(ctx, fmt.Sprintf("robot/send?access_token=%s&timestamp=%d&sign=%s", access_token, timestamp, c.robotSendSignGetSign(secret, timestamp)), params, http.MethodPost, &response)
+	request, err := c.request(ctx, span, apiUrl+fmt.Sprintf("robot/send?access_token=%s&timestamp=%d&sign=%s", accessToken, timestamp, c.robotSendSignGetSign(secret, timestamp)), params, http.MethodPost, &response)
+	return newRobotSendResult(response, request.ResponseBody, request), err
+}
+
+// RobotSendSignURL 发送消息签名版
+// https://open.dingtalk.com/document/group/custom-robot-access
+func (c *Client) RobotSendSignURL(ctx context.Context, url string, secret string, notMustParams ...gorequest.Params) (*RobotSendResult, error) {
+
+	// OpenTelemetry链路追踪
+	ctx, span := TraceStartSpan(ctx, url)
+	defer span.End()
+
+	// 参数
+	params := gorequest.NewParamsWith(notMustParams...)
+	// 时间
+	timestamp := time.Now().UnixNano() / 1e6
+
+	// 请求
+	var response RobotSendResponse
+	request, err := c.request(ctx, span, fmt.Sprintf("%s&timestamp=%d&sign=%s", url, timestamp, c.robotSendSignGetSign(secret, timestamp)), params, http.MethodPost, &response)
 	return newRobotSendResult(response, request.ResponseBody, request), err
 }
 

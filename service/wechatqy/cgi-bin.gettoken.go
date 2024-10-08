@@ -29,14 +29,14 @@ func newCgiBinGetTokenResult(result CgiBinGetTokenResponse, body []byte, http go
 func (c *Client) CgiBinGetToken(ctx context.Context, notMustParams ...gorequest.Params) (*CgiBinGetTokenResult, error) {
 
 	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "cgi-bin/gettoken")
-	defer c.TraceEndSpan()
+	ctx, span := TraceStartSpan(ctx, "cgi-bin/gettoken")
+	defer span.End()
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response CgiBinGetTokenResponse
-	request, err := c.request(ctx, fmt.Sprintf("cgi-bin/gettoken?corpid=%s&corpsecret=%s", c.GetAppId(), c.GetSecret()), params, http.MethodGet, &response)
+	request, err := c.request(ctx, span, apiUrl+fmt.Sprintf("cgi-bin/gettoken?corpid=%s&corpsecret=%s", c.GetAppId(), c.GetSecret()), params, http.MethodGet, &response)
 	return newCgiBinGetTokenResult(response, request.ResponseBody, request), err
 }

@@ -31,14 +31,14 @@ func newCgiBinUserGetUserInfoResult(result CgiBinUserGetUserInfoResponse, body [
 func (c *Client) CgiBinUserGetUserInfo(ctx context.Context, accessToken, code string, notMustParams ...gorequest.Params) (*CgiBinUserGetUserInfoResult, error) {
 
 	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "cgi-bin/user/getuserinfo")
-	defer c.TraceEndSpan()
+	ctx, span := TraceStartSpan(ctx, "cgi-bin/user/getuserinfo")
+	defer span.End()
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response CgiBinUserGetUserInfoResponse
-	request, err := c.request(ctx, fmt.Sprintf("cgi-bin/user/getuserinfo?access_token=%s&code=%s", accessToken, code), params, http.MethodGet, &response)
+	request, err := c.request(ctx, span, apiUrl+fmt.Sprintf("cgi-bin/user/getuserinfo?access_token=%s&code=%s", accessToken, code), params, http.MethodGet, &response)
 	return newCgiBinUserGetUserInfoResult(response, request.ResponseBody, request), err
 }
