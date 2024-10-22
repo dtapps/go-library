@@ -8,7 +8,7 @@ import (
 
 type CmsPromUrlGenerateResponse struct {
 	CmsPromotionUrlGenerateResponse struct {
-		Total   int `json:"total"`
+		Total   int64 `json:"total"`
 		UrlList []struct {
 			SingleUrlList struct {
 				TzSchemaUrl          string `json:"tz_schema_url"`

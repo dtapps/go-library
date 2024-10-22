@@ -10,7 +10,7 @@ type GoodsCatsGetResponse struct {
 		GoodsCatsList []struct {
 			CatId       int64  `json:"cat_id"`        // 商品类目ID
 			CatName     string `json:"cat_name"`      // 商品类目名称
-			Level       int    `json:"level"`         // 类目层级，1-一级类目，2-二级类目，3-三级类目，4-四级类目
+			Level       int64  `json:"level"`         // 类目层级，1-一级类目，2-二级类目，3-三级类目，4-四级类目
 			ParentCatID int64  `json:"parent_cat_id"` // id所属父类目ID，其中，parent_id=0时为顶级节点
 		} `json:"goods_cats_list"` // 类目树对象
 	} `json:"goods_cats_get_response"`

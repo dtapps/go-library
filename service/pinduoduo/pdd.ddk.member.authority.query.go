@@ -7,7 +7,7 @@ import (
 
 type MemberAuthorityQueryResponse struct {
 	AuthorityQueryResponse struct {
-		Bind      int    `json:"bind"`
+		Bind      int64  `json:"bind"`
 		RequestId string `json:"request_id"`
 	} `json:"authority_query_response"`
 }

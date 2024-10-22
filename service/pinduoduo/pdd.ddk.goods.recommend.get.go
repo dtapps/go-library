@@ -8,43 +8,43 @@ import (
 type GoodsRecommendGetResponse struct {
 	GoodsBasicDetailResponse struct {
 		List []struct {
-			ActivityPromotionRate      int      `json:"activity_promotion_rate"`
-			ActivityTags               []int    `json:"activity_tags"`
+			ActivityPromotionRate      int64    `json:"activity_promotion_rate"`
+			ActivityTags               []int64  `json:"activity_tags"`
 			BrandName                  string   `json:"brand_name"`
-			CashGiftAmount             int      `json:"cash_gift_amount"`
+			CashGiftAmount             int64    `json:"cash_gift_amount"`
 			CatId                      string   `json:"cat_id"`
-			CatIds                     []int    `json:"cat_ids"`
+			CatIds                     []int64  `json:"cat_ids"`
 			CouponDiscount             int64    `json:"coupon_discount"`
-			CouponEndTime              int      `json:"coupon_end_time"`
-			CouponMinOrderAmount       int      `json:"coupon_min_order_amount"`
-			CouponPrice                int      `json:"coupon_price"`
-			CouponRemainQuantity       int      `json:"coupon_remain_quantity"`
-			CouponStartTime            int      `json:"coupon_start_time"`
-			CouponTotalQuantity        int      `json:"coupon_total_quantity"`
-			CreateAt                   int      `json:"create_at"`
+			CouponEndTime              int64    `json:"coupon_end_time"`
+			CouponMinOrderAmount       int64    `json:"coupon_min_order_amount"`
+			CouponPrice                int64    `json:"coupon_price"`
+			CouponRemainQuantity       int64    `json:"coupon_remain_quantity"`
+			CouponStartTime            int64    `json:"coupon_start_time"`
+			CouponTotalQuantity        int64    `json:"coupon_total_quantity"`
+			CreateAt                   int64    `json:"create_at"`
 			DescTxt                    string   `json:"desc_txt"`
-			ExtraCouponAmount          int      `json:"extra_coupon_amount"`
+			ExtraCouponAmount          int64    `json:"extra_coupon_amount"`
 			GoodsDesc                  string   `json:"goods_desc"`
 			GoodsImageUrl              string   `json:"goods_image_url"`
-			GoodsLabels                []int    `json:"goods_labels"`
+			GoodsLabels                []int64  `json:"goods_labels"`
 			GoodsName                  string   `json:"goods_name"`
-			GoodsRate                  int      `json:"goods_rate"`
+			GoodsRate                  int64    `json:"goods_rate"`
 			GoodsSign                  string   `json:"goods_sign"`
 			GoodsThumbnailUrl          string   `json:"goods_thumbnail_url"`
-			GoodsType                  int      `json:"goods_type"`
+			GoodsType                  int64    `json:"goods_type"`
 			HasCoupon                  bool     `json:"has_coupon"`
 			HasMaterial                bool     `json:"has_material"`
 			LgstTxt                    string   `json:"lgst_txt"`
 			MallId                     int64    `json:"mall_id"`
 			MallName                   string   `json:"mall_name"`
-			MarketFee                  int      `json:"market_fee"`
+			MarketFee                  int64    `json:"market_fee"`
 			MerchantType               string   `json:"merchant_type"`
 			MinGroupPrice              int64    `json:"min_group_price"`
-			MinNormalPrice             int      `json:"min_normal_price"`
+			MinNormalPrice             int64    `json:"min_normal_price"`
 			OptId                      string   `json:"opt_id"`
-			OptIds                     []int    `json:"opt_ids"`
+			OptIds                     []int64  `json:"opt_ids"`
 			OptName                    string   `json:"opt_name"`
-			PredictPromotionRate       int      `json:"predict_promotion_rate"`
+			PredictPromotionRate       int64    `json:"predict_promotion_rate"`
 			PromotionRate              int64    `json:"promotion_rate"`
 			QrCodeImageUrl             string   `json:"qr_code_image_url"`
 			RealtimeSalesTip           string   `json:"realtime_sales_tip"`
@@ -52,9 +52,9 @@ type GoodsRecommendGetResponse struct {
 			SearchId                   string   `json:"search_id"`
 			ServTxt                    string   `json:"serv_txt"`
 			ShareDesc                  string   `json:"share_desc"`
-			ShareRate                  int      `json:"share_rate"`
-			SubsidyAmount              int      `json:"subsidy_amount"`
-			SubsidyDuoAmountTenMillion int      `json:"subsidy_duo_amount_ten_million"`
+			ShareRate                  int64    `json:"share_rate"`
+			SubsidyAmount              int64    `json:"subsidy_amount"`
+			SubsidyDuoAmountTenMillion int64    `json:"subsidy_duo_amount_ten_million"`
 			UnifiedTags                []string `json:"unified_tags"`
 			GoodsId                    int64    `json:"goods_id"`
 			CategoryId                 string   `json:"category_id"`
