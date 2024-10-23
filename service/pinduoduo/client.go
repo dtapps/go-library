@@ -9,10 +9,12 @@ import (
 
 // ClientConfig 实例配置
 type ClientConfig struct {
-	ClientId     string // POP分配给应用的client_id
-	ClientSecret string // POP分配给应用的client_secret
-	MediaId      string // 媒体ID
-	Pid          string // 推广位
+	ClientId         string   // POP分配给应用的client_id
+	ClientSecret     string   // POP分配给应用的client_secret
+	MediaId          string   // 媒体ID
+	Pid              string   // 推广位
+	AccessToken      string   // 通过code获取的access_token(无需授权的接口，该字段不参与sign签名运算)
+	AccessTokenScope []string // 授权范围
 }
 
 // Client 实例
@@ -41,6 +43,8 @@ func NewClient(config *ClientConfig) (*Client, error) {
 	c.config.clientSecret = config.ClientSecret
 	c.config.mediaId = config.MediaId
 	c.config.pid = config.Pid
+	c.config.accessToken = config.AccessToken
+	c.config.accessTokenScope = config.AccessTokenScope
 
 	c.trace = true
 	return c, nil
