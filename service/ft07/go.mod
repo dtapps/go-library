@@ -1,4 +1,4 @@
-module go.dtapp.net/library/service/pushdeer
+module go.dtapp.net/library/service/ft07
 
 go 1.23.0
 

@@ -1,4 +1,4 @@
-package pushdeer
+package ft07
 
 import (
 	"go.dtapp.net/library/utils/gorequest"
