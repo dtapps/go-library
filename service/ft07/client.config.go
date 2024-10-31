@@ -15,6 +15,13 @@ func (c *Client) SetSendKey(sendKey string) *Client {
 	return c
 }
 
+func (c *Client) SetUrl(url string) *Client {
+	if url != "" {
+		c.config.url = url
+	}
+	return c
+}
+
 // SetClientIP 配置
 func (c *Client) SetClientIP(clientIP string) *Client {
 	c.clientIP = clientIP

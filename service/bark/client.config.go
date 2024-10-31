@@ -2,10 +2,22 @@ package bark
 
 import (
 	"go.dtapp.net/library/utils/gorequest"
+	"strings"
 )
 
 func (c *Client) SetPushKey(pushKey string) *Client {
-	c.config.pushKey = pushKey
+	if strings.HasPrefix(pushKey, c.config.url) {
+		c.config.pushKey = strings.TrimPrefix(pushKey, c.config.url)
+	} else {
+		c.config.pushKey = pushKey
+	}
+	return c
+}
+
+func (c *Client) SetUrl(url string) *Client {
+	if url != "" {
+		c.config.url = url
+	}
 	return c
 }
 

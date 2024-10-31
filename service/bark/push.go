@@ -28,10 +28,12 @@ func (c *Client) Push(ctx context.Context, notMustParams ...gorequest.Params) (*
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("device_key", c.config.pushKey)
+	if c.config.pushKey != "" {
+		params.Set("device_key", c.config.pushKey)
+	}
 
 	// 请求
 	var response PushResponse
-	request, err := c.request(ctx, apiUrl+"push", params, http.MethodPost, &response)
+	request, err := c.request(ctx, c.config.url+"push", params, http.MethodPost, &response)
 	return newPushResult(response, request.ResponseBody, request), err
 }

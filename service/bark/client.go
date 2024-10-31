@@ -9,7 +9,8 @@ type Client struct {
 	httpClient *gorequest.App // HTTP请求客户端
 	clientIP   string         // 客户端IP
 	config     struct {
-		pushKey string // PushKey
+		pushKey string
+		url     string
 	}
 }
 
@@ -17,6 +18,8 @@ type Client struct {
 func NewClient() (*Client, error) {
 	c := &Client{}
 	c.httpClient = gorequest.NewHttp()
+
+	c.config.url = "https://api.day.app/"
 
 	return c, nil
 }

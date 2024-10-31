@@ -28,11 +28,13 @@ func (c *Client) MessagePush(ctx context.Context, text string, notMustParams ...
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("pushkey", c.config.pushKey) // PushKey
-	params.Set("text", text)                // 推送消息内容
+	if c.config.pushKey != "" {
+		params.Set("pushkey", c.config.pushKey)
+	}
+	params.Set("text", text) // 推送消息内容
 
 	// 请求
 	var response MessagePushResponse
-	request, err := c.request(ctx, apiUrl+"message/push", params, http.MethodPost, &response)
+	request, err := c.request(ctx, c.config.pushKey+"message/push", params, http.MethodPost, &response)
 	return newMessagePushResult(response, request.ResponseBody, request), err
 }
