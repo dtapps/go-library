@@ -11,15 +11,9 @@ import (
 	cookiemonster "github.com/MercuryEngineering/CookieMonster"
 	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gotime"
-	"go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace"
-	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
-	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/codes"
-	"go.opentelemetry.io/otel/trace"
 	"io"
 	"log/slog"
 	"net/http"
-	"net/http/httptrace"
 	"net/url"
 	"runtime"
 	"strings"
@@ -170,9 +164,6 @@ func (c *App) Request(ctx context.Context) (Response, error) {
 // 请求接口
 func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, c.httpMethod)
-
 	// 开始时间
 	start := time.Now().UTC()
 
@@ -190,21 +181,11 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	}
 	if httpResponse.RequestUri == "" {
 		err = errors.New("没有请求地址")
-		TraceRecordError(ctx, err, trace.WithStackTrace(true))
-		TraceSetStatus(ctx, codes.Error, err.Error())
-		TraceEndSpan(span) // 结束OpenTelemetry链路追踪
 		return httpResponse, err
 	}
 
 	// 创建 http 客户端
-	client := &http.Client{
-		// https://uptrace.dev/get/instrument/opentelemetry-net-http.html
-		Transport: otelhttp.NewTransport(
-			http.DefaultTransport,
-			otelhttp.WithClientTrace(func(ctx context.Context) *httptrace.ClientTrace {
-				return otelhttptrace.NewClientTrace(ctx)
-			}),
-		)}
+	client := &http.Client{}
 
 	transportStatus := false
 	transport := &http.Transport{}
@@ -244,12 +225,6 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 		httpResponse.RequestHeader.Set("Content-Type", "text/xml")
 	}
 
-	// 跟踪编号
-	traceID := TraceSpanGetTraceID(span)
-	if traceID != "" {
-		httpResponse.RequestHeader.Set(TraceID, traceID)
-	}
-
 	// 请求编号
 	httpResponse.RequestID = GetRequestIDContext(ctx)
 	if httpResponse.RequestID != "" {
@@ -264,9 +239,6 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 		requestBodyJsonStr = gojson.JsonEncodeNoError(httpResponse.RequestParams)
 		jsonStr, err := gojson.Marshal(httpResponse.RequestParams)
 		if err != nil {
-			TraceRecordError(ctx, err, trace.WithStackTrace(true))
-			TraceSetStatus(ctx, codes.Error, err.Error())
-			TraceEndSpan(span) // 结束OpenTelemetry链路追踪
 			return httpResponse, err
 		}
 		// 赋值
@@ -288,9 +260,6 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 		requestBodyJsonStr = gojson.JsonEncodeNoError(httpResponse.RequestParams)
 		requestBody, err = ToXml(httpResponse.RequestParams)
 		if err != nil {
-			TraceRecordError(ctx, err, trace.WithStackTrace(true))
-			TraceSetStatus(ctx, codes.Error, err.Error())
-			TraceEndSpan(span) // 结束OpenTelemetry链路追踪
 			return httpResponse, err
 		}
 	}
@@ -298,9 +267,6 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	// 创建请求
 	req, err := http.NewRequestWithContext(ctx, httpResponse.RequestMethod, httpResponse.RequestUri, requestBody)
 	if err != nil {
-		TraceRecordError(ctx, err, trace.WithStackTrace(true))
-		TraceSetStatus(ctx, codes.Error, err.Error())
-		TraceEndSpan(span) // 结束OpenTelemetry链路追踪
 		return httpResponse, err
 	}
 
@@ -334,22 +300,9 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 		}
 	}
 
-	// OpenTelemetry链路追踪
-	TraceSetAttributes(ctx, attribute.String("request.time", httpResponse.RequestTime.Format(gotime.DateTimeFormat)))
-	TraceSetAttributes(ctx, attribute.String("request.uri", httpResponse.RequestUri))
-	TraceSetAttributes(ctx, attribute.String("request.url", NewUri(httpResponse.RequestUri).Parse().Url))
-	TraceSetAttributes(ctx, attribute.String("request.api", NewUri(httpResponse.RequestUri).Parse().Path))
-	TraceSetAttributes(ctx, attribute.String("request.method", httpResponse.RequestMethod))
-	TraceSetAttributes(ctx, attribute.String("request.cookie", httpResponse.RequestCookie))
-	TraceSetAttributes(ctx, attribute.String("request.header", gojson.JsonEncodeNoError(httpResponse.RequestHeader)))
-	TraceSetAttributes(ctx, attribute.String("request.params", gojson.JsonEncodeNoError(httpResponse.RequestParams)))
-
 	// 发送请求
 	resp, err := client.Do(req)
 	if err != nil {
-		TraceRecordError(ctx, err, trace.WithStackTrace(true))
-		TraceSetStatus(ctx, codes.Error, err.Error())
-		TraceEndSpan(span) // 结束OpenTelemetry链路追踪
 		return httpResponse, err
 	}
 	defer resp.Body.Close() // 关闭连接
@@ -378,9 +331,6 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	// 读取内容
 	body, err := io.ReadAll(reader)
 	if err != nil {
-		TraceRecordError(ctx, err, trace.WithStackTrace(true))
-		TraceSetStatus(ctx, codes.Error, err.Error())
-		TraceEndSpan(span) // 结束OpenTelemetry链路追踪
 		return httpResponse, err
 	}
 
@@ -392,28 +342,10 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	httpResponse.ResponseBody = body
 	httpResponse.ResponseContentLength = resp.ContentLength
 
-	// OpenTelemetry链路追踪
-	TraceSetAttributes(ctx, attribute.Int64("request.cost_time", httpResponse.RequestCostTime))
-	TraceSetAttributes(ctx, attribute.String("response.time", httpResponse.ResponseTime.Format(gotime.DateTimeFormat)))
-	TraceSetAttributes(ctx, attribute.String("response.status", httpResponse.ResponseStatus))
-	TraceSetAttributes(ctx, attribute.Int("response.status_code", httpResponse.ResponseStatusCode))
-	TraceSetAttributes(ctx, attribute.String("response.header", gojson.JsonEncodeNoError(httpResponse.ResponseHeader)))
-	if gojson.IsValidJSON(string(httpResponse.ResponseBody)) {
-		TraceSetAttributes(ctx, attribute.String("response.body", gojson.JsonEncodeNoError(gojson.JsonDecodeNoError(string(httpResponse.ResponseBody)))))
-	} else {
-		if httpResponse.HeaderIsImg() {
-		} else if httpResponse.HeaderHtml() {
-		} else {
-			TraceSetAttributes(ctx, attribute.String("response.body", string(httpResponse.ResponseBody)))
-		}
-	}
-
 	// 调用日志记录函数
 	if c.logFunc != nil {
 		urlParse := NewUri(httpResponse.RequestUri).Parse() // 解析URL
 		c.logFunc(ctx, &LogResponse{
-			TraceID: TraceGetSpanID(ctx),
-
 			RequestID:          httpResponse.RequestID,
 			RequestTime:        httpResponse.RequestTime,
 			RequestHost:        urlParse.Hostname,
@@ -440,6 +372,5 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 		})
 	}
 
-	TraceEndSpan(span) // 结束OpenTelemetry链路追踪
 	return httpResponse, err
 }
