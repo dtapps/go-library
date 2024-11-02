@@ -24,10 +24,6 @@ func newFindBalanceResult(result FindBalanceResponse, body []byte, http goreques
 // FindBalance 余额查询接口
 func (c *Client) FindBalance(ctx context.Context, notMustParams ...gorequest.Params) (*FindBalanceResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "findBalance")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appId", c.GetUserId())  // 用户编号 由鼎信商务提供

@@ -25,10 +25,6 @@ func newQueryTxProductResult(result QueryTxProductResponse, body []byte, http go
 // QueryTxProduct 可充值腾讯产品查询
 func (c *Client) QueryTxProduct(ctx context.Context, notMustParams ...gorequest.Params) (*QueryTxProductResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "queryTXproduct")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserId()) // 用户编号

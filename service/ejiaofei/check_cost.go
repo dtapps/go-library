@@ -30,10 +30,6 @@ func newCheckCostResult(result CheckCostResponse, body []byte, http gorequest.Re
 // orderid 用户订单号	用户提交订单号
 func (c *Client) CheckCost(ctx context.Context, orderid string, notMustParams ...gorequest.Params) (*CheckCostResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "checkCost")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserId()) // 用户编号

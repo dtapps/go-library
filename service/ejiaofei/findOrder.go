@@ -30,10 +30,6 @@ func newFindOrderResult(result FindOrderResponse, body []byte, http gorequest.Re
 // orderId = 用户提交的订单号	是	用户提交的订单号，最长32位（用户保证其唯一性）
 func (c *Client) FindOrder(ctx context.Context, orderID string, notMustParams ...gorequest.Params) (*FindOrderResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "findOrder")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appId", c.GetUserId())  // 用户编号 由鼎信商务提供

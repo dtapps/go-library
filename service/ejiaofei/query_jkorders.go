@@ -35,10 +35,6 @@ func newQueryJkOrdersResult(result QueryJkOrdersResponse, body []byte, http gore
 // orderid = 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
 func (c *Client) QueryJkOrders(ctx context.Context, orderid string, notMustParams ...gorequest.Params) (*QueryJkOrdersResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "query_jkorders")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserId()) // 用户编号

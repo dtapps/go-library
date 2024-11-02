@@ -48,10 +48,6 @@ func newTxChOngZhiResult(result TxChOngZhiResponse, body []byte, http gorequest.
 // ip = 可以为空
 func (c *Client) TxChOngZhi(ctx context.Context, orderid string, account string, productid int64, amount int64, notMustParams ...gorequest.Params) (*TxChOngZhiResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "txchongzhi")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserId()) // 用户编号

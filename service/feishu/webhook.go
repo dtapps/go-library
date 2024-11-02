@@ -32,16 +32,12 @@ func newWebhookSendResult(result WebhookSendResponse, body []byte, http goreques
 // https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN
 func (c *Client) WebhookSend(ctx context.Context, key string, notMustParams ...gorequest.Params) (*WebhookSendResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, fmt.Sprintf("open-apis/bot/v2/hook/%s", key))
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response WebhookSendResponse
-	request, err := c.request(ctx, span, apiUrl+fmt.Sprintf("open-apis/bot/v2/hook/%s", key), params, &response)
+	request, err := c.request(ctx, apiUrl+fmt.Sprintf("open-apis/bot/v2/hook/%s", key), params, &response)
 	return newWebhookSendResult(response, request.ResponseBody, request), err
 }
 
@@ -49,16 +45,12 @@ func (c *Client) WebhookSend(ctx context.Context, key string, notMustParams ...g
 // https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN
 func (c *Client) WebhookSendURL(ctx context.Context, url string, notMustParams ...gorequest.Params) (*WebhookSendResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, url)
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response WebhookSendResponse
-	request, err := c.request(ctx, span, url, params, &response)
+	request, err := c.request(ctx, url, params, &response)
 	return newWebhookSendResult(response, request.ResponseBody, request), err
 }
 
@@ -66,10 +58,6 @@ func (c *Client) WebhookSendURL(ctx context.Context, url string, notMustParams .
 // https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN
 func (c *Client) WebhookSendSign(ctx context.Context, key string, secret string, notMustParams ...gorequest.Params) (*WebhookSendResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, fmt.Sprintf("open-apis/bot/v2/hook/%s", key))
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params["timestamp"] = gotime.Current().Timestamp()
@@ -77,7 +65,7 @@ func (c *Client) WebhookSendSign(ctx context.Context, key string, secret string,
 
 	// 请求
 	var response WebhookSendResponse
-	request, err := c.request(ctx, span, apiUrl+fmt.Sprintf("open-apis/bot/v2/hook/%s", key), params, &response)
+	request, err := c.request(ctx, apiUrl+fmt.Sprintf("open-apis/bot/v2/hook/%s", key), params, &response)
 	return newWebhookSendResult(response, request.ResponseBody, request), err
 }
 
@@ -85,10 +73,6 @@ func (c *Client) WebhookSendSign(ctx context.Context, key string, secret string,
 // https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN
 func (c *Client) WebhookSendSignURL(ctx context.Context, url string, secret string, notMustParams ...gorequest.Params) (*WebhookSendResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, url)
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params["timestamp"] = gotime.Current().Timestamp()
@@ -96,7 +80,7 @@ func (c *Client) WebhookSendSignURL(ctx context.Context, url string, secret stri
 
 	// 请求
 	var response WebhookSendResponse
-	request, err := c.request(ctx, span, url, params, &response)
+	request, err := c.request(ctx, url, params, &response)
 	return newWebhookSendResult(response, request.ResponseBody, request), err
 }
 

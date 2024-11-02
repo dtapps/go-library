@@ -27,10 +27,6 @@ func newMoneyJkUserResult(result MoneyJkUserResponse, body []byte, http goreques
 // MoneyJkUser 用户余额查询
 func (c *Client) MoneyJkUser(ctx context.Context, notMustParams ...gorequest.Params) (*MoneyJkUserResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "money_jkuser")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserId()) // 用户编号

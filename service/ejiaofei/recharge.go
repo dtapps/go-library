@@ -41,10 +41,6 @@ func newRechargeResult(result RechargeResponse, body []byte, http gorequest.Resp
 // operator = 运营商
 func (c *Client) Recharge(ctx context.Context, rechargeType int64, orderId string, account string, face int64, notMustParams ...gorequest.Params) (*RechargeResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "recharge")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("rechargeType", rechargeType)              // 充值类型（1-话费，2-流量，3-加油卡） 由鼎信商务提供

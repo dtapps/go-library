@@ -33,10 +33,6 @@ func newMobileGetResult(result MobileGetResponse, body []byte, http gorequest.Re
 // https://www.juhe.cn/docs/api/id/11
 func (c *Client) MobileGet(ctx context.Context, phone string, key string, notMustParams ...gorequest.Params) (*MobileGetResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "mobile/get")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("phone", phone)  // 需要查询的手机号码或手机号码前7位

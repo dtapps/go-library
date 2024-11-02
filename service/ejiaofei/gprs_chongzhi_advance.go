@@ -53,10 +53,6 @@ func newGprsChOngZhiAdvanceResult(result GprsChOngZhiAdvanceResponse, body []byt
 // validity = 流量有效期	传入月数，0为当月有效
 func (c *Client) GprsChOngZhiAdvance(ctx context.Context, orderid string, account string, gprs int64, area int64, effectTime int64, validity int64, notMustParams ...gorequest.Params) (*GprsChOngZhiAdvanceResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "gprsChongzhiAdvance")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserId())  // 用户编号
