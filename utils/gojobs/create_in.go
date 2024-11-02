@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"go.dtapp.net/library/utils/gostring"
 	"go.dtapp.net/library/utils/gotime"
-	"go.opentelemetry.io/otel/codes"
 	"gorm.io/gorm"
 )
 
@@ -48,8 +47,6 @@ func (c *Client) CreateInCustomId(ctx context.Context, config *ConfigCreateInCus
 		}).Error
 	if err != nil {
 		err = fmt.Errorf("创建[%s@%s]任务失败：%s", config.CustomID, config.Type, err)
-		TraceRecordError(ctx, err)
-		TraceSetStatus(ctx, codes.Error, err.Error())
 		return err
 	}
 	return nil
@@ -97,8 +94,6 @@ func (c *Client) CreateInCustomIdOnly(ctx context.Context, config *ConfigCreateI
 		}).Error
 	if err != nil {
 		err = fmt.Errorf("创建[%s@%s]任务失败：%s", config.CustomID, config.Type, err)
-		TraceRecordError(ctx, err)
-		TraceSetStatus(ctx, codes.Error, err.Error())
 		return err
 	}
 	return nil
@@ -144,8 +139,6 @@ func (c *Client) CreateInCustomIdMaxNumber(ctx context.Context, config *ConfigCr
 		}).Error
 	if err != nil {
 		err = fmt.Errorf("创建[%s@%s]任务失败：%s", config.CustomID, config.Type, err)
-		TraceRecordError(ctx, err)
-		TraceSetStatus(ctx, codes.Error, err.Error())
 		return err
 	}
 	return nil
@@ -171,8 +164,6 @@ func (c *Client) CreateInCustomIdMaxNumberOnly(ctx context.Context, config *Conf
 	query := c.TaskTypeTakeIn(ctx, config.Tx, config.CustomID, config.Type)
 	if query.ID != 0 {
 		err := fmt.Errorf("任务[%s@%s]已存在", config.CustomID, config.Type)
-		TraceRecordError(ctx, err)
-		TraceSetStatus(ctx, codes.Error, err.Error())
 		return err
 	}
 	if config.CurrentIP == "" {
@@ -198,8 +189,6 @@ func (c *Client) CreateInCustomIdMaxNumberOnly(ctx context.Context, config *Conf
 		}).Error
 	if err != nil {
 		err = fmt.Errorf("创建[%s@%s]任务失败：%s", config.CustomID, config.Type, err)
-		TraceRecordError(ctx, err)
-		TraceSetStatus(ctx, codes.Error, err.Error())
 		return err
 	}
 	return nil

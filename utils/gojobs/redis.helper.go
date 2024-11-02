@@ -18,10 +18,8 @@ func SetRedisKeyValue(ctx context.Context, taskType string) (context.Context, st
 	return ctx,
 		GetRedisKeyName(taskType),
 		fmt.Sprintf(
-			"%s-%s-%s-%s",
+			"%s-%s",
 			gotime.Current().SetFormat(gotime.DateTimeZhFormat),
-			gorequest.TraceGetTraceID(ctx),
-			gorequest.TraceGetSpanID(ctx),
 			gorequest.GetRequestIDContext(ctx),
 		),
 		0
@@ -32,10 +30,8 @@ func SetRedisKeyValueExpiration(ctx context.Context, taskType string, expiration
 	return ctx,
 		GetRedisKeyName(taskType),
 		fmt.Sprintf(
-			"%s-%s-%s-%s",
+			"%s-%s",
 			gotime.Current().SetFormat(gotime.DateTimeZhFormat),
-			gorequest.TraceGetTraceID(ctx),
-			gorequest.TraceGetSpanID(ctx),
 			gorequest.GetRequestIDContext(ctx),
 		),
 		time.Duration(expiration)

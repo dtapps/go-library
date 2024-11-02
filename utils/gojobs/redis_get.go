@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"go.dtapp.net/library/utils/gorequest"
-	"go.opentelemetry.io/otel/codes"
 	"log/slog"
 	"math/rand"
 	"strings"
@@ -42,8 +41,6 @@ func (c *Client) GetIssueAddress(ctx context.Context, workers []string, v *GormM
 				return workers[0], nil
 			}
 			err := fmt.Errorf("需要执行的[%s]客户端不在线", currentIP)
-			TraceRecordError(ctx, err)
-			TraceSetStatus(ctx, codes.Error, err.Error())
 			return "", err
 		}
 		return workers[0], nil
@@ -58,16 +55,12 @@ func (c *Client) GetIssueAddress(ctx context.Context, workers []string, v *GormM
 			}
 		}
 		err := fmt.Errorf("需要执行的[%s]客户端不在线", currentIP)
-		TraceRecordError(ctx, err)
-		TraceSetStatus(ctx, codes.Error, err.Error())
 		return "", err
 	} else {
 		// 随机返回一个
 		address := workers[c.random(0, len(workers))]
 		if address == "" {
 			err := fmt.Errorf("获取执行的客户端异常")
-			TraceRecordError(ctx, err)
-			TraceSetStatus(ctx, codes.Error, err.Error())
 			return address, err
 		}
 		slog.InfoContext(ctx, fmt.Sprintf("随机返回一个：%v %v", address, currentIP))
@@ -82,8 +75,6 @@ func (c *Client) GetSubscribeClientList(ctx context.Context) (client []string, e
 	client, err = c.redisConfig.client.PubSubChannels(ctx, c.redisConfig.cornKeyPrefix+"_*").Result()
 	if err != nil {
 		err = fmt.Errorf("获取在线的客户端失败：%s，%v", c.redisConfig.cornKeyPrefix+"_*", err)
-		TraceRecordError(ctx, err)
-		TraceSetStatus(ctx, codes.Error, err.Error())
 	}
 
 	return client, err

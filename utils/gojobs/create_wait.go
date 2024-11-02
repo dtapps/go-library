@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"go.dtapp.net/library/utils/gostring"
 	"go.dtapp.net/library/utils/gotime"
-	"go.opentelemetry.io/otel/codes"
 	"gorm.io/gorm"
 )
 
@@ -47,8 +46,6 @@ func (c *Client) CreateWaitCustomId(ctx context.Context, config *ConfigCreateWai
 		}).Error
 	if err != nil {
 		err = fmt.Errorf("创建[%s@%s]任务失败：%s", config.CustomID, config.Type, err)
-		TraceRecordError(ctx, err)
-		TraceSetStatus(ctx, codes.Error, err.Error())
 		return err
 	}
 	return nil

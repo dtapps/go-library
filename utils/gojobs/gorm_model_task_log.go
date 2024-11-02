@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"go.dtapp.net/library/utils/gotime"
-	"go.opentelemetry.io/otel/codes"
 	"time"
 )
 
@@ -28,8 +27,6 @@ func (c *Client) gormAutoMigrateTaskLog(ctx context.Context) error {
 	err := c.gormConfig.client.WithContext(ctx).Table(c.gormConfig.taskLogTableName).
 		AutoMigrate(&GormModelTaskLog{})
 	if err != nil {
-		TraceRecordError(ctx, err)
-		TraceSetStatus(ctx, codes.Error, err.Error())
 	}
 	return err
 }
@@ -44,8 +41,6 @@ func (c *Client) GormTaskLogDelete(ctx context.Context, hour int64) error {
 		Delete(&GormModelTaskLog{}).Error
 	if err != nil {
 		err = fmt.Errorf("删除失败：%s", err)
-		TraceRecordError(ctx, err)
-		TraceSetStatus(ctx, codes.Error, err.Error())
 	}
 	return err
 }
@@ -60,8 +55,6 @@ func (c *Client) GormTaskLogInDelete(ctx context.Context, hour int64) error {
 		Delete(&GormModelTaskLog{}).Error
 	if err != nil {
 		err = fmt.Errorf("删除失败：%s", err)
-		TraceRecordError(ctx, err)
-		TraceSetStatus(ctx, codes.Error, err.Error())
 	}
 	return err
 }
@@ -76,8 +69,6 @@ func (c *Client) GormTaskLogSuccessDelete(ctx context.Context, hour int64) error
 		Delete(&GormModelTaskLog{}).Error
 	if err != nil {
 		err = fmt.Errorf("删除失败：%s", err)
-		TraceRecordError(ctx, err)
-		TraceSetStatus(ctx, codes.Error, err.Error())
 	}
 	return err
 }
@@ -92,8 +83,6 @@ func (c *Client) GormTaskLogErrorDelete(ctx context.Context, hour int64) error {
 		Delete(&GormModelTaskLog{}).Error
 	if err != nil {
 		err = fmt.Errorf("删除失败：%s", err)
-		TraceRecordError(ctx, err)
-		TraceSetStatus(ctx, codes.Error, err.Error())
 	}
 	return err
 }
@@ -108,8 +97,6 @@ func (c *Client) GormTaskLogTimeoutDelete(ctx context.Context, hour int64) error
 		Delete(&GormModelTaskLog{}).Error
 	if err != nil {
 		err = fmt.Errorf("删除失败：%s", err)
-		TraceRecordError(ctx, err)
-		TraceSetStatus(ctx, codes.Error, err.Error())
 	}
 	return err
 }
@@ -125,8 +112,6 @@ func (c *Client) GormTaskLogWaitDelete(ctx context.Context, hour int64) error {
 		Delete(&GormModelTaskLog{}).Error
 	if err != nil {
 		err = fmt.Errorf("删除失败：%s", err)
-		TraceRecordError(ctx, err)
-		TraceSetStatus(ctx, codes.Error, err.Error())
 	}
 	return err
 }
@@ -145,7 +130,5 @@ func (c *Client) GormTaskLogRecord(ctx context.Context, task GormModelTask, runI
 		Create(&taskLog).Error
 	if err != nil {
 		err = fmt.Errorf("记录失败：%s", err)
-		TraceRecordError(ctx, err)
-		TraceSetStatus(ctx, codes.Error, err.Error())
 	}
 }

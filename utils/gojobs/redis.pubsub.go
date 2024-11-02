@@ -2,13 +2,9 @@ package gojobs
 
 import (
 	"context"
-	"fmt"
 	"github.com/redis/go-redis/v9"
 	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
-	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/codes"
-	"go.opentelemetry.io/otel/trace"
 	"log/slog"
 )
 
@@ -54,44 +50,22 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 		return
 	}
 
-	// 启动OpenTelemetry链路追踪
-	ctx, span := NewTraceStartSpan(ctx, task.Type+" "+task.CustomID)
-
-	span.SetAttributes(attribute.String("task.run.info", gojson.JsonEncodeNoError(task)))
-
 	// 任务回调函数
 	if executionCallback != nil {
 
 		// 需要返回的结构
 		result := TaskHelperRunSingleTaskResponse{
-			TraceID:   gorequest.TraceSpanGetTraceID(span),
-			SpanID:    gorequest.TraceSpanGetSpanID(span),
 			RequestID: gorequest.GetRequestIDContext(ctx),
 		}
 
 		// 执行
 		result.RunCode, result.RunDesc = executionCallback(ctx, &task)
-		if result.RunCode == CodeAbnormal {
-			span.SetStatus(codes.Error, result.RunDesc)
-		}
-		if result.RunCode == CodeSuccess {
-			span.SetStatus(codes.Ok, result.RunDesc)
-		}
-		if result.RunCode == CodeError {
-			span.RecordError(fmt.Errorf(result.RunDesc), trace.WithStackTrace(true))
-			span.SetStatus(codes.Error, result.RunDesc)
-		}
 
 		// 运行编号
 		result.RunID = result.TraceID
 		if result.RunID == "" {
 			result.RunID = result.RequestID
 			if result.RunID == "" {
-				span.RecordError(fmt.Errorf("上下文没有运行编号"), trace.WithStackTrace(true))
-				span.SetStatus(codes.Error, "上下文没有运行编号")
-
-				span.End() // 结束OpenTelemetry链路追踪
-
 				slog.ErrorContext(ctx, "[DbRunSingleTask] no run_id",
 					slog.String("trace_id", result.TraceID),
 					slog.String("request_id", result.RequestID),
@@ -101,20 +75,10 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 			}
 		}
 
-		// OpenTelemetry链路追踪
-		span.SetAttributes(attribute.String("task.run.id", result.RunID))
-		span.SetAttributes(attribute.Int("task.run.code", result.RunCode))
-		span.SetAttributes(attribute.String("task.run.desc", result.RunDesc))
-
 		// 执行更新回调函数
 		if updateCallback != nil {
 			err = updateCallback(ctx, &task, &result)
 			if err != nil {
-				span.RecordError(err, trace.WithStackTrace(true))
-				span.SetStatus(codes.Error, err.Error())
-
-				span.End() // 结束OpenTelemetry链路追踪
-
 				slog.ErrorContext(ctx, "[DbRunSingleTask] updateCallback",
 					slog.String("err", err.Error()),
 				)
@@ -124,6 +88,5 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 
 	}
 
-	span.End() // 结束OpenTelemetry链路追踪
 	return
 }
