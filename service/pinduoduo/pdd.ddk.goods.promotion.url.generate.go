@@ -56,16 +56,12 @@ func newGoodsPromotionUrlGenerateResult(result GoodsPromotionUrlGenerateResponse
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.promotion.url.generate
 func (c *Client) GoodsPromotionUrlGenerate(ctx context.Context, notMustParams ...gorequest.Params) (*GoodsPromotionUrlGenerateResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "pdd.ddk.goods.promotion.url.generate")
-	defer span.End()
-
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.promotion.url.generate", notMustParams...)
 	params.Set("p_id", c.GetPid())
 
 	// 请求
 	var response GoodsPromotionUrlGenerateResponse
-	request, err := c.request(ctx, span, params, &response)
+	request, err := c.request(ctx, params, &response)
 	return newGoodsPromotionUrlGenerateResult(response, request.ResponseBody, request), err
 }

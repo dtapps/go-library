@@ -31,15 +31,11 @@ func newGoodsPidGenerateResult(result GoodsPidGenerateResponse, body []byte, htt
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.pid.generate
 func (c *Client) GoodsPidGenerate(ctx context.Context, notMustParams ...gorequest.Params) (*GoodsPidGenerateResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "pdd.ddk.goods.pid.generate")
-	defer span.End()
-
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.pid.generate", notMustParams...)
 
 	// 请求
 	var response GoodsPidGenerateResponse
-	request, err := c.request(ctx, span, params, &response)
+	request, err := c.request(ctx, params, &response)
 	return newGoodsPidGenerateResult(response, request.ResponseBody, request), err
 }

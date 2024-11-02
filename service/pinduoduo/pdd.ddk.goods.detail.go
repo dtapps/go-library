@@ -99,16 +99,12 @@ func newGoodsDetailResult(result GoodsDetailResponse, body []byte, http goreques
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.detail
 func (c *Client) GoodsDetail(ctx context.Context, notMustParams ...gorequest.Params) (*GoodsDetailResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "pdd.ddk.goods.detail")
-	defer span.End()
-
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.detail", notMustParams...)
 	params.Set("pid", c.GetPid())
 
 	// 请求
 	var response GoodsDetailResponse
-	request, err := c.request(ctx, span, params, &response)
+	request, err := c.request(ctx, params, &response)
 	return newGoodsDetailResult(response, request.ResponseBody, request), err
 }

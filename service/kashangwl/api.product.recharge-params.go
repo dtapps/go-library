@@ -33,10 +33,6 @@ func newApiProductRechargeParamsResult(result ApiProductRechargeParamsResponse, 
 // http://doc.cqmeihu.cn/sales/recharge-params.html
 func (c *Client) ApiProductRechargeParams(ctx context.Context, productID int64, notMustParams ...gorequest.Params) (*ApiProductRechargeParamsResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "api/product/recharge-params")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("product_id", productID) // 商品编号

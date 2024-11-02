@@ -26,15 +26,11 @@ func newPddDdkTimeGetResult(result PddDdkTimeGetResponse, body []byte, http gore
 // https://open.pinduoduo.com/application/document/api?id=pdd.time.get
 func (c *Client) TimeGet(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkTimeGetResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "pdd.time.get")
-	defer span.End()
-
 	// 参数
 	params := NewParamsWithType("pdd.time.get", notMustParams...)
 
 	// 请求
 	var response PddDdkTimeGetResponse
-	request, err := c.request(ctx, span, params, &response)
+	request, err := c.request(ctx, params, &response)
 	return newPddDdkTimeGetResult(response, request.ResponseBody, request), err
 }

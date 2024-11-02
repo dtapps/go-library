@@ -53,10 +53,6 @@ func newApiOrderResult(result ApiOrderResponse, body []byte, http gorequest.Resp
 // http://doc.cqmeihu.cn/sales/order-info.html
 func (c *Client) ApiOrder(ctx context.Context, orderID int64, notMustParams ...gorequest.Params) (*ApiOrderResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "api/order")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("order_id", orderID) // 订单号

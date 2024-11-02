@@ -30,16 +30,12 @@ func newGoodsOptGetResult(result GoodsOptGetResponse, body []byte, http goreques
 // https://open.pinduoduo.com/application/document/api?id=pdd.goods.opt.get
 func (c *Client) GoodsOptGet(ctx context.Context, parentOptId int, notMustParams ...gorequest.Params) (*GoodsOptGetResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "pdd.goods.opt.get")
-	defer span.End()
-
 	// 参数
 	params := NewParamsWithType("pdd.goods.opt.get", notMustParams...)
 	params.Set("parent_opt_id", parentOptId) // 值=0时为顶点opt_id,通过树顶级节点获取opt树
 
 	// 请求
 	var response GoodsOptGetResponse
-	request, err := c.request(ctx, span, params, &response)
+	request, err := c.request(ctx, params, &response)
 	return newGoodsOptGetResult(response, request.ResponseBody, request), err
 }

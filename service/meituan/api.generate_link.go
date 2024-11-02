@@ -26,10 +26,6 @@ func newApiGenerateLinkResult(result ApiGenerateLinkResponse, body []byte, http 
 // https://union.meituan.com/v2/apiDetail?id=25
 func (c *Client) ApiGenerateLink(ctx context.Context, notMustParams ...gorequest.Params) (*ApiGenerateLinkResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "api/generateLink")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appkey", c.GetAppKey()) // 媒体名称，可在推广者备案-媒体管理中查询

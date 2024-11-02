@@ -35,10 +35,6 @@ func newApiGetQuaLitYsCoreBySidResult(result ApiGetQuaLitYsCoreBySidResponse, bo
 // https://union.meituan.com/v2/apiDetail?id=28
 func (c *Client) ApiGetQuaLitYsCoreBySid(ctx context.Context, notMustParams ...gorequest.Params) (*ApiGetQuaLitYsCoreBySidResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "api/getqualityscorebysid")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s

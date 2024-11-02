@@ -28,10 +28,6 @@ func newSupplierBalanceResult(result SupplierBalanceResponse, body []byte, http 
 // SupplierBalance 用户余额查询接口
 func (c *Client) SupplierBalance(ctx context.Context, notMustParams ...gorequest.Params) (*SupplierBalanceResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "api/order/supplierBalance")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("mch_id", c.GetMchID()) // 商户编号 (平台提供)

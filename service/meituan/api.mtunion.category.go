@@ -32,10 +32,6 @@ func newApiMtUnionCategoryResult(result ApiMtUnionCategoryResponse, body []byte,
 // https://union.meituan.com/v2/apiDetail?id=30
 func (c *Client) ApiMtUnionCategory(ctx context.Context, notMustParams ...gorequest.Params) (*ApiMtUnionCategoryResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "api/getqualityscorebysid")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s

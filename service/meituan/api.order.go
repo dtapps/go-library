@@ -66,10 +66,6 @@ func newApiOrderResult(result ApiOrderResponse, body []byte, http gorequest.Resp
 // https://union.meituan.com/v2/apiDetail?id=24
 func (c *Client) ApiOrder(ctx context.Context, notMustParams ...gorequest.Params) (*ApiOrderResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "api/order")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appkey", c.GetAppKey())

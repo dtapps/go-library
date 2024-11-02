@@ -68,15 +68,11 @@ func newPddDdkOauthGoodsDetailResult(result PddDdkOauthGoodsDetailResponse, body
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.goods.detail
 func (c *Client) OauthGoodsDetail(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthGoodsDetailResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "pdd.ddk.oauth.goods.detail")
-	defer span.End()
-
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.goods.detail", notMustParams...)
 
 	// 请求
 	var response PddDdkOauthGoodsDetailResponse
-	request, err := c.request(ctx, span, params, &response)
+	request, err := c.request(ctx, params, &response)
 	return newPddDdkOauthGoodsDetailResult(response, request.ResponseBody, request), err
 }

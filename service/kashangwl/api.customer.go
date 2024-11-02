@@ -30,10 +30,6 @@ func newApiCustomerResult(result ApiCustomerResponse, body []byte, http goreques
 // http://doc.cqmeihu.cn/sales/merchant-info.html
 func (c *Client) ApiCustomer(ctx context.Context, customerID int64, notMustParams ...gorequest.Params) (*ApiCustomerResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "api/customer")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("customer_id", customerID) // 商家编号

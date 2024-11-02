@@ -42,10 +42,6 @@ func newPddDdkPopAuthTokenCreateResult(result PddDdkPopAuthTokenCreateResponse, 
 // https://open.pinduoduo.com/application/document/api?id=pdd.pop.auth.token.create
 func (c *Client) PopAuthTokenCreate(ctx context.Context, code string, notMustParams ...gorequest.Params) (*PddDdkPopAuthTokenCreateResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "pdd.pop.auth.token.create")
-	defer span.End()
-
 	// 参数
 	params := NewParamsWithType("pdd.pop.auth.token.create", notMustParams...)
 	if code != "" {
@@ -54,6 +50,6 @@ func (c *Client) PopAuthTokenCreate(ctx context.Context, code string, notMustPar
 
 	// 请求
 	var response PddDdkPopAuthTokenCreateResponse
-	request, err := c.request(ctx, span, params, &response)
+	request, err := c.request(ctx, params, &response)
 	return newPddDdkPopAuthTokenCreateResult(response, request.ResponseBody, request), err
 }

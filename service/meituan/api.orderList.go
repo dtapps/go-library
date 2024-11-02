@@ -49,10 +49,6 @@ func newApiOrderListResult(result ApiOrderListResponse, body []byte, http gorequ
 // https://union.meituan.com/v2/apiDetail?id=23
 func (c *Client) ApiOrderList(ctx context.Context, notMustParams ...gorequest.Params) (*ApiOrderListResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "api/orderList")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s

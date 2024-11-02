@@ -72,15 +72,11 @@ func newOrderListRangeGetResult(result OrderListRangeGetResponse, body []byte, h
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.order.list.range.get
 func (c *Client) OrderListRangeGet(ctx context.Context, notMustParams ...gorequest.Params) (*OrderListRangeGetResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "pdd.ddk.order.list.range.get")
-	defer span.End()
-
 	// 参数
 	params := NewParamsWithType("pdd.ddk.order.list.range.get", notMustParams...)
 
 	// 请求
 	var response OrderListRangeGetResponse
-	request, err := c.request(ctx, span, params, &response)
+	request, err := c.request(ctx, params, &response)
 	return newOrderListRangeGetResult(response, request.ResponseBody, request), err
 }

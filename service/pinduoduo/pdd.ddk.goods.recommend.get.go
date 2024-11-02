@@ -81,16 +81,12 @@ func newGoodsRecommendGetResult(result GoodsRecommendGetResponse, body []byte, h
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.recommend.get
 func (c *Client) GoodsRecommendGet(ctx context.Context, notMustParams ...gorequest.Params) (*GoodsRecommendGetResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "pdd.ddk.goods.recommend.get")
-	defer span.End()
-
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.recommend.get", notMustParams...)
 	params.Set("pid", c.GetPid())
 
 	// 请求
 	var response GoodsRecommendGetResponse
-	request, err := c.request(ctx, span, params, &response)
+	request, err := c.request(ctx, params, &response)
 	return newGoodsRecommendGetResult(response, request.ResponseBody, request), err
 }

@@ -95,16 +95,12 @@ func newGoodsSearchResult(result GoodsSearchResponse, body []byte, http goreques
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.search
 func (c *Client) GoodsSearch(ctx context.Context, notMustParams ...gorequest.Params) (*GoodsSearchResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "pdd.ddk.goods.search")
-	defer span.End()
-
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.search", notMustParams...)
 	params.Set("pid", c.GetPid())
 
 	// 请求
 	var response GoodsSearchResponse
-	request, err := c.request(ctx, span, params, &response)
+	request, err := c.request(ctx, params, &response)
 	return newGoodsSearchResult(response, request.ResponseBody, request), err
 }

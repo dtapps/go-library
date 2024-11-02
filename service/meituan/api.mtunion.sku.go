@@ -37,10 +37,6 @@ func newApiMtUnionSkuResult(result ApiMtUnionSkuResponse, body []byte, http gore
 // https://union.meituan.com/v2/apiDetail?id=31
 func (c *Client) ApiMtUnionSku(ctx context.Context, notMustParams ...gorequest.Params) (*ApiMtUnionSkuResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "api/getqualityscorebysid")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s

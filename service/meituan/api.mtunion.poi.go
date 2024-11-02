@@ -47,10 +47,6 @@ func newApiMtUnionPoiResult(result ApiMtUnionPoiResponse, body []byte, http gore
 // https://union.meituan.com/v2/apiDetail?id=32
 func (c *Client) ApiMtUnionPoi(ctx context.Context, notMustParams ...gorequest.Params) (*ApiMtUnionPoiResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "api/getqualityscorebysid")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s

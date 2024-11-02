@@ -53,10 +53,6 @@ func newApiOuterOrderResult(result ApiOuterOrderResponse, body []byte, http gore
 // http://doc.cqmeihu.cn/sales/outer-order-info.html
 func (c *Client) ApiOuterOrder(ctx context.Context, outerOrderID string, notMustParams ...gorequest.Params) (*ApiOuterOrderResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "api/outer-order")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("outer_order_id", outerOrderID) // 外部订单号

@@ -54,10 +54,6 @@ func newPollQueryResult(result PollQueryResponse, body []byte, http gorequest.Re
 // https://api.kuaidi100.com/document/5f0ffb5ebc8da837cbd8aefc
 func (c *Client) PollQuery(ctx context.Context, notMustParams ...gorequest.Params) (*PollQueryResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "poll/query.do")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

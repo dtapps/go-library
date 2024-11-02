@@ -30,16 +30,12 @@ func newGoodsCatsGetResult(result GoodsCatsGetResponse, body []byte, http gorequ
 // https://open.pinduoduo.com/application/document/api?id=pdd.goods.cats.get
 func (c *Client) GoodsCatsGet(ctx context.Context, parentCatId int64, notMustParams ...gorequest.Params) (*GoodsCatsGetResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "pdd.goods.cats.get")
-	defer span.End()
-
 	// 参数
 	params := NewParamsWithType("pdd.goods.cats.get", notMustParams...)
 	params.Set("parent_cat_id", parentCatId) // 值=0时为顶点cat_id,通过树顶级节点获取cat树
 
 	// 请求
 	var response GoodsCatsGetResponse
-	request, err := c.request(ctx, span, params, &response)
+	request, err := c.request(ctx, params, &response)
 	return newGoodsCatsGetResult(response, request.ResponseBody, request), err
 }

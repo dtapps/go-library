@@ -68,15 +68,11 @@ func newPddDdkOauthMemberAuthorityQueryResult(result PddDdkOauthMemberAuthorityQ
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.member.authority.query
 func (c *Client) OauthMemberAuthorityQuery(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthMemberAuthorityQueryResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "pdd.ddk.oauth.member.authority.query")
-	defer span.End()
-
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.member.authority.query", notMustParams...)
 
 	// 请求
 	var response PddDdkOauthMemberAuthorityQueryResponse
-	request, err := c.request(ctx, span, params, &response)
+	request, err := c.request(ctx, params, &response)
 	return newPddDdkOauthMemberAuthorityQueryResult(response, request.ResponseBody, request), err
 }

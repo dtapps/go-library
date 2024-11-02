@@ -67,17 +67,13 @@ func newRpPromUrlGenerateResult(result RpPromUrlGenerateResponse, body []byte, h
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.rp.prom.url.generate
 func (c *Client) RpPromUrlGenerate(ctx context.Context, notMustParams ...gorequest.Params) (*RpPromUrlGenerateResult, RpPromUrlGenerateError, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "pdd.ddk.rp.prom.url.generate")
-	defer span.End()
-
 	// 参数
 	params := NewParamsWithType("pdd.ddk.rp.prom.url.generate", notMustParams...)
 	params.Set("p_id_list", []string{c.GetPid()})
 
 	// 请求
 	var response RpPromUrlGenerateResponse
-	request, err := c.request(ctx, span, params, &response)
+	request, err := c.request(ctx, params, &response)
 	var responseError RpPromUrlGenerateError
 	err = gojson.Unmarshal(request.ResponseBody, &responseError)
 	return newRpPromUrlGenerateResult(response, request.ResponseBody, request), responseError, err

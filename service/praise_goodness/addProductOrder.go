@@ -33,10 +33,6 @@ func newAddProductOrderResult(result AddProductOrderResponse, body []byte, http 
 // notifyurl = 回调通知地址
 func (c *Client) AddProductOrder(ctx context.Context, Type int64, mobile string, tradeID string, amount int64, official int64, area string, notifyurl string, notMustParams ...gorequest.Params) (*AddProductOrderResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "api/order/addProductOrder")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("mch_id", c.GetMchID()) // 商户编号 (平台提供)

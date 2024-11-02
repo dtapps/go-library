@@ -34,10 +34,6 @@ func newQuerySupplierOrderInfoResult(result QuerySupplierOrderInfoResponse, body
 // trade_id = 商户订单号
 func (c *Client) QuerySupplierOrderInfo(ctx context.Context, tradeID string, notMustParams ...gorequest.Params) (*QuerySupplierOrderInfoResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "api/order/querySupplierOrderInfo")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("mch_id", c.GetMchID()) // 商户编号 (平台提供)

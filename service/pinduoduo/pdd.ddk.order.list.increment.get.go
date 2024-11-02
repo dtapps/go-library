@@ -72,15 +72,11 @@ func newOrderListIncrementGetResult(result OrderListIncrementGetResponse, body [
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.order.list.increment.get
 func (c *Client) OrderListIncrementGet(ctx context.Context, notMustParams ...gorequest.Params) (*OrderListIncrementGetResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "pdd.ddk.order.list.increment.get")
-	defer span.End()
-
 	// 参数
 	params := NewParamsWithType("pdd.ddk.order.list.increment.get", notMustParams...)
 
 	// 请求
 	var response OrderListIncrementGetResponse
-	request, err := c.request(ctx, span, params, &response)
+	request, err := c.request(ctx, params, &response)
 	return newOrderListIncrementGetResult(response, request.ResponseBody, request), err
 }

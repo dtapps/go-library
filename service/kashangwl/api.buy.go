@@ -47,10 +47,6 @@ func newApiBuyResult(result ApiBuyResponse, body []byte, http gorequest.Response
 // http://doc.cqmeihu.cn/sales/buy.html
 func (c *Client) ApiBuy(ctx context.Context, productID int64, quantity int64, notMustParams ...gorequest.Params) (*ApiBuyResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "api/buy")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("product_id", productID) // 商品编号
