@@ -38,10 +38,6 @@ func newElecityResult(result ElecityResponse, body []byte, http gorequest.Respon
 // https://www.kancloud.cn/boyanyun/boyanyun_huafei/3097256
 func (c *Client) Elecity(ctx context.Context, notMustParams ...gorequest.Params) (*ElecityResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "index/elecity")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserID()) // 账号ID

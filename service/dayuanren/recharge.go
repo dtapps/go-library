@@ -55,10 +55,6 @@ func newRechargeResult(result RechargeResponse, body []byte, http gorequest.Resp
 // https://www.kancloud.cn/boyanyun/boyanyun_huafei/3097250
 func (c *Client) Recharge(ctx context.Context, outTradeNum string, productID int64, mobile string, notifyUrl string, notMustParams ...gorequest.Params) (*RechargeResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "index/recharge")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("out_trade_num", outTradeNum) // 商户订单号

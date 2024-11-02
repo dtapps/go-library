@@ -41,10 +41,6 @@ func newOrderDirectChargeResult(result OrderDirectChargeResponse, body []byte, h
 // https://chengquan.cn/rechargeInterface/directCharge.html
 func (c *Client) OrderDirectCharge(ctx context.Context, orderNo string, rechargeNumber string, productID int64, amount int64, notMustParams ...gorequest.Params) (*OrderDirectChargeResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "rder/directCharge")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("order_no", orderNo)               // 商户提交的订单号，最长32位(商户保证其唯一性)

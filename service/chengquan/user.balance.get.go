@@ -29,10 +29,6 @@ func newUserBalanceGetResult(result UserBalanceGetResponse, body []byte, http go
 // https://chengquan.cn/basicData/queryBalance.html
 func (c *Client) UserBalanceGet(ctx context.Context, notMustParams ...gorequest.Params) (*UserBalanceGetResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "user/balance/get")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

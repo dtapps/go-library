@@ -30,10 +30,6 @@ func newUserResult(result UserResponse, body []byte, http gorequest.Response) *U
 // https://www.kancloud.cn/boyanyun/boyanyun_huafei/3097251
 func (c *Client) User(ctx context.Context, notMustParams ...gorequest.Params) (*UserResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "index/user")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserID()) // 账号ID

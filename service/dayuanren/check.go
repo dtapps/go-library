@@ -50,10 +50,6 @@ func newCheckResult(result CheckResponse, body []byte, http gorequest.Response) 
 // https://www.kancloud.cn/boyanyun/boyanyun_huafei/3097254
 func (c *Client) Check(ctx context.Context, outTradeNums string, notMustParams ...gorequest.Params) (*CheckResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "index/check")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserID())        // 账户ID

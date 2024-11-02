@@ -38,10 +38,6 @@ func newPriceResult(result PriceResponse, body []byte, http gorequest.Response) 
 // https://www.showdoc.com.cn/dyr/9757701226597233
 func (c *Client) Price(ctx context.Context, id int64, notMustParams ...gorequest.Params) (*PriceResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "index/price")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserID()) // 商户ID

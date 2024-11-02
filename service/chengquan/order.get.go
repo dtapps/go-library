@@ -35,10 +35,6 @@ func newOrderGetResult(result OrderGetResponse, body []byte, http gorequest.Resp
 // https://www.chengquan.cn/rechargeInterface/queryOrder.html
 func (c *Client) OrderGet(ctx context.Context, orderNo string, notMustParams ...gorequest.Params) (*OrderGetResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "order/get")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("order_no", orderNo)         // 商户提交的订单号，最长32位(商户保证其唯一性)

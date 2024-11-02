@@ -26,10 +26,6 @@ func newCancelResult(result CancelResponse, body []byte, http gorequest.Response
 // https://www.kancloud.cn/boyanyun/boyanyun_huafei/3182909
 func (c *Client) Cancel(ctx context.Context, outTradeNums string, notMustParams ...gorequest.Params) (*CancelResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "index/cancel")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserID())        // 账户ID

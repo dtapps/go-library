@@ -38,10 +38,6 @@ func newOrderTelPayResult(result OrderTelPayResponse, body []byte, http goreques
 // https://www.chengquan.cn/rechargeInterface/tel.html
 func (c *Client) OrderTelPay(ctx context.Context, orderNo string, rechargeNumber string, price int64, notMustParams ...gorequest.Params) (*OrderTelPayResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "order/tel/pay")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("order_no", orderNo)               // 商户提交的订单号，最长32位(商户保证其唯一性)

@@ -26,10 +26,6 @@ func newRemoveResult(result RemoveResponse, body []byte, http gorequest.Response
 // https://www.showdoc.com.cn/dyr/9745453200292104
 func (c *Client) Remove(ctx context.Context, outTradeNums string, notMustParams ...gorequest.Params) (*RemoveResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "index/remove")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserID())        // 账户ID

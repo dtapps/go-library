@@ -1,5 +1,5 @@
 package dingtalk
 
 const (
-	Version = "1.0.26"
+	Version = "1.0.27"
 )

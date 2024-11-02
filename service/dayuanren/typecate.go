@@ -34,10 +34,6 @@ func newTypecateResult(result TypecateResponse, body []byte, http gorequest.Resp
 // https://www.kancloud.cn/boyanyun/boyanyun_huafei/3097252
 func (c *Client) Typecate(ctx context.Context, notMustParams ...gorequest.Params) (*TypecateResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "index/typecate")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserID()) // 商户ID
