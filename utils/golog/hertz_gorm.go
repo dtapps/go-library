@@ -9,7 +9,6 @@ import (
 	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
-	"go.opentelemetry.io/otel/attribute"
 	"log/slog"
 	"runtime"
 	"strings"
@@ -38,10 +37,6 @@ func NewHertzGorm(ctx context.Context) (*HertzGorm, error) {
 func (hg *HertzGorm) Middleware() app.HandlerFunc {
 	return func(c context.Context, h *app.RequestContext) {
 
-		// OpenTelemetry链路追踪
-		ctx, span := TraceStartSpan(c, "hertz")
-		defer span.End()
-
 		// 开始时间
 		start := time.Now().UTC()
 
@@ -64,7 +59,7 @@ func (hg *HertzGorm) Middleware() app.HandlerFunc {
 		log.ResponseTime = gotime.Current().Time
 
 		// 输出路由日志
-		hlog.CtxTracef(ctx, "status=%d cost=%d method=%s full_path=%s client_ip=%s host=%s",
+		hlog.CtxTracef(c, "status=%d cost=%d method=%s full_path=%s client_ip=%s host=%s",
 			h.Response.StatusCode(),
 			log.RequestCostTime,
 			h.Request.Header.Method(),
@@ -73,24 +68,21 @@ func (hg *HertzGorm) Middleware() app.HandlerFunc {
 			h.Request.Host(),
 		)
 
-		// 跟踪编号
-		log.TraceID = gorequest.TraceSpanGetTraceID(span)
-
 		// 请求编号
 		log.RequestID = hertz_requestid.Get(h)
 		if log.RequestID == "" {
-			slog.ErrorContext(ctx, "[hertz_middleware]",
+			slog.ErrorContext(c, "[hertz_middleware]",
 				slog.String("hertz_requestid.get", hertz_requestid.Get(h)),
 			)
 			log.RequestID = hertz_requestid.GetX(h)
 			if log.RequestID == "" {
-				slog.ErrorContext(ctx, "[hertz_middleware]",
+				slog.ErrorContext(c, "[hertz_middleware]",
 					slog.String("hertz_requestid.getx", hertz_requestid.GetX(h)),
 				)
-				log.RequestID = gorequest.GetRequestIDContext(ctx)
+				log.RequestID = gorequest.GetRequestIDContext(c)
 				if log.RequestID == "" {
-					slog.ErrorContext(ctx, "[hertz_middleware]",
-						slog.String("context", gorequest.GetRequestIDContext(ctx)),
+					slog.ErrorContext(c, "[hertz_middleware]",
+						slog.String("context", gorequest.GetRequestIDContext(c)),
 					)
 				}
 			}
@@ -154,28 +146,11 @@ func (hg *HertzGorm) Middleware() app.HandlerFunc {
 			log.ResponseBody = string(h.Response.Body())
 		}
 
-		// OpenTelemetry链路追踪
-		span.SetAttributes(attribute.String("request.time", log.RequestTime.Format(gotime.DateTimeFormat)))
-		span.SetAttributes(attribute.String("request.host", log.RequestHost))
-		span.SetAttributes(attribute.String("request.path", log.RequestPath))
-		span.SetAttributes(attribute.String("request.query", log.RequestQuery))
-		span.SetAttributes(attribute.String("request.method", log.RequestMethod))
-		span.SetAttributes(attribute.String("request.scheme", log.RequestScheme))
-		span.SetAttributes(attribute.String("request.content_type", log.RequestContentType))
-		span.SetAttributes(attribute.String("request.body", log.RequestBody))
-		span.SetAttributes(attribute.String("request.header", log.RequestHeader))
-		span.SetAttributes(attribute.Int64("request.cost_time", log.RequestCostTime))
-
-		span.SetAttributes(attribute.String("response.time", log.ResponseTime.Format(gotime.DateTimeFormat)))
-		span.SetAttributes(attribute.String("response.header", log.ResponseHeader))
-		span.SetAttributes(attribute.Int("response.status_code", log.ResponseStatusCode))
-		span.SetAttributes(attribute.String("response.body", log.ResponseBody))
-
 		// 调用Hertz框架日志函数
 		log.GoVersion = runtime.Version()
 		log.SdkVersion = Version
 		if hg.hertzLogFunc != nil {
-			hg.hertzLogFunc(ctx, &log)
+			hg.hertzLogFunc(c, &log)
 		}
 
 	}

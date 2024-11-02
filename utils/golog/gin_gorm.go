@@ -8,7 +8,6 @@ import (
 	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
-	"go.opentelemetry.io/otel/attribute"
 	"io"
 	"log/slog"
 	"net/http"
@@ -66,11 +65,6 @@ func (w ginGormBodyWriter) Header() http.Header {
 func (gg *GinGorm) Middleware() gin.HandlerFunc {
 	return func(g *gin.Context) {
 
-		// OpenTelemetry链路追踪
-		//g.Request = g.Request.WithContext(gg.TraceStartSpan(g))
-		ctx, span := TraceStartSpan(g.Request.Context(), "gin")
-		defer span.End()
-
 		// 开始时间
 		start := time.Now().UTC()
 
@@ -108,23 +102,20 @@ func (gg *GinGorm) Middleware() gin.HandlerFunc {
 		// 响应时间
 		log.ResponseTime = gotime.Current().Time
 
-		// 跟踪编号
-		log.TraceID = gorequest.TraceSpanGetTraceID(span)
-
 		// 请求编号
 		log.RequestID = gin_requestid.Get(g)
 		if log.RequestID == "" {
-			slog.ErrorContext(ctx, "[gin_middleware]",
+			slog.ErrorContext(g, "[gin_middleware]",
 				slog.String("gin_requestid.get", gin_requestid.Get(g)),
 			)
 			log.RequestID = gin_requestid.GetX(g)
 			if log.RequestID == "" {
-				slog.ErrorContext(ctx, "[gin_middleware]",
+				slog.ErrorContext(g, "[gin_middleware]",
 					slog.String("gin_requestid.getx", gin_requestid.GetX(g)),
 				)
 				log.RequestID = gorequest.GetRequestIDContext(g)
 				if log.RequestID == "" {
-					slog.ErrorContext(ctx, "[gin_middleware]",
+					slog.ErrorContext(g, "[gin_middleware]",
 						slog.String("context", gorequest.GetRequestIDContext(g)),
 					)
 				}
@@ -171,28 +162,11 @@ func (gg *GinGorm) Middleware() gin.HandlerFunc {
 			log.ResponseBody = blw.body.String()
 		}
 
-		// OpenTelemetry链路追踪
-		span.SetAttributes(attribute.String("request.time", log.RequestTime.Format(gotime.DateTimeFormat)))
-		span.SetAttributes(attribute.String("request.host", log.RequestHost))
-		span.SetAttributes(attribute.String("request.path", log.RequestPath))
-		span.SetAttributes(attribute.String("request.query", log.RequestQuery))
-		span.SetAttributes(attribute.String("request.method", log.RequestMethod))
-		span.SetAttributes(attribute.String("request.scheme", log.RequestScheme))
-		span.SetAttributes(attribute.String("request.content_type", log.RequestContentType))
-		span.SetAttributes(attribute.String("request.body", log.RequestBody))
-		span.SetAttributes(attribute.String("request.header", log.RequestHeader))
-		span.SetAttributes(attribute.Int64("request.cost_time", log.RequestCostTime))
-
-		span.SetAttributes(attribute.String("response.time", log.ResponseTime.Format(gotime.DateTimeFormat)))
-		span.SetAttributes(attribute.String("response.header", log.ResponseHeader))
-		span.SetAttributes(attribute.Int("response.status_code", log.ResponseStatusCode))
-		span.SetAttributes(attribute.String("response.body", log.ResponseBody))
-
 		// 调用Gin框架日志函数
 		log.GoVersion = runtime.Version()
 		log.SdkVersion = Version
 		if gg.ginLogFunc != nil {
-			gg.ginLogFunc(ctx, &log)
+			gg.ginLogFunc(g, &log)
 		}
 
 	}
