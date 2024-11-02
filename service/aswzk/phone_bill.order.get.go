@@ -37,10 +37,6 @@ func newPhoneBillOrderQueryResult(result PhoneBillOrderQueryResponse, body []byt
 // PhoneBillOrderQuery 话费订单查询
 func (c *Client) PhoneBillOrderQuery(ctx context.Context, orderID, orderNo string, notMustParams ...gorequest.Params) (*PhoneBillOrderQueryResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "phone_bill/order")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("order_id", orderID) // 订单编号

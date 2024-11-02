@@ -29,10 +29,6 @@ func newAssetsBalanceResult(result AssetsBalanceResponse, body []byte, http gore
 // AssetsBalance 余额查询
 func (c *Client) AssetsBalance(ctx context.Context, notMustParams ...gorequest.Params) (*AssetsBalanceResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "assets/balance")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

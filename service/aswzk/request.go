@@ -4,11 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
-	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/codes"
 )
 
 // 请求接口
@@ -40,25 +37,14 @@ func (c *Client) request(ctx context.Context, url string, param gorequest.Params
 	c.httpClient.SetHeader("X-UserId", c.GetUserID())
 	c.httpClient.SetHeader("X-Sign", xSign)
 
-	// OpenTelemetry链路追踪
-	c.TraceSetAttributes(attribute.String("http.url", uri))
-	c.TraceSetAttributes(attribute.String("http.method", method))
-	c.TraceSetAttributes(attribute.String("http.params", gojson.JsonEncodeNoError(param)))
-
 	// 发起请求
 	request, err := c.httpClient.Request(ctx)
 	if err != nil {
-		c.TraceRecordError(err)
-		c.TraceSetStatus(codes.Error, err.Error())
 		return gorequest.Response{}, err
 	}
 
 	// 解析响应
 	err = json.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		c.TraceRecordError(err)
-		c.TraceSetStatus(codes.Error, err.Error())
-	}
 
 	return request, err
 }

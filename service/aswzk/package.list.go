@@ -32,10 +32,6 @@ func newPackageListResult(result PackageListResponse, body []byte, http goreques
 // package_type = 套餐类型 phone_bill=话费 electricity=电费)
 func (c *Client) PackageList(ctx context.Context, notMustParams ...gorequest.Params) (*PackageListResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "package/list")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

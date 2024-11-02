@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
-	"go.opentelemetry.io/otel/codes"
 	"net/url"
 )
 
@@ -20,22 +19,14 @@ type NotifyUrlParams struct {
 // NotifyUrl 通知回调地址
 func (c *Client) NotifyUrl(ctx context.Context, params NotifyUrlParams, param gorequest.Params) error {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, params.NotifyUrl)
-	defer c.TraceEndSpan()
-
 	// 验证回调地址
 	_, err := url.ParseRequestURI(params.NotifyUrl)
 	if err != nil {
-		c.TraceRecordError(err)
-		c.TraceSetStatus(codes.Error, err.Error())
 		return err
 	}
 
 	// 检查密钥
 	if params.ApiKey == "" {
-		c.TraceRecordError(errors.New("api_key cannot be empty"))
-		c.TraceSetStatus(codes.Error, "api_key cannot be empty")
 		return errors.New("api_key cannot be empty")
 	}
 
@@ -61,8 +52,6 @@ func (c *Client) NotifyUrl(ctx context.Context, params NotifyUrlParams, param go
 	// 发起请求
 	request, err := c.httpClient.Post(ctx)
 	if err != nil {
-		c.TraceRecordError(err)
-		c.TraceSetStatus(codes.Error, err.Error())
 		return err
 	}
 
@@ -72,8 +61,6 @@ func (c *Client) NotifyUrl(ctx context.Context, params NotifyUrlParams, param go
 	}
 	err = json.Unmarshal(request.ResponseBody, &response)
 	if err != nil {
-		c.TraceRecordError(err)
-		c.TraceSetStatus(codes.Error, err.Error())
 		return err
 	}
 

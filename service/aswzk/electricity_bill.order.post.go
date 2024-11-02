@@ -27,10 +27,6 @@ func newElectricityBillOrderResult(result ElectricityBillOrderResponse, body []b
 // ElectricityBillOrder 电费订单下单
 func (c *Client) ElectricityBillOrder(ctx context.Context, notMustParams ...gorequest.Params) (*ElectricityBillOrderResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "electricity_bill/order")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
