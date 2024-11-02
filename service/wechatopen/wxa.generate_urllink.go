@@ -26,16 +26,12 @@ func newGenerateUrlLinkResult(result GenerateUrlLinkResponse, body []byte, http 
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/url-link/generateUrlLink.html
 func (c *Client) GenerateUrlLink(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GenerateUrlLinkResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/generate_urllink")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response GenerateUrlLinkResponse
-	request, err := c.request(ctx, span, "wxa/generate_urllink?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/generate_urllink?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 
 	return newGenerateUrlLinkResult(response, request.ResponseBody, request), err
 }

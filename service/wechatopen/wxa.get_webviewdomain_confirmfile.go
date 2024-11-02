@@ -27,16 +27,12 @@ func newGetJumpDomainConfirmFileResult(result GetJumpDomainConfirmFileResponse, 
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/getJumpDomainConfirmFile.html
 func (c *Client) GetJumpDomainConfirmFile(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GetJumpDomainConfirmFileResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/get_webviewdomain_confirmfile")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response GetJumpDomainConfirmFileResponse
-	request, err := c.request(ctx, span, "wxa/get_webviewdomain_confirmfile?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/get_webviewdomain_confirmfile?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newGetJumpDomainConfirmFileResult(response, request.ResponseBody, request), err
 }
 

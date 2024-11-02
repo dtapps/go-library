@@ -24,15 +24,11 @@ func NewCgiBinGetApiDomainIpResult(result CgiBinGetApiDomainIpResponse, body []b
 // https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_the_WeChat_server_IP_address.html
 func (c *Client) CgiBinGetApiDomainIp(ctx context.Context, componentAccessToken string, notMustParams ...gorequest.Params) (*CgiBinGetApiDomainIpResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "cgi-bin/get_api_domain_ip")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response CgiBinGetApiDomainIpResponse
-	request, err := c.request(ctx, span, "cgi-bin/get_api_domain_ip?access_token="+componentAccessToken, params, http.MethodGet, &response)
+	request, err := c.request(ctx, "cgi-bin/get_api_domain_ip?access_token="+componentAccessToken, params, http.MethodGet, &response)
 	return NewCgiBinGetApiDomainIpResult(response, request.ResponseBody, request), err
 }

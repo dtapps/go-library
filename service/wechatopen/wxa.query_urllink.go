@@ -36,16 +36,12 @@ func newQueryUrlLinkResult(result QueryUrlLinkResponse, body []byte, http gorequ
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/url-link/queryUrlLink.html
 func (c *Client) QueryUrlLink(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*QueryUrlLinkResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/query_urllink")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response QueryUrlLinkResponse
-	request, err := c.request(ctx, span, "wxa/query_urllink?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/query_urllink?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 
 	return newQueryUrlLinkResult(response, request.ResponseBody, request), err
 }

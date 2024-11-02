@@ -55,10 +55,6 @@ func newSecApiPayRefundResult(result SecApiPayRefundResponse, body []byte, http 
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_4
 func (c *Client) SecApiPayRefund(ctx context.Context, notMustParams ...gorequest.Params) (*SecApiPayRefundResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "secapi/pay/refund")
-	defer c.TraceEndSpan()
-
 	// 证书
 	cert, err := c.P12ToPem()
 

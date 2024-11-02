@@ -26,10 +26,6 @@ func newRestOilCancelResult(result RestOilCancelResponse, body []byte, http gore
 // https://open.wikeyun.cn/#/apiDocument/9/document/369
 func (c *Client) RestOilCancel(ctx context.Context, notMustParams ...gorequest.Params) (*RestOilCancelResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "rest/Oil/cancel")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

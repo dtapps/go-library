@@ -25,17 +25,13 @@ func newWxaGetDefaultamsInfoGetShareRatioResult(result WxaGetDefaultamsInfoGetSh
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/percentage/GetShareRatio.html
 func (c *Client) WxaGetDefaultamsInfoGetShareRatio(ctx context.Context, authorizerAppid, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaGetDefaultamsInfoGetShareRatioResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/getdefaultamsinfo")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", authorizerAppid)
 
 	// 请求
 	var response WxaGetDefaultamsInfoGetShareRatioResponse
-	request, err := c.request(ctx, span, "wxa/getdefaultamsinfo?action=get_share_ratio&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/getdefaultamsinfo?action=get_share_ratio&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaGetDefaultamsInfoGetShareRatioResult(response, request.ResponseBody, request), err
 }
 

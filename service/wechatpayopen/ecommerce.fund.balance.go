@@ -29,10 +29,6 @@ func newEcommerceFundBalanceResult(result EcommerceFundBalanceResponse, body []b
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_7_1.shtml
 func (c *Client) EcommerceFundBalance(ctx context.Context, accountType string, notMustParams ...gorequest.Params) (*EcommerceFundBalanceResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, fmt.Sprintf("v3/ecommerce/fund/balance/%s?account_type=%s", c.GetSubMchId(), accountType))
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

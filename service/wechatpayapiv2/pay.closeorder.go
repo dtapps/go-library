@@ -36,10 +36,6 @@ func newPayCloseOrderResult(result PayCloseOrderResponse, body []byte, http gore
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_3
 func (c *Client) PayCloseOrder(ctx context.Context, outTradeNo string, notMustParams ...gorequest.Params) (*PayCloseOrderResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "pay/closeorder")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", c.GetAppId())                  // 小程序ID

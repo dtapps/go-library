@@ -29,16 +29,12 @@ func newSetCodeAuditQuotaResult(result SetCodeAuditQuotaResponse, body []byte, h
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/setCodeAuditQuota.html
 func (c *Client) SetCodeAuditQuota(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*SetCodeAuditQuotaResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/queryquota")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response SetCodeAuditQuotaResponse
-	request, err := c.request(ctx, span, "wxa/queryquota?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/queryquota?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newSetCodeAuditQuotaResult(response, request.ResponseBody, request), err
 }
 

@@ -25,16 +25,12 @@ func newReleaseResult(result ReleaseResponse, body []byte, http gorequest.Respon
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/release.html
 func (c *Client) Release(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*ReleaseResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/release")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response ReleaseResponse
-	request, err := c.request(ctx, span, "wxa/release?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/release?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newReleaseResult(response, request.ResponseBody, request), err
 }
 

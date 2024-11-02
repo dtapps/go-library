@@ -14,10 +14,6 @@ type SaveImgResponse struct {
 
 func (c *Client) SaveImg(ctx context.Context, resp gorequest.Response, dir, saveName string) SaveImgResponse {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "SaveImg")
-	defer span.End()
-
 	// 返回是二进制图片，或者json错误
 	if resp.ResponseHeader.Get("Content-Type") == "image/jpeg" || resp.ResponseHeader.Get("Content-Type") == "image/png" {
 		// 保存在output目录

@@ -36,15 +36,11 @@ func newGetSettingCategoriesResult(result GetSettingCategoriesResponse, body []b
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/category-management/getSettingCategories.html
 func (c *Client) GetSettingCategories(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GetSettingCategoriesResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "cgi-bin/wxopen/getcategory")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response GetSettingCategoriesResponse
-	request, err := c.request(ctx, span, "cgi-bin/wxopen/getcategory?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "cgi-bin/wxopen/getcategory?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newGetSettingCategoriesResult(response, request.ResponseBody, request), err
 }

@@ -27,10 +27,6 @@ func newRestPowerDelCardResult(result RestPowerDelCardResponse, body []byte, htt
 // https://open.wikeyun.cn/#/apiDocument/9/document/330
 func (c *Client) RestPowerDelCard(ctx context.Context, cardID int64, notMustParams ...gorequest.Params) (*RestPowerDelCardResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "rest/Power/delCard")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("card_id", cardID)

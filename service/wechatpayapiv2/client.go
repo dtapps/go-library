@@ -2,7 +2,6 @@ package wechatpayapiv2
 
 import (
 	"go.dtapp.net/library/utils/gorequest"
-	"go.opentelemetry.io/otel/trace"
 )
 
 // ClientConfig 实例配置
@@ -27,8 +26,6 @@ type Client struct {
 	}
 	httpClient *gorequest.App // HTTP请求客户端
 	clientIP   string         // 客户端IP
-	trace      bool           // OpenTelemetry链路追踪
-	span       trace.Span     // OpenTelemetry链路追踪
 }
 
 // NewClient 创建实例化
@@ -44,6 +41,5 @@ func NewClient(config *ClientConfig) (*Client, error) {
 	c.config.certString = config.CertString
 	c.config.keyString = config.KeyString
 
-	c.trace = true
 	return c, nil
 }

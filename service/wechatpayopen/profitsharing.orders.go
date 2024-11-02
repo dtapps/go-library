@@ -39,10 +39,6 @@ func newProfitSharingOrdersResult(result ProfitSharingOrdersResponse, body []byt
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_1.shtml
 func (c *Client) ProfitSharingOrders(ctx context.Context, notMustParams ...gorequest.Params) (*ProfitSharingOrdersResult, ApiError, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "v3/profitsharing/orders")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号

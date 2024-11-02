@@ -35,10 +35,6 @@ func newRestOilPushOrderResult(result RestOilPushOrderResponse, body []byte, htt
 // https://open.wikeyun.cn/#/apiDocument/9/document/367
 func (c *Client) RestOilPushOrder(ctx context.Context, notMustParams ...gorequest.Params) (*RestOilPushOrderResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "rest/Oil/pushOrder")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("store_id", c.GetStoreId()) // 店铺ID

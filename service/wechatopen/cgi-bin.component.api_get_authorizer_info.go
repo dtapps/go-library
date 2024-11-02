@@ -82,10 +82,6 @@ func newCgiBinComponentApiGetAuthorizerInfoResult(result CgiBinComponentApiGetAu
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/authorization-management/getAuthorizerInfo.html
 func (c *Client) CgiBinComponentApiGetAuthorizerInfo(ctx context.Context, authorizerAppid, componentAccessToken string, notMustParams ...gorequest.Params) (*CgiBinComponentApiGetAuthorizerInfoResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "cgi-bin/component/api_get_authorizer_info")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("component_appid", c.GetComponentAppId()) // 第三方平台appid
@@ -93,6 +89,6 @@ func (c *Client) CgiBinComponentApiGetAuthorizerInfo(ctx context.Context, author
 
 	// 请求
 	var response CgiBinComponentApiGetAuthorizerInfoResponse
-	request, err := c.request(ctx, span, fmt.Sprintf("cgi-bin/component/api_get_authorizer_info?access_token=%s", componentAccessToken), params, http.MethodPost, &response)
+	request, err := c.request(ctx, fmt.Sprintf("cgi-bin/component/api_get_authorizer_info?access_token=%s", componentAccessToken), params, http.MethodPost, &response)
 	return newCgiBinComponentApiGetAuthorizerInfoResult(response, request.ResponseBody, request), err
 }

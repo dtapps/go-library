@@ -40,10 +40,6 @@ func newProfitSharingOrdersOutOrderNoResult(result ProfitSharingOrdersOutOrderNo
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_2.shtml
 func (c *Client) ProfitSharingOrdersOutOrderNo(ctx context.Context, transactionId, outOrderNo string, notMustParams ...gorequest.Params) (*ProfitSharingOrdersOutOrderNoResult, ApiError, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, fmt.Sprintf("v3/profitsharing/orders/%s", outOrderNo))
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sub_mchid", c.GetSubMchId())    // 子商户号

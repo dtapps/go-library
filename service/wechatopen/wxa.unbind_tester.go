@@ -25,10 +25,6 @@ func newUnbindTesterResult(result UnbindTesterResponse, body []byte, http gorequ
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/member-management/unbindTester.html
 func (c *Client) UnbindTester(ctx context.Context, authorizerAccessToken, wechatid, userstr string, notMustParams ...gorequest.Params) (*UnbindTesterResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/unbind_tester")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	if wechatid != "" {
@@ -38,6 +34,6 @@ func (c *Client) UnbindTester(ctx context.Context, authorizerAccessToken, wechat
 
 	// 请求
 	var response UnbindTesterResponse
-	request, err := c.request(ctx, span, "wxa/unbind_tester?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/unbind_tester?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newUnbindTesterResult(response, request.ResponseBody, request), err
 }

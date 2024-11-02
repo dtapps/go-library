@@ -29,10 +29,6 @@ func newDataCubeGetWeAnAlySisAppidDailySummaryTrendResult(result DataCubeGetWeAn
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/others/getDailySummary.html
 func (c *Client) DataCubeGetWeAnAlySisAppidDailySummaryTrend(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlySisAppidDailySummaryTrendResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "datacube/getweanalysisappiddailysummarytrend")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("begin_date", beginDate)
@@ -40,6 +36,6 @@ func (c *Client) DataCubeGetWeAnAlySisAppidDailySummaryTrend(ctx context.Context
 
 	// 请求
 	var response DataCubeGetWeAnAlySisAppidDailySummaryTrendResponse
-	request, err := c.request(ctx, span, "datacube/getweanalysisappiddailysummarytrend?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "datacube/getweanalysisappiddailysummarytrend?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newDataCubeGetWeAnAlySisAppidDailySummaryTrendResult(response, request.ResponseBody, request), err
 }

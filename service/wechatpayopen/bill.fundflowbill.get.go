@@ -26,10 +26,6 @@ func newBillFundFlowBillGetResult(result BillFundFlowBillGetResponse, body []byt
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_7.shtml
 func (c *Client) BillFundFlowBillGet(ctx context.Context, notMustParams ...gorequest.Params) (*BillFundFlowBillGetResult, ApiError, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "v3/bill/fundflowbill")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

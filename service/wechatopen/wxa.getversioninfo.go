@@ -35,15 +35,11 @@ func newGetVersionInfoResult(result GetVersionInfoResponse, body []byte, http go
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/getVersionInfo.html
 func (c *Client) GetVersionInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GetVersionInfoResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/getversioninfo")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response GetVersionInfoResponse
-	request, err := c.request(ctx, span, "wxa/getversioninfo?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/getversioninfo?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newGetVersionInfoResult(response, request.ResponseBody, request), err
 }

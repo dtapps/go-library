@@ -31,10 +31,6 @@ func newDataCubeGetWeAnAlysIsAppidVisitDistributionResult(result DataCubeGetWeAn
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/others/getVisitDistribution.html
 func (c *Client) DataCubeGetWeAnAlysIsAppidVisitDistribution(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlysIsAppidVisitDistributionResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "datacube/getweanalysisappidvisitdistribution")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("begin_date", beginDate)
@@ -42,6 +38,6 @@ func (c *Client) DataCubeGetWeAnAlysIsAppidVisitDistribution(ctx context.Context
 
 	// 请求
 	var response DataCubeGetWeAnAlysIsAppidVisitDistributionResponse
-	request, err := c.request(ctx, span, "datacube/getweanalysisappidvisitdistribution?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "datacube/getweanalysisappidvisitdistribution?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newDataCubeGetWeAnAlysIsAppidVisitDistributionResult(response, request.ResponseBody, request), err
 }

@@ -25,17 +25,13 @@ func newWxaDeleteTemplateResult(result WxaDeleteTemplateResponse, body []byte, h
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/deletetemplate.html
 func (c *Client) WxaDeleteTemplate(ctx context.Context, componentAccessToken, templateId string, notMustParams ...gorequest.Params) (*WxaDeleteTemplateResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/deletetemplate")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("template_id", templateId)
 
 	// 请求
 	var response WxaDeleteTemplateResponse
-	request, err := c.request(ctx, span, "wxa/deletetemplate?access_token="+componentAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/deletetemplate?access_token="+componentAccessToken, params, http.MethodPost, &response)
 	return newWxaDeleteTemplateResult(response, request.ResponseBody, request), err
 }
 

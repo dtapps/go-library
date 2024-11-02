@@ -27,16 +27,12 @@ func newWxaOperationamsAgencyCheckCanOpenPublisherResult(result WxaOperationamsA
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/open/AgencyCheckCanOpenPublisher.html
 func (c *Client) WxaOperationamsAgencyCheckCanOpenPublisher(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaOperationamsAgencyCheckCanOpenPublisherResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/operationams")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response WxaOperationamsAgencyCheckCanOpenPublisherResponse
-	request, err := c.request(ctx, span, "wxa/operationams?action=agency_check_can_open_publisher&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/operationams?action=agency_check_can_open_publisher&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaOperationamsAgencyCheckCanOpenPublisherResult(response, request.ResponseBody, request), err
 }
 

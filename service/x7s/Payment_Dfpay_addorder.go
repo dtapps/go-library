@@ -32,10 +32,6 @@ func newPaymentDfpayAddorderResult(result PaymentDfpayAddorderResponse, body []b
 // https://gys.x7s.com/Home_Index_documenta.html#doc6
 func (c *Client) PaymentDfpayAddorder(ctx context.Context, partnerOrderNo string, Type int, account string, amount float64, notifyUrl string, notMustParams ...gorequest.Params) (*PaymentDfpayAddorderResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "Payment_Dfpay_addorder")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("partner_id", c.GetPartnerID())     // 供应商ID

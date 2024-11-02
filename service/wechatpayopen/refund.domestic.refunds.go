@@ -63,10 +63,6 @@ func newRefundDomesticRefundsResult(result RefundDomesticRefundsResponse, body [
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_9.shtml
 func (c *Client) RefundDomesticRefunds(ctx context.Context, notMustParams ...gorequest.Params) (*RefundDomesticRefundsResult, ApiError, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "v3/refund/domestic/refunds")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号

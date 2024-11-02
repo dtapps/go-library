@@ -92,16 +92,12 @@ func newGetOnlineIcpOrderResult(result GetOnlineIcpOrderResponse, body []byte, h
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/record/getOnlineIcpOrder.html
 func (c *Client) GetOnlineIcpOrder(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GetOnlineIcpOrderResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/icp/get_online_icp_order")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response GetOnlineIcpOrderResponse
-	request, err := c.request(ctx, span, "wxa/icp/get_online_icp_order?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/icp/get_online_icp_order?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newGetOnlineIcpOrderResult(response, request.ResponseBody, request), err
 }
 

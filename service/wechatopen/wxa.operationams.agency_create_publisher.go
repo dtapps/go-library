@@ -26,16 +26,12 @@ func newWxaOperationamsAgencyCreatePublisherResult(result WxaOperationamsAgencyC
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/open/AgencyCreatePublisher.html
 func (c *Client) WxaOperationamsAgencyCreatePublisher(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaOperationamsAgencyCreatePublisherResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/operationams")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response WxaOperationamsAgencyCreatePublisherResponse
-	request, err := c.request(ctx, span, "wxa/operationams?action=agency_create_publisher&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/operationams?action=agency_create_publisher&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaOperationamsAgencyCreatePublisherResult(response, request.ResponseBody, request), err
 }
 

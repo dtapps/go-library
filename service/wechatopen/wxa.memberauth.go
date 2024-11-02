@@ -28,16 +28,12 @@ func newGetTesterResult(result GetTesterResponse, body []byte, http gorequest.Re
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/member-management/getTester.html
 func (c *Client) GetTester(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GetTesterResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/memberauth")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("action", "get_experiencer")
 
 	// 请求
 	var response GetTesterResponse
-	request, err := c.request(ctx, span, "wxa/memberauth?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/memberauth?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newGetTesterResult(response, request.ResponseBody, request), err
 }

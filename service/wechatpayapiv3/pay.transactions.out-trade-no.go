@@ -64,10 +64,6 @@ func newPayTransactionsOutTradeNoResult(result PayTransactionsOutTradeNoResponse
 // PayTransactionsOutTradeNo 商户订单号查询 https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_2.shtml
 func (c *Client) PayTransactionsOutTradeNo(ctx context.Context, outTradeNo string, notMustParams ...gorequest.Params) (*PayTransactionsOutTradeNoResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, fmt.Sprintf("v3/pay/transactions/out-trade-no/%s?mchid=%s", outTradeNo, c.GetMchId()))
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

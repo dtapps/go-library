@@ -36,16 +36,12 @@ func newWxaSecurityGetPrivacyInterfaceResult(result WxaSecurityGetPrivacyInterfa
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/apply_api/get_privacy_interface.html
 func (c *Client) WxaSecurityGetPrivacyInterface(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaSecurityGetPrivacyInterfaceResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/security/get_privacy_interface")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response WxaSecurityGetPrivacyInterfaceResponse
-	request, err := c.request(ctx, span, "wxa/security/get_privacy_interface?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
+	request, err := c.request(ctx, "wxa/security/get_privacy_interface?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
 	return newWxaSecurityGetPrivacyInterfaceResult(response, request.ResponseBody, request), err
 }
 

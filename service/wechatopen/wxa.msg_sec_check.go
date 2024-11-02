@@ -39,15 +39,11 @@ func newWxaMsgSecCheckResult(result WxaMsgSecCheckResponse, body []byte, http go
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.getUnlimited.html
 func (c *Client) WxaMsgSecCheck(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaMsgSecCheckResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/msg_sec_check")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response WxaMsgSecCheckResponse
-	request, err := c.request(ctx, span, "wxa/msg_sec_check?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/msg_sec_check?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaMsgSecCheckResult(response, request.ResponseBody, request), err
 }

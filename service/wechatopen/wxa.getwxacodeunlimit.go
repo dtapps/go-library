@@ -27,16 +27,12 @@ func newGetUnlimitedQRCodeResult(result GetUnlimitedQRCodeResponse, body []byte,
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/qr-code/getUnlimitedQRCode.html
 func (c *Client) GetUnlimitedQRCode(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GetUnlimitedQRCodeResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/getwxacodeunlimit")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response GetUnlimitedQRCodeResponse
-	request, err := c.request(ctx, span, "wxa/getwxacodeunlimit?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/getwxacodeunlimit?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 
 	// 判断内容是否为图片
 	//if request.HeaderIsImg() == false {

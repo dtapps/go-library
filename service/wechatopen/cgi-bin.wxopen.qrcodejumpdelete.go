@@ -25,16 +25,12 @@ func newCgiBinWxOpenQrCodeJumpDeleteResult(result CgiBinWxOpenQrCodeJumpDeleteRe
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumpdelete.html
 func (c *Client) CgiBinWxOpenQrCodeJumpDelete(ctx context.Context, authorizerAccessToken, prefix string, notMustParams ...gorequest.Params) (*CgiBinWxOpenQrCodeJumpDeleteResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "cgi-bin/wxopen/qrcodejumpdelete")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("prefix", prefix)
 
 	// 请求
 	var response CgiBinWxOpenQrCodeJumpDeleteResponse
-	request, err := c.request(ctx, span, "cgi-bin/wxopen/qrcodejumpdelete?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "cgi-bin/wxopen/qrcodejumpdelete?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newCgiBinWxOpenQrCodeJumpDeleteResult(response, request.ResponseBody, request), err
 }

@@ -51,10 +51,6 @@ func newMmpaymkttransfersGethbinfoResult(result MmpaymkttransfersGethbinfoRespon
 // https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon_sl.php?chapter=13_6&index=5
 func (c *Client) MmpaymkttransfersGethbinfo(ctx context.Context, notMustParams ...gorequest.Params) (*MmpaymkttransfersGethbinfoResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "mmpaymkttransfers/gethbinfo")
-	defer c.TraceEndSpan()
-
 	// 证书
 	cert, err := c.P12ToPem()
 

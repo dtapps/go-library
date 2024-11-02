@@ -26,10 +26,6 @@ func newProfitSharingReceiversDeleteResult(result ProfitSharingReceiversDeleteRe
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_9.shtml
 func (c *Client) ProfitSharingReceiversDelete(ctx context.Context, Type, account string, notMustParams ...gorequest.Params) (*ProfitSharingReceiversDeleteResult, ApiError, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "v3/profitsharing/receivers/delete")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号

@@ -24,10 +24,6 @@ func newPayPartnerTransactionsH5Result(result PayPartnerTransactionsH5Response, 
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_3_1.shtml
 func (c *Client) PayPartnerTransactionsH5(ctx context.Context, notMustParams ...gorequest.Params) (*PayPartnerTransactionsH5Result, ApiError, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "v3/pay/partner/transactions/h5")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sp_appid", c.GetSpAppid())   // 服务商应用ID

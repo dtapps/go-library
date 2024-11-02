@@ -25,10 +25,6 @@ func newModifyJumpDomainDirectlyResult(result ModifyJumpDomainDirectlyResponse, 
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/modifyJumpDomainDirectly.html
 func (c *Client) ModifyJumpDomainDirectly(ctx context.Context, authorizerAccessToken string, action string, webviewdomain []string, notMustParams ...gorequest.Params) (*ModifyJumpDomainDirectlyResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/setwebviewdomain_directly")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("action", action)
@@ -36,7 +32,7 @@ func (c *Client) ModifyJumpDomainDirectly(ctx context.Context, authorizerAccessT
 
 	// 请求
 	var response ModifyJumpDomainDirectlyResponse
-	request, err := c.request(ctx, span, "wxa/setwebviewdomain_directly?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/setwebviewdomain_directly?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newModifyJumpDomainDirectlyResult(response, request.ResponseBody, request), err
 }
 

@@ -29,16 +29,12 @@ func newWebhookSendResult(result WebhookSendResponse, body []byte, http goreques
 // https://developer.work.weixin.qq.com/document/path/99110
 func (c *Client) WebhookSend(ctx context.Context, key string, Type string, notMustParams ...gorequest.Params) (*WebhookSendResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "cgi-bin/webhook/send")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response WebhookSendResponse
-	request, err := c.request(ctx, span, apiUrl+fmt.Sprintf("cgi-bin/webhook/send?key=%s&type=%s", key, Type), params, http.MethodPost, &response)
+	request, err := c.request(ctx, apiUrl+fmt.Sprintf("cgi-bin/webhook/send?key=%s&type=%s", key, Type), params, http.MethodPost, &response)
 	return newWebhookSendResult(response, request.ResponseBody, request), err
 }
 
@@ -46,15 +42,11 @@ func (c *Client) WebhookSend(ctx context.Context, key string, Type string, notMu
 // https://developer.work.weixin.qq.com/document/path/99110
 func (c *Client) WebhookSendURL(ctx context.Context, url string, Type string, notMustParams ...gorequest.Params) (*WebhookSendResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, url)
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response WebhookSendResponse
-	request, err := c.request(ctx, span, fmt.Sprintf("%s&type=%s", url, Type), params, http.MethodPost, &response)
+	request, err := c.request(ctx, fmt.Sprintf("%s&type=%s", url, Type), params, http.MethodPost, &response)
 	return newWebhookSendResult(response, request.ResponseBody, request), err
 }

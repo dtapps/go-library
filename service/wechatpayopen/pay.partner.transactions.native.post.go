@@ -24,10 +24,6 @@ func newPayPartnerTransactionsNativePostResult(result PayPartnerTransactionsNati
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_1.shtml
 func (c *Client) PayPartnerTransactionsNativePost(ctx context.Context, notMustParams ...gorequest.Params) (*PayPartnerTransactionsNativePostResult, ApiError, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "v3/pay/partner/transactions/native")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sp_appid", c.GetSpAppid())   // 服务商应用ID

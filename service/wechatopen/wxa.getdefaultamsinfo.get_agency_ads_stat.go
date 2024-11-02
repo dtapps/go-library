@@ -55,10 +55,6 @@ func newWxaGetdefaultamsinfoGetAgencyAdsStatResult(result WxaGetdefaultamsinfoGe
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/ad-data/GetAgencyAdsStat.html
 func (c *Client) WxaGetdefaultamsinfoGetAgencyAdsStat(ctx context.Context, authorizerAccessToken string, page, pageSize int64, startDate, endDate, adSlot string, notMustParams ...gorequest.Params) (*WxaGetdefaultamsinfoGetAgencyAdsStatResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/getdefaultamsinfo")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("page", page)
@@ -71,6 +67,6 @@ func (c *Client) WxaGetdefaultamsinfoGetAgencyAdsStat(ctx context.Context, autho
 
 	// 请求
 	var response WxaGetdefaultamsinfoGetAgencyAdsStatResponse
-	request, err := c.request(ctx, span, "wxa/getdefaultamsinfo?action=get_agency_ads_stat&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/getdefaultamsinfo?action=get_agency_ads_stat&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaGetdefaultamsinfoGetAgencyAdsStatResult(response, request.ResponseBody, request), err
 }

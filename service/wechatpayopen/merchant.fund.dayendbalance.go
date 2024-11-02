@@ -28,10 +28,6 @@ func newMerchantFundDayEndBalanceResult(result MerchantFundDayEndBalanceResponse
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_7_4.shtml
 func (c *Client) MerchantFundDayEndBalance(ctx context.Context, accountType, date string, notMustParams ...gorequest.Params) (*MerchantFundDayEndBalanceResult, ApiError, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, fmt.Sprintf("v3/merchant/fund/dayendbalance/%s?date=%s", accountType, date))
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

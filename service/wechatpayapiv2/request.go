@@ -4,10 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/xml"
-	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
-	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/codes"
 )
 
 func (c *Client) request(ctx context.Context, url string, param gorequest.Params, certStatus bool, cert *tls.Certificate, response any) (gorequest.Response, error) {
@@ -29,24 +26,14 @@ func (c *Client) request(ctx context.Context, url string, param gorequest.Params
 		c.httpClient.SetP12Cert(cert)
 	}
 
-	// OpenTelemetry链路追踪
-	c.TraceSetAttributes(attribute.String("http.url", uri))
-	c.TraceSetAttributes(attribute.String("http.params", gojson.JsonEncodeNoError(param)))
-
 	// 发起请求
 	request, err := c.httpClient.Post(ctx)
 	if err != nil {
-		c.TraceRecordError(err)
-		c.TraceSetStatus(codes.Error, err.Error())
 		return gorequest.Response{}, err
 	}
 
 	// 解析响应
 	err = xml.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		c.TraceRecordError(err)
-		c.TraceSetStatus(codes.Error, err.Error())
-	}
 
 	return request, err
 }

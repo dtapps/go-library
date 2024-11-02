@@ -28,10 +28,6 @@ func newEcommerceFundEndDayBalanceResult(result EcommerceFundEndDayBalanceRespon
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_7_2.shtml
 func (c *Client) EcommerceFundEndDayBalance(ctx context.Context, date string, notMustParams ...gorequest.Params) (*EcommerceFundEndDayBalanceResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, fmt.Sprintf("v3/ecommerce/fund/enddaybalance/%s?date=%s", c.GetSubMchId(), date))
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

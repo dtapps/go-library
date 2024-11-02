@@ -27,16 +27,12 @@ func newCreateQRCodeResult(result CreateQRCodeResponse, body []byte, http gorequ
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/qr-code/createQRCode.html
 func (c *Client) CreateQRCode(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*CreateQRCodeResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "cgi-bin/wxaapp/createwxaqrcode")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response CreateQRCodeResponse
-	request, err := c.request(ctx, span, "cgi-bin/wxaapp/createwxaqrcode?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "cgi-bin/wxaapp/createwxaqrcode?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 
 	// 判断内容是否为图片
 	//if request.HeaderIsImg() == false {

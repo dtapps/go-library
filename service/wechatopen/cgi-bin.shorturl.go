@@ -26,10 +26,6 @@ func newCgiBinShortUrlResult(result CgiBinShortUrlResponse, body []byte, http go
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/shorturl.html
 func (c *Client) CgiBinShortUrl(ctx context.Context, authorizerAccessToken, longUrl string, notMustParams ...gorequest.Params) (*CgiBinShortUrlResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "cgi-bin/shorturl")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("action", "long2short") // 此处填long2short，代表长链接转短链接
@@ -37,6 +33,6 @@ func (c *Client) CgiBinShortUrl(ctx context.Context, authorizerAccessToken, long
 
 	// 请求
 	var response CgiBinShortUrlResponse
-	request, err := c.request(ctx, span, "cgi-bin/shorturl?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "cgi-bin/shorturl?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newCgiBinShortUrlResult(response, request.ResponseBody, request), err
 }

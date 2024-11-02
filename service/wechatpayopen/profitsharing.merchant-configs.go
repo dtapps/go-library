@@ -26,10 +26,6 @@ func newProfitSharingMerchantConfigsResult(result ProfitSharingMerchantConfigsRe
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_7.shtml
 func (c *Client) ProfitSharingMerchantConfigs(ctx context.Context, notMustParams ...gorequest.Params) (*ProfitSharingMerchantConfigsResult, ApiError, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, fmt.Sprintf("v3/profitsharing/merchant-configs/%s", c.GetSubMchId()))
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

@@ -26,10 +26,6 @@ func newProfitSharingTransactionsAmountsResult(result ProfitSharingTransactionsA
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_6.shtml
 func (c *Client) ProfitSharingTransactionsAmounts(ctx context.Context, transactionId string, notMustParams ...gorequest.Params) (*ProfitSharingTransactionsAmountsResult, ApiError, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, fmt.Sprintf("v3/profitsharing/transactions/%s", transactionId))
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

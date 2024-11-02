@@ -33,10 +33,6 @@ func newTransferBillReceiptOutBatchNoResult(result TransferBillReceiptOutBatchNo
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/electronic-signature/get-electronic-signature-by-out-no.html
 func (c *Client) TransferBillReceiptOutBatchNo(ctx context.Context, outBatchNo string, notMustParams ...gorequest.Params) (*TransferBillReceiptOutBatchNoResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, fmt.Sprintf("v3/transfer/bill-receipt/%s", outBatchNo))
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

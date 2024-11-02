@@ -31,10 +31,6 @@ func newRestOilAddCardResult(result RestOilAddCardResponse, body []byte, http go
 // https://open.wikeyun.cn/#/apiDocument/9/document/370
 func (c *Client) RestOilAddCard(ctx context.Context, notMustParams ...gorequest.Params) (*RestOilAddCardResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "rest/Oil/addCard")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("store_id", c.GetStoreId()) // 店铺ID

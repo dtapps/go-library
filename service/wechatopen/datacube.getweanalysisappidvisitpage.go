@@ -34,10 +34,6 @@ func newDataCubeGetWeAnAlySisAppidVisitPageResult(result DataCubeGetWeAnAlySisAp
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/others/getVisitPage.html
 func (c *Client) DataCubeGetWeAnAlySisAppidVisitPage(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlySisAppidVisitPageResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "datacube/getweanalysisappidvisitpage")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("begin_date", beginDate)
@@ -45,6 +41,6 @@ func (c *Client) DataCubeGetWeAnAlySisAppidVisitPage(ctx context.Context, author
 
 	// 请求
 	var response DataCubeGetWeAnAlySisAppidVisitPageResponse
-	request, err := c.request(ctx, span, "datacube/getweanalysisappidvisitpage?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "datacube/getweanalysisappidvisitpage?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newDataCubeGetWeAnAlySisAppidVisitPageResult(response, request.ResponseBody, request), err
 }

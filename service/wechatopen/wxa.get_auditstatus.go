@@ -29,17 +29,13 @@ func newGetAuditStatusResult(result GetAuditStatusResponse, body []byte, http go
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/getAuditStatus.html
 func (c *Client) GetAuditStatus(ctx context.Context, authorizerAccessToken string, auditid int64, notMustParams ...gorequest.Params) (*GetAuditStatusResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/get_auditstatus")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("auditid", auditid)
 
 	// 请求
 	var response GetAuditStatusResponse
-	request, err := c.request(ctx, span, "wxa/get_auditstatus?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/get_auditstatus?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newGetAuditStatusResult(response, request.ResponseBody, request), err
 }
 

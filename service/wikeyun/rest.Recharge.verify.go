@@ -28,10 +28,6 @@ func newRestRechargeVerifyResult(result RestRechargeVerifyResponse, body []byte,
 // https://open.wikeyun.cn/#/apiDocument/9/document/405
 func (c *Client) RestRechargeVerify(ctx context.Context, mobile string, amount int64, rechargeType int64, notMustParams ...gorequest.Params) (*RestRechargeVerifyResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "rest/Recharge/verify")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("mobile", mobile)              // 需要充值的手机号

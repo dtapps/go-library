@@ -39,10 +39,6 @@ func newTransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult(r
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-detail/get-transfer-detail-by-out-no.html
 func (c *Client) TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNo(ctx context.Context, outBatchNo, outDetailNo string, notMustParams ...gorequest.Params) (*TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, fmt.Sprintf("v3/transfer/batches/out-batch-no/%s/details/out-detail-no/%s", outBatchNo, outDetailNo))
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

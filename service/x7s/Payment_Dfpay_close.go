@@ -25,10 +25,6 @@ func newPaymentDfpayCloseResult(result PaymentDfpayCloseResponse, body []byte, h
 // https://gys.x7s.com/Home_Index_documenta.html#doc9
 func (c *Client) PaymentDfpayClose(ctx context.Context, partnerOrderNo string, notMustParams ...gorequest.Params) (*PaymentDfpayCloseResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "Payment_Dfpay_close")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("partner_id", c.GetPartnerID())     // 供应商ID

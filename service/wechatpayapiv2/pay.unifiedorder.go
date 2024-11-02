@@ -40,10 +40,6 @@ func newPayUnifiedOrderResult(result PayUnifiedOrderResponse, body []byte, http 
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1
 func (c *Client) PayUnifiedOrder(ctx context.Context, notMustParams ...gorequest.Params) (*PayUnifiedOrderResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "pay/unifiedorder")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", c.GetAppId())                  // 小程序ID

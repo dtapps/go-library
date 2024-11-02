@@ -34,16 +34,12 @@ func newWxaApiWxaembeddedGetListResult(result WxaApiWxaembeddedGetListResponse, 
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/embedded-management/getEmbeddedList.html
 func (c *Client) WxaApiWxaembeddedGetList(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaApiWxaembeddedGetListResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxaapi/wxaembedded/get_list")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response WxaApiWxaembeddedGetListResponse
-	request, err := c.request(ctx, span, "wxaapi/wxaembedded/get_list?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
+	request, err := c.request(ctx, "wxaapi/wxaembedded/get_list?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
 	return newWxaApiWxaembeddedGetListResult(response, request.ResponseBody, request), err
 }
 

@@ -28,15 +28,11 @@ func newCgiBinGetTokenResult(result CgiBinGetTokenResponse, body []byte, http go
 // https://open.work.weixin.qq.com/api/doc/90000/90135/91039
 func (c *Client) CgiBinGetToken(ctx context.Context, notMustParams ...gorequest.Params) (*CgiBinGetTokenResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "cgi-bin/gettoken")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response CgiBinGetTokenResponse
-	request, err := c.request(ctx, span, apiUrl+fmt.Sprintf("cgi-bin/gettoken?corpid=%s&corpsecret=%s", c.GetAppId(), c.GetSecret()), params, http.MethodGet, &response)
+	request, err := c.request(ctx, apiUrl+fmt.Sprintf("cgi-bin/gettoken?corpid=%s&corpsecret=%s", c.GetAppId(), c.GetSecret()), params, http.MethodGet, &response)
 	return newCgiBinGetTokenResult(response, request.ResponseBody, request), err
 }

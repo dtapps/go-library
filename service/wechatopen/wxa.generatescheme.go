@@ -26,16 +26,12 @@ func newGenerateSchemeResult(result GenerateSchemeResponse, body []byte, http go
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/url-scheme/generateScheme.html
 func (c *Client) GenerateScheme(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GenerateSchemeResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/generatescheme")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response GenerateSchemeResponse
-	request, err := c.request(ctx, span, "wxa/generatescheme?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/generatescheme?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 
 	return newGenerateSchemeResult(response, request.ResponseBody, request), err
 }

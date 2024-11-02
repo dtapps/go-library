@@ -28,16 +28,12 @@ func newModifyThirdpartyJumpDomainResult(result ModifyThirdpartyJumpDomainRespon
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/thirdparty-management/domain-mgnt/modifyThirdpartyJumpDomain.html
 func (c *Client) ModifyThirdpartyJumpDomain(ctx context.Context, componentAccessToken string, action string, notMustParams ...gorequest.Params) (*ModifyThirdpartyJumpDomainResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "cgi-bin/component/modify_wxa_jump_domain")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("action", action)
 
 	// 请求
 	var response ModifyThirdpartyJumpDomainResponse
-	request, err := c.request(ctx, span, "cgi-bin/component/modify_wxa_jump_domain?access_token="+componentAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "cgi-bin/component/modify_wxa_jump_domain?access_token="+componentAccessToken, params, http.MethodPost, &response)
 	return newModifyThirdpartyJumpDomainResult(response, request.ResponseBody, request), err
 }

@@ -27,16 +27,12 @@ func newWxaGetUserRiskRankResult(result WxaGetUserRiskRankResponse, body []byte,
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/sec-center/safety-control-capability/getUserRiskRank.html
 func (c *Client) WxaGetUserRiskRank(ctx context.Context, authorizerAppid, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaGetUserRiskRankResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/getuserriskrank")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", authorizerAppid)
 
 	// 请求
 	var response WxaGetUserRiskRankResponse
-	request, err := c.request(ctx, span, "wxa/getuserriskrank?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/getuserriskrank?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaGetUserRiskRankResult(response, request.ResponseBody, request), err
 }

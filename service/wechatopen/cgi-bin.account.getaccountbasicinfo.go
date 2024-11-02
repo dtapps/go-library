@@ -56,15 +56,11 @@ func newGetAccountBasicInfoResult(result GetAccountBasicInfoResponse, body []byt
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/basic-info-management/getAccountBasicInfo.html
 func (c *Client) GetAccountBasicInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GetAccountBasicInfoResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "cgi-bin/account/getaccountbasicinfo")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response GetAccountBasicInfoResponse
-	request, err := c.request(ctx, span, fmt.Sprintf("cgi-bin/account/getaccountbasicinfo?access_token=%s", authorizerAccessToken), params, http.MethodGet, &response)
+	request, err := c.request(ctx, fmt.Sprintf("cgi-bin/account/getaccountbasicinfo?access_token=%s", authorizerAccessToken), params, http.MethodGet, &response)
 	return newGetAccountBasicInfoResult(response, request.ResponseBody, request), err
 }

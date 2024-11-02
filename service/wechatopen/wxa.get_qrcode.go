@@ -25,10 +25,6 @@ func newGetTrialQRCodeResult(result GetTrialQRCodeResponse, body []byte, http go
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/getTrialQRCode.html
 func (c *Client) GetTrialQRCode(ctx context.Context, authorizerAccessToken, path string, notMustParams ...gorequest.Params) (*GetTrialQRCodeResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/get_qrcode")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	if path != "" {
@@ -37,7 +33,7 @@ func (c *Client) GetTrialQRCode(ctx context.Context, authorizerAccessToken, path
 
 	// 请求
 	var response GetTrialQRCodeResponse
-	request, err := c.request(ctx, span, "wxa/get_qrcode?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
+	request, err := c.request(ctx, "wxa/get_qrcode?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
 
 	// 判断内容是否为图片
 	//if request.HeaderIsImg() == false {

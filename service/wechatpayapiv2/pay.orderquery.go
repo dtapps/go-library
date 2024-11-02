@@ -56,10 +56,6 @@ func newPayOrderQueryResult(result PayOrderQueryResponse, body []byte, http gore
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_2
 func (c *Client) PayOrderQuery(ctx context.Context, transactionId, outTradeNo string, notMustParams ...gorequest.Params) (*PayOrderQueryResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "pay/orderquery")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", c.GetAppId())  // 小程序ID

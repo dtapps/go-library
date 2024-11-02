@@ -65,10 +65,6 @@ func newPayPartnerTransactionsIdResult(result PayPartnerTransactionsIdResponse, 
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_2.shtml
 func (c *Client) PayPartnerTransactionsId(ctx context.Context, transactionId string, notMustParams ...gorequest.Params) (*PayPartnerTransactionsIdResult, ApiError, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, fmt.Sprintf("v3/pay/partner/transactions/id/%s?sp_mchid=%s&sub_mchid=%s", transactionId, c.GetSpMchId(), c.GetSubMchId()))
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

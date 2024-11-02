@@ -26,16 +26,12 @@ func newGenerateShortLinkResult(result GenerateShortLinkResponse, body []byte, h
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/short-link/generateShortLink.html
 func (c *Client) GenerateShortLink(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GenerateShortLinkResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/genwxashortlink")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response GenerateShortLinkResponse
-	request, err := c.request(ctx, span, "wxa/genwxashortlink?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/genwxashortlink?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 
 	return newGenerateShortLinkResult(response, request.ResponseBody, request), err
 }

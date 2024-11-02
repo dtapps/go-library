@@ -25,17 +25,13 @@ func newUndoAuditResult(result UndoAuditResponse, body []byte, http gorequest.Re
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/undoAudit.html
 func (c *Client) UndoAudit(ctx context.Context, authorizerAccessToken string, auditid int64, notMustParams ...gorequest.Params) (*UndoAuditResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/undocodeaudit")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("auditid", auditid)
 
 	// 请求
 	var response UndoAuditResponse
-	request, err := c.request(ctx, span, "wxa/undocodeaudit?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/undocodeaudit?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newUndoAuditResult(response, request.ResponseBody, request), err
 }
 

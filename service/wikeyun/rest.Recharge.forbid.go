@@ -27,10 +27,6 @@ func newRestRechargeForbidResult(result RestRechargeForbidResponse, body []byte,
 // https://open.wikeyun.cn/#/apiDocument/9/document/445
 func (c *Client) RestRechargeForbid(ctx context.Context, status int64, notMustParams ...gorequest.Params) (*RestRechargeForbidResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "rest/Recharge/forbid")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("store_id", c.GetStoreId()) // 店铺ID

@@ -26,10 +26,6 @@ func newBillTradeBillGetResult(result BillTradeBillGetResponse, body []byte, htt
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_6.shtml
 func (c *Client) BillTradeBillGet(ctx context.Context, notMustParams ...gorequest.Params) (*BillTradeBillGetResult, ApiError, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "v3/bill/tradebill")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号

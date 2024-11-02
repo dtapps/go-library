@@ -40,10 +40,6 @@ func newCgiBinComponentApiQueryAuthResult(result CgiBinComponentApiQueryAuthResp
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/authorization_info.html
 func (c *Client) CgiBinComponentApiQueryAuth(ctx context.Context, componentAccessToken, authorizationCode string, notMustParams ...gorequest.Params) (*CgiBinComponentApiQueryAuthResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "cgi-bin/component/api_query_auth")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("component_appid", c.GetComponentAppId()) // 第三方平台appid
@@ -51,6 +47,6 @@ func (c *Client) CgiBinComponentApiQueryAuth(ctx context.Context, componentAcces
 
 	// 请求
 	var response CgiBinComponentApiQueryAuthResponse
-	request, err := c.request(ctx, span, fmt.Sprintf("cgi-bin/component/api_query_auth?component_access_token=%s", componentAccessToken), params, http.MethodPost, &response)
+	request, err := c.request(ctx, fmt.Sprintf("cgi-bin/component/api_query_auth?component_access_token=%s", componentAccessToken), params, http.MethodPost, &response)
 	return newCgiBinComponentApiQueryAuthResult(response, request.ResponseBody, request), err
 }

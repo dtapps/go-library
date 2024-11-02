@@ -32,10 +32,6 @@ func newThirdpartyCode2SessionResult(result ThirdpartyCode2SessionResponse, body
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/login/thirdpartyCode2Session.html
 func (c *Client) ThirdpartyCode2Session(ctx context.Context, componentAccessToken, authorizerAppid, jsCode string, notMustParams ...gorequest.Params) (*ThirdpartyCode2SessionResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "sns/component/jscode2session")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", authorizerAppid)                 // 小程序的 AppID
@@ -45,7 +41,7 @@ func (c *Client) ThirdpartyCode2Session(ctx context.Context, componentAccessToke
 
 	// 请求
 	var response ThirdpartyCode2SessionResponse
-	request, err := c.request(ctx, span, "sns/component/jscode2session?component_access_token="+componentAccessToken, params, http.MethodGet, &response)
+	request, err := c.request(ctx, "sns/component/jscode2session?component_access_token="+componentAccessToken, params, http.MethodGet, &response)
 	return newThirdpartyCode2SessionResult(response, request.ResponseBody, request), err
 }
 

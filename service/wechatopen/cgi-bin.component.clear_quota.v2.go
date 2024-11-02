@@ -25,10 +25,6 @@ func newClearComponentQuotaByAppSecretResult(result ClearComponentQuotaByAppSecr
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/openapi/clearComponentQuotaByAppSecret.html
 func (c *Client) ClearComponentQuotaByAppSecret(ctx context.Context, authorizerAccessToken, appid string, notMustParams ...gorequest.Params) (*ClearComponentQuotaByAppSecretResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "cgi-bin/component/clear_quota/v2")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", appid)
@@ -37,6 +33,6 @@ func (c *Client) ClearComponentQuotaByAppSecret(ctx context.Context, authorizerA
 
 	// 请求
 	var response ClearComponentQuotaByAppSecretResponse
-	request, err := c.request(ctx, span, "cgi-bin/component/clear_quota/v2?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "cgi-bin/component/clear_quota/v2?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newClearComponentQuotaByAppSecretResult(response, request.ResponseBody, request), err
 }

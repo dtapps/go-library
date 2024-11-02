@@ -48,10 +48,6 @@ func newTransferBatchesOutBatchNoResult(result TransferBatchesOutBatchNoResponse
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/get-transfer-batch-by-no.html
 func (c *Client) TransferBatchesOutBatchNo(ctx context.Context, notMustParams ...gorequest.Params) (*TransferBatchesOutBatchNoResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "v3/transfer/batches/out-batch-no")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

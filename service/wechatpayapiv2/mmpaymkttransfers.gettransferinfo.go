@@ -44,10 +44,6 @@ func newTransfersQueryResult(result TransfersQueryResponse, body []byte, http go
 // https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_3
 func (c *Client) TransfersQuery(ctx context.Context, notMustParams ...gorequest.Params) (*TransfersQueryResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "mmpaymkttransfers/gettransferinfo")
-	defer c.TraceEndSpan()
-
 	// 证书
 	cert, err := c.P12ToPem()
 

@@ -36,16 +36,12 @@ func newQuerySchemeResult(result QuerySchemeResponse, body []byte, http goreques
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/url-scheme/queryScheme.html
 func (c *Client) QueryScheme(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*QuerySchemeResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/queryscheme")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response QuerySchemeResponse
-	request, err := c.request(ctx, span, "wxa/queryscheme?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/queryscheme?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 
 	return newQuerySchemeResult(response, request.ResponseBody, request), err
 }

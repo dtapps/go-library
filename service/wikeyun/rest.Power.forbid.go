@@ -27,10 +27,6 @@ func newRestPowerForbidResult(result RestPowerForbidResponse, body []byte, http 
 // https://open.wikeyun.cn/#/apiDocument/9/document/446
 func (c *Client) RestPowerForbid(ctx context.Context, status int64, notMustParams ...gorequest.Params) (*RestPowerForbidResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "rest/Power/forbid")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("store_id", c.GetStoreId()) // 店铺ID

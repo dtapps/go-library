@@ -37,10 +37,6 @@ func newRestOrderOrderListResult(result RestOrderOrderListResponse, body []byte,
 // https://open.wikeyun.cn/#/apiDocument/13/document/364
 func (c *Client) RestOrderOrderList(ctx context.Context, notMustParams ...gorequest.Params) (*RestOrderOrderListResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "rest/Order/orderList")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

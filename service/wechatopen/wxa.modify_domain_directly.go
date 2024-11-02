@@ -38,16 +38,12 @@ func newWxaModifyDomainDirectlyResult(result WxaModifyDomainDirectlyResponse, bo
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/modifyServerDomainDirectly.html
 func (c *Client) WxaModifyDomainDirectly(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaModifyDomainDirectlyResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/modify_domain_directly")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response WxaModifyDomainDirectlyResponse
-	request, err := c.request(ctx, span, "wxa/modify_domain_directly?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/modify_domain_directly?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaModifyDomainDirectlyResult(response, request.ResponseBody, request), err
 }
 

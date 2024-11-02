@@ -35,10 +35,6 @@ func newCertificatesResult(result CertificatesResponse, body []byte, http gorequ
 // https://pay.weixin.qq.com/wiki/doc/apiv3/apis/wechatpay5_1.shtml
 func (c *Client) Certificates(ctx context.Context, notMustParams ...gorequest.Params) (*CertificatesResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "v3/certificates")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

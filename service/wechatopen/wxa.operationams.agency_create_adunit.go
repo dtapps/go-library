@@ -27,10 +27,6 @@ func newWxaOperationamsAgencyCreateAdunitResult(result WxaOperationamsAgencyCrea
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/ad-mgnt/AgencyCreateAdunit.html
 func (c *Client) WxaOperationamsAgencyCreateAdunit(ctx context.Context, authorizerAccessToken string, name, Type string, videoDurationMin, videoDurationMax int64, notMustParams ...gorequest.Params) (*WxaOperationamsAgencyCreateAdunitResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/operationams")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("name", name)
@@ -44,6 +40,6 @@ func (c *Client) WxaOperationamsAgencyCreateAdunit(ctx context.Context, authoriz
 
 	// 请求
 	var response WxaOperationamsAgencyCreateAdunitResponse
-	request, err := c.request(ctx, span, "wxa/operationams?action=agency_create_adunit&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/operationams?action=agency_create_adunit&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaOperationamsAgencyCreateAdunitResult(response, request.ResponseBody, request), err
 }

@@ -30,10 +30,6 @@ func newRestUserQueryResult(result RestUserQueryResponse, body []byte, http gore
 // https://open.wikeyun.cn/#/apiDocument/10/document/336
 func (c *Client) RestUserQuery(ctx context.Context, notMustParams ...gorequest.Params) (*RestUserQueryResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "rest/User/query")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

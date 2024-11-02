@@ -34,10 +34,6 @@ func newRestPowerPushOrderResult(result RestPowerPushOrderResponse, body []byte,
 // https://open.wikeyun.cn/#/apiDocument/9/document/311
 func (c *Client) RestPowerPushOrder(ctx context.Context, cardID int64, orderNo string, amount int64, rechargeType int64, notMustParams ...gorequest.Params) (*RestPowerPushOrderResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "rest/Power/pushOrder")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("cardId", cardID)              // 充值卡ID，通过创建充值卡接口获取

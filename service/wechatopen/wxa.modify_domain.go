@@ -38,16 +38,12 @@ func newWxaModifyDomainResult(result WxaModifyDomainResponse, body []byte, http 
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/modifyServerDomain.html
 func (c *Client) WxaModifyDomain(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaModifyDomainResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/modify_domain")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response WxaModifyDomainResponse
-	request, err := c.request(ctx, span, "wxa/modify_domain?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/modify_domain?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaModifyDomainResult(response, request.ResponseBody, request), err
 }
 

@@ -3,10 +3,6 @@ package wechatopen
 import (
 	"context"
 	"encoding/xml"
-	"go.dtapp.net/library/utils/gojson"
-	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/codes"
-	"go.opentelemetry.io/otel/trace"
 	"net/http"
 )
 
@@ -24,10 +20,6 @@ type ResponseServeHttpHttp struct {
 // ServeHttpHttp 验证票据推送
 func (c *Client) ServeHttpHttp(ctx context.Context, w http.ResponseWriter, r *http.Request) (ResponseServeHttpHttp, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "ServeHttpHttp")
-	defer span.End()
-
 	query := r.URL.Query()
 
 	// 解析请求体
@@ -37,8 +29,6 @@ func (c *Client) ServeHttpHttp(ctx context.Context, w http.ResponseWriter, r *ht
 	}
 	err := xml.NewDecoder(r.Body).Decode(&validateXml)
 	if err != nil {
-		span.RecordError(err, trace.WithStackTrace(true))
-		span.SetStatus(codes.Error, err.Error())
 		return ResponseServeHttpHttp{}, err
 	}
 
@@ -51,14 +41,6 @@ func (c *Client) ServeHttpHttp(ctx context.Context, w http.ResponseWriter, r *ht
 		AppId:        validateXml.AppId,
 		Encrypt:      validateXml.Encrypt,
 	}
-
-	span.SetAttributes(attribute.String("http.params", gojson.JsonEncodeNoError(validateXml)))
-
-	span.SetAttributes(attribute.String("http.query.msg_signature", response.MsgSignature))
-	span.SetAttributes(attribute.String("http.query.timestamp", response.Timestamp))
-	span.SetAttributes(attribute.String("http.query.nonce", response.Nonce))
-	span.SetAttributes(attribute.String("http.query.signature", response.Signature))
-	span.SetAttributes(attribute.String("http.query.encrypt_type", response.EncryptType))
 
 	return response, err
 }

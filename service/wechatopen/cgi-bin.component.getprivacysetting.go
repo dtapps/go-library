@@ -58,16 +58,12 @@ func newCgiBinComponentGetPrivacySettingResult(result CgiBinComponentGetPrivacyS
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/privacy_config/get_privacy_setting.html
 func (c *Client) CgiBinComponentGetPrivacySetting(ctx context.Context, authorizerAccessToken string, privacyVer int, notMustParams ...gorequest.Params) (*CgiBinComponentGetPrivacySettingResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "cgi-bin/component/getprivacysetting")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("privacy_ver", privacyVer)
 
 	// 请求
 	var response CgiBinComponentGetPrivacySettingResponse
-	request, err := c.request(ctx, span, "cgi-bin/component/getprivacysetting?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "cgi-bin/component/getprivacysetting?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newCgiBinComponentGetPrivacySettingResult(response, request.ResponseBody, request), err
 }

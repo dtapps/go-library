@@ -32,10 +32,6 @@ func newTransferBillReceiptResult(result TransferBillReceiptResponse, body []byt
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/electronic-signature/create-electronic-signature.html
 func (c *Client) TransferBillReceipt(ctx context.Context, notMustParams ...gorequest.Params) (*TransferBillReceiptResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "v3/transfer/bill-receipt")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

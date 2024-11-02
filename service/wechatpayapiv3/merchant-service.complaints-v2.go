@@ -64,10 +64,6 @@ func newMerchantServiceComplaintsV2Result(result MerchantServiceComplaintsV2Resp
 // https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter10_2_11.shtml
 func (c *Client) MerchantServiceComplaintsV2(ctx context.Context, notMustParams ...gorequest.Params) (*MerchantServiceComplaintsV2Result, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "v3/merchant-service/complaints-v2")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

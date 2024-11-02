@@ -30,16 +30,12 @@ func newGetAuthorizerListResult(result GetAuthorizerListResponse, body []byte, h
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/authorization-management/getAuthorizerList.html
 func (c *Client) GetAuthorizerList(ctx context.Context, authorizerAppid, componentAccessToken string, notMustParams ...gorequest.Params) (*GetAuthorizerListResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "cgi-bin/component/api_get_authorizer_list")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("component_appid", c.GetComponentAppId()) // 第三方平台appid
 
 	// 请求
 	var response GetAuthorizerListResponse
-	request, err := c.request(ctx, span, fmt.Sprintf("cgi-bin/component/api_get_authorizer_list?access_token=%s", componentAccessToken), params, http.MethodPost, &response)
+	request, err := c.request(ctx, fmt.Sprintf("cgi-bin/component/api_get_authorizer_list?access_token=%s", componentAccessToken), params, http.MethodPost, &response)
 	return newGetAuthorizerListResult(response, request.ResponseBody, request), err
 }

@@ -31,10 +31,6 @@ func newRestOilEditCardResult(result RestOilEditCardResponse, body []byte, http 
 // https://open.wikeyun.cn/#/apiDocument/9/document/371
 func (c *Client) RestOilEditCard(ctx context.Context, notMustParams ...gorequest.Params) (*RestOilEditCardResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "rest/Oil/editCard")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

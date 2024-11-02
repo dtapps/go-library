@@ -39,10 +39,6 @@ func newProfitSharingOrdersUnfreezeResult(result ProfitSharingOrdersUnfreezeResp
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_5.shtml
 func (c *Client) ProfitSharingOrdersUnfreeze(ctx context.Context, transactionId, outOrderNo, description string, notMustParams ...gorequest.Params) (*ProfitSharingOrdersUnfreezeResult, ApiError, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "v3/profitsharing/orders/unfreeze")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sub_mchid", c.GetSubMchId())    // 子商户号

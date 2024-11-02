@@ -31,10 +31,6 @@ func newTransferDetailElectronicReceiptsGetResult(result TransferDetailElectroni
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/electronic-receipt-api/query-electronic-receipt.html
 func (c *Client) TransferDetailElectronicReceiptsGet(ctx context.Context, notMustParams ...gorequest.Params) (*TransferDetailElectronicReceiptsGetResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "v3/transfer-detail/electronic-receipts")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

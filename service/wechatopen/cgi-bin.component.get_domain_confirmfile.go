@@ -27,15 +27,11 @@ func newGetThirdpartyJumpDomainConfirmFileResult(result GetThirdpartyJumpDomainC
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/thirdparty-management/domain-mgnt/getThirdpartyJumpDomainConfirmFile.html
 func (c *Client) GetThirdpartyJumpDomainConfirmFile(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GetThirdpartyJumpDomainConfirmFileResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "cgi-bin/component/get_domain_confirmfile")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response GetThirdpartyJumpDomainConfirmFileResponse
-	request, err := c.request(ctx, span, "cgi-bin/component/get_domain_confirmfile?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "cgi-bin/component/get_domain_confirmfile?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newGetThirdpartyJumpDomainConfirmFileResult(response, request.ResponseBody, request), err
 }

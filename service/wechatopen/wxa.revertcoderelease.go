@@ -31,16 +31,12 @@ func newRevertCodeReleaseResult(result RevertCodeReleaseResponse, body []byte, h
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/revertCodeRelease.html
 func (c *Client) RevertCodeRelease(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*RevertCodeReleaseResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/revertcoderelease")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response RevertCodeReleaseResponse
-	request, err := c.request(ctx, span, "wxa/revertcoderelease?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
+	request, err := c.request(ctx, "wxa/revertcoderelease?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
 	return newRevertCodeReleaseResult(response, request.ResponseBody, request), err
 }
 

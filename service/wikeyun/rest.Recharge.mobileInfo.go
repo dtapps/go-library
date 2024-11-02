@@ -46,10 +46,6 @@ func newRestRechargeMobileInfoResult(result RestRechargeMobileInfoResponse, body
 // https://open.wikeyun.cn/#/apiDocument/9/document/374
 func (c *Client) RestRechargeMobileInfo(ctx context.Context, mobile string, notMustParams ...gorequest.Params) (*RestRechargeMobileInfoResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "rest/Recharge/mobileInfo")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("mobile", mobile) // 手机号

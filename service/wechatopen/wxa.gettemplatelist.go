@@ -36,16 +36,12 @@ func newWxaGetTemplateListResult(result WxaGetTemplateListResponse, body []byte,
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/gettemplatelist.html
 func (c *Client) WxaGetTemplateList(ctx context.Context, componentAccessToken string, notMustParams ...gorequest.Params) (*WxaGetTemplateListResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/gettemplatelist")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response WxaGetTemplateListResponse
-	request, err := c.request(ctx, span, "wxa/gettemplatelist?access_token="+componentAccessToken, params, http.MethodGet, &response)
+	request, err := c.request(ctx, "wxa/gettemplatelist?access_token="+componentAccessToken, params, http.MethodGet, &response)
 	return newWxaGetTemplateListResult(response, request.ResponseBody, request), err
 }
 

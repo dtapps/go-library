@@ -26,10 +26,6 @@ func newRestOilDelCardResult(result RestOilDelCardResponse, body []byte, http go
 // https://open.wikeyun.cn/#/apiDocument/9/document/372
 func (c *Client) RestOilDelCard(ctx context.Context, notMustParams ...gorequest.Params) (*RestOilDelCardResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "rest/Oil/delCard")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

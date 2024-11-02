@@ -35,16 +35,12 @@ func newWxaGetTemplateDraftListResult(result WxaGetTemplateDraftListResponse, bo
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/gettemplatedraftlist.html
 func (c *Client) WxaGetTemplateDraftList(ctx context.Context, componentAccessToken string, notMustParams ...gorequest.Params) (*WxaGetTemplateDraftListResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/gettemplatedraftlist")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response WxaGetTemplateDraftListResponse
-	request, err := c.request(ctx, span, "wxa/gettemplatedraftlist?access_token="+componentAccessToken, params, http.MethodGet, &response)
+	request, err := c.request(ctx, "wxa/gettemplatedraftlist?access_token="+componentAccessToken, params, http.MethodGet, &response)
 	return newWxaGetTemplateDraftListResult(response, request.ResponseBody, request), err
 }
 

@@ -26,15 +26,11 @@ func newCgiBinOpenSameEnTityResult(result CgiBinOpenSameEnTityResponse, body []b
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/cloudbase-common/wechatpay/getWechatPayList.html
 func (c *Client) CgiBinOpenSameEnTity(ctx context.Context, componentAccessToken string, notMustParams ...gorequest.Params) (*CgiBinOpenSameEnTityResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "cgi-bin/open/sameentity")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response CgiBinOpenSameEnTityResponse
-	request, err := c.request(ctx, span, "cgi-bin/open/sameentity?access_token="+componentAccessToken, params, http.MethodGet, &response)
+	request, err := c.request(ctx, "cgi-bin/open/sameentity?access_token="+componentAccessToken, params, http.MethodGet, &response)
 	return newCgiBinOpenSameEnTityResult(response, request.ResponseBody, request), err
 }

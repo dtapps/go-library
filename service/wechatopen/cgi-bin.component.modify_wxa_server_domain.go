@@ -28,16 +28,12 @@ func newModifyThirdpartyServerDomainResult(result ModifyThirdpartyServerDomainRe
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/thirdparty-management/domain-mgnt/modifyThirdpartyServerDomain.html
 func (c *Client) ModifyThirdpartyServerDomain(ctx context.Context, componentAccessToken string, action string, notMustParams ...gorequest.Params) (*ModifyThirdpartyServerDomainResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "cgi-bin/component/modify_wxa_server_domain")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("action", action)
 
 	// 请求
 	var response ModifyThirdpartyServerDomainResponse
-	request, err := c.request(ctx, span, "cgi-bin/component/modify_wxa_server_domain?access_token="+componentAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "cgi-bin/component/modify_wxa_server_domain?access_token="+componentAccessToken, params, http.MethodPost, &response)
 	return newModifyThirdpartyServerDomainResult(response, request.ResponseBody, request), err
 }

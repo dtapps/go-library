@@ -30,10 +30,6 @@ func newRestMovieHotCityResult(result RestMovieHotCityResponse, body []byte, htt
 // https://open.wikeyun.cn/#/apiDocument/4/document/301
 func (c *Client) RestMovieHotCity(ctx context.Context, notMustParams ...gorequest.Params) (*RestMovieHotCityResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "rest/movie/hotCity")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("store_id", c.GetStoreId()) // 店铺ID

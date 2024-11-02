@@ -32,10 +32,6 @@ func newRestPowerEditCardResult(result RestPowerEditCardResponse, body []byte, h
 // https://open.wikeyun.cn/#/apiDocument/9/document/329
 func (c *Client) RestPowerEditCard(ctx context.Context, cardID int64, cardNum string, province string, city string, Type int64, notMustParams ...gorequest.Params) (*RestPowerEditCardResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "rest/Power/editCard")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("card_id", cardID)    // 充值卡ID

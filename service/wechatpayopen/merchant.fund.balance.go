@@ -27,10 +27,6 @@ func newMerchantFundBalanceResult(result MerchantFundBalanceResponse, body []byt
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_7_3.shtml
 func (c *Client) MerchantFundBalance(ctx context.Context, accountType string, notMustParams ...gorequest.Params) (*MerchantFundBalanceResult, ApiError, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, fmt.Sprintf("v3/merchant/fund/balance/%s", accountType))
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 

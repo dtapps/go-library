@@ -42,10 +42,6 @@ func newRestPowerAddCardResult(result RestPowerAddCardResponse, body []byte, htt
 // https://open.wikeyun.cn/#/apiDocument/9/document/326
 func (c *Client) RestPowerAddCard(ctx context.Context, cardNum string, province string, city string, Type int64, notMustParams ...gorequest.Params) (*RestPowerAddCardResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "rest/Power/addCard")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("store_id", c.GetStoreId()) // 店铺ID

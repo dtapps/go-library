@@ -32,10 +32,6 @@ func newDataCubeGetWeAnAlySisAppidMonthlyRetainInfoResult(result DataCubeGetWeAn
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/visit-retain/getMonthlyRetain.html
 func (c *Client) DataCubeGetWeAnAlySisAppidMonthlyRetainInfo(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlySisAppidMonthlyRetainInfoResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "datacube/getweanalysisappidmonthlyretaininfo")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("begin_date", beginDate)
@@ -43,6 +39,6 @@ func (c *Client) DataCubeGetWeAnAlySisAppidMonthlyRetainInfo(ctx context.Context
 
 	// 请求
 	var response DataCubeGetWeAnAlySisAppidMonthlyRetainInfoResponse
-	request, err := c.request(ctx, span, "datacube/getweanalysisappidmonthlyretaininfo?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "datacube/getweanalysisappidmonthlyretaininfo?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newDataCubeGetWeAnAlySisAppidMonthlyRetainInfoResult(response, request.ResponseBody, request), err
 }

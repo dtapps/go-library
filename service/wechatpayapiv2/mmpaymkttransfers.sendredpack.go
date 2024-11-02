@@ -37,10 +37,6 @@ func newMmpaymkttransfersSendredpackResult(result MmpaymkttransfersSendredpackRe
 // https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon_sl.php?chapter=13_4&index=3
 func (c *Client) MmpaymkttransfersSendredpack(ctx context.Context, notMustParams ...gorequest.Params) (*MmpaymkttransfersSendredpackResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "mmpaymkttransfers/sendredpack")
-	defer c.TraceEndSpan()
-
 	// 证书
 	cert, err := c.P12ToPem()
 

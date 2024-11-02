@@ -24,15 +24,11 @@ func NewCgiBinGetCallBackIpResult(result CgiBinGetCallBackIpResponse, body []byt
 // https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_the_WeChat_server_IP_address.html
 func (c *Client) CgiBinGetCallBackIp(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*CgiBinGetCallBackIpResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "cgi-bin/getcallbackip")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response CgiBinGetCallBackIpResponse
-	request, err := c.request(ctx, span, "cgi-bin/getcallbackip?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
+	request, err := c.request(ctx, "cgi-bin/getcallbackip?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
 	return NewCgiBinGetCallBackIpResult(response, request.ResponseBody, request), err
 }

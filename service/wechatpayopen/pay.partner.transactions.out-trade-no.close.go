@@ -20,10 +20,6 @@ func newPayPartnerTransactionsOutTradeNoCloseResult(body []byte, http gorequest.
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_3.shtml
 func (c *Client) PayPartnerTransactionsOutTradeNoClose(ctx context.Context, outTradeNo string, notMustParams ...gorequest.Params) (*PayPartnerTransactionsOutTradeNoCloseResult, ApiError, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, fmt.Sprintf("v3/pay/partner/transactions/out-trade-no/%s/close", outTradeNo))
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sp_mchid", c.GetSpMchId())   // 服务商户号

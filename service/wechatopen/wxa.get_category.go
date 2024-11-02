@@ -33,15 +33,11 @@ func newWxaGetCategoryResult(result WxaGetCategoryResponse, body []byte, http go
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/category/get_category.html
 func (c *Client) WxaGetCategory(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaGetCategoryResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/get_category")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response WxaGetCategoryResponse
-	request, err := c.request(ctx, span, "wxa/get_category?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
+	request, err := c.request(ctx, "wxa/get_category?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
 	return newWxaGetCategoryResult(response, request.ResponseBody, request), err
 }

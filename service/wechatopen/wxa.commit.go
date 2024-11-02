@@ -25,16 +25,12 @@ func newCommitResult(result CommitResponse, body []byte, http gorequest.Response
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/commit.html
 func (c *Client) Commit(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*CommitResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxa/commit")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response CommitResponse
-	request, err := c.request(ctx, span, "wxa/commit?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxa/commit?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newCommitResult(response, request.ResponseBody, request), err
 }
 

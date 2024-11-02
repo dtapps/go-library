@@ -26,10 +26,6 @@ func newRestPowerCancelResult(result RestPowerCancelResponse, body []byte, http 
 // https://open.wikeyun.cn/#/apiDocument/9/document/323
 func (c *Client) RestPowerCancel(ctx context.Context, orderNumber string, notMustParams ...gorequest.Params) (*RestPowerCancelResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "rest/Power/cancel")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("order_number", orderNumber) // 取消的单号，多个用英文逗号隔开

@@ -25,16 +25,12 @@ func newWxaApiWxaembeddedDelAuthorizeResult(result WxaApiWxaembeddedDelAuthorize
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/embedded-management/deleteAuthorizedEmbedded.html
 func (c *Client) WxaApiWxaembeddedDelAuthorize(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaApiWxaembeddedDelAuthorizeResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "wxaapi/wxaembedded/del_authorize")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response WxaApiWxaembeddedDelAuthorizeResponse
-	request, err := c.request(ctx, span, "wxaapi/wxaembedded/del_authorize?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "wxaapi/wxaembedded/del_authorize?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaApiWxaembeddedDelAuthorizeResult(response, request.ResponseBody, request), err
 }
 

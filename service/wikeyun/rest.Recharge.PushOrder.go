@@ -34,10 +34,6 @@ func newRestRechargePushOrderResult(result RestRechargePushOrderResponse, body [
 // https://open.wikeyun.cn/#/apiDocument/9/document/298
 func (c *Client) RestRechargePushOrder(ctx context.Context, mobile string, orderNo string, money int64, rechargeType int64, notifyUrl string, notMustParams ...gorequest.Params) (*RestRechargePushOrderResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx = c.TraceStartSpan(ctx, "rest/Recharge/pushOrder")
-	defer c.TraceEndSpan()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("store_id", c.GetStoreId())    // 店铺ID

@@ -25,16 +25,12 @@ func newClearQuotaResult(result ClearQuotaResponse, body []byte, http gorequest.
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/openapi/clearQuota.html
 func (c *Client) ClearQuota(ctx context.Context, authorizerAccessToken, appid string, notMustParams ...gorequest.Params) (*ClearQuotaResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "cgi-bin/clear_quota")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", appid)
 
 	// 请求
 	var response ClearQuotaResponse
-	request, err := c.request(ctx, span, "cgi-bin/clear_quota?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "cgi-bin/clear_quota?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newClearQuotaResult(response, request.ResponseBody, request), err
 }

@@ -33,16 +33,12 @@ func newTckWxPayListResult(result TckWxPayListResponse, body []byte, http gorequ
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/cloudbase-common/wechatpay/getWechatPayList.html
 func (c *Client) TckWxPayList(ctx context.Context, componentAccessToken string, notMustParams ...gorequest.Params) (*TckWxPayListResult, error) {
 
-	// OpenTelemetry链路追踪
-	ctx, span := TraceStartSpan(ctx, "tcb/wxpaylist")
-	defer span.End()
-
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
 	var response TckWxPayListResponse
-	request, err := c.request(ctx, span, "tcb/wxpaylist?access_token="+componentAccessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, "tcb/wxpaylist?access_token="+componentAccessToken, params, http.MethodPost, &response)
 	return newTckWxPayListResult(response, request.ResponseBody, request), err
 }
 
