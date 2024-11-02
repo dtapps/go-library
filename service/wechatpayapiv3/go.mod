@@ -16,7 +16,6 @@ require (
 	go.dtapp.net/library/utils/gojson v1.0.7
 	go.dtapp.net/library/utils/gorandom v1.0.4
 	go.dtapp.net/library/utils/gorequest v1.0.85
-	go.opentelemetry.io/otel/trace v1.31.0
 )
 
 require (
@@ -24,7 +23,6 @@ require (
 	github.com/basgys/goxml2json v1.1.0 // indirect
 	go.dtapp.net/library/utils/gostring v1.0.21 // indirect
 	go.dtapp.net/library/utils/gotime v1.0.12 // indirect
-	go.opentelemetry.io/otel v1.31.0 // indirect
 	golang.org/x/net v0.30.0 // indirect
 	golang.org/x/text v0.19.0 // indirect
 )
