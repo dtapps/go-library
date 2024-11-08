@@ -1,9 +1,7 @@
 package pinduoduo
 
 import (
-	"go.dtapp.net/library/utils/godecimal"
 	"go.dtapp.net/library/utils/gorequest"
-	"strings"
 )
 
 // ClientConfig 实例配置
@@ -59,14 +57,4 @@ type ErrResp struct {
 type CustomParametersResult struct {
 	Sid string `json:"sid"`
 	Uid string `json:"uid"`
-}
-
-func (c *Client) SalesTipParseInt64(salesTip string) int64 {
-	if strings.Contains(salesTip, "万+") {
-		return godecimal.NewString(strings.Replace(salesTip, "万+", "0000", -1)).Int64()
-	} else if strings.Contains(salesTip, "万") {
-		return godecimal.NewString(strings.Replace(salesTip, "万", "000", -1)).Int64()
-	} else {
-		return godecimal.NewString(salesTip).Int64()
-	}
 }

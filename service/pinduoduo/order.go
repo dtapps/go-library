@@ -1,5 +1,11 @@
 package pinduoduo
 
+import (
+	"github.com/shopspring/decimal"
+	"strconv"
+	"strings"
+)
+
 var (
 	OrderStatusType = []int64{0, 1, 2, 3, 4, 5, 10}
 	OrderStatusDesc = []string{"已支付", "已成团", "确认收货", "审核失败(不可提现)", "已经结算", "已处罚"}
@@ -94,4 +100,21 @@ func GetOrderPriceCompareStatusDesc(Type int64) (desc string) {
 		}
 	}
 	return
+}
+
+func GetOrderSalesTipParseInt64(salesTip string) int64 {
+	salesTip = strings.Replace(salesTip, "+", "", -1) // 去掉 "+"
+	if strings.Contains(salesTip, "万") {
+		salesTip = strings.Replace(salesTip, "万", "", -1) // 去掉 "万"
+		// 将小数部分解析为浮点数并乘以 10000
+		if val, err := decimal.NewFromString(salesTip); err == nil {
+			return val.Mul(decimal.NewFromInt(10000)).IntPart()
+		}
+	} else {
+		// 纯数字直接转换为 int64
+		if val, err := strconv.ParseInt(salesTip, 10, 64); err == nil {
+			return val
+		}
+	}
+	return 0
 }

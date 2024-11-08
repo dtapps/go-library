@@ -12,10 +12,8 @@ replace go.dtapp.net/library/utils/gorandom => ../../utils/gorandom
 
 replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 
-replace go.dtapp.net/library/utils/godecimal => ../../utils/godecimal
-
 require (
-	go.dtapp.net/library/utils/godecimal v1.0.11
+	github.com/shopspring/decimal v1.4.0
 	go.dtapp.net/library/utils/gojson v1.0.7
 	go.dtapp.net/library/utils/gorequest v1.0.85
 	go.dtapp.net/library/utils/gostring v1.0.21
@@ -27,5 +25,5 @@ require (
 	github.com/basgys/goxml2json v1.1.0 // indirect
 	go.dtapp.net/library/utils/gorandom v1.0.4 // indirect
 	golang.org/x/net v0.30.0 // indirect
-	golang.org/x/text v0.19.0 // indirect
+	golang.org/x/text v0.20.0 // indirect
 )
