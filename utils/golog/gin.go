@@ -9,67 +9,65 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
 	"io"
-	"log/slog"
 	"net/http"
-	"runtime"
 	"time"
 )
 
 // GinLogFunc Gin框架日志函数
-type GinLogFunc func(ctx context.Context, response *GormGinLogModel)
+type GinLogFunc func(ctx context.Context, response *GinLogData)
 
-// GinGorm 框架日志
-type GinGorm struct {
+// GinLog 框架日志
+type GinLog struct {
 	ginLogFunc GinLogFunc // Gin框架日志函数
 }
 
-// GinGormFun *GinGorm 框架日志驱动
-type GinGormFun func() *GinGorm
+// GinLogFun *GinLog 框架日志驱动
+type GinLogFun func() *GinLog
 
-// NewGinGorm 创建Gin框架实例
-func NewGinGorm(ctx context.Context) (*GinGorm, error) {
-	gg := &GinGorm{}
+// NewGinLog 创建Gin框架实例
+func NewGinLog(ctx context.Context) (*GinLog, error) {
+	gg := &GinLog{}
 
 	return gg, nil
 }
 
-// 定义一个自定义的 ResponseWriter
-type ginGormBodyWriter struct {
+// GinLogBodyWriter 定义一个自定义的 ResponseWriter
+type GinLogBodyWriter struct {
 	gin.ResponseWriter
 	body *bytes.Buffer
 }
 
 // 实现 http.ResponseWriter 的 Write 方法
-func (w ginGormBodyWriter) Write(b []byte) (int, error) {
+func (w GinLogBodyWriter) Write(b []byte) (int, error) {
 	w.body.Write(b)
 	return w.ResponseWriter.Write(b)
 }
 
 // WriteString 实现 http.ResponseWriter 的 WriteString 方法
-func (w ginGormBodyWriter) WriteString(s string) (int, error) {
+func (w GinLogBodyWriter) WriteString(s string) (int, error) {
 	w.body.WriteString(s)
 	return w.ResponseWriter.WriteString(s)
 }
 
 // WriteHeader 实现 http.ResponseWriter 的 WriteHeader 方法
-func (w ginGormBodyWriter) WriteHeader(statusCode int) {
+func (w GinLogBodyWriter) WriteHeader(statusCode int) {
 	w.ResponseWriter.WriteHeader(statusCode)
 }
 
 // Header 实现 http.ResponseWriter 的 Header 方法
-func (w ginGormBodyWriter) Header() http.Header {
+func (w GinLogBodyWriter) Header() http.Header {
 	return w.ResponseWriter.Header()
 }
 
 // Middleware 中间件
-func (gg *GinGorm) Middleware() gin.HandlerFunc {
+func (gg *GinLog) Middleware() gin.HandlerFunc {
 	return func(g *gin.Context) {
 
 		// 开始时间
 		start := time.Now().UTC()
 
 		// 模型
-		var log = GormGinLogModel{}
+		var log = GinLogData{}
 
 		// 请求时间
 		log.RequestTime = gotime.Current().Time
@@ -84,7 +82,7 @@ func (gg *GinGorm) Middleware() gin.HandlerFunc {
 		g.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 
 		// 创建自定义的 ResponseWriter 并替换原有的
-		blw := &ginGormBodyWriter{
+		blw := &GinLogBodyWriter{
 			ResponseWriter: g.Writer,
 			body:           bytes.NewBufferString(""),
 		}
@@ -105,20 +103,9 @@ func (gg *GinGorm) Middleware() gin.HandlerFunc {
 		// 请求编号
 		log.RequestID = gin_requestid.Get(g)
 		if log.RequestID == "" {
-			slog.ErrorContext(g, "[gin_middleware]",
-				slog.String("gin_requestid.get", gin_requestid.Get(g)),
-			)
 			log.RequestID = gin_requestid.GetX(g)
 			if log.RequestID == "" {
-				slog.ErrorContext(g, "[gin_middleware]",
-					slog.String("gin_requestid.getx", gin_requestid.GetX(g)),
-				)
 				log.RequestID = gorequest.GetRequestIDContext(g)
-				if log.RequestID == "" {
-					slog.ErrorContext(g, "[gin_middleware]",
-						slog.String("context", gorequest.GetRequestIDContext(g)),
-					)
-				}
 			}
 		}
 
@@ -129,42 +116,31 @@ func (gg *GinGorm) Middleware() gin.HandlerFunc {
 		log.RequestPath = gorequest.NewUri(g.Request.RequestURI).UriFilterExcludeQueryString()
 
 		// 请求参数
-		log.RequestQuery = gojson.JsonEncodeNoError(gojson.ParseQueryString(g.Request.RequestURI))
+		log.RequestQuery = gojson.ParseQueryString(g.Request.RequestURI)
 
 		// 请求方式
 		log.RequestMethod = g.Request.Method
 
-		// 请求协议
-		log.RequestScheme = g.Request.Proto
-
-		// 请求类型
-		log.RequestContentType = g.ContentType()
-
 		// 请求IP
-		log.RequestClientIP = g.ClientIP()
-
-		// 请求UA
-		log.RequestUserAgent = g.Request.UserAgent()
+		log.RequestIP = g.ClientIP()
 
 		// 请求头
-		log.RequestHeader = gojson.JsonEncodeNoError(g.Request.Header)
+		log.RequestHeader = g.Request.Header
 
 		// 响应头
-		log.ResponseHeader = gojson.JsonEncodeNoError(blw.Header())
+		log.ResponseHeader = blw.Header()
 
 		// 响应状态
-		log.ResponseStatusCode = g.Writer.Status()
+		log.ResponseCode = g.Writer.Status()
 
 		// 响应内容
 		if gojson.IsValidJSON(blw.body.String()) {
-			log.ResponseBody = gojson.JsonEncodeNoError(gojson.JsonDecodeNoError(blw.body.String()))
+			log.ResponseBody = gojson.JsonDecodeNoError(blw.body.String())
 		} else {
-			log.ResponseBody = blw.body.String()
+			//log.ResponseBody = blw.body.String()
 		}
 
 		// 调用Gin框架日志函数
-		log.GoVersion = runtime.Version()
-		log.SdkVersion = Version
 		if gg.ginLogFunc != nil {
 			gg.ginLogFunc(g, &log)
 		}
@@ -173,6 +149,6 @@ func (gg *GinGorm) Middleware() gin.HandlerFunc {
 }
 
 // SetLogFunc 设置日志记录方法
-func (gg *GinGorm) SetLogFunc(ginLogFunc GinLogFunc) {
+func (gg *GinLog) SetLogFunc(ginLogFunc GinLogFunc) {
 	gg.ginLogFunc = ginLogFunc
 }

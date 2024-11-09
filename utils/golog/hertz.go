@@ -9,39 +9,37 @@ import (
 	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
-	"log/slog"
-	"runtime"
 	"strings"
 	"time"
 )
 
 // HertzLogFunc Hertz框架日志函数
-type HertzLogFunc func(ctx context.Context, response *GormHertzLogModel)
+type HertzLogFunc func(ctx context.Context, response *HertzLogData)
 
-// HertzGorm 框架日志
-type HertzGorm struct {
+// HertzLog 框架日志
+type HertzLog struct {
 	hertzLogFunc HertzLogFunc // Hertz框架日志函数
 }
 
-// HertzGormFun *HertzGorm 框架日志驱动
-type HertzGormFun func() *HertzGorm
+// HertzLogFun *HertzLog 框架日志驱动
+type HertzLogFun func() *HertzLog
 
-// NewHertzGorm 创建框架实例化
-func NewHertzGorm(ctx context.Context) (*HertzGorm, error) {
-	hg := &HertzGorm{}
+// NewHertzLog 创建框架实例化
+func NewHertzLog(ctx context.Context) (*HertzLog, error) {
+	hg := &HertzLog{}
 
 	return hg, nil
 }
 
 // Middleware 中间件
-func (hg *HertzGorm) Middleware() app.HandlerFunc {
+func (hg *HertzLog) Middleware() app.HandlerFunc {
 	return func(c context.Context, h *app.RequestContext) {
 
 		// 开始时间
 		start := time.Now().UTC()
 
 		// 模型
-		var log = GormHertzLogModel{}
+		var log = HertzLogData{}
 
 		// 请求时间
 		log.RequestTime = gotime.Current().Time
@@ -71,20 +69,9 @@ func (hg *HertzGorm) Middleware() app.HandlerFunc {
 		// 请求编号
 		log.RequestID = hertz_requestid.Get(h)
 		if log.RequestID == "" {
-			slog.ErrorContext(c, "[hertz_middleware]",
-				slog.String("hertz_requestid.get", hertz_requestid.Get(h)),
-			)
 			log.RequestID = hertz_requestid.GetX(h)
 			if log.RequestID == "" {
-				slog.ErrorContext(c, "[hertz_middleware]",
-					slog.String("hertz_requestid.getx", hertz_requestid.GetX(h)),
-				)
 				log.RequestID = gorequest.GetRequestIDContext(c)
-				if log.RequestID == "" {
-					slog.ErrorContext(c, "[hertz_middleware]",
-						slog.String("context", gorequest.GetRequestIDContext(c)),
-					)
-				}
 			}
 		}
 
@@ -95,60 +82,51 @@ func (hg *HertzGorm) Middleware() app.HandlerFunc {
 		log.RequestPath = string(h.Request.URI().Path())
 
 		// 请求参数
-		log.RequestQuery = gojson.JsonEncodeNoError(gojson.ParseQueryString(string(h.Request.QueryString())))
+		log.RequestQuery = gojson.ParseQueryString(string(h.Request.QueryString()))
 
 		// 请求方式
 		log.RequestMethod = string(h.Request.Header.Method())
 
-		// 请求协议
-		log.RequestScheme = string(h.Request.Scheme())
-
-		// 请求类型
-		log.RequestContentType = string(h.ContentType())
-
-		if strings.Contains(log.RequestContentType, consts.MIMEApplicationHTMLForm) {
-			log.RequestBody = gojson.JsonEncodeNoError(gojson.ParseQueryString(string(h.Request.Body())))
-		} else if strings.Contains(log.RequestContentType, consts.MIMEMultipartPOSTForm) {
-			log.RequestBody = string(h.Request.Body())
-		} else if strings.Contains(log.RequestContentType, consts.MIMEApplicationJSON) {
-			log.RequestBody = gojson.JsonEncodeNoError(gojson.JsonDecodeNoError(string(h.Request.Body())))
+		if strings.Contains(string(h.ContentType()), consts.MIMEApplicationHTMLForm) {
+			log.RequestBody = gojson.ParseQueryString(string(h.Request.Body()))
+		} else if strings.Contains(string(h.ContentType()), consts.MIMEMultipartPOSTForm) {
+			//log.RequestBody = h.Request.Body()
+			log.RequestBody = gojson.JsonDecodeNoError(string(h.Request.Body()))
+		} else if strings.Contains(string(h.ContentType()), consts.MIMEApplicationJSON) {
+			log.RequestBody = gojson.JsonDecodeNoError(string(h.Request.Body()))
 		} else {
-			log.RequestBody = string(h.Request.Body())
+			//log.RequestBody = string(h.Request.Body())
+			log.RequestBody = gojson.JsonDecodeNoError(string(h.Request.Body()))
 		}
 
 		// 请求IP
-		log.RequestClientIP = h.ClientIP()
-
-		// 请求UA
-		log.RequestUserAgent = string(h.UserAgent())
+		log.RequestIP = h.ClientIP()
 
 		// 请求头
 		requestHeader := make(map[string][]string)
 		h.Request.Header.VisitAll(func(k, v []byte) {
 			requestHeader[string(k)] = append(requestHeader[string(k)], string(v))
 		})
-		log.RequestHeader = gojson.JsonEncodeNoError(requestHeader)
+		log.RequestHeader = requestHeader
 
 		// 响应头
 		responseHeader := make(map[string][]string)
 		h.Response.Header.VisitAll(func(k, v []byte) {
 			responseHeader[string(k)] = append(responseHeader[string(k)], string(v))
 		})
-		log.ResponseHeader = gojson.JsonEncodeNoError(responseHeader)
+		log.ResponseHeader = responseHeader
 
 		// 响应状态
-		log.ResponseStatusCode = h.Response.StatusCode()
+		log.ResponseCode = h.Response.StatusCode()
 
 		// 响应内容
 		if gojson.IsValidJSON(string(h.Response.Body())) {
-			log.ResponseBody = gojson.JsonEncodeNoError(gojson.JsonDecodeNoError(string(h.Response.Body())))
+			log.ResponseBody = gojson.JsonDecodeNoError(string(h.Response.Body()))
 		} else {
-			log.ResponseBody = string(h.Response.Body())
+			//log.ResponseBody = string(h.Response.Body())
 		}
 
 		// 调用Hertz框架日志函数
-		log.GoVersion = runtime.Version()
-		log.SdkVersion = Version
 		if hg.hertzLogFunc != nil {
 			hg.hertzLogFunc(c, &log)
 		}
@@ -157,6 +135,6 @@ func (hg *HertzGorm) Middleware() app.HandlerFunc {
 }
 
 // SetLogFunc 设置日志记录方法
-func (hg *HertzGorm) SetLogFunc(hertzLogFunc HertzLogFunc) {
+func (hg *HertzLog) SetLogFunc(hertzLogFunc HertzLogFunc) {
 	hg.hertzLogFunc = hertzLogFunc
 }
