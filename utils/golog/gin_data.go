@@ -11,7 +11,7 @@ type GinLogData struct {
 	RequestPath     string                 `json:"request_path,omitempty"`      // 请求地址
 	RequestQuery    map[string]interface{} `json:"request_query,omitempty"`     // 请求参数
 	RequestMethod   string                 `json:"request_method,omitempty"`    // 请求方式
-	RequestBody     string                 `json:"request_body,omitempty"`      // 请求内容
+	RequestBody     map[string]interface{} `json:"request_body,omitempty"`      // 请求内容
 	RequestIP       string                 `json:"request_ip,omitempty"`        // 请求IP
 	RequestHeader   map[string][]string    `json:"request_header,omitempty"`    // 请求头
 	RequestCostTime int64                  `json:"request_cost_time,omitempty"` // 请求消耗时长
