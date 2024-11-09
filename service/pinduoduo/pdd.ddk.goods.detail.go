@@ -2,6 +2,7 @@ package pinduoduo
 
 import (
 	"context"
+	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
 )
 
@@ -85,6 +86,15 @@ type GoodsDetailResponse struct {
 		GoodsDetails []GoodsDetailGoodsDetailsResponse `json:"goods_details"`
 	} `json:"goods_detail_response"`
 }
+type GoodsDetailResponseError struct {
+	ErrorResponse struct {
+		SubMsg    string `json:"sub_msg"`
+		SubCode   string `json:"sub_code"`
+		ErrorMsg  string `json:"error_msg"`
+		ErrorCode int    `json:"error_code"`
+		RequestId string `json:"request_id"`
+	} `json:"error_response"`
+}
 
 type GoodsDetailResult struct {
 	Result GoodsDetailResponse // 结果
@@ -99,7 +109,7 @@ func newGoodsDetailResult(result GoodsDetailResponse, body []byte, http goreques
 // GoodsDetail 多多进宝商品详情查询
 // https://open.pinduoduo.com/application/document/api?id=pdd.ddk.goods.detail
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.detail
-func (c *Client) GoodsDetail(ctx context.Context, notMustParams ...gorequest.Params) (*GoodsDetailResult, error) {
+func (c *Client) GoodsDetail(ctx context.Context, notMustParams ...gorequest.Params) (*GoodsDetailResult, GoodsDetailResponseError, error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.detail", notMustParams...)
@@ -108,5 +118,7 @@ func (c *Client) GoodsDetail(ctx context.Context, notMustParams ...gorequest.Par
 	// 请求
 	var response GoodsDetailResponse
 	request, err := c.request(ctx, params, &response)
-	return newGoodsDetailResult(response, request.ResponseBody, request), err
+	var responseError GoodsDetailResponseError
+	_ = gojson.Unmarshal(request.ResponseBody, &responseError)
+	return newGoodsDetailResult(response, request.ResponseBody, request), responseError, err
 }

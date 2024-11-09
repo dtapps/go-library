@@ -77,6 +77,6 @@ func (c *Client) RpPromUrlGenerate(ctx context.Context, notMustParams ...goreque
 	var response RpPromUrlGenerateResponse
 	request, err := c.request(ctx, params, &response)
 	var responseError RpPromUrlGenerateError
-	err = gojson.Unmarshal(request.ResponseBody, &responseError)
+	_ = gojson.Unmarshal(request.ResponseBody, &responseError)
 	return newRpPromUrlGenerateResult(response, request.ResponseBody, request), responseError, err
 }

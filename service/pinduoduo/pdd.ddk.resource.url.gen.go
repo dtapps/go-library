@@ -60,6 +60,6 @@ func (c *Client) ResourceUrlGen(ctx context.Context, notMustParams ...gorequest.
 	var response ResourceUrlGenResponse
 	request, err := c.request(ctx, params, &response)
 	var responseError ResourceUrlGenError
-	err = gojson.Unmarshal(request.ResponseBody, &responseError)
+	_ = gojson.Unmarshal(request.ResponseBody, &responseError)
 	return newResourceUrlGenResult(response, request.ResponseBody, request), responseError, err
 }

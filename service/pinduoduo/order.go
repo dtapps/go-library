@@ -103,18 +103,30 @@ func GetOrderPriceCompareStatusDesc(Type int64) (desc string) {
 }
 
 func GetOrderSalesTipParseInt64(salesTip string) int64 {
-	salesTip = strings.Replace(salesTip, "+", "", -1) // 去掉 "+"
+	// 去掉字符串中的 "+"
+	salesTip = strings.Replace(salesTip, "+", "", -1)
+
+	// 如果包含 "万"（包括 "万+" 或 "万"）
 	if strings.Contains(salesTip, "万") {
-		salesTip = strings.Replace(salesTip, "万", "", -1) // 去掉 "万"
-		// 将小数部分解析为浮点数并乘以 10000
+		// 去掉 "万"
+		salesTip = strings.Replace(salesTip, "万", "", -1)
+
+		// 如果有小数部分，直接转换为 decimal 类型并乘以 10000
 		if val, err := decimal.NewFromString(salesTip); err == nil {
+			// 如果原始字符串含有 "+"，意味着是一个 "万+" 的情况，稍微提高估值
+			if strings.Contains(salesTip, "+") {
+				// 向上调整为 1.1 倍，或者其他比例，根据业务逻辑来调整
+				return val.Mul(decimal.NewFromInt(10000)).Mul(decimal.NewFromFloat(1.1)).IntPart()
+			}
 			return val.Mul(decimal.NewFromInt(10000)).IntPart()
 		}
-	} else {
-		// 纯数字直接转换为 int64
-		if val, err := strconv.ParseInt(salesTip, 10, 64); err == nil {
-			return val
-		}
 	}
+
+	// 如果是普通数字（没有 "万"）
+	if val, err := strconv.ParseInt(salesTip, 10, 64); err == nil {
+		return val
+	}
+
+	// 无法解析时返回 0
 	return 0
 }

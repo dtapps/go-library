@@ -73,6 +73,6 @@ func (c *Client) CmsPromUrlGenerate(ctx context.Context, notMustParams ...gorequ
 	var response CmsPromUrlGenerateResponse
 	request, err := c.request(ctx, params, &response)
 	var responseError CmsPromUrlGenerateError
-	err = gojson.Unmarshal(request.ResponseBody, &responseError)
+	_ = gojson.Unmarshal(request.ResponseBody, &responseError)
 	return newCmsPromUrlGenerateResult(response, request.ResponseBody, request), responseError, err
 }
