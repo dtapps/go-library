@@ -21,6 +21,6 @@ require (
 	github.com/basgys/goxml2json v1.1.0 // indirect
 	github.com/stretchr/testify v1.9.0 // indirect
 	go.dtapp.net/library/utils/gorandom v1.0.4 // indirect
-	golang.org/x/net v0.30.0 // indirect
-	golang.org/x/text v0.19.0 // indirect
+	golang.org/x/net v0.31.0 // indirect
+	golang.org/x/text v0.20.0 // indirect
 )

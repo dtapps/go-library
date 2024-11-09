@@ -15,7 +15,6 @@ import (
 	"log/slog"
 	"net/http"
 	"net/url"
-	"runtime"
 	"strings"
 	"time"
 )
@@ -233,10 +232,8 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 
 	// 请求内容
 	var requestBody io.Reader
-	var requestBodyJsonStr string
 
 	if httpResponse.RequestMethod != http.MethodGet && c.httpContentType == httpParamsModeJson {
-		requestBodyJsonStr = gojson.JsonEncodeNoError(httpResponse.RequestParams)
 		jsonStr, err := gojson.Marshal(httpResponse.RequestParams)
 		if err != nil {
 			return httpResponse, err
@@ -246,7 +243,6 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	}
 
 	if httpResponse.RequestMethod != http.MethodGet && c.httpContentType == httpParamsModeForm {
-		requestBodyJsonStr = gojson.JsonEncodeNoError(httpResponse.RequestParams)
 		// 携带 form 参数
 		form := url.Values{}
 		for k, v := range httpResponse.RequestParams {
@@ -257,7 +253,6 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	}
 
 	if c.httpContentType == httpParamsModeXml {
-		requestBodyJsonStr = gojson.JsonEncodeNoError(httpResponse.RequestParams)
 		requestBody, err = ToXml(httpResponse.RequestParams)
 		if err != nil {
 			return httpResponse, err
@@ -344,31 +339,24 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 
 	// 调用日志记录函数
 	if c.logFunc != nil {
-		urlParse := NewUri(httpResponse.RequestUri).Parse() // 解析URL
 		c.logFunc(ctx, &LogResponse{
-			RequestID:          httpResponse.RequestID,
-			RequestTime:        httpResponse.RequestTime,
-			RequestHost:        urlParse.Hostname,
-			RequestPath:        urlParse.Path,
-			RequestQuery:       gojson.JsonEncodeNoError(req.URL.Query()),
-			RequestMethod:      req.Method,
-			RequestScheme:      urlParse.Scheme,
-			RequestContentType: req.Header.Get("Content-Type"),
-			RequestClientIP:    c.clientIP,
-			RequestBody:        requestBodyJsonStr,
-			RequestUserAgent:   req.Header.Get("User-Agent"),
-			RequestHeader:      gojson.JsonEncodeNoError(httpResponse.RequestHeader),
-			RequestCostTime:    httpResponse.RequestCostTime,
+			RequestID:       httpResponse.RequestID,
+			RequestTime:     httpResponse.RequestTime,
+			RequestHost:     req.Host,
+			RequestPath:     req.URL.String(),
+			RequestQuery:    req.URL.Query(),
+			RequestMethod:   req.Method,
+			RequestIP:       c.clientIP,
+			RequestBody:     httpResponse.RequestParams,
+			RequestHeader:   req.Header,
+			RequestCostTime: httpResponse.RequestCostTime,
 
-			ResponseTime:       httpResponse.ResponseTime,
-			ResponseHeader:     gojson.JsonEncodeNoError(httpResponse.ResponseHeader),
-			ResponseStatusCode: httpResponse.ResponseStatusCode,
-			ResponseBody:       string(httpResponse.ResponseBody),
-			ResponseBodyJson:   gojson.JsonEncodeNoError(gojson.JsonDecodeNoError(string(httpResponse.ResponseBody))),
-			ResponseBodyXml:    gojson.XmlEncodeNoError(gojson.XmlDecodeNoError(httpResponse.ResponseBody)),
-
-			GoVersion:  runtime.Version(),
-			SdkVersion: Version,
+			ResponseTime:     httpResponse.ResponseTime,
+			ResponseHeader:   resp.Header,
+			ResponseCode:     resp.StatusCode,
+			ResponseBody:     string(httpResponse.ResponseBody),
+			ResponseBodyJson: gojson.JsonDecodeNoError(string(httpResponse.ResponseBody)),
+			ResponseBodyXml:  gojson.XmlEncodeNoError(gojson.XmlDecodeNoError(httpResponse.ResponseBody)),
 		})
 	}
 
