@@ -46,7 +46,7 @@ func (c *Client) xmlSign(url string, param *gorequest.Params) (signStr string) {
 
 func (c *Client) jsonSign(param *gorequest.Params) string {
 	var keys []string
-	for k := range param.DeepCopy() {
+	for k := range param.DeepGet() {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)

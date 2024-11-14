@@ -16,7 +16,7 @@ replace go.dtapp.net/library/utils/gomd5 => ../../utils/gomd5
 
 require (
 	go.dtapp.net/library/utils/gomd5 v1.0.3
-	go.dtapp.net/library/utils/gorequest v1.0.86
+	go.dtapp.net/library/utils/gorequest v1.0.87
 	go.dtapp.net/library/utils/gostring v1.0.21
 	go.dtapp.net/library/utils/gotime v1.0.12
 )

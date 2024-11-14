@@ -16,7 +16,7 @@ func (c *Client) sign(ctx context.Context, param *gorequest.Params) string {
 
 	// 排序所有的 key
 	var keys []string
-	for key := range param.DeepCopy() {
+	for key := range param.DeepGet() {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)

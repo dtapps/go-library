@@ -12,7 +12,7 @@ import (
 // https://www.showdoc.com.cn/dyr/9227002900063946
 func (c *Client) sign(param *gorequest.Params) string {
 	var keys []string
-	for k := range param.DeepCopy() {
+	for k := range param.DeepGet() {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
