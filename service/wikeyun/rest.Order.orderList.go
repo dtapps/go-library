@@ -35,7 +35,7 @@ func newRestOrderOrderListResult(result RestOrderOrderListResponse, body []byte,
 // start_time = 开始时间，linux时间戳10位
 // end_time = 结束时间，linux时间戳10位，跟开始时间相差不能超过2小时
 // https://open.wikeyun.cn/#/apiDocument/13/document/364
-func (c *Client) RestOrderOrderList(ctx context.Context, notMustParams ...gorequest.Params) (*RestOrderOrderListResult, error) {
+func (c *Client) RestOrderOrderList(ctx context.Context, notMustParams ...*gorequest.Params) (*RestOrderOrderListResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

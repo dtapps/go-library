@@ -47,7 +47,7 @@ func newApiOrderListResult(result ApiOrderListResponse, body []byte, http gorequ
 
 // ApiOrderList 订单列表查询接口（新版）
 // https://union.meituan.com/v2/apiDetail?id=23
-func (c *Client) ApiOrderList(ctx context.Context, notMustParams ...gorequest.Params) (*ApiOrderListResult, error) {
+func (c *Client) ApiOrderList(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiOrderListResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

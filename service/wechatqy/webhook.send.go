@@ -27,7 +27,7 @@ func newWebhookSendResult(result WebhookSendResponse, body []byte, http goreques
 
 // WebhookSend 群机器人 发送消息
 // https://developer.work.weixin.qq.com/document/path/99110
-func (c *Client) WebhookSend(ctx context.Context, key string, Type string, notMustParams ...gorequest.Params) (*WebhookSendResult, error) {
+func (c *Client) WebhookSend(ctx context.Context, key string, Type string, notMustParams ...*gorequest.Params) (*WebhookSendResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -40,7 +40,7 @@ func (c *Client) WebhookSend(ctx context.Context, key string, Type string, notMu
 
 // WebhookSendURL 群机器人 发送消息
 // https://developer.work.weixin.qq.com/document/path/99110
-func (c *Client) WebhookSendURL(ctx context.Context, url string, Type string, notMustParams ...gorequest.Params) (*WebhookSendResult, error) {
+func (c *Client) WebhookSendURL(ctx context.Context, url string, Type string, notMustParams ...*gorequest.Params) (*WebhookSendResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

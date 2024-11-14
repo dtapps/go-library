@@ -35,7 +35,7 @@ func newRestV2MovieGetAllCityResult(result RestV2MovieGetAllCityResponse, body [
 // RestV2MovieGetAllCity 定位--获取全国所有城市（支持字母汉字搜索）
 // keyword = 关键词搜索
 // https://open.wikeyun.cn/#/apiDocument/4/document/510
-func (c *Client) RestV2MovieGetAllCity(ctx context.Context, notMustParams ...gorequest.Params) (*RestV2MovieGetAllCityResult, error) {
+func (c *Client) RestV2MovieGetAllCity(ctx context.Context, notMustParams ...*gorequest.Params) (*RestV2MovieGetAllCityResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

@@ -28,7 +28,7 @@ func newRestUserQueryResult(result RestUserQueryResponse, body []byte, http gore
 
 // RestUserQuery 用户信息
 // https://open.wikeyun.cn/#/apiDocument/10/document/336
-func (c *Client) RestUserQuery(ctx context.Context, notMustParams ...gorequest.Params) (*RestUserQueryResult, error) {
+func (c *Client) RestUserQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*RestUserQueryResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

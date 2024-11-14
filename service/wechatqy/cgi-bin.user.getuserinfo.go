@@ -28,7 +28,7 @@ func newCgiBinUserGetUserInfoResult(result CgiBinUserGetUserInfoResponse, body [
 
 // CgiBinUserGetUserInfo 获取访问用户身份
 // https://open.work.weixin.qq.com/api/doc/90000/90135/91023
-func (c *Client) CgiBinUserGetUserInfo(ctx context.Context, accessToken, code string, notMustParams ...gorequest.Params) (*CgiBinUserGetUserInfoResult, error) {
+func (c *Client) CgiBinUserGetUserInfo(ctx context.Context, accessToken, code string, notMustParams ...*gorequest.Params) (*CgiBinUserGetUserInfoResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

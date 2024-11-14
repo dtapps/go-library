@@ -33,7 +33,7 @@ func newRestPowerCardInfoResult(result RestPowerCardInfoResponse, body []byte, h
 // RestPowerCardInfo 电费充值卡详情
 // card_id = 充值卡ID
 // https://open.wikeyun.cn/#/apiDocument/9/document/333
-func (c *Client) RestPowerCardInfo(ctx context.Context, cardID int64, notMustParams ...gorequest.Params) (*RestPowerCardInfoResult, error) {
+func (c *Client) RestPowerCardInfo(ctx context.Context, cardID int64, notMustParams ...*gorequest.Params) (*RestPowerCardInfoResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

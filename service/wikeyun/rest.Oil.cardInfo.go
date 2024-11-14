@@ -31,7 +31,7 @@ func newRestOilCardInfoResult(result RestOilCardInfoResponse, body []byte, http 
 // RestOilCardInfo 油卡充值卡详情
 // card_id = 充值卡ID
 // https://open.wikeyun.cn/#/apiDocument/9/document/373
-func (c *Client) RestOilCardInfo(ctx context.Context, notMustParams ...gorequest.Params) (*RestOilCardInfoResult, error) {
+func (c *Client) RestOilCardInfo(ctx context.Context, notMustParams ...*gorequest.Params) (*RestOilCardInfoResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

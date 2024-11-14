@@ -33,7 +33,7 @@ func newApiGetQuaLitYsCoreBySidResult(result ApiGetQuaLitYsCoreBySidResponse, bo
 
 // ApiGetQuaLitYsCoreBySid 优选sid质量分&复购率查询
 // https://union.meituan.com/v2/apiDetail?id=28
-func (c *Client) ApiGetQuaLitYsCoreBySid(ctx context.Context, notMustParams ...gorequest.Params) (*ApiGetQuaLitYsCoreBySidResult, error) {
+func (c *Client) ApiGetQuaLitYsCoreBySid(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiGetQuaLitYsCoreBySidResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

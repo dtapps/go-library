@@ -8,7 +8,7 @@ import (
 )
 
 // 请求接口
-func (c *Client) request(ctx context.Context, url string, param gorequest.Params, response any) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, response any) (gorequest.Response, error) {
 
 	// 签名
 	sign := c.sign(param)

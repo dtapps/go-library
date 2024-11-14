@@ -33,7 +33,7 @@ func newRestOilPushOrderResult(result RestOilPushOrderResponse, body []byte, htt
 // notify_url = 回调通知地址，用于订单状态通知
 // cardId = 卡号ID，通过新增获取
 // https://open.wikeyun.cn/#/apiDocument/9/document/367
-func (c *Client) RestOilPushOrder(ctx context.Context, notMustParams ...gorequest.Params) (*RestOilPushOrderResult, error) {
+func (c *Client) RestOilPushOrder(ctx context.Context, notMustParams ...*gorequest.Params) (*RestOilPushOrderResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

@@ -29,7 +29,7 @@ func newRestOilEditCardResult(result RestOilEditCardResponse, body []byte, http 
 // card_type = 类型 0中石化 1中石油
 // user_num = 身份证号
 // https://open.wikeyun.cn/#/apiDocument/9/document/371
-func (c *Client) RestOilEditCard(ctx context.Context, notMustParams ...gorequest.Params) (*RestOilEditCardResult, error) {
+func (c *Client) RestOilEditCard(ctx context.Context, notMustParams ...*gorequest.Params) (*RestOilEditCardResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

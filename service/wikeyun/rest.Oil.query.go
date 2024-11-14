@@ -33,7 +33,7 @@ func newRestOilQueryResult(result RestOilQueryResponse, body []byte, http gorequ
 // order_number = 平台单号，与商户单号二选一
 // order_no = 商户单号
 // https://open.wikeyun.cn/#/apiDocument/9/document/368
-func (c *Client) RestOilQuery(ctx context.Context, notMustParams ...gorequest.Params) (*RestOilQueryResult, error) {
+func (c *Client) RestOilQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*RestOilQueryResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

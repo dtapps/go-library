@@ -29,7 +29,7 @@ func newRestOilAddCardResult(result RestOilAddCardResponse, body []byte, http go
 // card_type = 类型 0中石化 1中石油
 // user_num = 身份证号
 // https://open.wikeyun.cn/#/apiDocument/9/document/370
-func (c *Client) RestOilAddCard(ctx context.Context, notMustParams ...gorequest.Params) (*RestOilAddCardResult, error) {
+func (c *Client) RestOilAddCard(ctx context.Context, notMustParams ...*gorequest.Params) (*RestOilAddCardResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

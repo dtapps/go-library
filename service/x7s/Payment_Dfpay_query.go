@@ -30,7 +30,7 @@ func newPaymentDfpayQueryResult(result PaymentDfpayQueryResponse, body []byte, h
 
 // PaymentDfpayQuery 核销查询接口
 // https://gys.x7s.com/Home_Index_documenta.html#doc8
-func (c *Client) PaymentDfpayQuery(ctx context.Context, partnerOrderNo string, notMustParams ...gorequest.Params) (*PaymentDfpayQueryResult, error) {
+func (c *Client) PaymentDfpayQuery(ctx context.Context, partnerOrderNo string, notMustParams ...*gorequest.Params) (*PaymentDfpayQueryResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

@@ -30,7 +30,7 @@ func newApiMtUnionCityResult(result ApiMtUnionCityResponse, body []byte, http go
 
 // ApiMtUnionCity 城市信息查询（新版）
 // https://union.meituan.com/v2/apiDetail?id=29
-func (c *Client) ApiMtUnionCity(ctx context.Context, notMustParams ...gorequest.Params) (*ApiMtUnionCityResult, error) {
+func (c *Client) ApiMtUnionCity(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiMtUnionCityResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

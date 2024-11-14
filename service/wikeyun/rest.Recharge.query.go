@@ -39,7 +39,7 @@ func newRestRechargeQueryResult(result RestRechargeQueryResponse, body []byte, h
 // order_number = 平台单号，平台商户单号二选一
 // order_no = 商户单号
 // https://open.wikeyun.cn/#/apiDocument/9/document/299
-func (c *Client) RestRechargeQuery(ctx context.Context, notMustParams ...gorequest.Params) (*RestRechargeQueryResult, error) {
+func (c *Client) RestRechargeQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*RestRechargeQueryResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

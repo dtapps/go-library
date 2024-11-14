@@ -1,5 +1,5 @@
 package x7s
 
 const (
-	Version = "1.0.8"
+	Version = "1.0.9"
 )

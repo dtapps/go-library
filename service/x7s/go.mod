@@ -16,7 +16,7 @@ replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 
 require (
 	go.dtapp.net/library/utils/gomd5 v1.0.3
-	go.dtapp.net/library/utils/gorequest v1.0.85
+	go.dtapp.net/library/utils/gorequest v1.0.87
 )
 
 require (
@@ -26,6 +26,6 @@ require (
 	go.dtapp.net/library/utils/gorandom v1.0.4 // indirect
 	go.dtapp.net/library/utils/gostring v1.0.21 // indirect
 	go.dtapp.net/library/utils/gotime v1.0.12 // indirect
-	golang.org/x/net v0.30.0 // indirect
-	golang.org/x/text v0.19.0 // indirect
+	golang.org/x/net v0.31.0 // indirect
+	golang.org/x/text v0.20.0 // indirect
 )

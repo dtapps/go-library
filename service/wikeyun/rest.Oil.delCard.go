@@ -24,7 +24,7 @@ func newRestOilDelCardResult(result RestOilDelCardResponse, body []byte, http go
 // RestOilDelCard 删除油卡充值卡
 // card_id = 充值卡ID
 // https://open.wikeyun.cn/#/apiDocument/9/document/372
-func (c *Client) RestOilDelCard(ctx context.Context, notMustParams ...gorequest.Params) (*RestOilDelCardResult, error) {
+func (c *Client) RestOilDelCard(ctx context.Context, notMustParams ...*gorequest.Params) (*RestOilDelCardResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

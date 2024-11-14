@@ -28,7 +28,7 @@ func newRestMovieHotCityResult(result RestMovieHotCityResponse, body []byte, htt
 
 // RestMovieHotCity 定位--获取热门城市
 // https://open.wikeyun.cn/#/apiDocument/4/document/301
-func (c *Client) RestMovieHotCity(ctx context.Context, notMustParams ...gorequest.Params) (*RestMovieHotCityResult, error) {
+func (c *Client) RestMovieHotCity(ctx context.Context, notMustParams ...*gorequest.Params) (*RestMovieHotCityResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

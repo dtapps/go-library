@@ -30,7 +30,7 @@ func newPaymentDfpayAddorderResult(result PaymentDfpayAddorderResponse, body []b
 
 // PaymentDfpayAddorder 统一下单接口
 // https://gys.x7s.com/Home_Index_documenta.html#doc6
-func (c *Client) PaymentDfpayAddorder(ctx context.Context, partnerOrderNo string, Type int, account string, amount float64, notifyUrl string, notMustParams ...gorequest.Params) (*PaymentDfpayAddorderResult, error) {
+func (c *Client) PaymentDfpayAddorder(ctx context.Context, partnerOrderNo string, Type int, account string, amount float64, notifyUrl string, notMustParams ...*gorequest.Params) (*PaymentDfpayAddorderResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

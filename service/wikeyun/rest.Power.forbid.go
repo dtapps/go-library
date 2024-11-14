@@ -25,7 +25,7 @@ func newRestPowerForbidResult(result RestPowerForbidResponse, body []byte, http 
 // RestPowerForbid 禁启用非API渠道电费充值
 // status = 1 禁用 0启用
 // https://open.wikeyun.cn/#/apiDocument/9/document/446
-func (c *Client) RestPowerForbid(ctx context.Context, status int64, notMustParams ...gorequest.Params) (*RestPowerForbidResult, error) {
+func (c *Client) RestPowerForbid(ctx context.Context, status int64, notMustParams ...*gorequest.Params) (*RestPowerForbidResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

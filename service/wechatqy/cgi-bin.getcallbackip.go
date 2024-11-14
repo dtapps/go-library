@@ -24,7 +24,7 @@ func NewCgiBinGetCallBackIpResult(result CgiBinGetCallBackIpResponse, body []byt
 
 // CgiBinGetCallBackIp 获取企业微信回调IP段
 // https://developer.work.weixin.qq.com/document/path/98988
-func (c *Client) CgiBinGetCallBackIp(ctx context.Context, accessToken string, notMustParams ...gorequest.Params) (*CgiBinGetCallBackIpResult, error) {
+func (c *Client) CgiBinGetCallBackIp(ctx context.Context, accessToken string, notMustParams ...*gorequest.Params) (*CgiBinGetCallBackIpResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

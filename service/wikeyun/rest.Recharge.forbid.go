@@ -25,7 +25,7 @@ func newRestRechargeForbidResult(result RestRechargeForbidResponse, body []byte,
 // RestRechargeForbid 禁启用非API渠道下单
 // status = 1 禁用 0启用
 // https://open.wikeyun.cn/#/apiDocument/9/document/445
-func (c *Client) RestRechargeForbid(ctx context.Context, status int64, notMustParams ...gorequest.Params) (*RestRechargeForbidResult, error) {
+func (c *Client) RestRechargeForbid(ctx context.Context, status int64, notMustParams ...*gorequest.Params) (*RestRechargeForbidResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

@@ -32,7 +32,7 @@ func newRestRechargePushOrderResult(result RestRechargePushOrderResponse, body [
 // change = 失败更换渠道充值 0 否 1是 不传系统根据设置判断
 // source = 是否强制渠道，因为每个渠道价格不同，不同用户提交的业务不同，默认不强制，具体渠道价格联系客服
 // https://open.wikeyun.cn/#/apiDocument/9/document/298
-func (c *Client) RestRechargePushOrder(ctx context.Context, mobile string, orderNo string, money int64, rechargeType int64, notifyUrl string, notMustParams ...gorequest.Params) (*RestRechargePushOrderResult, error) {
+func (c *Client) RestRechargePushOrder(ctx context.Context, mobile string, orderNo string, money int64, rechargeType int64, notifyUrl string, notMustParams ...*gorequest.Params) (*RestRechargePushOrderResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

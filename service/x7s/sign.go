@@ -9,9 +9,9 @@ import (
 )
 
 // 签名
-func (c *Client) sign(param gorequest.Params) string {
+func (c *Client) sign(param *gorequest.Params) string {
 	var keys []string
-	for k := range param {
+	for k := range param.DeepCopy() {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)

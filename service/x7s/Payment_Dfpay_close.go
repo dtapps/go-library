@@ -23,7 +23,7 @@ func newPaymentDfpayCloseResult(result PaymentDfpayCloseResponse, body []byte, h
 
 // PaymentDfpayClose 取消订单
 // https://gys.x7s.com/Home_Index_documenta.html#doc9
-func (c *Client) PaymentDfpayClose(ctx context.Context, partnerOrderNo string, notMustParams ...gorequest.Params) (*PaymentDfpayCloseResult, error) {
+func (c *Client) PaymentDfpayClose(ctx context.Context, partnerOrderNo string, notMustParams ...*gorequest.Params) (*PaymentDfpayCloseResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

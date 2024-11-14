@@ -24,7 +24,7 @@ func NewCgiBinGetApiDomainIpResult(result CgiBinGetApiDomainIpResponse, body []b
 
 // CgiBinGetApiDomainIp 获取企业微信接口IP段
 // https://developer.work.weixin.qq.com/document/path/97073
-func (c *Client) CgiBinGetApiDomainIp(ctx context.Context, accessToken string, notMustParams ...gorequest.Params) (*CgiBinGetApiDomainIpResult, error) {
+func (c *Client) CgiBinGetApiDomainIp(ctx context.Context, accessToken string, notMustParams ...*gorequest.Params) (*CgiBinGetApiDomainIpResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
