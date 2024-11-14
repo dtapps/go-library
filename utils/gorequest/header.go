@@ -59,13 +59,31 @@ func (h *Headers) GetQuery() string {
 	return u.Encode()
 }
 
-// DeepCopy 深度复制
-func (h *Headers) DeepCopy() map[string]string {
+// DeepGet 深度获取
+func (h *Headers) DeepGet() map[string]string {
 	h.Lock()
 	defer h.Unlock()
+
 	targetMap := make(map[string]string)
 	for key, value := range h.m {
 		targetMap[key] = value
 	}
+	return targetMap
+}
+
+// DeepCopy 深度复制
+func (h *Headers) DeepCopy() map[string]string {
+	h.Lock()
+	defer h.Unlock()
+
+	// 深度复制数据
+	targetMap := make(map[string]string)
+	for key, value := range h.m {
+		targetMap[key] = value
+	}
+
+	// 清空原始数据
+	h.m = make(map[string]string)
+
 	return targetMap
 }

@@ -247,7 +247,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	if httpResponse.RequestMethod != http.MethodGet && c.httpContentType == httpParamsModeForm {
 		// 携带 form 参数
 		form := url.Values{}
-		for k, v := range httpResponse.RequestParams.DeepCopy() {
+		for k, v := range httpResponse.RequestParams.DeepGet() {
 			form.Add(k, GetParamsString(v))
 		}
 		// 赋值
@@ -255,7 +255,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	}
 
 	if c.httpContentType == httpParamsModeXml {
-		requestBody, err = ToXml(httpResponse.RequestParams.DeepCopy())
+		requestBody, err = ToXml(httpResponse.RequestParams.DeepGet())
 		if err != nil {
 			return httpResponse, err
 		}
@@ -270,15 +270,15 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	// GET 请求携带查询参数
 	if httpResponse.RequestMethod == http.MethodGet {
 		q := req.URL.Query()
-		for k, v := range httpResponse.RequestParams.DeepCopy() {
+		for k, v := range httpResponse.RequestParams.DeepGet() {
 			q.Add(k, GetParamsString(v))
 		}
 		req.URL.RawQuery = q.Encode()
 	}
 
 	// 设置请求头
-	if len(httpResponse.RequestHeader.DeepCopy()) > 0 {
-		for key, value := range httpResponse.RequestHeader.DeepCopy() {
+	if len(httpResponse.RequestHeader.DeepGet()) > 0 {
+		for key, value := range httpResponse.RequestHeader.DeepGet() {
 			req.Header.Set(key, fmt.Sprintf("%v", value))
 		}
 	}
@@ -349,7 +349,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 			RequestQuery:    req.URL.Query(),
 			RequestMethod:   req.Method,
 			RequestIP:       c.clientIP,
-			RequestBody:     httpResponse.RequestParams.DeepCopy(),
+			RequestBody:     httpResponse.RequestParams.DeepGet(),
 			RequestHeader:   req.Header,
 			RequestCostTime: httpResponse.RequestCostTime,
 

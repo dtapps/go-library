@@ -5,13 +5,13 @@ import "sync"
 // Params 参数
 type Params struct {
 	sync.Mutex
-	m map[string]interface{}
+	m map[string]any
 }
 
 // NewParams 新建参数
 func NewParams() *Params {
 	return &Params{
-		m: make(map[string]interface{}),
+		m: make(map[string]any),
 	}
 }
 
@@ -25,7 +25,7 @@ func NewParamsWith(params ...*Params) *Params {
 }
 
 // Set 设置参数
-func (p *Params) Set(key string, value interface{}) {
+func (p *Params) Set(key string, value any) {
 	p.Lock()
 	defer p.Unlock()
 	p.m[key] = value
@@ -41,19 +41,37 @@ func (p *Params) SetParams(params *Params) {
 }
 
 // Get 获取参数
-func (p *Params) Get(key string) interface{} {
+func (p *Params) Get(key string) any {
 	p.Lock()
 	defer p.Unlock()
 	return p.m[key]
 }
 
-// DeepCopy 深度复制
-func (p *Params) DeepCopy() map[string]interface{} {
+// DeepGet 深度获取
+func (p *Params) DeepGet() map[string]any {
 	p.Lock()
 	defer p.Unlock()
+
 	targetMap := make(map[string]interface{})
 	for key, value := range p.m {
 		targetMap[key] = value
 	}
+	return targetMap
+}
+
+// DeepCopy 深度复制
+func (p *Params) DeepCopy() map[string]any {
+	p.Lock()
+	defer p.Unlock()
+
+	// 深度复制数据
+	targetMap := make(map[string]any)
+	for key, value := range p.m {
+		targetMap[key] = value
+	}
+
+	// 清空原始数据
+	p.m = make(map[string]any)
+
 	return targetMap
 }
