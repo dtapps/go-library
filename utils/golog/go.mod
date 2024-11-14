@@ -23,7 +23,7 @@ require (
 	go.dtapp.net/library/contrib/gin-requestid v1.0.2
 	go.dtapp.net/library/contrib/hertz-requestid v1.0.2
 	go.dtapp.net/library/utils/gojson v1.0.7
-	go.dtapp.net/library/utils/gorequest v1.0.85
+	go.dtapp.net/library/utils/gorequest v1.0.86
 	go.dtapp.net/library/utils/gotime v1.0.12
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
