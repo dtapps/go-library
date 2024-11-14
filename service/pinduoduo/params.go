@@ -39,7 +39,7 @@ func (c *Client) Sign(p *gorequest.Params) {
 	}
 	// 排序所有的 key
 	var keys []string
-	for key := range p.DeepCopy() {
+	for key := range p.DeepGet() {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
@@ -58,7 +58,7 @@ func (c *Client) Sign(p *gorequest.Params) {
 }
 
 func SetCustomParameters(p gorequest.Params, uid string, sid string) gorequest.Params {
-	p.Set("custom_parameters", map[string]interface{}{
+	p.Set("custom_parameters", map[string]any{
 		"uid": uid,
 		"sid": sid,
 	})

@@ -33,7 +33,7 @@ func (c *Client) sign(param *gorequest.Params) respSign {
 	param.Set("timestamp", timestamp)   // unix时间戳（秒单位）
 	// 排序所有的 key
 	var keys []string
-	for key := range param.DeepCopy() {
+	for key := range param.DeepGet() {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)

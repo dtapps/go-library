@@ -11,7 +11,7 @@ import (
 // 签名
 func (c *Client) sign(param *gorequest.Params) string {
 	var keys []string
-	for k := range param.DeepCopy() {
+	for k := range param.DeepGet() {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)

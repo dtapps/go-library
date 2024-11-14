@@ -16,7 +16,7 @@ import (
 func (c *Client) getSign(customerKey string, param *gorequest.Params) string {
 	// 参数按照参数名的字典升序排列
 	var keys []string
-	for k := range param.DeepCopy() {
+	for k := range param.DeepGet() {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
@@ -37,7 +37,7 @@ func (c *Client) getRequestData(param *gorequest.Params) string {
 	// 公共参数
 	args := url.Values{}
 	// 请求参数
-	for key, val := range param.DeepCopy() {
+	for key, val := range param.DeepGet() {
 		args.Set(key, gostring.GetString(val))
 	}
 	return args.Encode()

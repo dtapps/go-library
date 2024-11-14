@@ -21,7 +21,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	}
 
 	// 认证
-	authorization, err := c.authorization(method, param.DeepCopy(), uri)
+	authorization, err := c.authorization(method, param.DeepGet(), uri)
 	if err != nil {
 		return gorequest.Response{}, err
 	}

@@ -15,7 +15,7 @@ import (
 func (c *Client) getSign(Secret string, param *gorequest.Params) string {
 	// 参数按照参数名的字典升序排列
 	var keys []string
-	for k := range param.DeepCopy() {
+	for k := range param.DeepGet() {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
