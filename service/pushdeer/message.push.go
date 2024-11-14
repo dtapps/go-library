@@ -24,7 +24,7 @@ func newMessagePushResult(result MessagePushResponse, body []byte, http goreques
 
 // MessagePush 推送消息
 // https://www.pushdeer.com/dev.html
-func (c *Client) MessagePush(ctx context.Context, text string, notMustParams ...gorequest.Params) (*MessagePushResult, error) {
+func (c *Client) MessagePush(ctx context.Context, text string, notMustParams ...*gorequest.Params) (*MessagePushResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

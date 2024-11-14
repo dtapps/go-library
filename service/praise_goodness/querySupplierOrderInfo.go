@@ -32,7 +32,7 @@ func newQuerySupplierOrderInfoResult(result QuerySupplierOrderInfoResponse, body
 
 // QuerySupplierOrderInfo 订单查询接口
 // trade_id = 商户订单号
-func (c *Client) QuerySupplierOrderInfo(ctx context.Context, tradeID string, notMustParams ...gorequest.Params) (*QuerySupplierOrderInfoResult, error) {
+func (c *Client) QuerySupplierOrderInfo(ctx context.Context, tradeID string, notMustParams ...*gorequest.Params) (*QuerySupplierOrderInfoResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

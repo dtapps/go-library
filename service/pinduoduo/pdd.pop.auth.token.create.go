@@ -40,7 +40,7 @@ func newPddDdkPopAuthTokenCreateResult(result PddDdkPopAuthTokenCreateResponse, 
 
 // PopAuthTokenCreate 获取Access Token
 // https://open.pinduoduo.com/application/document/api?id=pdd.pop.auth.token.create
-func (c *Client) PopAuthTokenCreate(ctx context.Context, code string, notMustParams ...gorequest.Params) (*PddDdkPopAuthTokenCreateResult, error) {
+func (c *Client) PopAuthTokenCreate(ctx context.Context, code string, notMustParams ...*gorequest.Params) (*PddDdkPopAuthTokenCreateResult, error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.pop.auth.token.create", notMustParams...)

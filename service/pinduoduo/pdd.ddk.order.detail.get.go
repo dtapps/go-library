@@ -77,7 +77,7 @@ func newOrderDetailGetResult(result OrderDetailGetResponse, body []byte, http go
 }
 
 // OrderDetailGet 多多进宝商品查询 https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.order.detail.get
-func (c *Client) OrderDetailGet(ctx context.Context, orderSn string, notMustParams ...gorequest.Params) (*OrderDetailGetResult, error) {
+func (c *Client) OrderDetailGet(ctx context.Context, orderSn string, notMustParams ...*gorequest.Params) (*OrderDetailGetResult, error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.order.detail.get", notMustParams...)

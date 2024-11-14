@@ -66,7 +66,7 @@ func newPddDdkOauthGoodsZsUnitUrlGenResult(result PddDdkOauthGoodsZsUnitUrlGenRe
 
 // OauthGoodsZsUnitUrlGen 生成招商推广链接
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.goods.zs.unit.url.gen
-func (c *Client) OauthGoodsZsUnitUrlGen(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthGoodsZsUnitUrlGenResult, error) {
+func (c *Client) OauthGoodsZsUnitUrlGen(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthGoodsZsUnitUrlGenResult, error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.goods.zs.unit.url.gen", notMustParams...)

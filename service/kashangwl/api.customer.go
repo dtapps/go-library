@@ -28,7 +28,7 @@ func newApiCustomerResult(result ApiCustomerResponse, body []byte, http goreques
 // ApiCustomer 获取商家信息
 // customer_id = 商家编号
 // http://doc.cqmeihu.cn/sales/merchant-info.html
-func (c *Client) ApiCustomer(ctx context.Context, customerID int64, notMustParams ...gorequest.Params) (*ApiCustomerResult, error) {
+func (c *Client) ApiCustomer(ctx context.Context, customerID int64, notMustParams ...*gorequest.Params) (*ApiCustomerResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

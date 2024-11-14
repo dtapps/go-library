@@ -31,7 +31,7 @@ func newAddProductOrderResult(result AddProductOrderResponse, body []byte, http 
 // official = 运营商 1 :中国移动 2 :中国联通 3 :中国电信
 // area = 归属地，填省份，如:山东，北京 ，内蒙古，黑龙江，重庆 填:auto,系统自动识别归属地
 // notifyurl = 回调通知地址
-func (c *Client) AddProductOrder(ctx context.Context, Type int64, mobile string, tradeID string, amount int64, official int64, area string, notifyurl string, notMustParams ...gorequest.Params) (*AddProductOrderResult, error) {
+func (c *Client) AddProductOrder(ctx context.Context, Type int64, mobile string, tradeID string, amount int64, official int64, area string, notifyurl string, notMustParams ...*gorequest.Params) (*AddProductOrderResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

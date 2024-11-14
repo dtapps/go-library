@@ -45,7 +45,7 @@ func newApiBuyResult(result ApiBuyResponse, body []byte, http gorequest.Response
 // safe_cost = 安全进价
 // client_ip = 购买的用户真实IP
 // http://doc.cqmeihu.cn/sales/buy.html
-func (c *Client) ApiBuy(ctx context.Context, productID int64, quantity int64, notMustParams ...gorequest.Params) (*ApiBuyResult, error) {
+func (c *Client) ApiBuy(ctx context.Context, productID int64, quantity int64, notMustParams ...*gorequest.Params) (*ApiBuyResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

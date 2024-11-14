@@ -40,7 +40,7 @@ func newPddDdkPopAuthTokenRefreshResult(result PddDdkPopAuthTokenRefreshResponse
 
 // PopAuthTokenRefresh 刷新Access Token
 // https://open.pinduoduo.com/application/document/api?id=pdd.pop.auth.token.refresh
-func (c *Client) PopAuthTokenRefresh(ctx context.Context, refreshToken string, notMustParams ...gorequest.Params) (*PddDdkPopAuthTokenRefreshResult, error) {
+func (c *Client) PopAuthTokenRefresh(ctx context.Context, refreshToken string, notMustParams ...*gorequest.Params) (*PddDdkPopAuthTokenRefreshResult, error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.pop.auth.token.refresh", notMustParams...)

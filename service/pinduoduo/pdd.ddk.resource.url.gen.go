@@ -50,7 +50,7 @@ func newResourceUrlGenResult(result ResourceUrlGenResponse, body []byte, http go
 
 // ResourceUrlGen 生成多多进宝频道推广
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.pid.generate
-func (c *Client) ResourceUrlGen(ctx context.Context, notMustParams ...gorequest.Params) (*ResourceUrlGenResult, ResourceUrlGenError, error) {
+func (c *Client) ResourceUrlGen(ctx context.Context, notMustParams ...*gorequest.Params) (*ResourceUrlGenResult, ResourceUrlGenError, error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.resource.url.gen", notMustParams...)

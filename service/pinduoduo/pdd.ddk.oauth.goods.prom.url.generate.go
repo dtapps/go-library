@@ -66,7 +66,7 @@ func newPddDdkOauthGoodsPromUrlGenerateResult(result PddDdkOauthGoodsPromUrlGene
 
 // OauthGoodsPromUrlGenerate 生成多多进宝推广链接
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.goods.prom.url.generate
-func (c *Client) OauthGoodsPromUrlGenerate(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthGoodsPromUrlGenerateResult, error) {
+func (c *Client) OauthGoodsPromUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthGoodsPromUrlGenerateResult, error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.goods.prom.url.generate", notMustParams...)

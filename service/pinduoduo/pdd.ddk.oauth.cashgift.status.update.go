@@ -23,7 +23,7 @@ func newPddDdkOauthCashGiftStatusUpdateResult(result PddDdkOauthCashGiftStatusUp
 
 // OauthCashGiftStatusUpdate 多多礼金状态更新接口
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.cashgift.status.update
-func (c *Client) OauthCashGiftStatusUpdate(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthCashGiftStatusUpdateResult, error) {
+func (c *Client) OauthCashGiftStatusUpdate(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthCashGiftStatusUpdateResult, error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.cashgift.status.update", notMustParams...)

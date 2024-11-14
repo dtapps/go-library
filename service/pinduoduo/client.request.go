@@ -6,7 +6,7 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-func (c *Client) request(ctx context.Context, param gorequest.Params, response any) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, param *gorequest.Params, response any) (gorequest.Response, error) {
 
 	// 请求地址
 	uri := apiUrl

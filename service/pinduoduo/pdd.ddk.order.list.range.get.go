@@ -81,7 +81,7 @@ func newOrderListRangeGetResult(result OrderListRangeGetResponse, body []byte, h
 
 // OrderListRangeGet 用时间段查询推广订单接口
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.order.list.range.get
-func (c *Client) OrderListRangeGet(ctx context.Context, startTime string, endTime string, lastOrderID string, pageSize int64, notMustParams ...gorequest.Params) (*OrderListRangeGetResult, error) {
+func (c *Client) OrderListRangeGet(ctx context.Context, startTime string, endTime string, lastOrderID string, pageSize int64, notMustParams ...*gorequest.Params) (*OrderListRangeGetResult, error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.order.list.range.get", notMustParams...)

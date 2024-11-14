@@ -1,5 +1,5 @@
 package pinduoduo
 
 const (
-	Version = "1.0.40"
+	Version = "1.0.41"
 )

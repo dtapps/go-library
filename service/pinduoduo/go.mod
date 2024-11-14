@@ -15,7 +15,7 @@ replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 require (
 	github.com/shopspring/decimal v1.4.0
 	go.dtapp.net/library/utils/gojson v1.0.7
-	go.dtapp.net/library/utils/gorequest v1.0.86
+	go.dtapp.net/library/utils/gorequest v1.0.87
 	go.dtapp.net/library/utils/gostring v1.0.21
 	go.dtapp.net/library/utils/gotime v1.0.12
 )

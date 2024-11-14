@@ -66,7 +66,7 @@ func newPddDdkOauthResourceUrlGenResult(result PddDdkOauthResourceUrlGenResponse
 
 // OauthResourceUrlGen 拼多多主站频道推广接口
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.resource.url.gen
-func (c *Client) OauthResourceUrlGen(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthResourceUrlGenResult, error) {
+func (c *Client) OauthResourceUrlGen(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthResourceUrlGenResult, error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.resource.url.gen", notMustParams...)

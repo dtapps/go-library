@@ -95,7 +95,7 @@ func newGoodsSearchResult(result GoodsSearchResponse, body []byte, http goreques
 // GoodsSearch 多多进宝商品查询
 // https://open.pinduoduo.com/application/document/api?id=pdd.ddk.goods.search
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.search
-func (c *Client) GoodsSearch(ctx context.Context, notMustParams ...gorequest.Params) (*GoodsSearchResult, error) {
+func (c *Client) GoodsSearch(ctx context.Context, notMustParams ...*gorequest.Params) (*GoodsSearchResult, error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.search", notMustParams...)

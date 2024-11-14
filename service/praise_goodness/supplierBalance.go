@@ -26,7 +26,7 @@ func newSupplierBalanceResult(result SupplierBalanceResponse, body []byte, http 
 }
 
 // SupplierBalance 用户余额查询接口
-func (c *Client) SupplierBalance(ctx context.Context, notMustParams ...gorequest.Params) (*SupplierBalanceResult, error) {
+func (c *Client) SupplierBalance(ctx context.Context, notMustParams ...*gorequest.Params) (*SupplierBalanceResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

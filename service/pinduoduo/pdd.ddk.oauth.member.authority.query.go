@@ -66,7 +66,7 @@ func newPddDdkOauthMemberAuthorityQueryResult(result PddDdkOauthMemberAuthorityQ
 
 // OauthMemberAuthorityQuery 查询是否绑定备案
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.member.authority.query
-func (c *Client) OauthMemberAuthorityQuery(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthMemberAuthorityQueryResult, error) {
+func (c *Client) OauthMemberAuthorityQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthMemberAuthorityQueryResult, error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.member.authority.query", notMustParams...)

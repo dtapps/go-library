@@ -84,7 +84,7 @@ func newOrderListIncrementGetResult(result OrderListIncrementGetResponse, body [
 
 // OrderListIncrementGet 最后更新时间段增量同步推广订单信息
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.order.list.increment.get
-func (c *Client) OrderListIncrementGet(ctx context.Context, startUpdateTime int64, endUpdateTime int64, page int64, pageSize int64, notMustParams ...gorequest.Params) (*OrderListIncrementGetResult, error) {
+func (c *Client) OrderListIncrementGet(ctx context.Context, startUpdateTime int64, endUpdateTime int64, page int64, pageSize int64, notMustParams ...*gorequest.Params) (*OrderListIncrementGetResult, error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.order.list.increment.get", notMustParams...)

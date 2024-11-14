@@ -24,7 +24,7 @@ func newPddDdkTimeGetResult(result PddDdkTimeGetResponse, body []byte, http gore
 
 // TimeGet 获取拼多多系统时间
 // https://open.pinduoduo.com/application/document/api?id=pdd.time.get
-func (c *Client) TimeGet(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkTimeGetResult, error) {
+func (c *Client) TimeGet(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkTimeGetResult, error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.time.get", notMustParams...)

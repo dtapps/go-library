@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func (c *Client) request(ctx context.Context, url string, param gorequest.Params, method string, response any) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, method string, response any) (gorequest.Response, error) {
 
 	// 请求地址
 	uri := c.GetApiURL() + url

@@ -22,36 +22,81 @@ func GetOrderStatusDesc(Type int64) (desc string) {
 	return
 }
 
-var (
-	OrderSubsidyType = []int64{0, 1, 2, 3, 4, 5, 8}
-	OrderSubsidyDesc = []string{"非补贴订单", "千万补贴", "社群补贴", "多多星选", "品牌优选", "千万神券", "拼团享多多"}
-)
-
-// GetOrderSubsidyDesc 订单补贴类型
-func GetOrderSubsidyDesc(Type int64) (desc string) {
-	for i, v := range OrderSubsidyType {
-		if v == Type {
-			desc = OrderSubsidyDesc[i]
-			break
-		}
-	}
-	return
+var orderSubsidyMap = map[int64]string{
+	0: "非补贴订单",
+	1: "千万补贴",
+	2: "社群补贴",
+	3: "多多星选",
+	4: "品牌优选",
+	5: "千万神券",
+	7: "佣金翻倍补贴",
+	8: "拼团享多多",
 }
 
-var (
-	OrderTypeType = []int64{0, 1, 4, 7, 8, 9, 77, 94, 101, 103, 104, 105}
-	OrderTypeDesc = []string{"单品推广", "红包活动推广", "多多进宝商城推广", "今日爆款", "品牌清仓", "1.9包邮", "刮刮卡活动推广", "充值中心", "品牌黑卡", "百亿补贴频道", "内购清单频道", "超级红包"}
-)
-
-// GetOrderTypeDesc 下单场景类型
-func GetOrderTypeDesc(Type int64) (desc string) {
-	for i, v := range OrderTypeType {
-		if v == Type {
-			desc = OrderTypeDesc[i]
-			break
-		}
+// GetOrderSubsidyDesc 订单补贴类型
+func GetOrderSubsidyDesc(orderSubsidy int64) (desc string) {
+	if desc, ok := orderSubsidyMap[orderSubsidy]; ok {
+		return desc
 	}
-	return
+	return "" // 或者返回一个默认值或错误信息
+}
+
+var orderTypeMap = map[int64]string{
+	0:   "单品",
+	1:   "红包",
+	2:   "领券页推荐",
+	3:   "主题",
+	4:   "手机商城",
+	6:   "拼团后推荐",
+	7:   "今日爆款",
+	8:   "品牌清仓",
+	9:   "1.9包邮",
+	10:  "全店关联",
+	11:  "PC商城",
+	13:  "大转盘锁佣",
+	16:  "支付新用户锁佣",
+	18:  "CPA拉新锁佣",
+	22:  "果园",
+	25:  "跨店",
+	51:  "商详推荐",
+	52:  "店铺券",
+	54:  "大转盘",
+	55:  "大转盘",
+	56:  "大转盘",
+	57:  "挽回推荐",
+	61:  "频道活动",
+	64:  "跨店关联",
+	68:  "活动推广",
+	69:  "拼团后推荐",
+	72:  "新人红包",
+	74:  "拼团后推荐",
+	76:  "家装",
+	77:  "刮刮卡",
+	78:  "大转盘",
+	80:  "直播",
+	83:  "挽回推荐",
+	84:  "直播全店关联",
+	85:  "拼多多品类榜单",
+	88:  "频道活动",
+	89:  "频道活动",
+	90:  "拼团后推荐",
+	91:  "浏览关联",
+	93:  "砸金蛋",
+	94:  "充值中心",
+	101: "品牌黑卡",
+	103: "百亿补贴频道",
+	104: "内购清单频道",
+	105: "超级红包",
+	200: "拼团模式",
+	201: "拼团模式关联",
+}
+
+// GetOrderTypeDesc 根据订单类型获取描述
+func GetOrderTypeDesc(orderType int64) string {
+	if desc, ok := orderTypeMap[orderType]; ok {
+		return desc
+	}
+	return "" // 或者返回一个默认值或错误信息
 }
 
 var (

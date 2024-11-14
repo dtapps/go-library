@@ -52,7 +52,7 @@ func newPollQueryResult(result PollQueryResponse, body []byte, http gorequest.Re
 
 // PollQuery 实时快递查询接口
 // https://api.kuaidi100.com/document/5f0ffb5ebc8da837cbd8aefc
-func (c *Client) PollQuery(ctx context.Context, notMustParams ...gorequest.Params) (*PollQueryResult, error) {
+func (c *Client) PollQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*PollQueryResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

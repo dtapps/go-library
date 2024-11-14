@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func NewParamsWithType(_type string, params ...gorequest.Params) gorequest.Params {
+func NewParamsWithType(_type string, params ...*gorequest.Params) *gorequest.Params {
 	p := gorequest.NewParamsWith(params...)
 	p.Set("type", _type)                                         // API接口名称
 	p.Set("timestamp", strconv.FormatInt(time.Now().Unix(), 10)) // UNIX时间戳，单位秒，需要与拼多多服务器时间差值在10分钟内
@@ -20,7 +20,7 @@ func NewParamsWithType(_type string, params ...gorequest.Params) gorequest.Param
 	return p
 }
 
-func (c *Client) Sign(p gorequest.Params) {
+func (c *Client) Sign(p *gorequest.Params) {
 	if c.GetClientId() != "" {
 		p.Set("client_id", c.GetClientId()) // 	POP分配给应用的client_id
 	}
@@ -39,7 +39,7 @@ func (c *Client) Sign(p gorequest.Params) {
 	}
 	// 排序所有的 key
 	var keys []string
-	for key := range p {
+	for key := range p.DeepCopy() {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)

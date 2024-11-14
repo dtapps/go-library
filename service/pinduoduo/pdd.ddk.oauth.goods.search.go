@@ -66,7 +66,7 @@ func newPddDdkOauthGoodsSearchResult(result PddDdkOauthGoodsSearchResponse, body
 
 // OauthGoodsSearch 多多进宝商品查询
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.goods.search
-func (c *Client) OauthGoodsSearch(ctx context.Context, notMustParams ...gorequest.Params) (*PddDdkOauthGoodsSearchResult, error) {
+func (c *Client) OauthGoodsSearch(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthGoodsSearchResult, error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.goods.search", notMustParams...)

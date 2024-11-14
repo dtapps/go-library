@@ -7,7 +7,7 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-func (c *Client) request(ctx context.Context, url string, param gorequest.Params, method string, response any) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, method string, response any) (gorequest.Response, error) {
 
 	if gorequest.IsHttpURL(url) == false {
 		return gorequest.Response{}, fmt.Errorf("不是有效地址: %s", url)
