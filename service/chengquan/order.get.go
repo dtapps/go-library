@@ -33,7 +33,7 @@ func newOrderGetResult(result OrderGetResponse, body []byte, http gorequest.Resp
 // OrderGet 订单查询接口
 // order_no = 商户提交的订单号，最长32位(商户保证其唯一性)
 // https://www.chengquan.cn/rechargeInterface/queryOrder.html
-func (c *Client) OrderGet(ctx context.Context, orderNo string, notMustParams ...gorequest.Params) (*OrderGetResult, error) {
+func (c *Client) OrderGet(ctx context.Context, orderNo string, notMustParams ...*gorequest.Params) (*OrderGetResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

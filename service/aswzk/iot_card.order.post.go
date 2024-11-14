@@ -25,7 +25,7 @@ func newIotCardOrderPostResult(result IotCardOrderPostResponse, body []byte, htt
 }
 
 // IotCardOrderPost 物联卡订单下单
-func (c *Client) IotCardOrderPost(ctx context.Context, notMustParams ...gorequest.Params) (*IotCardOrderPostResult, error) {
+func (c *Client) IotCardOrderPost(ctx context.Context, notMustParams ...*gorequest.Params) (*IotCardOrderPostResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

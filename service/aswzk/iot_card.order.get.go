@@ -34,7 +34,7 @@ func newIotCardOrderGetResult(result IotCardOrderGetResponse, body []byte, http 
 }
 
 // IotCardOrderGet 物联卡订单查询
-func (c *Client) IotCardOrderGet(ctx context.Context, notMustParams ...gorequest.Params) (*IotCardOrderGetResult, error) {
+func (c *Client) IotCardOrderGet(ctx context.Context, notMustParams ...*gorequest.Params) (*IotCardOrderGetResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

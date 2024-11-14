@@ -25,7 +25,7 @@ func newPhoneBillOrderResult(result PhoneBillOrderResponse, body []byte, http go
 }
 
 // PhoneBillOrder 话费订单下单
-func (c *Client) PhoneBillOrder(ctx context.Context, notMustParams ...gorequest.Params) (*PhoneBillOrderResult, error) {
+func (c *Client) PhoneBillOrder(ctx context.Context, notMustParams ...*gorequest.Params) (*PhoneBillOrderResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

@@ -39,7 +39,7 @@ func newOrderDirectChargeResult(result OrderDirectChargeResponse, body []byte, h
 // oil_phone_account = 加油卡充值时用户的手机号
 // notify_url = 橙券主动通知订单结果地址
 // https://chengquan.cn/rechargeInterface/directCharge.html
-func (c *Client) OrderDirectCharge(ctx context.Context, orderNo string, rechargeNumber string, productID int64, amount int64, notMustParams ...gorequest.Params) (*OrderDirectChargeResult, error) {
+func (c *Client) OrderDirectCharge(ctx context.Context, orderNo string, rechargeNumber string, productID int64, amount int64, notMustParams ...*gorequest.Params) (*OrderDirectChargeResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

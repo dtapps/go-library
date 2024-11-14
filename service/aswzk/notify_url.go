@@ -17,7 +17,7 @@ type NotifyUrlParams struct {
 }
 
 // NotifyUrl 通知回调地址
-func (c *Client) NotifyUrl(ctx context.Context, params NotifyUrlParams, param gorequest.Params) error {
+func (c *Client) NotifyUrl(ctx context.Context, params NotifyUrlParams, param *gorequest.Params) error {
 
 	// 验证回调地址
 	_, err := url.ParseRequestURI(params.NotifyUrl)

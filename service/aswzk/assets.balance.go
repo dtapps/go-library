@@ -27,7 +27,7 @@ func newAssetsBalanceResult(result AssetsBalanceResponse, body []byte, http gore
 }
 
 // AssetsBalance 余额查询
-func (c *Client) AssetsBalance(ctx context.Context, notMustParams ...gorequest.Params) (*AssetsBalanceResult, error) {
+func (c *Client) AssetsBalance(ctx context.Context, notMustParams ...*gorequest.Params) (*AssetsBalanceResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

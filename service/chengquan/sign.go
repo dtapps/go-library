@@ -12,11 +12,11 @@ import (
 )
 
 // 签名
-func (c *Client) sign(ctx context.Context, param gorequest.Params) string {
+func (c *Client) sign(ctx context.Context, param *gorequest.Params) string {
 
 	// 排序所有的 key
 	var keys []string
-	for key := range param {
+	for key := range param.DeepCopy() {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)

@@ -34,7 +34,7 @@ func newIotCardPackageListResult(result IotCardPackageListResponse, body []byte,
 }
 
 // IotCardPackageList 物联卡套餐列表
-func (c *Client) IotCardPackageList(ctx context.Context, iccid string, notMustParams ...gorequest.Params) (*IotCardPackageListResult, error) {
+func (c *Client) IotCardPackageList(ctx context.Context, iccid string, notMustParams ...*gorequest.Params) (*IotCardPackageListResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

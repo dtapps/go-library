@@ -36,7 +36,7 @@ func newOrderTelPayResult(result OrderTelPayResponse, body []byte, http goreques
 // price = 充值面值(单位：分)
 // notify_url = 橙券主动通知订单结果地址
 // https://www.chengquan.cn/rechargeInterface/tel.html
-func (c *Client) OrderTelPay(ctx context.Context, orderNo string, rechargeNumber string, price int64, notMustParams ...gorequest.Params) (*OrderTelPayResult, error) {
+func (c *Client) OrderTelPay(ctx context.Context, orderNo string, rechargeNumber string, price int64, notMustParams ...*gorequest.Params) (*OrderTelPayResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

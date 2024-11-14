@@ -35,7 +35,7 @@ func newElectricityBillOrderQueryResult(result ElectricityBillOrderQueryResponse
 }
 
 // ElectricityBillOrderQuery 电费订单查询
-func (c *Client) ElectricityBillOrderQuery(ctx context.Context, orderID string, orderNo string, notMustParams ...gorequest.Params) (*ElectricityBillOrderQueryResult, error) {
+func (c *Client) ElectricityBillOrderQuery(ctx context.Context, orderID string, orderNo string, notMustParams ...*gorequest.Params) (*ElectricityBillOrderQueryResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

@@ -27,7 +27,7 @@ func newUserBalanceGetResult(result UserBalanceGetResponse, body []byte, http go
 
 // UserBalanceGet 账号余额查询接口
 // https://chengquan.cn/basicData/queryBalance.html
-func (c *Client) UserBalanceGet(ctx context.Context, notMustParams ...gorequest.Params) (*UserBalanceGetResult, error) {
+func (c *Client) UserBalanceGet(ctx context.Context, notMustParams ...*gorequest.Params) (*UserBalanceGetResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
