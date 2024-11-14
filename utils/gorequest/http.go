@@ -23,9 +23,9 @@ import (
 type Response struct {
 	RequestID             string      `json:"request_id"`              // 请求编号
 	RequestUri            string      `json:"request_uri"`             // 请求链接
-	RequestParams         Params      `json:"request_params"`          // 请求参数
+	RequestParams         *Params     `json:"request_params"`          // 请求参数
 	RequestMethod         string      `json:"request_method"`          // 请求方式
-	RequestHeader         Headers     `json:"request_header"`          // 请求头部
+	RequestHeader         *Headers    `json:"request_header"`          // 请求头部
 	RequestCookie         string      `json:"request_cookie"`          // 请求Cookie
 	RequestTime           time.Time   `json:"request_time"`            // 请求时间
 	RequestCostTime       int64       `json:"request_cost_time"`       // 请求消耗时长
@@ -45,8 +45,8 @@ type App struct {
 	Uri                          string           // 全局请求地址，没有设置url才会使用
 	httpUri                      string           // 请求地址
 	httpMethod                   string           // 请求方法
-	httpHeader                   Headers          // 请求头
-	httpParams                   Params           // 请求参数
+	httpHeader                   *Headers         // 请求头
+	httpParams                   *Params          // 请求参数
 	httpCookie                   string           // Cookie
 	responseContent              Response         // 返回内容
 	httpContentType              string           // 请求内容类型
@@ -170,8 +170,10 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	httpResponse.RequestTime = gotime.Current().Time
 	httpResponse.RequestUri = c.httpUri
 	httpResponse.RequestMethod = c.httpMethod
-	httpResponse.RequestParams = c.httpParams.DeepCopy()
-	httpResponse.RequestHeader = c.httpHeader.DeepCopy()
+	//httpResponse.RequestParams = c.httpParams.DeepCopy()
+	httpResponse.RequestParams = c.httpParams
+	//httpResponse.RequestHeader = c.httpHeader.DeepCopy()
+	httpResponse.RequestHeader = c.httpHeader
 	httpResponse.RequestCookie = c.httpCookie
 
 	// 判断网址
@@ -245,7 +247,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	if httpResponse.RequestMethod != http.MethodGet && c.httpContentType == httpParamsModeForm {
 		// 携带 form 参数
 		form := url.Values{}
-		for k, v := range httpResponse.RequestParams {
+		for k, v := range httpResponse.RequestParams.DeepCopy() {
 			form.Add(k, GetParamsString(v))
 		}
 		// 赋值
@@ -253,7 +255,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	}
 
 	if c.httpContentType == httpParamsModeXml {
-		requestBody, err = ToXml(httpResponse.RequestParams)
+		requestBody, err = ToXml(httpResponse.RequestParams.DeepCopy())
 		if err != nil {
 			return httpResponse, err
 		}
@@ -268,15 +270,15 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	// GET 请求携带查询参数
 	if httpResponse.RequestMethod == http.MethodGet {
 		q := req.URL.Query()
-		for k, v := range httpResponse.RequestParams {
+		for k, v := range httpResponse.RequestParams.DeepCopy() {
 			q.Add(k, GetParamsString(v))
 		}
 		req.URL.RawQuery = q.Encode()
 	}
 
 	// 设置请求头
-	if len(httpResponse.RequestHeader) > 0 {
-		for key, value := range httpResponse.RequestHeader {
+	if len(httpResponse.RequestHeader.DeepCopy()) > 0 {
+		for key, value := range httpResponse.RequestHeader.DeepCopy() {
 			req.Header.Set(key, fmt.Sprintf("%v", value))
 		}
 	}
@@ -347,7 +349,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 			RequestQuery:    req.URL.Query(),
 			RequestMethod:   req.Method,
 			RequestIP:       c.clientIP,
-			RequestBody:     httpResponse.RequestParams,
+			RequestBody:     httpResponse.RequestParams.DeepCopy(),
 			RequestHeader:   req.Header,
 			RequestCostTime: httpResponse.RequestCostTime,
 

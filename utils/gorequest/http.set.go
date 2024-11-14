@@ -25,8 +25,8 @@ func (c *App) SetHeader(key, value string) {
 }
 
 // SetHeaders 批量设置请求头
-func (c *App) SetHeaders(headers Headers) {
-	for key, value := range headers {
+func (c *App) SetHeaders(headers *Headers) {
+	for key, value := range headers.DeepCopy() {
 		c.httpHeader.Set(key, value)
 	}
 }
@@ -72,8 +72,8 @@ func (c *App) SetParam(key string, value interface{}) {
 }
 
 // SetParams 批量设置请求参数
-func (c *App) SetParams(params Params) {
-	for key, value := range params {
+func (c *App) SetParams(params *Params) {
+	for key, value := range params.DeepCopy() {
 		c.httpParams.Set(key, value)
 	}
 }
