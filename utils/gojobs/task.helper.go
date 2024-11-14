@@ -25,7 +25,7 @@ type TaskHelper struct {
 // taskType 任务类型
 // logIsDebug 日志是否启动
 // traceIsFilter 链路追踪是否过滤
-func NewTaskHelper(rootCtx context.Context, taskType string, opts ...TaskHelperOption) *TaskHelper {
+func NewTaskHelper(ctx context.Context, taskType string, opts ...TaskHelperOption) *TaskHelper {
 	th := &TaskHelper{
 		taskType: taskType,
 	}
@@ -33,15 +33,15 @@ func NewTaskHelper(rootCtx context.Context, taskType string, opts ...TaskHelperO
 	// 配置
 	th.cfg = newTaskHelperConfig(opts)
 
-	if gorequest.GetRequestIDContext(rootCtx) == "" {
-		rootCtx = gorequest.SetRequestIDContext(rootCtx)
+	if gorequest.GetRequestIDContext(ctx) == "" {
+		ctx = gorequest.SetRequestIDContext(ctx)
 	}
 
 	return th
 }
 
 // QueryTaskList 通过回调函数获取任务列表
-// rootCtx 链路追踪的上下文
+// ctx 链路追踪的上下文
 // isRunCallback 任务列表回调函数 返回 是否使用 任务列表
 // listCallback 任务回调函数 返回 任务列表
 // newTaskLists 新的任务列表
@@ -100,7 +100,7 @@ func (th *TaskHelper) QueryTaskList(ctx context.Context, isRunCallback func(ctx 
 }
 
 // FilterTaskList 过滤任务列表
-// rootCtx 链路追踪的上下文
+// ctx 链路追踪的上下文
 // isMandatoryIp 强制当前ip
 // specifyIp 指定Ip
 // isContinue 是否继续
@@ -183,7 +183,7 @@ func (th *TaskHelper) GetTaskList() []*GormModelTask {
 }
 
 // RunMultipleTask 运行多个任务
-// rootCtx 链路追踪的上下文
+// ctx 链路追踪的上下文
 // wait 等待时间（秒）
 // executionCallback 执行任务回调函数 返回 runCode=状态 runDesc=描述
 // updateCallback 执行更新回调函数
@@ -231,7 +231,7 @@ type TaskHelperRunSingleTaskResponse struct {
 }
 
 // RunSingleTask 运行单个任务
-// rootCtx 链路追踪的上下文
+// ctx 链路追踪的上下文
 // task 任务
 // executionCallback 执行任务回调函数 返回 runCode=状态 runDesc=描述
 // updateCallback 执行更新回调函数
