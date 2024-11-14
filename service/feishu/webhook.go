@@ -30,7 +30,7 @@ func newWebhookSendResult(result WebhookSendResponse, body []byte, http goreques
 
 // WebhookSend 发送消息
 // https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN
-func (c *Client) WebhookSend(ctx context.Context, key string, notMustParams ...gorequest.Params) (*WebhookSendResult, error) {
+func (c *Client) WebhookSend(ctx context.Context, key string, notMustParams ...*gorequest.Params) (*WebhookSendResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -43,7 +43,7 @@ func (c *Client) WebhookSend(ctx context.Context, key string, notMustParams ...g
 
 // WebhookSendURL 发送消息
 // https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN
-func (c *Client) WebhookSendURL(ctx context.Context, url string, notMustParams ...gorequest.Params) (*WebhookSendResult, error) {
+func (c *Client) WebhookSendURL(ctx context.Context, url string, notMustParams ...*gorequest.Params) (*WebhookSendResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -56,12 +56,13 @@ func (c *Client) WebhookSendURL(ctx context.Context, url string, notMustParams .
 
 // WebhookSendSign 发送消息签名版
 // https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN
-func (c *Client) WebhookSendSign(ctx context.Context, key string, secret string, notMustParams ...gorequest.Params) (*WebhookSendResult, error) {
+func (c *Client) WebhookSendSign(ctx context.Context, key string, secret string, notMustParams ...*gorequest.Params) (*WebhookSendResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params["timestamp"] = gotime.Current().Timestamp()
-	params["sign"], _ = c.webhookSendSignGenSign(secret, fmt.Sprintf("%v", params["timestamp"]))
+	params.Set("timestamp", gotime.Current().Timestamp())
+	sign, _ := c.webhookSendSignGenSign(secret, fmt.Sprintf("%v", params.Get("timestamp")))
+	params.Set("sign", sign)
 
 	// 请求
 	var response WebhookSendResponse
@@ -71,12 +72,13 @@ func (c *Client) WebhookSendSign(ctx context.Context, key string, secret string,
 
 // WebhookSendSignURL 发送消息签名版
 // https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN
-func (c *Client) WebhookSendSignURL(ctx context.Context, url string, secret string, notMustParams ...gorequest.Params) (*WebhookSendResult, error) {
+func (c *Client) WebhookSendSignURL(ctx context.Context, url string, secret string, notMustParams ...*gorequest.Params) (*WebhookSendResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params["timestamp"] = gotime.Current().Timestamp()
-	params["sign"], _ = c.webhookSendSignGenSign(secret, fmt.Sprintf("%v", params["timestamp"]))
+	params.Set("timestamp", gotime.Current().Timestamp())
+	sign, _ := c.webhookSendSignGenSign(secret, fmt.Sprintf("%v", params.Get("timestamp")))
+	params.Set("sign", sign)
 
 	// 请求
 	var response WebhookSendResponse

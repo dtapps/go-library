@@ -44,7 +44,7 @@ func newPushResult(result PushResponse, body []byte, http gorequest.Response) *P
 
 // Push 推送消息
 // https://doc.sc3.ft07.com/server/api
-func (c *Client) Push(ctx context.Context, notMustParams ...gorequest.Params) (*PushResult, error) {
+func (c *Client) Push(ctx context.Context, notMustParams ...*gorequest.Params) (*PushResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

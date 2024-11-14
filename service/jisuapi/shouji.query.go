@@ -29,7 +29,7 @@ func newShoujiQueryResult(result ShoujiQueryResponse, body []byte, http goreques
 
 // ShoujiQuery 手机号码归属地
 // https://www.jisuapi.com/api/shouji/
-func (c *Client) ShoujiQuery(ctx context.Context, shouji string, appkey string, notMustParams ...gorequest.Params) (*ShoujiQueryResult, error) {
+func (c *Client) ShoujiQuery(ctx context.Context, shouji string, appkey string, notMustParams ...*gorequest.Params) (*ShoujiQueryResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

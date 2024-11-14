@@ -31,7 +31,7 @@ func newMobileGetResult(result MobileGetResponse, body []byte, http gorequest.Re
 
 // MobileGet 手机号码归属地
 // https://www.juhe.cn/docs/api/id/11
-func (c *Client) MobileGet(ctx context.Context, phone string, key string, notMustParams ...gorequest.Params) (*MobileGetResult, error) {
+func (c *Client) MobileGet(ctx context.Context, phone string, key string, notMustParams ...*gorequest.Params) (*MobileGetResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
