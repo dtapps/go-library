@@ -170,8 +170,8 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	httpResponse.RequestTime = gotime.Current().Time
 	httpResponse.RequestUri = c.httpUri
 	httpResponse.RequestMethod = c.httpMethod
-	httpResponse.RequestParams = c.httpParams.DeepCopyNew()
-	httpResponse.RequestHeader = c.httpHeader.DeepCopyNew()
+	httpResponse.RequestParams = c.httpParams.DeepCopy()
+	httpResponse.RequestHeader = c.httpHeader.DeepCopy()
 	httpResponse.RequestCookie = c.httpCookie
 
 	// 判断网址
@@ -234,7 +234,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	var requestBody io.Reader
 
 	if httpResponse.RequestMethod != http.MethodGet && c.httpContentType == httpParamsModeJson {
-		jsonStr, err := gojson.Marshal(httpResponse.RequestParams)
+		jsonStr, err := gojson.Marshal(httpResponse.RequestParams.DeepGet())
 		if err != nil {
 			return httpResponse, err
 		}

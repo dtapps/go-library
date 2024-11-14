@@ -72,35 +72,18 @@ func (h *Headers) DeepGet() map[string]string {
 }
 
 // DeepCopy 深度复制
-func (h *Headers) DeepCopy() map[string]string {
+func (h *Headers) DeepCopy() *Headers {
 	h.Lock()
 	defer h.Unlock()
 
 	// 深度复制数据
-	targetMap := make(map[string]string)
+	targetHeader := NewHeaders()
 	for key, value := range h.m {
-		targetMap[key] = value
+		targetHeader.Set(key, value)
 	}
 
 	// 清空原始数据
 	h.m = make(map[string]string)
 
-	return targetMap
-}
-
-// DeepCopyNew 深度复制
-func (h *Headers) DeepCopyNew() *Headers {
-	h.Lock()
-	defer h.Unlock()
-
-	// 深度复制数据
-	targetMap := make(map[string]string)
-	for key, value := range h.m {
-		targetMap[key] = value
-	}
-
-	// 清空原始数据
-	h.m = make(map[string]string)
-
-	return NewHeaders()
+	return targetHeader
 }

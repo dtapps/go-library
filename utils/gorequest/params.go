@@ -60,35 +60,18 @@ func (p *Params) DeepGet() map[string]any {
 }
 
 // DeepCopy 深度复制
-func (p *Params) DeepCopy() map[string]any {
+func (p *Params) DeepCopy() *Params {
 	p.Lock()
 	defer p.Unlock()
 
 	// 深度复制数据
-	targetMap := make(map[string]any)
+	targetParam := NewParams()
 	for key, value := range p.m {
-		targetMap[key] = value
+		targetParam.Set(key, value)
 	}
 
 	// 清空原始数据
 	p.m = make(map[string]any)
 
-	return targetMap
-}
-
-// DeepCopyNew 深度复制
-func (p *Params) DeepCopyNew() *Params {
-	p.Lock()
-	defer p.Unlock()
-
-	// 深度复制数据
-	targetMap := make(map[string]any)
-	for key, value := range p.m {
-		targetMap[key] = value
-	}
-
-	// 清空原始数据
-	p.m = make(map[string]any)
-
-	return NewParams()
+	return targetParam
 }
