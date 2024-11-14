@@ -7,7 +7,7 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-func (c *Client) requestXml(ctx context.Context, url string, param gorequest.Params, method string, response any) (gorequest.Response, error) {
+func (c *Client) requestXml(ctx context.Context, url string, param *gorequest.Params, method string, response any) (gorequest.Response, error) {
 
 	// 签名
 	param.Set("userkey", c.xmlSign(url, param))
@@ -39,7 +39,7 @@ func (c *Client) requestXml(ctx context.Context, url string, param gorequest.Par
 	return request, err
 }
 
-func (c *Client) requestJson(ctx context.Context, url string, param gorequest.Params, method string, response any) (gorequest.Response, error) {
+func (c *Client) requestJson(ctx context.Context, url string, param *gorequest.Params, method string, response any) (gorequest.Response, error) {
 
 	// 请求地址
 	uri := apiUrl + url

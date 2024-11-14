@@ -24,7 +24,7 @@ func newRemoveResult(result RemoveResponse, body []byte, http gorequest.Response
 // Remove 申请撤单【已正式上线】
 // out_trade_num = 商户订单号；多个用英文,分割
 // https://www.showdoc.com.cn/dyr/9745453200292104
-func (c *Client) Remove(ctx context.Context, outTradeNums string, notMustParams ...gorequest.Params) (*RemoveResult, error) {
+func (c *Client) Remove(ctx context.Context, outTradeNums string, notMustParams ...*gorequest.Params) (*RemoveResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

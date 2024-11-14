@@ -28,7 +28,7 @@ func newRobotSendResult(result RobotSendResponse, body []byte, http gorequest.Re
 
 // RobotSend 发送消息
 // https://open.dingtalk.com/document/group/custom-robot-access
-func (c *Client) RobotSend(ctx context.Context, accessToken string, notMustParams ...gorequest.Params) (*RobotSendResult, error) {
+func (c *Client) RobotSend(ctx context.Context, accessToken string, notMustParams ...*gorequest.Params) (*RobotSendResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -41,7 +41,7 @@ func (c *Client) RobotSend(ctx context.Context, accessToken string, notMustParam
 
 // RobotSendURL 发送消息
 // https://open.dingtalk.com/document/group/custom-robot-access
-func (c *Client) RobotSendURL(ctx context.Context, url string, notMustParams ...gorequest.Params) (*RobotSendResult, error) {
+func (c *Client) RobotSendURL(ctx context.Context, url string, notMustParams ...*gorequest.Params) (*RobotSendResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -54,7 +54,7 @@ func (c *Client) RobotSendURL(ctx context.Context, url string, notMustParams ...
 
 // RobotSendSign 发送消息签名版
 // https://open.dingtalk.com/document/group/custom-robot-access
-func (c *Client) RobotSendSign(ctx context.Context, accessToken string, secret string, notMustParams ...gorequest.Params) (*RobotSendResult, error) {
+func (c *Client) RobotSendSign(ctx context.Context, accessToken string, secret string, notMustParams ...*gorequest.Params) (*RobotSendResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -69,7 +69,7 @@ func (c *Client) RobotSendSign(ctx context.Context, accessToken string, secret s
 
 // RobotSendSignURL 发送消息签名版
 // https://open.dingtalk.com/document/group/custom-robot-access
-func (c *Client) RobotSendSignURL(ctx context.Context, url string, secret string, notMustParams ...gorequest.Params) (*RobotSendResult, error) {
+func (c *Client) RobotSendSignURL(ctx context.Context, url string, secret string, notMustParams ...*gorequest.Params) (*RobotSendResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

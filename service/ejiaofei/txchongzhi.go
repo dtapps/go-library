@@ -46,7 +46,7 @@ func newTxChOngZhiResult(result TxChOngZhiResponse, body []byte, http gorequest.
 // productid = 产品id 可以通过2.5查询
 // amount = 购买数量
 // ip = 可以为空
-func (c *Client) TxChOngZhi(ctx context.Context, orderid string, account string, productid int64, amount int64, notMustParams ...gorequest.Params) (*TxChOngZhiResult, error) {
+func (c *Client) TxChOngZhi(ctx context.Context, orderid string, account string, productid int64, amount int64, notMustParams ...*gorequest.Params) (*TxChOngZhiResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

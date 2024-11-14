@@ -48,7 +48,7 @@ func newCheckResult(result CheckResponse, body []byte, http gorequest.Response) 
 // out_trade_nums = 商户订单号；多个用英文,分割
 // https://www.showdoc.com.cn/dyr/9227006175502841
 // https://www.kancloud.cn/boyanyun/boyanyun_huafei/3097254
-func (c *Client) Check(ctx context.Context, outTradeNums string, notMustParams ...gorequest.Params) (*CheckResult, error) {
+func (c *Client) Check(ctx context.Context, outTradeNums string, notMustParams ...*gorequest.Params) (*CheckResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

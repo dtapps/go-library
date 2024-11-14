@@ -22,7 +22,7 @@ func newFindBalanceResult(result FindBalanceResponse, body []byte, http goreques
 }
 
 // FindBalance 余额查询接口
-func (c *Client) FindBalance(ctx context.Context, notMustParams ...gorequest.Params) (*FindBalanceResult, error) {
+func (c *Client) FindBalance(ctx context.Context, notMustParams ...*gorequest.Params) (*FindBalanceResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

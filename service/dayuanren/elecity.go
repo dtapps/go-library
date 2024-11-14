@@ -36,7 +36,7 @@ func newElecityResult(result ElecityResponse, body []byte, http gorequest.Respon
 // Elecity 电费支持地区查询
 // https://www.showdoc.com.cn/dyr/9227008514209156
 // https://www.kancloud.cn/boyanyun/boyanyun_huafei/3097256
-func (c *Client) Elecity(ctx context.Context, notMustParams ...gorequest.Params) (*ElecityResult, error) {
+func (c *Client) Elecity(ctx context.Context, notMustParams ...*gorequest.Params) (*ElecityResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

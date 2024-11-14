@@ -23,7 +23,7 @@ func newQueryTxProductResult(result QueryTxProductResponse, body []byte, http go
 }
 
 // QueryTxProduct 可充值腾讯产品查询
-func (c *Client) QueryTxProduct(ctx context.Context, notMustParams ...gorequest.Params) (*QueryTxProductResult, error) {
+func (c *Client) QueryTxProduct(ctx context.Context, notMustParams ...*gorequest.Params) (*QueryTxProductResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

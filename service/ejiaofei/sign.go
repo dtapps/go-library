@@ -8,7 +8,7 @@ import (
 	"sort"
 )
 
-func (c *Client) xmlSign(url string, param gorequest.Params) (signStr string) {
+func (c *Client) xmlSign(url string, param *gorequest.Params) (signStr string) {
 	switch url {
 
 	case "http://api.ejiaofei.net:11140/checkCost.do":
@@ -44,9 +44,9 @@ func (c *Client) xmlSign(url string, param gorequest.Params) (signStr string) {
 	return gomd5.ToUpper(fmt.Sprintf("%s%s", signStr, c.GetKey()))
 }
 
-func (c *Client) jsonSign(param gorequest.Params) string {
+func (c *Client) jsonSign(param *gorequest.Params) string {
 	var keys []string
-	for k := range param {
+	for k := range param.DeepCopy() {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)

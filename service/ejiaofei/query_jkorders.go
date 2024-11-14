@@ -33,7 +33,7 @@ func newQueryJkOrdersResult(result QueryJkOrdersResponse, body []byte, http gore
 
 // QueryJkOrders 通用查询接口
 // orderid = 用户提交的订单号 用户提交的订单号，最长32位（用户保证其唯一性）
-func (c *Client) QueryJkOrders(ctx context.Context, orderid string, notMustParams ...gorequest.Params) (*QueryJkOrdersResult, error) {
+func (c *Client) QueryJkOrders(ctx context.Context, orderid string, notMustParams ...*gorequest.Params) (*QueryJkOrdersResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

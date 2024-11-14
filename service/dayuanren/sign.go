@@ -10,9 +10,9 @@ import (
 
 // 签名
 // https://www.showdoc.com.cn/dyr/9227002900063946
-func (c *Client) sign(param gorequest.Params) string {
+func (c *Client) sign(param *gorequest.Params) string {
 	var keys []string
-	for k := range param {
+	for k := range param.DeepCopy() {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)

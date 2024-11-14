@@ -53,7 +53,7 @@ func newRechargeResult(result RechargeResponse, body []byte, http gorequest.Resp
 // param3 = 扩展参数，后台查看提交的产品类目是否需要提交此参数
 // https://www.showdoc.com.cn/dyr/9227003154511692
 // https://www.kancloud.cn/boyanyun/boyanyun_huafei/3097250
-func (c *Client) Recharge(ctx context.Context, outTradeNum string, productID int64, mobile string, notifyUrl string, notMustParams ...gorequest.Params) (*RechargeResult, error) {
+func (c *Client) Recharge(ctx context.Context, outTradeNum string, productID int64, mobile string, notifyUrl string, notMustParams ...*gorequest.Params) (*RechargeResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

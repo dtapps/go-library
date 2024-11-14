@@ -39,7 +39,7 @@ func newRechargeResult(result RechargeResponse, body []byte, http gorequest.Resp
 // unit = 流量有效期 0/小时，1/天 ，2/个月，3/季度，4/年
 // oilType = 加油卡类型（300-中石化，310-中石油）
 // operator = 运营商
-func (c *Client) Recharge(ctx context.Context, rechargeType int64, orderId string, account string, face int64, notMustParams ...gorequest.Params) (*RechargeResult, error) {
+func (c *Client) Recharge(ctx context.Context, rechargeType int64, orderId string, account string, face int64, notMustParams ...*gorequest.Params) (*RechargeResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

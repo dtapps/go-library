@@ -28,7 +28,7 @@ func newCheckCostResult(result CheckCostResponse, body []byte, http gorequest.Re
 
 // CheckCost 会员订单成本价查询接口
 // orderid 用户订单号	用户提交订单号
-func (c *Client) CheckCost(ctx context.Context, orderid string, notMustParams ...gorequest.Params) (*CheckCostResult, error) {
+func (c *Client) CheckCost(ctx context.Context, orderid string, notMustParams ...*gorequest.Params) (*CheckCostResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

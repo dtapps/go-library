@@ -57,7 +57,7 @@ func newProductResult(result ProductResponse, body []byte, http gorequest.Respon
 // cate_id = 分类ID
 // https://www.showdoc.com.cn/dyr/9227005691961526
 // https://www.kancloud.cn/boyanyun/boyanyun_huafei/3097253
-func (c *Client) Product(ctx context.Context, notMustParams ...gorequest.Params) (*ProductResult, error) {
+func (c *Client) Product(ctx context.Context, notMustParams ...*gorequest.Params) (*ProductResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

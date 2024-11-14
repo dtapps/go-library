@@ -37,7 +37,7 @@ func newChOngZhiJkOrdersResult(result ChOngZhiJkOrdersResponse, body []byte, htt
 // account = 手机号码 需要充值的手机号码
 // amount = 购买数量 只能为1
 // operator = 运营商可指定当前手机号的运营商信息进行充值,为空则自动匹配号段对应的运营商进行充值; 具体对应的运营商信息表3.3
-func (c *Client) ChOngZhiJkOrders(ctx context.Context, orderid string, face int64, account string, amount int64, notMustParams ...gorequest.Params) (*ChOngZhiJkOrdersResult, error) {
+func (c *Client) ChOngZhiJkOrders(ctx context.Context, orderid string, face int64, account string, amount int64, notMustParams ...*gorequest.Params) (*ChOngZhiJkOrdersResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

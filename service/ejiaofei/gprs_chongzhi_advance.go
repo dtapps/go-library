@@ -51,7 +51,7 @@ func newGprsChOngZhiAdvanceResult(result GprsChOngZhiAdvanceResponse, body []byt
 // area = 充值流量范围	0 全国流量，1 省内流量
 // effecttime = 生效日期	0 即时生效，1次日生效，2 次月生效
 // validity = 流量有效期	传入月数，0为当月有效
-func (c *Client) GprsChOngZhiAdvance(ctx context.Context, orderid string, account string, gprs int64, area int64, effectTime int64, validity int64, notMustParams ...gorequest.Params) (*GprsChOngZhiAdvanceResult, error) {
+func (c *Client) GprsChOngZhiAdvance(ctx context.Context, orderid string, account string, gprs int64, area int64, effectTime int64, validity int64, notMustParams ...*gorequest.Params) (*GprsChOngZhiAdvanceResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

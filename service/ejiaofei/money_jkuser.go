@@ -25,7 +25,7 @@ func newMoneyJkUserResult(result MoneyJkUserResponse, body []byte, http goreques
 }
 
 // MoneyJkUser 用户余额查询
-func (c *Client) MoneyJkUser(ctx context.Context, notMustParams ...gorequest.Params) (*MoneyJkUserResult, error) {
+func (c *Client) MoneyJkUser(ctx context.Context, notMustParams ...*gorequest.Params) (*MoneyJkUserResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

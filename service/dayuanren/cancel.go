@@ -24,7 +24,7 @@ func newCancelResult(result CancelResponse, body []byte, http gorequest.Response
 // Cancel 退单申请
 // out_trade_num = 商户订单号；多个用英文,分割
 // https://www.kancloud.cn/boyanyun/boyanyun_huafei/3182909
-func (c *Client) Cancel(ctx context.Context, outTradeNums string, notMustParams ...gorequest.Params) (*CancelResult, error) {
+func (c *Client) Cancel(ctx context.Context, outTradeNums string, notMustParams ...*gorequest.Params) (*CancelResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

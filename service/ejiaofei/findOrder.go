@@ -28,7 +28,7 @@ func newFindOrderResult(result FindOrderResponse, body []byte, http gorequest.Re
 
 // FindOrder 订单查询接口
 // orderId = 用户提交的订单号	是	用户提交的订单号，最长32位（用户保证其唯一性）
-func (c *Client) FindOrder(ctx context.Context, orderID string, notMustParams ...gorequest.Params) (*FindOrderResult, error) {
+func (c *Client) FindOrder(ctx context.Context, orderID string, notMustParams ...*gorequest.Params) (*FindOrderResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
