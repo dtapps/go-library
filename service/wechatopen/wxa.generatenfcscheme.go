@@ -24,7 +24,7 @@ func newGenerateNFCSchemeResult(result GenerateNFCSchemeResponse, body []byte, h
 
 // GenerateNFCScheme 获取 NFC 的小程序 scheme
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/url-scheme/generateNFCScheme.html
-func (c *Client) GenerateNFCScheme(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GenerateNFCSchemeResult, error) {
+func (c *Client) GenerateNFCScheme(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*GenerateNFCSchemeResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

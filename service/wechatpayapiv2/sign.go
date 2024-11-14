@@ -10,10 +10,10 @@ import (
 )
 
 // 支付字符串拼接
-func (c *Client) getSortString(m gorequest.Params) string {
+func (c *Client) getSortString(m *gorequest.Params) string {
 	var buf bytes.Buffer
 	keys := make([]string, 0)
-	for k := range m {
+	for k := range m.DeepCopy() {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
@@ -33,14 +33,14 @@ func (c *Client) getSortString(m gorequest.Params) string {
 }
 
 // 获取签名
-func (c *Client) getMd5Sign(paramMap gorequest.Params) string {
+func (c *Client) getMd5Sign(paramMap *gorequest.Params) string {
 	sortString := c.getSortString(paramMap)
 	sign := gomd5.Md5(sortString + "&key=" + c.GetMchKey())
 	return strings.ToUpper(sign)
 }
 
 // 验证签名
-func (c *Client) checkMd5Sign(rspMap gorequest.Params, sign string) bool {
+func (c *Client) checkMd5Sign(rspMap *gorequest.Params, sign string) bool {
 	calculateSign := c.getMd5Sign(rspMap)
 	return calculateSign == sign
 }

@@ -24,7 +24,7 @@ func newBillFundFlowBillGetResult(result BillFundFlowBillGetResponse, body []byt
 
 // BillFundFlowBillGet 申请资金账单API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_7.shtml
-func (c *Client) BillFundFlowBillGet(ctx context.Context, notMustParams ...gorequest.Params) (*BillFundFlowBillGetResult, ApiError, error) {
+func (c *Client) BillFundFlowBillGet(ctx context.Context, notMustParams ...*gorequest.Params) (*BillFundFlowBillGetResult, ApiError, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

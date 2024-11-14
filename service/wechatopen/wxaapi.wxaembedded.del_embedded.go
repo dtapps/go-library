@@ -23,7 +23,7 @@ func newWxaApiWxaembeddedDelAuthorizeResult(result WxaApiWxaembeddedDelAuthorize
 
 // WxaApiWxaembeddedDelAuthorize 取消授权小程序
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/embedded-management/deleteAuthorizedEmbedded.html
-func (c *Client) WxaApiWxaembeddedDelAuthorize(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaApiWxaembeddedDelAuthorizeResult, error) {
+func (c *Client) WxaApiWxaembeddedDelAuthorize(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaApiWxaembeddedDelAuthorizeResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

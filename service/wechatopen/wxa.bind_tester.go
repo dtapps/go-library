@@ -24,7 +24,7 @@ func newBindTesterResult(result BindTesterResponse, body []byte, http gorequest.
 
 // BindTester 绑定体验者
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/member-management/bindTester.html
-func (c *Client) BindTester(ctx context.Context, authorizerAccessToken, wechatid string, notMustParams ...gorequest.Params) (*BindTesterResult, error) {
+func (c *Client) BindTester(ctx context.Context, authorizerAccessToken, wechatid string, notMustParams ...*gorequest.Params) (*BindTesterResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

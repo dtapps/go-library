@@ -57,7 +57,7 @@ func newPayRefundQueryResult(result PayRefundQueryResponse, body []byte, http go
 // PayRefundQuery
 // 小程序支付 - 查询退款
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1
-func (c *Client) PayRefundQuery(ctx context.Context, notMustParams ...gorequest.Params) (*PayRefundQueryResult, error) {
+func (c *Client) PayRefundQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*PayRefundQueryResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

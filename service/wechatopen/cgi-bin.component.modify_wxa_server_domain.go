@@ -26,7 +26,7 @@ func newModifyThirdpartyServerDomainResult(result ModifyThirdpartyServerDomainRe
 
 // ModifyThirdpartyServerDomain 设置第三方平台服务器域名
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/thirdparty-management/domain-mgnt/modifyThirdpartyServerDomain.html
-func (c *Client) ModifyThirdpartyServerDomain(ctx context.Context, componentAccessToken string, action string, notMustParams ...gorequest.Params) (*ModifyThirdpartyServerDomainResult, error) {
+func (c *Client) ModifyThirdpartyServerDomain(ctx context.Context, componentAccessToken string, action string, notMustParams ...*gorequest.Params) (*ModifyThirdpartyServerDomainResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

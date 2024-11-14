@@ -25,7 +25,7 @@ func newCreateQRCodeResult(result CreateQRCodeResponse, body []byte, http gorequ
 
 // CreateQRCode 获取小程序二维码
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/qr-code/createQRCode.html
-func (c *Client) CreateQRCode(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*CreateQRCodeResult, error) {
+func (c *Client) CreateQRCode(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*CreateQRCodeResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

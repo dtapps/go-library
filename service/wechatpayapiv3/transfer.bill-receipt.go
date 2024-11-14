@@ -30,7 +30,7 @@ func newTransferBillReceiptResult(result TransferBillReceiptResponse, body []byt
 
 // TransferBillReceipt 转账账单电子回单申请受理接口
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/electronic-signature/create-electronic-signature.html
-func (c *Client) TransferBillReceipt(ctx context.Context, notMustParams ...gorequest.Params) (*TransferBillReceiptResult, error) {
+func (c *Client) TransferBillReceipt(ctx context.Context, notMustParams ...*gorequest.Params) (*TransferBillReceiptResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

@@ -60,7 +60,7 @@ func newRefundDomesticRefundsResult(result RefundDomesticRefundsResponse, body [
 
 // RefundDomesticRefunds 申请退款API
 // https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter6_1_26.shtml
-func (c *Client) RefundDomesticRefunds(ctx context.Context, notMustParams ...gorequest.Params) (*RefundDomesticRefundsResult, error) {
+func (c *Client) RefundDomesticRefunds(ctx context.Context, notMustParams ...*gorequest.Params) (*RefundDomesticRefundsResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

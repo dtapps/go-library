@@ -37,7 +37,7 @@ func newProfitSharingOrdersResult(result ProfitSharingOrdersResponse, body []byt
 
 // ProfitSharingOrders 请求分账API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_1.shtml
-func (c *Client) ProfitSharingOrders(ctx context.Context, notMustParams ...gorequest.Params) (*ProfitSharingOrdersResult, ApiError, error) {
+func (c *Client) ProfitSharingOrders(ctx context.Context, notMustParams ...*gorequest.Params) (*ProfitSharingOrdersResult, ApiError, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

@@ -33,7 +33,7 @@ func newGetVersionInfoResult(result GetVersionInfoResponse, body []byte, http go
 
 // GetVersionInfo 查询小程序版本信息
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/getVersionInfo.html
-func (c *Client) GetVersionInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GetVersionInfoResult, error) {
+func (c *Client) GetVersionInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*GetVersionInfoResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

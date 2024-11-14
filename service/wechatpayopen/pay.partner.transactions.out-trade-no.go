@@ -66,7 +66,7 @@ func newPayPartnerTransactionsOutTradeNoResult(result PayPartnerTransactionsOutT
 
 // PayPartnerTransactionsOutTradeNo 商户订单号查询
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_2.shtml
-func (c *Client) PayPartnerTransactionsOutTradeNo(ctx context.Context, outTradeNo string, notMustParams ...gorequest.Params) (*PayPartnerTransactionsOutTradeNoResult, ApiError, error) {
+func (c *Client) PayPartnerTransactionsOutTradeNo(ctx context.Context, outTradeNo string, notMustParams ...*gorequest.Params) (*PayPartnerTransactionsOutTradeNoResult, ApiError, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

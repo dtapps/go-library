@@ -34,7 +34,7 @@ func newGetSettingCategoriesResult(result GetSettingCategoriesResponse, body []b
 
 // GetSettingCategories 获取已设置的所有类目
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/category-management/getSettingCategories.html
-func (c *Client) GetSettingCategories(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GetSettingCategoriesResult, error) {
+func (c *Client) GetSettingCategories(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*GetSettingCategoriesResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

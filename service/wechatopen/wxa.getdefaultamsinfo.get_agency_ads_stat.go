@@ -53,7 +53,7 @@ func newWxaGetdefaultamsinfoGetAgencyAdsStatResult(result WxaGetdefaultamsinfoGe
 // WxaGetdefaultamsinfoGetAgencyAdsStat
 // 获取服务商广告汇总数据
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/ad-data/GetAgencyAdsStat.html
-func (c *Client) WxaGetdefaultamsinfoGetAgencyAdsStat(ctx context.Context, authorizerAccessToken string, page, pageSize int64, startDate, endDate, adSlot string, notMustParams ...gorequest.Params) (*WxaGetdefaultamsinfoGetAgencyAdsStatResult, error) {
+func (c *Client) WxaGetdefaultamsinfoGetAgencyAdsStat(ctx context.Context, authorizerAccessToken string, page, pageSize int64, startDate, endDate, adSlot string, notMustParams ...*gorequest.Params) (*WxaGetdefaultamsinfoGetAgencyAdsStatResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

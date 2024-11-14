@@ -37,7 +37,7 @@ func newTransfersResult(result TransfersResponse, body []byte, http gorequest.Re
 // 付款到零钱 - 付款
 // 需要证书
 // https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_2
-func (c *Client) Transfers(ctx context.Context, notMustParams ...gorequest.Params) (*TransfersResult, error) {
+func (c *Client) Transfers(ctx context.Context, notMustParams ...*gorequest.Params) (*TransfersResult, error) {
 
 	// 证书
 	cert, err := c.P12ToPem()

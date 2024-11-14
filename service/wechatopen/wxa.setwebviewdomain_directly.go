@@ -23,7 +23,7 @@ func newModifyJumpDomainDirectlyResult(result ModifyJumpDomainDirectlyResponse, 
 
 // ModifyJumpDomainDirectly 快速配置小程序业务域名
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/modifyJumpDomainDirectly.html
-func (c *Client) ModifyJumpDomainDirectly(ctx context.Context, authorizerAccessToken string, action string, webviewdomain []string, notMustParams ...gorequest.Params) (*ModifyJumpDomainDirectlyResult, error) {
+func (c *Client) ModifyJumpDomainDirectly(ctx context.Context, authorizerAccessToken string, action string, webviewdomain []string, notMustParams ...*gorequest.Params) (*ModifyJumpDomainDirectlyResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

@@ -32,7 +32,7 @@ func newWxaApiWxAembeddedGetOwnListResult(result WxaApiWxAembeddedGetOwnListResp
 
 // WxaApiWxAembeddedGetOwnList 获取半屏小程序授权列表
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/embedded-management/getOwnList.html
-func (c *Client) WxaApiWxAembeddedGetOwnList(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaApiWxAembeddedGetOwnListResult, error) {
+func (c *Client) WxaApiWxAembeddedGetOwnList(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaApiWxAembeddedGetOwnListResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

@@ -24,7 +24,7 @@ func newGenerateShortLinkResult(result GenerateShortLinkResponse, body []byte, h
 
 // GenerateShortLink 获取ShortLink
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/short-link/generateShortLink.html
-func (c *Client) GenerateShortLink(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GenerateShortLinkResult, error) {
+func (c *Client) GenerateShortLink(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*GenerateShortLinkResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

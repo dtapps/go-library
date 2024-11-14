@@ -42,7 +42,7 @@ func newWxaMediaCheckAsyncResult(result WxaMediaCheckAsyncResponse, body []byte,
 
 // WxaMediaCheckAsync 音视频内容安全识别
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/sec-center/sec-check/mediaCheckAsync.html
-func (c *Client) WxaMediaCheckAsync(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaMediaCheckAsyncResult, error) {
+func (c *Client) WxaMediaCheckAsync(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaMediaCheckAsyncResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

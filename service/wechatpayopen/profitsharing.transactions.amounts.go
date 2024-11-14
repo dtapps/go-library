@@ -24,7 +24,7 @@ func newProfitSharingTransactionsAmountsResult(result ProfitSharingTransactionsA
 
 // ProfitSharingTransactionsAmounts 查询剩余待分金额API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_6.shtml
-func (c *Client) ProfitSharingTransactionsAmounts(ctx context.Context, transactionId string, notMustParams ...gorequest.Params) (*ProfitSharingTransactionsAmountsResult, ApiError, error) {
+func (c *Client) ProfitSharingTransactionsAmounts(ctx context.Context, transactionId string, notMustParams ...*gorequest.Params) (*ProfitSharingTransactionsAmountsResult, ApiError, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

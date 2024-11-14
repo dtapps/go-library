@@ -27,7 +27,7 @@ func newSetCodeAuditQuotaResult(result SetCodeAuditQuotaResponse, body []byte, h
 
 // SetCodeAuditQuota 查询服务商审核额度
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/setCodeAuditQuota.html
-func (c *Client) SetCodeAuditQuota(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*SetCodeAuditQuotaResult, error) {
+func (c *Client) SetCodeAuditQuota(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*SetCodeAuditQuotaResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

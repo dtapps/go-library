@@ -23,7 +23,7 @@ func newReleaseResult(result ReleaseResponse, body []byte, http gorequest.Respon
 
 // Release 发布已通过审核的小程序
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/release.html
-func (c *Client) Release(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*ReleaseResult, error) {
+func (c *Client) Release(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*ReleaseResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

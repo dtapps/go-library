@@ -62,7 +62,7 @@ func newPayTransactionsIdResult(result PayTransactionsIdResponse, body []byte, h
 }
 
 // PayTransactionsId 微信支付订单号查询 https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_2.shtml
-func (c *Client) PayTransactionsId(ctx context.Context, transactionId string, notMustParams ...gorequest.Params) (*PayTransactionsIdResult, error) {
+func (c *Client) PayTransactionsId(ctx context.Context, transactionId string, notMustParams ...*gorequest.Params) (*PayTransactionsIdResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

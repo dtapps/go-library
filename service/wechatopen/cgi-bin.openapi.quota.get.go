@@ -36,7 +36,7 @@ func newcgiBinOpenapiQuotaGetResult(result cgiBinOpenapiQuotaGetResponse, body [
 
 // CgiBinOpenapiQuotaGet 查询API调用额度
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/openapi/getApiQuota.html
-func (c *Client) CgiBinOpenapiQuotaGet(ctx context.Context, componentAccessToken string, cgiPath string, notMustParams ...gorequest.Params) (*cgiBinOpenapiQuotaGetResult, error) {
+func (c *Client) CgiBinOpenapiQuotaGet(ctx context.Context, componentAccessToken string, cgiPath string, notMustParams ...*gorequest.Params) (*cgiBinOpenapiQuotaGetResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

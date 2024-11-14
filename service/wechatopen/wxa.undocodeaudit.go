@@ -23,7 +23,7 @@ func newUndoAuditResult(result UndoAuditResponse, body []byte, http gorequest.Re
 
 // UndoAudit 撤回代码审核
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/undoAudit.html
-func (c *Client) UndoAudit(ctx context.Context, authorizerAccessToken string, auditid int64, notMustParams ...gorequest.Params) (*UndoAuditResult, error) {
+func (c *Client) UndoAudit(ctx context.Context, authorizerAccessToken string, auditid int64, notMustParams ...*gorequest.Params) (*UndoAuditResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

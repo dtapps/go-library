@@ -25,7 +25,7 @@ func newWxaOperationamsAgencyCreateAdunitResult(result WxaOperationamsAgencyCrea
 // WxaOperationamsAgencyCreateAdunit
 // 创建广告单元
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/ad-mgnt/AgencyCreateAdunit.html
-func (c *Client) WxaOperationamsAgencyCreateAdunit(ctx context.Context, authorizerAccessToken string, name, Type string, videoDurationMin, videoDurationMax int64, notMustParams ...gorequest.Params) (*WxaOperationamsAgencyCreateAdunitResult, error) {
+func (c *Client) WxaOperationamsAgencyCreateAdunit(ctx context.Context, authorizerAccessToken string, name, Type string, videoDurationMin, videoDurationMax int64, notMustParams ...*gorequest.Params) (*WxaOperationamsAgencyCreateAdunitResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

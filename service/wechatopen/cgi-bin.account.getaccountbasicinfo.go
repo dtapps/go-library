@@ -54,7 +54,7 @@ func newGetAccountBasicInfoResult(result GetAccountBasicInfoResponse, body []byt
 
 // GetAccountBasicInfo 获取基本信息
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/basic-info-management/getAccountBasicInfo.html
-func (c *Client) GetAccountBasicInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GetAccountBasicInfoResult, error) {
+func (c *Client) GetAccountBasicInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*GetAccountBasicInfoResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

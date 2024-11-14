@@ -46,7 +46,7 @@ func newTransferBatchesOutBatchNoResult(result TransferBatchesOutBatchNoResponse
 
 // TransferBatchesOutBatchNo 通过微信批次单号查询批次单
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/get-transfer-batch-by-no.html
-func (c *Client) TransferBatchesOutBatchNo(ctx context.Context, notMustParams ...gorequest.Params) (*TransferBatchesOutBatchNoResult, error) {
+func (c *Client) TransferBatchesOutBatchNo(ctx context.Context, notMustParams ...*gorequest.Params) (*TransferBatchesOutBatchNoResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

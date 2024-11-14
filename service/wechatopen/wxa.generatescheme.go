@@ -24,7 +24,7 @@ func newGenerateSchemeResult(result GenerateSchemeResponse, body []byte, http go
 
 // GenerateScheme 获取加密scheme码
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/url-scheme/generateScheme.html
-func (c *Client) GenerateScheme(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GenerateSchemeResult, error) {
+func (c *Client) GenerateScheme(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*GenerateSchemeResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

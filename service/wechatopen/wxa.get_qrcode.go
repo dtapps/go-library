@@ -23,7 +23,7 @@ func newGetTrialQRCodeResult(result GetTrialQRCodeResponse, body []byte, http go
 
 // GetTrialQRCode 获取体验版二维码
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/getTrialQRCode.html
-func (c *Client) GetTrialQRCode(ctx context.Context, authorizerAccessToken, path string, notMustParams ...gorequest.Params) (*GetTrialQRCodeResult, error) {
+func (c *Client) GetTrialQRCode(ctx context.Context, authorizerAccessToken, path string, notMustParams ...*gorequest.Params) (*GetTrialQRCodeResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

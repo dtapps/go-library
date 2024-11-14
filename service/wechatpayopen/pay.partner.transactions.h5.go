@@ -22,7 +22,7 @@ func newPayPartnerTransactionsH5Result(result PayPartnerTransactionsH5Response, 
 
 // PayPartnerTransactionsH5 H5下单API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_3_1.shtml
-func (c *Client) PayPartnerTransactionsH5(ctx context.Context, notMustParams ...gorequest.Params) (*PayPartnerTransactionsH5Result, ApiError, error) {
+func (c *Client) PayPartnerTransactionsH5(ctx context.Context, notMustParams ...*gorequest.Params) (*PayPartnerTransactionsH5Result, ApiError, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

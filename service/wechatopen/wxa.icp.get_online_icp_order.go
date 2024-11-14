@@ -90,7 +90,7 @@ func newGetOnlineIcpOrderResult(result GetOnlineIcpOrderResponse, body []byte, h
 
 // GetOnlineIcpOrder 获取小程序已备案详情
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/record/getOnlineIcpOrder.html
-func (c *Client) GetOnlineIcpOrder(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GetOnlineIcpOrderResult, error) {
+func (c *Client) GetOnlineIcpOrder(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*GetOnlineIcpOrderResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

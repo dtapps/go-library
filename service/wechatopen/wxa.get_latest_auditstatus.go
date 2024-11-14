@@ -30,7 +30,7 @@ func newGetLatestAuditStatusResult(result GetLatestAuditStatusResponse, body []b
 
 // GetLatestAuditStatus 查询最新一次审核单状态
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/getLatestAuditStatus.html
-func (c *Client) GetLatestAuditStatus(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GetLatestAuditStatusResult, error) {
+func (c *Client) GetLatestAuditStatus(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*GetLatestAuditStatusResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

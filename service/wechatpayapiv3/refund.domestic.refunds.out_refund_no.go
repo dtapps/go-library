@@ -61,7 +61,7 @@ func newRefundDomesticRefundsOutRefundNoResult(result RefundDomesticRefundsOutRe
 
 // RefundDomesticRefundsOutRefundNo 查询单笔退款API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_10.shtml
-func (c *Client) RefundDomesticRefundsOutRefundNo(ctx context.Context, outRefundNo string, notMustParams ...gorequest.Params) (*RefundDomesticRefundsOutRefundNoResult, error) {
+func (c *Client) RefundDomesticRefundsOutRefundNo(ctx context.Context, outRefundNo string, notMustParams ...*gorequest.Params) (*RefundDomesticRefundsOutRefundNoResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

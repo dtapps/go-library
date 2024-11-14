@@ -24,7 +24,7 @@ func newGenerateUrlLinkResult(result GenerateUrlLinkResponse, body []byte, http 
 
 // GenerateUrlLink 获取加密URLLink
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/url-link/generateUrlLink.html
-func (c *Client) GenerateUrlLink(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GenerateUrlLinkResult, error) {
+func (c *Client) GenerateUrlLink(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*GenerateUrlLinkResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

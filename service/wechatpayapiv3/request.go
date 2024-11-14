@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func (c *Client) request(ctx context.Context, url string, param gorequest.Params, method string, commonParams bool, response any) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, method string, commonParams bool, response any) (gorequest.Response, error) {
 
 	// 请求地址
 	uri := apiUrl + url
@@ -21,7 +21,7 @@ func (c *Client) request(ctx context.Context, url string, param gorequest.Params
 	}
 
 	// 认证
-	authorization, err := c.authorization(method, param, uri)
+	authorization, err := c.authorization(method, param.DeepCopy(), uri)
 	if err != nil {
 		return gorequest.Response{}, err
 	}

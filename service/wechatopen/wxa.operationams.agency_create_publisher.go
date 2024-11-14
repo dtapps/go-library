@@ -24,7 +24,7 @@ func newWxaOperationamsAgencyCreatePublisherResult(result WxaOperationamsAgencyC
 // WxaOperationamsAgencyCreatePublisher
 // 开通流量主
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/open/AgencyCreatePublisher.html
-func (c *Client) WxaOperationamsAgencyCreatePublisher(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaOperationamsAgencyCreatePublisherResult, error) {
+func (c *Client) WxaOperationamsAgencyCreatePublisher(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaOperationamsAgencyCreatePublisherResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

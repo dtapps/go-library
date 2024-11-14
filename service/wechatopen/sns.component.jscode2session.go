@@ -30,7 +30,7 @@ func newThirdpartyCode2SessionResult(result ThirdpartyCode2SessionResponse, body
 
 // ThirdpartyCode2Session 小程序登录
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/login/thirdpartyCode2Session.html
-func (c *Client) ThirdpartyCode2Session(ctx context.Context, componentAccessToken, authorizerAppid, jsCode string, notMustParams ...gorequest.Params) (*ThirdpartyCode2SessionResult, error) {
+func (c *Client) ThirdpartyCode2Session(ctx context.Context, componentAccessToken, authorizerAppid, jsCode string, notMustParams ...*gorequest.Params) (*ThirdpartyCode2SessionResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

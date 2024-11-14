@@ -25,7 +25,7 @@ func newGetUnlimitedQRCodeResult(result GetUnlimitedQRCodeResponse, body []byte,
 
 // GetUnlimitedQRCode 获取不限制的小程序码
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/qr-code/getUnlimitedQRCode.html
-func (c *Client) GetUnlimitedQRCode(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GetUnlimitedQRCodeResult, error) {
+func (c *Client) GetUnlimitedQRCode(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*GetUnlimitedQRCodeResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

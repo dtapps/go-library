@@ -26,7 +26,7 @@ func newModifyThirdpartyJumpDomainResult(result ModifyThirdpartyJumpDomainRespon
 
 // ModifyThirdpartyJumpDomain 设置第三方平台业务域名
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/thirdparty-management/domain-mgnt/modifyThirdpartyJumpDomain.html
-func (c *Client) ModifyThirdpartyJumpDomain(ctx context.Context, componentAccessToken string, action string, notMustParams ...gorequest.Params) (*ModifyThirdpartyJumpDomainResult, error) {
+func (c *Client) ModifyThirdpartyJumpDomain(ctx context.Context, componentAccessToken string, action string, notMustParams ...*gorequest.Params) (*ModifyThirdpartyJumpDomainResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

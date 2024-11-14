@@ -24,7 +24,7 @@ func newProfitSharingReceiversDeleteResult(result ProfitSharingReceiversDeleteRe
 
 // ProfitSharingReceiversDelete 删除分账接收方API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_9.shtml
-func (c *Client) ProfitSharingReceiversDelete(ctx context.Context, Type, account string, notMustParams ...gorequest.Params) (*ProfitSharingReceiversDeleteResult, ApiError, error) {
+func (c *Client) ProfitSharingReceiversDelete(ctx context.Context, Type, account string, notMustParams ...*gorequest.Params) (*ProfitSharingReceiversDeleteResult, ApiError, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

@@ -46,7 +46,7 @@ func newWxaOperationamsAgencyGetAdposGenenralResult(result WxaOperationamsAgency
 // WxaOperationamsAgencyGetAdposGenenral
 // 获取小程序广告汇总数据
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/ad-data/GetAdposGenenral.html
-func (c *Client) WxaOperationamsAgencyGetAdposGenenral(ctx context.Context, authorizerAccessToken string, page, pageSize int64, startDate, endDate, adSlot string, notMustParams ...gorequest.Params) (*WxaOperationamsAgencyGetAdposGenenralResult, error) {
+func (c *Client) WxaOperationamsAgencyGetAdposGenenral(ctx context.Context, authorizerAccessToken string, page, pageSize int64, startDate, endDate, adSlot string, notMustParams ...*gorequest.Params) (*WxaOperationamsAgencyGetAdposGenenralResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

@@ -34,7 +34,7 @@ func newPayCloseOrderResult(result PayCloseOrderResponse, body []byte, http gore
 // PayCloseOrder
 // 小程序支付 - 关闭订单
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_3
-func (c *Client) PayCloseOrder(ctx context.Context, outTradeNo string, notMustParams ...gorequest.Params) (*PayCloseOrderResult, error) {
+func (c *Client) PayCloseOrder(ctx context.Context, outTradeNo string, notMustParams ...*gorequest.Params) (*PayCloseOrderResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

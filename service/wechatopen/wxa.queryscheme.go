@@ -34,7 +34,7 @@ func newQuerySchemeResult(result QuerySchemeResponse, body []byte, http goreques
 
 // QueryScheme 查询scheme码
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/url-scheme/queryScheme.html
-func (c *Client) QueryScheme(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*QuerySchemeResult, error) {
+func (c *Client) QueryScheme(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*QuerySchemeResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

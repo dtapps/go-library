@@ -24,7 +24,7 @@ func newWxaSetDefaultamsInfoAgencySetCustomShareRatioResult(result WxaSetDefault
 // WxaSetDefaultamsInfoAgencySetCustomShareRatio
 // 设置自定义分账比例
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/percentage/SetCustomShareRatio.html
-func (c *Client) WxaSetDefaultamsInfoAgencySetCustomShareRatio(ctx context.Context, authorizerAccessToken string, appid string, shareRatio int64, notMustParams ...gorequest.Params) (*WxaSetDefaultamsInfoAgencySetCustomShareRatioResult, error) {
+func (c *Client) WxaSetDefaultamsInfoAgencySetCustomShareRatio(ctx context.Context, authorizerAccessToken string, appid string, shareRatio int64, notMustParams ...*gorequest.Params) (*WxaSetDefaultamsInfoAgencySetCustomShareRatioResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

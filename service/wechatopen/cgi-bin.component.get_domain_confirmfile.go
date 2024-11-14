@@ -25,7 +25,7 @@ func newGetThirdpartyJumpDomainConfirmFileResult(result GetThirdpartyJumpDomainC
 
 // GetThirdpartyJumpDomainConfirmFile 获取第三方平台业务域名校验文件
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/thirdparty-management/domain-mgnt/getThirdpartyJumpDomainConfirmFile.html
-func (c *Client) GetThirdpartyJumpDomainConfirmFile(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GetThirdpartyJumpDomainConfirmFileResult, error) {
+func (c *Client) GetThirdpartyJumpDomainConfirmFile(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*GetThirdpartyJumpDomainConfirmFileResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

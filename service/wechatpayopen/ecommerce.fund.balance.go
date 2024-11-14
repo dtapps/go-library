@@ -27,7 +27,7 @@ func newEcommerceFundBalanceResult(result EcommerceFundBalanceResponse, body []b
 // EcommerceFundBalance 查询二级商户账户实时余额API
 // accountType 账户类型 BASIC：基本账户 OPERATION：运营账户 FEES：手续费账户
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_7_1.shtml
-func (c *Client) EcommerceFundBalance(ctx context.Context, accountType string, notMustParams ...gorequest.Params) (*EcommerceFundBalanceResult, error) {
+func (c *Client) EcommerceFundBalance(ctx context.Context, accountType string, notMustParams ...*gorequest.Params) (*EcommerceFundBalanceResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

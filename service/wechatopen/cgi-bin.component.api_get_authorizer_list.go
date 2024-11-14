@@ -28,7 +28,7 @@ func newGetAuthorizerListResult(result GetAuthorizerListResponse, body []byte, h
 
 // GetAuthorizerList 拉取已授权的账号信息
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/authorization-management/getAuthorizerList.html
-func (c *Client) GetAuthorizerList(ctx context.Context, authorizerAppid, componentAccessToken string, notMustParams ...gorequest.Params) (*GetAuthorizerListResult, error) {
+func (c *Client) GetAuthorizerList(ctx context.Context, authorizerAppid, componentAccessToken string, notMustParams ...*gorequest.Params) (*GetAuthorizerListResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

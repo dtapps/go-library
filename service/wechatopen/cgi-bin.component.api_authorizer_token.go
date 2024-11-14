@@ -26,7 +26,7 @@ func newCgiBinComponentApiAuthorizerTokenResult(result CgiBinComponentApiAuthori
 
 // CgiBinComponentApiAuthorizerToken 获取/刷新接口调用令牌
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/api_authorizer_token.html
-func (c *Client) CgiBinComponentApiAuthorizerToken(ctx context.Context, componentAccessToken, authorizerAppid, authorizerRefreshToken string, notMustParams ...gorequest.Params) (*CgiBinComponentApiAuthorizerTokenResult, error) {
+func (c *Client) CgiBinComponentApiAuthorizerToken(ctx context.Context, componentAccessToken, authorizerAppid, authorizerRefreshToken string, notMustParams ...*gorequest.Params) (*CgiBinComponentApiAuthorizerTokenResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

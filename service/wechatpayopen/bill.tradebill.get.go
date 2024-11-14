@@ -24,7 +24,7 @@ func newBillTradeBillGetResult(result BillTradeBillGetResponse, body []byte, htt
 
 // BillTradeBillGet 申请交易账单API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_6.shtml
-func (c *Client) BillTradeBillGet(ctx context.Context, notMustParams ...gorequest.Params) (*BillTradeBillGetResult, ApiError, error) {
+func (c *Client) BillTradeBillGet(ctx context.Context, notMustParams ...*gorequest.Params) (*BillTradeBillGetResult, ApiError, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

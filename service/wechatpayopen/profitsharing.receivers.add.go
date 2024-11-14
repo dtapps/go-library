@@ -27,7 +27,7 @@ func newProfitSharingReceiversAddResult(result ProfitSharingReceiversAddResponse
 
 // ProfitSharingReceiversAdd 添加分账接收方API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_8.shtml
-func (c *Client) ProfitSharingReceiversAdd(ctx context.Context, Type, account, name, relationType, customRelation string, notMustParams ...gorequest.Params) (*ProfitSharingReceiversAddResult, ApiError, error) {
+func (c *Client) ProfitSharingReceiversAdd(ctx context.Context, Type, account, name, relationType, customRelation string, notMustParams ...*gorequest.Params) (*ProfitSharingReceiversAddResult, ApiError, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

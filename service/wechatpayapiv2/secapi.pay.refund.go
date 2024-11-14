@@ -53,7 +53,7 @@ func newSecApiPayRefundResult(result SecApiPayRefundResponse, body []byte, http 
 // 小程序支付 - 申请退款
 // 需要证书
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_4
-func (c *Client) SecApiPayRefund(ctx context.Context, notMustParams ...gorequest.Params) (*SecApiPayRefundResult, error) {
+func (c *Client) SecApiPayRefund(ctx context.Context, notMustParams ...*gorequest.Params) (*SecApiPayRefundResult, error) {
 
 	// 证书
 	cert, err := c.P12ToPem()

@@ -24,7 +24,7 @@ func newProfitSharingMerchantConfigsResult(result ProfitSharingMerchantConfigsRe
 
 // ProfitSharingMerchantConfigs 查询最大分账比例API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_7.shtml
-func (c *Client) ProfitSharingMerchantConfigs(ctx context.Context, notMustParams ...gorequest.Params) (*ProfitSharingMerchantConfigsResult, ApiError, error) {
+func (c *Client) ProfitSharingMerchantConfigs(ctx context.Context, notMustParams ...*gorequest.Params) (*ProfitSharingMerchantConfigsResult, ApiError, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

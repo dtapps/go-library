@@ -34,7 +34,7 @@ func newQueryUrlLinkResult(result QueryUrlLinkResponse, body []byte, http gorequ
 
 // QueryUrlLink 查询加密URLLink
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/url-link/queryUrlLink.html
-func (c *Client) QueryUrlLink(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*QueryUrlLinkResult, error) {
+func (c *Client) QueryUrlLink(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*QueryUrlLinkResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

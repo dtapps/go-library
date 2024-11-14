@@ -22,7 +22,7 @@ func newPayTransactionsJsapiResult(result PayTransactionsJsapiResponse, body []b
 
 // PayTransactionsJsapi JSAPI下单
 // https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_5_1.shtml
-func (c *Client) PayTransactionsJsapi(ctx context.Context, notMustParams ...gorequest.Params) (*PayTransactionsJsapiResult, error) {
+func (c *Client) PayTransactionsJsapi(ctx context.Context, notMustParams ...*gorequest.Params) (*PayTransactionsJsapiResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

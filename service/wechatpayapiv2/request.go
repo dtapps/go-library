@@ -7,7 +7,7 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-func (c *Client) request(ctx context.Context, url string, param gorequest.Params, certStatus bool, cert *tls.Certificate, response any) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, certStatus bool, cert *tls.Certificate, response any) (gorequest.Response, error) {
 
 	// 请求地址
 	uri := apiUrl + url

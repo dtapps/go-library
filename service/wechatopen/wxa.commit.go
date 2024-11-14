@@ -23,7 +23,7 @@ func newCommitResult(result CommitResponse, body []byte, http gorequest.Response
 
 // Commit 上传代码并生成体验版
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/commit.html
-func (c *Client) Commit(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*CommitResult, error) {
+func (c *Client) Commit(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*CommitResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

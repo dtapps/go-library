@@ -25,7 +25,7 @@ func newMerchantFundBalanceResult(result MerchantFundBalanceResponse, body []byt
 // MerchantFundBalance 查询电商平台账户实时余额API
 // accountType 账户类型 BASIC：基本账户 OPERATION：运营账户 FEES：手续费账户
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_7_3.shtml
-func (c *Client) MerchantFundBalance(ctx context.Context, accountType string, notMustParams ...gorequest.Params) (*MerchantFundBalanceResult, ApiError, error) {
+func (c *Client) MerchantFundBalance(ctx context.Context, accountType string, notMustParams ...*gorequest.Params) (*MerchantFundBalanceResult, ApiError, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

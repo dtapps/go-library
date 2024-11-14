@@ -23,7 +23,7 @@ func newClearQuotaResult(result ClearQuotaResponse, body []byte, http gorequest.
 
 // ClearQuota 重置API调用次数
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/openapi/clearQuota.html
-func (c *Client) ClearQuota(ctx context.Context, authorizerAccessToken, appid string, notMustParams ...gorequest.Params) (*ClearQuotaResult, error) {
+func (c *Client) ClearQuota(ctx context.Context, authorizerAccessToken, appid string, notMustParams ...*gorequest.Params) (*ClearQuotaResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

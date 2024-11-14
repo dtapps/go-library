@@ -37,7 +37,7 @@ func newProfitSharingOrdersUnfreezeResult(result ProfitSharingOrdersUnfreezeResp
 
 // ProfitSharingOrdersUnfreeze 解冻剩余资金API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_5.shtml
-func (c *Client) ProfitSharingOrdersUnfreeze(ctx context.Context, transactionId, outOrderNo, description string, notMustParams ...gorequest.Params) (*ProfitSharingOrdersUnfreezeResult, ApiError, error) {
+func (c *Client) ProfitSharingOrdersUnfreeze(ctx context.Context, transactionId, outOrderNo, description string, notMustParams ...*gorequest.Params) (*ProfitSharingOrdersUnfreezeResult, ApiError, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

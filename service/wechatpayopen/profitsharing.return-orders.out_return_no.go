@@ -34,7 +34,7 @@ func newProfitSharingReturnOrdersOutReturnNoResult(result ProfitSharingReturnOrd
 
 // ProfitSharingReturnOrdersOutReturnNo 查询分账回退结果API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_4.shtml
-func (c *Client) ProfitSharingReturnOrdersOutReturnNo(ctx context.Context, outReturnNo, outOrderNo string, notMustParams ...gorequest.Params) (*ProfitSharingReturnOrdersOutReturnNoResult, ApiError, error) {
+func (c *Client) ProfitSharingReturnOrdersOutReturnNo(ctx context.Context, outReturnNo, outOrderNo string, notMustParams ...*gorequest.Params) (*ProfitSharingReturnOrdersOutReturnNoResult, ApiError, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

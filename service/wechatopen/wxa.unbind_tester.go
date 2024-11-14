@@ -23,7 +23,7 @@ func newUnbindTesterResult(result UnbindTesterResponse, body []byte, http gorequ
 
 // UnbindTester 解除绑定体验者
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/member-management/unbindTester.html
-func (c *Client) UnbindTester(ctx context.Context, authorizerAccessToken, wechatid, userstr string, notMustParams ...gorequest.Params) (*UnbindTesterResult, error) {
+func (c *Client) UnbindTester(ctx context.Context, authorizerAccessToken, wechatid, userstr string, notMustParams ...*gorequest.Params) (*UnbindTesterResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

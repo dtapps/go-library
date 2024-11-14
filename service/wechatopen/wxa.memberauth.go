@@ -26,7 +26,7 @@ func newGetTesterResult(result GetTesterResponse, body []byte, http gorequest.Re
 
 // GetTester 获取体验者列表
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/member-management/getTester.html
-func (c *Client) GetTester(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*GetTesterResult, error) {
+func (c *Client) GetTester(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*GetTesterResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

@@ -26,7 +26,7 @@ func newEcommerceFundEndDayBalanceResult(result EcommerceFundEndDayBalanceRespon
 // EcommerceFundEndDayBalance 查询二级商户账户日终余额API
 // date 日期 示例值：2019-08-17
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_7_2.shtml
-func (c *Client) EcommerceFundEndDayBalance(ctx context.Context, date string, notMustParams ...gorequest.Params) (*EcommerceFundEndDayBalanceResult, error) {
+func (c *Client) EcommerceFundEndDayBalance(ctx context.Context, date string, notMustParams ...*gorequest.Params) (*EcommerceFundEndDayBalanceResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

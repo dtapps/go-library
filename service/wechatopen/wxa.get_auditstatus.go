@@ -27,7 +27,7 @@ func newGetAuditStatusResult(result GetAuditStatusResponse, body []byte, http go
 
 // GetAuditStatus 查询审核单状态
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/getAuditStatus.html
-func (c *Client) GetAuditStatus(ctx context.Context, authorizerAccessToken string, auditid int64, notMustParams ...gorequest.Params) (*GetAuditStatusResult, error) {
+func (c *Client) GetAuditStatus(ctx context.Context, authorizerAccessToken string, auditid int64, notMustParams ...*gorequest.Params) (*GetAuditStatusResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

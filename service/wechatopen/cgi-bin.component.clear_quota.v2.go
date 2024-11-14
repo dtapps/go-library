@@ -23,7 +23,7 @@ func newClearComponentQuotaByAppSecretResult(result ClearComponentQuotaByAppSecr
 
 // ClearComponentQuotaByAppSecret 使用AppSecret重置第三方平台 API 调用次数
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/openapi/clearComponentQuotaByAppSecret.html
-func (c *Client) ClearComponentQuotaByAppSecret(ctx context.Context, authorizerAccessToken, appid string, notMustParams ...gorequest.Params) (*ClearComponentQuotaByAppSecretResult, error) {
+func (c *Client) ClearComponentQuotaByAppSecret(ctx context.Context, authorizerAccessToken, appid string, notMustParams ...*gorequest.Params) (*ClearComponentQuotaByAppSecretResult, error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
