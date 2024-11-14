@@ -75,3 +75,20 @@ func (p *Params) DeepCopy() map[string]any {
 
 	return targetMap
 }
+
+// DeepCopyNew 深度复制
+func (p *Params) DeepCopyNew() *Params {
+	p.Lock()
+	defer p.Unlock()
+
+	// 深度复制数据
+	targetMap := make(map[string]any)
+	for key, value := range p.m {
+		targetMap[key] = value
+	}
+
+	// 清空原始数据
+	p.m = make(map[string]any)
+
+	return NewParams()
+}

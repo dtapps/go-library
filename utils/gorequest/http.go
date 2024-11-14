@@ -170,10 +170,8 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	httpResponse.RequestTime = gotime.Current().Time
 	httpResponse.RequestUri = c.httpUri
 	httpResponse.RequestMethod = c.httpMethod
-	//httpResponse.RequestParams = c.httpParams.DeepCopy()
-	httpResponse.RequestParams = c.httpParams
-	//httpResponse.RequestHeader = c.httpHeader.DeepCopy()
-	httpResponse.RequestHeader = c.httpHeader
+	httpResponse.RequestParams = c.httpParams.DeepCopyNew()
+	httpResponse.RequestHeader = c.httpHeader.DeepCopyNew()
 	httpResponse.RequestCookie = c.httpCookie
 
 	// 判断网址
