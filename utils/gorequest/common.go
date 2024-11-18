@@ -6,7 +6,7 @@ import (
 )
 
 // GetParamsString 获取参数字符串
-func GetParamsString(src interface{}) string {
+func GetParamsString(src any) string {
 	switch src.(type) {
 	case string:
 		return src.(string)

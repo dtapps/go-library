@@ -19,7 +19,7 @@ func NewOldParamsWith(oldParams ...OldParams) OldParams {
 }
 
 // Set 设置参数
-func (p OldParams) Set(key string, value interface{}) {
+func (p OldParams) Set(key string, value any) {
 	p[key] = value
 }
 
@@ -31,7 +31,7 @@ func (p OldParams) SetParams(OldParams OldParams) {
 }
 
 // Get 获取参数
-func (p OldParams) Get(key string) interface{} {
+func (p OldParams) Get(key string) any {
 	return p[key]
 }
 

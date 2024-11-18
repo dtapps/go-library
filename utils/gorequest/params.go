@@ -52,7 +52,7 @@ func (p *Params) DeepGet() map[string]any {
 	p.Lock()
 	defer p.Unlock()
 
-	targetMap := make(map[string]interface{})
+	targetMap := make(map[string]any)
 	for key, value := range p.m {
 		targetMap[key] = value
 	}

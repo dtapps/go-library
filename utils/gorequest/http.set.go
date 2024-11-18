@@ -67,7 +67,7 @@ func (c *App) SetContentTypeXml() {
 }
 
 // SetParam 设置请求参数
-func (c *App) SetParam(key string, value interface{}) {
+func (c *App) SetParam(key string, value any) {
 	c.httpParams.Set(key, value)
 }
 
