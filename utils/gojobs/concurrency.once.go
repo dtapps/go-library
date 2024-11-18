@@ -8,17 +8,17 @@ import (
 // ConcurrencyOnce 使用 sync.Once 实现任务并发控制
 type ConcurrencyOnce struct {
 	ctx       context.Context // 上下文
-	taskCount int             // 任务数量
-	wg        sync.WaitGroup  // 等待
+	wg        sync.WaitGroup  // 等待所有任务完成
 	once      sync.Once
+	taskCount int // 任务数量
 }
 
 // NewConcurrencyOnce 创建
-func (c *Client) NewConcurrencyOnce(ctx context.Context, taskCount int) *ConcurrencyOnce {
+func NewConcurrencyOnce(ctx context.Context, taskCount int) *ConcurrencyOnce {
 	return &ConcurrencyOnce{
 		ctx:       ctx,              // 上下文
+		wg:        sync.WaitGroup{}, // 等待所有任务完成
 		taskCount: taskCount,        // 任务数量
-		wg:        sync.WaitGroup{}, // 等待
 	}
 }
 

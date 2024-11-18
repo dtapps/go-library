@@ -9,17 +9,17 @@ import (
 // ConcurrencyMap 使用 sync.Map 实现任务并发控制
 type ConcurrencyMap struct {
 	ctx       context.Context // 上下文
-	taskCount int             //  任务数量
-	wg        sync.WaitGroup  // 等待
+	wg        sync.WaitGroup  // 等待所有任务完成
 	statusMap sync.Map        // 用来存储任务状态
+	taskCount int             // 任务数量
 }
 
 // NewConcurrencyMap 创建
-func (c *Client) NewConcurrencyMap(ctx context.Context, taskCount int) *ConcurrencyMap {
+func NewConcurrencyMap(ctx context.Context, taskCount int) *ConcurrencyMap {
 	return &ConcurrencyMap{
 		ctx:       ctx,              // 上下文
-		taskCount: taskCount,        //  任务数量
-		wg:        sync.WaitGroup{}, // 等待
+		wg:        sync.WaitGroup{}, // 等待所有任务完成
+		taskCount: taskCount,        // 任务数量
 	}
 }
 

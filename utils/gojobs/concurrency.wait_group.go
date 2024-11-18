@@ -15,10 +15,10 @@ type ConcurrencyWaitGroup struct {
 }
 
 // NewConcurrencyWaitGroup 创建
-func (c *Client) NewConcurrencyWaitGroup(ctx context.Context, maxConcurrency int64) *ConcurrencyWaitGroup {
+func NewConcurrencyWaitGroup(ctx context.Context, maxConcurrency int64) *ConcurrencyWaitGroup {
 	return &ConcurrencyWaitGroup{
 		ctx:            ctx,                                   // 上下文
-		wg:             sync.WaitGroup{},                      // 等待
+		wg:             sync.WaitGroup{},                      // 等待所有任务完成
 		sem:            semaphore.NewWeighted(maxConcurrency), // 控制并发度
 		maxConcurrency: maxConcurrency,                        // 最大并发数
 	}
