@@ -17,9 +17,10 @@ require (
 	github.com/redis/go-redis/v9 v9.7.0
 	github.com/robfig/cron/v3 v3.0.1
 	go.dtapp.net/library/utils/gojson v1.0.7
-	go.dtapp.net/library/utils/gorequest v1.0.86
+	go.dtapp.net/library/utils/gorequest v1.0.90
 	go.dtapp.net/library/utils/gostring v1.0.21
 	go.dtapp.net/library/utils/gotime v1.0.12
+	golang.org/x/sync v0.9.0
 	gorm.io/gorm v1.25.12
 )
 

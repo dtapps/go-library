@@ -6,10 +6,13 @@ import (
 	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
 	"log/slog"
+	"sync"
 )
 
 type PubSubClient struct {
-	client *redis.Client
+	client               *redis.Client // Redis客户端
+	taskTypeMu           sync.Mutex    // 互斥锁，用于保护 taskTypeExecutingMap
+	taskTypeExecutingMap sync.Map      // 存储正在执行的任务类型
 }
 
 func NewPubSub(ctx context.Context, client *redis.Client) *PubSubClient {
@@ -35,7 +38,7 @@ func (c *PubSubClient) PSubscribe(ctx context.Context, channel ...string) *redis
 
 // DbRunSingleTask 运行单个任务
 // ctx 链路追踪的上下文
-// message 任务json编码
+// message 任务信息，需要json编码
 // executionCallback 执行任务回调函数 返回 runCode=状态 runDesc=描述
 // updateCallback 执行更新回调函数
 func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, executionCallback func(ctx context.Context, task *GormModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *GormModelTask, result *TaskHelperRunSingleTaskResponse) (err error)) {
@@ -44,8 +47,8 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 	var task GormModelTask
 	err := gojson.Unmarshal([]byte(message), &task)
 	if err != nil {
-		slog.ErrorContext(ctx, "[DbRunSingleTask] json.Unmarshal",
-			slog.String("err", err.Error()),
+		slog.ErrorContext(ctx, "[运行单个任务]解析错误",
+			slog.String("err_desc", err.Error()),
 		)
 		return
 	}
@@ -65,22 +68,268 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 		result.RunID = result.TraceID
 		if result.RunID == "" {
 			result.RunID = result.RequestID
-			if result.RunID == "" {
-				slog.ErrorContext(ctx, "[DbRunSingleTask] no run_id",
-					slog.String("trace_id", result.TraceID),
-					slog.String("request_id", result.RequestID),
-					slog.String("run_id", result.RunID),
-				)
-				return
-			}
+		}
+		if result.RunID == "" {
+			slog.ErrorContext(ctx, "[运行单个任务]运行编号为空",
+				slog.Int64("task_id", int64(task.ID)),
+				slog.String("task_type", task.Type),
+				slog.String("task_custom_id", task.CustomID),
+				slog.String("task_trace_id", result.TraceID),
+				slog.String("task_request_id", result.RequestID),
+				slog.String("task_run_id", result.RunID),
+			)
+			return
 		}
 
 		// 执行更新回调函数
 		if updateCallback != nil {
 			err = updateCallback(ctx, &task, &result)
 			if err != nil {
-				slog.ErrorContext(ctx, "[DbRunSingleTask] updateCallback",
-					slog.String("err", err.Error()),
+				slog.ErrorContext(ctx, "[运行单个任务]回调函数返回错误",
+					slog.Int64("task_id", int64(task.ID)),
+					slog.String("task_type", task.Type),
+					slog.String("task_custom_id", task.CustomID),
+					slog.String("err_desc", err.Error()),
+				)
+				return
+			}
+		}
+
+	}
+
+	return
+}
+
+// DbRunSingleTaskMutex 运行单个任务带互斥锁
+// ctx 链路追踪的上下文
+// message 任务信息，需要json编码
+// executionCallback 执行任务回调函数 返回 runCode=状态 runDesc=描述
+// updateCallback 执行更新回调函数
+func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string, executionCallback func(ctx context.Context, task *GormModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *GormModelTask, result *TaskHelperRunSingleTaskResponse) (err error)) {
+
+	// 解析任务
+	var task GormModelTask
+	err := gojson.Unmarshal([]byte(message), &task)
+	if err != nil {
+		slog.ErrorContext(ctx, "[运行单个任务带互斥锁]解析错误",
+			slog.String("err_desc", err.Error()),
+		)
+		return
+	}
+
+	// 检查任务类型是否已经在执行
+	if _, ok := c.taskTypeExecutingMap.Load(task.Type); ok {
+		slog.WarnContext(ctx, "[运行单个任务带互斥锁]任务类型已经在执行",
+			slog.Int64("task_id", int64(task.ID)),
+			slog.String("task_type", task.Type),
+			slog.String("task_custom_id", task.CustomID),
+		)
+		return
+	}
+
+	// 标记任务类型为正在执行
+	c.taskTypeExecutingMap.Store(task.Type, struct{}{})
+
+	// 确保任务执行完毕后清理标记
+	defer c.taskTypeExecutingMap.Delete(task.Type)
+
+	// 任务回调函数
+	if executionCallback != nil {
+
+		// 需要返回的结构
+		result := TaskHelperRunSingleTaskResponse{
+			RequestID: gorequest.GetRequestIDContext(ctx),
+		}
+
+		// 执行
+		result.RunCode, result.RunDesc = executionCallback(ctx, &task)
+
+		// 运行编号
+		result.RunID = result.TraceID
+		if result.RunID == "" {
+			result.RunID = result.RequestID
+		}
+		if result.RunID == "" {
+			slog.ErrorContext(ctx, "[运行单个任务带互斥锁]运行编号为空",
+				slog.Int64("task_id", int64(task.ID)),
+				slog.String("task_type", task.Type),
+				slog.String("task_custom_id", task.CustomID),
+				slog.String("task_trace_id", result.TraceID),
+				slog.String("task_request_id", result.RequestID),
+				slog.String("task_run_id", result.RunID),
+			)
+			return
+		}
+
+		// 执行更新回调函数
+		if updateCallback != nil {
+			err = updateCallback(ctx, &task, &result)
+			if err != nil {
+				slog.ErrorContext(ctx, "[运行单个任务带互斥锁]回调函数返回错误",
+					slog.Int64("task_id", int64(task.ID)),
+					slog.String("task_type", task.Type),
+					slog.String("task_custom_id", task.CustomID),
+					slog.String("err_desc", err.Error()),
+				)
+				return
+			}
+		}
+
+	}
+
+	return
+}
+
+// DbRunSingleTaskMutexUseID 运行单个任务带互斥锁，使用ID编号
+// ctx 链路追踪的上下文
+// message 任务信息，需要json编码
+// executionCallback 执行任务回调函数 返回 runCode=状态 runDesc=描述
+// updateCallback 执行更新回调函数
+func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message string, executionCallback func(ctx context.Context, task *GormModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *GormModelTask, result *TaskHelperRunSingleTaskResponse) (err error)) {
+
+	// 解析任务
+	var task GormModelTask
+	err := gojson.Unmarshal([]byte(message), &task)
+	if err != nil {
+		slog.ErrorContext(ctx, "[运行单个任务带互斥锁，使用ID编号]解析错误",
+			slog.String("err_desc", err.Error()),
+		)
+		return
+	}
+
+	// 检查任务类型是否已经在执行
+	if _, ok := c.taskTypeExecutingMap.Load(task.Type); ok {
+		slog.WarnContext(ctx, "[运行单个任务带互斥锁，使用ID编号]任务类型已经在执行",
+			slog.Int64("task_id", int64(task.ID)),
+			slog.String("task_type", task.Type),
+			slog.String("task_custom_id", task.CustomID),
+		)
+		return
+	}
+
+	// 标记任务类型为正在执行
+	c.taskTypeExecutingMap.Store(task.Type, struct{}{})
+
+	// 确保任务执行完毕后清理标记
+	defer c.taskTypeExecutingMap.Delete(task.Type)
+
+	// 任务回调函数
+	if executionCallback != nil {
+
+		// 需要返回的结构
+		result := TaskHelperRunSingleTaskResponse{
+			RequestID: gorequest.GetRequestIDContext(ctx),
+		}
+
+		// 执行
+		result.RunCode, result.RunDesc = executionCallback(ctx, &task)
+
+		// 运行编号
+		result.RunID = result.TraceID
+		if result.RunID == "" {
+			result.RunID = result.RequestID
+		}
+		if result.RunID == "" {
+			slog.ErrorContext(ctx, "[运行单个任务带互斥锁，使用ID编号]运行编号为空",
+				slog.Int64("task_id", int64(task.ID)),
+				slog.String("task_type", task.Type),
+				slog.String("task_custom_id", task.CustomID),
+				slog.String("task_trace_id", result.TraceID),
+				slog.String("task_request_id", result.RequestID),
+				slog.String("task_run_id", result.RunID),
+			)
+			return
+		}
+
+		// 执行更新回调函数
+		if updateCallback != nil {
+			err = updateCallback(ctx, &task, &result)
+			if err != nil {
+				slog.ErrorContext(ctx, "[运行单个任务带互斥锁，使用ID编号]回调函数返回错误",
+					slog.Int64("task_id", int64(task.ID)),
+					slog.String("task_type", task.Type),
+					slog.String("task_custom_id", task.CustomID),
+					slog.String("err_desc", err.Error()),
+				)
+				return
+			}
+		}
+
+	}
+
+	return
+}
+
+// DbRunSingleTaskMutexUseCustomID 运行单个任务带互斥锁，使用CustomID编号
+// ctx 链路追踪的上下文
+// message 任务信息，需要json编码
+// executionCallback 执行任务回调函数 返回 runCode=状态 runDesc=描述
+// updateCallback 执行更新回调函数
+func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, message string, executionCallback func(ctx context.Context, task *GormModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *GormModelTask, result *TaskHelperRunSingleTaskResponse) (err error)) {
+
+	// 解析任务
+	var task GormModelTask
+	err := gojson.Unmarshal([]byte(message), &task)
+	if err != nil {
+		slog.ErrorContext(ctx, "[运行单个任务带互斥锁，使用CustomID编号]解析错误",
+			slog.String("err_desc", err.Error()),
+		)
+		return
+	}
+
+	// 检查任务类型是否已经在执行
+	if _, ok := c.taskTypeExecutingMap.Load(task.CustomID); ok {
+		slog.WarnContext(ctx, "[运行单个任务带互斥锁，使用CustomID编号]任务类型已经在执行",
+			slog.Int64("task_id", int64(task.ID)),
+			slog.String("task_type", task.Type),
+			slog.String("task_custom_id", task.CustomID),
+		)
+		return
+	}
+
+	// 标记任务类型为正在执行
+	c.taskTypeExecutingMap.Store(task.Type, struct{}{})
+
+	// 确保任务执行完毕后清理标记
+	defer c.taskTypeExecutingMap.Delete(task.Type)
+
+	// 任务回调函数
+	if executionCallback != nil {
+
+		// 需要返回的结构
+		result := TaskHelperRunSingleTaskResponse{
+			RequestID: gorequest.GetRequestIDContext(ctx),
+		}
+
+		// 执行
+		result.RunCode, result.RunDesc = executionCallback(ctx, &task)
+
+		// 运行编号
+		result.RunID = result.TraceID
+		if result.RunID == "" {
+			result.RunID = result.RequestID
+		}
+		if result.RunID == "" {
+			slog.ErrorContext(ctx, "[运行单个任务带互斥锁，使用CustomID编号]运行编号为空",
+				slog.Int64("task_id", int64(task.ID)),
+				slog.String("task_type", task.Type),
+				slog.String("task_custom_id", task.CustomID),
+				slog.String("task_trace_id", result.TraceID),
+				slog.String("task_request_id", result.RequestID),
+				slog.String("task_run_id", result.RunID),
+			)
+			return
+		}
+
+		// 执行更新回调函数
+		if updateCallback != nil {
+			err = updateCallback(ctx, &task, &result)
+			if err != nil {
+				slog.ErrorContext(ctx, "[运行单个任务带互斥锁，使用CustomID编号]回调函数返回错误",
+					slog.Int64("task_id", int64(task.ID)),
+					slog.String("task_type", task.Type),
+					slog.String("task_custom_id", task.CustomID),
+					slog.String("err_desc", err.Error()),
 				)
 				return
 			}
