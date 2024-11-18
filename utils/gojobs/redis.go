@@ -10,7 +10,7 @@ import (
 // ctx 上下文
 // channel 频道
 // message 消息
-func (c *Client) Publish(ctx context.Context, channel string, message interface{}) error {
+func (c *Client) Publish(ctx context.Context, channel string, message any) error {
 	publish, err := c.redisConfig.client.Publish(ctx, channel, message).Result()
 	if err != nil {
 		err = fmt.Errorf("发布失败：%s %s %v %s", channel, message, publish, err)

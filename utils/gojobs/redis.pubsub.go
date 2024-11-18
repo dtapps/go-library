@@ -22,7 +22,7 @@ func NewPubSub(ctx context.Context, client *redis.Client) *PubSubClient {
 }
 
 // Publish 发布
-func (c *PubSubClient) Publish(ctx context.Context, channel string, message interface{}) error {
+func (c *PubSubClient) Publish(ctx context.Context, channel string, message any) error {
 	return c.client.Publish(ctx, channel, message).Err()
 }
 

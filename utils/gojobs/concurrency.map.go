@@ -42,7 +42,7 @@ func (cm *ConcurrencyMap) Wait() {
 
 // ShowStatus 显示任务状态
 func (cm *ConcurrencyMap) ShowStatus() {
-	cm.statusMap.Range(func(key, value interface{}) bool {
+	cm.statusMap.Range(func(key, value any) bool {
 		fmt.Printf("任务 %v 状态: %v\n", key, value)
 		return true
 	})
