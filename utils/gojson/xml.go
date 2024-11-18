@@ -6,10 +6,10 @@ import (
 )
 
 // XmlDecodeNoError xml字符串转结构体，不报错
-func XmlDecodeNoError(b []byte) map[string]interface{} {
+func XmlDecodeNoError(b []byte) map[string]any {
 	xtj := strings.NewReader(string(b))
 	jtx, _ := xj.Convert(xtj)
-	var data map[string]interface{}
+	var data map[string]any
 	_ = Unmarshal(jtx.Bytes(), &data)
 	return data
 }

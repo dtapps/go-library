@@ -46,14 +46,14 @@ func MarshalToString(msg interface{}) (string, error) {
 
 // JsonDecode 将 JSON 字符串解析为 map 类型。
 func JsonDecode(data string) (map[string]interface{}, error) {
-	var dat map[string]interface{}
+	var dat map[string]any
 	err := json.Unmarshal([]byte(data), &dat)
 	return dat, err
 }
 
 // JsonDecodeNoError 同 JsonDecode，但忽略错误。
-func JsonDecodeNoError(data string) map[string]interface{} {
-	var dat map[string]interface{}
+func JsonDecodeNoError(data string) map[string]any {
+	var dat map[string]any
 	_ = json.Unmarshal([]byte(data), &dat)
 	return dat
 }
@@ -78,7 +78,7 @@ func JsonDecodesNoError(data string) []string {
 }
 
 // ParseQueryString 解析 URL 查询字符串为 map 类型。
-func ParseQueryString(input string) map[string]interface{} {
+func ParseQueryString(input string) map[string]any {
 	paramMap := make(map[string]interface{})
 	keyValuePairs := strings.Split(input, "&")
 	for _, pair := range keyValuePairs {
@@ -94,6 +94,6 @@ func ParseQueryString(input string) map[string]interface{} {
 
 // IsValidJSON 检查给定字符串是否为有效的 JSON 格式。
 func IsValidJSON(s string) bool {
-	var js map[string]interface{}
+	var js map[string]any
 	return json.Unmarshal([]byte(s), &js) == nil
 }
