@@ -22,8 +22,8 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	go.dtapp.net/library/contrib/gin-requestid v1.0.2
 	go.dtapp.net/library/contrib/hertz-requestid v1.0.2
-	go.dtapp.net/library/utils/gojson v1.0.7
-	go.dtapp.net/library/utils/gorequest v1.0.86
+	go.dtapp.net/library/utils/gojson v1.0.8
+	go.dtapp.net/library/utils/gorequest v1.0.91
 	go.dtapp.net/library/utils/gotime v1.0.12
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
@@ -45,7 +45,7 @@ require (
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-playground/validator/v10 v10.22.1 // indirect
+	github.com/go-playground/validator/v10 v10.23.0 // indirect
 	github.com/goccy/go-json v0.10.3 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/hertz-contrib/requestid v1.1.0 // indirect
@@ -55,7 +55,7 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/nyaruka/phonenumbers v1.4.1 // indirect
+	github.com/nyaruka/phonenumbers v1.4.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
 	github.com/tidwall/gjson v1.18.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
@@ -69,6 +69,6 @@ require (
 	golang.org/x/net v0.31.0 // indirect
 	golang.org/x/sys v0.27.0 // indirect
 	golang.org/x/text v0.20.0 // indirect
-	google.golang.org/protobuf v1.35.1 // indirect
+	google.golang.org/protobuf v1.35.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

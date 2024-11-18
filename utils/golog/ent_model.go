@@ -38,14 +38,14 @@ func EntApiLogFields(logName bool) []ent.Field {
 			field.String("request_path").Optional().Immutable().Comment("请求地址").Annotations(entsql.WithComments(true)),
 			field.JSON("request_query", map[string][]string{}).Optional().Immutable().Comment("请求参数").Annotations(entsql.WithComments(true)),
 			field.String("request_method").Optional().Immutable().Comment("请求方式").Annotations(entsql.WithComments(true)),
-			field.JSON("request_body", map[string]interface{}{}).Optional().Immutable().Comment("请求内容").Annotations(entsql.WithComments(true)),
+			field.JSON("request_body", map[string]any{}).Optional().Immutable().Comment("请求内容").Annotations(entsql.WithComments(true)),
 			field.String("request_ip").Optional().Immutable().Comment("请求IP").Annotations(entsql.WithComments(true)),
 			field.JSON("request_header", map[string][]string{}).Optional().Immutable().Comment("请求头").Annotations(entsql.WithComments(true)),
 			field.Int64("request_cost_time").Optional().Immutable().Comment("请求消耗时长").Annotations(entsql.WithComments(true)),
 			field.Time("response_time").Immutable().Comment("响应时间").Annotations(entsql.WithComments(true)),
 			field.JSON("response_header", map[string][]string{}).Optional().Immutable().Comment("响应头").Annotations(entsql.WithComments(true)),
 			field.Int("response_code").Optional().Immutable().Comment("响应状态").Annotations(entsql.WithComments(true)),
-			field.JSON("response_body", map[string]interface{}{}).Optional().Immutable().Comment("响应内容").Annotations(entsql.WithComments(true)),
+			field.JSON("response_body", map[string]any{}).Optional().Immutable().Comment("响应内容").Annotations(entsql.WithComments(true)),
 		}
 	} else {
 		return []ent.Field{
@@ -57,14 +57,14 @@ func EntApiLogFields(logName bool) []ent.Field {
 			field.String("request_path").Optional().Immutable().Comment("请求地址").Annotations(entsql.WithComments(true)),
 			field.JSON("request_query", map[string][]string{}).Optional().Immutable().Comment("请求参数").Annotations(entsql.WithComments(true)),
 			field.String("request_method").Optional().Immutable().Comment("请求方式").Annotations(entsql.WithComments(true)),
-			field.JSON("request_body", map[string]interface{}{}).Optional().Immutable().Comment("请求内容").Annotations(entsql.WithComments(true)),
+			field.JSON("request_body", map[string]any{}).Optional().Immutable().Comment("请求内容").Annotations(entsql.WithComments(true)),
 			field.String("request_ip").Optional().Immutable().Comment("请求IP").Annotations(entsql.WithComments(true)),
 			field.JSON("request_header", map[string][]string{}).Optional().Immutable().Comment("请求头").Annotations(entsql.WithComments(true)),
 			field.Int64("request_cost_time").Optional().Immutable().Comment("请求消耗时长").Annotations(entsql.WithComments(true)),
 			field.Time("response_time").Immutable().Comment("响应时间").Annotations(entsql.WithComments(true)),
 			field.JSON("response_header", map[string][]string{}).Optional().Immutable().Comment("响应头").Annotations(entsql.WithComments(true)),
 			field.Int("response_code").Optional().Immutable().Comment("响应状态").Annotations(entsql.WithComments(true)),
-			field.JSON("response_body", map[string]interface{}{}).Optional().Immutable().Comment("响应内容").Annotations(entsql.WithComments(true)),
+			field.JSON("response_body", map[string]any{}).Optional().Immutable().Comment("响应内容").Annotations(entsql.WithComments(true)),
 		}
 	}
 }
@@ -87,16 +87,16 @@ func EntFrameLogFields(logName bool) []ent.Field {
 			field.Time("request_time").Immutable().Comment("请求时间").Annotations(entsql.WithComments(true)),
 			field.String("request_host").Optional().Immutable().Comment("请求主机").Annotations(entsql.WithComments(true)),
 			field.String("request_path").Optional().Immutable().Comment("请求地址").Annotations(entsql.WithComments(true)),
-			field.JSON("request_query", map[string]interface{}{}).Optional().Immutable().Comment("请求参数").Annotations(entsql.WithComments(true)),
+			field.JSON("request_query", map[string]any{}).Optional().Immutable().Comment("请求参数").Annotations(entsql.WithComments(true)),
 			field.String("request_method").Optional().Immutable().Comment("请求方式").Annotations(entsql.WithComments(true)),
-			field.JSON("request_body", map[string]interface{}{}).Optional().Immutable().Comment("请求内容").Annotations(entsql.WithComments(true)),
+			field.JSON("request_body", map[string]any{}).Optional().Immutable().Comment("请求内容").Annotations(entsql.WithComments(true)),
 			field.String("request_ip").Optional().Immutable().Comment("请求IP").Annotations(entsql.WithComments(true)),
 			field.JSON("request_header", map[string][]string{}).Optional().Immutable().Comment("请求头").Annotations(entsql.WithComments(true)),
 			field.Int64("request_cost_time").Optional().Immutable().Comment("请求消耗时长").Annotations(entsql.WithComments(true)),
 			field.Time("response_time").Immutable().Comment("响应时间").Annotations(entsql.WithComments(true)),
 			field.JSON("response_header", map[string][]string{}).Optional().Immutable().Comment("响应头").Annotations(entsql.WithComments(true)),
 			field.Int("response_code").Optional().Immutable().Comment("响应状态").Annotations(entsql.WithComments(true)),
-			field.JSON("response_body", map[string]interface{}{}).Optional().Immutable().Comment("响应内容").Annotations(entsql.WithComments(true)),
+			field.JSON("response_body", map[string]any{}).Optional().Immutable().Comment("响应内容").Annotations(entsql.WithComments(true)),
 		}
 	} else {
 		return []ent.Field{
@@ -107,16 +107,16 @@ func EntFrameLogFields(logName bool) []ent.Field {
 			field.Time("request_time").Immutable().Comment("请求时间").Annotations(entsql.WithComments(true)),
 			field.String("request_host").Optional().Immutable().Comment("请求主机").Annotations(entsql.WithComments(true)),
 			field.String("request_path").Optional().Immutable().Comment("请求地址").Annotations(entsql.WithComments(true)),
-			field.JSON("request_query", map[string]interface{}{}).Optional().Immutable().Comment("请求参数").Annotations(entsql.WithComments(true)),
+			field.JSON("request_query", map[string]any{}).Optional().Immutable().Comment("请求参数").Annotations(entsql.WithComments(true)),
 			field.String("request_method").Optional().Immutable().Comment("请求方式").Annotations(entsql.WithComments(true)),
-			field.JSON("request_body", map[string]interface{}{}).Optional().Immutable().Comment("请求内容").Annotations(entsql.WithComments(true)),
+			field.JSON("request_body", map[string]any{}).Optional().Immutable().Comment("请求内容").Annotations(entsql.WithComments(true)),
 			field.String("request_ip").Optional().Immutable().Comment("请求IP").Annotations(entsql.WithComments(true)),
 			field.JSON("request_header", map[string][]string{}).Optional().Immutable().Comment("请求头").Annotations(entsql.WithComments(true)),
 			field.Int64("request_cost_time").Optional().Immutable().Comment("请求消耗时长").Annotations(entsql.WithComments(true)),
 			field.Time("response_time").Immutable().Comment("响应时间").Annotations(entsql.WithComments(true)),
 			field.JSON("response_header", map[string][]string{}).Optional().Immutable().Comment("响应头").Annotations(entsql.WithComments(true)),
 			field.Int("response_code").Optional().Immutable().Comment("响应状态").Annotations(entsql.WithComments(true)),
-			field.JSON("response_body", map[string]interface{}{}).Optional().Immutable().Comment("响应内容").Annotations(entsql.WithComments(true)),
+			field.JSON("response_body", map[string]any{}).Optional().Immutable().Comment("响应内容").Annotations(entsql.WithComments(true)),
 		}
 	}
 }
