@@ -5,8 +5,10 @@ import (
 	"github.com/redis/go-redis/v9"
 	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/library/utils/gostring"
 	"log/slog"
 	"sync"
+	"time"
 )
 
 type PubSubClient struct {
@@ -61,8 +63,14 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 			RequestID: gorequest.GetRequestIDContext(ctx),
 		}
 
+		// 开始时间
+		start := time.Now().UTC()
+
 		// 执行
 		result.RunCode, result.RunDesc = executionCallback(ctx, &task)
+
+		// 结束时间
+		end := time.Now().UTC()
 
 		// 运行编号
 		result.RunID = result.TraceID
@@ -70,16 +78,11 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 			result.RunID = result.RequestID
 		}
 		if result.RunID == "" {
-			slog.ErrorContext(ctx, "[运行单个任务]运行编号为空",
-				slog.Int64("task_id", int64(task.ID)),
-				slog.String("task_type", task.Type),
-				slog.String("task_custom_id", task.CustomID),
-				slog.String("task_trace_id", result.TraceID),
-				slog.String("task_request_id", result.RequestID),
-				slog.String("task_run_id", result.RunID),
-			)
-			return
+			result.RunID = gostring.GetUuId()
 		}
+
+		// 消耗时长
+		result.CostTime = end.Sub(start).Milliseconds()
 
 		// 执行更新回调函数
 		if updateCallback != nil {
@@ -141,8 +144,14 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 			RequestID: gorequest.GetRequestIDContext(ctx),
 		}
 
+		// 开始时间
+		start := time.Now().UTC()
+
 		// 执行
 		result.RunCode, result.RunDesc = executionCallback(ctx, &task)
+
+		// 结束时间
+		end := time.Now().UTC()
 
 		// 运行编号
 		result.RunID = result.TraceID
@@ -150,16 +159,11 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 			result.RunID = result.RequestID
 		}
 		if result.RunID == "" {
-			slog.ErrorContext(ctx, "[运行单个任务带互斥锁]运行编号为空",
-				slog.Int64("task_id", int64(task.ID)),
-				slog.String("task_type", task.Type),
-				slog.String("task_custom_id", task.CustomID),
-				slog.String("task_trace_id", result.TraceID),
-				slog.String("task_request_id", result.RequestID),
-				slog.String("task_run_id", result.RunID),
-			)
-			return
+			result.RunID = gostring.GetUuId()
 		}
+
+		// 消耗时长
+		result.CostTime = end.Sub(start).Milliseconds()
 
 		// 执行更新回调函数
 		if updateCallback != nil {
@@ -221,8 +225,14 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 			RequestID: gorequest.GetRequestIDContext(ctx),
 		}
 
+		// 开始时间
+		start := time.Now().UTC()
+
 		// 执行
 		result.RunCode, result.RunDesc = executionCallback(ctx, &task)
+
+		// 结束时间
+		end := time.Now().UTC()
 
 		// 运行编号
 		result.RunID = result.TraceID
@@ -230,16 +240,11 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 			result.RunID = result.RequestID
 		}
 		if result.RunID == "" {
-			slog.ErrorContext(ctx, "[运行单个任务带互斥锁，使用ID编号]运行编号为空",
-				slog.Int64("task_id", int64(task.ID)),
-				slog.String("task_type", task.Type),
-				slog.String("task_custom_id", task.CustomID),
-				slog.String("task_trace_id", result.TraceID),
-				slog.String("task_request_id", result.RequestID),
-				slog.String("task_run_id", result.RunID),
-			)
-			return
+			result.RunID = gostring.GetUuId()
 		}
+
+		// 消耗时长
+		result.CostTime = end.Sub(start).Milliseconds()
 
 		// 执行更新回调函数
 		if updateCallback != nil {
@@ -301,8 +306,14 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 			RequestID: gorequest.GetRequestIDContext(ctx),
 		}
 
+		// 开始时间
+		start := time.Now().UTC()
+
 		// 执行
 		result.RunCode, result.RunDesc = executionCallback(ctx, &task)
+
+		// 结束时间
+		end := time.Now().UTC()
 
 		// 运行编号
 		result.RunID = result.TraceID
@@ -310,16 +321,11 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 			result.RunID = result.RequestID
 		}
 		if result.RunID == "" {
-			slog.ErrorContext(ctx, "[运行单个任务带互斥锁，使用CustomID编号]运行编号为空",
-				slog.Int64("task_id", int64(task.ID)),
-				slog.String("task_type", task.Type),
-				slog.String("task_custom_id", task.CustomID),
-				slog.String("task_trace_id", result.TraceID),
-				slog.String("task_request_id", result.RequestID),
-				slog.String("task_run_id", result.RunID),
-			)
-			return
+			result.RunID = gostring.GetUuId()
 		}
+
+		// 消耗时长
+		result.CostTime = end.Sub(start).Milliseconds()
 
 		// 执行更新回调函数
 		if updateCallback != nil {
