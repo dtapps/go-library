@@ -35,9 +35,9 @@ func EntTaskFields() []ent.Field {
 		field.Int64("custom_sequence").Optional().Comment("自定义顺序").Annotations(entsql.WithComments(true)),
 		field.String("type").NotEmpty().Immutable().Comment("类型").Annotations(entsql.WithComments(true)),
 		field.String("type_name").Optional().Immutable().Comment("类型名称").Annotations(entsql.WithComments(true)),
-		field.String("created_ip").Optional().Default("0.0.0.0").Immutable().Comment("创建外网IP").Annotations(entsql.WithComments(true)),
-		field.String("specify_ip").Optional().Default("0.0.0.0").Immutable().Comment("指定外网IP").Annotations(entsql.WithComments(true)),
-		field.String("updated_ip").Optional().Default("0.0.0.0").Comment("更新外网IP").Annotations(entsql.WithComments(true)),
+		field.String("created_ip").Default("0.0.0.0").Immutable().Comment("创建外网IP").Annotations(entsql.WithComments(true)),
+		field.String("specify_ip").Default("0.0.0.0").Immutable().Comment("指定外网IP").Annotations(entsql.WithComments(true)),
+		field.String("updated_ip").Default("0.0.0.0").Comment("更新外网IP").Annotations(entsql.WithComments(true)),
 		field.String("result").Optional().Comment("结果").Annotations(entsql.WithComments(true)),
 		field.Time("next_run_time").Optional().Comment("下次运行时间").Annotations(entsql.WithComments(true)),
 		field.Time("created_at").Default(time.Now).Immutable().Comment("创建时间").Annotations(entsql.WithComments(true)),
@@ -74,11 +74,11 @@ func EntTaskLogFields() []ent.Field {
 		field.String("task_run_id").Optional().Immutable().Comment("执行编号").Annotations(entsql.WithComments(true)),
 		field.Int("task_result_code").Optional().Immutable().Comment("执行状态码").Annotations(entsql.WithComments(true)),
 		field.String("task_result_desc").Optional().Immutable().Comment("执行结果").Annotations(entsql.WithComments(true)),
-		field.Int64("task_cost_time").Optional().Immutable().Comment("消耗时长").Annotations(entsql.WithComments(true)),
-		field.String("system_inside_ip").Optional().Immutable().Default("0.0.0.0").Comment("内网IP").Annotations(entsql.WithComments(true)),
-		field.String("system_outside_ip").Optional().Immutable().Default("0.0.0.0").Comment("外网IP").Annotations(entsql.WithComments(true)),
-		field.String("go_version").Optional().Default(runtime.Version()).Immutable().Comment("go版本").Annotations(entsql.WithComments(true)),
-		field.String("sdk_version").Optional().Default(Version).Immutable().Comment("sdk版本").Annotations(entsql.WithComments(true)),
+		field.Int64("task_cost_time").Default(0).Immutable().Comment("消耗时长").Annotations(entsql.WithComments(true)),
+		field.String("system_inside_ip").Default("0.0.0.0").Immutable().Comment("内网IP").Annotations(entsql.WithComments(true)),
+		field.String("system_outside_ip").Default("0.0.0.0").Immutable().Comment("外网IP").Annotations(entsql.WithComments(true)),
+		field.String("go_version").Default(runtime.Version()).Immutable().Comment("go版本").Annotations(entsql.WithComments(true)),
+		field.String("sdk_version").Default(Version).Immutable().Comment("sdk版本").Annotations(entsql.WithComments(true)),
 	}
 }
 
@@ -86,6 +86,5 @@ func EntTaskLogFields() []ent.Field {
 func EntTaskLogIndexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("task_id"),
-		index.Fields("task_result_code"),
 	}
 }
