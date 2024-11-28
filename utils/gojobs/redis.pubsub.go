@@ -7,6 +7,7 @@ import (
 	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gostring"
+	"go.dtapp.net/library/utils/gotime"
 	"log/slog"
 	"strings"
 	"sync"
@@ -16,7 +17,7 @@ import (
 type PubSubClient struct {
 	client               *redis.Client // Redis客户端
 	taskTypeMu           sync.Mutex    // 互斥锁，用于保护 taskTypeExecutingMap
-	taskTypeExecutingMap sync.Map      // 存储正在执行的任务类型
+	taskTypeExecutingMap sync.Map      // 存储正在执行的任务，值是设置时间
 }
 
 func NewPubSub(ctx context.Context, client *redis.Client) *PubSubClient {
@@ -134,8 +135,8 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 	customTaskID := task.Type
 
 	// 检查任务类型是否已经在执行
-	if _, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
-		errDesc := fmt.Sprintf("%s{%v}任务已经在执行，需要等待", runName, customTaskID)
+	if value, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
+		errDesc := fmt.Sprintf("%s{%v}任务已经在执行,时间%v，需要等待执行完才能继续", runName, customTaskID, value)
 		errorCallback(ctx, &task, errDesc)
 		slog.WarnContext(ctx, errDesc,
 			slog.Uint64("task_id", uint64(task.ID)),
@@ -146,7 +147,7 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 	}
 
 	// 标记任务类型为正在执行
-	c.taskTypeExecutingMap.Store(customTaskID, struct{}{})
+	c.taskTypeExecutingMap.Store(customTaskID, gotime.Current().Format())
 
 	// 确保任务执行完毕后清理标记
 	defer c.taskTypeExecutingMap.Delete(customTaskID)
@@ -225,8 +226,8 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 	customTaskID := task.ID
 
 	// 检查任务类型是否已经在执行
-	if _, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
-		errDesc := fmt.Sprintf("%s{%v}任务已经在执行，需要等待", runName, customTaskID)
+	if value, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
+		errDesc := fmt.Sprintf("%s{%v}任务已经在执行,时间%v，需要等待执行完才能继续", runName, customTaskID, value)
 		errorCallback(ctx, &task, errDesc)
 		slog.WarnContext(ctx, errDesc,
 			slog.Uint64("task_id", uint64(task.ID)),
@@ -237,7 +238,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 	}
 
 	// 标记任务类型为正在执行
-	c.taskTypeExecutingMap.Store(customTaskID, struct{}{})
+	c.taskTypeExecutingMap.Store(customTaskID, gotime.Current().Format())
 
 	// 确保任务执行完毕后清理标记
 	defer c.taskTypeExecutingMap.Delete(customTaskID)
@@ -320,8 +321,8 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 	customTaskID := builder.String()
 
 	// 检查任务类型是否已经在执行
-	if _, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
-		errDesc := fmt.Sprintf("%s{%v}任务已经在执行，需要等待", runName, customTaskID)
+	if value, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
+		errDesc := fmt.Sprintf("%s{%v}任务已经在执行,时间%v，需要等待执行完才能继续", runName, customTaskID, value)
 		errorCallback(ctx, &task, errDesc)
 		slog.WarnContext(ctx, errDesc,
 			slog.Uint64("task_id", uint64(task.ID)),
@@ -332,7 +333,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 	}
 
 	// 标记任务类型为正在执行
-	c.taskTypeExecutingMap.Store(customTaskID, struct{}{})
+	c.taskTypeExecutingMap.Store(customTaskID, gotime.Current().Format())
 
 	// 确保任务执行完毕后清理标记
 	defer c.taskTypeExecutingMap.Delete(customTaskID)
@@ -411,16 +412,14 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, 
 	var builder strings.Builder
 	builder.WriteString(task.Type)
 	builder.WriteString(":")
-	if task.CustomID != "" {
-		builder.WriteString(task.CustomID)
-	} else {
-		builder.WriteString(fmt.Sprintf("%d", task.ID))
-	}
+	builder.WriteString(fmt.Sprintf("%d", task.ID))
+	builder.WriteString(task.CustomID)
+	builder.WriteString(":")
 	customTaskID := builder.String()
 
 	// 检查任务类型是否已经在执行
-	if _, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
-		errDesc := fmt.Sprintf("%s{%v}任务已经在执行，需要等待", runName, customTaskID)
+	if value, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
+		errDesc := fmt.Sprintf("%s{%v}任务已经在执行,时间%v，需要等待执行完才能继续", runName, customTaskID, value)
 		errorCallback(ctx, &task, errDesc)
 		slog.WarnContext(ctx, errDesc,
 			slog.Uint64("task_id", uint64(task.ID)),
@@ -431,7 +430,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, 
 	}
 
 	// 标记任务类型为正在执行
-	c.taskTypeExecutingMap.Store(customTaskID, struct{}{})
+	c.taskTypeExecutingMap.Store(customTaskID, gotime.Current().Format())
 
 	// 确保任务执行完毕后清理标记
 	defer c.taskTypeExecutingMap.Delete(customTaskID)
