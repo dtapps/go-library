@@ -10,6 +10,8 @@ const (
 	CodeAbnormal = 0
 	// CodeConflict 冲突
 	CodeConflict = http.StatusBadRequest
+	// CodeObservation 观查
+	CodeObservation = http.StatusMultipleChoices
 	// CodeError 失败
 	CodeError = http.StatusInternalServerError
 	// CodeSuccess 成功
