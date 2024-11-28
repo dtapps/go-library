@@ -10,8 +10,7 @@ import (
 func (c *Client) StartHandle(ctx context.Context, key any, overdue int64) error {
 	status, err := c.redisConfig.client.Get(ctx, fmt.Sprintf("%v", key)).Result()
 	if status != "" {
-		err = fmt.Errorf("【%v】上一次还在执行中", fmt.Sprintf("%v", key))
-		return err
+		return fmt.Errorf("【%v】上一次还在执行中", fmt.Sprintf("%v", key))
 	}
 
 	err = c.redisConfig.client.Set(ctx, fmt.Sprintf("%v", key), gotime.Current().Format(), time.Duration(overdue)*time.Second).Err()

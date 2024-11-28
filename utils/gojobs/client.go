@@ -2,7 +2,7 @@ package gojobs
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
@@ -33,7 +33,7 @@ func NewClient(ctx context.Context, currentIP string) (*Client, error) {
 	c := &Client{}
 
 	if currentIP == "" || currentIP == "0.0.0.0" {
-		return nil, errors.New("请配置 CurrentIp")
+		return nil, fmt.Errorf("请配置 CurrentIp")
 	}
 
 	// 配置信息

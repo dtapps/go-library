@@ -35,7 +35,7 @@ func (c *Client) LockForever(ctx context.Context, info *GormModelTask, id any) (
 // ttl 锁过期时间
 func (c *Client) lock(ctx context.Context, key string, val string, ttl time.Duration) (resp string, err error) {
 	if ttl <= 0 {
-		return resp, errors.New("长期请使用 LockForever 方法")
+		return resp, fmt.Errorf("长期请使用 LockForever 方法")
 	}
 	// 获取
 	get, err := c.redisConfig.client.Get(ctx, key).Result()
@@ -43,14 +43,14 @@ func (c *Client) lock(ctx context.Context, key string, val string, ttl time.Dura
 		// 设置
 		err = c.redisConfig.client.Set(ctx, key, val, ttl).Err()
 		if err != nil {
-			return resp, errors.New(fmt.Sprintf("上锁失败：%s", err.Error()))
+			return resp, fmt.Errorf("上锁失败：%s", err.Error())
 		}
 		return val, nil
 	}
 	if get != "" {
-		return resp, errors.New("上锁失败，已存在")
+		return resp, fmt.Errorf("上锁失败，已存在")
 	}
-	return resp, errors.New(fmt.Sprintf("获取异常：%s", err.Error()))
+	return resp, fmt.Errorf("获取异常：%s", err.Error())
 }
 
 // Unlock 解锁
@@ -58,7 +58,7 @@ func (c *Client) lock(ctx context.Context, key string, val string, ttl time.Dura
 func (c *Client) unlock(ctx context.Context, key string) error {
 	_, err := c.redisConfig.client.Del(ctx, key).Result()
 	if err != nil {
-		return errors.New(fmt.Sprintf("解锁失败：%s", err.Error()))
+		return fmt.Errorf("解锁失败：%s", err.Error())
 	}
 	return err
 }
@@ -73,12 +73,12 @@ func (c *Client) lockForever(ctx context.Context, key string, val string) (resp 
 		// 设置
 		err = c.redisConfig.client.Set(ctx, key, val, 0).Err()
 		if err != nil {
-			return resp, errors.New(fmt.Sprintf("上锁失败：%s", err.Error()))
+			return resp, fmt.Errorf("上锁失败：%s", err.Error())
 		}
 		return val, nil
 	}
 	if get != "" {
-		return resp, errors.New("上锁失败，已存在")
+		return resp, fmt.Errorf("上锁失败，已存在")
 	}
-	return resp, errors.New(fmt.Sprintf("获取异常：%s", err.Error()))
+	return resp, fmt.Errorf("获取异常：%s", err.Error())
 }

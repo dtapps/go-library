@@ -8,6 +8,8 @@ import (
 const (
 	// CodeAbnormal 异常
 	CodeAbnormal = 0
+	// CodeConflict 冲突
+	CodeConflict = http.StatusBadRequest
 	// CodeError 失败
 	CodeError = http.StatusInternalServerError
 	// CodeSuccess 成功

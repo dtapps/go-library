@@ -2,7 +2,6 @@ package gojobs
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"go.dtapp.net/library/utils/gostring"
 	"go.dtapp.net/library/utils/gotime"
@@ -46,8 +45,7 @@ func (c *Client) CreateInCustomId(ctx context.Context, config *ConfigCreateInCus
 			NextRunTime:    gotime.Current().AfterSeconds(config.Frequency).Time,
 		}).Error
 	if err != nil {
-		err = fmt.Errorf("创建[%s@%s]任务失败：%s", config.CustomID, config.Type, err)
-		return err
+		return fmt.Errorf("创建[%s@%s]任务失败：%s", config.CustomID, config.Type, err)
 	}
 	return nil
 }
@@ -70,7 +68,7 @@ type ConfigCreateInCustomIdOnly struct {
 func (c *Client) CreateInCustomIdOnly(ctx context.Context, config *ConfigCreateInCustomIdOnly) error {
 	query := c.TaskTypeTakeIn(ctx, config.Tx, config.CustomID, config.Type)
 	if query.ID != 0 {
-		return errors.New("任务已存在")
+		return fmt.Errorf("任务已存在")
 	}
 	if config.CurrentIP == "" {
 		config.CurrentIP = c.config.systemOutsideIP
@@ -93,8 +91,7 @@ func (c *Client) CreateInCustomIdOnly(ctx context.Context, config *ConfigCreateI
 			NextRunTime:    gotime.Current().AfterSeconds(config.Frequency).Time,
 		}).Error
 	if err != nil {
-		err = fmt.Errorf("创建[%s@%s]任务失败：%s", config.CustomID, config.Type, err)
-		return err
+		return fmt.Errorf("创建[%s@%s]任务失败：%s", config.CustomID, config.Type, err)
 	}
 	return nil
 }
@@ -138,8 +135,7 @@ func (c *Client) CreateInCustomIdMaxNumber(ctx context.Context, config *ConfigCr
 			NextRunTime:    gotime.Current().AfterSeconds(config.Frequency).Time,
 		}).Error
 	if err != nil {
-		err = fmt.Errorf("创建[%s@%s]任务失败：%s", config.CustomID, config.Type, err)
-		return err
+		return fmt.Errorf("创建[%s@%s]任务失败：%s", config.CustomID, config.Type, err)
 	}
 	return nil
 }
@@ -188,8 +184,7 @@ func (c *Client) CreateInCustomIdMaxNumberOnly(ctx context.Context, config *Conf
 			NextRunTime:    gotime.Current().AfterSeconds(config.Frequency).Time,
 		}).Error
 	if err != nil {
-		err = fmt.Errorf("创建[%s@%s]任务失败：%s", config.CustomID, config.Type, err)
-		return err
+		return fmt.Errorf("创建[%s@%s]任务失败：%s", config.CustomID, config.Type, err)
 	}
 	return nil
 }

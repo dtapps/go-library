@@ -45,8 +45,7 @@ func (c *Client) CreateWaitCustomId(ctx context.Context, config *ConfigCreateWai
 			NextRunTime:    gotime.Current().AfterSeconds(config.Frequency).Time,
 		}).Error
 	if err != nil {
-		err = fmt.Errorf("创建[%s@%s]任务失败：%s", config.CustomID, config.Type, err)
-		return err
+		return fmt.Errorf("创建[%s@%s]任务失败：%s", config.CustomID, config.Type, err)
 	}
 	return nil
 }

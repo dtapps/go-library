@@ -7,6 +7,7 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gostring"
 	"log/slog"
+	"strings"
 	"sync"
 	"time"
 )
@@ -121,8 +122,11 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 		return
 	}
 
+	// 自定义任务编号
+	customTaskID := task.Type
+
 	// 检查任务类型是否已经在执行
-	if _, ok := c.taskTypeExecutingMap.Load(task.Type); ok {
+	if _, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
 		errorCallback(ctx, &task, "[运行单个任务带互斥锁]任务类型已经在执行")
 		slog.WarnContext(ctx, "[运行单个任务带互斥锁]任务类型已经在执行",
 			slog.Int64("task_id", int64(task.ID)),
@@ -133,10 +137,10 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 	}
 
 	// 标记任务类型为正在执行
-	c.taskTypeExecutingMap.Store(task.Type, struct{}{})
+	c.taskTypeExecutingMap.Store(customTaskID, struct{}{})
 
 	// 确保任务执行完毕后清理标记
-	defer c.taskTypeExecutingMap.Delete(task.Type)
+	defer c.taskTypeExecutingMap.Delete(customTaskID)
 
 	// 任务回调函数
 	if executionCallback != nil {
@@ -204,8 +208,11 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 		return
 	}
 
+	// 自定义任务编号
+	customTaskID := task.ID
+
 	// 检查任务类型是否已经在执行
-	if _, ok := c.taskTypeExecutingMap.Load(task.ID); ok {
+	if _, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
 		errorCallback(ctx, &task, "[运行单个任务带互斥锁，使用ID编号]任务类型已经在执行")
 		slog.WarnContext(ctx, "[运行单个任务带互斥锁，使用ID编号]任务类型已经在执行",
 			slog.Int64("task_id", int64(task.ID)),
@@ -216,10 +223,10 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 	}
 
 	// 标记任务类型为正在执行
-	c.taskTypeExecutingMap.Store(task.ID, struct{}{})
+	c.taskTypeExecutingMap.Store(customTaskID, struct{}{})
 
 	// 确保任务执行完毕后清理标记
-	defer c.taskTypeExecutingMap.Delete(task.ID)
+	defer c.taskTypeExecutingMap.Delete(customTaskID)
 
 	// 任务回调函数
 	if executionCallback != nil {
@@ -287,8 +294,15 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 		return
 	}
 
+	// 自定义任务编号
+	var builder strings.Builder
+	builder.WriteString(task.Type)
+	builder.WriteString(":")
+	builder.WriteString(task.CustomID)
+	customTaskID := builder.String()
+
 	// 检查任务类型是否已经在执行
-	if _, ok := c.taskTypeExecutingMap.Load(task.CustomID); ok {
+	if _, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
 		errorCallback(ctx, &task, "[运行单个任务带互斥锁，使用CustomID编号]任务类型已经在执行")
 		slog.WarnContext(ctx, "[运行单个任务带互斥锁，使用CustomID编号]任务类型已经在执行",
 			slog.Int64("task_id", int64(task.ID)),
@@ -299,10 +313,10 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 	}
 
 	// 标记任务类型为正在执行
-	c.taskTypeExecutingMap.Store(task.CustomID, struct{}{})
+	c.taskTypeExecutingMap.Store(customTaskID, struct{}{})
 
 	// 确保任务执行完毕后清理标记
-	defer c.taskTypeExecutingMap.Delete(task.CustomID)
+	defer c.taskTypeExecutingMap.Delete(customTaskID)
 
 	// 任务回调函数
 	if executionCallback != nil {

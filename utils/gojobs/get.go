@@ -3,6 +3,7 @@ package gojobs
 import (
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
+	"strings"
 )
 
 // GetDb 获取数据库驱动
@@ -27,5 +28,9 @@ func (c *Client) GetCurrentIp() string {
 
 // GetSubscribeAddress 获取订阅地址
 func (c *Client) GetSubscribeAddress() string {
-	return c.redisConfig.cornKeyPrefix + "_" + c.redisConfig.cornKeyCustom
+	var builder strings.Builder
+	builder.WriteString(c.redisConfig.cornKeyPrefix)
+	builder.WriteString("_")
+	builder.WriteString(c.redisConfig.cornKeyCustom)
+	return builder.String()
 }

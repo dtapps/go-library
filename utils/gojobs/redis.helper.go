@@ -5,12 +5,16 @@ import (
 	"fmt"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
+	"strings"
 	"time"
 )
 
 // GetRedisKeyName 获取Redis键名
 func GetRedisKeyName(taskType string) string {
-	return "task:run:" + taskType
+	var builder strings.Builder
+	builder.WriteString("task:run:")
+	builder.WriteString(taskType)
+	return builder.String()
 }
 
 // SetRedisKeyValue 返回设置Redis键值

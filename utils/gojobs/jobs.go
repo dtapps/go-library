@@ -7,6 +7,8 @@ import (
 const (
 	// TASK_IN 任务运行
 	TASK_IN = "IN"
+	// TASK_CONFLICT 冲突
+	TASK_CONFLICT = "CONFLICT"
 	// TASK_SUCCESS 任务完成
 	TASK_SUCCESS = "SUCCESS"
 	// TASK_ERROR 任务异常
