@@ -47,11 +47,14 @@ func (c *PubSubClient) PSubscribe(ctx context.Context, channel ...string) *redis
 // updateCallback 执行更新回调函数
 func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, executionCallback func(ctx context.Context, task *GormModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *GormModelTask, result *TaskHelperRunSingleTaskResponse) (err error)) {
 
+	var runName = "[运行单个任务]"
+
 	// 解析任务
 	var task GormModelTask
 	err := gojson.Unmarshal([]byte(message), &task)
 	if err != nil {
-		slog.ErrorContext(ctx, "[运行单个任务]解析错误",
+		errDesc := fmt.Sprintf("%s解析错误", runName)
+		slog.ErrorContext(ctx, errDesc,
 			slog.String("err_desc", err.Error()),
 		)
 		return
@@ -90,7 +93,8 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 		if updateCallback != nil {
 			err = updateCallback(ctx, &task, &result)
 			if err != nil {
-				slog.ErrorContext(ctx, "[运行单个任务]回调函数返回错误",
+				errDesc := fmt.Sprintf("%s回调函数返回错误", runName)
+				slog.ErrorContext(ctx, errDesc,
 					slog.Uint64("task_id", uint64(task.ID)),
 					slog.String("task_type", task.Type),
 					slog.String("task_custom_id", task.CustomID),
@@ -112,12 +116,15 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 // updateCallback 执行更新回调函数
 func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string, executionCallback func(ctx context.Context, task *GormModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *GormModelTask, result *TaskHelperRunSingleTaskResponse) (err error), errorCallback func(ctx context.Context, task *GormModelTask, desc string)) {
 
+	var runName = "[运行单个任务带互斥锁]"
+
 	// 解析任务
 	var task GormModelTask
 	err := gojson.Unmarshal([]byte(message), &task)
 	if err != nil {
-		errorCallback(ctx, &task, "[运行单个任务带互斥锁]解析错误")
-		slog.ErrorContext(ctx, "[运行单个任务带互斥锁]解析错误",
+		errDesc := fmt.Sprintf("%s解析错误", runName)
+		errorCallback(ctx, &task, errDesc)
+		slog.ErrorContext(ctx, errDesc,
 			slog.String("err_desc", err.Error()),
 		)
 		return
@@ -128,8 +135,9 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 
 	// 检查任务类型是否已经在执行
 	if _, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
-		errorCallback(ctx, &task, "[运行单个任务带互斥锁]任务类型已经在执行")
-		slog.WarnContext(ctx, "[运行单个任务带互斥锁]任务类型已经在执行",
+		errDesc := fmt.Sprintf("%s任务类型已经在执行{%v}", runName, customTaskID)
+		errorCallback(ctx, &task, errDesc)
+		slog.WarnContext(ctx, errDesc,
 			slog.Uint64("task_id", uint64(task.ID)),
 			slog.String("task_type", task.Type),
 			slog.String("task_custom_id", task.CustomID),
@@ -176,7 +184,8 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 		if updateCallback != nil {
 			err = updateCallback(ctx, &task, &result)
 			if err != nil {
-				slog.ErrorContext(ctx, "[运行单个任务带互斥锁]回调函数返回错误",
+				errDesc := fmt.Sprintf("%s回调函数返回错误", runName)
+				slog.ErrorContext(ctx, errDesc,
 					slog.Uint64("task_id", uint64(task.ID)),
 					slog.String("task_type", task.Type),
 					slog.String("task_custom_id", task.CustomID),
@@ -198,12 +207,15 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 // updateCallback 执行更新回调函数
 func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message string, executionCallback func(ctx context.Context, task *GormModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *GormModelTask, result *TaskHelperRunSingleTaskResponse) (err error), errorCallback func(ctx context.Context, task *GormModelTask, desc string)) {
 
+	var runName = "[运行单个任务带互斥锁，使用ID编号]"
+
 	// 解析任务
 	var task GormModelTask
 	err := gojson.Unmarshal([]byte(message), &task)
 	if err != nil {
-		errorCallback(ctx, &task, "[运行单个任务带互斥锁，使用ID编号]解析错误")
-		slog.ErrorContext(ctx, "[运行单个任务带互斥锁，使用ID编号]解析错误",
+		errDesc := fmt.Sprintf("%s解析错误", runName)
+		errorCallback(ctx, &task, errDesc)
+		slog.ErrorContext(ctx, errDesc,
 			slog.String("err_desc", err.Error()),
 		)
 		return
@@ -214,8 +226,9 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 
 	// 检查任务类型是否已经在执行
 	if _, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
-		errorCallback(ctx, &task, "[运行单个任务带互斥锁，使用ID编号]任务类型已经在执行")
-		slog.WarnContext(ctx, "[运行单个任务带互斥锁，使用ID编号]任务类型已经在执行",
+		errDesc := fmt.Sprintf("%s任务类型已经在执行{%v}", runName, customTaskID)
+		errorCallback(ctx, &task, errDesc)
+		slog.WarnContext(ctx, errDesc,
 			slog.Uint64("task_id", uint64(task.ID)),
 			slog.String("task_type", task.Type),
 			slog.String("task_custom_id", task.CustomID),
@@ -262,7 +275,8 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 		if updateCallback != nil {
 			err = updateCallback(ctx, &task, &result)
 			if err != nil {
-				slog.ErrorContext(ctx, "[运行单个任务带互斥锁，使用ID编号]回调函数返回错误",
+				errDesc := fmt.Sprintf("%s回调函数返回错误", runName)
+				slog.ErrorContext(ctx, errDesc,
 					slog.Uint64("task_id", uint64(task.ID)),
 					slog.String("task_type", task.Type),
 					slog.String("task_custom_id", task.CustomID),
@@ -284,12 +298,15 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 // updateCallback 执行更新回调函数
 func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, message string, executionCallback func(ctx context.Context, task *GormModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *GormModelTask, result *TaskHelperRunSingleTaskResponse) (err error), errorCallback func(ctx context.Context, task *GormModelTask, desc string)) {
 
+	var runName = "[运行单个任务带互斥锁，使用CustomID编号]"
+
 	// 解析任务
 	var task GormModelTask
 	err := gojson.Unmarshal([]byte(message), &task)
 	if err != nil {
-		errorCallback(ctx, &task, "[运行单个任务带互斥锁，使用CustomID编号]解析错误")
-		slog.ErrorContext(ctx, "[运行单个任务带互斥锁，使用CustomID编号]解析错误",
+		errDesc := fmt.Sprintf("%s解析错误", runName)
+		errorCallback(ctx, &task, errDesc)
+		slog.ErrorContext(ctx, errDesc,
 			slog.String("err_desc", err.Error()),
 		)
 		return
@@ -304,8 +321,9 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 
 	// 检查任务类型是否已经在执行
 	if _, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
-		errorCallback(ctx, &task, "[运行单个任务带互斥锁，使用CustomID编号]任务类型已经在执行")
-		slog.WarnContext(ctx, "[运行单个任务带互斥锁，使用CustomID编号]任务类型已经在执行",
+		errDesc := fmt.Sprintf("%s任务类型已经在执行{%v}", runName, customTaskID)
+		errorCallback(ctx, &task, errDesc)
+		slog.WarnContext(ctx, errDesc,
 			slog.Uint64("task_id", uint64(task.ID)),
 			slog.String("task_type", task.Type),
 			slog.String("task_custom_id", task.CustomID),
@@ -352,7 +370,8 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 		if updateCallback != nil {
 			err = updateCallback(ctx, &task, &result)
 			if err != nil {
-				slog.ErrorContext(ctx, "[运行单个任务带互斥锁，使用CustomID编号]回调函数返回错误",
+				errDesc := fmt.Sprintf("%s回调函数返回错误", runName)
+				slog.ErrorContext(ctx, errDesc,
 					slog.Uint64("task_id", uint64(task.ID)),
 					slog.String("task_type", task.Type),
 					slog.String("task_custom_id", task.CustomID),
@@ -374,12 +393,15 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 // updateCallback 执行更新回调函数
 func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, message string, executionCallback func(ctx context.Context, task *GormModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *GormModelTask, result *TaskHelperRunSingleTaskResponse) (err error), errorCallback func(ctx context.Context, task *GormModelTask, desc string)) {
 
+	var runName = "[运行单个任务带互斥锁，使用CustomID编号或者ID编号]"
+
 	// 解析任务
 	var task GormModelTask
 	err := gojson.Unmarshal([]byte(message), &task)
 	if err != nil {
-		errorCallback(ctx, &task, "[运行单个任务带互斥锁，使用CustomID编号或者ID编号]解析错误")
-		slog.ErrorContext(ctx, "[运行单个任务带互斥锁，使用CustomID编号或者ID编号]解析错误",
+		errDesc := fmt.Sprintf("%s解析错误", runName)
+		errorCallback(ctx, &task, errDesc)
+		slog.ErrorContext(ctx, errDesc,
 			slog.String("err_desc", err.Error()),
 		)
 		return
@@ -398,8 +420,9 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, 
 
 	// 检查任务类型是否已经在执行
 	if _, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
-		errorCallback(ctx, &task, "[运行单个任务带互斥锁，使用CustomID编号或者ID编号]任务类型已经在执行")
-		slog.WarnContext(ctx, "[运行单个任务带互斥锁，使用CustomID编号或者ID编号]任务类型已经在执行",
+		errDesc := fmt.Sprintf("%s任务类型已经在执行{%v}", runName, customTaskID)
+		errorCallback(ctx, &task, errDesc)
+		slog.WarnContext(ctx, errDesc,
 			slog.Uint64("task_id", uint64(task.ID)),
 			slog.String("task_type", task.Type),
 			slog.String("task_custom_id", task.CustomID),
@@ -446,7 +469,8 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, 
 		if updateCallback != nil {
 			err = updateCallback(ctx, &task, &result)
 			if err != nil {
-				slog.ErrorContext(ctx, "[运行单个任务带互斥锁，使用CustomID编号或者ID编号]回调函数返回错误",
+				errDesc := fmt.Sprintf("%s回调函数返回错误", runName)
+				slog.ErrorContext(ctx, errDesc,
 					slog.Uint64("task_id", uint64(task.ID)),
 					slog.String("task_type", task.Type),
 					slog.String("task_custom_id", task.CustomID),
