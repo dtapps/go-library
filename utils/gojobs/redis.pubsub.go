@@ -135,7 +135,7 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 
 	// 检查任务类型是否已经在执行
 	if _, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
-		errDesc := fmt.Sprintf("%s任务类型已经在执行{%v}", runName, customTaskID)
+		errDesc := fmt.Sprintf("%s{%v}任务类型已经在执行", runName, customTaskID)
 		errorCallback(ctx, &task, errDesc)
 		slog.WarnContext(ctx, errDesc,
 			slog.Uint64("task_id", uint64(task.ID)),
@@ -184,7 +184,7 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 		if updateCallback != nil {
 			err = updateCallback(ctx, &task, &result)
 			if err != nil {
-				errDesc := fmt.Sprintf("%s回调函数返回错误{%v}", runName, customTaskID)
+				errDesc := fmt.Sprintf("%s{%v}回调函数返回错误", runName, customTaskID)
 				slog.ErrorContext(ctx, errDesc,
 					slog.Uint64("task_id", uint64(task.ID)),
 					slog.String("task_type", task.Type),
@@ -226,7 +226,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 
 	// 检查任务类型是否已经在执行
 	if _, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
-		errDesc := fmt.Sprintf("%s任务类型已经在执行{%v}", runName, customTaskID)
+		errDesc := fmt.Sprintf("%s{%v}任务类型已经在执行", runName, customTaskID)
 		errorCallback(ctx, &task, errDesc)
 		slog.WarnContext(ctx, errDesc,
 			slog.Uint64("task_id", uint64(task.ID)),
@@ -275,7 +275,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 		if updateCallback != nil {
 			err = updateCallback(ctx, &task, &result)
 			if err != nil {
-				errDesc := fmt.Sprintf("%s回调函数返回错误{%v}", runName, customTaskID)
+				errDesc := fmt.Sprintf("%s{%v}回调函数返回错误", runName, customTaskID)
 				slog.ErrorContext(ctx, errDesc,
 					slog.Uint64("task_id", uint64(task.ID)),
 					slog.String("task_type", task.Type),
@@ -321,7 +321,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 
 	// 检查任务类型是否已经在执行
 	if _, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
-		errDesc := fmt.Sprintf("%s任务类型已经在执行{%v}", runName, customTaskID)
+		errDesc := fmt.Sprintf("%s{%v}任务类型已经在执行", runName, customTaskID)
 		errorCallback(ctx, &task, errDesc)
 		slog.WarnContext(ctx, errDesc,
 			slog.Uint64("task_id", uint64(task.ID)),
@@ -370,7 +370,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 		if updateCallback != nil {
 			err = updateCallback(ctx, &task, &result)
 			if err != nil {
-				errDesc := fmt.Sprintf("%s回调函数返回错误{%v}", runName, customTaskID)
+				errDesc := fmt.Sprintf("%s{%v}回调函数返回错误", runName, customTaskID)
 				slog.ErrorContext(ctx, errDesc,
 					slog.Uint64("task_id", uint64(task.ID)),
 					slog.String("task_type", task.Type),
@@ -420,7 +420,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, 
 
 	// 检查任务类型是否已经在执行
 	if _, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
-		errDesc := fmt.Sprintf("%s任务类型已经在执行{%v}", runName, customTaskID)
+		errDesc := fmt.Sprintf("%s{%v}任务类型已经在执行", runName, customTaskID)
 		errorCallback(ctx, &task, errDesc)
 		slog.WarnContext(ctx, errDesc,
 			slog.Uint64("task_id", uint64(task.ID)),
@@ -469,7 +469,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, 
 		if updateCallback != nil {
 			err = updateCallback(ctx, &task, &result)
 			if err != nil {
-				errDesc := fmt.Sprintf("%s回调函数返回错误{%v}", runName, customTaskID)
+				errDesc := fmt.Sprintf("%s{%v}回调函数返回错误", runName, customTaskID)
 				slog.ErrorContext(ctx, errDesc,
 					slog.Uint64("task_id", uint64(task.ID)),
 					slog.String("task_type", task.Type),
