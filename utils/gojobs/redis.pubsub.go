@@ -60,22 +60,22 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 		return
 	}
 
+	// 开始时间
+	start := time.Now().UTC()
+
 	// 任务回调函数
 	if executionCallback != nil {
+
+		// 计算执行时间
+		elapsed := time.Since(start)
 
 		// 需要返回的结构
 		result := TaskHelperRunSingleTaskResponse{
 			RequestID: gorequest.GetRequestIDContext(ctx),
 		}
 
-		// 开始时间
-		start := time.Now().UTC()
-
 		// 执行
 		result.RunCode, result.RunDesc = executionCallback(ctx, &task)
-
-		// 结束时间
-		end := time.Now().UTC()
 
 		// 运行编号
 		result.RunID = result.TraceID
@@ -87,7 +87,7 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 		}
 
 		// 消耗时长
-		result.CostTime = end.Sub(start).Milliseconds()
+		result.CostTime = elapsed.Seconds()
 
 		// 执行更新回调函数
 		if updateCallback != nil {
@@ -151,22 +151,22 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 	// 确保任务执行完毕后清理标记
 	defer c.taskTypeExecutingMap.Delete(customTaskID)
 
+	// 开始时间
+	start := time.Now().UTC()
+
 	// 任务回调函数
 	if executionCallback != nil {
+
+		// 计算执行时间
+		elapsed := time.Since(start)
 
 		// 需要返回的结构
 		result := TaskHelperRunSingleTaskResponse{
 			RequestID: gorequest.GetRequestIDContext(ctx),
 		}
 
-		// 开始时间
-		start := time.Now().UTC()
-
 		// 执行
 		result.RunCode, result.RunDesc = executionCallback(ctx, &task)
-
-		// 结束时间
-		end := time.Now().UTC()
 
 		// 运行编号
 		result.RunID = result.TraceID
@@ -178,7 +178,7 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 		}
 
 		// 消耗时长
-		result.CostTime = end.Sub(start).Milliseconds()
+		result.CostTime = elapsed.Seconds()
 
 		// 执行更新回调函数
 		if updateCallback != nil {
@@ -242,22 +242,22 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 	// 确保任务执行完毕后清理标记
 	defer c.taskTypeExecutingMap.Delete(customTaskID)
 
+	// 开始时间
+	start := time.Now().UTC()
+
 	// 任务回调函数
 	if executionCallback != nil {
+
+		// 计算执行时间
+		elapsed := time.Since(start)
 
 		// 需要返回的结构
 		result := TaskHelperRunSingleTaskResponse{
 			RequestID: gorequest.GetRequestIDContext(ctx),
 		}
 
-		// 开始时间
-		start := time.Now().UTC()
-
 		// 执行
 		result.RunCode, result.RunDesc = executionCallback(ctx, &task)
-
-		// 结束时间
-		end := time.Now().UTC()
 
 		// 运行编号
 		result.RunID = result.TraceID
@@ -269,7 +269,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 		}
 
 		// 消耗时长
-		result.CostTime = end.Sub(start).Milliseconds()
+		result.CostTime = elapsed.Seconds()
 
 		// 执行更新回调函数
 		if updateCallback != nil {
@@ -337,22 +337,22 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 	// 确保任务执行完毕后清理标记
 	defer c.taskTypeExecutingMap.Delete(customTaskID)
 
+	// 开始时间
+	start := time.Now().UTC()
+
 	// 任务回调函数
 	if executionCallback != nil {
+
+		// 计算执行时间
+		elapsed := time.Since(start)
 
 		// 需要返回的结构
 		result := TaskHelperRunSingleTaskResponse{
 			RequestID: gorequest.GetRequestIDContext(ctx),
 		}
 
-		// 开始时间
-		start := time.Now().UTC()
-
 		// 执行
 		result.RunCode, result.RunDesc = executionCallback(ctx, &task)
-
-		// 结束时间
-		end := time.Now().UTC()
 
 		// 运行编号
 		result.RunID = result.TraceID
@@ -364,7 +364,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 		}
 
 		// 消耗时长
-		result.CostTime = end.Sub(start).Milliseconds()
+		result.CostTime = elapsed.Seconds()
 
 		// 执行更新回调函数
 		if updateCallback != nil {
@@ -436,22 +436,22 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, 
 	// 确保任务执行完毕后清理标记
 	defer c.taskTypeExecutingMap.Delete(customTaskID)
 
+	// 开始时间
+	start := time.Now().UTC()
+
 	// 任务回调函数
 	if executionCallback != nil {
+
+		// 计算执行时间
+		elapsed := time.Since(start)
 
 		// 需要返回的结构
 		result := TaskHelperRunSingleTaskResponse{
 			RequestID: gorequest.GetRequestIDContext(ctx),
 		}
 
-		// 开始时间
-		start := time.Now().UTC()
-
 		// 执行
 		result.RunCode, result.RunDesc = executionCallback(ctx, &task)
-
-		// 结束时间
-		end := time.Now().UTC()
 
 		// 运行编号
 		result.RunID = result.TraceID
@@ -463,7 +463,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, 
 		}
 
 		// 消耗时长
-		result.CostTime = end.Sub(start).Milliseconds()
+		result.CostTime = elapsed.Seconds()
 
 		// 执行更新回调函数
 		if updateCallback != nil {

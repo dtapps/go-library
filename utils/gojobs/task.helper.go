@@ -225,7 +225,7 @@ type TaskHelperRunSingleTaskResponse struct {
 	RunCode int    `json:"run_code"` // 运行状态
 	RunDesc string `json:"run_desc"` // 运行描述
 
-	CostTime int64 `json:"cost_time"` // 消耗时长
+	CostTime float64 `json:"cost_time"` // 消耗时长
 
 	TraceID   string `json:"trace_id"`   // 追踪编号
 	SpanID    string `json:"span_id"`    // 跨度编号

@@ -74,7 +74,7 @@ func EntTaskLogFields() []ent.Field {
 		field.String("task_run_id").Optional().Immutable().Comment("执行编号").Annotations(entsql.WithComments(true)),
 		field.Int("task_result_code").Optional().Immutable().Comment("执行状态码").Annotations(entsql.WithComments(true)),
 		field.String("task_result_desc").Optional().Immutable().Comment("执行结果").Annotations(entsql.WithComments(true)),
-		field.Int64("task_cost_time").Default(0).Immutable().Comment("消耗时长").Annotations(entsql.WithComments(true)),
+		field.Float("task_cost_time").Default(0).Immutable().Comment("消耗时长").Annotations(entsql.WithComments(true)),
 		field.String("system_inside_ip").Default("0.0.0.0").Immutable().Comment("内网IP").Annotations(entsql.WithComments(true)),
 		field.String("system_outside_ip").Default("0.0.0.0").Immutable().Comment("外网IP").Annotations(entsql.WithComments(true)),
 		field.String("go_version").Default(runtime.Version()).Immutable().Comment("go版本").Annotations(entsql.WithComments(true)),
