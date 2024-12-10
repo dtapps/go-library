@@ -209,7 +209,20 @@ func IsNotChinese(s string) bool {
 	return false
 }
 
-// IsNotDigit 检查字符串数字字符 则返回 true；否则返回 false。
+// IsNotDigit 判断字符串是否包含数字字符
+//
+// 参数：
+//
+//	s string: 要判断的字符串
+//
+// 返回值：
+//
+//	bool: 如果字符串中包含数字字符，则返回true；否则返回false
+//
+// 说明：
+//
+//	该函数遍历字符串s中的每个字符，使用unicode.IsDigit函数判断字符是否为数字。
+//	如果找到任何一个数字字符，则返回true；如果遍历完整个字符串后仍未找到数字字符，则返回false。
 func IsNotDigit(s string) bool {
 	for _, r := range s {
 		if unicode.IsDigit(r) {
@@ -217,4 +230,27 @@ func IsNotDigit(s string) bool {
 		}
 	}
 	return false
+}
+
+// TruncateStringRune 截断字符串
+//
+// 参数：
+//
+//	s string: 要截断的字符串
+//	maxLength int: 截断后的最大长度
+//
+// 返回值：
+//
+//	string: 截断后的字符串
+//
+// 说明：
+//
+//	该函数将字符串s截断为最多maxLength个字符，如果字符串s的长度小于等于maxLength，则返回原字符串；
+//	否则返回前maxLength个字符组成的字符串。注意这里是按rune（Unicode码点）来截断，而不是按字节。
+func TruncateStringRune(s string, maxLength int) string {
+	runes := []rune(s)
+	if len(runes) > maxLength {
+		return string(runes[:maxLength])
+	}
+	return s
 }
