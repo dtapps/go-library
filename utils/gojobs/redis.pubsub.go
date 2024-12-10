@@ -75,6 +75,9 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 			RequestID: gorequest.GetRequestIDContext(ctx),
 		}
 
+		// 旧的任务规则
+		oldSpec := task.Spec
+
 		// 执行
 		result.RunCode, result.RunDesc = executionCallback(ctx, &task)
 
@@ -92,6 +95,10 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 
 		// 执行更新回调函数
 		if updateCallback != nil {
+			// 判断更新任务规则
+			if oldSpec != task.Spec {
+				result.UpdateSpec = task.Spec
+			}
 			err = updateCallback(ctx, &task, &result)
 			if err != nil {
 				errDesc := fmt.Sprintf("%s回调函数返回错误", runName)
@@ -166,6 +173,9 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 			RequestID: gorequest.GetRequestIDContext(ctx),
 		}
 
+		// 旧的任务规则
+		oldSpec := task.Spec
+
 		// 执行
 		result.RunCode, result.RunDesc = executionCallback(ctx, &task)
 
@@ -183,6 +193,10 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 
 		// 执行更新回调函数
 		if updateCallback != nil {
+			// 判断更新任务规则
+			if oldSpec != task.Spec {
+				result.UpdateSpec = task.Spec
+			}
 			err = updateCallback(ctx, &task, &result)
 			if err != nil {
 				errDesc := fmt.Sprintf("%s{%v}回调函数返回错误", runName, customTaskID)
@@ -257,6 +271,9 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 			RequestID: gorequest.GetRequestIDContext(ctx),
 		}
 
+		// 旧的任务规则
+		oldSpec := task.Spec
+
 		// 执行
 		result.RunCode, result.RunDesc = executionCallback(ctx, &task)
 
@@ -274,6 +291,10 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 
 		// 执行更新回调函数
 		if updateCallback != nil {
+			// 判断更新任务规则
+			if oldSpec != task.Spec {
+				result.UpdateSpec = task.Spec
+			}
 			err = updateCallback(ctx, &task, &result)
 			if err != nil {
 				errDesc := fmt.Sprintf("%s{%v}回调函数返回错误", runName, customTaskID)
@@ -352,6 +373,9 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 			RequestID: gorequest.GetRequestIDContext(ctx),
 		}
 
+		// 旧的任务规则
+		oldSpec := task.Spec
+
 		// 执行
 		result.RunCode, result.RunDesc = executionCallback(ctx, &task)
 
@@ -369,6 +393,10 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 
 		// 执行更新回调函数
 		if updateCallback != nil {
+			// 判断更新任务规则
+			if oldSpec != task.Spec {
+				result.UpdateSpec = task.Spec
+			}
 			err = updateCallback(ctx, &task, &result)
 			if err != nil {
 				errDesc := fmt.Sprintf("%s{%v}回调函数返回错误", runName, customTaskID)
@@ -449,6 +477,9 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, 
 			RequestID: gorequest.GetRequestIDContext(ctx),
 		}
 
+		// 旧的任务规则
+		oldSpec := task.Spec
+
 		// 执行
 		result.RunCode, result.RunDesc = executionCallback(ctx, &task)
 
@@ -466,6 +497,10 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, 
 
 		// 执行更新回调函数
 		if updateCallback != nil {
+			// 判断更新任务规则
+			if oldSpec != task.Spec {
+				result.UpdateSpec = task.Spec
+			}
 			err = updateCallback(ctx, &task, &result)
 			if err != nil {
 				errDesc := fmt.Sprintf("%s{%v}回调函数返回错误", runName, customTaskID)

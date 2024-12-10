@@ -230,6 +230,8 @@ type TaskHelperRunSingleTaskResponse struct {
 	TraceID   string `json:"trace_id"`   // 追踪编号
 	SpanID    string `json:"span_id"`    // 跨度编号
 	RequestID string `json:"request_id"` // 请求编号
+
+	UpdateSpec string `json:"update_spec"` // 不为空就需要更新任务规则
 }
 
 // RunSingleTask 运行单个任务
@@ -246,6 +248,9 @@ func (th *TaskHelper) RunSingleTask(ctx context.Context, task *GormModelTask, ex
 		result := TaskHelperRunSingleTaskResponse{
 			RequestID: gorequest.GetRequestIDContext(ctx),
 		}
+
+		// 旧的任务规则
+		oldSpec := task.Spec
 
 		// 执行
 		result.RunCode, result.RunDesc = executionCallback(ctx, task)
@@ -264,6 +269,10 @@ func (th *TaskHelper) RunSingleTask(ctx context.Context, task *GormModelTask, ex
 
 		// 执行更新回调函数
 		if updateCallback != nil {
+			// 判断更新任务规则
+			if oldSpec != task.Spec {
+				result.UpdateSpec = task.Spec
+			}
 			updateCallback(ctx, task, &result)
 		}
 
