@@ -18,10 +18,10 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	newParams.Set("customer", c.GetCustomer())
 
 	// 请求参数
-	newParams.Set("param", gojson.JsonEncodeNoError(param))
+	newParams.Set("param", gojson.JsonEncodeNoError(param.DeepGet()))
 
 	// 签名
-	newParams.Set("sign", c.getSign(gojson.JsonEncodeNoError(param)))
+	newParams.Set("sign", c.getSign(gojson.JsonEncodeNoError(param.DeepGet())))
 
 	// 设置请求地址
 	c.httpClient.SetUri(uri)
