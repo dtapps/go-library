@@ -254,3 +254,33 @@ func TruncateStringRune(s string, maxLength int) string {
 	}
 	return s
 }
+
+// GetQueryParamSimple 从给定的URL字符串中提取指定名称的查询参数。
+// 如果无法找到或解析出该参数，则返回空字符串。
+// 假设查询参数的位置是固定的，不进行完整的查询字符串解析。
+func GetQueryParamSimple(urlStr, paramName string) string {
+	// 找到查询字符串部分
+	queryStart := strings.IndexByte(urlStr, '?')
+	if queryStart == -1 {
+		return ""
+	}
+
+	// 查找参数名
+	paramPattern := paramName + "="
+	queryString := urlStr[queryStart+1:]
+	paramStart := strings.Index(queryString, paramPattern)
+	if paramStart == -1 {
+		return ""
+	}
+	paramStart += len(paramPattern)
+
+	// 查找结束位置（下一个&或者字符串结尾）
+	paramEnd := strings.IndexByte(queryString[paramStart:], '&')
+	if paramEnd == -1 {
+		paramEnd = len(queryString[paramStart:])
+	} else {
+		paramEnd += paramStart
+	}
+
+	return queryString[paramStart:paramEnd]
+}
