@@ -268,19 +268,14 @@ func GetQueryParamSimple(urlStr, paramName string) string {
 	// 查找参数名
 	paramPattern := paramName + "="
 	queryString := urlStr[queryStart+1:]
-	paramStart := strings.Index(queryString, paramPattern)
-	if paramStart == -1 {
-		return ""
-	}
-	paramStart += len(paramPattern)
+	pairs := strings.Split(queryString, "&")
 
-	// 查找结束位置（下一个&或者字符串结尾）
-	paramEnd := strings.IndexByte(queryString[paramStart:], '&')
-	if paramEnd == -1 {
-		paramEnd = len(queryString[paramStart:])
-	} else {
-		paramEnd += paramStart
+	for _, pair := range pairs {
+		if strings.HasPrefix(pair, paramPattern) {
+			// 截取参数值
+			return pair[len(paramPattern):]
+		}
 	}
 
-	return queryString[paramStart:paramEnd]
+	return ""
 }
