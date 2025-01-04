@@ -2,11 +2,19 @@ package pinduoduo
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
 )
 
 func (c *Client) request(ctx context.Context, param *gorequest.Params, response any) (gorequest.Response, error) {
+
+	if c.clientIP == "" {
+		requestIP, isIP := gorequest.GetRequestIPStr(ctx)
+		if isIP {
+			c.httpClient.SetClientIP(requestIP)
+		}
+	}
 
 	// 请求地址
 	uri := apiUrl

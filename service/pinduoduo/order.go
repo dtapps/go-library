@@ -1,9 +1,10 @@
 package pinduoduo
 
 import (
-	"github.com/shopspring/decimal"
 	"strconv"
 	"strings"
+
+	"github.com/shopspring/decimal"
 )
 
 var (
@@ -84,6 +85,7 @@ var orderTypeMap = map[int64]string{
 	93:  "砸金蛋",
 	94:  "充值中心",
 	95:  "频道活动",
+	100: "小程序原生商详",
 	101: "品牌黑卡",
 	103: "百亿补贴频道",
 	104: "内购清单频道",
