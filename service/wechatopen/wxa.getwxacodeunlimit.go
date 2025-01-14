@@ -2,49 +2,47 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
-type WxaGetWxaCodeUnLimitResponse struct {
-	Errcode     int         `json:"errcode"`
-	Errmsg      string      `json:"errmsg"`
-	ContentType string      `json:"contentType"`
-	Buffer      interface{} `json:"buffer"`
+type GetUnlimitedQRCodeResponse struct {
+	Errcode     int    `json:"errcode"`               // 错误码
+	Errmsg      string `json:"errmsg"`                // 错误信息
+	ContentType string `json:"contentType,omitempty"` // 内容类型
+	Buffer      any    `json:"buffer"`                // 图片 Buffer
 }
 
-type WxaGetWxaCodeUnLimitResult struct {
-	Result WxaGetWxaCodeUnLimitResponse // 结果
-	Body   []byte                       // 内容
-	Http   gorequest.Response           // 请求
+type GetUnlimitedQRCodeResult struct {
+	Result GetUnlimitedQRCodeResponse // 结果
+	Body   []byte                     // 内容
+	Http   gorequest.Response         // 请求
 }
 
-func newWxaGetWxaCodeUnLimitResult(result WxaGetWxaCodeUnLimitResponse, body []byte, http gorequest.Response) *WxaGetWxaCodeUnLimitResult {
-	return &WxaGetWxaCodeUnLimitResult{Result: result, Body: body, Http: http}
+func newGetUnlimitedQRCodeResult(result GetUnlimitedQRCodeResponse, body []byte, http gorequest.Response) *GetUnlimitedQRCodeResult {
+	return &GetUnlimitedQRCodeResult{Result: result, Body: body, Http: http}
 }
 
-// WxaGetWxaCodeUnLimit 获取小程序码，适用于需要的码数量极多的业务场景。通过该接口生成的小程序码，永久有效，数量暂无限制
-// https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.getUnlimited.html
-func (c *Client) WxaGetWxaCodeUnLimit(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaGetWxaCodeUnLimitResult, error) {
+// GetUnlimitedQRCode 获取不限制的小程序码
+// https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/qr-code/getUnlimitedQRCode.html
+func (c *Client) GetUnlimitedQRCode(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*GetUnlimitedQRCodeResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/getwxacodeunlimit?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newWxaGetWxaCodeUnLimitResult(WxaGetWxaCodeUnLimitResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
-	var response WxaGetWxaCodeUnLimitResponse
+	var response GetUnlimitedQRCodeResponse
+	request, err := c.request(ctx, "wxa/getwxacodeunlimit?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+
 	// 判断内容是否为图片
-	if request.HeaderIsImg() == false {
-		err = gojson.Unmarshal(request.ResponseBody, &response)
-	}
-	return newWxaGetWxaCodeUnLimitResult(response, request.ResponseBody, request), err
+	//if request.HeaderIsImg() == false {
+	//	err = json.Unmarshal(request.ResponseBody, &response)
+	//}
+	return newGetUnlimitedQRCodeResult(response, request.ResponseBody, request), err
 }
 
 // ErrcodeInfo 错误描述
-func (resp *WxaGetWxaCodeUnLimitResult) ErrcodeInfo() string {
+func (resp *GetUnlimitedQRCodeResult) ErrcodeInfo() string {
 	switch resp.Result.Errcode {
 	case 45009:
 		return "调用分钟频率受限(目前5000次/分钟，会调整)，如需大量小程序码，建议预生成"
@@ -52,6 +50,7 @@ func (resp *WxaGetWxaCodeUnLimitResult) ErrcodeInfo() string {
 		return "page 不合法（页面不存在或者小程序没有发布、根路径前加 /或者携带参数）"
 	case 40097:
 		return "env_version 不合法"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

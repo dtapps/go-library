@@ -2,8 +2,7 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -23,16 +22,13 @@ func newPayTransactionsJsapiResult(result PayTransactionsJsapiResponse, body []b
 
 // PayTransactionsJsapi JSAPI下单
 // https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_5_1.shtml
-func (c *Client) PayTransactionsJsapi(ctx context.Context, notMustParams ...gorequest.Params) (*PayTransactionsJsapiResult, error) {
+func (c *Client) PayTransactionsJsapi(ctx context.Context, notMustParams ...*gorequest.Params) (*PayTransactionsJsapiResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/pay/transactions/jsapi", params, http.MethodPost, true)
-	if err != nil {
-		return newPayTransactionsJsapiResult(PayTransactionsJsapiResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response PayTransactionsJsapiResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "v3/pay/transactions/jsapi", params, http.MethodPost, true, &response)
 	return newPayTransactionsJsapiResult(response, request.ResponseBody, request), err
 }

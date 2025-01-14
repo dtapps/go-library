@@ -3,8 +3,7 @@ package wechatpayapiv3
 import (
 	"context"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -63,16 +62,13 @@ func newPayTransactionsOutTradeNoResult(result PayTransactionsOutTradeNoResponse
 }
 
 // PayTransactionsOutTradeNo 商户订单号查询 https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_2.shtml
-func (c *Client) PayTransactionsOutTradeNo(ctx context.Context, outTradeNo string, notMustParams ...gorequest.Params) *PayTransactionsOutTradeNoResult {
+func (c *Client) PayTransactionsOutTradeNo(ctx context.Context, outTradeNo string, notMustParams ...*gorequest.Params) (*PayTransactionsOutTradeNoResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, fmt.Sprintf(apiUrl+"/v3/pay/transactions/out-trade-no/%s?mchid=%s", outTradeNo, c.GetMchId()), params, http.MethodGet, true)
-	if err != nil {
-		return newPayTransactionsOutTradeNoResult(PayTransactionsOutTradeNoResponse{}, request.ResponseBody, request)
-	}
-	// 定义
 	var response PayTransactionsOutTradeNoResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newPayTransactionsOutTradeNoResult(response, request.ResponseBody, request)
+	request, err := c.request(ctx, fmt.Sprintf("v3/pay/transactions/out-trade-no/%s?mchid=%s", outTradeNo, c.GetMchId()), params, http.MethodGet, true, &response)
+	return newPayTransactionsOutTradeNoResult(response, request.ResponseBody, request), err
 }

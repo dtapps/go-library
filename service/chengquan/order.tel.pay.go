@@ -2,8 +2,7 @@ package chengquan
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -37,19 +36,16 @@ func newOrderTelPayResult(result OrderTelPayResponse, body []byte, http goreques
 // price = 充值面值(单位：分)
 // notify_url = 橙券主动通知订单结果地址
 // https://www.chengquan.cn/rechargeInterface/tel.html
-func (c *Client) OrderTelPay(ctx context.Context, orderNo string, rechargeNumber string, price int64, notMustParams ...gorequest.Params) (*OrderTelPayResult, error) {
+func (c *Client) OrderTelPay(ctx context.Context, orderNo string, rechargeNumber string, price int64, notMustParams ...*gorequest.Params) (*OrderTelPayResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("order_no", orderNo)               // 商户提交的订单号，最长32位(商户保证其唯一性)
 	params.Set("recharge_number", rechargeNumber) // 充值手机号码
 	params.Set("price", price)                    // 充值面值(单位：分)
+
 	// 请求
-	request, err := c.request(ctx, "/order/tel/pay", params, http.MethodPost)
-	if err != nil {
-		return newOrderTelPayResult(OrderTelPayResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response OrderTelPayResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "order/tel/pay", params, http.MethodPost, &response)
 	return newOrderTelPayResult(response, request.ResponseBody, request), err
 }

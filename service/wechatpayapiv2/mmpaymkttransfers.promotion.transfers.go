@@ -2,9 +2,8 @@ package wechatpayapiv2
 
 import (
 	"context"
-	"encoding/xml"
-	"github.com/dtapps/go-library/utils/gorandom"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorandom"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type TransfersResponse struct {
@@ -38,22 +37,22 @@ func newTransfersResult(result TransfersResponse, body []byte, http gorequest.Re
 // 付款到零钱 - 付款
 // 需要证书
 // https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_2
-func (c *Client) Transfers(ctx context.Context, notMustParams ...gorequest.Params) (*TransfersResult, error) {
+func (c *Client) Transfers(ctx context.Context, notMustParams ...*gorequest.Params) (*TransfersResult, error) {
+
+	// 证书
 	cert, err := c.P12ToPem()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("mch_appid", c.GetAppId())
 	params.Set("mchid", c.GetMchId())
 	params.Set("nonce_str", gorandom.Alphanumeric(32))
+
 	// 签名
 	params.Set("sign", c.getMd5Sign(params))
+
 	// 	请求
-	request, err := c.request(ctx, apiUrl+"/mmpaymkttransfers/promotion/transfers", params, true, cert)
-	if err != nil {
-		return newTransfersResult(TransfersResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response TransfersResponse
-	err = xml.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "mmpaymkttransfers/promotion/transfers", params, true, cert, &response)
 	return newTransfersResult(response, request.ResponseBody, request), err
 }

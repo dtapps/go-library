@@ -1,45 +1,45 @@
 package pinduoduo
 
 import (
-	"github.com/dtapps/go-library/utils/godecimal"
-	"github.com/dtapps/go-library/utils/golog"
-	"github.com/dtapps/go-library/utils/gorequest"
-	"strings"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 // ClientConfig 实例配置
 type ClientConfig struct {
-	ClientId     string // POP分配给应用的client_id
-	ClientSecret string // POP分配给应用的client_secret
-	MediaId      string // 媒体ID
-	Pid          string // 推广位
+	ClientId         string   // POP分配给应用的client_id
+	ClientSecret     string   // POP分配给应用的client_secret
+	MediaId          string   // 媒体ID
+	Pid              string   // 推广位
+	AccessToken      string   // 通过code获取的access_token(无需授权的接口，该字段不参与sign签名运算)
+	AccessTokenScope []string // 授权范围
 }
 
 // Client 实例
 type Client struct {
-	requestClient       *gorequest.App // 请求服务
-	requestClientStatus bool           // 请求服务状态
-	config              struct {
-		clientId     string // POP分配给应用的client_id
-		clientSecret string // POP分配给应用的client_secret
-		mediaId      string // 媒体ID
-		pid          string // 推广位
+	config struct {
+		clientId         string   // POP分配给应用的client_id
+		clientSecret     string   // POP分配给应用的client_secret
+		mediaId          string   // 媒体ID
+		pid              string   // 推广位
+		accessToken      string   // 通过code获取的access_token(无需授权的接口，该字段不参与sign签名运算)
+		accessTokenScope []string // 授权范围
 	}
-	slog struct {
-		status bool           // 状态
-		client *golog.ApiSLog // 日志服务
-	}
+	httpClient *gorequest.App // HTTP请求客户端
+	clientIP   string         // 客户端IP
 }
 
 // NewClient 创建实例化
 func NewClient(config *ClientConfig) (*Client, error) {
-
 	c := &Client{}
+
+	c.httpClient = gorequest.NewHttp()
 
 	c.config.clientId = config.ClientId
 	c.config.clientSecret = config.ClientSecret
 	c.config.mediaId = config.MediaId
 	c.config.pid = config.Pid
+	c.config.accessToken = config.AccessToken
+	c.config.accessTokenScope = config.AccessTokenScope
 
 	return c, nil
 }
@@ -57,14 +57,4 @@ type ErrResp struct {
 type CustomParametersResult struct {
 	Sid string `json:"sid"`
 	Uid string `json:"uid"`
-}
-
-func (c *Client) SalesTipParseInt64(salesTip string) int64 {
-	if strings.Contains(salesTip, "万+") {
-		return godecimal.NewString(strings.Replace(salesTip, "万+", "0000", -1)).Int64()
-	} else if strings.Contains(salesTip, "万") {
-		return godecimal.NewString(strings.Replace(salesTip, "万", "000", -1)).Int64()
-	} else {
-		return godecimal.NewString(salesTip).Int64()
-	}
 }

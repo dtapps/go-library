@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/mitchellh/mapstructure"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -27,7 +27,8 @@ type cipherRequestHttpBody struct {
 }
 
 // ServeHttpVerifyTicket 验证票据推送
-func (c *Client) ServeHttpVerifyTicket(ctx context.Context, r *http.Request) (resp *ResponseServeHttpVerifyTicket, err error) {
+func (c *Client) ServeHttpVerifyTicket(ctx context.Context, w http.ResponseWriter, r *http.Request) (resp *ResponseServeHttpVerifyTicket, err error) {
+
 	var (
 		query = r.URL.Query()
 
@@ -51,81 +52,94 @@ func (c *Client) ServeHttpVerifyTicket(ctx context.Context, r *http.Request) (re
 	}
 
 	if timestamp == "" {
-		return resp, errors.New("找不到时间戳参数")
+		err = errors.New("找不到时间戳参数")
+		return resp, err
 	}
 
 	if nonce == "" {
-		return resp, errors.New("未找到随机数参数")
+		err = errors.New("未找到随机数参数")
+		return resp, err
 	}
 
-	wantSignature = Sign(c.config.messageToken, timestamp, nonce)
+	wantSignature = Sign(c.GetMessageToken(), timestamp, nonce)
 	if haveSignature != wantSignature {
-		return resp, errors.New("签名错误")
+		err = errors.New("签名错误")
+		return resp, err
 	}
 
 	// 进入事件执行
 	if encryptType != "aes" {
-		err = errors.New("未知的加密类型: " + encryptType)
-		return
+		err = fmt.Errorf("未知的加密类型: %s", encryptType)
+		return resp, err
 	}
 	if haveMsgSignature == "" {
 		err = errors.New("找不到签名参数")
-		return
+		return resp, err
 	}
 
-	data, err = ioutil.ReadAll(r.Body)
+	data, err = io.ReadAll(r.Body)
 	if err != nil {
 		return resp, err
 	}
 
 	xmlDecode := XmlDecode(string(data))
 	if len(xmlDecode) <= 0 {
-		return resp, errors.New(fmt.Sprintf("Xml解码错误：%s", xmlDecode))
+		err = fmt.Errorf("xml解码错误：%s", xmlDecode)
+		return resp, err
 	}
 
 	err = mapstructure.Decode(xmlDecode, &requestHttpBody)
 	if err != nil {
-		return resp, errors.New(fmt.Sprintf("mapstructure 解码错误：%s", xmlDecode))
+		err = fmt.Errorf("mapstructure 解码错误：%s", xmlDecode)
+		return resp, err
 	}
 
 	if requestHttpBody.Encrypt == "" {
-		return resp, errors.New(fmt.Sprintf("未找到加密数据：%s", requestHttpBody))
+		err = fmt.Errorf("未找到加密数据：%s", requestHttpBody)
+		return resp, err
 	}
 
 	cipherData, err := base64.StdEncoding.DecodeString(requestHttpBody.Encrypt)
 	if err != nil {
-		return resp, errors.New(fmt.Sprintf("Encrypt 解码字符串错误：%v", err))
+		err = fmt.Errorf("encrypt 解码字符串错误：%v", err)
+		return resp, err
 	}
 
-	AesKey, err := base64.StdEncoding.DecodeString(c.config.messageKey + "=")
+	AesKey, err := base64.StdEncoding.DecodeString(c.GetMessageKey() + "=")
 	if err != nil {
-		return resp, errors.New(fmt.Sprintf("messageKey 解码字符串错误：%v", err))
+		err = fmt.Errorf("messageKey 解码字符串错误：%v", err)
+		return resp, err
 	}
 
 	msg, err := AesDecrypt(cipherData, AesKey)
 	if err != nil {
-		return resp, errors.New(fmt.Sprintf("AES解密错误：%v", err))
+		err = fmt.Errorf("AES解密错误：%v", err)
+		return resp, err
 	}
 
 	str := string(msg)
 
 	left := strings.Index(str, "<xml>")
 	if left <= 0 {
-		return resp, errors.New(fmt.Sprintf("匹配不到<xml>：%v", left))
+		err = fmt.Errorf("匹配不到<xml>：%v", left)
+		return resp, err
 	}
 	right := strings.Index(str, "</xml>")
 	if right <= 0 {
-		return resp, errors.New(fmt.Sprintf("匹配不到</xml>：%v", right))
+		err = fmt.Errorf("匹配不到</xml>：%v", right)
+		return resp, err
 	}
 	msgStr := str[left:right]
 	if len(msgStr) == 0 {
-		return resp, errors.New(fmt.Sprintf("提取错误：%v", msgStr))
+		err = fmt.Errorf("提取错误：%v", msgStr)
+		return resp, err
 	}
 
 	resp = &ResponseServeHttpVerifyTicket{}
 	err = xml.Unmarshal([]byte(msgStr+"</xml>"), resp)
 	if err != nil {
-		return resp, errors.New(fmt.Sprintf("解析错误：%v", err))
+		err = fmt.Errorf("解析错误：%v", err)
+		return resp, err
 	}
 
 	return resp, nil

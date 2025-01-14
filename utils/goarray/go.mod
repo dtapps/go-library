@@ -1,5 +1,3 @@
 module go.dtapp.net/library/utils/goarray
 
-go 1.21
-
-replace go.dtapp.net/library => ../..
+go 1.22.5

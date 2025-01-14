@@ -2,52 +2,47 @@ package kuaidi100
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gojson"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
-func (c *Client) request(ctx context.Context, url string, param gorequest.Params, method string) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, method string, response any) (gorequest.Response, error) {
 
+	// 请求地址
+	uri := apiUrl + url
+
+	// 参数
 	newParams := gorequest.NewParams()
 
 	// 公共参数
 	newParams.Set("customer", c.GetCustomer())
 
 	// 请求参数
-	newParams.Set("param", gojson.JsonEncodeNoError(param))
+	newParams.Set("param", gojson.JsonEncodeNoError(param.DeepGet()))
 
 	// 签名
-	newParams.Set("sign", c.getSign(gojson.JsonEncodeNoError(param)))
-
-	// 创建请求
-	client := c.requestClient
-	if !c.requestClientStatus {
-		c.DefaultHttp()
-		client = c.requestClient
-	}
+	newParams.Set("sign", c.getSign(gojson.JsonEncodeNoError(param.DeepGet())))
 
 	// 设置请求地址
-	client.SetUri(url)
+	c.httpClient.SetUri(uri)
 
 	// 设置方式
-	client.SetMethod(method)
+	c.httpClient.SetMethod(method)
 
 	// 设置格式
-	client.SetContentTypeForm()
+	c.httpClient.SetContentTypeForm()
 
 	// 设置参数
-	client.SetParams(newParams)
+	c.httpClient.SetParams(newParams)
 
 	// 发起请求
-	request, err := client.Request(ctx)
+	request, err := c.httpClient.Request(ctx)
 	if err != nil {
 		return gorequest.Response{}, err
 	}
 
-	// 记录日志
-	if c.slog.status {
-		go c.slog.client.Middleware(ctx, request)
-	}
+	// 解析响应
+	err = gojson.Unmarshal(request.ResponseBody, &response)
 
 	return request, err
 }

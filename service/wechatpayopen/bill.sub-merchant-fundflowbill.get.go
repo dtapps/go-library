@@ -2,8 +2,7 @@ package wechatpayopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -31,20 +30,15 @@ func newbillSubMerchantFundFlowBillGetResult(result billSubMerchantFundFlowBillG
 
 // billSubMerchantFundFlowBillGet 申请单个子商户资金账单API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_12.shtml
-func (c *Client) billSubMerchantFundFlowBillGet(ctx context.Context, notMustParams ...gorequest.Params) (*billSubMerchantFundFlowBillGetResult, ApiError, error) {
+func (c *Client) billSubMerchantFundFlowBillGet(ctx context.Context, notMustParams ...*gorequest.Params) (*billSubMerchantFundFlowBillGetResult, ApiError, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/bill/sub-merchant-fundflowbill", params, http.MethodGet)
-	if err != nil {
-		return newbillSubMerchantFundFlowBillGetResult(billSubMerchantFundFlowBillGetResponse{}, request.ResponseBody, request), ApiError{}, err
-	}
-	// 定义
 	var response billSubMerchantFundFlowBillGetResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
-	// 错误
 	var apiError ApiError
-	err = gojson.Unmarshal(request.ResponseBody, &apiError)
+	request, err := c.request(ctx, "v3/bill/sub-merchant-fundflowbill", params, http.MethodGet, &response, &apiError)
 	return newbillSubMerchantFundFlowBillGetResult(response, request.ResponseBody, request), apiError, err
 }

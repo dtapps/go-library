@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -24,17 +23,14 @@ func newCgiBinWxOpenQrCodeJumpAddResult(result CgiBinWxOpenQrCodeJumpAddResponse
 
 // CgiBinWxOpenQrCodeJumpAdd 增加或修改二维码规则
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumpadd.html
-func (c *Client) CgiBinWxOpenQrCodeJumpAdd(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*CgiBinWxOpenQrCodeJumpAddResult, error) {
+func (c *Client) CgiBinWxOpenQrCodeJumpAdd(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*CgiBinWxOpenQrCodeJumpAddResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/wxopen/qrcodejumpadd?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newCgiBinWxOpenQrCodeJumpAddResult(CgiBinWxOpenQrCodeJumpAddResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response CgiBinWxOpenQrCodeJumpAddResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "cgi-bin/wxopen/qrcodejumpadd?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newCgiBinWxOpenQrCodeJumpAddResult(response, request.ResponseBody, request), err
 }
 
@@ -59,6 +55,7 @@ func (resp *CgiBinWxOpenQrCodeJumpAddResult) ErrcodeInfo() string {
 		return "二维码规则已满"
 	case 85075:
 		return "个人类型小程序无法设置二维码规则"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

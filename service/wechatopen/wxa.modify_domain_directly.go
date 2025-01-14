@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -37,17 +36,14 @@ func newWxaModifyDomainDirectlyResult(result WxaModifyDomainDirectlyResponse, bo
 
 // WxaModifyDomainDirectly 快速配置小程序服务器域名
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/modifyServerDomainDirectly.html
-func (c *Client) WxaModifyDomainDirectly(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaModifyDomainDirectlyResult, error) {
+func (c *Client) WxaModifyDomainDirectly(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaModifyDomainDirectlyResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/modify_domain_directly?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newWxaModifyDomainDirectlyResult(WxaModifyDomainDirectlyResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaModifyDomainDirectlyResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "wxa/modify_domain_directly?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaModifyDomainDirectlyResult(response, request.ResponseBody, request), err
 }
 
@@ -66,6 +62,7 @@ func (resp *WxaModifyDomainDirectlyResult) ErrcodeInfo() string {
 		return "域名数量超限制"
 	case 86102:
 		return "每个月只能修改50次，超过域名修改次数限制"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

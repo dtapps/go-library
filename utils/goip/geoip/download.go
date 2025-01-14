@@ -1,9 +1,10 @@
 package geoip
 
 import (
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
+	"os"
 )
 
 func OnlineDownload(downloadUrl string, downloadName string) {
@@ -13,11 +14,11 @@ func OnlineDownload(downloadUrl string, downloadName string) {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 
-	err = ioutil.WriteFile("./"+downloadName, body, 0644)
+	err = os.WriteFile("./"+downloadName, body, 0644)
 	if err != nil {
 		panic(err)
 	}
-	log.Printf("已下载最新 ip2region.xdb 数据库 %s ", "./"+downloadName)
+	log.Printf("已下载最新 geoip 数据库 %s ", "./"+downloadName)
 }

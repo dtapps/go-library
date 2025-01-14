@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"crypto/md5"
 	"encoding/hex"
-	"github.com/dtapps/go-library/utils/gorequest"
-	"github.com/dtapps/go-library/utils/gostring"
+	"go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/library/utils/gostring"
 	"io"
 	"net/url"
 	"sort"
@@ -13,10 +13,10 @@ import (
 )
 
 // md5(key + 参数1名称 + 参数1值 + 参数2名称 + 参数2值...) 加密源串应为{key}customer_id1192442order_id827669582783timestamp1626845767
-func (c *Client) getSign(customerKey string, param gorequest.Params) string {
+func (c *Client) getSign(customerKey string, param *gorequest.Params) string {
 	// 参数按照参数名的字典升序排列
 	var keys []string
-	for k := range param {
+	for k := range param.DeepGet() {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
@@ -33,11 +33,11 @@ func (c *Client) getSign(customerKey string, param gorequest.Params) string {
 }
 
 // 获取请求数据
-func (c *Client) getRequestData(param gorequest.Params) string {
+func (c *Client) getRequestData(param *gorequest.Params) string {
 	// 公共参数
 	args := url.Values{}
 	// 请求参数
-	for key, val := range param {
+	for key, val := range param.DeepGet() {
 		args.Set(key, gostring.GetString(val))
 	}
 	return args.Encode()

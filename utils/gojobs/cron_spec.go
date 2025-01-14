@@ -6,29 +6,37 @@ import (
 )
 
 const (
-	CodeAbnormal = 0                              // 异常
-	CodeError    = http.StatusInternalServerError // 失败
-	CodeSuccess  = http.StatusOK                  // 成功
-	CodeEnd      = http.StatusCreated             // 结束
+	// CodeAbnormal 异常
+	CodeAbnormal = 0
+	// CodeConflict 冲突
+	CodeConflict = http.StatusBadRequest
+	// CodeObservation 观查
+	CodeObservation = http.StatusMultipleChoices
+	// CodeError 失败
+	CodeError = http.StatusInternalServerError
+	// CodeSuccess 成功
+	CodeSuccess = http.StatusOK
+	// CodeEnd 结束
+	CodeEnd = http.StatusCreated
 )
 
 // 每隔n秒执行一次
 const specSeconds = "*/%d * * * * *"
 
-// 每隔n秒执行一次
-type seconds struct {
+// Seconds 每隔n秒执行一次
+type Seconds struct {
 	n int64
 }
 
 // GetSeconds 每隔n秒执行一次
-func GetSeconds(n int64) *seconds {
-	s := seconds{}
+func GetSeconds(n int64) *Seconds {
+	s := Seconds{}
 	s.n = n
 	return &s
 }
 
 // Spec 每隔n秒执行一次
-func (s seconds) Spec() string {
+func (s Seconds) Spec() string {
 	if s.n < 0 || s.n > 59 {
 		return ""
 	}
@@ -36,7 +44,7 @@ func (s seconds) Spec() string {
 }
 
 // Frequency 每隔n秒执行一次
-func (s seconds) Frequency() int64 {
+func (s Seconds) Frequency() int64 {
 	if s.n < 0 || s.n > 59 {
 		return -1
 	}
@@ -46,20 +54,20 @@ func (s seconds) Frequency() int64 {
 // 每隔n分钟执行一次
 const specMinutes = "0 */%d * * * *"
 
-// 每隔n分钟执行一次
-type minutes struct {
+// Minutes 每隔n分钟执行一次
+type Minutes struct {
 	n int64
 }
 
 // GetMinutes 每隔n分钟执行一次
-func GetMinutes(n int64) *minutes {
-	s := minutes{}
+func GetMinutes(n int64) *Minutes {
+	s := Minutes{}
 	s.n = n
 	return &s
 }
 
 // Spec 每隔n分钟执行一次
-func (s minutes) Spec() string {
+func (s Minutes) Spec() string {
 	if s.n < 0 || s.n > 59 {
 		return ""
 	}
@@ -67,7 +75,7 @@ func (s minutes) Spec() string {
 }
 
 // Frequency 每隔n分钟执行一次
-func (s minutes) Frequency() int64 {
+func (s Minutes) Frequency() int64 {
 	if s.n < 0 || s.n > 59 {
 		return -1
 	}
@@ -77,20 +85,20 @@ func (s minutes) Frequency() int64 {
 // 每天n点执行一次
 const specHour = "0 0 */%d * * *"
 
-// 每天n点执行一次
-type hour struct {
+// Hour 每天n点执行一次
+type Hour struct {
 	n int64
 }
 
 // GetHour 每天n点执行一次
-func GetHour(n int64) *hour {
-	s := hour{}
+func GetHour(n int64) *Hour {
+	s := Hour{}
 	s.n = n
 	return &s
 }
 
 // Spec 每天n点执行一次
-func (s hour) Spec() string {
+func (s Hour) Spec() string {
 	if s.n < 0 || s.n > 23 {
 		return ""
 	}
@@ -98,7 +106,7 @@ func (s hour) Spec() string {
 }
 
 // Frequency 每天n点执行一次
-func (s hour) Frequency() int64 {
+func (s Hour) Frequency() int64 {
 	if s.n < 0 || s.n > 23 {
 		return -1
 	}
@@ -108,20 +116,20 @@ func (s hour) Frequency() int64 {
 // 每隔n小时执行一次
 const specHourInterval = "0 0 %s * * *"
 
-// 每隔n小时执行一次
-type hourInterval struct {
+// HourInterval 每隔n小时执行一次
+type HourInterval struct {
 	n int64
 }
 
 // GetHourInterval 每隔n小时执行一次
-func GetHourInterval(n int64) *hourInterval {
-	s := hourInterval{}
+func GetHourInterval(n int64) *HourInterval {
+	s := HourInterval{}
 	s.n = n
 	return &s
 }
 
 // Spec 每隔n小时执行一次
-func (s hourInterval) Spec() string {
+func (s HourInterval) Spec() string {
 
 	if s.n < 0 || s.n > 23 {
 		return ""
@@ -158,7 +166,7 @@ func (s hourInterval) Spec() string {
 }
 
 // Frequency 每隔n小时执行一次
-func (s hourInterval) Frequency() int64 {
+func (s HourInterval) Frequency() int64 {
 	if s.n < 0 || s.n > 23 {
 		return -1
 	}

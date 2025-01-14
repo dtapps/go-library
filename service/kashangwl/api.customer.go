@@ -2,8 +2,7 @@ package kashangwl
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type ApiCustomerResponse struct {
@@ -29,17 +28,14 @@ func newApiCustomerResult(result ApiCustomerResponse, body []byte, http goreques
 // ApiCustomer 获取商家信息
 // customer_id = 商家编号
 // http://doc.cqmeihu.cn/sales/merchant-info.html
-func (c *Client) ApiCustomer(ctx context.Context, customerID int64, notMustParams ...gorequest.Params) (*ApiCustomerResult, error) {
+func (c *Client) ApiCustomer(ctx context.Context, customerID int64, notMustParams ...*gorequest.Params) (*ApiCustomerResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("customer_id", customerID) // 商家编号
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/api/customer", params)
-	if err != nil {
-		return newApiCustomerResult(ApiCustomerResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response ApiCustomerResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "api/customer", params, &response)
 	return newApiCustomerResult(response, request.ResponseBody, request), err
 }

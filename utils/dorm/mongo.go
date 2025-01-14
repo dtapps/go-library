@@ -12,7 +12,8 @@ import (
 // string 库名
 type MongoClientFun func() (*MongoClient, string)
 
-// MongoClientCollectionFun *MongoClient 驱动
+// MongoClientCollectionFun
+// *MongoClient 驱动
 // string 库名
 // string 集合
 type MongoClientCollectionFun func() (*MongoClient, string, string)
@@ -31,9 +32,8 @@ type MongoClient struct {
 }
 
 // NewMongoClient 创建实例
-func NewMongoClient(config *MongoClientConfig) (*MongoClient, error) {
+func NewMongoClient(ctx context.Context, config *MongoClientConfig) (*MongoClient, error) {
 
-	var ctx = context.Background()
 	var err error
 	c := &MongoClient{}
 

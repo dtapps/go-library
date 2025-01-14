@@ -4,13 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gotime"
+	"go.dtapp.net/library/utils/gotime"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"time"
 )
 
+// NewGormMysqlClient 创建GormClient实例 mysql
 func NewGormMysqlClient(ctx context.Context, config *GormClientConfig) (*GormClient, error) {
 
 	var err error
@@ -18,9 +19,9 @@ func NewGormMysqlClient(ctx context.Context, config *GormClientConfig) (*GormCli
 
 	// 判断路径
 	if c.config.LogPath == "" {
-		logsUrl = "/logs/mysql"
+		logsURL = "/logs/mysql"
 	} else {
-		logsUrl = c.config.LogPath
+		logsURL = c.config.LogPath
 	}
 
 	if c.config.LogStatus {
@@ -60,30 +61,30 @@ func NewGormMysqlClient(ctx context.Context, config *GormClientConfig) (*GormCli
 		return nil, errors.New(fmt.Sprintf("连接失败：%v", err))
 	}
 
-	sqlDd, err := c.db.DB()
+	c.sqlDd, err = c.db.DB()
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("检查连接失败：%v", err))
+		return nil, errors.New(fmt.Sprintf("获取通用数据库对象失败：%v", err))
 	}
 
 	// 设置空闲连接池中连接的最大数量
 	if c.config.ConnSetMaxIdle == 0 {
-		sqlDd.SetMaxIdleConns(10)
+		c.sqlDd.SetMaxIdleConns(10)
 	} else {
-		sqlDd.SetMaxIdleConns(c.config.ConnSetMaxIdle)
+		c.sqlDd.SetMaxIdleConns(c.config.ConnSetMaxIdle)
 	}
 
 	// 设置打开数据库连接的最大数量
 	if c.config.ConnSetMaxOpen == 0 {
-		sqlDd.SetMaxOpenConns(100)
+		c.sqlDd.SetMaxOpenConns(100)
 	} else {
-		sqlDd.SetMaxOpenConns(c.config.ConnSetMaxOpen)
+		c.sqlDd.SetMaxOpenConns(c.config.ConnSetMaxOpen)
 	}
 
 	// 设置了连接可复用的最大时间
 	if c.config.ConnSetConnMaxLifetime == 0 {
-		sqlDd.SetConnMaxLifetime(time.Second * 600)
+		c.sqlDd.SetConnMaxLifetime(time.Second * 600)
 	} else {
-		sqlDd.SetConnMaxLifetime(time.Duration(c.config.ConnSetConnMaxLifetime))
+		c.sqlDd.SetConnMaxLifetime(time.Duration(c.config.ConnSetConnMaxLifetime))
 	}
 
 	return c, nil

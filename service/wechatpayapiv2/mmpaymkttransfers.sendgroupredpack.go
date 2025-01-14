@@ -2,9 +2,8 @@ package wechatpayapiv2
 
 import (
 	"context"
-	"encoding/xml"
-	"github.com/dtapps/go-library/utils/gorandom"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorandom"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type MmpaymkttransfersSendgroupredpackResponse struct {
@@ -36,20 +35,20 @@ func newMmpaymkttransfersSendgroupredpackResult(result MmpaymkttransfersSendgrou
 // MmpaymkttransfersSendgroupredpack
 // 现金红包 - 发放裂变红包
 // https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon_sl.php?chapter=13_5&index=4
-func (c *Client) MmpaymkttransfersSendgroupredpack(ctx context.Context, notMustParams ...gorequest.Params) (*MmpaymkttransfersSendgroupredpackResult, error) {
+func (c *Client) MmpaymkttransfersSendgroupredpack(ctx context.Context, notMustParams ...*gorequest.Params) (*MmpaymkttransfersSendgroupredpackResult, error) {
+
+	// 证书
 	cert, err := c.P12ToPem()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("nonce_str", gorandom.Alphanumeric(32)) // 随机字符串
+
 	// 签名
 	params.Set("sign", c.getMd5Sign(params))
+
 	// 	请求
-	request, err := c.request(ctx, apiUrl+"/mmpaymkttransfers/sendgroupredpack", params, true, cert)
-	if err != nil {
-		return newMmpaymkttransfersSendgroupredpackResult(MmpaymkttransfersSendgroupredpackResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response MmpaymkttransfersSendgroupredpackResponse
-	err = xml.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "mmpaymkttransfers/sendgroupredpack", params, true, cert, &response)
 	return newMmpaymkttransfersSendgroupredpackResult(response, request.ResponseBody, request), err
 }

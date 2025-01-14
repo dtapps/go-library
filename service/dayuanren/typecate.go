@@ -2,8 +2,7 @@ package dayuanren
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type TypecateResponse struct {
@@ -32,17 +31,15 @@ func newTypecateResult(result TypecateResponse, body []byte, http gorequest.Resp
 
 // Typecate 获取产品类型和产品分类
 // https://www.showdoc.com.cn/dyr/9227005390454727
-func (c *Client) Typecate(ctx context.Context, notMustParams ...gorequest.Params) (*TypecateResult, error) {
+// https://www.kancloud.cn/boyanyun/boyanyun_huafei/3097252
+func (c *Client) Typecate(ctx context.Context, notMustParams ...*gorequest.Params) (*TypecateResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserID()) // 商户ID
+
 	// 请求
-	request, err := c.request(ctx, c.GetApiURL()+"index/typecate", params)
-	if err != nil {
-		return newTypecateResult(TypecateResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response TypecateResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "index/typecate", params, &response)
 	return newTypecateResult(response, request.ResponseBody, request), err
 }

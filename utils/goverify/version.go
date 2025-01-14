@@ -1,3 +1,3 @@
 package goverify
 
-const Version = "1.0.9"
+const Version = "1.0.10"

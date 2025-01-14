@@ -5,17 +5,17 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gorequest"
-	"github.com/dtapps/go-library/utils/gostring"
+	"go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/library/utils/gostring"
 	"sort"
 )
 
 // 签名
-func (c *Client) sign(ctx context.Context, param gorequest.Params) string {
+func (c *Client) sign(ctx context.Context, param *gorequest.Params) string {
 
 	// 排序所有的 key
 	var keys []string
-	for key := range param {
+	for key := range param.DeepGet() {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)

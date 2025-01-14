@@ -2,8 +2,8 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 	"time"
 )
@@ -37,16 +37,13 @@ func newTransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult(r
 
 // TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNo 通过商家明细单号查询明细单
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-detail/get-transfer-detail-by-out-no.html
-func (c *Client) TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNo(ctx context.Context, outBatchNo, outDetailNo string, notMustParams ...gorequest.Params) (*TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult, error) {
+func (c *Client) TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNo(ctx context.Context, outBatchNo, outDetailNo string, notMustParams ...*gorequest.Params) (*TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/transfer/batches/out-batch-no/"+outBatchNo+"/details/out-detail-no/"+outDetailNo, params, http.MethodGet, false)
-	if err != nil {
-		return newTransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult(TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, fmt.Sprintf("v3/transfer/batches/out-batch-no/%s/details/out-detail-no/%s", outBatchNo, outDetailNo), params, http.MethodGet, false, &response)
 	return newTransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult(response, request.ResponseBody, request), err
 }

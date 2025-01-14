@@ -1,34 +1,20 @@
 package caiyunapp
 
 import (
-	"github.com/dtapps/go-library/utils/golog"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
+	"go.opentelemetry.io/otel/trace"
 )
-
-// ClientConfig 实例配置
-type ClientConfig struct {
-	Token string
-}
 
 // Client 实例
 type Client struct {
-	requestClient       *gorequest.App // 请求服务
-	requestClientStatus bool           // 请求服务状态
-	config              struct {
-		token string
-	}
-	slog struct {
-		status bool           // 状态
-		client *golog.ApiSLog // 日志服务
-	}
+	token      string
+	httpClient *gorequest.App // HTTP请求客户端
+	clientIP   string         // 客户端IP
+	trace      bool           // OpenTelemetry链路追踪
+	span       trace.Span     // OpenTelemetry链路追踪
 }
 
 // NewClient 创建实例化
-func NewClient(config *ClientConfig) (*Client, error) {
-
-	c := &Client{}
-
-	c.config.token = config.Token
-
-	return c, nil
+func NewClient(token string) (*Client, error) {
+	return &Client{token: token, httpClient: gorequest.NewHttp()}, nil
 }

@@ -2,8 +2,7 @@ package dayuanren
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type PriceResponse struct {
@@ -37,18 +36,15 @@ func newPriceResult(result PriceResponse, body []byte, http gorequest.Response) 
 // Price 产品ID查询【新增】
 // id = 产品ID
 // https://www.showdoc.com.cn/dyr/9757701226597233
-func (c *Client) Price(ctx context.Context, id int64, notMustParams ...gorequest.Params) (*PriceResult, error) {
+func (c *Client) Price(ctx context.Context, id int64, notMustParams ...*gorequest.Params) (*PriceResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserID()) // 商户ID
 	params.Set("id", id)                // 产品ID
+
 	// 请求
-	request, err := c.request(ctx, c.GetApiURL()+"index/price", params)
-	if err != nil {
-		return newPriceResult(PriceResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response PriceResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "index/price", params, &response)
 	return newPriceResult(response, request.ResponseBody, request), err
 }

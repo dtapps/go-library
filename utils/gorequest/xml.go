@@ -7,7 +7,7 @@ import (
 	"io"
 )
 
-func ToXml(params map[string]interface{}) (reader io.Reader, err error) {
+func ToXml(params map[string]any) (reader io.Reader, err error) {
 	buffer := bytes.NewBuffer(make([]byte, 0))
 
 	if _, err = io.WriteString(buffer, "<xml>"); err != nil {

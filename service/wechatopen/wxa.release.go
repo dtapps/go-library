@@ -2,49 +2,46 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
-type WxaReleaseResponse struct {
+type ReleaseResponse struct {
 	Errcode int    `json:"errcode"` // 错误码
 	Errmsg  string `json:"errmsg"`  // 错误信息
 }
 
-type WxaReleaseResult struct {
-	Result WxaReleaseResponse // 结果
+type ReleaseResult struct {
+	Result ReleaseResponse    // 结果
 	Body   []byte             // 内容
 	Http   gorequest.Response // 请求
 }
 
-func newWxaReleaseResult(result WxaReleaseResponse, body []byte, http gorequest.Response) *WxaReleaseResult {
-	return &WxaReleaseResult{Result: result, Body: body, Http: http}
+func newReleaseResult(result ReleaseResponse, body []byte, http gorequest.Response) *ReleaseResult {
+	return &ReleaseResult{Result: result, Body: body, Http: http}
 }
 
-// WxaRelease 发布已通过审核的小程序
-// https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/release.html
-func (c *Client) WxaRelease(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaReleaseResult, error) {
+// Release 发布已通过审核的小程序
+// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/release.html
+func (c *Client) Release(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*ReleaseResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/release?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newWxaReleaseResult(WxaReleaseResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
-	var response WxaReleaseResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newWxaReleaseResult(response, request.ResponseBody, request), err
+	var response ReleaseResponse
+	request, err := c.request(ctx, "wxa/release?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return newReleaseResult(response, request.ResponseBody, request), err
 }
 
 // ErrcodeInfo 错误描述
-func (resp *WxaReleaseResult) ErrcodeInfo() string {
+func (resp *ReleaseResult) ErrcodeInfo() string {
 	switch resp.Result.Errcode {
 	case 85019:
 		return "没有审核版本"
 	case 85020:
 		return "审核状态未满足发布"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

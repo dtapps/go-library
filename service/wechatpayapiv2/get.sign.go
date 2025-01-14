@@ -3,20 +3,20 @@ package wechatpayapiv2
 import (
 	"bytes"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gomd5"
+	"go.dtapp.net/library/utils/gomd5"
 	"sort"
 	"strings"
 )
 
 // GetSign 获取签名
-func GetSign(param map[string]interface{}, key string) string {
+func GetSign(param map[string]any, key string) string {
 	sortString := getSortString(param)
 	sign := gomd5.Md5(sortString + "&key=" + key)
 	return strings.ToUpper(sign)
 }
 
 // 支付字符串拼接
-func getSortString(m map[string]interface{}) string {
+func getSortString(m map[string]any) string {
 	var buf bytes.Buffer
 	keys := make([]string, 0, len(m))
 	for k := range m {

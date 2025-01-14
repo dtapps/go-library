@@ -2,8 +2,7 @@ package meituan
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -31,17 +30,14 @@ func newPoiAreaResult(result PoiAreaResponse, body []byte, http gorequest.Respon
 
 // PoiArea 基础数据 - 商圈接口
 // https://openapi.meituan.com/#api-0.%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE-GetHttpsOpenapiMeituanComPoiAreaCityid1
-func (c *Client) PoiArea(ctx context.Context, cityID int, notMustParams ...gorequest.Params) (*PoiAreaResult, error) {
+func (c *Client) PoiArea(ctx context.Context, cityID int, notMustParams ...*gorequest.Params) (*PoiAreaResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("cityid", cityID)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/poi/area", params, http.MethodGet)
-	if err != nil {
-		return newPoiAreaResult(PoiAreaResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response PoiAreaResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "poi/area", params, http.MethodGet, &response)
 	return newPoiAreaResult(response, request.ResponseBody, request), err
 }

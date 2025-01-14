@@ -5,48 +5,44 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/base64"
+	"encoding/json"
 	"errors"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 	"strings"
 )
 
-type SnsComponentJsCode2sessionResponse struct {
+type ThirdpartyCode2SessionResponse struct {
 	Openid     string `json:"openid"`      // 用户唯一标识的 openid
 	SessionKey string `json:"session_key"` // 会话密钥
 	Unionid    string `json:"unionid"`     // 用户在开放平台的唯一标识符，在满足 UnionID 下发条件的情况下会返回，详见 UnionID 机制说明。
 }
 
-type SnsComponentJsCode2sessionResult struct {
-	Result SnsComponentJsCode2sessionResponse // 结果
-	Body   []byte                             // 内容
-	Http   gorequest.Response                 // 请求
+type ThirdpartyCode2SessionResult struct {
+	Result ThirdpartyCode2SessionResponse // 结果
+	Body   []byte                         // 内容
+	Http   gorequest.Response             // 请求
 }
 
-func newSnsComponentJsCode2sessionResult(result SnsComponentJsCode2sessionResponse, body []byte, http gorequest.Response) *SnsComponentJsCode2sessionResult {
-	return &SnsComponentJsCode2sessionResult{Result: result, Body: body, Http: http}
+func newThirdpartyCode2SessionResult(result ThirdpartyCode2SessionResponse, body []byte, http gorequest.Response) *ThirdpartyCode2SessionResult {
+	return &ThirdpartyCode2SessionResult{Result: result, Body: body, Http: http}
 }
 
-// SnsComponentJsCode2session 小程序登录
-// https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/others/WeChat_login.html
-func (c *Client) SnsComponentJsCode2session(ctx context.Context, componentAccessToken, authorizerAppid, jsCode string, notMustParams ...gorequest.Params) (*SnsComponentJsCode2sessionResult, error) {
+// ThirdpartyCode2Session 小程序登录
+// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/login/thirdpartyCode2Session.html
+func (c *Client) ThirdpartyCode2Session(ctx context.Context, componentAccessToken, authorizerAppid, jsCode string, notMustParams ...*gorequest.Params) (*ThirdpartyCode2SessionResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("appid", authorizerAppid)                       // 小程序的 appId
-	params.Set("js_code", jsCode)                              // wx.login 获取的 code
-	params.Set("grant_type", "authorization_code")             // 填 authorization_code
-	params.Set("component_appid", c.config.componentAppId)     // 第三方平台 appid
-	params.Set("component_access_token", componentAccessToken) // 第三方平台的component_access_token
+	params.Set("appid", authorizerAppid)                 // 小程序的 AppID
+	params.Set("grant_type", "authorization_code")       // 填 authorization_code
+	params.Set("component_appid", c.GetComponentAppId()) // 第三方平台 appid
+	params.Set("js_code", jsCode)                        // wx.login 获取的 code
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/sns/component/jscode2session", params, http.MethodGet)
-	if err != nil {
-		return newSnsComponentJsCode2sessionResult(SnsComponentJsCode2sessionResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
-	var response SnsComponentJsCode2sessionResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newSnsComponentJsCode2sessionResult(response, request.ResponseBody, request), err
+	var response ThirdpartyCode2SessionResponse
+	request, err := c.request(ctx, "sns/component/jscode2session?component_access_token="+componentAccessToken, params, http.MethodGet, &response)
+	return newThirdpartyCode2SessionResult(response, request.ResponseBody, request), err
 }
 
 type UserInfo struct {
@@ -80,7 +76,7 @@ func newUserInfoResult(result UserInfoResponse, err error) *UserInfoResult {
 }
 
 // UserInfo 解密用户信息
-func (r *SnsComponentJsCode2sessionResult) UserInfo(param UserInfo) *UserInfoResult {
+func (r *ThirdpartyCode2SessionResult) UserInfo(param UserInfo) *UserInfoResult {
 	var response UserInfoResponse
 	aesKey, err := base64.StdEncoding.DecodeString(r.Result.SessionKey)
 	if err != nil {
@@ -104,7 +100,7 @@ func (r *SnsComponentJsCode2sessionResult) UserInfo(param UserInfo) *UserInfoRes
 	if err != nil {
 		return newUserInfoResult(response, err)
 	}
-	err = gojson.Unmarshal(cipherText, &response)
+	err = json.Unmarshal(cipherText, &response)
 	if err != nil {
 		return newUserInfoResult(response, err)
 	}
@@ -136,7 +132,7 @@ func DecryptionUserInfo(param UserInfo) *UserInfoResult {
 	if err != nil {
 		return newUserInfoResult(response, err)
 	}
-	err = gojson.Unmarshal(cipherText, &response)
+	err = json.Unmarshal(cipherText, &response)
 	if err != nil {
 		return newUserInfoResult(response, err)
 	}
@@ -151,7 +147,7 @@ func UserInfoAvatarUrlReal(avatarUrl string) string {
 	return strings.Replace(avatarUrl, "/132", "/0", -1)
 }
 
-func (r *SnsComponentJsCode2sessionResult) pkcs7Unpaid(data []byte, blockSize int) ([]byte, error) {
+func (r *ThirdpartyCode2SessionResult) pkcs7Unpaid(data []byte, blockSize int) ([]byte, error) {
 	if blockSize <= 0 {
 		return nil, errors.New("invalid block size")
 	}

@@ -2,8 +2,8 @@ package dayuanren
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gojson"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type RechargeResponse struct {
@@ -52,7 +52,9 @@ func newRechargeResult(result RechargeResponse, body []byte, http gorequest.Resp
 // param2 = 扩展参数，后台查看提交的产品类目是否需要提交此参数
 // param3 = 扩展参数，后台查看提交的产品类目是否需要提交此参数
 // https://www.showdoc.com.cn/dyr/9227003154511692
-func (c *Client) Recharge(ctx context.Context, outTradeNum string, productID int64, mobile string, notifyUrl string, notMustParams ...gorequest.Params) (*RechargeResult, error) {
+// https://www.kancloud.cn/boyanyun/boyanyun_huafei/3097250
+func (c *Client) Recharge(ctx context.Context, outTradeNum string, productID int64, mobile string, notifyUrl string, notMustParams ...*gorequest.Params) (*RechargeResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("out_trade_num", outTradeNum) // 商户订单号
@@ -60,14 +62,10 @@ func (c *Client) Recharge(ctx context.Context, outTradeNum string, productID int
 	params.Set("mobile", mobile)             // 充值号码
 	params.Set("notify_url", notifyUrl)      // 回调地址
 	params.Set("userid", c.GetUserID())      // 商户ID
+
 	// 请求
-	request, err := c.request(ctx, c.GetApiURL()+"index/recharge", params)
-	if err != nil {
-		return newRechargeResult(RechargeResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response RechargeResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "index/recharge", params, &response)
 	return newRechargeResult(response, request.ResponseBody, request), err
 }
 

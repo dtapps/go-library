@@ -2,50 +2,49 @@ package aswzk
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gorequest"
-	"github.com/dtapps/go-library/utils/gotime"
+	"go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/library/utils/gotime"
 )
 
 // 请求接口
-func (c *Client) request(ctx context.Context, url string, param gorequest.Params, method string) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, method string, response any) (gorequest.Response, error) {
+
+	// 请求地址
+	uri := c.GetApiUrl() + url
+
+	// 获取时间戳
+	xTimestamp := fmt.Sprintf("%v", gotime.Current().Timestamp())
 
 	// 签名
-	sign := c.sign(param)
-
-	// 创建请求
-	client := c.requestClient
-	if !c.requestClientStatus {
-		c.DefaultHttp()
-		client = c.requestClient
-	}
+	xSign := sign(param, c.GetApiKey(), xTimestamp)
 
 	// 设置请求地址
-	timestamp := gotime.Current().Timestamp()
-	client.SetUri(fmt.Sprintf("%s?user_id=%s&timestamp=%v&sign=%s", url, c.GetUserID(), timestamp, sign))
+	c.httpClient.SetUri(uri)
 
 	// 设置方式
-	client.SetMethod(method)
+	c.httpClient.SetMethod(method)
 
 	// 设置格式
-	client.SetContentTypeJson()
-
-	// 设置用户代理
-	client.SetUserAgent(gorequest.GetRandomUserAgentSystem())
+	c.httpClient.SetContentTypeJson()
 
 	// 设置参数
-	client.SetParams(param)
+	c.httpClient.SetParams(param)
+
+	// 添加请求头
+	c.httpClient.SetHeader("X-Timestamp", xTimestamp)
+	c.httpClient.SetHeader("X-UserId", c.GetUserID())
+	c.httpClient.SetHeader("X-Sign", xSign)
 
 	// 发起请求
-	request, err := client.Request(ctx)
+	request, err := c.httpClient.Request(ctx)
 	if err != nil {
 		return gorequest.Response{}, err
 	}
 
-	// 日志
-	if c.slog.status {
-		go c.slog.client.Middleware(ctx, request)
-	}
+	// 解析响应
+	err = json.Unmarshal(request.ResponseBody, &response)
 
 	return request, err
 }

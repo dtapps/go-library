@@ -2,8 +2,8 @@ package wechatpayopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 	"time"
 )
@@ -49,21 +49,16 @@ func newPayPartnerTransactionsIdTransactionIdGetResult(result PayPartnerTransact
 
 // PayPartnerTransactionsIdTransactionIdGet 微信支付订单号查询
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_2.shtml
-func (c *Client) PayPartnerTransactionsIdTransactionIdGet(ctx context.Context, transactionId string, notMustParams ...gorequest.Params) (*PayPartnerTransactionsIdTransactionIdGetResult, ApiError, error) {
+func (c *Client) PayPartnerTransactionsIdTransactionIdGet(ctx context.Context, transactionId string, notMustParams ...*gorequest.Params) (*PayPartnerTransactionsIdTransactionIdGetResult, ApiError, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sp_mchid", c.GetSpMchId())   // 服务商户号
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/pay/partner/transactions/id/"+transactionId, params, http.MethodGet)
-	if err != nil {
-		return newPayPartnerTransactionsIdTransactionIdGetResult(PayPartnerTransactionsIdTransactionIdGetResponse{}, request.ResponseBody, request), ApiError{}, err
-	}
-	// 定义
 	var response PayPartnerTransactionsIdTransactionIdGetResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
-	// 错误
 	var apiError ApiError
-	err = gojson.Unmarshal(request.ResponseBody, &apiError)
+	request, err := c.request(ctx, fmt.Sprintf("v3/pay/partner/transactions/id/%s", transactionId), params, http.MethodGet, &response, &apiError)
 	return newPayPartnerTransactionsIdTransactionIdGetResult(response, request.ResponseBody, request), apiError, err
 }

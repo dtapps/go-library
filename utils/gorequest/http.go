@@ -9,13 +9,10 @@ import (
 	"errors"
 	"fmt"
 	cookiemonster "github.com/MercuryEngineering/CookieMonster"
-	"github.com/dtapps/go-library"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gostring"
-	"github.com/dtapps/go-library/utils/gotime"
-	"github.com/dtapps/go-library/utils/gotrace_id"
+	"go.dtapp.net/library/utils/gojson"
+	"go.dtapp.net/library/utils/gotime"
 	"io"
-	"log"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"strings"
@@ -24,183 +21,166 @@ import (
 
 // Response 返回内容
 type Response struct {
-	RequestId             string      //【请求】编号
-	RequestUri            string      //【请求】链接
-	RequestParams         Params      //【请求】参数
-	RequestMethod         string      //【请求】方式
-	RequestHeader         Headers     //【请求】头部
-	RequestCookie         string      //【请求】Cookie
-	RequestTime           time.Time   //【请求】时间
-	ResponseHeader        http.Header //【返回】头部
-	ResponseStatus        string      //【返回】状态
-	ResponseStatusCode    int         //【返回】状态码
-	ResponseBody          []byte      //【返回】内容
-	ResponseContentLength int64       //【返回】大小
-	ResponseTime          time.Time   //【返回】时间
+	RequestID             string      `json:"request_id"`              // 请求编号
+	RequestUri            string      `json:"request_uri"`             // 请求链接
+	RequestParams         *Params     `json:"request_params"`          // 请求参数
+	RequestMethod         string      `json:"request_method"`          // 请求方式
+	RequestHeader         *Headers    `json:"request_header"`          // 请求头部
+	RequestCookie         string      `json:"request_cookie"`          // 请求Cookie
+	RequestTime           time.Time   `json:"request_time"`            // 请求时间
+	RequestCostTime       int64       `json:"request_cost_time"`       // 请求消耗时长
+	ResponseHeader        http.Header `json:"response_header"`         // 响应头部
+	ResponseStatus        string      `json:"response_status"`         // 响应状态
+	ResponseStatusCode    int         `json:"response_status_code"`    // 响应状态码
+	ResponseBody          []byte      `json:"response_body"`           // 响应内容
+	ResponseContentLength int64       `json:"response_content_length"` // 响应大小
+	ResponseTime          time.Time   `json:"response_time"`           // 响应时间
 }
+
+// LogFunc 日志函数
+type LogFunc func(ctx context.Context, response *LogResponse)
 
 // App 实例
 type App struct {
 	Uri                          string           // 全局请求地址，没有设置url才会使用
-	Error                        error            // 错误
 	httpUri                      string           // 请求地址
 	httpMethod                   string           // 请求方法
-	httpHeader                   Headers          // 请求头
-	httpParams                   Params           // 请求参数
+	httpHeader                   *Headers         // 请求头
+	httpParams                   *Params          // 请求参数
 	httpCookie                   string           // Cookie
 	responseContent              Response         // 返回内容
 	httpContentType              string           // 请求内容类型
-	debug                        bool             // 是否开启调试模式
 	p12Cert                      *tls.Certificate // p12证书内容
 	tlsMinVersion, tlsMaxVersion uint16           // TLS版本
-	config                       struct {
-		systemOs     string // 系统类型
-		systemKernel string // 系统内核
-		goVersion    string // go版本
-		sdkVersion   string // sdk版本
-	}
+	clientIP                     string           // 客户端IP
+	logFunc                      LogFunc          // 日志记录函数
 }
 
 // NewHttp 实例化
 func NewHttp() *App {
-	app := &App{
+	c := &App{
 		httpHeader: NewHeaders(),
 		httpParams: NewParams(),
 	}
-	app.setConfig()
-	return app
+	return c
 }
 
-// SetDebug 设置调试模式
-func (app *App) SetDebug() {
-	app.debug = true
-}
-
-// SetUri 设置请求地址
-func (app *App) SetUri(uri string) {
-	app.httpUri = uri
-}
-
-// SetMethod 设置请求方式
-func (app *App) SetMethod(method string) {
-	app.httpMethod = method
-}
-
-// SetHeader 设置请求头
-func (app *App) SetHeader(key, value string) {
-	app.httpHeader.Set(key, value)
-}
-
-// SetHeaders 批量设置请求头
-func (app *App) SetHeaders(headers Headers) {
-	for key, value := range headers {
-		app.httpHeader.Set(key, value)
-	}
-}
-
-// SetTlsVersion 设置TLS版本
-func (app *App) SetTlsVersion(minVersion, maxVersion uint16) {
-	app.tlsMinVersion = minVersion
-	app.tlsMaxVersion = maxVersion
-}
-
-// SetAuthToken 设置身份验证令牌
-func (app *App) SetAuthToken(token string) {
-	app.httpHeader.Set("Authorization", fmt.Sprintf("Bearer %s", token))
-}
-
-// SetUserAgent 设置用户代理，空字符串就随机设置
-func (app *App) SetUserAgent(ua string) {
-	if ua == "" {
-		ua = GetRandomUserAgent()
-	}
-	app.httpHeader.Set("User-Agent", ua)
-}
-
-// SetContentTypeJson 设置JSON格式
-func (app *App) SetContentTypeJson() {
-	app.httpContentType = httpParamsModeJson
-}
-
-// SetContentTypeForm 设置FORM格式
-func (app *App) SetContentTypeForm() {
-	app.httpContentType = httpParamsModeForm
-}
-
-// SetContentTypeXml 设置XML格式
-func (app *App) SetContentTypeXml() {
-	app.httpContentType = httpParamsModeXml
-}
-
-// SetParam 设置请求参数
-func (app *App) SetParam(key string, value interface{}) {
-	app.httpParams.Set(key, value)
-}
-
-// SetParams 批量设置请求参数
-func (app *App) SetParams(params Params) {
-	for key, value := range params {
-		app.httpParams.Set(key, value)
-	}
-}
-
-// SetCookie 设置Cookie
-func (app *App) SetCookie(value string) {
-	app.httpCookie = value
-}
-
-// SetP12Cert 设置证书
-func (app *App) SetP12Cert(content *tls.Certificate) {
-	app.p12Cert = content
-}
-
-// Get 发起GET请求
-func (app *App) Get(ctx context.Context, uri ...string) (httpResponse Response, err error) {
+// Get 发起 GET 请求
+func (c *App) Get(ctx context.Context, uri ...string) (Response, error) {
 	if len(uri) == 1 {
-		app.Uri = uri[0]
+		c.Uri = uri[0]
 	}
 	// 设置请求方法
-	app.httpMethod = http.MethodGet
-	return request(app, ctx)
+	c.httpMethod = http.MethodGet
+	return request(c, ctx)
 }
 
-// Post 发起POST请求
-func (app *App) Post(ctx context.Context, uri ...string) (httpResponse Response, err error) {
+// Head 发起 HEAD 请求
+func (c *App) Head(ctx context.Context, uri ...string) (Response, error) {
 	if len(uri) == 1 {
-		app.Uri = uri[0]
+		c.Uri = uri[0]
 	}
 	// 设置请求方法
-	app.httpMethod = http.MethodPost
-	return request(app, ctx)
+	c.httpMethod = http.MethodHead
+	return request(c, ctx)
+}
+
+// Post 发起 POST 请求
+func (c *App) Post(ctx context.Context, uri ...string) (Response, error) {
+	if len(uri) == 1 {
+		c.Uri = uri[0]
+	}
+	// 设置请求方法
+	c.httpMethod = http.MethodPost
+	return request(c, ctx)
+}
+
+// Put 发起 PUT 请求
+func (c *App) Put(ctx context.Context, uri ...string) (Response, error) {
+	if len(uri) == 1 {
+		c.Uri = uri[0]
+	}
+	// 设置请求方法
+	c.httpMethod = http.MethodPut
+	return request(c, ctx)
+}
+
+// Patch 发起 PATCH 请求
+func (c *App) Patch(ctx context.Context, uri ...string) (Response, error) {
+	if len(uri) == 1 {
+		c.Uri = uri[0]
+	}
+	// 设置请求方法
+	c.httpMethod = http.MethodPatch
+	return request(c, ctx)
+}
+
+// Delete 发起 DELETE 请求
+func (c *App) Delete(ctx context.Context, uri ...string) (Response, error) {
+	if len(uri) == 1 {
+		c.Uri = uri[0]
+	}
+	// 设置请求方法
+	c.httpMethod = http.MethodDelete
+	return request(c, ctx)
+}
+
+// Connect 发起 CONNECT 请求
+func (c *App) Connect(ctx context.Context, uri ...string) (Response, error) {
+	if len(uri) == 1 {
+		c.Uri = uri[0]
+	}
+	// 设置请求方法
+	c.httpMethod = http.MethodConnect
+	return request(c, ctx)
+}
+
+// Options 发起 OPTIONS 请求
+func (c *App) Options(ctx context.Context, uri ...string) (Response, error) {
+	if len(uri) == 1 {
+		c.Uri = uri[0]
+	}
+	// 设置请求方法
+	c.httpMethod = http.MethodOptions
+	return request(c, ctx)
+}
+
+// Trace 发起 TRACE 请求
+func (c *App) Trace(ctx context.Context, uri ...string) (Response, error) {
+	if len(uri) == 1 {
+		c.Uri = uri[0]
+	}
+	// 设置请求方法
+	c.httpMethod = http.MethodTrace
+	return request(c, ctx)
 }
 
 // Request 发起请求
-func (app *App) Request(ctx context.Context) (httpResponse Response, err error) {
-	return request(app, ctx)
+func (c *App) Request(ctx context.Context) (Response, error) {
+	return request(c, ctx)
 }
 
 // 请求接口
-func request(app *App, ctx context.Context) (httpResponse Response, err error) {
+func request(c *App, ctx context.Context) (httpResponse Response, err error) {
+
+	// 开始时间
+	start := time.Now().UTC()
 
 	// 赋值
 	httpResponse.RequestTime = gotime.Current().Time
-	httpResponse.RequestUri = app.httpUri
-	httpResponse.RequestMethod = app.httpMethod
-	httpResponse.RequestParams = app.httpParams.DeepCopy()
-	httpResponse.RequestHeader = app.httpHeader.DeepCopy()
-	httpResponse.RequestCookie = app.httpCookie
+	httpResponse.RequestUri = c.httpUri
+	httpResponse.RequestMethod = c.httpMethod
+	httpResponse.RequestParams = c.httpParams.DeepCopy()
+	httpResponse.RequestHeader = c.httpHeader.DeepCopy()
+	httpResponse.RequestCookie = c.httpCookie
 
 	// 判断网址
 	if httpResponse.RequestUri == "" {
-		httpResponse.RequestUri = app.Uri
+		httpResponse.RequestUri = c.Uri
 	}
 	if httpResponse.RequestUri == "" {
-		app.Error = errors.New("没有设置Uri")
-		if app.debug {
-			log.Printf("{%s}------------------------\n", gotrace_id.GetTraceIdContext(ctx))
-			log.Printf("{%s}请求异常：%v\n", httpResponse.RequestUri, app.Error)
-		}
-		return httpResponse, app.Error
+		err = errors.New("没有请求地址")
+		return httpResponse, err
 	}
 
 	// 创建 http 客户端
@@ -210,18 +190,18 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	transport := &http.Transport{}
 	transportTls := &tls.Config{}
 
-	if app.p12Cert != nil {
+	if c.p12Cert != nil {
 		transportStatus = true
 		// 配置
-		transportTls.Certificates = []tls.Certificate{*app.p12Cert}
+		transportTls.Certificates = []tls.Certificate{*c.p12Cert}
 		transport.DisableCompression = true
 	}
 
-	if app.tlsMinVersion != 0 && app.tlsMaxVersion != 0 {
+	if c.tlsMinVersion != 0 && c.tlsMaxVersion != 0 {
 		transportStatus = true
 		// 配置
-		transportTls.MinVersion = app.tlsMinVersion
-		transportTls.MaxVersion = app.tlsMaxVersion
+		transportTls.MinVersion = c.tlsMinVersion
+		transportTls.MaxVersion = c.tlsMaxVersion
 	}
 
 	if transportStatus {
@@ -231,14 +211,11 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 		}
 	}
 
-	// SDK版本
-	httpResponse.RequestHeader.Set("Sdk-User-Agent", fmt.Sprintf(userAgentFormat, app.config.systemOs, app.config.systemKernel, app.config.goVersion)+"/"+go_library.Version())
-
 	// 请求类型
-	if app.httpContentType == "" {
-		app.httpContentType = httpParamsModeJson
+	if c.httpContentType == "" {
+		c.httpContentType = httpParamsModeJson
 	}
-	switch app.httpContentType {
+	switch c.httpContentType {
 	case httpParamsModeJson:
 		httpResponse.RequestHeader.Set("Content-Type", "application/json")
 	case httpParamsModeForm:
@@ -247,112 +224,98 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 		httpResponse.RequestHeader.Set("Content-Type", "text/xml")
 	}
 
-	// 跟踪编号
-	httpResponse.RequestId = gotrace_id.GetTraceIdContext(ctx)
-	if httpResponse.RequestId == "" {
-		httpResponse.RequestId = gostring.GetUuId()
+	// 请求编号
+	httpResponse.RequestID = GetRequestIDContext(ctx)
+	if httpResponse.RequestID != "" {
+		httpResponse.RequestHeader.Set(XRequestID, httpResponse.RequestID)
 	}
-	httpResponse.RequestHeader.Set("X-Request-Id", httpResponse.RequestId)
 
 	// 请求内容
-	var reqBody io.Reader
+	var requestBody io.Reader
 
-	if httpResponse.RequestMethod == http.MethodPost && app.httpContentType == httpParamsModeJson {
-		jsonStr, err := gojson.Marshal(httpResponse.RequestParams)
+	if httpResponse.RequestMethod != http.MethodGet && c.httpContentType == httpParamsModeJson {
+		jsonStr, err := gojson.Marshal(httpResponse.RequestParams.DeepGet())
 		if err != nil {
-			app.Error = errors.New(fmt.Sprintf("解析出错 %s", err))
-			if app.debug {
-				log.Printf("{%s}请求异常：%v\n", httpResponse.RequestUri, app.Error)
-			}
-			return httpResponse, app.Error
+			return httpResponse, err
 		}
 		// 赋值
-		reqBody = bytes.NewBuffer(jsonStr)
+		requestBody = bytes.NewBuffer(jsonStr)
 	}
 
-	if httpResponse.RequestMethod == http.MethodPost && app.httpContentType == httpParamsModeForm {
+	if httpResponse.RequestMethod != http.MethodGet && c.httpContentType == httpParamsModeForm {
 		// 携带 form 参数
 		form := url.Values{}
-		for k, v := range httpResponse.RequestParams {
+		for k, v := range httpResponse.RequestParams.DeepGet() {
 			form.Add(k, GetParamsString(v))
 		}
 		// 赋值
-		reqBody = strings.NewReader(form.Encode())
+		requestBody = strings.NewReader(form.Encode())
 	}
 
-	if app.httpContentType == httpParamsModeXml {
-		reqBody, err = ToXml(httpResponse.RequestParams)
+	if c.httpContentType == httpParamsModeXml {
+		requestBody, err = ToXml(httpResponse.RequestParams.DeepGet())
 		if err != nil {
-			app.Error = errors.New(fmt.Sprintf("解析XML出错 %s", err))
-			if app.debug {
-				log.Printf("{%s}请求异常：%v\n", httpResponse.RequestUri, app.Error)
-			}
-			return httpResponse, app.Error
+			return httpResponse, err
 		}
 	}
 
 	// 创建请求
-	req, err := http.NewRequest(httpResponse.RequestMethod, httpResponse.RequestUri, reqBody)
+	req, err := http.NewRequestWithContext(ctx, httpResponse.RequestMethod, httpResponse.RequestUri, requestBody)
 	if err != nil {
-		app.Error = errors.New(fmt.Sprintf("创建请求出错 %s", err))
-		if app.debug {
-			log.Printf("{%s}请求异常：%v\n", httpResponse.RequestUri, app.Error)
-		}
-		return httpResponse, app.Error
+		return httpResponse, err
 	}
 
 	// GET 请求携带查询参数
 	if httpResponse.RequestMethod == http.MethodGet {
 		q := req.URL.Query()
-		for k, v := range httpResponse.RequestParams {
+		for k, v := range httpResponse.RequestParams.DeepGet() {
 			q.Add(k, GetParamsString(v))
 		}
 		req.URL.RawQuery = q.Encode()
 	}
 
 	// 设置请求头
-	if len(httpResponse.RequestHeader) > 0 {
-		for key, value := range httpResponse.RequestHeader {
+	if len(httpResponse.RequestHeader.DeepGet()) > 0 {
+		for key, value := range httpResponse.RequestHeader.DeepGet() {
 			req.Header.Set(key, fmt.Sprintf("%v", value))
 		}
 	}
 
 	// 设置Cookie
 	if httpResponse.RequestCookie != "" {
-		cookies, _ := cookiemonster.ParseString(httpResponse.RequestCookie)
-		if len(cookies) > 0 {
-			for _, c := range cookies {
-				req.AddCookie(c)
+		cookies, err := cookiemonster.ParseString(httpResponse.RequestCookie)
+		if err == nil {
+			if len(cookies) > 0 {
+				for _, c := range cookies {
+					req.AddCookie(c)
+				}
+			} else {
+				req.Header.Set("Cookie", httpResponse.RequestCookie)
 			}
-		} else {
-			req.Header.Set("Cookie", httpResponse.RequestCookie)
 		}
-	}
-
-	if app.debug {
-		log.Printf("{%s}请求Uri：%s %s\n", httpResponse.RequestUri, httpResponse.RequestMethod, httpResponse.RequestUri)
-		log.Printf("{%s}请求Params Get：%+v\n", httpResponse.RequestUri, req.URL.RawQuery)
-		log.Printf("{%s}请求Params Post：%+v\n", httpResponse.RequestUri, reqBody)
-		log.Printf("{%s}请求Header：%+v\n", httpResponse.RequestUri, req.Header)
 	}
 
 	// 发送请求
 	resp, err := client.Do(req)
 	if err != nil {
-		app.Error = errors.New(fmt.Sprintf("请求出错 %s", err))
-		if app.debug {
-			log.Printf("{%s}请求异常：%v\n", httpResponse.RequestUri, app.Error)
-		}
-		return httpResponse, app.Error
+		return httpResponse, err
 	}
+	defer resp.Body.Close() // 关闭连接
 
-	// 最后关闭连接
-	defer resp.Body.Close()
+	// 结束时间
+	end := time.Now().UTC()
+
+	httpResponse.RequestCostTime = end.Sub(start).Milliseconds() // 请求消耗时长
 
 	var reader io.ReadCloser
 	switch resp.Header.Get("Content-Encoding") {
 	case "gzip":
-		reader, _ = gzip.NewReader(resp.Body)
+		reader, err = gzip.NewReader(resp.Body)
+		if err != nil {
+			slog.ErrorContext(ctx, "[gorequest] gzip.NewReader",
+				slog.String("err", err.Error()),
+			)
+		}
 	case "deflate":
 		reader = flate.NewReader(resp.Body)
 	default:
@@ -363,11 +326,7 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	// 读取内容
 	body, err := io.ReadAll(reader)
 	if err != nil {
-		app.Error = errors.New(fmt.Sprintf("解析内容出错 %s", err))
-		if app.debug {
-			log.Printf("{%s}请求异常：%v\n", httpResponse.RequestUri, app.Error)
-		}
-		return httpResponse, app.Error
+		return httpResponse, err
 	}
 
 	// 赋值
@@ -378,11 +337,27 @@ func request(app *App, ctx context.Context) (httpResponse Response, err error) {
 	httpResponse.ResponseBody = body
 	httpResponse.ResponseContentLength = resp.ContentLength
 
-	if app.debug {
-		log.Printf("{%s}返回Status：%s\n", httpResponse.RequestUri, httpResponse.ResponseStatus)
-		log.Printf("{%s}返回Header：%+v\n", httpResponse.RequestUri, httpResponse.ResponseHeader)
-		log.Printf("{%s}返回Body：%s\n", httpResponse.RequestUri, httpResponse.ResponseBody)
-		log.Printf("{%s}------------------------\n", gotrace_id.GetTraceIdContext(ctx))
+	// 调用日志记录函数
+	if c.logFunc != nil {
+		c.logFunc(ctx, &LogResponse{
+			RequestID:       httpResponse.RequestID,
+			RequestTime:     httpResponse.RequestTime,
+			RequestHost:     req.Host,
+			RequestPath:     req.URL.String(),
+			RequestQuery:    req.URL.Query(),
+			RequestMethod:   req.Method,
+			RequestIP:       c.clientIP,
+			RequestBody:     httpResponse.RequestParams.DeepGet(),
+			RequestHeader:   req.Header,
+			RequestCostTime: httpResponse.RequestCostTime,
+
+			ResponseTime:     httpResponse.ResponseTime,
+			ResponseHeader:   resp.Header,
+			ResponseCode:     resp.StatusCode,
+			ResponseBody:     string(httpResponse.ResponseBody),
+			ResponseBodyJson: gojson.JsonDecodeNoError(string(httpResponse.ResponseBody)),
+			ResponseBodyXml:  gojson.XmlEncodeNoError(gojson.XmlDecodeNoError(httpResponse.ResponseBody)),
+		})
 	}
 
 	return httpResponse, err

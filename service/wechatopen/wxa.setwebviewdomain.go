@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -24,17 +23,14 @@ func newWxaSetWebViewDoMainResult(result WxaSetWebViewDoMainResponse, body []byt
 
 // WxaSetWebViewDoMain 配置小程序业务域名
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/modifyJumpDomain.html
-func (c *Client) WxaSetWebViewDoMain(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaSetWebViewDoMainResult, error) {
+func (c *Client) WxaSetWebViewDoMain(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaSetWebViewDoMainResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/setwebviewdomain?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newWxaSetWebViewDoMainResult(WxaSetWebViewDoMainResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaSetWebViewDoMainResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "wxa/setwebviewdomain?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaSetWebViewDoMainResult(response, request.ResponseBody, request), err
 }
 
@@ -53,6 +49,7 @@ func (resp *WxaSetWebViewDoMainResult) ErrcodeInfo() string {
 		return "业务域名数量超过限制，最多可以添加100个业务域名"
 	case 89231:
 		return "个人小程序不支持调用 setwebviewdomain 接口"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

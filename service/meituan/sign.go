@@ -4,18 +4,18 @@ import (
 	"bytes"
 	"crypto/md5"
 	"encoding/hex"
-	"github.com/dtapps/go-library/utils/gorequest"
-	"github.com/dtapps/go-library/utils/gostring"
+	"go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/library/utils/gostring"
 	"io"
 	"sort"
 )
 
 // 签名(sign)生成逻辑（新版）
 // https://union.meituan.com/v2/apiDetail?id=27
-func (c *Client) getSign(Secret string, param gorequest.Params) string {
+func (c *Client) getSign(Secret string, param *gorequest.Params) string {
 	// 参数按照参数名的字典升序排列
 	var keys []string
-	for k := range param {
+	for k := range param.DeepGet() {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)

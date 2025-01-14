@@ -2,8 +2,7 @@ package chengquan
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -34,18 +33,15 @@ func newOrderGetResult(result OrderGetResponse, body []byte, http gorequest.Resp
 // OrderGet 订单查询接口
 // order_no = 商户提交的订单号，最长32位(商户保证其唯一性)
 // https://www.chengquan.cn/rechargeInterface/queryOrder.html
-func (c *Client) OrderGet(ctx context.Context, orderNo string, notMustParams ...gorequest.Params) (*OrderGetResult, error) {
+func (c *Client) OrderGet(ctx context.Context, orderNo string, notMustParams ...*gorequest.Params) (*OrderGetResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("order_no", orderNo) // 商户提交的订单号，最长32位(商户保证其唯一性)
-	params.Set("version", version)  // 版本号
+	params.Set("order_no", orderNo)         // 商户提交的订单号，最长32位(商户保证其唯一性)
+	params.Set("version", c.config.version) // 版本号
+
 	// 请求
-	request, err := c.request(ctx, "/order/get", params, http.MethodPost)
-	if err != nil {
-		return newOrderGetResult(OrderGetResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response OrderGetResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "order/get", params, http.MethodPost, &response)
 	return newOrderGetResult(response, request.ResponseBody, request), err
 }

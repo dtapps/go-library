@@ -2,9 +2,8 @@ package caiyunapp
 
 import (
 	"context"
-	"fmt"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gojson"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -251,7 +250,7 @@ func (c *Client) Daily(ctx context.Context, location string, notMustParams ...go
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
-	request, err := c.request(ctx, c.getApiUrl()+fmt.Sprintf("/%s/daily", location), params, http.MethodGet)
+	request, err := c.request(ctx, apiUrl+c.token+"/"+location+"/daily", params, http.MethodGet)
 	if err != nil {
 		return newDailyResult(DailyResponse{}, request.ResponseBody, request), err
 	}

@@ -2,8 +2,7 @@ package aswzk
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -26,16 +25,13 @@ func newElectricityBillOrderResult(result ElectricityBillOrderResponse, body []b
 }
 
 // ElectricityBillOrder 电费订单下单
-func (c *Client) ElectricityBillOrder(ctx context.Context, notMustParams ...gorequest.Params) (*ElectricityBillOrderResult, error) {
+func (c *Client) ElectricityBillOrder(ctx context.Context, notMustParams ...*gorequest.Params) (*ElectricityBillOrderResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/electricity_bill/order", params, http.MethodPost)
-	if err != nil {
-		return newElectricityBillOrderResult(ElectricityBillOrderResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response ElectricityBillOrderResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "electricity_bill/order", params, http.MethodPost, &response)
 	return newElectricityBillOrderResult(response, request.ResponseBody, request), err
 }

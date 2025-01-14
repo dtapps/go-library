@@ -2,8 +2,8 @@ package wechatpayopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -24,19 +24,14 @@ func newProfitSharingTransactionsAmountsResult(result ProfitSharingTransactionsA
 
 // ProfitSharingTransactionsAmounts 查询剩余待分金额API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_6.shtml
-func (c *Client) ProfitSharingTransactionsAmounts(ctx context.Context, transactionId string) (*ProfitSharingTransactionsAmountsResult, ApiError, error) {
+func (c *Client) ProfitSharingTransactionsAmounts(ctx context.Context, transactionId string, notMustParams ...*gorequest.Params) (*ProfitSharingTransactionsAmountsResult, ApiError, error) {
+
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/profitsharing/transactions/"+transactionId, params, http.MethodGet)
-	if err != nil {
-		return newProfitSharingTransactionsAmountsResult(ProfitSharingTransactionsAmountsResponse{}, request.ResponseBody, request), ApiError{}, err
-	}
-	// 定义
 	var response ProfitSharingTransactionsAmountsResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
-	// 错误
 	var apiError ApiError
-	err = gojson.Unmarshal(request.ResponseBody, &apiError)
+	request, err := c.request(ctx, fmt.Sprintf("v3/profitsharing/transactions/%s", transactionId), params, http.MethodGet, &response, &apiError)
 	return newProfitSharingTransactionsAmountsResult(response, request.ResponseBody, request), apiError, err
 }

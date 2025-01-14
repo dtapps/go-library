@@ -8,10 +8,12 @@ import (
 // GormGenClientFun *GormClient 驱动
 type GormGenClientFun func() *GormGenClient
 
-// GormGenClientTableFun *GormClient 驱动
+// GormGenClientTableFun
+// *GormClient 驱动
 // string 表名
 type GormGenClientTableFun func() (*GormGenClient, string)
 
+// GormGenClientConfig 配置
 type GormGenClientConfig struct {
 	Dns    string     // dns地址
 	Db     *gorm.DB   // db驱动

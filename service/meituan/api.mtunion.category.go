@@ -2,9 +2,8 @@ package meituan
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
-	"github.com/dtapps/go-library/utils/gotime"
+	"go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/library/utils/gotime"
 	"net/http"
 )
 
@@ -31,20 +30,17 @@ func newApiMtUnionCategoryResult(result ApiMtUnionCategoryResponse, body []byte,
 
 // ApiMtUnionCategory 商品类目查询（新版）
 // https://union.meituan.com/v2/apiDetail?id=30
-func (c *Client) ApiMtUnionCategory(ctx context.Context, notMustParams ...gorequest.Params) (*ApiMtUnionCategoryResult, error) {
+func (c *Client) ApiMtUnionCategory(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiMtUnionCategoryResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s
 	params.Set("ts", gotime.Current().Timestamp())
 	params.Set("appkey", c.GetAppKey())
 	params.Set("sign", c.getSign(c.GetSecret(), params))
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/api/getqualityscorebysid", params, http.MethodGet)
-	if err != nil {
-		return newApiMtUnionCategoryResult(ApiMtUnionCategoryResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response ApiMtUnionCategoryResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "api/getqualityscorebysid", params, http.MethodGet, &response)
 	return newApiMtUnionCategoryResult(response, request.ResponseBody, request), err
 }

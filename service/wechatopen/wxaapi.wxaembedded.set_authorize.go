@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -25,17 +24,14 @@ func newWxaApiWxAembeddedSetAuthorizeResult(result WxaApiWxAembeddedSetAuthorize
 // WxaApiWxAembeddedSetAuthorize 设置授权方式
 // checkComponentIsConfig && checkAuthorizerConfig
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/embedded-management/setAuthorizedEmbedded.html
-func (c *Client) WxaApiWxAembeddedSetAuthorize(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaApiWxAembeddedSetAuthorizeResult, error) {
+func (c *Client) WxaApiWxAembeddedSetAuthorize(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaApiWxAembeddedSetAuthorizeResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxaapi/wxaembedded/set_authorize?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newWxaApiWxAembeddedSetAuthorizeResult(WxaApiWxAembeddedSetAuthorizeResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaApiWxAembeddedSetAuthorizeResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "wxaapi/wxaembedded/set_authorize?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaApiWxAembeddedSetAuthorizeResult(response, request.ResponseBody, request), err
 }
 
@@ -44,6 +40,7 @@ func (resp *WxaApiWxAembeddedSetAuthorizeResult) ErrcodeInfo() string {
 	switch resp.Result.Errcode {
 	case 89417:
 		return "修改半屏小程序方式 flag 参数错误"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -32,18 +31,15 @@ func newDataCubeGetWeAnAlySisAppidDailyVisitTrendResult(result DataCubeGetWeAnAl
 
 // DataCubeGetWeAnAlySisAppidDailyVisitTrend 获取用户访问小程序数据日趋势
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/visit-trend/getDailyVisitTrend.html
-func (c *Client) DataCubeGetWeAnAlySisAppidDailyVisitTrend(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlySisAppidDailyVisitTrendResult, error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidDailyVisitTrend(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (*DataCubeGetWeAnAlySisAppidDailyVisitTrendResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("begin_date", beginDate)
 	params.Set("end_date", endDate)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/datacube/getweanalysisappiddailyvisittrend?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newDataCubeGetWeAnAlySisAppidDailyVisitTrendResult(DataCubeGetWeAnAlySisAppidDailyVisitTrendResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response DataCubeGetWeAnAlySisAppidDailyVisitTrendResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "datacube/getweanalysisappiddailyvisittrend?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newDataCubeGetWeAnAlySisAppidDailyVisitTrendResult(response, request.ResponseBody, request), err
 }

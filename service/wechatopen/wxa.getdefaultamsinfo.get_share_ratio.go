@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -24,18 +23,15 @@ func newWxaGetDefaultamsInfoGetShareRatioResult(result WxaGetDefaultamsInfoGetSh
 
 // WxaGetDefaultamsInfoGetShareRatio 查询分账比例
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/percentage/GetShareRatio.html
-func (c *Client) WxaGetDefaultamsInfoGetShareRatio(ctx context.Context, authorizerAppid, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaGetDefaultamsInfoGetShareRatioResult, error) {
+func (c *Client) WxaGetDefaultamsInfoGetShareRatio(ctx context.Context, authorizerAppid, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaGetDefaultamsInfoGetShareRatioResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", authorizerAppid)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/getdefaultamsinfo?action=get_share_ratio&access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newWxaGetDefaultamsInfoGetShareRatioResult(WxaGetDefaultamsInfoGetShareRatioResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaGetDefaultamsInfoGetShareRatioResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "wxa/getdefaultamsinfo?action=get_share_ratio&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaGetDefaultamsInfoGetShareRatioResult(response, request.ResponseBody, request), err
 }
 
@@ -54,6 +50,7 @@ func (resp *WxaGetDefaultamsInfoGetShareRatioResult) ErrcodeInfo() string {
 		return "操作过快"
 	case 2056:
 		return "服务商未在变现专区开通账户"
+	default:
+		return resp.Result.ErrMsg
 	}
-	return "系统繁忙"
 }

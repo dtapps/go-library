@@ -2,107 +2,42 @@ package gojobs
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/dorm"
-	"github.com/dtapps/go-library/utils/goip"
-	"github.com/dtapps/go-library/utils/golog"
+	"fmt"
+	"github.com/redis/go-redis/v9"
+	"gorm.io/gorm"
 )
-
-// 前缀
-// lockKeyPrefix 锁Key前缀 xxx_lock
-// lockKeySeparator 锁Key分隔符 :
-// cornKeyPrefix 任务Key前缀 xxx_cron
-// cornKeyCustom 任务Key自定义 xxx_cron_自定义  xxx_cron_自定义_*
-type redisPrefixFun func() (lockKeyPrefix, lockKeySeparator, cornKeyPrefix, cornKeyCustom string)
-
-// ClientConfig 实例配置
-type ClientConfig struct {
-	GormClientFun  dorm.GormClientFun  // 数据库驱动
-	RedisClientFun dorm.RedisClientFun // 数据库驱动
-	RedisPrefixFun redisPrefixFun      // 前缀
-	CurrentIp      string              // 当前IP
-}
 
 // Client 实例
 type Client struct {
-	gormClient *dorm.GormClient // 数据库
-	config     struct {
-		systemHostname      string  // 主机名
-		systemOs            string  // 系统类型
-		systemVersion       string  // 系统版本
-		systemKernel        string  // 系统内核
-		systemKernelVersion string  // 系统内核版本
-		systemBootTime      uint64  // 系统开机时间
-		cpuCores            int     // CPU核数
-		cpuModelName        string  // CPU型号名称
-		cpuMhz              float64 // CPU兆赫
-		systemInsideIp      string  // 内网ip
-		systemOutsideIp     string  // 外网ip
-		goVersion           string  // go版本
-		sdkVersion          string  // sdk版本
-		redisVersion        string  // redis版本
-		redisSdkVersion     string  // redis sdk版本
-		logVersion          string  // log版本
+	config struct {
+		systemInsideIP  string // 内网IP
+		systemOutsideIP string // 外网IP
 	}
-	cache struct {
-		redisClient      *dorm.RedisClient     // 数据库
-		redisLockClient  *dorm.RedisClientLock // 锁服务
-		lockKeyPrefix    string                // 锁Key前缀 xxx_lock
-		lockKeySeparator string                // 锁Key分隔符 :
-		cornKeyPrefix    string                // 任务Key前缀 xxx_cron
-		cornKeyCustom    string                // 任务Key自定义
+	redisConfig struct {
+		client           *redis.Client // 数据库
+		lockKeyPrefix    string        // 锁Key前缀 xxx_lock
+		lockKeySeparator string        // 锁Key分隔符 :
+		cornKeyPrefix    string        // 任务Key前缀 xxx_cron
+		cornKeyCustom    string        // 任务Key自定义
 	}
-	slog struct {
-		status bool        // 状态
-		client *golog.SLog // 日志服务
-	}
-	runSlog struct {
-		status bool        // 状态
-		client *golog.SLog // 日志服务
+	gormConfig struct {
+		client           *gorm.DB // 数据库
+		taskTableName    string   // 任务表名
+		taskLogStatus    bool     // 任务日志状态
+		taskLogTableName string   // 任务日志表名
 	}
 }
 
 // NewClient 创建实例
-func NewClient(config *ClientConfig) (*Client, error) {
-
-	var ctx = context.Background()
-
+func NewClient(ctx context.Context, currentIP string) (*Client, error) {
 	c := &Client{}
 
-	if config.CurrentIp != "" && config.CurrentIp != "0.0.0.0" {
-		c.config.systemOutsideIp = config.CurrentIp
-	}
-	c.config.systemOutsideIp = goip.IsIp(c.config.systemOutsideIp)
-	if c.config.systemOutsideIp == "" {
-		return nil, currentIpNoConfig
-	}
-
-	// 配置缓存
-	redisClient := config.RedisClientFun()
-	if redisClient != nil && redisClient.GetDb() != nil {
-		c.cache.redisClient = redisClient
-		c.cache.redisLockClient = c.cache.redisClient.NewLock()
-	} else {
-		return nil, redisPrefixFunNoConfig
-	}
-
-	// 配置缓存前缀
-	c.cache.lockKeyPrefix, c.cache.lockKeySeparator, c.cache.cornKeyPrefix, c.cache.cornKeyCustom = config.RedisPrefixFun()
-	if c.cache.lockKeyPrefix == "" || c.cache.lockKeySeparator == "" || c.cache.cornKeyPrefix == "" || c.cache.cornKeyCustom == "" {
-		return nil, redisPrefixFunNoConfig
+	if currentIP == "" || currentIP == "0.0.0.0" {
+		return nil, fmt.Errorf("请配置 CurrentIp")
 	}
 
 	// 配置信息
-	c.setConfig(ctx)
-
-	// 配置关系数据库
-	gormClient := config.GormClientFun()
-	if gormClient != nil && gormClient.GetDb() != nil {
-		c.gormClient = gormClient
-
-		c.autoMigrateTask(ctx)
-	} else {
-		return nil, gormClientFunNoConfig
-	}
+	c.setConfig(ctx, currentIP)
 
 	return c, nil
 }

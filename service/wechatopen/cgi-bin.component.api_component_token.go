@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -24,19 +23,16 @@ func newCgiBinComponentApiComponentTokenResult(result CgiBinComponentApiComponen
 
 // CgiBinComponentApiComponentToken 令牌
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/component_access_token.html
-func (c *Client) CgiBinComponentApiComponentToken(ctx context.Context, componentVerifyTicket string, notMustParams ...gorequest.Params) (*CgiBinComponentApiComponentTokenResult, error) {
+func (c *Client) CgiBinComponentApiComponentToken(ctx context.Context, componentVerifyTicket string, notMustParams ...*gorequest.Params) (*CgiBinComponentApiComponentTokenResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("component_appid", c.config.componentAppId)         // 第三方平台appid
-	params.Set("component_appsecret", c.config.componentAppSecret) // 第三方平台appsecret
-	params.Set("component_verify_ticket", componentVerifyTicket)   // 微信后台推送的ticket
+	params.Set("component_appid", c.GetComponentAppId())         // 第三方平台appid
+	params.Set("component_appsecret", c.GetComponentAppSecret()) // 第三方平台appsecret
+	params.Set("component_verify_ticket", componentVerifyTicket) // 微信后台推送的ticket
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/api_component_token", params, http.MethodPost)
-	if err != nil {
-		return newCgiBinComponentApiComponentTokenResult(CgiBinComponentApiComponentTokenResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response CgiBinComponentApiComponentTokenResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "cgi-bin/component/api_component_token", params, http.MethodPost, &response)
 	return newCgiBinComponentApiComponentTokenResult(response, request.ResponseBody, request), err
 }

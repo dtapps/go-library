@@ -2,8 +2,7 @@ package dayuanren
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type ProductResponse struct {
@@ -57,17 +56,15 @@ func newProductResult(result ProductResponse, body []byte, http gorequest.Respon
 // type = 产品类型ID
 // cate_id = 分类ID
 // https://www.showdoc.com.cn/dyr/9227005691961526
-func (c *Client) Product(ctx context.Context, notMustParams ...gorequest.Params) (*ProductResult, error) {
+// https://www.kancloud.cn/boyanyun/boyanyun_huafei/3097253
+func (c *Client) Product(ctx context.Context, notMustParams ...*gorequest.Params) (*ProductResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserID()) // 商户ID
+
 	// 请求
-	request, err := c.request(ctx, c.GetApiURL()+"index/product", params)
-	if err != nil {
-		return newProductResult(ProductResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response ProductResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "index/product", params, &response)
 	return newProductResult(response, request.ResponseBody, request), err
 }

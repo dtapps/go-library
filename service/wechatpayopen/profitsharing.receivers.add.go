@@ -2,8 +2,7 @@ package wechatpayopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -28,9 +27,10 @@ func newProfitSharingReceiversAddResult(result ProfitSharingReceiversAddResponse
 
 // ProfitSharingReceiversAdd 添加分账接收方API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_8.shtml
-func (c *Client) ProfitSharingReceiversAdd(ctx context.Context, Type, account, name, relationType, customRelation string) (*ProfitSharingReceiversAddResult, ApiError, error) {
+func (c *Client) ProfitSharingReceiversAdd(ctx context.Context, Type, account, name, relationType, customRelation string, notMustParams ...*gorequest.Params) (*ProfitSharingReceiversAddResult, ApiError, error) {
+
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
 	params.Set("appid", c.GetSpAppid())      // 应用ID
 	params.Set("sub_appid", c.GetSubAppid()) // 子商户应用ID
@@ -51,16 +51,10 @@ func (c *Client) ProfitSharingReceiversAdd(ctx context.Context, Type, account, n
 	if relationType == "CUSTOM" {
 		params.Set("custom_relation", customRelation) // 自定义的分账关系
 	}
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/profitsharing/receivers/delete", params, http.MethodPost)
-	if err != nil {
-		return newProfitSharingReceiversAddResult(ProfitSharingReceiversAddResponse{}, request.ResponseBody, request), ApiError{}, err
-	}
-	// 定义
 	var response ProfitSharingReceiversAddResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
-	// 错误
 	var apiError ApiError
-	err = gojson.Unmarshal(request.ResponseBody, &apiError)
+	request, err := c.request(ctx, "v3/profitsharing/receivers/delete", params, http.MethodPost, &response, &apiError)
 	return newProfitSharingReceiversAddResult(response, request.ResponseBody, request), apiError, err
 }

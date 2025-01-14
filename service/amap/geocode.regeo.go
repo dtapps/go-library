@@ -2,8 +2,8 @@ package amap
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gojson"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -102,7 +102,7 @@ func (c *Client) GeocodeRegeo(ctx context.Context, location string, notMustParam
 	params.Set("location", location)
 	params.Set("output", "JSON")
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/geocode/regeo", params, http.MethodGet)
+	request, err := c.request(ctx, "geocode/regeo", params, http.MethodGet)
 	if err != nil {
 		return newGeocodeRegeoResult(GeocodeRegeoResponse{}, request.ResponseBody, request), err
 	}

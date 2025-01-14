@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -24,17 +23,14 @@ func newWxaSecurityApplySetOrderPathInfoResult(result WxaSecurityApplySetOrderPa
 
 // WxaSecurityApplySetOrderPathInfo 申请设置订单页 path 信息
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/basic-info-management/applySetOrderPathInfo.html
-func (c *Client) WxaSecurityApplySetOrderPathInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaSecurityApplySetOrderPathInfoResult, error) {
+func (c *Client) WxaSecurityApplySetOrderPathInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaSecurityApplySetOrderPathInfoResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/security/applysetorderpathinfo?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newWxaSecurityApplySetOrderPathInfoResult(WxaSecurityApplySetOrderPathInfoResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaSecurityApplySetOrderPathInfoResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "wxa/security/applysetorderpathinfo?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaSecurityApplySetOrderPathInfoResult(response, request.ResponseBody, request), err
 }
 
@@ -47,6 +43,7 @@ func (resp *WxaSecurityApplySetOrderPathInfoResult) ErrcodeInfo() string {
 		return "参数填写错误"
 	case 61044:
 		return "path填写不规范"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

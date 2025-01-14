@@ -3,8 +3,8 @@ package dayuanren
 import (
 	"context"
 	"errors"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gojson"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type CheckResponse struct {
@@ -47,19 +47,17 @@ func newCheckResult(result CheckResponse, body []byte, http gorequest.Response) 
 // Check 自发查询订单状态
 // out_trade_nums = 商户订单号；多个用英文,分割
 // https://www.showdoc.com.cn/dyr/9227006175502841
-func (c *Client) Check(ctx context.Context, outTradeNums string, notMustParams ...gorequest.Params) (*CheckResult, error) {
+// https://www.kancloud.cn/boyanyun/boyanyun_huafei/3097254
+func (c *Client) Check(ctx context.Context, outTradeNums string, notMustParams ...*gorequest.Params) (*CheckResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserID())        // 账户ID
 	params.Set("out_trade_nums", outTradeNums) // 商户订单号；多个用英文,分割
+
 	// 请求
-	request, err := c.request(ctx, c.GetApiURL()+"index/check", params)
-	if err != nil {
-		return newCheckResult(CheckResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response CheckResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "index/check", params, &response)
 	return newCheckResult(response, request.ResponseBody, request), err
 }
 

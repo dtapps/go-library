@@ -3,7 +3,7 @@ package ejiaofei
 import (
 	"context"
 	"encoding/xml"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -46,7 +46,8 @@ func newTxChOngZhiResult(result TxChOngZhiResponse, body []byte, http gorequest.
 // productid = 产品id 可以通过2.5查询
 // amount = 购买数量
 // ip = 可以为空
-func (c *Client) TxChOngZhi(ctx context.Context, orderid string, account string, productid int64, amount int64, notMustParams ...gorequest.Params) (*TxChOngZhiResult, error) {
+func (c *Client) TxChOngZhi(ctx context.Context, orderid string, account string, productid int64, amount int64, notMustParams ...*gorequest.Params) (*TxChOngZhiResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserId()) // 用户编号
@@ -55,13 +56,11 @@ func (c *Client) TxChOngZhi(ctx context.Context, orderid string, account string,
 	params.Set("account", account)      // QQ号 需要充值的QQ号
 	params.Set("productid", productid)  // 产品id 可以通过2.5查询
 	params.Set("amount", amount)        // 购买数量
-	// 请求
-	request, err := c.requestXml(ctx, apiUrl+"/txchongzhi.do", params, http.MethodGet)
-	if err != nil {
-		return newTxChOngZhiResult(TxChOngZhiResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
+
+	// 响应
 	var response TxChOngZhiResponse
-	err = xml.Unmarshal(request.ResponseBody, &response)
+
+	// 请求
+	request, err := c.requestXml(ctx, "txchongzhi.do", params, http.MethodGet, &response)
 	return newTxChOngZhiResult(response, request.ResponseBody, request), err
 }

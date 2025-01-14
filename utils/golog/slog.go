@@ -1,9 +1,7 @@
 package golog
 
 import (
-	"context"
-	"github.com/dtapps/go-library/utils/gotime"
-	"github.com/dtapps/go-library/utils/gotrace_id"
+	"go.dtapp.net/library/utils/gotime"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"io"
 	"log/slog"
@@ -12,35 +10,40 @@ import (
 
 type SLogFun func() *SLog
 
-type SLogConfig struct {
-	LogPath      string // 日志文件路径
-	LogName      string // 日志文件名
-	MaxSize      int    // 单位为MB,默认为512MB
-	MaxBackups   int    // 保留旧文件的最大个数
-	MaxAge       int    // 文件最多保存多少天 0=不删除
-	LocalTime    bool   // 采用本地时间
-	Compress     bool   // 是否压缩日志
-	ShowLine     bool   // 显示代码行
-	LogSaveFile  bool   // 是否保存到文件
-	LogInConsole bool   // 是否同时输出到控制台
+type sLogConfig struct {
+	showLine               bool               // 显示代码行
+	setDefault             bool               // 设置为默认的实例
+	setDefaultCtx          bool               // 设置默认上下文
+	setJSONFormat          bool               // 设置为json格式
+	lumberjackConfig       *lumberjack.Logger // 配置lumberjack
+	lumberjackConfigStatus bool
 }
 
 type SLog struct {
-	config      *SLogConfig
+	option      sLogConfig
+	logger      *slog.Logger
+	ctxHandler  *ContextHandler
 	jsonHandler *slog.JSONHandler
 	textHandler *slog.TextHandler
-	logger      *slog.Logger
 }
 
-func NewSlog(ctx context.Context, config *SLogConfig) *SLog {
+// NewSlog 创建
+func NewSlog(opts ...SLogOption) *SLog {
+	sl := &SLog{}
+	for _, opt := range opts {
+		opt(sl)
+	}
+	sl.start()
+	return sl
+}
 
-	sl := &SLog{config: config}
+func (sl *SLog) start() {
 
 	opts := slog.HandlerOptions{
-		AddSource: sl.config.ShowLine,
-		Level:     slog.LevelDebug,
+		AddSource: sl.option.showLine, // 输出日志语句的位置信息
+		Level:     slog.LevelDebug,    // 设置最低日志等级
 		ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
-			if a.Key == slog.TimeKey {
+			if a.Key == slog.TimeKey { // 格式化 key 为 "time" 的属性值
 				a.Value = slog.StringValue(a.Value.Time().Format(gotime.DateTimeFormat))
 				//return slog.Attr{}
 			}
@@ -48,54 +51,55 @@ func NewSlog(ctx context.Context, config *SLogConfig) *SLog {
 		},
 	}
 
-	// 是否保存到文件
-	if sl.config.LogSaveFile {
-
-		lumberjackLogger := lumberjack.Logger{
-			Filename:   sl.config.LogPath + sl.config.LogName, // ⽇志⽂件路径
-			MaxSize:    sl.config.MaxSize,                     // 单位为MB,默认为512MB
-			MaxAge:     sl.config.MaxAge,                      // 文件最多保存多少天
-			MaxBackups: sl.config.MaxBackups,                  // 保留旧文件的最大个数
-			LocalTime:  sl.config.LocalTime,                   // 采用本地时间
-			Compress:   sl.config.Compress,                    // 是否压缩日志
-		}
-
-		// json格式输出
-		if sl.config.LogInConsole {
-			sl.jsonHandler = slog.NewJSONHandler(io.MultiWriter(os.Stdout, &lumberjackLogger), &opts)
-		} else {
-			sl.jsonHandler = slog.NewJSONHandler(&lumberjackLogger, &opts)
-		}
-		sl.logger = slog.New(sl.jsonHandler)
+	// 输出
+	var mw io.Writer
+	if sl.option.lumberjackConfigStatus {
+		// 同时控制台和文件输出日志
+		mw = io.MultiWriter(os.Stdout, sl.option.lumberjackConfig)
 	} else {
-		// json格式输出
-		sl.jsonHandler = slog.NewJSONHandler(os.Stdout, &opts)
-		sl.logger = slog.New(sl.jsonHandler)
+		// 只在文件输出日志
+		mw = io.MultiWriter(os.Stdout)
 	}
 
-	return sl
+	if sl.option.setJSONFormat {
+		// 控制台输出
+		sl.jsonHandler = slog.NewJSONHandler(mw, &opts)
+		// 设置默认上下文
+		if sl.option.setDefaultCtx {
+			sl.ctxHandler = &ContextHandler{sl.jsonHandler}
+			sl.logger = slog.New(sl.ctxHandler)
+		} else {
+			sl.logger = slog.New(sl.jsonHandler)
+		}
+	} else {
+		// 控制台输出
+		sl.textHandler = slog.NewTextHandler(mw, &opts)
+		// 设置默认上下文
+		if sl.option.setDefaultCtx {
+			sl.ctxHandler = &ContextHandler{sl.textHandler}
+			sl.logger = slog.New(sl.ctxHandler)
+		} else {
+			sl.logger = slog.New(sl.textHandler)
+		}
+	}
+
+	// 将这个 slog 对象设置为默认的实例
+	if sl.option.setDefault {
+		slog.SetDefault(sl.logger)
+	}
+
 }
 
 // WithLogger 跟踪编号
-func (sl *SLog) WithLogger() *slog.Logger {
-	logger := slog.New(sl.jsonHandler)
-	return logger
-}
-
-// WithTraceId 跟踪编号
-func (sl *SLog) WithTraceId(ctx context.Context) *slog.Logger {
-	jsonHandler := sl.jsonHandler.WithAttrs([]slog.Attr{
-		slog.String("trace_id", gotrace_id.GetTraceIdContext(ctx)),
-	})
-	logger := slog.New(jsonHandler)
-	return logger
-}
-
-// WithTraceIdStr 跟踪编号
-func (sl *SLog) WithTraceIdStr(traceId string) *slog.Logger {
-	jsonHandler := sl.jsonHandler.WithAttrs([]slog.Attr{
-		slog.String("trace_id", traceId),
-	})
-	logger := slog.New(jsonHandler)
+func (sl *SLog) WithLogger() (logger *slog.Logger) {
+	if sl.option.setDefaultCtx {
+		logger = slog.New(sl.ctxHandler)
+	} else {
+		if sl.option.setJSONFormat {
+			logger = slog.New(sl.jsonHandler)
+		} else {
+			logger = slog.New(sl.textHandler)
+		}
+	}
 	return logger
 }

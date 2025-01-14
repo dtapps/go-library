@@ -2,8 +2,8 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 	"time"
 )
@@ -31,16 +31,13 @@ func newTransferBillReceiptOutBatchNoResult(result TransferBillReceiptOutBatchNo
 
 // TransferBillReceiptOutBatchNo 查询转账账单电子回单接口
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/electronic-signature/get-electronic-signature-by-out-no.html
-func (c *Client) TransferBillReceiptOutBatchNo(ctx context.Context, outBatchNo string, notMustParams ...gorequest.Params) (*TransferBillReceiptOutBatchNoResult, error) {
+func (c *Client) TransferBillReceiptOutBatchNo(ctx context.Context, outBatchNo string, notMustParams ...*gorequest.Params) (*TransferBillReceiptOutBatchNoResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/transfer/bill-receipt/"+outBatchNo, params, http.MethodGet, false)
-	if err != nil {
-		return newTransferBillReceiptOutBatchNoResult(TransferBillReceiptOutBatchNoResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response TransferBillReceiptOutBatchNoResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, fmt.Sprintf("v3/transfer/bill-receipt/%s", outBatchNo), params, http.MethodGet, false, &response)
 	return newTransferBillReceiptOutBatchNoResult(response, request.ResponseBody, request), err
 }

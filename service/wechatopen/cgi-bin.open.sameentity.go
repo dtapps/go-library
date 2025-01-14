@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -25,16 +24,13 @@ func newCgiBinOpenSameEnTityResult(result CgiBinOpenSameEnTityResponse, body []b
 
 // CgiBinOpenSameEnTity 获取授权绑定的商户号列表
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/cloudbase-common/wechatpay/getWechatPayList.html
-func (c *Client) CgiBinOpenSameEnTity(ctx context.Context, componentAccessToken string, notMustParams ...gorequest.Params) (*CgiBinOpenSameEnTityResult, error) {
+func (c *Client) CgiBinOpenSameEnTity(ctx context.Context, componentAccessToken string, notMustParams ...*gorequest.Params) (*CgiBinOpenSameEnTityResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/open/sameentity?access_token="+componentAccessToken, params, http.MethodGet)
-	if err != nil {
-		return newCgiBinOpenSameEnTityResult(CgiBinOpenSameEnTityResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response CgiBinOpenSameEnTityResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "cgi-bin/open/sameentity?access_token="+componentAccessToken, params, http.MethodGet, &response)
 	return newCgiBinOpenSameEnTityResult(response, request.ResponseBody, request), err
 }

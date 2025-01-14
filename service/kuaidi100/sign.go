@@ -2,7 +2,7 @@ package kuaidi100
 
 import (
 	"fmt"
-	"github.com/dtapps/go-library/utils/gomd5"
+	"go.dtapp.net/library/utils/gomd5"
 )
 
 func (c *Client) getSign(param string) string {

@@ -2,9 +2,8 @@ package meituan
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
-	"github.com/dtapps/go-library/utils/gotime"
+	"go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/library/utils/gotime"
 	"net/http"
 )
 
@@ -48,20 +47,17 @@ func newApiOrderListResult(result ApiOrderListResponse, body []byte, http gorequ
 
 // ApiOrderList 订单列表查询接口（新版）
 // https://union.meituan.com/v2/apiDetail?id=23
-func (c *Client) ApiOrderList(ctx context.Context, notMustParams ...gorequest.Params) (*ApiOrderListResult, error) {
+func (c *Client) ApiOrderList(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiOrderListResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s
 	params.Set("ts", gotime.Current().Timestamp())
 	params.Set("appkey", c.GetAppKey())
 	params.Set("sign", c.getSign(c.GetSecret(), params))
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/api/orderList", params, http.MethodGet)
-	if err != nil {
-		return newApiOrderListResult(ApiOrderListResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response ApiOrderListResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "api/orderList", params, http.MethodGet, &response)
 	return newApiOrderListResult(response, request.ResponseBody, request), err
 }

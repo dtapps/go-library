@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -24,17 +23,14 @@ func newCgiBinWxOpenQrCodeJumpDeleteResult(result CgiBinWxOpenQrCodeJumpDeleteRe
 
 // CgiBinWxOpenQrCodeJumpDelete 删除已设置的二维码规则
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumpdelete.html
-func (c *Client) CgiBinWxOpenQrCodeJumpDelete(ctx context.Context, authorizerAccessToken, prefix string, notMustParams ...gorequest.Params) (*CgiBinWxOpenQrCodeJumpDeleteResult, error) {
+func (c *Client) CgiBinWxOpenQrCodeJumpDelete(ctx context.Context, authorizerAccessToken, prefix string, notMustParams ...*gorequest.Params) (*CgiBinWxOpenQrCodeJumpDeleteResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("prefix", prefix)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/wxopen/qrcodejumpdelete?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newCgiBinWxOpenQrCodeJumpDeleteResult(CgiBinWxOpenQrCodeJumpDeleteResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response CgiBinWxOpenQrCodeJumpDeleteResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "cgi-bin/wxopen/qrcodejumpdelete?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newCgiBinWxOpenQrCodeJumpDeleteResult(response, request.ResponseBody, request), err
 }

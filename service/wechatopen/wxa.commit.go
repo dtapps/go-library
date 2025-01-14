@@ -2,44 +2,40 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
-type WxaCommitResponse struct {
+type CommitResponse struct {
 	Errcode int    `json:"errcode"`
 	Errmsg  string `json:"errmsg"`
 }
 
-type WxaCommitResult struct {
-	Result WxaCommitResponse  // 结果
+type CommitResult struct {
+	Result CommitResponse     // 结果
 	Body   []byte             // 内容
 	Http   gorequest.Response // 请求
 }
 
-func newWxaCommitResult(result WxaCommitResponse, body []byte, http gorequest.Response) *WxaCommitResult {
-	return &WxaCommitResult{Result: result, Body: body, Http: http}
+func newCommitResult(result CommitResponse, body []byte, http gorequest.Response) *CommitResult {
+	return &CommitResult{Result: result, Body: body, Http: http}
 }
 
-// WxaCommit 上传小程序代码并生成体验版
-// https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/commit.html
-func (c *Client) WxaCommit(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaCommitResult, error) {
+// Commit 上传代码并生成体验版
+// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/commit.html
+func (c *Client) Commit(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*CommitResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/commit?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newWxaCommitResult(WxaCommitResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
-	var response WxaCommitResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newWxaCommitResult(response, request.ResponseBody, request), err
+	var response CommitResponse
+	request, err := c.request(ctx, "wxa/commit?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return newCommitResult(response, request.ResponseBody, request), err
 }
 
 // ErrcodeInfo 错误描述
-func (resp *WxaCommitResult) ErrcodeInfo() string {
+func (resp *CommitResult) ErrcodeInfo() string {
 	switch resp.Result.Errcode {
 	case 85013:
 		return "无效的自定义配置"
@@ -67,6 +63,7 @@ func (resp *WxaCommitResult) ErrcodeInfo() string {
 		return "请勿频繁提交，待上一次操作完成后再提交"
 	case 9402203:
 		return `标准模板ext_json错误，传了不合法的参数， 如果是标准模板库的模板，则ext_json支持的参数仅为{"extAppid":'', "ext": {}, "window": {}}`
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

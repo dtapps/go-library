@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -47,7 +46,8 @@ func newWxaOperationamsAgencyGetAdposGenenralResult(result WxaOperationamsAgency
 // WxaOperationamsAgencyGetAdposGenenral
 // 获取小程序广告汇总数据
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/ad-data/GetAdposGenenral.html
-func (c *Client) WxaOperationamsAgencyGetAdposGenenral(ctx context.Context, authorizerAccessToken string, page, pageSize int64, startDate, endDate, adSlot string, notMustParams ...gorequest.Params) (*WxaOperationamsAgencyGetAdposGenenralResult, error) {
+func (c *Client) WxaOperationamsAgencyGetAdposGenenral(ctx context.Context, authorizerAccessToken string, page, pageSize int64, startDate, endDate, adSlot string, notMustParams ...*gorequest.Params) (*WxaOperationamsAgencyGetAdposGenenralResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("page", page)
@@ -57,13 +57,9 @@ func (c *Client) WxaOperationamsAgencyGetAdposGenenral(ctx context.Context, auth
 	if adSlot != "" {
 		params.Set("ad_slot", adSlot)
 	}
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/operationams?action=agency_get_adpos_genenral&access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newWxaOperationamsAgencyGetAdposGenenralResult(WxaOperationamsAgencyGetAdposGenenralResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaOperationamsAgencyGetAdposGenenralResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "wxa/operationams?action=agency_get_adpos_genenral&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaOperationamsAgencyGetAdposGenenralResult(response, request.ResponseBody, request), err
 }

@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -85,18 +84,15 @@ func newDataCubeGetWeAnAlySisAppidUserPortraitResult(result DataCubeGetWeAnAlySi
 
 // DataCubeGetWeAnAlySisAppidUserPortrait 获取小程序用户画像分布
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/others/getUserPortrait.html
-func (c *Client) DataCubeGetWeAnAlySisAppidUserPortrait(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...gorequest.Params) (*DataCubeGetWeAnAlySisAppidUserPortraitResult, error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidUserPortrait(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (*DataCubeGetWeAnAlySisAppidUserPortraitResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("begin_date", beginDate)
 	params.Set("end_date", endDate)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/datacube/getweanalysisappiduserportrait?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newDataCubeGetWeAnAlySisAppidUserPortraitResult(DataCubeGetWeAnAlySisAppidUserPortraitResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response DataCubeGetWeAnAlySisAppidUserPortraitResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "datacube/getweanalysisappiduserportrait?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newDataCubeGetWeAnAlySisAppidUserPortraitResult(response, request.ResponseBody, request), err
 }

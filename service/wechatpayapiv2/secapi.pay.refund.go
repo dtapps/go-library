@@ -2,9 +2,8 @@ package wechatpayapiv2
 
 import (
 	"context"
-	"encoding/xml"
-	"github.com/dtapps/go-library/utils/gorandom"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorandom"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type SecApiPayRefundResponse struct {
@@ -54,22 +53,22 @@ func newSecApiPayRefundResult(result SecApiPayRefundResponse, body []byte, http 
 // 小程序支付 - 申请退款
 // 需要证书
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_4
-func (c *Client) SecApiPayRefund(ctx context.Context, notMustParams ...gorequest.Params) (*SecApiPayRefundResult, error) {
+func (c *Client) SecApiPayRefund(ctx context.Context, notMustParams ...*gorequest.Params) (*SecApiPayRefundResult, error) {
+
+	// 证书
 	cert, err := c.P12ToPem()
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", c.GetAppId())                  // 小程序ID
 	params.Set("mch_id", c.GetMchId())                 // 商户号
 	params.Set("nonce_str", gorandom.Alphanumeric(32)) // 随机字符串
+
 	// 签名
 	params.Set("sign", c.getMd5Sign(params))
+
 	// 	请求
-	request, err := c.request(ctx, apiUrl+"/secapi/pay/refund", params, true, cert)
-	if err != nil {
-		return newSecApiPayRefundResult(SecApiPayRefundResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response SecApiPayRefundResponse
-	err = xml.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "secapi/pay/refund", params, true, cert, &response)
 	return newSecApiPayRefundResult(response, request.ResponseBody, request), err
 }

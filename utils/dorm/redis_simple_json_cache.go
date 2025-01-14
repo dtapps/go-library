@@ -2,7 +2,7 @@ package dorm
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
+	"go.dtapp.net/library/utils/gojson"
 	"time"
 )
 

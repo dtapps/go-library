@@ -2,8 +2,7 @@ package chengquan
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -40,21 +39,18 @@ func newOrderDirectChargeResult(result OrderDirectChargeResponse, body []byte, h
 // oil_phone_account = 加油卡充值时用户的手机号
 // notify_url = 橙券主动通知订单结果地址
 // https://chengquan.cn/rechargeInterface/directCharge.html
-func (c *Client) OrderDirectCharge(ctx context.Context, orderNo string, rechargeNumber string, productID int64, amount int64, notMustParams ...gorequest.Params) (*OrderDirectChargeResult, error) {
+func (c *Client) OrderDirectCharge(ctx context.Context, orderNo string, rechargeNumber string, productID int64, amount int64, notMustParams ...*gorequest.Params) (*OrderDirectChargeResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("order_no", orderNo)               // 商户提交的订单号，最长32位(商户保证其唯一性)
 	params.Set("recharge_number", rechargeNumber) // 充值账号
 	params.Set("product_id", productID)           // 充值产品编号
 	params.Set("amount", amount)                  // 充值数量（加油卡，视频业务默认为1，其它业务按照实际情况传递）。数量范围1-99999
-	params.Set("version", version)                // 版本号
+	params.Set("version", c.config.version)       // 版本号
+
 	// 请求
-	request, err := c.request(ctx, "/rder/directCharge", params, http.MethodPost)
-	if err != nil {
-		return newOrderDirectChargeResult(OrderDirectChargeResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response OrderDirectChargeResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "rder/directCharge", params, http.MethodPost, &response)
 	return newOrderDirectChargeResult(response, request.ResponseBody, request), err
 }

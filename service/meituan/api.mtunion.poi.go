@@ -2,9 +2,8 @@ package meituan
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
-	"github.com/dtapps/go-library/utils/gotime"
+	"go.dtapp.net/library/utils/gorequest"
+	"go.dtapp.net/library/utils/gotime"
 	"net/http"
 )
 
@@ -46,20 +45,17 @@ func newApiMtUnionPoiResult(result ApiMtUnionPoiResponse, body []byte, http gore
 
 // ApiMtUnionPoi 门店POI查询（新版）
 // https://union.meituan.com/v2/apiDetail?id=32
-func (c *Client) ApiMtUnionPoi(ctx context.Context, notMustParams ...gorequest.Params) (*ApiMtUnionPoiResult, error) {
+func (c *Client) ApiMtUnionPoi(ctx context.Context, notMustParams ...*gorequest.Params) (*ApiMtUnionPoiResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求时刻10位时间戳(秒级)，有效期60s
 	params.Set("ts", gotime.Current().Timestamp())
 	params.Set("appkey", c.GetAppKey())
 	params.Set("sign", c.getSign(c.GetSecret(), params))
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/api/getqualityscorebysid", params, http.MethodGet)
-	if err != nil {
-		return newApiMtUnionPoiResult(ApiMtUnionPoiResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response ApiMtUnionPoiResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "api/getqualityscorebysid", params, http.MethodGet, &response)
 	return newApiMtUnionPoiResult(response, request.ResponseBody, request), err
 }

@@ -4,8 +4,8 @@ func Grouping() {
 
 }
 
-// TurnString []string 转 string
-func TurnString(ss []string) (s string) {
+// TurnString 字符串切片 转 字符串
+func TurnString[T string](ss []T) (s T) {
 	sl := len(ss)
 	for k, v := range ss {
 		if k+1 == sl {
@@ -15,6 +15,19 @@ func TurnString(ss []string) (s string) {
 		}
 	}
 	return s
+}
+
+// SplitSliceIntoChunks 将一个字符串切片分割成多个子切片，每个子切片的长度不超过指定的最大长度。
+func SplitSliceIntoChunks[T any](slice []T, chunkSize int) [][]T {
+	var chunks [][]T
+	for i := 0; i < len(slice); i += chunkSize {
+		end := i + chunkSize
+		if end > len(slice) {
+			end = len(slice)
+		}
+		chunks = append(chunks, slice[i:end])
+	}
+	return chunks
 }
 
 // RemoveDuplicateElement 去重

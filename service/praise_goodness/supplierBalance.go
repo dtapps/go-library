@@ -2,8 +2,7 @@ package praise_goodness
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -27,17 +26,16 @@ func newSupplierBalanceResult(result SupplierBalanceResponse, body []byte, http 
 }
 
 // SupplierBalance 用户余额查询接口
-func (c *Client) SupplierBalance(ctx context.Context, notMustParams ...gorequest.Params) (*SupplierBalanceResult, error) {
+func (c *Client) SupplierBalance(ctx context.Context, notMustParams ...*gorequest.Params) (*SupplierBalanceResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("mch_id", c.GetMchID()) // 商户编号 (平台提供)
-	// 请求
-	request, err := c.request(ctx, "api/order/supplierBalance", params, http.MethodPost)
-	if err != nil {
-		return newSupplierBalanceResult(SupplierBalanceResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
+
+	// 响应
 	var response SupplierBalanceResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+
+	// 请求
+	request, err := c.request(ctx, "api/order/supplierBalance", params, http.MethodPost, &response)
 	return newSupplierBalanceResult(response, request.ResponseBody, request), err
 }

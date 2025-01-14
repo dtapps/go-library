@@ -10,16 +10,6 @@
 [![goreportcard.com](https://goreportcard.com/badge/github.com/dtapps/go-library)](https://goreportcard.com/report/github.com/dtapps/go-library)
 [![deps.dev](https://img.shields.io/badge/deps-go-red.svg)](https://deps.dev/go/github.com%2Fdtapps%2Fgo-library)
 
-#### 安装使用
-
-```go
-go get -v -u github.com/dtapps/go-library
-
-import (
-    "github.com/dtapps/go-library"
-)
-```
-
 #### 用法示例
 
 > 默认时区为 Local，即服务器所在时区
@@ -28,7 +18,7 @@ import (
 
 ```go
 import (
-	"github.com/dtapps/go-library/utils/gotime"
+	"go.dtapp.net/library/utils/gotime"
 )
 
 gotime.Current().Now()
@@ -57,4 +47,4 @@ https://codeium.com/profile/teasingly-loved-muskellunge-75525
 
 [MIT](https://github.com/dtapps/go-library/blob/master/LICENSE)
 
-Copyright (c) 2018 茂名聚合科技有限公司
+Copyright (c) 2018 李光春

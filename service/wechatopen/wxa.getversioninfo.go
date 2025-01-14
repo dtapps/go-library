@@ -2,12 +2,11 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
-type WxaGetVersionInfoResponse struct {
+type GetVersionInfoResponse struct {
 	Errcode int    `json:"errcode"`
 	Errmsg  string `json:"errmsg"`
 	ExpInfo struct {
@@ -22,28 +21,25 @@ type WxaGetVersionInfoResponse struct {
 	} `json:"release_info"` // 线上版信息
 }
 
-type WxaGetVersionInfoResult struct {
-	Result WxaGetVersionInfoResponse // 结果
-	Body   []byte                    // 内容
-	Http   gorequest.Response        // 请求
+type GetVersionInfoResult struct {
+	Result GetVersionInfoResponse // 结果
+	Body   []byte                 // 内容
+	Http   gorequest.Response     // 请求
 }
 
-func newWxaGetVersionInfoResult(result WxaGetVersionInfoResponse, body []byte, http gorequest.Response) *WxaGetVersionInfoResult {
-	return &WxaGetVersionInfoResult{Result: result, Body: body, Http: http}
+func newGetVersionInfoResult(result GetVersionInfoResponse, body []byte, http gorequest.Response) *GetVersionInfoResult {
+	return &GetVersionInfoResult{Result: result, Body: body, Http: http}
 }
 
-// WxaGetVersionInfo 查询小程序版本信息
-// https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_versioninfo.html
-func (c *Client) WxaGetVersionInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaGetVersionInfoResult, error) {
+// GetVersionInfo 查询小程序版本信息
+// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/getVersionInfo.html
+func (c *Client) GetVersionInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*GetVersionInfoResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/getversioninfo?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newWxaGetVersionInfoResult(WxaGetVersionInfoResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
-	var response WxaGetVersionInfoResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newWxaGetVersionInfoResult(response, request.ResponseBody, request), err
+	var response GetVersionInfoResponse
+	request, err := c.request(ctx, "wxa/getversioninfo?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return newGetVersionInfoResult(response, request.ResponseBody, request), err
 }

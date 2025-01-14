@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -37,17 +36,14 @@ func newWxaModifyDomainResult(result WxaModifyDomainResponse, body []byte, http 
 
 // WxaModifyDomain 配置小程序服务器域名
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/modifyServerDomain.html
-func (c *Client) WxaModifyDomain(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaModifyDomainResult, error) {
+func (c *Client) WxaModifyDomain(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaModifyDomainResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/modify_domain?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newWxaModifyDomainResult(WxaModifyDomainResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaModifyDomainResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "wxa/modify_domain?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newWxaModifyDomainResult(response, request.ResponseBody, request), err
 }
 
@@ -68,6 +64,7 @@ func (resp *WxaModifyDomainResult) ErrcodeInfo() string {
 		return "存在 “ 缺少ICP备案的域名”导致无修改"
 	case 85303:
 		return "同时存在“不符合域名规则的域名”以及“ 缺少ICP备案的域名”导致无修改"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

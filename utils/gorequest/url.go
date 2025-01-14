@@ -47,9 +47,9 @@ func (u *UriParse) Parse() (resp ResponseUrlParse) {
 }
 
 // UriFilterExcludeQueryString 过滤掉url中的参数
-func (u *UriParse) UriFilterExcludeQueryString(uri string) string {
-	URL, _ := url.Parse(uri)
-	clearUri := strings.ReplaceAll(uri, URL.RawQuery, "")
+func (u *UriParse) UriFilterExcludeQueryString() string {
+	URL, _ := url.Parse(u.uri)
+	clearUri := strings.ReplaceAll(u.uri, URL.RawQuery, "")
 	clearUri = strings.TrimRight(clearUri, "?")
 	return strings.TrimRight(clearUri, "/")
 }
@@ -75,4 +75,23 @@ func ParseQuery(s string) map[string][]string {
 	urlParam := u.RawQuery
 	m, _ := url.ParseQuery(urlParam)
 	return m
+}
+
+func IsHttpURL(s string) bool {
+	_, err := url.ParseRequestURI(s)
+	if err != nil {
+		// 解析失败，不是有效的URL
+		return false
+	}
+	return true
+}
+
+func IsURL(s string) bool {
+	u, err := url.Parse(s)
+	if err != nil {
+		// 解析失败，不是有效的URL
+		return false
+	}
+	// 检查是否有方案（scheme），例如 http, https 等
+	return u.Scheme != ""
 }

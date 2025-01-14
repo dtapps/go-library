@@ -3,8 +3,7 @@ package wechatqy
 import (
 	"context"
 	"fmt"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -29,16 +28,13 @@ func newCgiBinUserGetUserInfoResult(result CgiBinUserGetUserInfoResponse, body [
 
 // CgiBinUserGetUserInfo 获取访问用户身份
 // https://open.work.weixin.qq.com/api/doc/90000/90135/91023
-func (c *Client) CgiBinUserGetUserInfo(ctx context.Context, accessToken, code string, notMustParams ...gorequest.Params) (*CgiBinUserGetUserInfoResult, error) {
+func (c *Client) CgiBinUserGetUserInfo(ctx context.Context, accessToken, code string, notMustParams ...*gorequest.Params) (*CgiBinUserGetUserInfoResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+fmt.Sprintf("/cgi-bin/user/getuserinfo?access_token=%s&code=%s", accessToken, code), params, http.MethodGet)
-	if err != nil {
-		return newCgiBinUserGetUserInfoResult(CgiBinUserGetUserInfoResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response CgiBinUserGetUserInfoResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, apiUrl+fmt.Sprintf("cgi-bin/user/getuserinfo?access_token=%s&code=%s", accessToken, code), params, http.MethodGet, &response)
 	return newCgiBinUserGetUserInfoResult(response, request.ResponseBody, request), err
 }

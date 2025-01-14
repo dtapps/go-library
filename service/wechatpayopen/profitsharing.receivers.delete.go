@@ -2,8 +2,7 @@ package wechatpayopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -25,9 +24,10 @@ func newProfitSharingReceiversDeleteResult(result ProfitSharingReceiversDeleteRe
 
 // ProfitSharingReceiversDelete 删除分账接收方API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_9.shtml
-func (c *Client) ProfitSharingReceiversDelete(ctx context.Context, Type, account string) (*ProfitSharingReceiversDeleteResult, ApiError, error) {
+func (c *Client) ProfitSharingReceiversDelete(ctx context.Context, Type, account string, notMustParams ...*gorequest.Params) (*ProfitSharingReceiversDeleteResult, ApiError, error) {
+
 	// 参数
-	params := gorequest.NewParams()
+	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
 	params.Set("appid", c.GetSpAppid())      // 应用ID
 	params.Set("sub_appid", c.GetSubAppid()) // 子商户应用ID
@@ -41,16 +41,10 @@ func (c *Client) ProfitSharingReceiversDelete(ctx context.Context, Type, account
 	if Type == PERSONAL_SUB_OPENID {
 		params.Set("account", account) // 个人sub_openid
 	}
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/v3/profitsharing/receivers/delete", params, http.MethodPost)
-	if err != nil {
-		return newProfitSharingReceiversDeleteResult(ProfitSharingReceiversDeleteResponse{}, request.ResponseBody, request), ApiError{}, err
-	}
-	// 定义
 	var response ProfitSharingReceiversDeleteResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
-	// 错误
 	var apiError ApiError
-	err = gojson.Unmarshal(request.ResponseBody, &apiError)
+	request, err := c.request(ctx, "v3/profitsharing/receivers/delete", params, http.MethodPost, &response, &apiError)
 	return newProfitSharingReceiversDeleteResult(response, request.ResponseBody, request), apiError, err
 }

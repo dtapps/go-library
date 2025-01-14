@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -32,16 +31,13 @@ func newWxaGetCategoryResult(result WxaGetCategoryResponse, body []byte, http go
 
 // WxaGetCategory 获取审核时可填写的类目信息
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/category/get_category.html
-func (c *Client) WxaGetCategory(ctx context.Context, authorizerAccessToken string, notMustParams ...gorequest.Params) (*WxaGetCategoryResult, error) {
+func (c *Client) WxaGetCategory(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaGetCategoryResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/get_category?access_token="+authorizerAccessToken, params, http.MethodGet)
-	if err != nil {
-		return newWxaGetCategoryResult(WxaGetCategoryResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaGetCategoryResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "wxa/get_category?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
 	return newWxaGetCategoryResult(response, request.ResponseBody, request), err
 }

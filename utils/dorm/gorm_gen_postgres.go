@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// NewGormGenPostgresClient 创建GormGenClient实例 postgres
 func NewGormGenPostgresClient(ctx context.Context, config *GormGenClientConfig) (*GormGenClient, error) {
 
 	c := &GormGenClient{config: config}

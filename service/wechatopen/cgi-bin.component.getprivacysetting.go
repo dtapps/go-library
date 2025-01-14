@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -57,17 +56,14 @@ func newCgiBinComponentGetPrivacySettingResult(result CgiBinComponentGetPrivacyS
 // CgiBinComponentGetPrivacySetting 查询小程序用户隐私保护指引
 // @privacyVer 1表示现网版本，即，传1则该接口返回的内容是现网版本的；2表示开发版，即，传2则该接口返回的内容是开发版本的。默认是2。
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/privacy_config/get_privacy_setting.html
-func (c *Client) CgiBinComponentGetPrivacySetting(ctx context.Context, authorizerAccessToken string, privacyVer int, notMustParams ...gorequest.Params) (*CgiBinComponentGetPrivacySettingResult, error) {
+func (c *Client) CgiBinComponentGetPrivacySetting(ctx context.Context, authorizerAccessToken string, privacyVer int, notMustParams ...*gorequest.Params) (*CgiBinComponentGetPrivacySettingResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("privacy_ver", privacyVer)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/component/getprivacysetting?access_token="+authorizerAccessToken, params, http.MethodPost)
-	if err != nil {
-		return newCgiBinComponentGetPrivacySettingResult(CgiBinComponentGetPrivacySettingResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response CgiBinComponentGetPrivacySettingResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "cgi-bin/component/getprivacysetting?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return newCgiBinComponentGetPrivacySettingResult(response, request.ResponseBody, request), err
 }

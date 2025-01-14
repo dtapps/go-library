@@ -2,37 +2,33 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
-type GetCallBackIpResponse struct {
+type CgiBinGetApiDomainIpResponse struct {
 	IpList []string `json:"ip_list,omitempty"`
 }
 
-type GetCallBackIpResult struct {
-	Result GetCallBackIpResponse // 结果
-	Body   []byte                // 内容
-	Http   gorequest.Response    // 请求
+type CgiBinGetApiDomainIpResult struct {
+	Result CgiBinGetApiDomainIpResponse // 结果
+	Body   []byte                       // 内容
+	Http   gorequest.Response           // 请求
 }
 
-func NewGetCallBackIpResult(result GetCallBackIpResponse, body []byte, http gorequest.Response) *GetCallBackIpResult {
-	return &GetCallBackIpResult{Result: result, Body: body, Http: http}
+func NewCgiBinGetApiDomainIpResult(result CgiBinGetApiDomainIpResponse, body []byte, http gorequest.Response) *CgiBinGetApiDomainIpResult {
+	return &CgiBinGetApiDomainIpResult{Result: result, Body: body, Http: http}
 }
 
 // CgiBinGetApiDomainIp 获取微信API接口 IP地址
 // https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_the_WeChat_server_IP_address.html
-func (c *Client) CgiBinGetApiDomainIp(ctx context.Context, componentAccessToken string, notMustParams ...gorequest.Params) (*GetCallBackIpResult, error) {
+func (c *Client) CgiBinGetApiDomainIp(ctx context.Context, componentAccessToken string, notMustParams ...*gorequest.Params) (*CgiBinGetApiDomainIpResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/cgi-bin/get_api_domain_ip?access_token="+componentAccessToken, params, http.MethodGet)
-	if err != nil {
-		return NewGetCallBackIpResult(GetCallBackIpResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
-	var response GetCallBackIpResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return NewGetCallBackIpResult(response, request.ResponseBody, request), err
+	var response CgiBinGetApiDomainIpResponse
+	request, err := c.request(ctx, "cgi-bin/get_api_domain_ip?access_token="+componentAccessToken, params, http.MethodGet, &response)
+	return NewCgiBinGetApiDomainIpResult(response, request.ResponseBody, request), err
 }

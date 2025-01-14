@@ -1,10 +1,7 @@
 package geoip
 
 import (
-	_ "embed"
-	"errors"
 	"net"
-	"strings"
 )
 
 // QueryCityResult 返回
@@ -32,15 +29,16 @@ type QueryCityResult struct {
 	} `json:"location,omitempty"`
 }
 
-func (c *Client) QueryCity(ipAddress net.IP) (result QueryCityResult, err error) {
+func (c *Client) QueryCity(ipAddress string) (result QueryCityResult, err error) {
 
-	record, err := c.cityDb.City(ipAddress)
+	ip := net.ParseIP(ipAddress)
+	record, err := c.cityDb.City(ip)
 	if err != nil {
 		return QueryCityResult{}, err
 	}
 
 	// ip
-	result.Ip = ipAddress.String()
+	result.Ip = ipAddress
 
 	// 大陆
 	result.Continent.Code = record.Continent.Code
@@ -65,17 +63,4 @@ func (c *Client) QueryCity(ipAddress net.IP) (result QueryCityResult, err error)
 	result.Location.Longitude = record.Location.Longitude
 
 	return result, err
-}
-
-// QueryCityIP ip地址查询对应归属地信息
-func (c *Client) QueryCityIP(ipAddressStr string) (result QueryCityResult, err error) {
-	arrIpv4 := strings.Split(ipAddressStr, ".")
-	if len(arrIpv4) == 4 {
-		return c.QueryCity(net.ParseIP(ipAddressStr))
-	}
-	arrIpv6 := strings.Split(ipAddressStr, ":")
-	if len(arrIpv6) == 8 {
-		return c.QueryCity(net.ParseIP(ipAddressStr))
-	}
-	return QueryCityResult{}, errors.New("不是IP")
 }

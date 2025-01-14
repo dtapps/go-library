@@ -2,8 +2,7 @@ package wechatopen
 
 import (
 	"context"
-	"github.com/dtapps/go-library/utils/gojson"
-	"github.com/dtapps/go-library/utils/gorequest"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
 
@@ -35,17 +34,14 @@ func newWxaGetTemplateListResult(result WxaGetTemplateListResponse, body []byte,
 
 // WxaGetTemplateList 获取代码模板列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/gettemplatelist.html
-func (c *Client) WxaGetTemplateList(ctx context.Context, componentAccessToken string, notMustParams ...gorequest.Params) (*WxaGetTemplateListResult, error) {
+func (c *Client) WxaGetTemplateList(ctx context.Context, componentAccessToken string, notMustParams ...*gorequest.Params) (*WxaGetTemplateListResult, error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, apiUrl+"/wxa/gettemplatelist?access_token="+componentAccessToken, params, http.MethodGet)
-	if err != nil {
-		return newWxaGetTemplateListResult(WxaGetTemplateListResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
 	var response WxaGetTemplateListResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	request, err := c.request(ctx, "wxa/gettemplatelist?access_token="+componentAccessToken, params, http.MethodGet, &response)
 	return newWxaGetTemplateListResult(response, request.ResponseBody, request), err
 }
 
@@ -56,6 +52,7 @@ func (resp *WxaGetTemplateListResult) ErrcodeInfo() string {
 		return "请使用GET，不要使用post"
 	case 85064:
 		return "找不到模板"
+	default:
+		return resp.Result.Errmsg
 	}
-	return "系统繁忙"
 }

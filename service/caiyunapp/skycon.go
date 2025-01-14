@@ -4,13 +4,17 @@ package caiyunapp
 func GetSkyCon(skycon string) string {
 	switch skycon {
 	case "CLEAR_DAY":
-		return "晴（白天）"
+		return "晴"
+		//return "晴（白天）"
 	case "CLEAR_NIGHT":
-		return "晴（夜间）"
+		return "晴"
+		//return "晴（夜间）"
 	case "PARTLY_CLOUDY_DAY":
-		return "多云（白天）"
+		return "多云"
+		//return "多云（白天）"
 	case "PARTLY_CLOUDY_NIGHT":
-		return "多云（夜间）"
+		return "多云"
+		//return "多云（夜间）"
 	case "CLOUDY":
 		return "阴"
 	case "LIGHT_HAZE":
