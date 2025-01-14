@@ -12,6 +12,12 @@ func (d Decimal) String() string {
 	return d.floatValue.String()
 }
 
+// Int 输出 int
+func (d Decimal) Int() int {
+	i64, _ := d.floatValue.Int64()
+	return int(i64)
+}
+
 // Int64 输出 int64
 func (d Decimal) Int64() int64 {
 	i64, _ := d.floatValue.Int64()
