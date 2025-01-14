@@ -1,6 +1,7 @@
 package govalidator
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/locales/en"
 	"github.com/go-playground/locales/zh"
@@ -12,31 +13,68 @@ import (
 	"strings"
 )
 
+type ValidatorConfig struct {
+	Local        string
+	DefaultPage  string
+	DefaultLimit string
+}
+
 type Validator struct {
+	config   ValidatorConfig
 	uni      *ut.UniversalTranslator
 	validate *validator.Validate
 	trans    ut.Translator
 }
 
-func NewValidator(local string) (*Validator, error) {
+func NewValidator(config *ValidatorConfig) (*Validator, error) {
 
-	v := &Validator{}
+	var err error
+	v := &Validator{config: *config}
 
 	// 获取gin的校验器
 	var ok bool
 	if v.validate, ok = binding.Validator.Engine().(*validator.Validate); ok {
 
+		// 注册自定义标签
 		v.validate.RegisterTagNameFunc(func(field reflect.StructField) string {
 			// 参数名称
-			paramsName := field.Tag.Get("params_name")
-			if paramsName == "-" {
+			paramsNameTag := field.Tag.Get("params_name")
+			if paramsNameTag == "-" {
 				// 将大写的User替换为json中定义的tag标签 -- "LoginForm.user": "user长度不能超过10个字符"
 				oldName := strings.SplitN(field.Tag.Get("json"), ",", 2)[0]
 				if oldName == "-" {
 					return ""
 				}
 			}
-			return paramsName
+			return paramsNameTag
+		})
+
+		// 注册自定义标签
+		v.validate.RegisterTagNameFunc(func(field reflect.StructField) string {
+			// 参数名称
+			pageTag := field.Tag.Get("page")
+			if pageTag == "-" {
+				// 将大写的User替换为json中定义的tag标签 -- "LoginForm.user": "user长度不能超过10个字符"
+				oldName := strings.SplitN(field.Tag.Get("json"), ",", 2)[0]
+				if oldName == "-" {
+					return v.config.DefaultPage
+				}
+			}
+			return pageTag
+		})
+
+		// 注册自定义标签
+		v.validate.RegisterTagNameFunc(func(field reflect.StructField) string {
+			// 参数名称
+			limitTag := field.Tag.Get("limit")
+			if limitTag == "-" {
+				// 将大写的User替换为json中定义的tag标签 -- "LoginForm.user": "user长度不能超过10个字符"
+				oldName := strings.SplitN(field.Tag.Get("json"), ",", 2)[0]
+				if oldName == "-" {
+					return v.config.DefaultLimit
+				}
+			}
+			return limitTag
 		})
 
 		zhT := zh.New() // 中文
@@ -44,14 +82,13 @@ func NewValidator(local string) (*Validator, error) {
 		v.uni = ut.New(enT, zhT, enT)
 
 		var o bool
-		v.trans, o = v.uni.GetTranslator(local)
+		v.trans, o = v.uni.GetTranslator(v.config.Local)
 		if !o {
 			return nil, nil
 		}
 
 		// 注册翻译器
-		var err error
-		switch local {
+		switch v.config.Local {
 		case "en":
 			err = enTranslations.RegisterDefaultTranslations(v.validate, v.trans)
 		case "zh":
@@ -73,7 +110,8 @@ func NewValidator(local string) (*Validator, error) {
 // https://learnku.com/articles/59498
 // https://www.cnblogs.com/silent-cxl/p/15181647.html
 func (v *Validator) Translate(err error) (errMsg string) {
-	errs := err.(validator.ValidationErrors)
+	var errs validator.ValidationErrors
+	errors.As(err, &errs)
 	for _, err := range errs {
 		errMsg = err.Translate(v.trans)
 		break

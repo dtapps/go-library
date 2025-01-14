@@ -27,6 +27,14 @@ gotime.Current().Timestamp()
 gotime.Current().TimestampWithMillisecond()
 ```
 
+## Tool
+
+[![built with Codeium](https://codeium.com/badges/main)](https://codeium.com)
+
+https://codeium.com/profile/teasingly-loved-muskellunge-75525
+
+<img src="https://codeium.com/profile/teasingly-loved-muskellunge-75525/card.png" alt="codeium">
+
 ## JetBrains 开源证书支持
 
 `go-library` 基于 JetBrains 公司旗下的 GoLand 集成开发环境中进行开发。
