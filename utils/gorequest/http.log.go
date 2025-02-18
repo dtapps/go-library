@@ -21,6 +21,5 @@ type LogResponse struct {
 	ResponseCode     int                 `json:"response_code"`      // 返回状态码
 	ResponseBody     string              `json:"response_body"`      // 返回Json数据
 	ResponseBodyJson map[string]any      `json:"response_body_json"` // 返回Json数据
-	ResponseBodyXml  string              `json:"response_body_xml"`  // 返回Xml数据
 
 }

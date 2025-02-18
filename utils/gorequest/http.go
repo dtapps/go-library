@@ -6,17 +6,17 @@ import (
 	"compress/gzip"
 	"context"
 	"crypto/tls"
+	"encoding/json"
 	"errors"
 	"fmt"
-	cookiemonster "github.com/MercuryEngineering/CookieMonster"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gotime"
 	"io"
 	"log/slog"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
+
+	cookiemonster "github.com/MercuryEngineering/CookieMonster"
 )
 
 // Response 返回内容
@@ -167,7 +167,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	start := time.Now().UTC()
 
 	// 赋值
-	httpResponse.RequestTime = gotime.Current().Time
+	httpResponse.RequestTime = time.Now()
 	httpResponse.RequestUri = c.httpUri
 	httpResponse.RequestMethod = c.httpMethod
 	httpResponse.RequestParams = c.httpParams.DeepCopy()
@@ -234,7 +234,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	var requestBody io.Reader
 
 	if httpResponse.RequestMethod != http.MethodGet && c.httpContentType == httpParamsModeJson {
-		jsonStr, err := gojson.Marshal(httpResponse.RequestParams.DeepGet())
+		jsonStr, err := json.Marshal(httpResponse.RequestParams.DeepGet())
 		if err != nil {
 			return httpResponse, err
 		}
@@ -330,7 +330,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	}
 
 	// 赋值
-	httpResponse.ResponseTime = gotime.Current().Time
+	httpResponse.ResponseTime = time.Now()
 	httpResponse.ResponseStatus = resp.Status
 	httpResponse.ResponseStatusCode = resp.StatusCode
 	httpResponse.ResponseHeader = resp.Header
@@ -339,6 +339,8 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 
 	// 调用日志记录函数
 	if c.logFunc != nil {
+		var responseBodyJson map[string]any
+		_ = json.Unmarshal([]byte(httpResponse.ResponseBody), &responseBodyJson)
 		c.logFunc(ctx, &LogResponse{
 			RequestID:       httpResponse.RequestID,
 			RequestTime:     httpResponse.RequestTime,
@@ -355,8 +357,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 			ResponseHeader:   resp.Header,
 			ResponseCode:     resp.StatusCode,
 			ResponseBody:     string(httpResponse.ResponseBody),
-			ResponseBodyJson: gojson.JsonDecodeNoError(string(httpResponse.ResponseBody)),
-			ResponseBodyXml:  gojson.XmlEncodeNoError(gojson.XmlDecodeNoError(httpResponse.ResponseBody)),
+			ResponseBodyJson: responseBodyJson,
 		})
 	}
 

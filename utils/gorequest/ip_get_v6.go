@@ -2,7 +2,6 @@ package gorequest
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gostring"
 	"strings"
 )
 
@@ -16,7 +15,7 @@ func getIPV6_SpeedNeu6EduCn(ctx context.Context) string {
 		return ""
 	}
 
-	return gostring.SpaceAndLineBreak(string(response.ResponseBody))
+	return strings.Replace(strings.Replace(string(response.ResponseBody), " ", "", -1), "\n", "", -1)
 }
 
 func getIPV6_V6IdentMe(ctx context.Context) string {

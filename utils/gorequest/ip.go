@@ -2,7 +2,7 @@ package gorequest
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
+	"encoding/json"
 	"net"
 	"net/http"
 	"strings"
@@ -129,7 +129,7 @@ func GetOutsideIp(ctx context.Context) string {
 	}
 	// 解析
 	var responseJson respGetOutsideIp
-	err = gojson.Unmarshal(response.ResponseBody, &responseJson)
+	err = json.Unmarshal(response.ResponseBody, &responseJson)
 	if err != nil {
 		return "0.0.0.0"
 	}
