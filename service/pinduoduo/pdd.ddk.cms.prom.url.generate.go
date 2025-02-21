@@ -2,7 +2,8 @@ package pinduoduo
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
+	"encoding/json"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
@@ -73,6 +74,6 @@ func (c *Client) CmsPromUrlGenerate(ctx context.Context, notMustParams ...*goreq
 	var response CmsPromUrlGenerateResponse
 	request, err := c.request(ctx, params, &response)
 	var responseError CmsPromUrlGenerateError
-	_ = gojson.Unmarshal(request.ResponseBody, &responseError)
+	_ = json.Unmarshal(request.ResponseBody, &responseError)
 	return newCmsPromUrlGenerateResult(response, request.ResponseBody, request), responseError, err
 }

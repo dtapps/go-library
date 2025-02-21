@@ -2,7 +2,8 @@ package pinduoduo
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
+	"encoding/json"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
@@ -77,6 +78,6 @@ func (c *Client) RpPromUrlGenerate(ctx context.Context, notMustParams ...*gorequ
 	var response RpPromUrlGenerateResponse
 	request, err := c.request(ctx, params, &response)
 	var responseError RpPromUrlGenerateError
-	_ = gojson.Unmarshal(request.ResponseBody, &responseError)
+	_ = json.Unmarshal(request.ResponseBody, &responseError)
 	return newRpPromUrlGenerateResult(response, request.ResponseBody, request), responseError, err
 }

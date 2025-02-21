@@ -2,7 +2,8 @@ package pinduoduo
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
+	"encoding/json"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
@@ -60,6 +61,6 @@ func (c *Client) ResourceUrlGen(ctx context.Context, notMustParams ...*gorequest
 	var response ResourceUrlGenResponse
 	request, err := c.request(ctx, params, &response)
 	var responseError ResourceUrlGenError
-	_ = gojson.Unmarshal(request.ResponseBody, &responseError)
+	_ = json.Unmarshal(request.ResponseBody, &responseError)
 	return newResourceUrlGenResult(response, request.ResponseBody, request), responseError, err
 }

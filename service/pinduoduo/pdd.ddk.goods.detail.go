@@ -2,7 +2,8 @@ package pinduoduo
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
+	"encoding/json"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
@@ -119,6 +120,6 @@ func (c *Client) GoodsDetail(ctx context.Context, notMustParams ...*gorequest.Pa
 	var response GoodsDetailResponse
 	request, err := c.request(ctx, params, &response)
 	var responseError GoodsDetailResponseError
-	_ = gojson.Unmarshal(request.ResponseBody, &responseError)
+	_ = json.Unmarshal(request.ResponseBody, &responseError)
 	return newGoodsDetailResult(response, request.ResponseBody, request), responseError, err
 }
