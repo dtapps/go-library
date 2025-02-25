@@ -41,12 +41,12 @@ type MediaQueryCouponResponse struct {
 			RecallSource  any    `json:"recallSource,omitempty"`
 		} `json:"couponPackDetail"` // 商品详情
 		DeliverablePoiInfo struct {
-			PoiName          int64 `json:"poiName"`          // 门店名称，商品券可配送门店信息，无则不返回 注：入参经纬度可展示附近配送门店名称。按主题榜单查询时不展示该字段
-			PoiLogoUrl       int64 `json:"poiLogoUrl"`       // 门店Logo的url 注：入参经纬度可展示附近配送门店logo。按主题榜单查询时不展示该字段。
-			DeliveryDistance int64 `json:"deliveryDistance"` // 配送距离 注：入参经纬度可展示附近配送门店的配送距离。按主题榜单查询时不展示该字段。
-			DistributionCost int64 `json:"distributionCost"` // 配送费 注：入参经纬度可展示附近配送门店的配送费。按主题榜单查询时不展示该字段。
-			DeliveryDuration int64 `json:"deliveryDuration"` // 配送时长 注：入参经纬度可展示附近配送门店的配送时长。按主题榜单查询时不展示该字段。
-			LastDeliveryFee  int64 `json:"lastDeliveryFee"`  // 起送额 注：入参经纬度可展示附近配送门店的起送金额。按主题榜单查询时不展示该字段。
+			PoiName          string `json:"poiName"`          // 门店名称，商品券可配送门店信息，无则不返回 注：入参经纬度可展示附近配送门店名称。按主题榜单查询时不展示该字段
+			PoiLogoUrl       string `json:"poiLogoUrl"`       // 门店Logo的url 注：入参经纬度可展示附近配送门店logo。按主题榜单查询时不展示该字段。
+			DeliveryDistance string `json:"deliveryDistance"` // 配送距离 注：入参经纬度可展示附近配送门店的配送距离。按主题榜单查询时不展示该字段。
+			DistributionCost string `json:"distributionCost"` // 配送费 注：入参经纬度可展示附近配送门店的配送费。按主题榜单查询时不展示该字段。
+			DeliveryDuration string `json:"deliveryDuration"` // 配送时长 注：入参经纬度可展示附近配送门店的配送时长。按主题榜单查询时不展示该字段。
+			LastDeliveryFee  string `json:"lastDeliveryFee"`  // 起送额 注：入参经纬度可展示附近配送门店的起送金额。按主题榜单查询时不展示该字段。
 		} `json:"deliverablePoiInfo,omitempty"` // 只支持到家外卖商品券业务类型，可配送门店信息
 		PurchaseLimitInfo struct {
 			SingleDayPurchaseLimit int64 `json:"singleDayPurchaseLimit"` // 单日售卖上限
