@@ -3,7 +3,6 @@ package meituan
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 
 	"go.dtapp.net/library/utils/gorequest"
 )
@@ -34,7 +33,6 @@ func (c *MediaClient) request(ctx context.Context, url string, method string, bo
 		"data":   bodyParam.DeepGet(),
 		"url":    path,
 	})
-	fmt.Printf("%+v\n", signHeaders)
 	c.httpClient.SetHeader("S-Ca-App", signHeaders.SCaApp)
 	c.httpClient.SetHeader("S-Ca-Timestamp", signHeaders.SCaTimestamp)
 	c.httpClient.SetHeader("S-Ca-Signature", signHeaders.SCaSignature)
