@@ -2,9 +2,9 @@ package gojobs
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/redis/go-redis/v9"
-	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gostring"
 	"go.dtapp.net/library/utils/gotime"
@@ -50,9 +50,12 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 
 	var runName = "[运行单个任务]"
 
+	// 开始时间
+	start := time.Now().UTC()
+
 	// 解析任务
 	var task GormModelTask
-	err := gojson.Unmarshal([]byte(message), &task)
+	err := json.Unmarshal([]byte(message), &task)
 	if err != nil {
 		errDesc := fmt.Sprintf("%s解析错误", runName)
 		slog.ErrorContext(ctx, errDesc,
@@ -61,14 +64,8 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 		return
 	}
 
-	// 开始时间
-	start := time.Now().UTC()
-
 	// 任务回调函数
 	if executionCallback != nil {
-
-		// 计算执行时间
-		elapsed := time.Since(start)
 
 		// 需要返回的结构
 		result := TaskHelperRunSingleTaskResponse{
@@ -89,6 +86,9 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 		if result.RunID == "" {
 			result.RunID = gostring.GetUuId()
 		}
+
+		// 计算执行时间
+		elapsed := time.Since(start)
 
 		// 消耗时长
 		result.CostTime = elapsed.Seconds()
@@ -126,9 +126,12 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 
 	var runName = "[运行单个任务带互斥锁]"
 
+	// 开始时间
+	start := time.Now().UTC()
+
 	// 解析任务
 	var task GormModelTask
-	err := gojson.Unmarshal([]byte(message), &task)
+	err := json.Unmarshal([]byte(message), &task)
 	if err != nil {
 		errDesc := fmt.Sprintf("%s解析错误", runName)
 		errorCallback(ctx, &task, errDesc)
@@ -159,14 +162,8 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 	// 确保任务执行完毕后清理标记
 	defer c.taskTypeExecutingMap.Delete(customTaskID)
 
-	// 开始时间
-	start := time.Now().UTC()
-
 	// 任务回调函数
 	if executionCallback != nil {
-
-		// 计算执行时间
-		elapsed := time.Since(start)
 
 		// 需要返回的结构
 		result := TaskHelperRunSingleTaskResponse{
@@ -187,6 +184,9 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 		if result.RunID == "" {
 			result.RunID = gostring.GetUuId()
 		}
+
+		// 计算执行时间
+		elapsed := time.Since(start)
 
 		// 消耗时长
 		result.CostTime = elapsed.Seconds()
@@ -224,9 +224,12 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 
 	var runName = "[运行单个任务带互斥锁，使用ID编号]"
 
+	// 开始时间
+	start := time.Now().UTC()
+
 	// 解析任务
 	var task GormModelTask
-	err := gojson.Unmarshal([]byte(message), &task)
+	err := json.Unmarshal([]byte(message), &task)
 	if err != nil {
 		errDesc := fmt.Sprintf("%s解析错误", runName)
 		errorCallback(ctx, &task, errDesc)
@@ -257,14 +260,8 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 	// 确保任务执行完毕后清理标记
 	defer c.taskTypeExecutingMap.Delete(customTaskID)
 
-	// 开始时间
-	start := time.Now().UTC()
-
 	// 任务回调函数
 	if executionCallback != nil {
-
-		// 计算执行时间
-		elapsed := time.Since(start)
 
 		// 需要返回的结构
 		result := TaskHelperRunSingleTaskResponse{
@@ -285,6 +282,9 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 		if result.RunID == "" {
 			result.RunID = gostring.GetUuId()
 		}
+
+		// 计算执行时间
+		elapsed := time.Since(start)
 
 		// 消耗时长
 		result.CostTime = elapsed.Seconds()
@@ -322,9 +322,12 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 
 	var runName = "[运行单个任务带互斥锁，使用CustomID编号]"
 
+	// 开始时间
+	start := time.Now().UTC()
+
 	// 解析任务
 	var task GormModelTask
-	err := gojson.Unmarshal([]byte(message), &task)
+	err := json.Unmarshal([]byte(message), &task)
 	if err != nil {
 		errDesc := fmt.Sprintf("%s解析错误", runName)
 		errorCallback(ctx, &task, errDesc)
@@ -359,14 +362,8 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 	// 确保任务执行完毕后清理标记
 	defer c.taskTypeExecutingMap.Delete(customTaskID)
 
-	// 开始时间
-	start := time.Now().UTC()
-
 	// 任务回调函数
 	if executionCallback != nil {
-
-		// 计算执行时间
-		elapsed := time.Since(start)
 
 		// 需要返回的结构
 		result := TaskHelperRunSingleTaskResponse{
@@ -387,6 +384,9 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 		if result.RunID == "" {
 			result.RunID = gostring.GetUuId()
 		}
+
+		// 计算执行时间
+		elapsed := time.Since(start)
 
 		// 消耗时长
 		result.CostTime = elapsed.Seconds()
@@ -424,9 +424,12 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, 
 
 	var runName = "[运行单个任务带互斥锁，使用CustomID编号或者ID编号]"
 
+	// 开始时间
+	start := time.Now().UTC()
+
 	// 解析任务
 	var task GormModelTask
-	err := gojson.Unmarshal([]byte(message), &task)
+	err := json.Unmarshal([]byte(message), &task)
 	if err != nil {
 		errDesc := fmt.Sprintf("%s解析错误", runName)
 		errorCallback(ctx, &task, errDesc)
@@ -463,14 +466,8 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, 
 	// 确保任务执行完毕后清理标记
 	defer c.taskTypeExecutingMap.Delete(customTaskID)
 
-	// 开始时间
-	start := time.Now().UTC()
-
 	// 任务回调函数
 	if executionCallback != nil {
-
-		// 计算执行时间
-		elapsed := time.Since(start)
 
 		// 需要返回的结构
 		result := TaskHelperRunSingleTaskResponse{
@@ -491,6 +488,9 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, 
 		if result.RunID == "" {
 			result.RunID = gostring.GetUuId()
 		}
+
+		// 计算执行时间
+		elapsed := time.Since(start)
 
 		// 消耗时长
 		result.CostTime = elapsed.Seconds()
