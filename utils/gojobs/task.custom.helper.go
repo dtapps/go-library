@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/redis/go-redis/v9"
-	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
 	"log/slog"
 	"time"
@@ -149,7 +148,13 @@ func (th *TaskCustomHelper) RunMultipleTask(ctx context.Context, wait int64, exe
 func (th *TaskCustomHelper) RunSingleTask(ctx context.Context, task *TaskCustomHelperTaskList, executionCallback func(ctx context.Context, task *TaskCustomHelperTaskList) (err error)) {
 
 	if th.cfg.logIsDebug {
-		slog.DebugContext(ctx, "RunSingleTask 运行单个任务", slog.String("task", gojson.JsonEncodeNoError(task)))
+		slog.DebugContext(ctx, "RunSingleTask 运行单个任务",
+			slog.String("task_id", task.TaskID),
+			slog.String("task_name", task.TaskID),
+			slog.String("task_params", task.TaskID),
+			slog.String("custom_id", task.TaskID),
+			slog.String("custom_content", task.TaskID),
+		)
 	}
 
 	// 任务回调函数

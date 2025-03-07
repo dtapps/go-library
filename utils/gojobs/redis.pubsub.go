@@ -146,7 +146,7 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 
 	// 检查任务类型是否已经在执行
 	if value, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
-		errDesc := fmt.Sprintf("%s{%v}(%v)(%v)任务已经在执行，需要等待执行完才能继续", runName, customTaskID, value, gotime.Current().Time)
+		errDesc := fmt.Sprintf("%s[%v]任务已经在%v执行，需要等待执行完才能继续", runName, customTaskID, value)
 		errorCallback(ctx, &task, errDesc)
 		slog.WarnContext(ctx, errDesc,
 			slog.Uint64("task_id", uint64(task.ID)),
@@ -157,7 +157,7 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 	}
 
 	// 标记任务类型为正在执行
-	c.taskTypeExecutingMap.Store(customTaskID, gotime.Current().Time)
+	c.taskTypeExecutingMap.Store(customTaskID, gotime.Current().Format())
 
 	// 确保任务执行完毕后清理标记
 	defer c.taskTypeExecutingMap.Delete(customTaskID)
@@ -199,7 +199,7 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 			}
 			err = updateCallback(ctx, &task, &result)
 			if err != nil {
-				errDesc := fmt.Sprintf("%s{%v}回调函数返回错误", runName, customTaskID)
+				errDesc := fmt.Sprintf("%s[%v]回调函数返回错误", runName, customTaskID)
 				slog.ErrorContext(ctx, errDesc,
 					slog.Uint64("task_id", uint64(task.ID)),
 					slog.String("task_type", task.Type),
@@ -244,7 +244,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 
 	// 检查任务类型是否已经在执行
 	if value, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
-		errDesc := fmt.Sprintf("%s{%v}(%v)(%v)任务已经在执行，需要等待执行完才能继续", runName, customTaskID, value, gotime.Current().Time)
+		errDesc := fmt.Sprintf("%s[%v]任务已经在%v执行，需要等待执行完才能继续", runName, customTaskID, value)
 		errorCallback(ctx, &task, errDesc)
 		slog.WarnContext(ctx, errDesc,
 			slog.Uint64("task_id", uint64(task.ID)),
@@ -255,7 +255,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 	}
 
 	// 标记任务类型为正在执行
-	c.taskTypeExecutingMap.Store(customTaskID, gotime.Current().Time)
+	c.taskTypeExecutingMap.Store(customTaskID, gotime.Current().Format())
 
 	// 确保任务执行完毕后清理标记
 	defer c.taskTypeExecutingMap.Delete(customTaskID)
@@ -297,7 +297,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 			}
 			err = updateCallback(ctx, &task, &result)
 			if err != nil {
-				errDesc := fmt.Sprintf("%s{%v}回调函数返回错误", runName, customTaskID)
+				errDesc := fmt.Sprintf("%s[%v]回调函数返回错误", runName, customTaskID)
 				slog.ErrorContext(ctx, errDesc,
 					slog.Uint64("task_id", uint64(task.ID)),
 					slog.String("task_type", task.Type),
@@ -346,7 +346,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 
 	// 检查任务类型是否已经在执行
 	if value, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
-		errDesc := fmt.Sprintf("%s{%v}(%v)(%v)任务已经在执行，需要等待执行完才能继续", runName, customTaskID, value, gotime.Current().Time)
+		errDesc := fmt.Sprintf("%s[%v]任务已经在%v执行，需要等待执行完才能继续", runName, customTaskID, value)
 		errorCallback(ctx, &task, errDesc)
 		slog.WarnContext(ctx, errDesc,
 			slog.Uint64("task_id", uint64(task.ID)),
@@ -357,7 +357,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 	}
 
 	// 标记任务类型为正在执行
-	c.taskTypeExecutingMap.Store(customTaskID, gotime.Current().Time)
+	c.taskTypeExecutingMap.Store(customTaskID, gotime.Current().Format())
 
 	// 确保任务执行完毕后清理标记
 	defer c.taskTypeExecutingMap.Delete(customTaskID)
@@ -399,7 +399,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 			}
 			err = updateCallback(ctx, &task, &result)
 			if err != nil {
-				errDesc := fmt.Sprintf("%s{%v}回调函数返回错误", runName, customTaskID)
+				errDesc := fmt.Sprintf("%s[%v]回调函数返回错误", runName, customTaskID)
 				slog.ErrorContext(ctx, errDesc,
 					slog.Uint64("task_id", uint64(task.ID)),
 					slog.String("task_type", task.Type),
@@ -450,7 +450,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, 
 
 	// 检查任务类型是否已经在执行
 	if value, ok := c.taskTypeExecutingMap.Load(customTaskID); ok {
-		errDesc := fmt.Sprintf("%s{%v}(%v)(%v)任务已经在执行，需要等待执行完才能继续", runName, customTaskID, value, gotime.Current().Time)
+		errDesc := fmt.Sprintf("%s[%v]任务已经在%v执行，需要等待执行完才能继续", runName, customTaskID, value)
 		errorCallback(ctx, &task, errDesc)
 		slog.WarnContext(ctx, errDesc,
 			slog.Uint64("task_id", uint64(task.ID)),
@@ -461,7 +461,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, 
 	}
 
 	// 标记任务类型为正在执行
-	c.taskTypeExecutingMap.Store(customTaskID, gotime.Current().Time)
+	c.taskTypeExecutingMap.Store(customTaskID, gotime.Current().Format())
 
 	// 确保任务执行完毕后清理标记
 	defer c.taskTypeExecutingMap.Delete(customTaskID)
@@ -503,7 +503,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, 
 			}
 			err = updateCallback(ctx, &task, &result)
 			if err != nil {
-				errDesc := fmt.Sprintf("%s{%v}回调函数返回错误", runName, customTaskID)
+				errDesc := fmt.Sprintf("%s[%v]回调函数返回错误", runName, customTaskID)
 				slog.ErrorContext(ctx, errDesc,
 					slog.Uint64("task_id", uint64(task.ID)),
 					slog.String("task_type", task.Type),
