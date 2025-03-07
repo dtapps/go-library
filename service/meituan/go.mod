@@ -23,6 +23,6 @@ require (
 	github.com/basgys/goxml2json v1.1.0 // indirect
 	go.dtapp.net/library/utils/gojson v1.0.8 // indirect
 	go.dtapp.net/library/utils/gorandom v1.0.4 // indirect
-	golang.org/x/net v0.35.0 // indirect
-	golang.org/x/text v0.22.0 // indirect
+	golang.org/x/net v0.37.0 // indirect
+	golang.org/x/text v0.23.0 // indirect
 )

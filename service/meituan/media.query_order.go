@@ -15,6 +15,7 @@ type MediaQueryOrderResponse struct {
 		SkuCount int64  `json:"skuCount"`        // 查询返回本页的数量合计（无实际使用场景，若查询订单购买商品数可以看返回的dataList中skuCount）
 		ScrollId string `json:"scrollId"`        // 分页id，当searchType选择2逐页查询时，出参会返回本字段。用于下一页查询的scrollId字段入参使用
 		DataList []struct {
+			Platform          int64  `json:"platform"`               // 商品所属业务一级分类类型：1 到家及其他业务类型，2 到店业务类型（包含到店美食、休闲生活、酒店、门票）
 			BusinessLine      int64  `json:"businessLine,omitempty"` // 业务线，同入参枚举说明
 			OrderId           string `json:"orderId"`                // 订单ID
 			PayTime           int64  `json:"payTime"`                // 订单支付时间
@@ -27,18 +28,18 @@ type MediaQueryOrderResponse struct {
 			ProductId         string `json:"productId,omitempty"`    // 产品ID，对应商品查询接口的skuViewId，目前只支持到家外卖商品券、到家医药、到家闪购商品业务、到店业务类型
 			ProductName       string `json:"productName"`            // 产品名称，外卖订单展示店铺名称，到店取单个商品券的名称、其他展示全部商品名称
 			SpecificationName string `json:"specificationName"`      // 规格信息，同一个商品名称下可以包括不同的规格，对应不同的价格和佣金
-			OrderDetail       struct {
-				CouponStatus string `json:"couponStatus"` // 本期只有到到家外卖商品券、到家医药、到家闪购商品业务、到店到餐、到综、酒店业务类型展示订单明细，表示商品券/子订单推广计佣状态，1、付款，2、完成（或券已核销），3、结算，4、失效（含取消或风控的情况）
-				ItemOrderId  string `json:"itemOrderId"`  // 针对到店到餐、到综、酒店商品券，返回商品券的子订单号。其他业务类型不返回
-				FinishTime   string `json:"finishTime"`   // 1、针对到家外卖商品券，返回商品券核销完成履约的实物菜品订单号对应的完成时间；2、针对到家医药&闪购商品，返回商品订单完成时间；3、针对到店到餐、到综、酒店子订单，返回子订单对应的券核销时间
-				BasicAmount  string `json:"basicAmount"`  // 商品的计佣金额，每个商品对应的支付分摊金额，单位元
-				CouponFee    string `json:"couponFee"`    // 商品的佣金，当推广状态为失效、取消、风控时，佣金值为0，单位元
-				OrderViewId  string `json:"orderViewId"`  // 只对到家外卖商品券有效。商品券的核销完成履约的实物菜品订单号
-				RefundAmount string `json:"refundAmount"` // 到店到餐、到综、酒店子订单、到家闪购商品、到家医药业务类型的退款金额，到家其他业务类型不返回数据，单位元
-				RefundFee    string `json:"refundFee"`    // 到店到餐、到综、酒店子订单、到家闪购商品、到家医药业务类型的退款佣金，到家其他业务类型不返回数据，单位元
-				RefundTime   string `json:"refundTime"`   // 到店到餐、到综、酒店子订单、到家闪购商品、到家医药业务类型的退款时间，到家其他业务类型不返回数据
-				SettleTime   string `json:"settleTime"`   // 到家商品券/到家闪购商品/到店到餐/到综/酒店子订单的结算时间，完成并且进入结算账期时则变为结算状态。若存在多次结算记录则取最新结算时间
-				UpdateTime   string `json:"updateTime"`   // 到家商品券/到家闪购商品/到家医药/到店到餐、到综、酒店子订单的更新时间
+			OrderDetail       []struct {
+				CouponStatus string `json:"couponStatus,omitempty"` // 本期只有到到家外卖商品券、到家医药、到家闪购商品业务、到店到餐、到综、酒店业务类型展示订单明细，表示商品券/子订单推广计佣状态，1、付款，2、完成（或券已核销），3、结算，4、失效（含取消或风控的情况）
+				ItemOrderId  string `json:"itemOrderId,omitempty"`  // 针对到店到餐、到综、酒店商品券，返回商品券的子订单号。其他业务类型不返回
+				FinishTime   string `json:"finishTime,omitempty"`   // 1、针对到家外卖商品券，返回商品券核销完成履约的实物菜品订单号对应的完成时间；2、针对到家医药&闪购商品，返回商品订单完成时间；3、针对到店到餐、到综、酒店子订单，返回子订单对应的券核销时间
+				BasicAmount  string `json:"basicAmount,omitempty"`  // 商品的计佣金额，每个商品对应的支付分摊金额，单位元
+				CouponFee    string `json:"couponFee,omitempty"`    // 商品的佣金，当推广状态为失效、取消、风控时，佣金值为0，单位元
+				OrderViewId  string `json:"orderViewId,omitempty"`  // 只对到家外卖商品券有效。商品券的核销完成履约的实物菜品订单号
+				RefundAmount string `json:"refundAmount,omitempty"` // 到店到餐、到综、酒店子订单、到家闪购商品、到家医药业务类型的退款金额，到家其他业务类型不返回数据，单位元
+				RefundFee    string `json:"refundFee,omitempty"`    // 到店到餐、到综、酒店子订单、到家闪购商品、到家医药业务类型的退款佣金，到家其他业务类型不返回数据，单位元
+				RefundTime   string `json:"refundTime,omitempty"`   // 到店到餐、到综、酒店子订单、到家闪购商品、到家医药业务类型的退款时间，到家其他业务类型不返回数据
+				SettleTime   string `json:"settleTime,omitempty"`   // 到家商品券/到家闪购商品/到店到餐/到综/酒店子订单的结算时间，完成并且进入结算账期时则变为结算状态。若存在多次结算记录则取最新结算时间
+				UpdateTime   string `json:"updateTime,omitempty"`   // 到家商品券/到家闪购商品/到家医药/到店到餐、到综、酒店子订单的更新时间
 			} `json:"orderDetail,omitempty"` // 订单详情，只支持到家外卖商品券、到家医药、到家闪购商品业务、到店到餐、到综、酒店类型返回数据
 			RefundPrice     string `json:"refundPrice"`            // 只对非到店到餐、非到综、非酒店业务类型有效。订单维度退款价格，该笔订单用户发生退款行为时的退款计佣金额之和，超值券包订单本期不返回退款数据，单位元
 			RefundTime      string `json:"refundTime"`             // 只对非到店到餐、非到综、非酒店业务类型有效。订单维度最新一次发生退款的时间；超值券包订单本期不返回退款数据，单位元
