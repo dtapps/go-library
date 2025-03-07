@@ -518,3 +518,28 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, 
 
 	return
 }
+
+// PrintRunningTasks 打印正在运行的任务列表
+func (p *PubSubClient) PrintRunningTasks() []string {
+	var tasks []string // 用于存储任务信息
+
+	// 遍历 taskTypeExecutingMap
+	p.taskTypeExecutingMap.Range(func(key, value any) bool {
+		taskType := key.(string)
+		setTime := value.(string)
+		tasks = append(tasks, fmt.Sprintf("任务类型: %s, 设置时间: %v", taskType, setTime))
+		return true // 继续迭代
+	})
+
+	// 打印任务列表
+	//if len(tasks) == 0 {
+	//	fmt.Println("当前没有正在运行的任务")
+	//} else {
+	//	fmt.Println("正在运行的任务列表:")
+	//	for _, task := range tasks {
+	//		fmt.Println(task)
+	//	}
+	//}
+
+	return tasks
+}
