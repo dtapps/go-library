@@ -1,9 +1,5 @@
 package gojobs
 
-import (
-	"context"
-)
-
 const (
 	// TASK_IN 任务运行
 	TASK_IN = "IN"
@@ -21,18 +17,18 @@ const (
 	TASK_WAIT = "WAIT"
 )
 
-// Cron
-type jobs interface {
-	// Run 运行
-	Run(ctx context.Context, info GormModelTask, status int, result string)
-	// CreateInCustomId 创建正在运行任务
-	CreateInCustomId(ctx context.Context, config *ConfigCreateInCustomId) error
-	// CreateInCustomIdOnly 创建正在运行唯一任务
-	CreateInCustomIdOnly(ctx context.Context, config *ConfigCreateInCustomIdOnly) error
-	// CreateInCustomIdMaxNumber 创建正在运行任务并限制数量
-	CreateInCustomIdMaxNumber(ctx context.Context, config *ConfigCreateInCustomIdMaxNumber) error
-	// CreateInCustomIdMaxNumberOnly 创建正在运行唯一任务并限制数量
-	CreateInCustomIdMaxNumberOnly(ctx context.Context, config *ConfigCreateInCustomIdMaxNumberOnly) error
-	// CreateWaitCustomId 创建正在运行任务
-	CreateWaitCustomId(ctx context.Context, config *ConfigCreateWaitCustomId) error
-}
+//// Cron
+//type jobs interface {
+//	// Run 运行
+//	Run(ctx context.Context, info GormModelTask, status int, result string)
+//	// CreateInCustomId 创建正在运行任务
+//	CreateInCustomId(ctx context.Context, config *ConfigCreateInCustomId) error
+//	// CreateInCustomIdOnly 创建正在运行唯一任务
+//	CreateInCustomIdOnly(ctx context.Context, config *ConfigCreateInCustomIdOnly) error
+//	// CreateInCustomIdMaxNumber 创建正在运行任务并限制数量
+//	CreateInCustomIdMaxNumber(ctx context.Context, config *ConfigCreateInCustomIdMaxNumber) error
+//	// CreateInCustomIdMaxNumberOnly 创建正在运行唯一任务并限制数量
+//	CreateInCustomIdMaxNumberOnly(ctx context.Context, config *ConfigCreateInCustomIdMaxNumberOnly) error
+//	// CreateWaitCustomId 创建正在运行任务
+//	CreateWaitCustomId(ctx context.Context, config *ConfigCreateWaitCustomId) error
+//}

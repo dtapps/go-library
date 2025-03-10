@@ -46,7 +46,7 @@ func (c *PubSubClient) PSubscribe(ctx context.Context, channel ...string) *redis
 // message 任务信息，需要json编码
 // executionCallback 执行任务回调函数 返回 runCode=状态 runDesc=描述
 // updateCallback 执行更新回调函数
-func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, executionCallback func(ctx context.Context, task *GormModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *GormModelTask, result *TaskHelperRunSingleTaskResponse) (err error)) {
+func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, executionCallback func(ctx context.Context, task *ModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *ModelTask, result *TaskHelperRunSingleTaskResponse) (err error)) {
 
 	var runName = "[运行单个任务]"
 
@@ -54,7 +54,7 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 	start := time.Now().UTC()
 
 	// 解析任务
-	var task GormModelTask
+	var task ModelTask
 	err := json.Unmarshal([]byte(message), &task)
 	if err != nil {
 		errDesc := fmt.Sprintf("%s解析错误", runName)
@@ -122,7 +122,7 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 // message 任务信息，需要json编码
 // executionCallback 执行任务回调函数 返回 runCode=状态 runDesc=描述
 // updateCallback 执行更新回调函数
-func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string, executionCallback func(ctx context.Context, task *GormModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *GormModelTask, result *TaskHelperRunSingleTaskResponse) (err error), errorCallback func(ctx context.Context, task *GormModelTask, desc string)) {
+func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string, executionCallback func(ctx context.Context, task *ModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *ModelTask, result *TaskHelperRunSingleTaskResponse) (err error), errorCallback func(ctx context.Context, task *ModelTask, desc string)) {
 
 	var runName = "[运行单个任务带互斥锁]"
 
@@ -130,7 +130,7 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 	start := time.Now().UTC()
 
 	// 解析任务
-	var task GormModelTask
+	var task ModelTask
 	err := json.Unmarshal([]byte(message), &task)
 	if err != nil {
 		errDesc := fmt.Sprintf("%s解析错误", runName)
@@ -220,7 +220,7 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 // message 任务信息，需要json编码
 // executionCallback 执行任务回调函数 返回 runCode=状态 runDesc=描述
 // updateCallback 执行更新回调函数
-func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message string, executionCallback func(ctx context.Context, task *GormModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *GormModelTask, result *TaskHelperRunSingleTaskResponse) (err error), errorCallback func(ctx context.Context, task *GormModelTask, desc string)) {
+func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message string, executionCallback func(ctx context.Context, task *ModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *ModelTask, result *TaskHelperRunSingleTaskResponse) (err error), errorCallback func(ctx context.Context, task *ModelTask, desc string)) {
 
 	var runName = "[运行单个任务带互斥锁，使用ID编号]"
 
@@ -228,7 +228,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 	start := time.Now().UTC()
 
 	// 解析任务
-	var task GormModelTask
+	var task ModelTask
 	err := json.Unmarshal([]byte(message), &task)
 	if err != nil {
 		errDesc := fmt.Sprintf("%s解析错误", runName)
@@ -318,7 +318,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 // message 任务信息，需要json编码
 // executionCallback 执行任务回调函数 返回 runCode=状态 runDesc=描述
 // updateCallback 执行更新回调函数
-func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, message string, executionCallback func(ctx context.Context, task *GormModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *GormModelTask, result *TaskHelperRunSingleTaskResponse) (err error), errorCallback func(ctx context.Context, task *GormModelTask, desc string)) {
+func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, message string, executionCallback func(ctx context.Context, task *ModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *ModelTask, result *TaskHelperRunSingleTaskResponse) (err error), errorCallback func(ctx context.Context, task *ModelTask, desc string)) {
 
 	var runName = "[运行单个任务带互斥锁，使用CustomID编号]"
 
@@ -326,7 +326,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 	start := time.Now().UTC()
 
 	// 解析任务
-	var task GormModelTask
+	var task ModelTask
 	err := json.Unmarshal([]byte(message), &task)
 	if err != nil {
 		errDesc := fmt.Sprintf("%s解析错误", runName)
@@ -420,7 +420,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 // message 任务信息，需要json编码
 // executionCallback 执行任务回调函数 返回 runCode=状态 runDesc=描述
 // updateCallback 执行更新回调函数
-func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, message string, executionCallback func(ctx context.Context, task *GormModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *GormModelTask, result *TaskHelperRunSingleTaskResponse) (err error), errorCallback func(ctx context.Context, task *GormModelTask, desc string)) {
+func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, message string, executionCallback func(ctx context.Context, task *ModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *ModelTask, result *TaskHelperRunSingleTaskResponse) (err error), errorCallback func(ctx context.Context, task *ModelTask, desc string)) {
 
 	var runName = "[运行单个任务带互斥锁，使用CustomID编号或者ID编号]"
 
@@ -428,7 +428,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, 
 	start := time.Now().UTC()
 
 	// 解析任务
-	var task GormModelTask
+	var task ModelTask
 	err := json.Unmarshal([]byte(message), &task)
 	if err != nil {
 		errDesc := fmt.Sprintf("%s解析错误", runName)

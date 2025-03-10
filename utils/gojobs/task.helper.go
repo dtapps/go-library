@@ -14,8 +14,8 @@ import (
 type TaskHelper struct {
 	cfg *taskHelperConfig // 配置
 
-	taskType string           // [任务]类型
-	taskList []*GormModelTask // [任务]列表
+	taskType string       // [任务]类型
+	taskList []*ModelTask // [任务]列表
 
 	Ctx context.Context // [启动]上下文
 }
@@ -46,7 +46,7 @@ func NewTaskHelper(ctx context.Context, taskType string, opts ...TaskHelperOptio
 // listCallback 任务回调函数 返回 任务列表
 // newTaskLists 新的任务列表
 // isContinue 是否继续
-func (th *TaskHelper) QueryTaskList(ctx context.Context, isRunCallback func(ctx context.Context, keyName string) (isUse bool, result *redis.StringCmd), listCallback func(ctx context.Context, taskType string) []*GormModelTask) (isContinue bool) {
+func (th *TaskHelper) QueryTaskList(ctx context.Context, isRunCallback func(ctx context.Context, keyName string) (isUse bool, result *redis.StringCmd), listCallback func(ctx context.Context, taskType string) []*ModelTask) (isContinue bool) {
 
 	// 任务列表回调函数
 	if isRunCallback != nil {
@@ -109,7 +109,7 @@ func (th *TaskHelper) FilterTaskList(ctx context.Context, isMandatoryIp bool, sp
 	if specifyIp != "" {
 
 		// 新的任务列表
-		var newTaskLists []*GormModelTask
+		var newTaskLists []*ModelTask
 
 		// 解析指定IP
 		specifyIp = gorequest.IpIs(specifyIp)
@@ -178,7 +178,7 @@ func (th *TaskHelper) FilterTaskList(ctx context.Context, isMandatoryIp bool, sp
 }
 
 // GetTaskList 请在FilterTaskList之后获取任务列表
-func (th *TaskHelper) GetTaskList() []*GormModelTask {
+func (th *TaskHelper) GetTaskList() []*ModelTask {
 	return th.taskList
 }
 
@@ -189,7 +189,7 @@ func (th *TaskHelper) GetTaskList() []*GormModelTask {
 // updateCallback 执行更新回调函数
 // startCallback 开始任务回调函数
 // endCallback 结束任务回调函数
-func (th *TaskHelper) RunMultipleTask(ctx context.Context, wait int64, executionCallback func(ctx context.Context, task *GormModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *GormModelTask, result *TaskHelperRunSingleTaskResponse), startCallback func(ctx context.Context, taskType string) (err error), endCallback func(ctx context.Context, taskType string)) {
+func (th *TaskHelper) RunMultipleTask(ctx context.Context, wait int64, executionCallback func(ctx context.Context, task *ModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *ModelTask, result *TaskHelperRunSingleTaskResponse), startCallback func(ctx context.Context, taskType string) (err error), endCallback func(ctx context.Context, taskType string)) {
 
 	// 执行开始任务回调函数
 	if startCallback != nil && endCallback != nil {
@@ -239,7 +239,7 @@ type TaskHelperRunSingleTaskResponse struct {
 // task 任务
 // executionCallback 执行任务回调函数 返回 runCode=状态 runDesc=描述
 // updateCallback 执行更新回调函数
-func (th *TaskHelper) RunSingleTask(ctx context.Context, task *GormModelTask, executionCallback func(ctx context.Context, task *GormModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *GormModelTask, result *TaskHelperRunSingleTaskResponse)) {
+func (th *TaskHelper) RunSingleTask(ctx context.Context, task *ModelTask, executionCallback func(ctx context.Context, task *ModelTask) (runCode int, runDesc string), updateCallback func(ctx context.Context, task *ModelTask, result *TaskHelperRunSingleTaskResponse)) {
 
 	// 任务回调函数
 	if executionCallback != nil {
