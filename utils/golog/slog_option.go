@@ -4,6 +4,13 @@ import "gopkg.in/natefinch/lumberjack.v2"
 
 type SLogOption func(*SLog)
 
+// WithConsoleOutput 控制台输出开关
+func WithConsoleOutput(enable bool) SLogOption {
+	return func(sl *SLog) {
+		sl.option.consoleOutput = enable
+	}
+}
+
 // WithSLogLumberjack Lumberjack配置
 // Filename 日志文件的位置
 // MaxSize 文件最大尺寸（以MB为单位）
