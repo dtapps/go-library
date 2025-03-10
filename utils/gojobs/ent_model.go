@@ -26,7 +26,7 @@ func EntTaskFields() []ent.Field {
 		field.String("status").Optional().Comment("状态码").Annotations(entsql.WithComments(true)),
 		field.String("status_desc").Optional().Comment("状态描述").Annotations(entsql.WithComments(true)),
 		field.String("spec").NotEmpty().Comment("任务规则").Annotations(entsql.WithComments(true)),
-		field.String("params").Optional().Comment("参数").Annotations(entsql.WithComments(true)),
+		field.JSON("params", map[string]any{}).Optional().Comment("参数").Annotations(entsql.WithComments(true)),
 		field.Int64("frequency").Optional().Immutable().Comment("频率(秒单位)").Annotations(entsql.WithComments(true)),
 		field.Int64("number").Optional().Default(0).Comment("当前次数").Annotations(entsql.WithComments(true)),
 		field.Int64("max_number").Optional().Comment("最大次数").Annotations(entsql.WithComments(true)),
