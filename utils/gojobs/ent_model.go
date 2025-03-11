@@ -24,8 +24,9 @@ func EntTaskAnnotations() []schema.Annotation {
 func EntTaskFields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id").Comment("记录编号").Annotations(entsql.WithComments(true)),
-		field.String("status").Optional().Comment("状态码").Annotations(entsql.WithComments(true)),
+		field.Enum("status").Optional().Values("CONFLICT", "OBSERVATION", "ERROR", "IN", "SUCCESS", "TIMEOUT", "WAIT").Comment("状态码").Default("IN").Annotations(entsql.WithComments(true)),
 		field.String("status_desc").Optional().Comment("状态描述").Annotations(entsql.WithComments(true)),
+		field.Enum("last_status").Optional().Values("CONFLICT", "OBSERVATION", "ERROR", "IN", "SUCCESS", "TIMEOUT", "WAIT").Comment("最后状态码").Annotations(entsql.WithComments(true)),
 		field.String("spec").NotEmpty().Comment("任务规则").Annotations(entsql.WithComments(true)),
 		field.JSON("params", json.RawMessage{}).Optional().Comment("参数").Annotations(entsql.WithComments(true)),
 		field.Int64("frequency").Optional().Immutable().Comment("频率(秒单位)").Annotations(entsql.WithComments(true)),
