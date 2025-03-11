@@ -12,7 +12,7 @@ const (
 	// CodeConflict 冲突
 	CodeConflict = http.StatusConflict // http.StatusBadRequest 改 http.StatusConflict
 	// CodeObservation 观查
-	CodeObservation = http.StatusAccepted // http.StatusMultipleChoices 改 http.StatusAccepted
+	CodeObservation = http.StatusProcessing // http.StatusMultipleChoices 改 http.StatusProcessing
 	// CodeError 失败
 	CodeError = http.StatusInternalServerError
 	// CodeSuccess 成功
