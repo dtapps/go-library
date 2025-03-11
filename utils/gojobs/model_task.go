@@ -10,6 +10,7 @@ type ModelTask struct {
 	ID             int64           `json:"id,omitempty"`              // 记录编号
 	Status         string          `json:"status,omitempty"`          // 状态码
 	StatusDesc     string          `json:"status_desc,omitempty"`     // 状态描述
+	LastStatus     string          `json:"last_status,omitempty"`     // 最后状态码
 	Params         json.RawMessage `json:"params,omitempty"`          // 参数
 	Frequency      int64           `json:"frequency,omitempty"`       // 频率(秒单位)
 	Spec           string          `json:"spec,omitempty"`            // cron表达式
