@@ -2,6 +2,7 @@ package golog
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
@@ -121,7 +122,8 @@ func (hg *HertzLog) Middleware() app.HandlerFunc {
 
 		// 响应内容
 		if gojson.IsValidJSON(string(h.Response.Body())) {
-			log.ResponseBody = gojson.JsonDecodeNoError(string(h.Response.Body()))
+			_ = json.Unmarshal(h.Response.Body(), &log.ResponseBody)
+			//log.ResponseBody = gojson.JsonDecodeNoError(string(h.Response.Body()))
 		} else {
 			//log.ResponseBody = string(h.Response.Body())
 		}

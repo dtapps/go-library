@@ -3,6 +3,7 @@ package golog
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	gin_requestid "go.dtapp.net/library/contrib/gin-requestid"
 	"go.dtapp.net/library/utils/gojson"
@@ -135,7 +136,8 @@ func (gg *GinLog) Middleware() gin.HandlerFunc {
 
 		// 响应内容
 		if gojson.IsValidJSON(blw.body.String()) {
-			log.ResponseBody = gojson.JsonDecodeNoError(blw.body.String())
+			_ = json.Unmarshal([]byte(blw.body.String()), &log.ResponseBody)
+			//log.ResponseBody = gojson.JsonDecodeNoError(blw.body.String())
 		} else {
 			//log.ResponseBody = blw.body.String()
 		}
