@@ -7,7 +7,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"go.dtapp.net/library/utils/gorequest"
-	"go.dtapp.net/library/utils/gotime"
+	"time"
 )
 
 type WebhookSendResponse struct {
@@ -60,7 +60,7 @@ func (c *Client) WebhookSendSign(ctx context.Context, key string, secret string,
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("timestamp", gotime.Current().Timestamp())
+	params.Set("timestamp", time.Now().Unix())
 	sign, _ := c.webhookSendSignGenSign(secret, fmt.Sprintf("%v", params.Get("timestamp")))
 	params.Set("sign", sign)
 
@@ -76,7 +76,7 @@ func (c *Client) WebhookSendSignURL(ctx context.Context, url string, secret stri
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("timestamp", gotime.Current().Timestamp())
+	params.Set("timestamp", time.Now().Unix())
 	sign, _ := c.webhookSendSignGenSign(secret, fmt.Sprintf("%v", params.Get("timestamp")))
 	params.Set("sign", sign)
 
@@ -97,4 +97,45 @@ func (c *Client) webhookSendSignGenSign(secret string, timestamp string) (string
 	}
 	signature := base64.StdEncoding.EncodeToString(h.Sum(nil))
 	return signature, nil
+}
+
+type MarkdownFormatDetails struct {
+	Label string `json:"label"` // 键
+	Value string `json:"value"` // 值
+}
+
+type MarkdownFormatResponse struct {
+	Title   string                            `json:"title"`
+	Content [][]MarkdownFormatResponseContent `json:"content"`
+}
+type MarkdownFormatResponseContent struct {
+	Tag  string `json:"tag"`
+	Text string `json:"text"`
+}
+
+func MarkdownFormat(ctx context.Context, title string, details []MarkdownFormatDetails) (response MarkdownFormatResponse) {
+
+	// 添加标题内容
+	response.Title = title
+
+	// 动态添加详细信息
+	content := make([]MarkdownFormatResponseContent, 0)
+	for i, detail := range details {
+		if i < len(details)-1 {
+			// 非最后一行，添加换行符
+			content = append(content, MarkdownFormatResponseContent{
+				Tag:  "text",
+				Text: fmt.Sprintf(" %s:%s\n", detail.Label, detail.Value),
+			})
+		} else {
+			// 最后一行，不添加换行符
+			content = append(content, MarkdownFormatResponseContent{
+				Tag:  "text",
+				Text: fmt.Sprintf(" %s:%s", detail.Label, detail.Value),
+			})
+		}
+	}
+	response.Content = append(response.Content, content)
+
+	return response
 }
