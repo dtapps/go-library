@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+	"strings"
 )
 
 type WebhookSendResponse struct {
@@ -49,4 +50,37 @@ func (c *Client) WebhookSendURL(ctx context.Context, url string, Type string, no
 	var response WebhookSendResponse
 	request, err := c.request(ctx, fmt.Sprintf("%s&type=%s", url, Type), params, http.MethodPost, &response)
 	return newWebhookSendResult(response, request.ResponseBody, request), err
+}
+
+type MarkdownFormatDetails struct {
+	Label string `json:"label"`           // 键
+	Value string `json:"value"`           // 值
+	Color string `json:"color,omitempty"` // 颜色，可选
+}
+
+func MarkdownFormat(ctx context.Context, title string, details []MarkdownFormatDetails) (markdownContent string) {
+
+	// 使用 []string 动态存储每一行的内容
+	var markdownLines []string
+
+	// 添加标题内容
+	markdownLines = append(markdownLines, title)
+
+	// 动态添加详细信息
+	for _, detail := range details {
+		if detail.Color != "" {
+			// 如果有颜色，则添加颜色标记
+			line := fmt.Sprintf("> %s:<font color=\"%s\">%s</font>", detail.Label, detail.Color, detail.Value)
+			markdownLines = append(markdownLines, line)
+		} else {
+			// 如果没有颜色，则直接拼接文本
+			line := fmt.Sprintf("> %s:%s", detail.Label, detail.Value)
+			markdownLines = append(markdownLines, line)
+		}
+	}
+
+	// 将所有内容拼接成最终的 markdown 字符串
+	markdownContent = strings.Join(markdownLines, "\n")
+
+	return markdownContent
 }
