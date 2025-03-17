@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -88,4 +89,33 @@ func (c *Client) robotSendSignGetSign(secret string, timestamp int64) string {
 	hmac256.Write([]byte(secStr))
 	result := hmac256.Sum(nil)
 	return base64.StdEncoding.EncodeToString(result)
+}
+
+type MarkdownFormatDetails struct {
+	Label string `json:"label"` // 键
+	Value string `json:"value"` // 值
+}
+
+type MarkdownFormatResponse struct {
+	Title string `json:"title"`
+	Text  string `json:"text"`
+}
+
+func MarkdownFormat(ctx context.Context, title string, details []MarkdownFormatDetails) (response MarkdownFormatResponse) {
+
+	// 使用 []string 动态存储每一行的内容
+	var markdownLines []string
+
+	// 添加标题内容
+	response.Title = title
+
+	// 动态添加详细信息
+	for _, detail := range details {
+		line := fmt.Sprintf("> %s:%s", detail.Label, detail.Value)
+		markdownLines = append(markdownLines, line)
+	}
+	// 将所有内容拼接成最终的 markdown 字符串
+	response.Text = strings.Join(markdownLines, "\n")
+
+	return response
 }
