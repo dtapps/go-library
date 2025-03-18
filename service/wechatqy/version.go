@@ -1,5 +1,5 @@
 package wechatqy
 
 const (
-	Version = "1.0.28"
+	Version = "1.0.29"
 )

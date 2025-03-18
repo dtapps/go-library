@@ -70,11 +70,11 @@ func MarkdownFormat(ctx context.Context, title string, details []MarkdownFormatD
 	for _, detail := range details {
 		if detail.Color != "" {
 			// 如果有颜色，则添加颜色标记
-			line := fmt.Sprintf("> %s:<font color=\"%s\">%s</font>", detail.Label, detail.Color, detail.Value)
+			line := fmt.Sprintf("> %s：<font color=\"%s\">%s</font>", detail.Label, detail.Color, detail.Value)
 			markdownLines = append(markdownLines, line)
 		} else {
 			// 如果没有颜色，则直接拼接文本
-			line := fmt.Sprintf("> %s:%s", detail.Label, detail.Value)
+			line := fmt.Sprintf("> %s：%s", detail.Label, detail.Value)
 			markdownLines = append(markdownLines, line)
 		}
 	}

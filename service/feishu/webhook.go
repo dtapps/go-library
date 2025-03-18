@@ -125,13 +125,13 @@ func MarkdownFormat(ctx context.Context, title string, details []MarkdownFormatD
 			// 非最后一行，添加换行符
 			content = append(content, MarkdownFormatResponseContent{
 				Tag:  "text",
-				Text: fmt.Sprintf(" %s:%s\n", detail.Label, detail.Value),
+				Text: fmt.Sprintf(" %s：%s\n", detail.Label, detail.Value),
 			})
 		} else {
 			// 最后一行，不添加换行符
 			content = append(content, MarkdownFormatResponseContent{
 				Tag:  "text",
-				Text: fmt.Sprintf(" %s:%s", detail.Label, detail.Value),
+				Text: fmt.Sprintf(" %s：%s", detail.Label, detail.Value),
 			})
 		}
 	}

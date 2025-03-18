@@ -111,7 +111,7 @@ func MarkdownFormat(ctx context.Context, title string, details []MarkdownFormatD
 
 	// 动态添加详细信息
 	for _, detail := range details {
-		line := fmt.Sprintf("> %s:%s", detail.Label, detail.Value)
+		line := fmt.Sprintf("> %s：%s", detail.Label, detail.Value)
 		markdownLines = append(markdownLines, line)
 	}
 	// 将所有内容拼接成最终的 markdown 字符串
