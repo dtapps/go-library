@@ -1,5 +1,5 @@
 package gin_monitor_prometheus
 
 const (
-	Version = "1.0.0"
+	Version = "1.0.1"
 )

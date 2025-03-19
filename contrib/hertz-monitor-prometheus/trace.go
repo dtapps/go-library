@@ -53,8 +53,9 @@ func (s *serverTracer) Finish(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	cost := httpFinish.Time().Sub(httpStart.Time())
-	_ = counterAdd(s.serverHandledCounter, 1, genLabels(c))
-	_ = histogramObserve(s.serverHandledHistogram, cost, genLabels(c))
+	labels := genLabels(c)
+	_ = counterAdd(s.serverHandledCounter, 1, labels)
+	_ = histogramObserve(s.serverHandledHistogram, cost, labels)
 }
 
 // NewServerTracer provides tracer for server access, addr and path is the scrape_configs for prometheus server.

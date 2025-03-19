@@ -41,10 +41,12 @@ func (s *ServerTracer) Middleware() gin.HandlerFunc {
 		// 处理请求
 		c.Next()
 
-		cost := time.Now().Sub(start)
-		_ = counterAdd(s.serverHandledCounter, 1, genLabels(c))
-		_ = histogramObserve(s.serverHandledHistogram, cost, genLabels(c))
+		// 耗时
+		cost := time.Since(start)
 
+		labels := genLabels(c)
+		_ = counterAdd(s.serverHandledCounter, 1, labels)
+		_ = histogramObserve(s.serverHandledHistogram, cost, labels)
 	}
 }
 
