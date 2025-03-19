@@ -27,6 +27,6 @@ func histogramObserve(histogramVec *prom.HistogramVec, value time.Duration, labe
 		return err // 如果获取直方图失败，返回错误
 	}
 	// 观察时延值，转换为微秒
-	histogram.Observe(float64(value.Microseconds()))
+	histogram.Observe(value.Seconds())
 	return nil
 }

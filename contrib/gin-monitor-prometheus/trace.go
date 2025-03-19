@@ -2,7 +2,7 @@ package gin_monitor_prometheus
 
 import (
 	"github.com/gin-gonic/gin"
-	prom "github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
@@ -12,31 +12,30 @@ import (
 )
 
 const (
-	labelMethod     = "method"     // 请求方法（GET, POST 等）
-	labelStatusCode = "statusCode" // HTTP 响应状态码
-	labelPath       = "path"       // 请求路径
-	labelIP         = "ip"         // 客户端 IP 地址
+	labelMethod     = "method"      // 请求方法（GET, POST 等）
+	labelStatusCode = "status_code" // HTTP 响应状态码
+	labelPath       = "path"        // 请求路径
+	labelIP         = "ip"          // 客户端 IP 地址
 
 	unknownLabelValue = "unknown" // 默认的标签值，表示未知
 )
 
 // genLabels make labels values.
-func genLabels(c *gin.Context) prom.Labels {
-	labels := make(prom.Labels)
-	// 默认值处理：如果标签为空，则使用默认值
-	labels[labelMethod] = defaultValIfEmpty(c.Request.Method, unknownLabelValue)
+func genLabels(c *gin.Context) prometheus.Labels {
+	labels := make(prometheus.Labels)
+	labels[labelMethod] = c.Request.Method
 	labels[labelStatusCode] = defaultValIfEmpty(strconv.Itoa(c.Writer.Status()), unknownLabelValue)
-	labels[labelPath] = defaultValIfEmpty(c.FullPath(), unknownLabelValue)
+	labels[labelPath] = c.Request.URL.Path
 	labels[labelIP] = defaultValIfEmpty(c.ClientIP(), unknownLabelValue)
-
 	return labels
 }
 
 // ServerTracer 用于监控服务器请求数据，记录请求数量、时延和 IP 请求数量
 type ServerTracer struct {
-	serverHandledCounter   *prom.CounterVec   // 请求量计数器
-	serverHandledHistogram *prom.HistogramVec // 请求时延直方图
-	serverIPRequestCounter *prom.CounterVec   // 按 IP 请求计数器
+	serverHandledTotal           *prometheus.CounterVec   // 请求总数（按方法+路径）
+	serverHandledIpTotal         *prometheus.CounterVec   // IP 请求（按 IP+方法+路径）
+	serverHandledStatusCodeTotal *prometheus.CounterVec   // 状态码统计（仅按状态码）
+	serverHandledDurationSeconds *prometheus.HistogramVec // 耗时（按方法+路径）
 }
 
 // Middleware 中间件用于跟踪请求信息
@@ -50,20 +49,23 @@ func (s *ServerTracer) Middleware() gin.HandlerFunc {
 		cost := time.Since(start)
 		// 生成标签
 		labels := genLabels(c)
-		if err := counterAdd(s.serverHandledCounter, 1, labels); err != nil {
-			log.Printf("增加请求量计数时发生错误: %v", err)
+		if err := counterAdd(s.serverHandledTotal, 1, labels); err != nil {
+			log.Printf("增加请求总数指标时发生错误: %v", err)
 		}
-		if err := histogramObserve(s.serverHandledHistogram, cost, labels); err != nil {
-			log.Printf("记录时延数据时发生错误: %v", err)
+		if err := counterAdd(s.serverHandledIpTotal, 1, labels); err != nil {
+			log.Printf("增加请求IP指标时发生错误: %v", err)
 		}
-		if err := counterAdd(s.serverIPRequestCounter, 1, labels); err != nil {
-			log.Printf("增加IP请求计数时发生错误: %v", err)
+		if err := counterAdd(s.serverHandledStatusCodeTotal, 1, labels); err != nil {
+			log.Printf("增加请求状态码指标时发生错误: %v", err)
+		}
+		if err := histogramObserve(s.serverHandledDurationSeconds, cost, labels); err != nil {
+			log.Printf("记录请求耗时指标时发生错误: %v", err)
 		}
 	}
 }
 
 // NewServerTracer 创建一个新的 ServerTracer，提供 Prometheus 监控功能
-func NewServerTracer(addr, path string, opts ...Option) *ServerTracer {
+func NewServerTracer(addr string, path string, prefix string, opts ...Option) *ServerTracer {
 	cfg := defaultConfig()
 
 	// 处理用户传入的配置选项
@@ -85,36 +87,44 @@ func NewServerTracer(addr, path string, opts ...Option) *ServerTracer {
 		}()
 	}
 
-	// 创建并注册请求量计数器
-	serverHandledCounter := prom.NewCounterVec(
-		prom.CounterOpts{
-			Name: "gin_server_throughput",
-			Help: "服务器完成的 HTTP 请求总数，不论成功或失败。",
+	serverHandledTotal := prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: prefix + "http_request_total",
+			Help: "HTTP 请求总数（按方法和路径统计）",
 		},
-		[]string{labelIP, labelMethod, labelStatusCode, labelPath}, // 标签：IP、方法、状态码、路径
+		[]string{labelMethod, labelPath},
 	)
-	cfg.registry.MustRegister(serverHandledCounter)
 
-	// 创建并注册请求时延监控
-	serverHandledHistogram := prom.NewHistogramVec(
-		prom.HistogramOpts{
-			Name:    "gin_server_latency_us",
-			Help:    "服务器处理请求的时延（微秒）。",
-			Buckets: cfg.buckets, // 时延桶配置
+	serverHandledIpTotal := prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: prefix + "http_request_ip_total",
+			Help: "客户端 IP 请求统计（按 IP、方法和路径）",
 		},
-		[]string{labelIP, labelMethod, labelStatusCode, labelPath}, // 标签：IP、方法、状态码、路径
+		[]string{labelIP, labelMethod, labelPath},
 	)
-	cfg.registry.MustRegister(serverHandledHistogram)
 
-	// 创建并注册按 IP 请求计数器
-	serverIPRequestCounter := prom.NewCounterVec(
-		prom.CounterOpts{
-			Name: "gin_server_ip_requests",
-			Help: "来自每个 IP 地址的 HTTP 请求总数。",
+	serverHandledStatusCodeTotal := prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: prefix + "http_request_status_code_total",
+			Help: "HTTP 状态码统计（仅按状态码）",
 		},
-		[]string{labelIP, labelMethod, labelStatusCode, labelPath}, // 标签：IP、方法、状态码、路径
+		[]string{labelStatusCode},
 	)
-	cfg.registry.MustRegister(serverIPRequestCounter)
+
+	serverHandledDurationSeconds := prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name:    prefix + "http_request_duration_seconds",
+			Help:    "HTTP 请求耗时（秒）",
+			Buckets: prometheus.DefBuckets,
+		},
+		[]string{labelMethod, labelPath},
+	)
+
+	// 注册指标
+	cfg.registry.MustRegister(serverHandledTotal)
+	cfg.registry.MustRegister(serverHandledIpTotal)
+	cfg.registry.MustRegister(serverHandledStatusCodeTotal)
+	cfg.registry.MustRegister(serverHandledDurationSeconds)
 
 	// 注册 Go runtime 指标（可选）
 	if cfg.enableGoCollector {
@@ -123,9 +133,10 @@ func NewServerTracer(addr, path string, opts ...Option) *ServerTracer {
 
 	// 返回 ServerTracer 实例，开始监控
 	return &ServerTracer{
-		serverHandledCounter:   serverHandledCounter,
-		serverHandledHistogram: serverHandledHistogram,
-		serverIPRequestCounter: serverIPRequestCounter,
+		serverHandledTotal:           serverHandledTotal,
+		serverHandledIpTotal:         serverHandledIpTotal,
+		serverHandledStatusCodeTotal: serverHandledStatusCodeTotal,
+		serverHandledDurationSeconds: serverHandledDurationSeconds,
 	}
 }
 
