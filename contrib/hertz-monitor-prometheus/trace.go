@@ -50,16 +50,32 @@ func (s *ServerTracer) Middleware() app.HandlerFunc {
 		cost := time.Since(start)
 		// 生成标签
 		labels := genLabels(c)
-		if err := counterAdd(s.serverHandledTotal, 1, labels); err != nil {
+		// 请求总数（按方法+路径）
+		if err := counterAdd(s.serverHandledTotal, 1, prometheus.Labels{
+			labelMethod: labels[labelMethod],
+			labelPath:   labels[labelPath],
+		}); err != nil {
 			log.Printf("增加请求总数指标时发生错误: %v", err)
 		}
-		if err := counterAdd(s.serverHandledIpTotal, 1, labels); err != nil {
+		// IP 请求（按 IP+方法+路径）
+		if err := counterAdd(s.serverHandledIpTotal, 1, prometheus.Labels{
+			labelIP:     labels[labelIP],
+			labelMethod: labels[labelMethod],
+			labelPath:   labels[labelPath],
+		}); err != nil {
 			log.Printf("增加请求IP指标时发生错误: %v", err)
 		}
-		if err := counterAdd(s.serverHandledStatusCodeTotal, 1, labels); err != nil {
+		// 状态码统计（仅按状态码）
+		if err := counterAdd(s.serverHandledStatusCodeTotal, 1, prometheus.Labels{
+			labelStatusCode: labels[labelStatusCode],
+		}); err != nil {
 			log.Printf("增加请求状态码指标时发生错误: %v", err)
 		}
-		if err := histogramObserve(s.serverHandledDurationSeconds, cost, labels); err != nil {
+		// 耗时（按方法+路径）
+		if err := histogramObserve(s.serverHandledDurationSeconds, cost, prometheus.Labels{
+			labelMethod: labels[labelMethod],
+			labelPath:   labels[labelPath],
+		}); err != nil {
 			log.Printf("记录请求耗时指标时发生错误: %v", err)
 		}
 	}
