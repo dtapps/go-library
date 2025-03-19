@@ -61,9 +61,15 @@ func (s *serverTracer) Finish(ctx context.Context, c *app.RequestContext) {
 	cost := httpFinish.Time().Sub(httpStart.Time())
 	// 生成标签
 	labels := genLabels(c)
-	_ = counterAdd(s.serverHandledCounter, 1, labels)            // 增加请求量计数
-	_ = histogramObserve(s.serverHandledHistogram, cost, labels) // 记录时延数据
-	_ = counterAdd(s.serverIPRequestCounter, 1, labels)          // 增加 IP 请求计数
+	if err := counterAdd(s.serverHandledCounter, 1, labels); err != nil {
+		log.Printf("增加请求量计数时发生错误: %v", err)
+	}
+	if err := histogramObserve(s.serverHandledHistogram, cost, labels); err != nil {
+		log.Printf("记录时延数据时发生错误: %v", err)
+	}
+	if err := counterAdd(s.serverIPRequestCounter, 1, labels); err != nil {
+		log.Printf("增加IP请求计数时发生错误: %v", err)
+	}
 }
 
 // NewServerTracer 创建一个新的 ServerTracer，提供 Prometheus 监控功能
@@ -95,7 +101,7 @@ func NewServerTracer(addr, path string, opts ...Option) tracer.Tracer {
 			Name: "hertz_server_throughput",
 			Help: "服务器完成的 HTTP 请求总数，不论成功或失败。",
 		},
-		[]string{labelMethod, labelStatusCode, labelPath}, // 标签：方法、状态码、路径
+		[]string{labelIP, labelMethod, labelStatusCode, labelPath}, // 标签：IP、方法、状态码、路径
 	)
 	cfg.registry.MustRegister(serverHandledCounter)
 
@@ -106,7 +112,7 @@ func NewServerTracer(addr, path string, opts ...Option) tracer.Tracer {
 			Help:    "服务器处理请求的时延（微秒）。",
 			Buckets: cfg.buckets, // 时延桶配置
 		},
-		[]string{labelMethod, labelStatusCode, labelPath}, // 标签：方法、状态码、路径
+		[]string{labelIP, labelMethod, labelStatusCode, labelPath}, // 标签：IP、方法、状态码、路径
 	)
 	cfg.registry.MustRegister(serverHandledHistogram)
 
