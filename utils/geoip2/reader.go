@@ -402,8 +402,8 @@ func (r *Reader) CityWithLanguage(ipAddress netip.Addr) (*CityWithLanguage, erro
 
 	cityWithLanguage := &CityWithLanguage{}
 
-	cityWithLanguage.City.Names = city.Country.Names[index]
-	cityWithLanguage.City.GeoNameID = city.Country.GeoNameID
+	cityWithLanguage.City.Names = city.City.Names[index]
+	cityWithLanguage.City.GeoNameID = city.City.GeoNameID
 
 	cityWithLanguage.Postal = city.Postal
 

@@ -5,8 +5,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus/collectors"
 )
 
-var defaultBuckets = []float64{5000, 10000, 25000, 50000, 100000, 250000, 500000, 1000000}
-
 // Option opts for monitor prometheus
 type Option interface {
 	apply(cfg *config)
@@ -19,7 +17,6 @@ func (fn option) apply(cfg *config) {
 }
 
 type config struct {
-	buckets             []float64
 	enableGoCollector   bool
 	registry            *prom.Registry
 	runtimeMetricRules  []collectors.GoRuntimeMetricsRule
@@ -29,7 +26,6 @@ type config struct {
 
 func defaultConfig() *config {
 	return &config{
-		buckets:             defaultBuckets,
 		enableGoCollector:   false,
 		registry:            prom.NewRegistry(),
 		disableServer:       false,
@@ -37,33 +33,24 @@ func defaultConfig() *config {
 	}
 }
 
-// WithEnableGoCollector enable go collector
+// WithEnableGoCollector 启用go收集器
 func WithEnableGoCollector(enable bool) Option {
 	return option(func(cfg *config) {
 		cfg.enableGoCollector = enable
 	})
 }
 
-// WithGoCollectorRule define your custom go collector rule
+// WithGoCollectorRule 定义自定义go收集器规则
 func WithGoCollectorRule(rules ...collectors.GoRuntimeMetricsRule) Option {
 	return option(func(cfg *config) {
 		cfg.runtimeMetricRules = rules
 	})
 }
 
-// WithDisableServer disable prometheus server
+// WithDisableServer 禁用 Prometheus 服务
 func WithDisableServer(disable bool) Option {
 	return option(func(cfg *config) {
 		cfg.disableServer = disable
-	})
-}
-
-// WithHistogramBuckets define your custom histogram buckets base on your biz
-func WithHistogramBuckets(buckets []float64) Option {
-	return option(func(cfg *config) {
-		if len(buckets) > 0 {
-			cfg.buckets = buckets
-		}
 	})
 }
 
