@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"go.dtapp.net/library/utils/gostring"
+	"github.com/google/uuid"
 )
 
 // CustomTraceIdContext 自定义设置跟踪编号上下文
 func CustomTraceIdContext(ctx context.Context) context.Context {
-	var traceId = gostring.GetUuId()
+	var traceId = uuid.Must(uuid.NewV7()).String()
 	return context.WithValue(ctx, TraceIdKey, traceId)
 }
 

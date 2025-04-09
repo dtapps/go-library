@@ -29,7 +29,7 @@ func CompleteUrlHttp(url string) string {
 		buffer.WriteString("http")
 		buffer.WriteString(url)
 	} else if strings.HasPrefix(url, prefixHTTPS) {
-		buffer.WriteString(Replace(url, prefixHTTPS, prefixHTTP))
+		buffer.WriteString(strings.Replace(url, prefixHTTPS, prefixHTTP, -1))
 	} else {
 		buffer.WriteString(prefixHTTP)
 		buffer.WriteString(url)
@@ -57,7 +57,7 @@ func CompleteUrlHttps(url string) string {
 		buffer.WriteString("https")
 		buffer.WriteString(url)
 	} else if strings.HasPrefix(url, prefixHTTP) {
-		buffer.WriteString(Replace(url, prefixHTTP, prefixHTTPS))
+		buffer.WriteString(strings.Replace(url, prefixHTTP, prefixHTTPS, -1))
 	} else {
 		buffer.WriteString(prefixHTTPS)
 		buffer.WriteString(url)

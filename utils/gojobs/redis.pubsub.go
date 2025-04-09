@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 	"go.dtapp.net/library/utils/gorequest"
-	"go.dtapp.net/library/utils/gostring"
 	"go.dtapp.net/library/utils/gotime"
 	"log/slog"
 	"strings"
@@ -84,7 +84,7 @@ func (c *PubSubClient) DbRunSingleTask(ctx context.Context, message string, exec
 			result.RunID = result.RequestID
 		}
 		if result.RunID == "" {
-			result.RunID = gostring.GetUuId()
+			result.RunID = uuid.Must(uuid.NewV7()).String()
 		}
 
 		// 计算执行时间
@@ -182,7 +182,7 @@ func (c *PubSubClient) DbRunSingleTaskMutex(ctx context.Context, message string,
 			result.RunID = result.RequestID
 		}
 		if result.RunID == "" {
-			result.RunID = gostring.GetUuId()
+			result.RunID = uuid.Must(uuid.NewV7()).String()
 		}
 
 		// 计算执行时间
@@ -280,7 +280,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseID(ctx context.Context, message st
 			result.RunID = result.RequestID
 		}
 		if result.RunID == "" {
-			result.RunID = gostring.GetUuId()
+			result.RunID = uuid.Must(uuid.NewV7()).String()
 		}
 
 		// 计算执行时间
@@ -382,7 +382,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomID(ctx context.Context, mess
 			result.RunID = result.RequestID
 		}
 		if result.RunID == "" {
-			result.RunID = gostring.GetUuId()
+			result.RunID = uuid.Must(uuid.NewV7()).String()
 		}
 
 		// 计算执行时间
@@ -486,7 +486,7 @@ func (c *PubSubClient) DbRunSingleTaskMutexUseCustomIDOrID(ctx context.Context, 
 			result.RunID = result.RequestID
 		}
 		if result.RunID == "" {
-			result.RunID = gostring.GetUuId()
+			result.RunID = uuid.Must(uuid.NewV7()).String()
 		}
 
 		// 计算执行时间

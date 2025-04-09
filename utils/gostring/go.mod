@@ -8,5 +8,5 @@ replace go.dtapp.net/library/utils/gorandom => ../../utils/gorandom
 
 require (
 	go.dtapp.net/library/utils/gorandom v1.0.4
-	go.dtapp.net/library/utils/gotime v1.0.12
+	go.dtapp.net/library/utils/gotime v1.0.13
 )
