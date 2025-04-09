@@ -5,6 +5,7 @@ import (
 	"log"
 	"math"
 	"os"
+	"path/filepath"
 )
 
 // DeleteFile 删除文件
@@ -125,4 +126,28 @@ func humanateBytes(s uint64, base float64, sizes []string) string {
 func FileSize(s uint64) string {
 	sizes := []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
 	return humanateBytes(uint64(s), 1024, sizes)
+}
+
+// SaveFile 保存文件
+func SaveFile(filePath string, content string) error {
+
+	// 获取文件的父目录
+	parentDir := filepath.Dir(filePath)
+
+	// 检查父目录是否存在
+	if _, err := os.Stat(parentDir); os.IsNotExist(err) {
+		// 创建父目录（包括所有必要的上级目录）
+		if err := os.MkdirAll(parentDir, os.ModePerm); err != nil {
+			return err
+		}
+	} else if err != nil {
+		return err // 如果 Stat 返回其他错误（如权限问题），直接返回错误
+	}
+
+	// 写入文件
+	if err := os.WriteFile(filePath, []byte(content), 0644); err != nil {
+		return err
+	}
+
+	return nil
 }
