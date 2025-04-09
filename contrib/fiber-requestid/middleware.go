@@ -19,7 +19,7 @@ func New() fiber.Handler {
 		// 从请求中获取ID
 		rid := c.Get(HeaderXRequestID)
 		if rid == "" {
-			rid = uuid.New().String()
+			rid = uuid.Must(uuid.NewV7()).String()
 		}
 
 		// 设置id
