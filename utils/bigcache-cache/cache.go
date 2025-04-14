@@ -8,10 +8,10 @@ import (
 )
 
 // GetStringFunc String缓存结构
-type GetStringFunc func() string
+type GetStringFunc func() (string, error)
 
 // GetAnyFunc Any缓存结构
-type GetAnyFunc func() any
+type GetAnyFunc func() (any, error)
 
 // CacheClient 缓存客户端结构 https://github.com/allegro/bigcache
 type CacheClient struct {
@@ -37,7 +37,10 @@ func (bc *CacheClient) GetString(ctx context.Context, key string, callback GetSt
 	}
 
 	// 不存在调用 GetStringFunc
-	value := callback()
+	value, err := callback()
+	if err != nil {
+		return value, err
+	}
 
 	// 设置缓存值
 	return value, bc.Set(ctx, key, []byte(value))
@@ -52,7 +55,10 @@ func (bc *CacheClient) GetAny(ctx context.Context, key string, resultValue any, 
 	}
 
 	// 不存在调用 GetAnyFunc
-	value := callback()
+	value, err := callback()
+	if err != nil {
+		return err
+	}
 
 	// 序列化
 	marshal, err := json.Marshal(value)

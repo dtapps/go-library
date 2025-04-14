@@ -9,6 +9,13 @@ func NewInterface(value interface{}) Decimal {
 	return d
 }
 
+// NewAny 创建
+func NewAny(value any) Decimal {
+	d := New()
+	d.floatValue.SetString(fmt.Sprint(value))
+	return d
+}
+
 // NewString 从字符串创建
 func NewString(s string) Decimal {
 	d := New()
