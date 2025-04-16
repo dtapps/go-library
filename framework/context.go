@@ -76,21 +76,21 @@ func (c *Context) Param(key string) string {
 }
 
 // BindAndValidate 方法：统一绑定和验证请求数据
-func (c *Context) BindAndValidate(obj any) error {
-	if c.ginCtx != nil {
-		// Gin 的绑定和验证
-		if err := c.ginCtx.ShouldBind(obj); err != nil {
-			return err
-		}
-	}
-	if c.hertzCtx != nil {
-		// Hertz 的绑定和验证
-		if err := c.hertzCtx.BindAndValidate(obj); err != nil {
-			return err
-		}
-	}
-	return nil
-}
+//func (c *Context) BindAndValidate(obj any) error {
+//	if c.ginCtx != nil {
+//		// Gin 的绑定和验证
+//		if err := c.ginCtx.ShouldBind(obj); err != nil {
+//			return err
+//		}
+//	}
+//	if c.hertzCtx != nil {
+//		// Hertz 的绑定和验证
+//		if err := c.hertzCtx.BindAndValidate(obj); err != nil {
+//			return err
+//		}
+//	}
+//	return nil
+//}
 
 // GetGinContext 获取原始的 Gin 上下文
 func (c *Context) GetGinContext() *gin.Context {

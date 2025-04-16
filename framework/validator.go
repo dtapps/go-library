@@ -10,6 +10,29 @@ import (
 	"sync"
 )
 
+// BindAndValidate 统一绑定参数并校验
+func (c *Context) BindAndValidate(obj any) error {
+	var bindErr error
+
+	if c.ginCtx != nil {
+		// Gin 会自动 bind JSON、Query、Form、Path
+		bindErr = c.ginCtx.ShouldBind(obj)
+	}
+	if c.hertzCtx != nil {
+		// Hertz 根据 Content-Type 来自动选择绑定的方法，其中 GET 请求会调用 BindQuery, 带有 Body 的请求会根据 Content-Type 自动选择
+		if err := c.hertzCtx.BindByContentType(obj); err != nil {
+			return fmt.Errorf("参数绑定失败: %w", err)
+		}
+	}
+
+	if bindErr != nil {
+		return fmt.Errorf("参数绑定失败: %w", bindErr)
+	}
+
+	// 设置默认值并验证
+	return c.Validator(obj)
+}
+
 // 验证器单例模式
 var (
 	globalValidator *validator.Validate
