@@ -4,10 +4,12 @@ import (
 	"context"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 // Context 统一的 Context 封装
 type Context struct {
+	Ctx      context.Context     // 统一的上下文
 	ginCtx   *gin.Context        // Gin 上下文
 	hertzCtx *app.RequestContext // Hertz 上下文
 }
@@ -63,7 +65,10 @@ type HandlerFunc func(ctx *Context)
 // HertzHandler 封装 Hertz
 func HertzHandler(handler HandlerFunc) app.HandlerFunc {
 	return func(c context.Context, ctx *app.RequestContext) {
-		wrapperCtx := &Context{hertzCtx: ctx}
+		wrapperCtx := &Context{
+			Ctx:      c,   // 使用 Hertz 提供的上下文
+			hertzCtx: ctx, // 保存 Hertz 的上下文
+		}
 		handler(wrapperCtx)
 	}
 }
@@ -71,13 +76,33 @@ func HertzHandler(handler HandlerFunc) app.HandlerFunc {
 // GinHandler 封装 Gin
 func GinHandler(handler HandlerFunc) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		wrapperCtx := &Context{ginCtx: c}
+		wrapperCtx := &Context{
+			Ctx:    c.Request.Context(), // 使用 Gin 提供的上下文
+			ginCtx: c,                   // 保存 Gin 的上下文
+		}
 		handler(wrapperCtx)
 	}
 }
 
-// GetApis 通用的 GetApis 方法
-func GetApis(ctx *Context) {
-	name := ctx.Param("name")
-	ctx.JSON(200, map[string]string{"message": "Hello, " + name})
+// GetTest 示例方法
+func GetTest(ctx *Context) {
+
+	// 参数
+	type User struct {
+		Name string `query:"name" binding:"required"`
+		Age  int    `json:"age" binding:"gte=0,lte=100"`
+		ID   string `path:"id" binding:"required"`
+	}
+
+	// 调用 Validator 方法进行验证
+	var user User
+	if err := ctx.Validator(&user); err != nil {
+		errors := ctx.ValidatorError(err)
+		ctx.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error":   "Validation failed",
+			"details": errors,
+		})
+		return
+	}
+
 }
