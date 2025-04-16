@@ -14,6 +14,16 @@ type Context struct {
 	hertzCtx *app.RequestContext // Hertz 上下文
 }
 
+// Next 继续处理请求
+func (c *Context) Next() {
+	if c.ginCtx != nil {
+		c.ginCtx.Next()
+	}
+	if c.hertzCtx != nil {
+		c.hertzCtx.Next(c.Ctx)
+	}
+}
+
 // Abort 中止请求
 func (c *Context) Abort() {
 	if c.ginCtx != nil {
@@ -21,6 +31,26 @@ func (c *Context) Abort() {
 	}
 	if c.hertzCtx != nil {
 		c.hertzCtx.Abort()
+	}
+}
+
+// AbortWithStatus 中止请求并设置状态码
+func (c *Context) AbortWithStatus(code int) {
+	if c.ginCtx != nil {
+		c.ginCtx.AbortWithStatus(code)
+	}
+	if c.hertzCtx != nil {
+		c.hertzCtx.AbortWithStatus(code)
+	}
+}
+
+// AbortWithStatusJSON 中止请求并设置状态码和响应体
+func (c *Context) AbortWithStatusJSON(code int, jsonObj any) {
+	if c.ginCtx != nil {
+		c.ginCtx.AbortWithStatusJSON(code, jsonObj)
+	}
+	if c.hertzCtx != nil {
+		c.hertzCtx.AbortWithStatusJSON(code, jsonObj)
 	}
 }
 

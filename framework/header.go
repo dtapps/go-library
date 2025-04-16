@@ -21,6 +21,17 @@ func (c *Context) GetHeader(key string) string {
 	return ""
 }
 
+// Host 获取请求域名
+func (c *Context) Host() string {
+	if c.ginCtx != nil {
+		return c.ginCtx.Request.Host
+	}
+	if c.hertzCtx != nil {
+		return string(c.hertzCtx.Host())
+	}
+	return ""
+}
+
 // Method 获取请求方法
 func (c *Context) Method() string {
 	if c.ginCtx != nil {
