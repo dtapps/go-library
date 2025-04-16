@@ -5,12 +5,11 @@ import (
 	"fmt"
 	"github.com/go-playground/validator/v10"
 	"reflect"
-	"strconv"
 	"strings"
 	"sync"
 )
 
-// HertzValidator 是一个结构体，用于封装验证器的功能
+// HertzValidator Hertz框架验证器
 type HertzValidator struct {
 	once        sync.Once           // 用于确保初始化只执行一次
 	validate    *validator.Validate // 验证器实例
@@ -137,74 +136,6 @@ func (m *HertzValidator) setDefaults(value reflect.Value) error {
 	return nil
 }
 
-// parseDefaultValue 从标签中提取默认值
-func parseDefaultValue(tag string) string {
-	parts := strings.Split(tag, ",") // 按逗号分割标签内容
-	for _, part := range parts {
-		if strings.HasPrefix(part, "default=") { // 查找以 "default=" 开头的部分
-			return strings.TrimPrefix(part, "default=") // 提取默认值
-		}
-	}
-	return ""
-}
-
-// isEmptyValue 判断字段是否为空（零值）
-func isEmptyValue(field reflect.Value) bool {
-	switch field.Kind() {
-	case reflect.String:
-		return field.String() == "" // 字符串为空
-	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		return field.Int() == 0 // 整数为 0
-	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		return field.Uint() == 0 // 无符号整数为 0
-	case reflect.Float32, reflect.Float64:
-		return field.Float() == 0 // 浮点数为 0
-	case reflect.Bool:
-		return !field.Bool() // 布尔值为 false
-	case reflect.Slice, reflect.Array, reflect.Map:
-		return field.Len() == 0 // 切片、数组或映射为空
-	case reflect.Interface, reflect.Ptr:
-		return field.IsNil() // 接口或指针为空
-	default:
-		return false
-	}
-}
-
-// setFieldValue 根据字段的类型设置默认值
-func setFieldValue(field reflect.Value, defaultValue string) error {
-	switch field.Kind() {
-	case reflect.String:
-		field.SetString(defaultValue) // 设置字符串类型的默认值
-	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		val, err := strconv.ParseInt(defaultValue, 10, 64) // 将字符串转换为整数
-		if err != nil {
-			return err
-		}
-		field.SetInt(val) // 设置整数类型的默认值
-	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		val, err := strconv.ParseUint(defaultValue, 10, 64) // 将字符串转换为无符号整数
-		if err != nil {
-			return err
-		}
-		field.SetUint(val) // 设置无符号整数类型的默认值
-	case reflect.Float32, reflect.Float64:
-		val, err := strconv.ParseFloat(defaultValue, 64) // 将字符串转换为浮点数
-		if err != nil {
-			return err
-		}
-		field.SetFloat(val) // 设置浮点数类型的默认值
-	case reflect.Bool:
-		val, err := strconv.ParseBool(defaultValue) // 将字符串转换为布尔值
-		if err != nil {
-			return err
-		}
-		field.SetBool(val) // 设置布尔类型的默认值
-	default:
-		return fmt.Errorf("不支持的字段类型: %s", field.Kind())
-	}
-	return nil
-}
-
 // validateStruct 验证结构体类型的对象
 func (m *HertzValidator) validateStruct(obj interface{}) error {
 	m.lazyinit()                  // 确保验证器已初始化
@@ -219,19 +150,6 @@ func (m *HertzValidator) validateStruct(obj interface{}) error {
 		return CustomValidationError(ve)
 	}
 	return err
-}
-
-// CustomValidationError 将验证错误格式化为自定义格式
-func CustomValidationError(errs validator.ValidationErrors) error {
-	var errMsgs []string
-	for _, e := range errs {
-		field := e.Field() // 字段名
-		tag := e.Tag()     // 验证规则
-		param := e.Param() // 参数值
-		msg := generateErrorMessage(field, tag, param)
-		errMsgs = append(errMsgs, msg)
-	}
-	return errors.New(strings.Join(errMsgs, ""))
 }
 
 // Engine 返回底层的验证器实例

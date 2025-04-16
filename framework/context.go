@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 // Context 统一的 Context 封装
@@ -64,17 +63,6 @@ func (c *Context) JSON(code int, obj any) {
 	}
 }
 
-// Param 方法：统一获取路径参数
-func (c *Context) Param(key string) string {
-	if c.ginCtx != nil {
-		return c.ginCtx.Param(key)
-	}
-	if c.hertzCtx != nil {
-		return c.hertzCtx.Param(key)
-	}
-	return ""
-}
-
 // BindAndValidate 方法：统一绑定和验证请求数据
 //func (c *Context) BindAndValidate(obj any) error {
 //	if c.ginCtx != nil {
@@ -125,27 +113,4 @@ func GinHandler(handler HandlerFunc) gin.HandlerFunc {
 		}
 		handler(wrapperCtx)
 	}
-}
-
-// GetTest 示例方法
-func GetTest(ctx *Context) {
-
-	// 参数
-	type User struct {
-		Name string `query:"name" binding:"required"`
-		Age  int    `json:"age" binding:"gte=0,lte=100"`
-		ID   string `path:"id" binding:"required"`
-	}
-
-	// 调用 Validator 方法进行验证
-	var user User
-	if err := ctx.Validator(&user); err != nil {
-		errors := ctx.ValidatorError(err)
-		ctx.JSON(http.StatusBadRequest, map[string]any{
-			"error":   "Validation failed",
-			"details": errors,
-		})
-		return
-	}
-
 }
