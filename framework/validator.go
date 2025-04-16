@@ -3,131 +3,70 @@ package framework
 import (
 	"errors"
 	"fmt"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
+	"io"
+	"log"
 	"reflect"
 	"strconv"
 	"strings"
 	"sync"
 )
 
-// Param 获取路径参数
-func (c *Context) Param(key string) string {
-	if c.ginCtx != nil {
-		return c.ginCtx.Param(key)
-	}
-	if c.hertzCtx != nil {
-		return c.hertzCtx.Param(key)
-	}
-	return ""
-}
-
-func (c *Context) Query(key string) string {
-	if c.ginCtx != nil {
-		return c.ginCtx.Query(key)
-	}
-	if c.hertzCtx != nil {
-		return c.hertzCtx.Query(key)
-	}
-	return ""
-}
-
-func (c *Context) DefaultQuery(key, defaultValue string) string {
-	if c.ginCtx != nil {
-		return c.ginCtx.DefaultQuery(key, defaultValue)
-	}
-	if c.hertzCtx != nil {
-		return c.hertzCtx.DefaultQuery(key, defaultValue)
-	}
-	return ""
-}
-func (c *Context) GetQuery(key string) (string, bool) {
-	if c.ginCtx != nil {
-		return c.ginCtx.GetQuery(key)
-	}
-	if c.hertzCtx != nil {
-		return c.hertzCtx.GetQuery(key)
-	}
-	return "", false
-}
-
-//func (c *Context) QueryArray(key string) (values []string) {
-//	if c.ginCtx != nil {
-//		return c.ginCtx.QueryArray(key)
-//	}
-//	if c.hertzCtx != nil {
-//		return c.hertzCtx.QueryArgs(key)
-//	}
-//	return
-//}
-
-func (c *Context) PostForm(key string) string {
-	if c.ginCtx != nil {
-		return c.ginCtx.PostForm(key)
-	}
-	if c.hertzCtx != nil {
-		return c.hertzCtx.PostForm(key)
-	}
-	return ""
-}
-
-func (c *Context) DefaultPostForm(key, defaultValue string) string {
-	if c.ginCtx != nil {
-		return c.ginCtx.DefaultPostForm(key, defaultValue)
-	}
-	if c.hertzCtx != nil {
-		return c.hertzCtx.DefaultPostForm(key, defaultValue)
-	}
-	return ""
-}
-
-func (c *Context) PostFormArray(key string) (values []string) {
-	if c.ginCtx != nil {
-		return c.ginCtx.PostFormArray(key)
-	}
-	if c.hertzCtx != nil {
-		return c.hertzCtx.PostFormArray(key)
-	}
-	return
-}
-
-func (c *Context) GetPostForm(key string) (string, bool) {
-	if c.ginCtx != nil {
-		return c.ginCtx.GetPostForm(key)
-	}
-	if c.hertzCtx != nil {
-		return c.hertzCtx.GetPostForm(key)
-	}
-	return "", false
-}
-
-func (c *Context) GetPostFormArray(key string) (values []string, ok bool) {
-	if c.ginCtx != nil {
-		return c.ginCtx.GetPostFormArray(key)
-	}
-	if c.hertzCtx != nil {
-		return c.hertzCtx.GetPostFormArray(key)
-	}
-	return
-}
-
-// BindAndValidate 统一绑定参数并校验
-func (c *Context) BindAndValidate(obj any) error {
-	var bindErr error
+// BindJsonAndValidate 统一绑定Json参数并校验
+func (c *Context) BindJsonAndValidate(obj any) error {
 
 	if c.ginCtx != nil {
-		// Gin 会自动 bind JSON、Query、Form、Path
-		bindErr = c.ginCtx.ShouldBind(obj)
+		// 先绑定有没有包含path
+		typ := reflect.TypeOf(obj)
+		if typ.Kind() == reflect.Ptr {
+			typ = typ.Elem()
+		}
+
+		// 是否包含 path tag
+		hasPath := false
+		for i := 0; i < typ.NumField(); i++ {
+			field := typ.Field(i)
+			if tag := field.Tag.Get("path"); tag != "" {
+				hasPath = true
+				break
+			}
+		}
+
+		contentType := c.ginCtx.ContentType()
+		method := c.ginCtx.Request.Method
+
+		log.Println("gin hasPath", hasPath)
+		log.Println("gin contentType", contentType)
+		log.Println("gin method", method)
+
+		// Path 参数绑定
+		if hasPath {
+			log.Println("gin Path 参数绑定")
+			if err := c.ginCtx.ShouldBindUri(obj); err != nil {
+				return fmt.Errorf("path 参数绑定失败: %w", err)
+			}
+		}
+
+		if err := c.ginCtx.ShouldBindBodyWith(obj, binding.JSON); err != nil {
+			log.Println(err.Error())
+			// 如果是 EOF 错误，忽略它
+			if errors.Is(err, io.EOF) {
+				log.Println("空 body，跳过绑定")
+			} else {
+				log.Println(err.Error())
+				return fmt.Errorf("参数绑定失败: %w", err)
+			}
+		}
 	}
 	if c.hertzCtx != nil {
-		// Hertz 根据 Content-Type 来自动选择绑定的方法，其中 GET 请求会调用 BindQuery, 带有 Body 的请求会根据 Content-Type 自动选择
-		if err := c.hertzCtx.BindByContentType(obj); err != nil {
+		if err := c.hertzCtx.Bind(obj); err != nil {
+			log.Println(err.Error())
 			return fmt.Errorf("参数绑定失败: %w", err)
 		}
 	}
 
-	if bindErr != nil {
-		return fmt.Errorf("参数绑定失败: %w", bindErr)
-	}
+	log.Printf("%+v\n", obj)
 
 	// 设置默认值并验证
 	return c.Validator(obj)

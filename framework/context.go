@@ -63,6 +63,116 @@ func (c *Context) JSON(code int, obj any) {
 	}
 }
 
+// String 方法：统一返回 JSON 响应
+func (c *Context) String(code int, format string, values ...any) {
+	if c.ginCtx != nil {
+		c.ginCtx.String(code, format, values)
+	}
+	if c.hertzCtx != nil {
+		c.hertzCtx.String(code, format, values)
+	}
+}
+
+// Param 获取路径参数
+func (c *Context) Param(key string) string {
+	if c.ginCtx != nil {
+		return c.ginCtx.Param(key)
+	}
+	if c.hertzCtx != nil {
+		return c.hertzCtx.Param(key)
+	}
+	return ""
+}
+
+func (c *Context) Query(key string) string {
+	if c.ginCtx != nil {
+		return c.ginCtx.Query(key)
+	}
+	if c.hertzCtx != nil {
+		return c.hertzCtx.Query(key)
+	}
+	return ""
+}
+
+func (c *Context) DefaultQuery(key, defaultValue string) string {
+	if c.ginCtx != nil {
+		return c.ginCtx.DefaultQuery(key, defaultValue)
+	}
+	if c.hertzCtx != nil {
+		return c.hertzCtx.DefaultQuery(key, defaultValue)
+	}
+	return ""
+}
+func (c *Context) GetQuery(key string) (string, bool) {
+	if c.ginCtx != nil {
+		return c.ginCtx.GetQuery(key)
+	}
+	if c.hertzCtx != nil {
+		return c.hertzCtx.GetQuery(key)
+	}
+	return "", false
+}
+
+//func (c *Context) QueryArray(key string) (values []string) {
+//	if c.ginCtx != nil {
+//		return c.ginCtx.QueryArray(key)
+//	}
+//	if c.hertzCtx != nil {
+//		return c.hertzCtx.QueryArgs(key)
+//	}
+//	return
+//}
+
+func (c *Context) PostForm(key string) string {
+	if c.ginCtx != nil {
+		return c.ginCtx.PostForm(key)
+	}
+	if c.hertzCtx != nil {
+		return c.hertzCtx.PostForm(key)
+	}
+	return ""
+}
+
+func (c *Context) DefaultPostForm(key, defaultValue string) string {
+	if c.ginCtx != nil {
+		return c.ginCtx.DefaultPostForm(key, defaultValue)
+	}
+	if c.hertzCtx != nil {
+		return c.hertzCtx.DefaultPostForm(key, defaultValue)
+	}
+	return ""
+}
+
+func (c *Context) PostFormArray(key string) (values []string) {
+	if c.ginCtx != nil {
+		return c.ginCtx.PostFormArray(key)
+	}
+	if c.hertzCtx != nil {
+		return c.hertzCtx.PostFormArray(key)
+	}
+	return
+}
+
+func (c *Context) GetPostForm(key string) (string, bool) {
+	if c.ginCtx != nil {
+		return c.ginCtx.GetPostForm(key)
+	}
+	if c.hertzCtx != nil {
+		return c.hertzCtx.GetPostForm(key)
+	}
+	return "", false
+}
+
+func (c *Context) GetPostFormArray(key string) (values []string, ok bool) {
+	if c.ginCtx != nil {
+		return c.ginCtx.GetPostFormArray(key)
+	}
+	if c.hertzCtx != nil {
+		return c.hertzCtx.GetPostFormArray(key)
+	}
+	return
+}
+
 // BindAndValidate 方法：统一绑定和验证请求数据
 //func (c *Context) BindAndValidate(obj any) error {
 //	if c.ginCtx != nil {
