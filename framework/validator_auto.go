@@ -16,28 +16,26 @@ func (c *Context) ginBindPathParams(ctx *gin.Context, obj any) error {
 	v = v.Elem()
 	t := v.Type()
 
-	hasPath := false // 记录是否有 path 标签
+	hasPath := false
+	fields := make([]reflect.StructField, 0)
+
+	// 第一次循环：检查是否有 path 标签的字段，记录它们
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
 		if pathTag := field.Tag.Get("path"); pathTag != "" {
 			hasPath = true
-			break
+			fields = append(fields, field)
 		}
 	}
 
-	// 如果结构体没有 path 字段，则直接返回
+	// 如果没有 path 字段，直接返回
 	if !hasPath {
 		return nil
 	}
 
-	// 有 path 字段，进行路径参数绑定
-	for i := 0; i < t.NumField(); i++ {
-		field := t.Field(i)
+	// 第二次循环：进行路径参数的绑定
+	for _, field := range fields {
 		pathTag := field.Tag.Get("path")
-		if pathTag == "" {
-			continue
-		}
-
 		paramVal := ctx.Param(pathTag)
 		if paramVal == "" {
 			if def := field.Tag.Get("default"); def != "" {
@@ -47,7 +45,7 @@ func (c *Context) ginBindPathParams(ctx *gin.Context, obj any) error {
 			}
 		}
 
-		fv := v.Field(i)
+		fv := v.FieldByName(field.Name)
 		if !fv.CanSet() {
 			return fmt.Errorf("字段 %s 不可设置", field.Name)
 		}
