@@ -3,7 +3,6 @@ package framework
 import (
 	"errors"
 	"fmt"
-	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
 	"io"
 	"log"
@@ -17,20 +16,20 @@ import (
 func (c *Context) BindJsonAndValidate(obj any) error {
 
 	if c.ginCtx != nil {
+		// 先绑定 path 参数
 		if err := c.ginBindPathParams(c.GetGinContext(), obj); err != nil {
 			return fmt.Errorf("path 参数绑定失败: %w", err)
 		}
 
 		log.Println("Method：", c.ginCtx.Request.Method)
 
-		if err := c.ginCtx.ShouldBindBodyWith(obj, binding.JSON); err != nil {
-			// 如果是 EOF 错误，忽略它
-			if errors.Is(err, io.EOF) {
-			} else {
-				return fmt.Errorf("参数绑定失败: %w", err)
-			}
+		// 再绑定 JSON
+		if err := c.ginBindJson(c.ginCtx, obj); err != nil && !errors.Is(err, io.EOF) {
+			return fmt.Errorf("参数绑定失败: %w", err)
 		}
 		log.Printf("Gin绑定:%+v\n", obj)
+
+		// 设置默认值
 		if err := setDefaultValues(obj); err != nil {
 			return fmt.Errorf("设置默认值失败: %w", err)
 		}
@@ -122,14 +121,25 @@ func setDefaultValues(obj any) error {
 		field := v.Field(i)
 		fieldType := t.Field(i)
 
-		// 检查是否有 default 标签
-		defaultValue := fieldType.Tag.Get("default")
-		if defaultValue == "" {
+		// 跳过不可设置的字段
+		if !field.CanSet() {
 			continue
 		}
 
-		// 跳过不可设置的字段
-		if !field.CanSet() {
+		// ✅ 递归嵌套结构体（非 time.Time）
+		if field.Kind() == reflect.Struct && field.Type().PkgPath() != "time" {
+			// 必须传指针
+			if field.CanAddr() {
+				if err := setDefaultValues(field.Addr().Interface()); err != nil {
+					return err
+				}
+			}
+			continue
+		}
+
+		// 如果没有 default 标签，跳过
+		defaultValue := fieldType.Tag.Get("default")
+		if defaultValue == "" {
 			continue
 		}
 
@@ -140,7 +150,7 @@ func setDefaultValues(obj any) error {
 
 		setter, ok := fieldSetters[field.Kind()]
 		if !ok {
-			log.Printf("不支持的字段类型 '%s' 用于默认值设置", field.Kind()) // 记录错误日志
+			log.Printf("不支持的字段类型 '%s' 用于默认值设置", field.Kind())
 			return fmt.Errorf("unsupported field type '%s' for default value", field.Kind())
 		}
 
