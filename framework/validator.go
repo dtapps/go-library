@@ -15,13 +15,17 @@ import (
 // BindJsonAndValidate 统一绑定Json参数并校验
 func (c *Context) BindJsonAndValidate(obj any) error {
 
+	log.Println("Method：", c.Method())
+	log.Println("ContentType：", c.ContentType())
+
 	if c.ginCtx != nil {
+		log.Println("Gin Method：", c.ginCtx.Request.Method)
+		log.Println("Gin ContentType：", c.ginCtx.ContentType())
+
 		// 先绑定 path 参数
 		if err := c.ginBindPathParams(c.GetGinContext(), obj); err != nil {
 			return fmt.Errorf("path 参数绑定失败: %w", err)
 		}
-
-		log.Println("Method：", c.ginCtx.Request.Method)
 
 		// 再绑定 JSON
 		if err := c.ginBindJson(c.ginCtx, obj); err != nil && !errors.Is(err, io.EOF) {
@@ -35,6 +39,9 @@ func (c *Context) BindJsonAndValidate(obj any) error {
 		}
 	}
 	if c.hertzCtx != nil {
+		log.Println("Hertz Method：", c.hertzCtx.Method())
+		log.Println("Hertz ContentType：", c.hertzCtx.ContentType())
+
 		if err := c.hertzCtx.Bind(obj); err != nil {
 			return fmt.Errorf("参数绑定失败: %w", err)
 		}
