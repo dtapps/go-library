@@ -16,7 +16,8 @@ func (c *Context) GetSession() Session {
 		return Session{
 			ginSession: session,
 		}
-	} else if c.hertzCtx != nil {
+	}
+	if c.hertzCtx != nil {
 		session := hertzSession.Default(c.hertzCtx)
 		return Session{
 			hertzSession: session,
@@ -29,27 +30,28 @@ func (c *Context) GetSession() Session {
 func (s Session) ID() string {
 	if s.ginSession != nil {
 		return s.ginSession.ID()
-	} else if s.hertzSession != nil {
+	}
+	if s.hertzSession != nil {
 		return s.hertzSession.ID()
 	}
-	// 如果没有 ginSession 或 hertzSession，则返回空字符串
 	return ""
 }
 
 func (s Session) Get(key any) any {
 	if s.ginSession != nil {
 		return s.ginSession.Get(key)
-	} else if s.hertzSession != nil {
+	}
+	if s.hertzSession != nil {
 		return s.hertzSession.Get(key)
 	}
-	// 如果没有 ginSession 或 hertzSession，返回 nil
 	return nil
 }
 
 func (s Session) Set(key any, val any) {
 	if s.ginSession != nil {
 		s.ginSession.Set(key, val)
-	} else if s.hertzSession != nil {
+	}
+	if s.hertzSession != nil {
 		s.hertzSession.Set(key, val)
 	}
 }
@@ -57,7 +59,8 @@ func (s Session) Set(key any, val any) {
 func (s Session) Delete(key any) {
 	if s.ginSession != nil {
 		s.ginSession.Delete(key)
-	} else if s.hertzSession != nil {
+	}
+	if s.hertzSession != nil {
 		s.hertzSession.Delete(key)
 	}
 }
@@ -65,7 +68,8 @@ func (s Session) Delete(key any) {
 func (s Session) Clear() {
 	if s.ginSession != nil {
 		s.ginSession.Clear()
-	} else if s.hertzSession != nil {
+	}
+	if s.hertzSession != nil {
 		s.hertzSession.Clear()
 	}
 }
@@ -73,9 +77,9 @@ func (s Session) Clear() {
 func (s Session) Save() error {
 	if s.ginSession != nil {
 		return s.ginSession.Save()
-	} else if s.hertzSession != nil {
+	}
+	if s.hertzSession != nil {
 		return s.hertzSession.Save()
 	}
-	// 如果没有 ginSession 或 hertzSession，返回 nil
 	return nil
 }

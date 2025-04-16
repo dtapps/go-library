@@ -14,11 +14,22 @@ type Context struct {
 	hertzCtx *app.RequestContext // Hertz 上下文
 }
 
+// Abort 中止请求
+func (c *Context) Abort() {
+	if c.ginCtx != nil {
+		c.ginCtx.Abort()
+	}
+	if c.hertzCtx != nil {
+		c.hertzCtx.Abort()
+	}
+}
+
 // JSON 方法：统一返回 JSON 响应
 func (c *Context) JSON(code int, obj any) {
 	if c.ginCtx != nil {
 		c.ginCtx.JSON(code, obj)
-	} else if c.hertzCtx != nil {
+	}
+	if c.hertzCtx != nil {
 		c.hertzCtx.JSON(code, obj)
 	}
 }
@@ -27,7 +38,8 @@ func (c *Context) JSON(code int, obj any) {
 func (c *Context) Param(key string) string {
 	if c.ginCtx != nil {
 		return c.ginCtx.Param(key)
-	} else if c.hertzCtx != nil {
+	}
+	if c.hertzCtx != nil {
 		return c.hertzCtx.Param(key)
 	}
 	return ""
@@ -40,7 +52,8 @@ func (c *Context) BindAndValidate(obj any) error {
 		if err := c.ginCtx.ShouldBind(obj); err != nil {
 			return err
 		}
-	} else if c.hertzCtx != nil {
+	}
+	if c.hertzCtx != nil {
 		// Hertz 的绑定和验证
 		if err := c.hertzCtx.BindAndValidate(obj); err != nil {
 			return err
