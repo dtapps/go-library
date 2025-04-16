@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
 	"io"
+	"log"
 	"reflect"
 	"strconv"
 	"strings"
@@ -94,6 +95,25 @@ func setDefaultValues(obj any) error {
 	v = v.Elem() // 获取指针指向的值
 	t := v.Type()
 
+	// 用于字段类型到设置默认值方法的映射
+	fieldSetters := map[reflect.Kind]func(field reflect.Value, defaultValue string) error{
+		reflect.Int:     setDefaultInt,
+		reflect.Int8:    setDefaultInt,
+		reflect.Int16:   setDefaultInt,
+		reflect.Int32:   setDefaultInt,
+		reflect.Int64:   setDefaultInt,
+		reflect.Uint:    setDefaultUint,
+		reflect.Uint8:   setDefaultUint,
+		reflect.Uint16:  setDefaultUint,
+		reflect.Uint32:  setDefaultUint,
+		reflect.Uint64:  setDefaultUint,
+		reflect.Float32: setDefaultFloat,
+		reflect.Float64: setDefaultFloat,
+		reflect.String:  setDefaultString,
+		reflect.Bool:    setDefaultBool,
+		reflect.Slice:   setDefaultSlice,
+	}
+
 	for i := 0; i < v.NumField(); i++ {
 		field := v.Field(i)
 		fieldType := t.Field(i)
@@ -104,7 +124,7 @@ func setDefaultValues(obj any) error {
 			continue
 		}
 
-		// 跳过非可导出字段
+		// 跳过不可设置的字段
 		if !field.CanSet() {
 			continue
 		}
@@ -114,155 +134,77 @@ func setDefaultValues(obj any) error {
 			continue
 		}
 
-		// 根据字段类型设置默认值
-		switch field.Kind() {
-		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-			val, err := strconv.ParseInt(defaultValue, 10, 64)
-			if err != nil {
-				return fmt.Errorf("invalid default value for field '%s': %w", fieldType.Name, err)
-			}
-			field.SetInt(val)
-		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-			val, err := strconv.ParseUint(defaultValue, 10, 64)
-			if err != nil {
-				return fmt.Errorf("invalid default value for field '%s': %w", fieldType.Name, err)
-			}
-			field.SetUint(val)
-		case reflect.Float32, reflect.Float64:
-			val, err := strconv.ParseFloat(defaultValue, 64)
-			if err != nil {
-				return fmt.Errorf("invalid default value for field '%s': %w", fieldType.Name, err)
-			}
-			field.SetFloat(val)
-		case reflect.String:
-			field.SetString(defaultValue)
-		case reflect.Bool:
-			val, err := strconv.ParseBool(defaultValue)
-			if err != nil {
-				return fmt.Errorf("invalid default value for field '%s': %w", fieldType.Name, err)
-			}
-			field.SetBool(val)
-		case reflect.Slice:
-			// 如果 default 值是一个切片字符串，例如 "[1,2,3]"，需要解析为具体的切片类型
-			if strings.HasPrefix(defaultValue, "[") && strings.HasSuffix(defaultValue, "]") {
-				// 移除前后的方括号
-				cleaned := defaultValue[1 : len(defaultValue)-1]
-				// 根据切片的类型来进行解析（这里只做了 int 类型的解析示例）
-				elemType := fieldType.Type.Elem().Kind()
-				switch elemType {
-				case reflect.Int:
-					// 解析为 []int
-					elems := strings.Split(cleaned, ",")
-					var intSlice []int
-					for _, elem := range elems {
-						elem = strings.TrimSpace(elem)
-						val, err := strconv.Atoi(elem)
-						if err != nil {
-							return fmt.Errorf("invalid default value for slice field '%s': %w", fieldType.Name, err)
-						}
-						intSlice = append(intSlice, val)
-					}
-					field.Set(reflect.ValueOf(intSlice))
-				case reflect.String:
-					// 解析为 []string
-					elems := strings.Split(cleaned, ",")
-					var strSlice []string
-					for _, elem := range elems {
-						elem = strings.TrimSpace(elem)
-						strSlice = append(strSlice, elem)
-					}
-					field.Set(reflect.ValueOf(strSlice))
-				default:
-					return fmt.Errorf("unsupported slice element type '%s' for default value", elemType)
-				}
-			}
-		default:
+		setter, ok := fieldSetters[field.Kind()]
+		if !ok {
+			log.Printf("不支持的字段类型 '%s' 用于默认值设置", field.Kind()) // 记录错误日志
 			return fmt.Errorf("unsupported field type '%s' for default value", field.Kind())
 		}
+
+		if err := setter(field, defaultValue); err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-// parseDefaultValue 从标签中提取默认值
-func parseDefaultValue(tag string) string {
-	parts := strings.Split(tag, ",") // 按逗号分割标签内容
-	for _, part := range parts {
-		if strings.HasPrefix(part, "default=") { // 查找以 "default=" 开头的部分
-			return strings.TrimPrefix(part, "default=") // 提取默认值
-		}
+func setDefaultInt(field reflect.Value, defaultValue string) error {
+	val, err := strconv.ParseInt(defaultValue, 10, 64)
+	if err != nil {
+		log.Printf("无效的默认值（整数）: %v", err) // 记录错误日志
+		return fmt.Errorf("invalid default value for field: %w", err)
 	}
-	return ""
-}
-
-// isEmptyValue 判断字段是否为空（零值）
-func isEmptyValue(field reflect.Value) bool {
-	switch field.Kind() {
-	case reflect.String:
-		return field.String() == "" // 字符串为空
-	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		return field.Int() == 0 // 整数为 0
-	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		return field.Uint() == 0 // 无符号整数为 0
-	case reflect.Float32, reflect.Float64:
-		return field.Float() == 0 // 浮点数为 0
-	case reflect.Bool:
-		return !field.Bool() // 布尔值为 false
-	case reflect.Slice, reflect.Array, reflect.Map:
-		return field.Len() == 0 // 切片、数组或映射为空
-	case reflect.Interface, reflect.Ptr:
-		return field.IsNil() // 接口或指针为空
-	default:
-		return false
-	}
-}
-
-// setFieldValue 根据字段的类型设置默认值
-func setFieldValue(field reflect.Value, defaultValue string) error {
-	switch field.Kind() {
-	case reflect.String:
-		field.SetString(defaultValue) // 设置字符串类型的默认值
-	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		val, err := strconv.ParseInt(defaultValue, 10, 64) // 将字符串转换为整数
-		if err != nil {
-			return err
-		}
-		field.SetInt(val) // 设置整数类型的默认值
-	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		val, err := strconv.ParseUint(defaultValue, 10, 64) // 将字符串转换为无符号整数
-		if err != nil {
-			return err
-		}
-		field.SetUint(val) // 设置无符号整数类型的默认值
-	case reflect.Float32, reflect.Float64:
-		val, err := strconv.ParseFloat(defaultValue, 64) // 将字符串转换为浮点数
-		if err != nil {
-			return err
-		}
-		field.SetFloat(val) // 设置浮点数类型的默认值
-	case reflect.Bool:
-		val, err := strconv.ParseBool(defaultValue) // 将字符串转换为布尔值
-		if err != nil {
-			return err
-		}
-		field.SetBool(val) // 设置布尔类型的默认值
-	default:
-		return fmt.Errorf("不支持的字段类型: %s", field.Kind())
-	}
+	field.SetInt(val)
 	return nil
 }
 
-// CustomValidationError 将验证错误格式化为自定义格式
-func CustomValidationError(errs validator.ValidationErrors) error {
-	var errMsgs []string
-	for _, e := range errs {
-		field := e.Field() // 字段名
-		tag := e.Tag()     // 验证规则
-		param := e.Param() // 参数值
-		msg := generateErrorMessage(field, tag, param)
-		errMsgs = append(errMsgs, msg)
+func setDefaultUint(field reflect.Value, defaultValue string) error {
+	val, err := strconv.ParseUint(defaultValue, 10, 64)
+	if err != nil {
+		log.Printf("无效的默认值（无符号整数）: %v", err) // 记录错误日志
+		return fmt.Errorf("invalid default value for field: %w", err)
 	}
-	return errors.New(strings.Join(errMsgs, ""))
+	field.SetUint(val)
+	return nil
+}
+
+func setDefaultFloat(field reflect.Value, defaultValue string) error {
+	val, err := strconv.ParseFloat(defaultValue, 64)
+	if err != nil {
+		log.Printf("无效的默认值（浮点数）: %v", err) // 记录错误日志
+		return fmt.Errorf("invalid default value for field: %w", err)
+	}
+	field.SetFloat(val)
+	return nil
+}
+
+func setDefaultString(field reflect.Value, defaultValue string) error {
+	field.SetString(defaultValue)
+	return nil
+}
+
+func setDefaultBool(field reflect.Value, defaultValue string) error {
+	val, err := strconv.ParseBool(defaultValue)
+	if err != nil {
+		log.Printf("无效的默认值（布尔值）: %v", err) // 记录错误日志
+		return fmt.Errorf("invalid default value for field: %w", err)
+	}
+	field.SetBool(val)
+	return nil
+}
+
+func setDefaultSlice(field reflect.Value, defaultValue string) error {
+	if strings.HasPrefix(defaultValue, "[") && strings.HasSuffix(defaultValue, "]") {
+		cleaned := defaultValue[1 : len(defaultValue)-1]
+		elems := strings.Split(cleaned, ",")
+		var strSlice []string
+		for _, elem := range elems {
+			elem = strings.TrimSpace(elem)
+			strSlice = append(strSlice, elem)
+		}
+		field.Set(reflect.ValueOf(strSlice))
+	}
+	return nil
 }
 
 // generateErrorMessage 生成友好的错误消息（中文版）
