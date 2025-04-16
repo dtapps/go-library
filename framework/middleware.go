@@ -42,7 +42,7 @@ func HertzMiddleware(mw MiddlewareFunc) app.HandlerFunc {
 }
 
 // Set 在上下文中设置键值对
-func (c *Context) Set(key, value string) {
+func (c *Context) Set(key string, value any) {
 	if c.ginCtx != nil {
 		c.ginCtx.Set(key, value)
 	}

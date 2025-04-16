@@ -111,7 +111,7 @@ func GetTest(ctx *Context) {
 	var user User
 	if err := ctx.Validator(&user); err != nil {
 		errors := ctx.ValidatorError(err)
-		ctx.JSON(http.StatusBadRequest, map[string]interface{}{
+		ctx.JSON(http.StatusBadRequest, map[string]any{
 			"error":   "Validation failed",
 			"details": errors,
 		})
