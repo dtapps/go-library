@@ -17,38 +17,12 @@ import (
 func (c *Context) BindJsonAndValidate(obj any) error {
 
 	if c.ginCtx != nil {
-		// 先绑定有没有包含path
-		typ := reflect.TypeOf(obj)
-		if typ.Kind() == reflect.Ptr {
-			typ = typ.Elem()
-		}
-
-		// 是否包含 path tag
-		hasPath := false
-		for i := 0; i < typ.NumField(); i++ {
-			field := typ.Field(i)
-			if tag := field.Tag.Get("path"); tag != "" {
-				hasPath = true
-				break
-			}
-		}
-
-		contentType := c.ginCtx.ContentType()
-		method := c.ginCtx.Request.Method
-
-		log.Println("gin hasPath", hasPath)
-		log.Println("gin contentType", contentType)
-		log.Println("gin method", method)
-
-		// Path 参数绑定
-		if hasPath {
-			log.Println("gin Path 参数绑定")
-			if err := c.ginCtx.ShouldBindUri(obj); err != nil {
-				return fmt.Errorf("path 参数绑定失败: %w", err)
-			}
+		if err := c.ginBindPathParams(c.GetGinContext(), obj); err != nil {
+			return fmt.Errorf("path 参数绑定失败: %w", err)
 		}
 
 		if err := c.ginCtx.ShouldBindBodyWith(obj, binding.JSON); err != nil {
+			log.Println("gin Json 参数绑定")
 			log.Println(err.Error())
 			// 如果是 EOF 错误，忽略它
 			if errors.Is(err, io.EOF) {
