@@ -21,6 +21,8 @@ func (c *Context) BindJsonAndValidate(obj any) error {
 			return fmt.Errorf("path 参数绑定失败: %w", err)
 		}
 
+		log.Println("Method：", c.ginCtx.Request.Method)
+
 		if err := c.ginCtx.ShouldBindBodyWith(obj, binding.JSON); err != nil {
 			// 如果是 EOF 错误，忽略它
 			if errors.Is(err, io.EOF) {
@@ -28,14 +30,21 @@ func (c *Context) BindJsonAndValidate(obj any) error {
 				return fmt.Errorf("参数绑定失败: %w", err)
 			}
 		}
+		log.Printf("Gin绑定:%+v\n", obj)
+		if err := setDefaultValues(obj); err != nil {
+			return fmt.Errorf("设置默认值失败: %w", err)
+		}
 	}
 	if c.hertzCtx != nil {
 		if err := c.hertzCtx.Bind(obj); err != nil {
 			return fmt.Errorf("参数绑定失败: %w", err)
 		}
+		log.Printf("Hertz绑定:%+v\n", obj)
 	}
 
-	// 设置默认值并验证
+	log.Printf("验证数据:%+v\n", obj)
+
+	// 验证
 	return c.Validator(obj)
 }
 
@@ -54,11 +63,6 @@ func getValidator() *validator.Validate {
 
 // Validator 验证数据
 func (c *Context) Validator(obj any) error {
-	// 设置默认值
-	if err := setDefaultValues(obj); err != nil {
-		return err
-	}
-
 	// 复用验证器实例
 	validate := getValidator()
 	return validate.Struct(obj)
