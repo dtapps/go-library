@@ -19,6 +19,10 @@ func (c *Context) BindAndValidate(obj any) error {
 		bindErr = c.ginCtx.ShouldBind(obj)
 	}
 	if c.hertzCtx != nil {
+		// Hertz 需要显式 Bind 路径参数
+		if err := c.hertzCtx.Bind(obj); err != nil {
+			return fmt.Errorf("路径参数绑定失败: %w", err)
+		}
 		// Hertz 根据 Content-Type 来自动选择绑定的方法，其中 GET 请求会调用 BindQuery, 带有 Body 的请求会根据 Content-Type 自动选择
 		if err := c.hertzCtx.BindByContentType(obj); err != nil {
 			return fmt.Errorf("参数绑定失败: %w", err)
