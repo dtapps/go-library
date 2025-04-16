@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
 	"io"
-	"log"
 	"reflect"
 	"strconv"
 	"strings"
@@ -22,25 +21,18 @@ func (c *Context) BindJsonAndValidate(obj any) error {
 		}
 
 		if err := c.ginCtx.ShouldBindBodyWith(obj, binding.JSON); err != nil {
-			log.Println("gin Json 参数绑定")
-			log.Println(err.Error())
 			// 如果是 EOF 错误，忽略它
 			if errors.Is(err, io.EOF) {
-				log.Println("空 body，跳过绑定")
 			} else {
-				log.Println(err.Error())
 				return fmt.Errorf("参数绑定失败: %w", err)
 			}
 		}
 	}
 	if c.hertzCtx != nil {
 		if err := c.hertzCtx.Bind(obj); err != nil {
-			log.Println(err.Error())
 			return fmt.Errorf("参数绑定失败: %w", err)
 		}
 	}
-
-	log.Printf("%+v\n", obj)
 
 	// 设置默认值并验证
 	return c.Validator(obj)
