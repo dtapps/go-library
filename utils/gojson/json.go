@@ -91,9 +91,3 @@ func ParseQueryString(input string) map[string]any {
 	}
 	return paramMap
 }
-
-// IsValidJSON 检查给定字符串是否为有效的 JSON 格式。
-func IsValidJSON(s string) bool {
-	var js map[string]any
-	return json.Unmarshal([]byte(s), &js) == nil
-}
