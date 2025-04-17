@@ -1,4 +1,4 @@
 package framework
 
 // Version 版本
-const Version = "1.0.19"
+const Version = "1.0.20"

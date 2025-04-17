@@ -35,6 +35,16 @@ func (cr *ResponseWrapper) GetHeader(key string) string {
 	return ""
 }
 
+// SetHeader 设置响应的Header
+func (cr *ResponseWrapper) SetHeader(key, value string) {
+	if cr.ginCtx != nil {
+		cr.ginCtx.Header(key, value)
+	}
+	if cr.hertzCtx != nil {
+		cr.hertzCtx.Header(key, value)
+	}
+}
+
 // StatusCode 获取响应的状态码
 func (cr *ResponseWrapper) StatusCode() int {
 	if cr.ginCtx != nil {

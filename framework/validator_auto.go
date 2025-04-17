@@ -89,6 +89,11 @@ func (c *Context) ginBindJson(ginCtx *gin.Context, obj any) error {
 		return fmt.Errorf("读取请求体失败：%w", err)
 	}
 
+	// 判断 body 是否为空
+	if len(bodyBytes) == 0 {
+		return nil
+	}
+
 	// 反序列化
 	if err := json.Unmarshal(bodyBytes, obj); err != nil {
 		return fmt.Errorf("JSON 反序列化失败: %w", err)
