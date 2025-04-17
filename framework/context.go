@@ -8,7 +8,7 @@ import (
 
 // Context 统一的 Context 封装
 type Context struct {
-	Ctx      context.Context     // 统一的上下文
+	ctx      context.Context     // 统一的上下文
 	ginCtx   *gin.Context        // Gin 上下文
 	hertzCtx *app.RequestContext // Hertz 上下文
 }
@@ -19,7 +19,7 @@ func (c *Context) Next() {
 		c.ginCtx.Next()
 	}
 	if c.hertzCtx != nil {
-		c.hertzCtx.Next(c.Ctx)
+		c.hertzCtx.Next(c.ctx)
 	}
 }
 
@@ -150,6 +150,21 @@ func (c *Context) GetPostFormArray(key string) (values []string, ok bool) {
 //	return nil
 //}
 
+// GetContext 获取上下文
+func (c *Context) GetContext() context.Context {
+	return c.ctx
+}
+
+// SetContext 设置上下文
+func (c *Context) SetContext(ctx context.Context) {
+	c.ctx = ctx
+}
+
+// GetSafeContext 获取安全上下文
+func (c *Context) GetSafeContext() context.Context {
+	return context.WithoutCancel(c.ctx)
+}
+
 // GetGinContext 获取原始的 Gin 上下文
 func (c *Context) GetGinContext() *gin.Context {
 	if c.ginCtx == nil {
@@ -169,23 +184,23 @@ func (c *Context) GetHertzContext() *app.RequestContext {
 // HandlerFunc 统一的处理函数签名
 type HandlerFunc func(ctx *Context)
 
-// HertzHandler 封装 Hertz
-func HertzHandler(handler HandlerFunc) app.HandlerFunc {
-	return func(c context.Context, ctx *app.RequestContext) {
+// GinHandler 封装 Gin
+func GinHandler(handler HandlerFunc) gin.HandlerFunc {
+	return func(c *gin.Context) {
 		wrapperCtx := &Context{
-			Ctx:      c,   // 使用 Hertz 提供的上下文
-			hertzCtx: ctx, // 保存 Hertz 的上下文
+			ctx:    c.Request.Context(), // 使用 Gin 提供的上下文
+			ginCtx: c,                   // 保存 Gin 的上下文
 		}
 		handler(wrapperCtx)
 	}
 }
 
-// GinHandler 封装 Gin
-func GinHandler(handler HandlerFunc) gin.HandlerFunc {
-	return func(c *gin.Context) {
+// HertzHandler 封装 Hertz
+func HertzHandler(handler HandlerFunc) app.HandlerFunc {
+	return func(c context.Context, ctx *app.RequestContext) {
 		wrapperCtx := &Context{
-			Ctx:    c.Request.Context(), // 使用 Gin 提供的上下文
-			ginCtx: c,                   // 保存 Gin 的上下文
+			ctx:      c,   // 使用 Hertz 提供的上下文
+			hertzCtx: ctx, // 保存 Hertz 的上下文
 		}
 		handler(wrapperCtx)
 	}

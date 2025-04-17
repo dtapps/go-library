@@ -7,7 +7,7 @@ import (
 )
 
 type RequestWrapper struct {
-	Ctx      context.Context     // 统一的上下文
+	ctx      context.Context     // 统一的上下文
 	ginCtx   *gin.Context        // Gin 上下文
 	hertzCtx *app.RequestContext // Hertz 上下文
 }
@@ -15,7 +15,7 @@ type RequestWrapper struct {
 // 返回请求相关的封装方法
 func (c *Context) Request() *RequestWrapper {
 	return &RequestWrapper{
-		Ctx:      c.Ctx,
+		ctx:      c.ctx,
 		ginCtx:   c.ginCtx,
 		hertzCtx: c.hertzCtx,
 	}

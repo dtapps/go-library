@@ -10,7 +10,7 @@ import (
 
 // ResponseWrapper 用于统一封装响应处理
 type ResponseWrapper struct {
-	Ctx      context.Context     // 统一的上下文
+	ctx      context.Context     // 统一的上下文
 	ginCtx   *gin.Context        // Gin 上下文
 	hertzCtx *app.RequestContext // Hertz 上下文
 }
@@ -18,7 +18,7 @@ type ResponseWrapper struct {
 // Response 返回响应相关的封装方法
 func (c *Context) Response() *ResponseWrapper {
 	return &ResponseWrapper{
-		Ctx:      c.Ctx,
+		ctx:      c.ctx,
 		ginCtx:   c.ginCtx,
 		hertzCtx: c.hertzCtx,
 	}

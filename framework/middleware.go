@@ -13,8 +13,8 @@ type MiddlewareFunc func(ctx *Context)
 func GinMiddleware(mw MiddlewareFunc) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		wrapped := &Context{
-			Ctx:    c.Request.Context(),
-			ginCtx: c,
+			ctx:    c.Request.Context(), // 使用 Gin 提供的上下文
+			ginCtx: c,                   // 保存 Gin 的上下文
 		}
 		mw(wrapped)
 
@@ -27,16 +27,16 @@ func GinMiddleware(mw MiddlewareFunc) gin.HandlerFunc {
 
 // HertzMiddleware 将统一中间件函数转换为 Hertz 的中间件
 func HertzMiddleware(mw MiddlewareFunc) app.HandlerFunc {
-	return func(ctx context.Context, c *app.RequestContext) {
+	return func(c context.Context, ctx *app.RequestContext) {
 		wrapped := &Context{
-			Ctx:      ctx,
-			hertzCtx: c,
+			ctx:      c,   // 使用 Hertz 提供的上下文
+			hertzCtx: ctx, // 保存 Hertz 的上下文
 		}
 		mw(wrapped)
 
 		// Hertz 的中止机制略不同，不会自动跳过后续中间件，所以需手动判断
-		if !c.IsAborted() {
-			c.Next(ctx)
+		if !ctx.IsAborted() {
+			ctx.Next(c)
 		}
 	}
 }

@@ -19,7 +19,7 @@ func New() framework.MiddlewareFunc {
 		// 设置id
 		c.Set(__headerXRequestID, rid)
 		c.Header(__headerXRequestID, rid)
-		c.Ctx = context.WithValue(c.Ctx, __headerXRequestID, rid)
+		c.SetContext(context.WithValue(c.GetContext(), __headerXRequestID, rid))
 
 		// 继续
 		c.Next()
