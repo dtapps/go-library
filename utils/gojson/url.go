@@ -104,7 +104,7 @@ func parseFields(t reflect.Type, parentIndex []int) []fieldMeta {
 			continue
 		}
 
-		tag := f.Tag.Get("form")
+		tag := f.Tag.Get("json")
 		if tag == "" {
 			tag = strings.ToLower(f.Name)
 		}
