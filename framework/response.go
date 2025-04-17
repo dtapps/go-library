@@ -2,73 +2,65 @@ package framework
 
 import (
 	"bytes"
-	"context"
-	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 // ResponseWrapper 用于统一封装响应处理
 type ResponseWrapper struct {
-	ctx      context.Context     // 统一的上下文
-	ginCtx   *gin.Context        // Gin 上下文
-	hertzCtx *app.RequestContext // Hertz 上下文
+	c *Context
 }
 
 // Response 返回响应相关的封装方法
 func (c *Context) Response() *ResponseWrapper {
-	return &ResponseWrapper{
-		ctx:      c.ctx,
-		ginCtx:   c.ginCtx,
-		hertzCtx: c.hertzCtx,
-	}
+	return &ResponseWrapper{c: c}
 }
 
 // GetHeader 获取响应的Header
 func (cr *ResponseWrapper) GetHeader(key string) string {
-	if cr.ginCtx != nil {
-		return cr.ginCtx.Writer.Header().Get(key)
+	if cr.c.IsGin() {
+		return cr.c.ginCtx.Writer.Header().Get(key)
 	}
-	if cr.hertzCtx != nil {
-		return cr.hertzCtx.Response.Header.Get(key)
+	if cr.c.IsHertz() {
+		return cr.c.hertzCtx.Response.Header.Get(key)
 	}
 	return ""
 }
 
 // SetHeader 设置响应的Header
 func (cr *ResponseWrapper) SetHeader(key, value string) {
-	if cr.ginCtx != nil {
-		cr.ginCtx.Header(key, value)
+	if cr.c.IsGin() {
+		cr.c.ginCtx.Header(key, value)
 	}
-	if cr.hertzCtx != nil {
-		cr.hertzCtx.Header(key, value)
+	if cr.c.IsHertz() {
+		cr.c.hertzCtx.Header(key, value)
 	}
 }
 
 // StatusCode 获取响应的状态码
 func (cr *ResponseWrapper) StatusCode() int {
-	if cr.ginCtx != nil {
-		return cr.ginCtx.Writer.Status()
+	if cr.c.IsGin() {
+		return cr.c.ginCtx.Writer.Status()
 	}
-	if cr.hertzCtx != nil {
-		return cr.hertzCtx.Response.StatusCode()
+	if cr.c.IsHertz() {
+		return cr.c.hertzCtx.Response.StatusCode()
 	}
 	return 0
 }
 
 // Body 获取响应的 body 内容
 func (cr *ResponseWrapper) Body() []byte {
-	if cr.ginCtx != nil {
+	if cr.c.IsGin() {
 		// Gin 默认是直接写到 ResponseWriter，需要通过自定义的 ResponseWriter 捕获响应体
-		if val, exists := cr.ginCtx.Get(__responseBodyKey); exists {
+		if val, exists := cr.c.ginCtx.Get(__responseBodyKey); exists {
 			if body, ok := val.([]byte); ok {
 				return body
 			}
 		}
 		return nil
 	}
-	if cr.hertzCtx != nil {
-		return cr.hertzCtx.Response.Body()
+	if cr.c.IsHertz() {
+		return cr.c.hertzCtx.Response.Body()
 	}
 	return nil
 }

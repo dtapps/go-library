@@ -15,119 +15,119 @@ type Context struct {
 
 // Next 继续处理请求
 func (c *Context) Next() {
-	if c.ginCtx != nil {
+	if c.IsGin() {
 		c.ginCtx.Next()
 	}
-	if c.hertzCtx != nil {
+	if c.IsHertz() {
 		c.hertzCtx.Next(c.ctx)
 	}
 }
 
 // Abort 中止请求
 func (c *Context) Abort() {
-	if c.ginCtx != nil {
+	if c.IsGin() {
 		c.ginCtx.Abort()
 	}
-	if c.hertzCtx != nil {
+	if c.IsHertz() {
 		c.hertzCtx.Abort()
 	}
 }
 
 // AbortWithStatus 中止请求并设置状态码
 func (c *Context) AbortWithStatus(code int) {
-	if c.ginCtx != nil {
+	if c.IsGin() {
 		c.ginCtx.AbortWithStatus(code)
 	}
-	if c.hertzCtx != nil {
+	if c.IsHertz() {
 		c.hertzCtx.AbortWithStatus(code)
 	}
 }
 
 // AbortWithStatusJSON 中止请求并设置状态码和响应体
 func (c *Context) AbortWithStatusJSON(code int, jsonObj any) {
-	if c.ginCtx != nil {
+	if c.IsGin() {
 		c.ginCtx.AbortWithStatusJSON(code, jsonObj)
 	}
-	if c.hertzCtx != nil {
+	if c.IsHertz() {
 		c.hertzCtx.AbortWithStatusJSON(code, jsonObj)
 	}
 }
 
 // JSON 方法：统一返回 JSON 响应
 func (c *Context) JSON(code int, obj any) {
-	if c.ginCtx != nil {
+	if c.IsGin() {
 		c.ginCtx.JSON(code, obj)
 	}
-	if c.hertzCtx != nil {
+	if c.IsHertz() {
 		c.hertzCtx.JSON(code, obj)
 	}
 }
 
 // String 方法：统一返回 JSON 响应
 func (c *Context) String(code int, format string, values ...any) {
-	if c.ginCtx != nil {
+	if c.IsGin() {
 		c.ginCtx.String(code, format, values)
 	}
-	if c.hertzCtx != nil {
+	if c.IsHertz() {
 		c.hertzCtx.String(code, format, values)
 	}
 }
 
 //func (c *Context) QueryArray(key string) (values []string) {
-//	if c.ginCtx != nil {
+//	if c.IsGin() {
 //		return c.ginCtx.QueryArray(key)
 //	}
-//	if c.hertzCtx != nil {
+//	if c.IsHertz() {
 //		return c.hertzCtx.QueryArgs(key)
 //	}
 //	return
 //}
 
 func (c *Context) PostForm(key string) string {
-	if c.ginCtx != nil {
+	if c.IsGin() {
 		return c.ginCtx.PostForm(key)
 	}
-	if c.hertzCtx != nil {
+	if c.IsHertz() {
 		return c.hertzCtx.PostForm(key)
 	}
 	return ""
 }
 
 func (c *Context) DefaultPostForm(key, defaultValue string) string {
-	if c.ginCtx != nil {
+	if c.IsGin() {
 		return c.ginCtx.DefaultPostForm(key, defaultValue)
 	}
-	if c.hertzCtx != nil {
+	if c.IsHertz() {
 		return c.hertzCtx.DefaultPostForm(key, defaultValue)
 	}
 	return ""
 }
 
 func (c *Context) PostFormArray(key string) (values []string) {
-	if c.ginCtx != nil {
+	if c.IsGin() {
 		return c.ginCtx.PostFormArray(key)
 	}
-	if c.hertzCtx != nil {
+	if c.IsHertz() {
 		return c.hertzCtx.PostFormArray(key)
 	}
 	return
 }
 
 func (c *Context) GetPostForm(key string) (string, bool) {
-	if c.ginCtx != nil {
+	if c.IsGin() {
 		return c.ginCtx.GetPostForm(key)
 	}
-	if c.hertzCtx != nil {
+	if c.IsHertz() {
 		return c.hertzCtx.GetPostForm(key)
 	}
 	return "", false
 }
 
 func (c *Context) GetPostFormArray(key string) (values []string, ok bool) {
-	if c.ginCtx != nil {
+	if c.IsGin() {
 		return c.ginCtx.GetPostFormArray(key)
 	}
-	if c.hertzCtx != nil {
+	if c.IsHertz() {
 		return c.hertzCtx.GetPostFormArray(key)
 	}
 	return
@@ -135,13 +135,13 @@ func (c *Context) GetPostFormArray(key string) (values []string, ok bool) {
 
 // BindAndValidate 方法：统一绑定和验证请求数据
 //func (c *Context) BindAndValidate(obj any) error {
-//	if c.ginCtx != nil {
+//	if c.IsGin() {
 //		// Gin 的绑定和验证
 //		if err := c.ginCtx.ShouldBind(obj); err != nil {
 //			return err
 //		}
 //	}
-//	if c.hertzCtx != nil {
+//	if c.IsHertz() {
 //		// Hertz 的绑定和验证
 //		if err := c.hertzCtx.BindAndValidate(obj); err != nil {
 //			return err
@@ -186,6 +186,9 @@ type HandlerFunc func(ctx *Context)
 
 // GinHandler 封装 Gin
 func GinHandler(handler HandlerFunc) gin.HandlerFunc {
+	if useFramework != Gin {
+		return nil
+	}
 	return func(c *gin.Context) {
 		wrapperCtx := &Context{
 			ctx:    c.Request.Context(), // 使用 Gin 提供的上下文
@@ -197,6 +200,9 @@ func GinHandler(handler HandlerFunc) gin.HandlerFunc {
 
 // HertzHandler 封装 Hertz
 func HertzHandler(handler HandlerFunc) app.HandlerFunc {
+	if useFramework != Hertz {
+		return nil
+	}
 	return func(c context.Context, ctx *app.RequestContext) {
 		wrapperCtx := &Context{
 			ctx:      c,   // 使用 Hertz 提供的上下文

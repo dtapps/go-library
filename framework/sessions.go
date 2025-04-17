@@ -10,14 +10,15 @@ type Session struct {
 	hertzSession hertzSession.Session // Hertz
 }
 
+// GetSession 获取 Session
 func (c *Context) GetSession() Session {
-	if c.ginCtx != nil {
+	if c.IsGin() {
 		session := ginSession.Default(c.ginCtx)
 		return Session{
 			ginSession: session,
 		}
 	}
-	if c.hertzCtx != nil {
+	if c.IsHertz() {
 		session := hertzSession.Default(c.hertzCtx)
 		return Session{
 			hertzSession: session,

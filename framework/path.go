@@ -2,10 +2,10 @@ package framework
 
 // Param 获取路径参数
 func (c *Context) Param(key string) string {
-	if c.ginCtx != nil {
+	if c.IsGin() {
 		return c.ginCtx.Param(key)
 	}
-	if c.hertzCtx != nil {
+	if c.IsHertz() {
 		return c.hertzCtx.Param(key)
 	}
 	return ""

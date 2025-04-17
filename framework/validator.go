@@ -6,7 +6,6 @@ import (
 	"github.com/go-playground/validator/v10"
 	"go.dtapp.net/library/utils/gojson"
 	"io"
-	"log"
 	"reflect"
 	"strconv"
 	"strings"
@@ -15,51 +14,34 @@ import (
 
 // BindJsonAndValidate 统一绑定Json参数并校验
 func (c *Context) BindJsonAndValidate(obj any) error {
-
-	log.Println("Method：", c.Method())
-	log.Println("ContentType：", c.ContentType())
-
-	if c.ginCtx != nil {
-		log.Println("Gin Method：", c.ginCtx.Request.Method)
-		log.Println("Gin ContentType：", c.ginCtx.ContentType())
-
+	if c.IsGin() {
 		// 绑定 Path 参数
 		if err := c.ginBindPathParams(c.GetGinContext(), obj); err != nil {
 			return fmt.Errorf("Path 参数绑定失败：%w", err)
 		}
-		log.Printf("Gin Path 绑定：%+v\n", obj)
 
 		// 绑定 Url 参数
 		if c.ginCtx.Request.URL.RawQuery != "" {
 			if err := gojson.BindURLQueryToStruct(gojson.ParseURLQueryWithoutError(c.ginCtx.Request.URL.RawQuery), obj); err != nil {
 				return fmt.Errorf("Url 参数绑定失败：%w", err)
 			}
-			log.Printf("Gin Url 绑定：%+v\n", obj)
 		}
 
 		// 绑定 Body JSON 参数
 		if err := c.ginBindJson(c.ginCtx, obj); err != nil && !errors.Is(err, io.EOF) {
 			return fmt.Errorf("Body JSON 参数绑定失败：%w", err)
 		}
-		log.Printf("Gin Body JSON 绑定：%+v\n", obj)
 
 		// 设置默认值
 		if err := setDefaultValues(obj); err != nil {
 			return fmt.Errorf("设置默认值失败：%w", err)
 		}
-		log.Printf("Gin 设置默认值：%+v\n", obj)
 	}
-	if c.hertzCtx != nil {
-		log.Println("Hertz Method：", c.hertzCtx.Method())
-		log.Println("Hertz ContentType：", c.hertzCtx.ContentType())
-
+	if c.IsHertz() {
 		if err := c.hertzCtx.Bind(obj); err != nil {
 			return fmt.Errorf("参数绑定失败：%w", err)
 		}
-		log.Printf("Hertz 绑定：%+v\n", obj)
 	}
-
-	log.Printf("Validator 准备验证数据：%+v\n", obj)
 
 	// 验证
 	return c.Validator(obj)
@@ -168,7 +150,6 @@ func setDefaultValues(obj any) error {
 
 		setter, ok := fieldSetters[field.Kind()]
 		if !ok {
-			log.Printf("不支持的字段类型 '%s' 用于默认值设置", field.Kind())
 			return fmt.Errorf("unsupported field type '%s' for default value", field.Kind())
 		}
 
@@ -183,7 +164,6 @@ func setDefaultValues(obj any) error {
 func setDefaultInt(field reflect.Value, defaultValue string) error {
 	val, err := strconv.ParseInt(defaultValue, 10, 64)
 	if err != nil {
-		log.Printf("无效的默认值（整数）: %v", err) // 记录错误日志
 		return fmt.Errorf("invalid default value for field: %w", err)
 	}
 	field.SetInt(val)
@@ -193,7 +173,6 @@ func setDefaultInt(field reflect.Value, defaultValue string) error {
 func setDefaultUint(field reflect.Value, defaultValue string) error {
 	val, err := strconv.ParseUint(defaultValue, 10, 64)
 	if err != nil {
-		log.Printf("无效的默认值（无符号整数）: %v", err) // 记录错误日志
 		return fmt.Errorf("invalid default value for field: %w", err)
 	}
 	field.SetUint(val)
@@ -203,7 +182,6 @@ func setDefaultUint(field reflect.Value, defaultValue string) error {
 func setDefaultFloat(field reflect.Value, defaultValue string) error {
 	val, err := strconv.ParseFloat(defaultValue, 64)
 	if err != nil {
-		log.Printf("无效的默认值（浮点数）: %v", err) // 记录错误日志
 		return fmt.Errorf("invalid default value for field: %w", err)
 	}
 	field.SetFloat(val)
@@ -218,7 +196,6 @@ func setDefaultString(field reflect.Value, defaultValue string) error {
 func setDefaultBool(field reflect.Value, defaultValue string) error {
 	val, err := strconv.ParseBool(defaultValue)
 	if err != nil {
-		log.Printf("无效的默认值（布尔值）: %v", err) // 记录错误日志
 		return fmt.Errorf("invalid default value for field: %w", err)
 	}
 	field.SetBool(val)

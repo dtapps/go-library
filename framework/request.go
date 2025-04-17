@@ -12,7 +12,7 @@ type RequestWrapper struct {
 	hertzCtx *app.RequestContext // Hertz 上下文
 }
 
-// 返回请求相关的封装方法
+// Request 返回请求相关的封装方法
 func (c *Context) Request() *RequestWrapper {
 	return &RequestWrapper{
 		ctx:      c.ctx,

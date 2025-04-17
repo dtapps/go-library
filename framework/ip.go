@@ -2,10 +2,10 @@ package framework
 
 // ClientIP 获取请求客户端的IP
 func (c *Context) ClientIP() string {
-	if c.ginCtx != nil {
+	if c.IsGin() {
 		return c.ginCtx.ClientIP()
 	}
-	if c.hertzCtx != nil {
+	if c.IsHertz() {
 		return c.hertzCtx.ClientIP()
 	}
 	return ""
