@@ -25,10 +25,13 @@ func ParseURLQuery(input string) (map[string]any, error) {
 			return nil, err
 		}
 		if existing, ok := paramMap[key]; ok {
-			if values, ok := existing.([]string); ok {
-				paramMap[key] = append(values, value)
-			} else {
-				paramMap[key] = []string{existing.(string), value}
+			switch v := existing.(type) {
+			case string:
+				paramMap[key] = []string{v, value}
+			case []string:
+				paramMap[key] = append(v, value)
+			default:
+				paramMap[key] = []string{value}
 			}
 		} else {
 			paramMap[key] = value
@@ -55,10 +58,13 @@ func ParseURLQueryWithoutError(input string) map[string]any {
 			continue
 		}
 		if existing, ok := paramMap[key]; ok {
-			if values, ok := existing.([]string); ok {
-				paramMap[key] = append(values, value)
-			} else {
-				paramMap[key] = []string{existing.(string), value}
+			switch v := existing.(type) {
+			case string:
+				paramMap[key] = []string{v, value}
+			case []string:
+				paramMap[key] = append(v, value)
+			default:
+				paramMap[key] = []string{value}
 			}
 		} else {
 			paramMap[key] = value
