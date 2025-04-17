@@ -73,46 +73,6 @@ func (c *Context) String(code int, format string, values ...any) {
 	}
 }
 
-// Param 获取路径参数
-func (c *Context) Param(key string) string {
-	if c.ginCtx != nil {
-		return c.ginCtx.Param(key)
-	}
-	if c.hertzCtx != nil {
-		return c.hertzCtx.Param(key)
-	}
-	return ""
-}
-
-func (c *Context) Query(key string) string {
-	if c.ginCtx != nil {
-		return c.ginCtx.Query(key)
-	}
-	if c.hertzCtx != nil {
-		return c.hertzCtx.Query(key)
-	}
-	return ""
-}
-
-func (c *Context) DefaultQuery(key, defaultValue string) string {
-	if c.ginCtx != nil {
-		return c.ginCtx.DefaultQuery(key, defaultValue)
-	}
-	if c.hertzCtx != nil {
-		return c.hertzCtx.DefaultQuery(key, defaultValue)
-	}
-	return ""
-}
-func (c *Context) GetQuery(key string) (string, bool) {
-	if c.ginCtx != nil {
-		return c.ginCtx.GetQuery(key)
-	}
-	if c.hertzCtx != nil {
-		return c.hertzCtx.GetQuery(key)
-	}
-	return "", false
-}
-
 //func (c *Context) QueryArray(key string) (values []string) {
 //	if c.ginCtx != nil {
 //		return c.ginCtx.QueryArray(key)
@@ -192,11 +152,17 @@ func (c *Context) GetPostFormArray(key string) (values []string, ok bool) {
 
 // GetGinContext 获取原始的 Gin 上下文
 func (c *Context) GetGinContext() *gin.Context {
+	if c.ginCtx == nil {
+		return nil
+	}
 	return c.ginCtx
 }
 
 // GetHertzContext 获取原始的 Hertz 上下文
 func (c *Context) GetHertzContext() *app.RequestContext {
+	if c.hertzCtx == nil {
+		return nil
+	}
 	return c.hertzCtx
 }
 

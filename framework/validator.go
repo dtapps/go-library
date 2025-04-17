@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-playground/validator/v10"
+	"go.dtapp.net/library/utils/gojson"
 	"io"
 	"log"
 	"reflect"
@@ -22,33 +23,43 @@ func (c *Context) BindJsonAndValidate(obj any) error {
 		log.Println("Gin Method：", c.ginCtx.Request.Method)
 		log.Println("Gin ContentType：", c.ginCtx.ContentType())
 
-		// 先绑定 path 参数
+		// 绑定 Path 参数
 		if err := c.ginBindPathParams(c.GetGinContext(), obj); err != nil {
-			return fmt.Errorf("path 参数绑定失败: %w", err)
+			return fmt.Errorf("Path 参数绑定失败：%w", err)
+		}
+		log.Printf("Gin Path 绑定：%+v\n", obj)
+
+		// 绑定 Url 参数
+		if c.ginCtx.Request.URL.RawQuery != "" {
+			if err := gojson.BindURLQueryToStruct(gojson.ParseURLQueryWithoutError(c.ginCtx.Request.URL.RawQuery), obj); err != nil {
+				return fmt.Errorf("Url 参数绑定失败：%w", err)
+			}
+			log.Printf("Gin Url 绑定：%+v\n", obj)
 		}
 
-		// 再绑定 JSON
+		// 绑定 Body JSON 参数
 		if err := c.ginBindJson(c.ginCtx, obj); err != nil && !errors.Is(err, io.EOF) {
-			return fmt.Errorf("参数绑定失败: %w", err)
+			return fmt.Errorf("Body JSON 参数绑定失败：%w", err)
 		}
-		log.Printf("Gin绑定:%+v\n", obj)
+		log.Printf("Gin Body JSON 绑定：%+v\n", obj)
 
 		// 设置默认值
 		if err := setDefaultValues(obj); err != nil {
-			return fmt.Errorf("设置默认值失败: %w", err)
+			return fmt.Errorf("设置默认值失败：%w", err)
 		}
+		log.Printf("Gin 设置默认值：%+v\n", obj)
 	}
 	if c.hertzCtx != nil {
 		log.Println("Hertz Method：", c.hertzCtx.Method())
 		log.Println("Hertz ContentType：", c.hertzCtx.ContentType())
 
 		if err := c.hertzCtx.Bind(obj); err != nil {
-			return fmt.Errorf("参数绑定失败: %w", err)
+			return fmt.Errorf("参数绑定失败：%w", err)
 		}
-		log.Printf("Hertz绑定:%+v\n", obj)
+		log.Printf("Hertz 绑定：%+v\n", obj)
 	}
 
-	log.Printf("验证数据:%+v\n", obj)
+	log.Printf("Validator 准备验证数据：%+v\n", obj)
 
 	// 验证
 	return c.Validator(obj)
@@ -89,7 +100,7 @@ func (c *Context) ValidatorError(err error) map[string]string {
 		}
 	} else if err != nil {
 		// 如果不是验证错误，记录原始错误
-		errMap["general"] = fmt.Sprintf("An unexpected error occurred: %s", err.Error())
+		errMap["general"] = fmt.Sprintf("An unexpected error occurred：%s", err.Error())
 	}
 
 	return errMap

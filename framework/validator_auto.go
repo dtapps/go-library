@@ -1,17 +1,15 @@
 package framework
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"io"
-	"log"
 	"reflect"
 	"strconv"
 )
 
+// 扩展 gin.Context 的方法，用于读取并反序列化请求体
 func (c *Context) ginBindPathParams(ginCtx *gin.Context, obj any) error {
 	v := reflect.ValueOf(obj)
 	if v.Kind() != reflect.Ptr || v.IsNil() {
@@ -82,26 +80,19 @@ func (c *Context) ginBindPathParams(ginCtx *gin.Context, obj any) error {
 	return nil
 }
 
+// 扩展 gin.Context 的方法，用于读取并反序列化请求体
 func (c *Context) ginBindJson(ginCtx *gin.Context, obj any) error {
-	bodyBytes, err := io.ReadAll(ginCtx.Request.Body)
+
+	// 缓存请求体内容
+	bodyBytes, err := c.GinCacheBody(ginCtx)
 	if err != nil {
-		return fmt.Errorf("读取请求体失败: %w", err)
+		return fmt.Errorf("读取请求体失败：%w", err)
 	}
-	defer ginCtx.Request.Body.Close()
-
-	// 空 body 直接返回，不报错
-	if len(bodyBytes) == 0 {
-		return nil
-	}
-
-	log.Println("原始 Body:", string(bodyBytes))
 
 	// 反序列化
 	if err := json.Unmarshal(bodyBytes, obj); err != nil {
 		return fmt.Errorf("JSON 反序列化失败: %w", err)
 	}
 
-	// 如果后续还需要用 Body，重新设置回来
-	ginCtx.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 	return nil
 }
