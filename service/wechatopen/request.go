@@ -6,14 +6,17 @@ import (
 	"net/http"
 )
 
-// RequestAuthorizer 发起小程序
-func (c *Client) RequestAuthorizer(ctx context.Context, url string, accessToken string, notMustParams ...*gorequest.Params) (gorequest.Response, error) {
+type RequestAuthorizerParams struct {
+	Url         string
+	AccessToken string
+	Response    any
+}
 
+// RequestAuthorizer 发起小程序
+func (c *Client) RequestAuthorizer(ctx context.Context, param RequestAuthorizerParams, notMustParams ...*gorequest.Params) (gorequest.Response, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-
 	// 请求
-	var response WxaApiWxaembeddedAddEmbeddedResponse
-	request, err := c.request(ctx, url+"?access_token="+accessToken, params, http.MethodPost, &response)
+	request, err := c.request(ctx, param.Url+"?access_token="+param.AccessToken, params, http.MethodPost, &param.Response)
 	return request, err
 }
