@@ -2,6 +2,7 @@ package gojson
 
 import (
 	"errors"
+	"fmt"
 	"net/url"
 	"reflect"
 	"strconv"
@@ -99,16 +100,24 @@ func parseFields(t reflect.Type, parentIndex []int) []fieldMeta {
 		index := append([]int{}, parentIndex...)
 		index = append(index, i)
 
+		// 处理匿名嵌套字段
 		if f.Anonymous && f.Type.Kind() == reflect.Struct {
 			fields = append(fields, parseFields(f.Type, index)...)
 			continue
 		}
 
+		// 提取 JSON 标签
 		tag := f.Tag.Get("json")
-		if tag == "" {
-			tag = strings.ToLower(f.Name)
+		if tag == "" || tag == "-" {
+			continue // 忽略未标记的字段
 		}
-		fields = append(fields, fieldMeta{index: index, tag: tag})
+		tagParts := strings.Split(tag, ",")
+		tagName := tagParts[0]
+		if tagName == "" {
+			tagName = strings.ToLower(f.Name)
+		}
+
+		fields = append(fields, fieldMeta{index: index, tag: tagName})
 	}
 	return fields
 }
@@ -121,21 +130,29 @@ func setField(field reflect.Value, strVal string) error {
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		num, err := strconv.ParseInt(strVal, 10, 64)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to parse int value '%s': %v", strVal, err)
 		}
 		field.SetInt(num)
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 		num, err := strconv.ParseUint(strVal, 10, 64)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to parse uint value '%s': %v", strVal, err)
 		}
 		field.SetUint(num)
 	case reflect.Bool:
 		b, err := strconv.ParseBool(strVal)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to parse bool value '%s': %v", strVal, err)
 		}
 		field.SetBool(b)
+	case reflect.Float32, reflect.Float64:
+		num, err := strconv.ParseFloat(strVal, field.Type().Bits())
+		if err != nil {
+			return fmt.Errorf("failed to parse float value '%s': %v", strVal, err)
+		}
+		field.SetFloat(num)
+	default:
+		return fmt.Errorf("unsupported field type: %s", field.Kind())
 	}
 	return nil
 }
