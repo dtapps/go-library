@@ -19,23 +19,38 @@ func (c *Context) ginBindPathParams(ginCtx *gin.Context, obj any) error {
 	t := v.Type()
 
 	hasPath := false
-	fields := make([]reflect.StructField, 0)
+	var fields []reflect.StructField
 
-	// 第一次循环：检查是否有 path 标签的字段，记录它们
-	for i := 0; i < t.NumField(); i++ {
-		field := t.Field(i)
-		if pathTag := field.Tag.Get("path"); pathTag != "" {
-			hasPath = true
-			fields = append(fields, field)
+	// 递归解析结构体字段
+	var parseFields func(t reflect.Type, parentIndex []int)
+	parseFields = func(t reflect.Type, parentIndex []int) {
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+
+			// 如果是匿名嵌套字段，递归解析
+			if field.Anonymous && field.Type.Kind() == reflect.Struct {
+				parseFields(field.Type, append(parentIndex, i))
+				continue
+			}
+
+			// 检查是否有 path 标签
+			pathTag := field.Tag.Get("path")
+			if pathTag != "" {
+				hasPath = true
+				fields = append(fields, field)
+			}
 		}
 	}
+
+	// 调用递归解析函数
+	parseFields(t, nil)
 
 	// 如果没有 path 字段，直接返回
 	if !hasPath {
 		return nil
 	}
 
-	// 第二次循环：进行路径参数的绑定
+	// 绑定路径参数
 	for _, field := range fields {
 		pathTag := field.Tag.Get("path")
 		paramVal := ginCtx.Param(pathTag)
