@@ -8,5 +8,8 @@ func (c *Context) Param(key string) string {
 	if c.IsHertz() {
 		return c.hertzCtx.Param(key)
 	}
+	if c.IsEcho() {
+		return c.echoCtx.Param(key)
+	}
 	return ""
 }

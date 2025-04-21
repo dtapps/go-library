@@ -10,6 +10,7 @@ import (
 const __rawBodyKey = "__rawBody"
 
 func (c *Context) GinCacheBody(ginCtx *gin.Context) ([]byte, error) {
+
 	// 检查是否已经缓存了请求体
 	if val, exists := ginCtx.Get(__rawBodyKey); exists {
 		if body, ok := val.([]byte); ok {
@@ -38,6 +39,7 @@ func (c *Context) GinCacheBody(ginCtx *gin.Context) ([]byte, error) {
 }
 
 func (c *Context) HertzCacheBody(hertzCtx *app.RequestContext) ([]byte, error) {
+
 	// 检查是否已经缓存了请求体
 	if val, exists := hertzCtx.Get(__rawBodyKey); exists {
 		return val.([]byte), nil
@@ -66,6 +68,8 @@ func (c *Context) CacheBody() ([]byte, error) {
 	}
 	if c.IsHertz() {
 		return c.HertzCacheBody(c.hertzCtx)
+	}
+	if c.IsEcho() {
 	}
 	return nil, nil
 }

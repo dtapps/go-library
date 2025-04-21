@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
 )
 
 // Context 统一的 Context 封装
@@ -11,6 +12,7 @@ type Context struct {
 	ctx      context.Context     // 统一的上下文
 	ginCtx   *gin.Context        // Gin 上下文
 	hertzCtx *app.RequestContext // Hertz 上下文
+	echoCtx  echo.Context        // Echo 上下文
 }
 
 // Next 继续处理请求
@@ -20,6 +22,9 @@ func (c *Context) Next() {
 	}
 	if c.IsHertz() {
 		c.hertzCtx.Next(c.ctx)
+	}
+	if c.IsEcho() {
+
 	}
 }
 
@@ -31,6 +36,8 @@ func (c *Context) Abort() {
 	if c.IsHertz() {
 		c.hertzCtx.Abort()
 	}
+	if c.IsEcho() {
+	}
 }
 
 // AbortWithStatus 中止请求并设置状态码
@@ -40,6 +47,8 @@ func (c *Context) AbortWithStatus(code int) {
 	}
 	if c.IsHertz() {
 		c.hertzCtx.AbortWithStatus(code)
+	}
+	if c.IsEcho() {
 	}
 }
 
@@ -51,6 +60,8 @@ func (c *Context) AbortWithStatusJSON(code int, jsonObj any) {
 	if c.IsHertz() {
 		c.hertzCtx.AbortWithStatusJSON(code, jsonObj)
 	}
+	if c.IsEcho() {
+	}
 }
 
 // JSON 方法：统一返回 JSON 响应
@@ -60,6 +71,8 @@ func (c *Context) JSON(code int, obj any) {
 	}
 	if c.IsHertz() {
 		c.hertzCtx.JSON(code, obj)
+	}
+	if c.IsEcho() {
 	}
 }
 
@@ -71,17 +84,9 @@ func (c *Context) String(code int, format string, values ...any) {
 	if c.IsHertz() {
 		c.hertzCtx.String(code, format, values)
 	}
+	if c.IsEcho() {
+	}
 }
-
-//func (c *Context) QueryArray(key string) (values []string) {
-//	if c.IsGin() {
-//		return c.ginCtx.QueryArray(key)
-//	}
-//	if c.IsHertz() {
-//		return c.hertzCtx.QueryArgs(key)
-//	}
-//	return
-//}
 
 func (c *Context) PostForm(key string) string {
 	if c.IsGin() {
@@ -89,6 +94,8 @@ func (c *Context) PostForm(key string) string {
 	}
 	if c.IsHertz() {
 		return c.hertzCtx.PostForm(key)
+	}
+	if c.IsEcho() {
 	}
 	return ""
 }
@@ -100,6 +107,8 @@ func (c *Context) DefaultPostForm(key, defaultValue string) string {
 	if c.IsHertz() {
 		return c.hertzCtx.DefaultPostForm(key, defaultValue)
 	}
+	if c.IsEcho() {
+	}
 	return ""
 }
 
@@ -109,6 +118,8 @@ func (c *Context) PostFormArray(key string) (values []string) {
 	}
 	if c.IsHertz() {
 		return c.hertzCtx.PostFormArray(key)
+	}
+	if c.IsEcho() {
 	}
 	return
 }
@@ -120,6 +131,8 @@ func (c *Context) GetPostForm(key string) (string, bool) {
 	if c.IsHertz() {
 		return c.hertzCtx.GetPostForm(key)
 	}
+	if c.IsEcho() {
+	}
 	return "", false
 }
 
@@ -130,55 +143,9 @@ func (c *Context) GetPostFormArray(key string) (values []string, ok bool) {
 	if c.IsHertz() {
 		return c.hertzCtx.GetPostFormArray(key)
 	}
+	if c.IsEcho() {
+	}
 	return
-}
-
-// BindAndValidate 方法：统一绑定和验证请求数据
-//func (c *Context) BindAndValidate(obj any) error {
-//	if c.IsGin() {
-//		// Gin 的绑定和验证
-//		if err := c.ginCtx.ShouldBind(obj); err != nil {
-//			return err
-//		}
-//	}
-//	if c.IsHertz() {
-//		// Hertz 的绑定和验证
-//		if err := c.hertzCtx.BindAndValidate(obj); err != nil {
-//			return err
-//		}
-//	}
-//	return nil
-//}
-
-// GetContext 获取上下文
-func (c *Context) GetContext() context.Context {
-	return c.ctx
-}
-
-// SetContext 设置上下文
-func (c *Context) SetContext(ctx context.Context) {
-	c.ctx = ctx
-}
-
-// GetSafeContext 获取安全上下文
-func (c *Context) GetSafeContext() context.Context {
-	return context.WithoutCancel(c.ctx)
-}
-
-// GetGinContext 获取原始的 Gin 上下文
-func (c *Context) GetGinContext() *gin.Context {
-	if c.ginCtx == nil {
-		return nil
-	}
-	return c.ginCtx
-}
-
-// GetHertzContext 获取原始的 Hertz 上下文
-func (c *Context) GetHertzContext() *app.RequestContext {
-	if c.hertzCtx == nil {
-		return nil
-	}
-	return c.hertzCtx
 }
 
 // HandlerFunc 统一的处理函数签名
@@ -209,5 +176,20 @@ func HertzHandler(handler HandlerFunc) app.HandlerFunc {
 			hertzCtx: ctx, // 保存 Hertz 的上下文
 		}
 		handler(wrapperCtx)
+	}
+}
+
+// EchoHandler 封装 Echo
+func EchoHandler(handler HandlerFunc) echo.HandlerFunc {
+	if useFramework != Echo {
+		return nil
+	}
+	return func(c echo.Context) error {
+		wrapperCtx := &Context{
+			ctx:     c.Request().Context(), // 使用 Echo 提供的上下文
+			echoCtx: c,                     // 保存 Echo 的上下文
+		}
+		handler(wrapperCtx)
+		return nil
 	}
 }

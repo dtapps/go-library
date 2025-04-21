@@ -8,6 +8,9 @@ func (c *Context) Header(key, value string) {
 	if c.IsHertz() {
 		c.hertzCtx.Header(key, value)
 	}
+	if c.IsEcho() {
+		c.hertzCtx.Header(key, value)
+	}
 }
 
 // GetHeader 设置响应头部信息
@@ -17,6 +20,8 @@ func (c *Context) GetHeader(key string) string {
 	}
 	if c.IsHertz() {
 		return string(c.hertzCtx.GetHeader(key))
+	}
+	if c.IsEcho() {
 	}
 	return ""
 }
@@ -29,6 +34,8 @@ func (c *Context) Host() string {
 	if c.IsHertz() {
 		return string(c.hertzCtx.Host())
 	}
+	if c.IsEcho() {
+	}
 	return ""
 }
 
@@ -39,6 +46,8 @@ func (c *Context) Method() string {
 	}
 	if c.IsHertz() {
 		return string(c.hertzCtx.Method())
+	}
+	if c.IsEcho() {
 	}
 	return ""
 }
@@ -51,6 +60,8 @@ func (c *Context) UserAgent() string {
 	if c.IsHertz() {
 		return string(c.hertzCtx.UserAgent())
 	}
+	if c.IsEcho() {
+	}
 	return ""
 }
 
@@ -62,6 +73,8 @@ func (c *Context) ContentType() string {
 	if c.IsHertz() {
 		return string(c.hertzCtx.ContentType())
 	}
+	if c.IsEcho() {
+	}
 	return ""
 }
 
@@ -72,6 +85,8 @@ func (c *Context) StatusCode() int {
 	}
 	if c.IsHertz() {
 		return c.hertzCtx.Response.StatusCode()
+	}
+	if c.IsEcho() {
 	}
 	return 0
 }
@@ -86,6 +101,8 @@ func (c *Context) FullPath() string {
 	if c.IsHertz() {
 		return c.hertzCtx.FullPath()
 	}
+	if c.IsEcho() {
+	}
 	return ""
 }
 
@@ -98,6 +115,8 @@ func (c *Context) Path() string {
 	}
 	if c.IsHertz() {
 		return string(c.hertzCtx.Path())
+	}
+	if c.IsEcho() {
 	}
 	return ""
 }

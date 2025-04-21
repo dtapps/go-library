@@ -8,5 +8,8 @@ func (c *Context) ClientIP() string {
 	if c.IsHertz() {
 		return c.hertzCtx.ClientIP()
 	}
+	if c.IsEcho() {
+		return c.echoCtx.RealIP()
+	}
 	return ""
 }
