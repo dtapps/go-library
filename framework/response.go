@@ -24,16 +24,25 @@ func (cr *ResponseWrapper) GetHeader(key string) string {
 	if cr.c.IsHertz() {
 		return cr.c.hertzCtx.Response.Header.Get(key)
 	}
+	if cr.c.IsEcho() {
+		return cr.c.echoCtx.Response().Header().Get(key)
+	}
 	return ""
 }
 
 // SetHeader 设置响应的Header
 func (cr *ResponseWrapper) SetHeader(key, value string) {
+	if value == "" {
+		return
+	}
 	if cr.c.IsGin() {
-		cr.c.ginCtx.Header(key, value)
+		cr.c.ginCtx.Writer.Header().Set(key, value)
 	}
 	if cr.c.IsHertz() {
-		cr.c.hertzCtx.Header(key, value)
+		cr.c.hertzCtx.Response.Header.Set(key, value)
+	}
+	if cr.c.IsEcho() {
+		cr.c.echoCtx.Response().Header().Set(key, value)
 	}
 }
 
@@ -44,6 +53,9 @@ func (cr *ResponseWrapper) StatusCode() int {
 	}
 	if cr.c.IsHertz() {
 		return cr.c.hertzCtx.Response.StatusCode()
+	}
+	if cr.c.IsEcho() {
+		return cr.c.echoCtx.Response().Status
 	}
 	return 0
 }
@@ -61,6 +73,8 @@ func (cr *ResponseWrapper) Body() []byte {
 	}
 	if cr.c.IsHertz() {
 		return cr.c.hertzCtx.Response.Body()
+	}
+	if cr.c.IsEcho() {
 	}
 	return nil
 }
