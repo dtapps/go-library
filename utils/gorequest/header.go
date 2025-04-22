@@ -59,8 +59,21 @@ func (h *Headers) GetQuery() string {
 	return u.Encode()
 }
 
-// DeepGet 深度获取
+// Deprecated: 请使用 DeepGetString 方法代替。
+// DeepGet 方法已被弃用，因为它返回的类型不够明确
 func (h *Headers) DeepGet() map[string]string {
+	h.Lock()
+	defer h.Unlock()
+
+	targetMap := make(map[string]string)
+	for key, value := range h.m {
+		targetMap[key] = value
+	}
+	return targetMap
+}
+
+// DeepGetString 深度获取
+func (h *Headers) DeepGetString() map[string]string {
 	h.Lock()
 	defer h.Unlock()
 

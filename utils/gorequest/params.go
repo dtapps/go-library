@@ -1,6 +1,9 @@
 package gorequest
 
-import "sync"
+import (
+	"fmt"
+	"sync"
+)
 
 // Params 参数
 type Params struct {
@@ -47,8 +50,33 @@ func (p *Params) Get(key string) any {
 	return p.m[key]
 }
 
-// DeepGet 深度获取
+// Deprecated: 请使用 DeepGetString / DeepGetAny 方法代替。
+// DeepGet 方法已被弃用，因为它返回的类型不够明确，可能导致类型转换问题。
 func (p *Params) DeepGet() map[string]any {
+	p.Lock()
+	defer p.Unlock()
+
+	targetMap := make(map[string]any)
+	for key, value := range p.m {
+		targetMap[key] = value
+	}
+	return targetMap
+}
+
+// DeepGetString 深度获取
+func (p *Params) DeepGetString() map[string]string {
+	p.Lock()
+	defer p.Unlock()
+
+	targetMap := make(map[string]string)
+	for key, value := range p.m {
+		targetMap[key] = fmt.Sprintf("%v", value)
+	}
+	return targetMap
+}
+
+// DeepGetAny 深度获取
+func (p *Params) DeepGetAny() map[string]any {
 	p.Lock()
 	defer p.Unlock()
 
