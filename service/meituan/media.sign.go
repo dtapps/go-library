@@ -8,13 +8,12 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 	"net/url"
 	"sort"
 	"strings"
 	"time"
-
-	"go.dtapp.net/library/utils/gorequest"
 )
 
 type MediaClientNewSignResponse struct {
@@ -55,7 +54,7 @@ func (c *MediaClient) signSign(urlStr string, method string, param *gorequest.Pa
 
 func (c *MediaClient) signContentMD5(method string, param *gorequest.Params) string {
 	if method == http.MethodPost && param != nil {
-		bodyData, _ := json.Marshal(param.DeepGet())
+		bodyData, _ := json.Marshal(param.DeepGetAny())
 		hash := md5.Sum(bodyData)
 		return base64.StdEncoding.EncodeToString(hash[:])
 	}
@@ -69,7 +68,7 @@ func (c *MediaClient) signSort(method string, param *gorequest.Params, response 
 	params.Set("S-Ca-Timestamp", response.SCaTimestamp)
 
 	var keys []string
-	for k := range params.DeepGet() {
+	for k := range params.DeepGetAny() {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
@@ -92,7 +91,7 @@ func (c *MediaClient) signURL(urlStr string, method string, param *gorequest.Par
 	if method == http.MethodGet {
 		sortParam := c.signURLSort(param)
 		var keys []string
-		for k := range sortParam.DeepGet() {
+		for k := range sortParam.DeepGetAny() {
 			keys = append(keys, k)
 		}
 		sort.Strings(keys)
@@ -109,7 +108,7 @@ func (c *MediaClient) signURL(urlStr string, method string, param *gorequest.Par
 
 func (c *MediaClient) signURLSort(param *gorequest.Params) *gorequest.Params {
 	var keys []string
-	for k := range param.DeepGet() {
+	for k := range param.DeepGetAny() {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)

@@ -2,9 +2,8 @@ package meituan
 
 import (
 	"context"
-	"net/http"
-
 	"go.dtapp.net/library/utils/gorequest"
+	"net/http"
 )
 
 type MediaQueryOrderResponse struct {
@@ -15,8 +14,8 @@ type MediaQueryOrderResponse struct {
 		SkuCount int64  `json:"skuCount"`        // 查询返回本页的数量合计（无实际使用场景，若查询订单购买商品数可以看返回的dataList中skuCount）
 		ScrollId string `json:"scrollId"`        // 分页id，当searchType选择2逐页查询时，出参会返回本字段。用于下一页查询的scrollId字段入参使用
 		DataList []struct {
-			Platform          int64  `json:"platform"`               // 商品所属业务一级分类类型：1 到家及其他业务类型，2 到店业务类型（包含到店美食、休闲生活、酒店、门票）
-			BusinessLine      int64  `json:"businessLine,omitempty"` // 业务线，同入参枚举说明
+			Platform          int64  `json:"platform"`               // 商品所属业务一级分类类型：1 到家及其他业务类型，2 到店业务类型（包含到店美食、休闲生活）
+			BusinessLine      int64  `json:"businessLine,omitempty"` // 1）当platform选择到家及其他业务类型时，业务线枚举 1：外卖订单 WAIMAI 2：闪购红包 3：酒旅 4：美团电商订单（团好货） 5：医药 6：拼好饭 7：商品超值券包 COUPON 8：买菜 MAICAI 11：闪购商品 不传则默认传空表示返回除类型7以外的全部类型查询。若输入参数含7 商品超值券包，则只返回商品超值券包订单 2）当platform选择到店业务类型 时，业务线枚举1:到餐 2: 到综
 			OrderId           string `json:"orderId"`                // 订单ID
 			PayTime           int64  `json:"payTime"`                // 订单支付时间
 			PayPrice          string `json:"payPrice"`               // 订单支付价格。针对到餐、到综、酒店、闪购、医药业务类型，为父订单的支付价格，单位元
@@ -70,6 +69,7 @@ func newMediaQueryOrderResult(result MediaQueryOrderResponse, body []byte, http 
 // MediaQueryOrder 查询订单接口
 // 查询推广的订单明细及佣金信息，包括到店、到家、买菜等业务类型的订单。支持按付款时间或更新时间查询，查询近3个月的订单明细。支持POST方法查询接口。只接受JSON格式。
 // https://media.meituan.com/pc/index.html#/materials/api-detail/query_order
+// https://page.meituan.net/html/1706169509872_eb0353/index.html
 func (c *MediaClient) MediaQueryOrder(ctx context.Context, notMustParams ...*gorequest.Params) (*MediaQueryOrderResult, error) {
 
 	// 参数

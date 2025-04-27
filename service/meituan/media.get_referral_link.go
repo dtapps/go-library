@@ -2,9 +2,8 @@ package meituan
 
 import (
 	"context"
-	"net/http"
-
 	"go.dtapp.net/library/utils/gorequest"
+	"net/http"
 )
 
 type MediaGetReferralLinkResponse struct {
@@ -27,6 +26,7 @@ func newMediaGetReferralLinkResult(result MediaGetReferralLinkResponse, body []b
 // MediaGetReferralLink 获取推广链接接口
 // 支持获取活动物料、到店/到家/买菜业务类型的推广链接；支持按活动物料ID、商品券展示ID、目标链接的形式获取对应的推广链接；支持appkey-sid两级渠道追踪推广效果。需要用POST方法调用接口。
 // https://media.meituan.com/pc/index.html#/materials/api-detail/get_referral_link
+// https://page.meituan.net/html/1701831845934_13e608/index.html
 func (c *MediaClient) MediaGetReferralLink(ctx context.Context, notMustParams ...*gorequest.Params) (*MediaGetReferralLinkResult, error) {
 
 	// 参数

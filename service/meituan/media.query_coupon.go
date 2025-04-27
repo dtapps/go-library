@@ -2,9 +2,8 @@ package meituan
 
 import (
 	"context"
-	"net/http"
-
 	"go.dtapp.net/library/utils/gorequest"
+	"net/http"
 )
 
 type MediaQueryCouponResponse struct {
@@ -75,6 +74,7 @@ func newMediaQueryCouponResult(result MediaQueryCouponResponse, body []byte, htt
 // MediaQueryCoupon 商品查询接口
 // 查询售卖商品接口，支持全量查询、精确查询、榜单主题查询。需用POST方式调用。只接受JSON格式。
 // https://media.meituan.com/pc/index.html#/materials/api-detail/query_coupon
+// https://page.meituan.net/html/1701831807616_1db0df/index.html
 func (c *MediaClient) MediaQueryCoupon(ctx context.Context, notMustParams ...*gorequest.Params) (*MediaQueryCouponResult, error) {
 
 	// 参数

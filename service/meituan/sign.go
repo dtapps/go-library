@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"crypto/md5"
 	"encoding/hex"
+	"github.com/spf13/cast"
 	"go.dtapp.net/library/utils/gorequest"
-	"go.dtapp.net/library/utils/gostring"
 	"io"
 	"sort"
 )
@@ -15,14 +15,14 @@ import (
 func (c *Client) getSign(Secret string, param *gorequest.Params) string {
 	// 参数按照参数名的字典升序排列
 	var keys []string
-	for k := range param.DeepGet() {
+	for k := range param.DeepGetAny() {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
 	signStr := bytes.NewBufferString(Secret)
 	for _, k := range keys {
 		signStr.WriteString(k)
-		signStr.WriteString(gostring.GetString(param.Get(k)))
+		signStr.WriteString(cast.ToString(param.Get(k)))
 	}
 	signStr.WriteString(Secret)
 	// md5加密
