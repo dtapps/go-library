@@ -3,8 +3,8 @@ package wikeyun
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"github.com/spf13/cast"
 	"go.dtapp.net/library/utils/gorequest"
-	"go.dtapp.net/library/utils/gostring"
 	"sort"
 	"strconv"
 	"strings"
@@ -33,13 +33,13 @@ func (c *Client) sign(param *gorequest.Params) respSign {
 	param.Set("timestamp", timestamp)   // unix时间戳（秒单位）
 	// 排序所有的 key
 	var keys []string
-	for key := range param.DeepGet() {
+	for key := range param.DeepGetAny() {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
 	signStr := c.GetAppSecret()
 	for _, key := range keys {
-		signStr += key + gostring.GetString(param.Get(key))
+		signStr += key + cast.ToString(param.Get(key))
 	}
 	signStr += c.GetAppSecret()
 	return respSign{

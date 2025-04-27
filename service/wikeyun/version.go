@@ -1,5 +1,5 @@
 package wikeyun
 
 const (
-	Version = "1.0.44"
+	Version = "1.0.45"
 )
