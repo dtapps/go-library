@@ -2,7 +2,7 @@ package juhe
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
+	"encoding/json"
 	"go.dtapp.net/library/utils/gorequest"
 )
 
@@ -30,7 +30,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	}
 
 	// 解析响应
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 
 	return request, err
 }
