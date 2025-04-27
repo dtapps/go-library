@@ -2,7 +2,7 @@ package wechatpayopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
+	"encoding/json"
 	"go.dtapp.net/library/utils/gorequest"
 )
 
@@ -12,7 +12,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	uri := apiUrl + url
 
 	// 认证
-	authorization, err := c.authorization(method, param.DeepGet(), uri)
+	authorization, err := c.authorization(method, param.DeepGetAny(), uri)
 	if err != nil {
 		return gorequest.Response{}, err
 	}
@@ -43,10 +43,10 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	}
 
 	// 解析响应
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 
 	// 解析错误响应
-	err = gojson.Unmarshal(request.ResponseBody, &errResponse)
+	err = json.Unmarshal(request.ResponseBody, &errResponse)
 
 	return request, err
 }

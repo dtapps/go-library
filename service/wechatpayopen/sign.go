@@ -9,10 +9,10 @@ import (
 	"crypto/sha256"
 	"crypto/x509"
 	"encoding/base64"
+	"encoding/json"
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorandom"
 	"net/url"
 	"time"
@@ -63,7 +63,7 @@ func (c *Client) authorization(method string, paramMap map[string]any, rawUrl st
 	// 请求报文主体
 	var signBody string
 	if len(paramMap) != 0 {
-		paramJsonBytes, err := gojson.Marshal(paramMap)
+		paramJsonBytes, err := json.Marshal(paramMap)
 		if err != nil {
 			return token, err
 		}

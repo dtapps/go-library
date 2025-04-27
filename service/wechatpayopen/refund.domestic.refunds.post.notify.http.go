@@ -2,8 +2,8 @@ package wechatpayopen
 
 import (
 	"context"
+	"encoding/json"
 	"encoding/xml"
-	"go.dtapp.net/library/utils/gojson"
 	"net/http"
 	"time"
 )
@@ -36,7 +36,7 @@ func (c *Client) RefundDomesticRefundsPostNotifyHttp(ctx context.Context, w http
 		return validateXml, response, gcm, err
 	}
 
-	err = gojson.Unmarshal(gcm, &response)
+	err = json.Unmarshal(gcm, &response)
 	return validateXml, response, gcm, err
 }
 
