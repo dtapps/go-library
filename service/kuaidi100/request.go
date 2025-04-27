@@ -2,6 +2,7 @@ package kuaidi100
 
 import (
 	"context"
+	"encoding/json"
 	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
 )
@@ -18,10 +19,10 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	newParams.Set("customer", c.GetCustomer())
 
 	// 请求参数
-	newParams.Set("param", gojson.JsonEncodeNoError(param.DeepGet()))
+	newParams.Set("param", gojson.JsonEncodeNoError(param.DeepGetAny()))
 
 	// 签名
-	newParams.Set("sign", c.getSign(gojson.JsonEncodeNoError(param.DeepGet())))
+	newParams.Set("sign", c.getSign(gojson.JsonEncodeNoError(param.DeepGetAny())))
 
 	// 设置请求地址
 	c.httpClient.SetUri(uri)
@@ -42,7 +43,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	}
 
 	// 解析响应
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 
 	return request, err
 }

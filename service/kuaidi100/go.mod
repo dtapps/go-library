@@ -1,31 +1,25 @@
 module go.dtapp.net/library/service/kuaidi100
 
-go 1.23.0
+go 1.24.1
 
 replace go.dtapp.net/library/utils/gojson => ../../utils/gojson
-
-replace go.dtapp.net/library/utils/gotime => ../../utils/gotime
-
-replace go.dtapp.net/library/utils/gostring => ../../utils/gostring
-
-replace go.dtapp.net/library/utils/gorandom => ../../utils/gorandom
 
 replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 
 replace go.dtapp.net/library/utils/gomd5 => ../../utils/gomd5
 
 require (
-	go.dtapp.net/library/utils/gojson v1.0.8
+	go.dtapp.net/library/utils/gojson v1.0.13
 	go.dtapp.net/library/utils/gomd5 v1.0.3
-	go.dtapp.net/library/utils/gorequest v1.0.91
+	go.dtapp.net/library/utils/gorequest v1.0.95
 )
 
 require (
 	github.com/MercuryEngineering/CookieMonster v0.0.0-20180304172713-1584578b3403 // indirect
 	github.com/basgys/goxml2json v1.1.0 // indirect
-	go.dtapp.net/library/utils/gorandom v1.0.4 // indirect
-	go.dtapp.net/library/utils/gostring v1.0.22 // indirect
-	go.dtapp.net/library/utils/gotime v1.0.12 // indirect
-	golang.org/x/net v0.32.0 // indirect
-	golang.org/x/text v0.21.0 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	golang.org/x/net v0.39.0 // indirect
+	golang.org/x/text v0.24.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
