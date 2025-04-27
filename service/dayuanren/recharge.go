@@ -2,7 +2,7 @@ package dayuanren
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
+	"encoding/json"
 	"go.dtapp.net/library/utils/gorequest"
 )
 
@@ -72,7 +72,7 @@ func (c *Client) Recharge(ctx context.Context, outTradeNum string, productID int
 // ParsingContent 解析内容
 func (cr *RechargeResult) ParsingContent() (RechargeResponseContent, error) {
 	checksContent := RechargeResponseContent{}
-	err := gojson.Unmarshal(cr.Body, &checksContent)
+	err := json.Unmarshal(cr.Body, &checksContent)
 	if err != nil {
 		return RechargeResponseContent{}, err
 	}

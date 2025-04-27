@@ -2,8 +2,8 @@ package dayuanren
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
-	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
 )
 
@@ -64,7 +64,7 @@ func (c *Client) Check(ctx context.Context, outTradeNums string, notMustParams .
 // ParsingContent 解析内容
 func (cr *CheckResult) ParsingContent() (CheckResponseContent, error) {
 	checksContent := CheckResponseContent{}
-	err := gojson.Unmarshal(cr.Body, &checksContent)
+	err := json.Unmarshal(cr.Body, &checksContent)
 	if err != nil {
 		return CheckResponseContent{}, err
 	}

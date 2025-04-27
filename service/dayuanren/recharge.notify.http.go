@@ -2,7 +2,7 @@ package dayuanren
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
+	"encoding/json"
 	"net/http"
 )
 
@@ -23,6 +23,6 @@ type ResponseRechargeNotifyHttp struct {
 // RechargeNotifyHttp 充值结果通知-异步通知
 // https://www.kancloud.cn/boyanyun/boyanyun_huafei/3097255
 func (c *Client) RechargeNotifyHttp(ctx context.Context, w http.ResponseWriter, r *http.Request) (validateJson ResponseRechargeNotifyHttp, err error) {
-	err = gojson.NewDecoder(r.Body).Decode(&validateJson)
+	err = json.NewDecoder(r.Body).Decode(&validateJson)
 	return validateJson, err
 }
