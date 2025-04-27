@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"crypto/md5"
 	"encoding/hex"
+	"github.com/spf13/cast"
 	"go.dtapp.net/library/utils/gorequest"
-	"go.dtapp.net/library/utils/gostring"
 	"io"
 	"net/url"
 	"sort"
@@ -16,7 +16,7 @@ import (
 func (c *Client) getSign(customerKey string, param *gorequest.Params) string {
 	// 参数按照参数名的字典升序排列
 	var keys []string
-	for k := range param.DeepGet() {
+	for k := range param.DeepGetAny() {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
@@ -37,8 +37,8 @@ func (c *Client) getRequestData(param *gorequest.Params) string {
 	// 公共参数
 	args := url.Values{}
 	// 请求参数
-	for key, val := range param.DeepGet() {
-		args.Set(key, gostring.GetString(val))
+	for key, val := range param.DeepGetAny() {
+		args.Set(key, cast.ToString(val))
 	}
 	return args.Encode()
 }

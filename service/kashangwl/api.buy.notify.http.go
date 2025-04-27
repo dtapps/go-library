@@ -2,7 +2,7 @@ package kashangwl
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
+	"encoding/json"
 	"net/http"
 )
 
@@ -20,6 +20,6 @@ type ResponseApiBuyNotifyHttp struct {
 // ApiBuyNotifyHttp 购买商品 - 回调通知
 // http://doc.cqmeihu.cn/sales/order-status-notify.html
 func (c *Client) ApiBuyNotifyHttp(ctx context.Context, w http.ResponseWriter, r *http.Request) (validateJson ResponseApiBuyNotifyHttp, err error) {
-	err = gojson.NewDecoder(r.Body).Decode(&validateJson)
+	err = json.NewDecoder(r.Body).Decode(&validateJson)
 	return validateJson, err
 }
