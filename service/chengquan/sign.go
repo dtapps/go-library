@@ -5,8 +5,8 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
+	"github.com/spf13/cast"
 	"go.dtapp.net/library/utils/gorequest"
-	"go.dtapp.net/library/utils/gostring"
 	"sort"
 	"strings"
 )
@@ -16,14 +16,14 @@ func (c *Client) sign(ctx context.Context, param *gorequest.Params) string {
 
 	// 排序所有的 key
 	var keys []string
-	for key := range param.DeepGet() {
+	for key := range param.DeepGetAny() {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
 	signStr := ""
 	for _, key := range keys {
 		if key != "" {
-			signStr += fmt.Sprintf("%s=%s&", key, gostring.GetString(param.Get(key)))
+			signStr += fmt.Sprintf("%s=%s&", key, cast.ToString(param.Get(key)))
 		}
 	}
 	signStr += "key=" + c.GetAppKey()
