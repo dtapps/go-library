@@ -11,7 +11,7 @@ import (
 // 签名
 func sign(param *gorequest.Params, apiKey string, timestamp string) string {
 	var keys []string
-	for k := range param.DeepGet() {
+	for k := range param.DeepGetAny() {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
