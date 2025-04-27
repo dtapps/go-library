@@ -2,8 +2,8 @@ package wechatpayapiv3
 
 import (
 	"context"
+	"encoding/json"
 	"encoding/xml"
-	"go.dtapp.net/library/utils/gojson"
 	"net/http"
 )
 
@@ -35,7 +35,7 @@ func (c *Client) PayTransactionsJsapiNotifyHttp(ctx context.Context, w http.Resp
 		return validateXml, response, gcm, err
 	}
 
-	err = gojson.Unmarshal(gcm, &response)
+	err = json.Unmarshal(gcm, &response)
 	return validateXml, response, gcm, err
 }
 
