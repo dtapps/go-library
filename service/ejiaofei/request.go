@@ -2,8 +2,8 @@ package ejiaofei
 
 import (
 	"context"
+	"encoding/json"
 	"encoding/xml"
-	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
 )
 
@@ -66,6 +66,6 @@ func (c *Client) requestJson(ctx context.Context, url string, param *gorequest.P
 	}
 
 	// 解析响应
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return request, err
 }

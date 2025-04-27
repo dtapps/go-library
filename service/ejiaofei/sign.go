@@ -2,9 +2,9 @@ package ejiaofei
 
 import (
 	"fmt"
+	"github.com/spf13/cast"
 	"go.dtapp.net/library/utils/gomd5"
 	"go.dtapp.net/library/utils/gorequest"
-	"go.dtapp.net/library/utils/gostring"
 	"sort"
 )
 
@@ -46,13 +46,13 @@ func (c *Client) xmlSign(url string, param *gorequest.Params) (signStr string) {
 
 func (c *Client) jsonSign(param *gorequest.Params) string {
 	var keys []string
-	for k := range param.DeepGet() {
+	for k := range param.DeepGetAny() {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
 	signStr := ""
 	for _, key := range keys {
-		signStr += fmt.Sprintf("%s%s", key, gostring.ToString(param.Get(key)))
+		signStr += fmt.Sprintf("%s%s", key, cast.ToString(param.Get(key)))
 	}
 	signStr += fmt.Sprintf("%s", c.GetKey())
 	return gomd5.ToUpper(signStr)
