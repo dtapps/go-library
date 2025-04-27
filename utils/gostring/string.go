@@ -5,60 +5,12 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"strconv"
 	"strings"
 	"unicode"
 	"unicode/utf8"
 	"unsafe"
 )
-
-// ToString 转换成string
-func ToString(value interface{}) string {
-	if value == nil {
-		return ""
-	}
-	return fmt.Sprint(value)
-}
-
-// ToFloat64 string到float64
-func ToFloat64(s string) float64 {
-	i, _ := strconv.ParseFloat(s, 64)
-	return i
-}
-
-// ToInt string到int
-func ToInt(s string) int {
-	i, _ := strconv.Atoi(s)
-	return i
-}
-
-// ToInt64 string到int64
-func ToInt64(s string) int64 {
-	i, err := strconv.ParseInt(s, 10, 64)
-	if err == nil {
-		return i
-	}
-	return int64(ToFloat64(s))
-}
-
-// ToUint string到uint64
-func ToUint(s string) uint {
-	i, err := strconv.ParseUint(s, 10, 64)
-	if err == nil {
-		return uint(i)
-	}
-	return 0
-}
-
-// ToUint64 string到uint64
-func ToUint64(s string) uint64 {
-	i, err := strconv.ParseUint(s, 10, 64)
-	if err == nil {
-		return i
-	}
-	return 0
-}
 
 // Replace 字符串替换
 func Replace(str, old, new string) string {
@@ -183,7 +135,6 @@ func GetString(i interface{}) string {
 	case bool:
 		return strconv.FormatBool(v)
 	default:
-
 		bytes, _ := json.Marshal(v)
 		return string(bytes)
 	}
