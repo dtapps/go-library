@@ -1,8 +1,8 @@
 package pinduoduo
 
 import (
+	"github.com/spf13/cast"
 	"go.dtapp.net/library/utils/gorequest"
-	"go.dtapp.net/library/utils/gostring"
 	"sort"
 	"strconv"
 	"time"
@@ -39,7 +39,7 @@ func (c *Client) Sign(p *gorequest.Params) {
 	}
 	// 排序所有的 key
 	var keys []string
-	for key := range p.DeepGet() {
+	for key := range p.DeepGetAny() {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
@@ -47,17 +47,17 @@ func (c *Client) Sign(p *gorequest.Params) {
 	for _, key := range keys {
 		if isFilterAccessToken {
 			if key != "access_token" {
-				signStr += key + gostring.GetString(p.Get(key))
+				signStr += key + cast.ToString(p.Get(key))
 			}
 		} else {
-			signStr += key + gostring.GetString(p.Get(key))
+			signStr += key + cast.ToString(p.Get(key))
 		}
 	}
 	signStr += c.GetClientSecret()
 	p.Set("sign", createSign(signStr))
 }
 
-func SetCustomParameters(p gorequest.Params, uid string, sid string) gorequest.Params {
+func SetCustomParameters(p *gorequest.Params, uid string, sid string) *gorequest.Params {
 	p.Set("custom_parameters", map[string]any{
 		"uid": uid,
 		"sid": sid,
@@ -66,7 +66,7 @@ func SetCustomParameters(p gorequest.Params, uid string, sid string) gorequest.P
 }
 
 // SetGoodsSignList 设置商品goodsSign列表
-func SetGoodsSignList(p gorequest.Params, goodsSign string) gorequest.Params {
+func SetGoodsSignList(p *gorequest.Params, goodsSign string) *gorequest.Params {
 	p.Set("goods_sign_list", []string{goodsSign})
 	return p
 }

@@ -1,29 +1,16 @@
 module go.dtapp.net/library/service/pinduoduo
 
-go 1.23.1
-
-replace go.dtapp.net/library/utils/gojson => ../../utils/gojson
+go 1.24.1
 
 replace go.dtapp.net/library/utils/gotime => ../../utils/gotime
-
-replace go.dtapp.net/library/utils/gostring => ../../utils/gostring
-
-replace go.dtapp.net/library/utils/gorandom => ../../utils/gorandom
 
 replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 
 require (
 	github.com/shopspring/decimal v1.4.0
-	go.dtapp.net/library/utils/gorequest v1.0.93
-	go.dtapp.net/library/utils/gostring v1.0.24
-	go.dtapp.net/library/utils/gotime v1.0.12
+	github.com/spf13/cast v1.7.1
+	go.dtapp.net/library/utils/gorequest v1.0.95
+	go.dtapp.net/library/utils/gotime v1.0.13
 )
 
-require (
-	github.com/MercuryEngineering/CookieMonster v0.0.0-20180304172713-1584578b3403 // indirect
-	github.com/basgys/goxml2json v1.1.0 // indirect
-	go.dtapp.net/library/utils/gojson v1.0.8 // indirect
-	go.dtapp.net/library/utils/gorandom v1.0.4 // indirect
-	golang.org/x/net v0.35.0 // indirect
-	golang.org/x/text v0.22.0 // indirect
-)
+require github.com/MercuryEngineering/CookieMonster v0.0.0-20180304172713-1584578b3403 // indirect
