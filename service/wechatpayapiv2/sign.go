@@ -13,7 +13,7 @@ import (
 func (c *Client) getSortString(m *gorequest.Params) string {
 	var buf bytes.Buffer
 	keys := make([]string, 0)
-	for k := range m.DeepGet() {
+	for k := range m.DeepGetAny() {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
