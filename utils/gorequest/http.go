@@ -8,15 +8,13 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"errors"
-	"fmt"
+	cookiemonster "github.com/MercuryEngineering/CookieMonster"
 	"io"
 	"log/slog"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
-
-	cookiemonster "github.com/MercuryEngineering/CookieMonster"
 )
 
 // Response 返回内容
@@ -234,7 +232,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	var requestBody io.Reader
 
 	if httpResponse.RequestMethod != http.MethodGet && c.httpContentType == httpParamsModeJson {
-		jsonStr, err := json.Marshal(httpResponse.RequestParams.DeepGet())
+		jsonStr, err := json.Marshal(httpResponse.RequestParams.DeepGetAny())
 		if err != nil {
 			return httpResponse, err
 		}
@@ -245,15 +243,15 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	if httpResponse.RequestMethod != http.MethodGet && c.httpContentType == httpParamsModeForm {
 		// 携带 form 参数
 		form := url.Values{}
-		for k, v := range httpResponse.RequestParams.DeepGet() {
-			form.Add(k, GetParamsString(v))
+		for k, v := range httpResponse.RequestParams.DeepGetString() {
+			form.Add(k, v)
 		}
 		// 赋值
 		requestBody = strings.NewReader(form.Encode())
 	}
 
 	if c.httpContentType == httpParamsModeXml {
-		requestBody, err = ToXml(httpResponse.RequestParams.DeepGet())
+		requestBody, err = ToXml(httpResponse.RequestParams.DeepGetAny())
 		if err != nil {
 			return httpResponse, err
 		}
@@ -268,16 +266,16 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 	// GET 请求携带查询参数
 	if httpResponse.RequestMethod == http.MethodGet {
 		q := req.URL.Query()
-		for k, v := range httpResponse.RequestParams.DeepGet() {
-			q.Add(k, GetParamsString(v))
+		for k, v := range httpResponse.RequestParams.DeepGetString() {
+			q.Add(k, v)
 		}
 		req.URL.RawQuery = q.Encode()
 	}
 
 	// 设置请求头
-	if len(httpResponse.RequestHeader.DeepGet()) > 0 {
-		for key, value := range httpResponse.RequestHeader.DeepGet() {
-			req.Header.Set(key, fmt.Sprintf("%v", value))
+	if len(httpResponse.RequestHeader.DeepGetString()) > 0 {
+		for k, v := range httpResponse.RequestHeader.DeepGetString() {
+			req.Header.Set(k, v)
 		}
 	}
 
@@ -349,7 +347,7 @@ func request(c *App, ctx context.Context) (httpResponse Response, err error) {
 			RequestQuery:    req.URL.Query(),
 			RequestMethod:   req.Method,
 			RequestIP:       c.clientIP,
-			RequestBody:     httpResponse.RequestParams.DeepGet(),
+			RequestBody:     httpResponse.RequestParams.DeepGetAny(),
 			RequestHeader:   req.Header,
 			RequestCostTime: httpResponse.RequestCostTime,
 

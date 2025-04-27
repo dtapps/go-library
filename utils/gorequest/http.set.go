@@ -26,7 +26,7 @@ func (c *App) SetHeader(key, value string) {
 
 // SetHeaders 批量设置请求头
 func (c *App) SetHeaders(headers *Headers) {
-	for key, value := range headers.DeepGet() {
+	for key, value := range headers.DeepGetString() {
 		c.httpHeader.Set(key, value)
 	}
 }
@@ -73,7 +73,7 @@ func (c *App) SetParam(key string, value any) {
 
 // SetParams 批量设置请求参数
 func (c *App) SetParams(params *Params) {
-	for key, value := range params.DeepGet() {
+	for key, value := range params.DeepGetAny() {
 		c.httpParams.Set(key, value)
 	}
 }
