@@ -61,8 +61,16 @@ func SetCustomParameters(p *gorequest.Params, customParameters any) *gorequest.P
 	return p
 }
 
+// SetActivityTags 设置 活动商品标记数组
+func SetActivityTags(p *gorequest.Params, activityTags any) *gorequest.Params {
+	jsons, _ := json.Marshal(activityTags)
+	p.Set("activity_tags", string(jsons))
+	return p
+}
+
 // SetGoodsSignList 设置 商品goodsSign列表
-func SetGoodsSignList(p *gorequest.Params, goodsSign string) *gorequest.Params {
-	p.Set("goods_sign_list", []string{goodsSign})
+func SetGoodsSignList(p *gorequest.Params, goodsSignList any) *gorequest.Params {
+	jsons, _ := json.Marshal(goodsSignList)
+	p.Set("goods_sign_list", string(jsons))
 	return p
 }
