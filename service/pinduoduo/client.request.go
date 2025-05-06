@@ -14,8 +14,8 @@ func (c *Client) request(ctx context.Context, param *gorequest.Params, response 
 func (c *Client) restyRequestV3(ctx context.Context, param *gorequest.Params, response any) error {
 
 	// 创建请求客户端
-	httpClient := c.restyHttpClient.R().SetContext(ctx)
-	defer c.restyHttpClient.Close()
+	httpClient := c.httpClient.R().SetContext(ctx)
+	defer c.httpClient.Close()
 
 	// 签名
 	c.Sign(param)
