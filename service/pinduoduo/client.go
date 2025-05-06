@@ -44,6 +44,13 @@ func NewClient(config *ClientConfig) (*Client, error) {
 	return c, nil
 }
 
+// Close 关闭 请求客户端
+func (c *Client) Close() {
+	if c.httpClient != nil {
+		c.httpClient.Close()
+	}
+}
+
 type ErrResp struct {
 	ErrorResponse struct {
 		ErrorMsg  string      `json:"error_msg"`

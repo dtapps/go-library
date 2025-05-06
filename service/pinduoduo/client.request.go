@@ -15,7 +15,6 @@ func (c *Client) restyRequestV3(ctx context.Context, param *gorequest.Params, re
 
 	// 创建请求客户端
 	httpClient := c.httpClient.R().SetContext(ctx)
-	defer c.httpClient.Close()
 
 	// 签名
 	c.Sign(param)
