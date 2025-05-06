@@ -1,7 +1,5 @@
 package pinduoduo
 
-import "go.dtapp.net/library/utils/gorequest"
-
 func (c *Client) GetClientId() string {
 	return c.config.clientId
 }
@@ -58,20 +56,4 @@ func (c *Client) GetAccessTokenScope() []string {
 func (c *Client) SetAccessTokenScope(accessTokenScope []string) *Client {
 	c.config.accessTokenScope = accessTokenScope
 	return c
-}
-
-// SetClientIP 配置
-func (c *Client) SetClientIP(clientIP string) *Client {
-	c.clientIP = clientIP
-	if c.httpClient != nil {
-		c.httpClient.SetClientIP(clientIP)
-	}
-	return c
-}
-
-// SetLogFun 设置日志记录函数
-func (c *Client) SetLogFun(logFun gorequest.LogFunc) {
-	if c.httpClient != nil {
-		c.httpClient.SetLogFunc(logFun)
-	}
 }

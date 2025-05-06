@@ -1,7 +1,7 @@
 package pinduoduo
 
 import (
-	"go.dtapp.net/library/utils/gorequest"
+	"resty.dev/v3"
 )
 
 // ClientConfig 实例配置
@@ -12,6 +12,7 @@ type ClientConfig struct {
 	Pid              string   // 推广位
 	AccessToken      string   // 通过code获取的access_token(无需授权的接口，该字段不参与sign签名运算)
 	AccessTokenScope []string // 授权范围
+	Debug            bool
 }
 
 // Client 实例
@@ -24,15 +25,14 @@ type Client struct {
 		accessToken      string   // 通过code获取的access_token(无需授权的接口，该字段不参与sign签名运算)
 		accessTokenScope []string // 授权范围
 	}
-	httpClient *gorequest.App // HTTP请求客户端
-	clientIP   string         // 客户端IP
+	httpClient *resty.Client // 请求客户端
 }
 
 // NewClient 创建实例化
 func NewClient(config *ClientConfig) (*Client, error) {
 	c := &Client{}
 
-	c.httpClient = gorequest.NewHttp()
+	c.httpClient = resty.New().SetDebug(config.Debug)
 
 	c.config.clientId = config.ClientId
 	c.config.clientSecret = config.ClientSecret
