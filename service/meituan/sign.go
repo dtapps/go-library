@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"crypto/md5"
 	"encoding/hex"
-	"github.com/spf13/cast"
 	"go.dtapp.net/library/utils/gorequest"
 	"io"
 	"sort"
@@ -22,7 +21,7 @@ func (c *Client) getSign(Secret string, param *gorequest.Params) string {
 	signStr := bytes.NewBufferString(Secret)
 	for _, k := range keys {
 		signStr.WriteString(k)
-		signStr.WriteString(cast.ToString(param.Get(k)))
+		signStr.WriteString(gorequest.GetString(param.Get(k)))
 	}
 	signStr.WriteString(Secret)
 	// md5加密

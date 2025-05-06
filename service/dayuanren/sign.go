@@ -2,7 +2,6 @@ package dayuanren
 
 import (
 	"fmt"
-	"github.com/spf13/cast"
 	"go.dtapp.net/library/utils/gomd5"
 	"go.dtapp.net/library/utils/gorequest"
 	"sort"
@@ -18,7 +17,7 @@ func (c *Client) sign(param *gorequest.Params) string {
 	sort.Strings(keys)
 	signStr := ""
 	for _, key := range keys {
-		signStr += fmt.Sprintf("%s=%s&", key, cast.ToString(param.Get(key)))
+		signStr += fmt.Sprintf("%s=%s&", key, gorequest.GetString(param.Get(key)))
 	}
 	signStr += fmt.Sprintf("apikey=%s", c.GetApiKey())
 	return gomd5.ToUpper(signStr)

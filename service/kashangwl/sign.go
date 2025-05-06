@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"crypto/md5"
 	"encoding/hex"
-	"github.com/spf13/cast"
 	"go.dtapp.net/library/utils/gorequest"
 	"io"
 	"net/url"
@@ -38,7 +37,7 @@ func (c *Client) getRequestData(param *gorequest.Params) string {
 	args := url.Values{}
 	// 请求参数
 	for key, val := range param.DeepGetAny() {
-		args.Set(key, cast.ToString(val))
+		args.Set(key, gorequest.GetString(val))
 	}
 	return args.Encode()
 }

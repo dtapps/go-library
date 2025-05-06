@@ -6,7 +6,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"go.dtapp.net/library/utils/gorequest"
-	"go.dtapp.net/library/utils/gostring"
 	"sort"
 )
 
@@ -15,7 +14,7 @@ func (c *Client) sign(ctx context.Context, param *gorequest.Params) string {
 
 	// 排序所有的 key
 	var keys []string
-	for key := range param.DeepGet() {
+	for key := range param.DeepGetAny() {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
@@ -24,7 +23,7 @@ func (c *Client) sign(ctx context.Context, param *gorequest.Params) string {
 		if key == "notifyurl" {
 			continue
 		}
-		signStr += fmt.Sprintf("%s=%s&", key, gostring.GetString(param.Get(key)))
+		signStr += fmt.Sprintf("%s=%s&", key, gorequest.GetString(param.Get(key)))
 	}
 	signStr += "key=" + c.GetKey()
 

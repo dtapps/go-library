@@ -1,7 +1,6 @@
 package pinduoduo
 
 import (
-	"github.com/spf13/cast"
 	"go.dtapp.net/library/utils/gorequest"
 	"sort"
 	"strconv"
@@ -47,10 +46,10 @@ func (c *Client) Sign(p *gorequest.Params) {
 	for _, key := range keys {
 		if isFilterAccessToken {
 			if key != "access_token" {
-				signStr += key + cast.ToString(p.Get(key))
+				signStr += key + gorequest.GetString(p.Get(key))
 			}
 		} else {
-			signStr += key + cast.ToString(p.Get(key))
+			signStr += key + gorequest.GetString(p.Get(key))
 		}
 	}
 	signStr += c.GetClientSecret()

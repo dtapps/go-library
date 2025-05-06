@@ -7,8 +7,7 @@ replace go.dtapp.net/library/utils/gotime => ../../utils/gotime
 replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 
 require (
-	github.com/spf13/cast v1.7.1
-	go.dtapp.net/library/utils/gorequest v1.0.95
+	go.dtapp.net/library/utils/gorequest v1.0.96
 	go.dtapp.net/library/utils/gotime v1.0.13
 )
 
