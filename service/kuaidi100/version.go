@@ -1,5 +1,5 @@
 package kuaidi100
 
 const (
-	Version = "1.0.9"
+	Version = "1.0.10"
 )

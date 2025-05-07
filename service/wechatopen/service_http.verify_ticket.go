@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/mitchellh/mapstructure"
-	"go.dtapp.net/library/utils/gojson"
+	"go.dtapp.net/library/utils/gorequest"
 	"io"
 	"net/http"
 	"strings"
@@ -83,7 +83,7 @@ func (c *Client) ServeHttpVerifyTicket(ctx context.Context, w http.ResponseWrite
 		return resp, err
 	}
 
-	xmlDecode := gojson.XmlDecodeNoError(data)
+	xmlDecode := gorequest.XmlDecodeNoError(data)
 	if len(xmlDecode) <= 0 {
 		err = fmt.Errorf("xml解码错误：%s", xmlDecode)
 		return resp, err
