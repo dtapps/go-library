@@ -68,9 +68,23 @@ func SetActivityTags(p *gorequest.Params, activityTags any) *gorequest.Params {
 	return p
 }
 
+// SetGoodsSign 设置 商品goodsSign列表
+func SetGoodsSign(p *gorequest.Params, goodsSign any) *gorequest.Params {
+	jsons, _ := json.Marshal(goodsSign)
+	p.Set("goods_sign", string(jsons))
+	return p
+}
+
 // SetGoodsSignList 设置 商品goodsSign列表
 func SetGoodsSignList(p *gorequest.Params, goodsSignList any) *gorequest.Params {
 	jsons, _ := json.Marshal(goodsSignList)
 	p.Set("goods_sign_list", string(jsons))
+	return p
+}
+
+// SetPidList 设置 推广位列表
+func SetPidList(p *gorequest.Params, pidList any) *gorequest.Params {
+	jsons, _ := json.Marshal(pidList)
+	p.Set("p_id_list", string(jsons))
 	return p
 }

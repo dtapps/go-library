@@ -95,3 +95,18 @@ func IsURL(s string) bool {
 	// 检查是否有方案（scheme），例如 http, https 等
 	return u.Scheme != ""
 }
+
+// ParseQueryString 解析 URL 查询字符串为 map 类型。
+func ParseQueryString(input string) map[string]any {
+	paramMap := make(map[string]interface{})
+	keyValuePairs := strings.Split(input, "&")
+	for _, pair := range keyValuePairs {
+		parts := strings.Split(pair, "=")
+		if len(parts) == 2 {
+			key := parts[0]
+			value := parts[1]
+			paramMap[key] = value
+		}
+	}
+	return paramMap
+}

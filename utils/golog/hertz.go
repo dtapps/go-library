@@ -7,7 +7,6 @@ import (
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	hertz_requestid "go.dtapp.net/library/contrib/hertz-requestid"
-	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
 	"strings"
@@ -83,21 +82,21 @@ func (hg *HertzLog) Middleware() app.HandlerFunc {
 		log.RequestPath = string(h.Request.URI().Path())
 
 		// 请求参数
-		log.RequestQuery = gojson.ParseQueryString(string(h.Request.QueryString()))
+		log.RequestQuery = gorequest.ParseQueryString(string(h.Request.QueryString()))
 
 		// 请求方式
 		log.RequestMethod = string(h.Request.Header.Method())
 
 		if strings.Contains(string(h.ContentType()), consts.MIMEApplicationHTMLForm) {
-			log.RequestBody = gojson.ParseQueryString(string(h.Request.Body()))
+			log.RequestBody = gorequest.ParseQueryString(string(h.Request.Body()))
 		} else if strings.Contains(string(h.ContentType()), consts.MIMEMultipartPOSTForm) {
 			//log.RequestBody = h.Request.Body()
-			log.RequestBody = gojson.JsonDecodeNoError(string(h.Request.Body()))
+			log.RequestBody = gorequest.JsonDecodeNoError(string(h.Request.Body()))
 		} else if strings.Contains(string(h.ContentType()), consts.MIMEApplicationJSON) {
-			log.RequestBody = gojson.JsonDecodeNoError(string(h.Request.Body()))
+			log.RequestBody = gorequest.JsonDecodeNoError(string(h.Request.Body()))
 		} else {
 			//log.RequestBody = string(h.Request.Body())
-			log.RequestBody = gojson.JsonDecodeNoError(string(h.Request.Body()))
+			log.RequestBody = gorequest.JsonDecodeNoError(string(h.Request.Body()))
 		}
 
 		// 请求IP
@@ -121,7 +120,7 @@ func (hg *HertzLog) Middleware() app.HandlerFunc {
 		log.ResponseCode = h.Response.StatusCode()
 
 		// 响应内容
-		if gojson.IsValidJSON(string(h.Response.Body())) {
+		if gorequest.IsValidJSON(string(h.Response.Body())) {
 			_ = json.Unmarshal(h.Response.Body(), &log.ResponseBody)
 			//log.ResponseBody = gojson.JsonDecodeNoError(string(h.Response.Body()))
 		} else {

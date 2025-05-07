@@ -72,7 +72,7 @@ func (c *Client) RpPromUrlGenerate(ctx context.Context, notMustParams ...*gorequ
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.rp.prom.url.generate", notMustParams...)
-	params.Set("p_id_list", []string{c.GetPid()})
+	SetPidList(params, []string{c.GetPid()})
 
 	// 请求
 	var response RpPromUrlGenerateResponse

@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	gin_requestid "go.dtapp.net/library/contrib/gin-requestid"
-	"go.dtapp.net/library/utils/gojson"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
 	"io"
@@ -117,7 +116,7 @@ func (gg *GinLog) Middleware() gin.HandlerFunc {
 		log.RequestPath = gorequest.NewUri(g.Request.RequestURI).UriFilterExcludeQueryString()
 
 		// 请求参数
-		log.RequestQuery = gojson.ParseQueryString(g.Request.RequestURI)
+		log.RequestQuery = gorequest.ParseQueryString(g.Request.RequestURI)
 
 		// 请求方式
 		log.RequestMethod = g.Request.Method
@@ -135,7 +134,7 @@ func (gg *GinLog) Middleware() gin.HandlerFunc {
 		log.ResponseCode = g.Writer.Status()
 
 		// 响应内容
-		if gojson.IsValidJSON(blw.body.String()) {
+		if gorequest.IsValidJSON(blw.body.String()) {
 			_ = json.Unmarshal([]byte(blw.body.String()), &log.ResponseBody)
 			//log.ResponseBody = gojson.JsonDecodeNoError(blw.body.String())
 		} else {
