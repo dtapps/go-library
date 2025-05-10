@@ -98,8 +98,8 @@ func IsURL(s string) bool {
 
 // ParseQueryString 解析 URL 查询字符串为 map 类型。
 func ParseQueryString(input string) map[string]any {
-	paramMap := make(map[string]interface{})
-	keyValuePairs := strings.Split(input, "&")
+	paramMap := make(map[string]any)
+	keyValuePairs := strings.Split(DeCode(input), "&")
 	for _, pair := range keyValuePairs {
 		parts := strings.Split(pair, "=")
 		if len(parts) == 2 {
@@ -109,4 +109,28 @@ func ParseQueryString(input string) map[string]any {
 		}
 	}
 	return paramMap
+}
+
+// ParseUrlQuery 解析 URL 查询字符串为 map 类型。
+func ParseUrlQuery(input string) map[string]any {
+	paramMap := make(map[string]any)
+	keyValuePairs := strings.Split(DeCode(input), "&")
+	for _, pair := range keyValuePairs {
+		parts := strings.Split(pair, "=")
+		if len(parts) == 2 {
+			key := parts[0]
+			value := parts[1]
+			paramMap[key] = value
+		}
+	}
+	return paramMap
+}
+
+func QueryUrlValue(paramMap map[string]any, queryKey string) any {
+	for kParam, vParam := range paramMap {
+		if kParam == queryKey {
+			return vParam
+		}
+	}
+	return nil
 }
