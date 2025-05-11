@@ -103,18 +103,9 @@ func (u *UploadFile) SaveFile(dst string, cover bool) error {
 	}
 
 	// 判断文件是否存在
-	if !cover {
-		if FileExists(dst) {
-			return fmt.Errorf("文件已存在")
-		}
+	if !cover && FileExists(dst) {
+		return fmt.Errorf("文件已存在")
 	}
-
-	// 打开上传的文件源
-	src, err := u.File.Open()
-	if err != nil {
-		return fmt.Errorf("打开上传文件失败: %w", err)
-	}
-	defer src.Close()
 
 	// 创建目标文件
 	out, err := os.Create(dst)
@@ -122,6 +113,22 @@ func (u *UploadFile) SaveFile(dst string, cover bool) error {
 		return fmt.Errorf("创建目标文件失败: %w", err)
 	}
 	defer out.Close()
+
+	// 如果有 Data 字段，直接写入
+	if len(u.Data) > 0 {
+		_, err = out.Write(u.Data)
+		if err != nil {
+			return fmt.Errorf("写入文件失败: %w", err)
+		}
+		return nil
+	}
+
+	// 否则从 multipart.FileHeader 中拷贝（适用于表单上传）
+	src, err := u.File.Open()
+	if err != nil {
+		return fmt.Errorf("打开上传文件失败: %w", err)
+	}
+	defer src.Close()
 
 	// 拷贝内容
 	_, err = io.Copy(out, src)
@@ -135,6 +142,10 @@ func (u *UploadFile) SaveFile(dst string, cover bool) error {
 // ToBytes 文件转字节流 []byte
 func (u *UploadFile) ToBytes() ([]byte, error) {
 
+	if len(u.Data) > 0 {
+		return u.Data, nil
+	}
+
 	// 打开上传的文件源
 	src, err := u.File.Open()
 	if err != nil {
@@ -147,20 +158,22 @@ func (u *UploadFile) ToBytes() ([]byte, error) {
 
 // ToBase64 文件转 base64 字符串
 func (u *UploadFile) ToBase64() (string, error) {
-	// 打开上传的文件源
-	src, err := u.File.Open()
-	if err != nil {
-		return "", fmt.Errorf("打开上传文件失败: %w", err)
-	}
-	defer src.Close()
+	var data []byte
 
-	// 读取文件内容到内存
-	data, err := io.ReadAll(src)
-	if err != nil {
-		return "", fmt.Errorf("读取文件内容失败: %w", err)
+	if len(u.Data) > 0 {
+		data = u.Data
+	} else {
+		src, err := u.File.Open()
+		if err != nil {
+			return "", fmt.Errorf("打开上传文件失败: %w", err)
+		}
+		defer src.Close()
+
+		data, err = io.ReadAll(src)
+		if err != nil {
+			return "", err
+		}
 	}
 
-	// 使用 base64 编码
-	base64Str := base64.StdEncoding.EncodeToString(data)
-	return base64Str, nil
+	return base64.StdEncoding.EncodeToString(data), nil
 }
