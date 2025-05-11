@@ -56,13 +56,13 @@ func (c *Context) FormFile(key string) (*UploadFile, error) {
 }
 
 // FromBase64 将 base64 字符串解析为 UploadFile 对象
-func (c *Context) FromBase64(base64Str, filename string) error {
+func (c *Context) FromBase64(base64Str, filename string) (*UploadFile, error) {
 
 	if filename == "" {
 		md5Hash := GetMD5FromBase64(base64Str)
 		fileExt := GetFileExtFromBase64(base64Str)
 		if md5Hash == "" {
-			return fmt.Errorf("无法生成文件名：MD5 计算失败")
+			return nil, fmt.Errorf("无法生成文件名：MD5 计算失败")
 		}
 		filename = md5Hash + fileExt
 	}
@@ -78,21 +78,19 @@ func (c *Context) FromBase64(base64Str, filename string) error {
 	// 解码 base64 数据
 	data, err := base64.StdEncoding.DecodeString(base64Str)
 	if err != nil {
-		return fmt.Errorf("base64 解码失败: %w", err)
+		return nil, fmt.Errorf("base64 解码失败: %w", err)
 	}
-
-	u := UploadFile{}
 
 	// 设置数据和文件名
-	u.Filename = filename
-	u.Size = int64(len(data))
-	u.Data = data
-	u.File = &multipart.FileHeader{
+	return &UploadFile{
 		Filename: filename,
 		Size:     int64(len(data)),
-	}
-
-	return nil
+		File: &multipart.FileHeader{
+			Filename: filename,
+			Size:     int64(len(data)),
+		},
+		Data: data,
+	}, nil
 }
 
 // SaveFile 保存上传文件
