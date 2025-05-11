@@ -56,7 +56,7 @@ func (c *Context) FormFile(key string) (*UploadFile, error) {
 }
 
 // FromBase64 将 base64 字符串解析为 UploadFile 对象
-func (u *UploadFile) FromBase64(base64Str, filename string) error {
+func (c *Context) FromBase64(base64Str, filename string) error {
 
 	if filename == "" {
 		md5Hash := GetMD5FromBase64(base64Str)
@@ -80,6 +80,8 @@ func (u *UploadFile) FromBase64(base64Str, filename string) error {
 	if err != nil {
 		return fmt.Errorf("base64 解码失败: %w", err)
 	}
+
+	u := UploadFile{}
 
 	// 设置数据和文件名
 	u.Filename = filename
