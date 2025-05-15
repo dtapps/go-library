@@ -2,8 +2,9 @@ package framework
 
 import (
 	"bytes"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 // ResponseWrapper 用于统一封装响应处理
@@ -73,8 +74,6 @@ func (cr *ResponseWrapper) Body() []byte {
 	}
 	if cr.c.IsHertz() {
 		return cr.c.hertzCtx.Response.Body()
-	}
-	if cr.c.IsEcho() {
 	}
 	return nil
 }

@@ -5,7 +5,7 @@ go 1.24.3
 replace go.dtapp.net/library/utils/gojson => ../utils/gojson
 
 require (
-	github.com/cloudwego/hertz v0.9.7
+	github.com/cloudwego/hertz v0.10.0
 	github.com/gin-contrib/sessions v1.0.3
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-playground/validator/v10 v10.26.0

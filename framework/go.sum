@@ -29,6 +29,8 @@ github.com/cloudwego/gopkg v0.1.4/go.mod h1:FQuXsRWRsSqJLsMVd5SYzp8/Z1y5gXKnVvRr
 github.com/cloudwego/hertz v0.7.2/go.mod h1:WliNtVbwihWHHgAaIQEbVXl0O3aWj0ks1eoPrcEAnjs=
 github.com/cloudwego/hertz v0.9.7 h1:tAVaiO+vTf+ZkQhvNhKbDJ0hmC4oJ7bzwDi1KhvhHy4=
 github.com/cloudwego/hertz v0.9.7/go.mod h1:t6d7NcoQxPmETvzPMMIVPHMn5C5QzpqIiFsaavoLJYQ=
+github.com/cloudwego/hertz v0.10.0 h1:V0vmBaLdQPlgL6w2TA6PZL1g6SGgQznFx6vqxWdCcKw=
+github.com/cloudwego/hertz v0.10.0/go.mod h1:lRBohmcDkGx5TLK6QKFGdzJ6n3IXqGueHsOiXcYgXA4=
 github.com/cloudwego/iasm v0.2.0/go.mod h1:8rXZaNYT2n95jn+zTI1sDr+IgcD2GVs0nlbbQPiEFhY=
 github.com/cloudwego/netpoll v0.5.0/go.mod h1:xVefXptcyheopwNDZjDPcfU6kIjZXZ4nY550k1yH9eQ=
 github.com/cloudwego/netpoll v0.7.0 h1:bDrxQaNfijRI1zyGgXHQoE/nYegL0nr+ijO1Norelc4=

@@ -2,6 +2,7 @@ package framework
 
 import (
 	"context"
+
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/gin-gonic/gin"
 	"github.com/labstack/echo/v4"
@@ -9,7 +10,7 @@ import (
 
 // Context 统一的 Context 封装
 type Context struct {
-	ctx      context.Context     // 统一的上下文
+	ctx      context.Context     // 上下文
 	ginCtx   *gin.Context        // Gin 上下文
 	hertzCtx *app.RequestContext // Hertz 上下文
 	echoCtx  echo.Context        // Echo 上下文
@@ -23,9 +24,6 @@ func (c *Context) Next() {
 	if c.IsHertz() {
 		c.hertzCtx.Next(c.ctx)
 	}
-	if c.IsEcho() {
-
-	}
 }
 
 // Abort 中止请求
@@ -35,8 +33,6 @@ func (c *Context) Abort() {
 	}
 	if c.IsHertz() {
 		c.hertzCtx.Abort()
-	}
-	if c.IsEcho() {
 	}
 }
 
@@ -48,8 +44,6 @@ func (c *Context) AbortWithStatus(code int) {
 	if c.IsHertz() {
 		c.hertzCtx.AbortWithStatus(code)
 	}
-	if c.IsEcho() {
-	}
 }
 
 // AbortWithStatusJSON 中止请求并设置状态码和响应体
@@ -59,8 +53,6 @@ func (c *Context) AbortWithStatusJSON(code int, jsonObj any) {
 	}
 	if c.IsHertz() {
 		c.hertzCtx.AbortWithStatusJSON(code, jsonObj)
-	}
-	if c.IsEcho() {
 	}
 }
 
@@ -72,8 +64,6 @@ func (c *Context) JSON(code int, obj any) {
 	if c.IsHertz() {
 		c.hertzCtx.JSON(code, obj)
 	}
-	if c.IsEcho() {
-	}
 }
 
 // String 方法：统一返回 JSON 响应
@@ -84,8 +74,6 @@ func (c *Context) String(code int, format string, values ...any) {
 	if c.IsHertz() {
 		c.hertzCtx.String(code, format, values)
 	}
-	if c.IsEcho() {
-	}
 }
 
 func (c *Context) PostForm(key string) string {
@@ -94,8 +82,6 @@ func (c *Context) PostForm(key string) string {
 	}
 	if c.IsHertz() {
 		return c.hertzCtx.PostForm(key)
-	}
-	if c.IsEcho() {
 	}
 	return ""
 }
@@ -107,8 +93,6 @@ func (c *Context) DefaultPostForm(key, defaultValue string) string {
 	if c.IsHertz() {
 		return c.hertzCtx.DefaultPostForm(key, defaultValue)
 	}
-	if c.IsEcho() {
-	}
 	return ""
 }
 
@@ -118,8 +102,6 @@ func (c *Context) PostFormArray(key string) (values []string) {
 	}
 	if c.IsHertz() {
 		return c.hertzCtx.PostFormArray(key)
-	}
-	if c.IsEcho() {
 	}
 	return
 }
@@ -131,8 +113,6 @@ func (c *Context) GetPostForm(key string) (string, bool) {
 	if c.IsHertz() {
 		return c.hertzCtx.GetPostForm(key)
 	}
-	if c.IsEcho() {
-	}
 	return "", false
 }
 
@@ -142,8 +122,6 @@ func (c *Context) GetPostFormArray(key string) (values []string, ok bool) {
 	}
 	if c.IsHertz() {
 		return c.hertzCtx.GetPostFormArray(key)
-	}
-	if c.IsEcho() {
 	}
 	return
 }

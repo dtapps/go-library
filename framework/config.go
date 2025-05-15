@@ -3,6 +3,7 @@ package framework
 import (
 	"context"
 	"fmt"
+
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/gin-gonic/gin"
 	"github.com/labstack/echo/v4"
@@ -90,4 +91,12 @@ func (c *Context) GetEchoContext() echo.Context {
 		return nil
 	}
 	return c.echoCtx
+}
+
+// 是否调试
+var isDebug = false
+
+// InitUseFramework 初始使用框架
+func InitDebug(debug bool) {
+	isDebug = debug
 }

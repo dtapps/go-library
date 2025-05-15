@@ -2,9 +2,10 @@ package framework
 
 import (
 	"bytes"
+	"io"
+
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/gin-gonic/gin"
-	"io"
 )
 
 const __rawBodyKey = "__rawBody"
@@ -68,8 +69,6 @@ func (c *Context) CacheBody() ([]byte, error) {
 	}
 	if c.IsHertz() {
 		return c.HertzCacheBody(c.hertzCtx)
-	}
-	if c.IsEcho() {
 	}
 	return nil, nil
 }

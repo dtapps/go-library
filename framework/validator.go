@@ -3,49 +3,66 @@ package framework
 import (
 	"errors"
 	"fmt"
-	"github.com/go-playground/validator/v10"
-	"go.dtapp.net/library/utils/gojson"
 	"io"
 	"reflect"
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/go-playground/validator/v10"
+	"go.dtapp.net/library/utils/gojson"
 )
 
 // BindJsonAndValidate 统一绑定Json参数并校验
 func (c *Context) BindJsonAndValidate(obj any) error {
 	if c.IsGin() {
+		if isDebug {
+			fmt.Printf("Gin 绑定:%+v\n", obj)
+		}
 		// 绑定 Path 参数
 		if err := c.ginBindPathParams(c.GetGinContext(), obj); err != nil {
 			return fmt.Errorf("Path 参数绑定失败：%w", err)
 		}
-		//log.Printf("Gin 绑定 Path 参数:%+v\n", obj)
+		if isDebug {
+			fmt.Printf("Gin 绑定 Path 参数:%+v\n", obj)
+		}
 
 		// 绑定 Url 参数
 		if c.ginCtx.Request.URL.RawQuery != "" {
 			if err := gojson.BindURLQueryToStruct(gojson.ParseURLQueryWithoutError(c.ginCtx.Request.URL.RawQuery), obj); err != nil {
 				return fmt.Errorf("Url 参数绑定失败：%w", err)
 			}
-			//log.Printf("Gin 绑定 Url 参数:%+v\n", obj)
+			if isDebug {
+				fmt.Printf("Gin 绑定 Url 参数:%+v\n", obj)
+			}
 		}
 
 		// 绑定 Body JSON 参数
 		if err := c.ginBindJson(c.ginCtx, obj); err != nil && !errors.Is(err, io.EOF) {
 			return fmt.Errorf("Body JSON 参数绑定失败：%w", err)
 		}
-		//log.Printf("Gin 绑定 Body JSON 参数:%+v\n", obj)
+		if isDebug {
+			fmt.Printf("Gin 绑定 Body JSON 参数:%+v\n", obj)
+		}
 
 		// 设置默认值
 		if err := setDefaultValues(obj); err != nil {
 			return fmt.Errorf("设置默认值失败：%w", err)
 		}
-		//log.Printf("Gin 设置默认值:%+v\n", obj)
+		if isDebug {
+			fmt.Printf("Gin 设置默认值:%+v\n", obj)
+		}
 	}
 	if c.IsHertz() {
+		if isDebug {
+			fmt.Printf("Hertz 绑定:%+v\n", obj)
+		}
 		if err := c.hertzCtx.Bind(obj); err != nil {
 			return fmt.Errorf("参数绑定失败：%w", err)
 		}
-		//log.Printf("Hertz 绑定 参数:%+v\n", obj)
+		if isDebug {
+			fmt.Printf("Hertz 绑定 参数:%+v\n", obj)
+		}
 	}
 
 	// 验证
