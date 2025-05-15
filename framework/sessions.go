@@ -1,6 +1,8 @@
 package framework
 
 import (
+	"fmt"
+
 	ginSession "github.com/gin-contrib/sessions"
 	hertzSession "github.com/hertz-contrib/sessions"
 )
@@ -12,49 +14,52 @@ type Session struct {
 }
 
 // GetSession 获取 Session
-func (c *Context) GetSession() Session {
+func (c *Context) GetSession() (*Session, error) {
 	if c.IsGin() {
-		session := ginSession.Default(c.ginCtx)
-		return Session{
-			ginSession: session,
+		session := ginSession.Default(c.GetGinContext())
+		if session == nil {
+			return nil, fmt.Errorf("gin session is nil, maybe middleware not registered")
 		}
+		return &Session{
+			ginSession: session,
+		}, nil
 	}
 	if c.IsHertz() {
-		session := hertzSession.Default(c.hertzCtx)
-		return Session{
-			hertzSession: session,
+		session := hertzSession.Default(c.GetHertzContext())
+		if session == nil {
+			return nil, fmt.Errorf("hertz session is nil, maybe middleware not registered")
 		}
+		return &Session{
+			hertzSession: session,
+		}, nil
 	}
 	if c.IsEcho() {
 	}
-	return Session{}
+	return nil, fmt.Errorf("unsupported framework")
 }
 
-func (s Session) ID() string {
+// 会话的ID
+func (s *Session) ID() string {
 	if s.ginSession != nil {
 		return s.ginSession.ID()
 	}
 	if s.hertzSession != nil {
 		return s.hertzSession.ID()
 	}
-	if s.c.IsEcho() {
-	}
 	return ""
 }
 
-func (s Session) Get(key any) any {
+func (s *Session) Get(key any) any {
 	if s.ginSession != nil {
 		return s.ginSession.Get(key)
 	}
 	if s.hertzSession != nil {
 		return s.hertzSession.Get(key)
 	}
-	if s.c.IsEcho() {
-	}
 	return nil
 }
 
-func (s Session) Set(key any, val any) {
+func (s *Session) Set(key any, val any) {
 	if s.ginSession != nil {
 		s.ginSession.Set(key, val)
 	}
@@ -65,7 +70,7 @@ func (s Session) Set(key any, val any) {
 	}
 }
 
-func (s Session) Delete(key any) {
+func (s *Session) Delete(key any) {
 	if s.ginSession != nil {
 		s.ginSession.Delete(key)
 	}
@@ -76,7 +81,7 @@ func (s Session) Delete(key any) {
 	}
 }
 
-func (s Session) Clear() {
+func (s *Session) Clear() {
 	if s.ginSession != nil {
 		s.ginSession.Clear()
 	}
@@ -87,14 +92,12 @@ func (s Session) Clear() {
 	}
 }
 
-func (s Session) Save() error {
+func (s *Session) Save() error {
 	if s.ginSession != nil {
 		return s.ginSession.Save()
 	}
 	if s.hertzSession != nil {
 		return s.hertzSession.Save()
-	}
-	if s.c.IsEcho() {
 	}
 	return nil
 }
