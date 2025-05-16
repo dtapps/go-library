@@ -29,10 +29,17 @@ type Client struct {
 }
 
 // NewClient 创建实例化
-func NewClient(config *ClientConfig) (*Client, error) {
+func NewClient(config *ClientConfig, opts ...Option) (*Client, error) {
+
+	options := NewOptions(opts)
+
 	c := &Client{}
 
-	c.httpClient = resty.New().SetDebug(config.Debug)
+	if options.httpClient == nil {
+		c.httpClient = resty.New().SetDebug(config.Debug)
+	} else {
+		c.httpClient = options.httpClient
+	}
 
 	c.config.clientId = config.ClientId
 	c.config.clientSecret = config.ClientSecret
