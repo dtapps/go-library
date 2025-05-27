@@ -6,7 +6,7 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type OauthGoodsDetail struct {
+type OauthGoodsDetailGoodsDetails struct {
 	OrderDetailResponse struct {
 		SepMarketFee          int64   `json:"sep_market_fee"`
 		GoodsPrice            int64   `json:"goods_price"`
@@ -53,6 +53,12 @@ type OauthGoodsDetail struct {
 		OrderSn               string  `json:"order_sn"`
 		ZsDuoId               int64   `json:"zs_duo_id"`
 	} `json:"order_detail_response"`
+}
+
+type OauthGoodsDetail struct {
+	GoodsDetailResponse struct {
+		GoodsDetails []OauthGoodsDetailGoodsDetails `json:"goods_details"`
+	} `json:"goods_detail_response"`
 }
 
 // OauthGoodsDetail 多多进宝商品详情查询
