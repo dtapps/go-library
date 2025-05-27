@@ -6,7 +6,7 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type GoodsDetail struct {
+type GoodsDetailGoodsDetails struct {
 	ActivityPromotionRate       int64    `json:"activity_promotion_rate,omitempty"`         // 活动佣金比例，千分比（特定活动期间的佣金比例）
 	ActivityTags                []int64  `json:"activity_tags,omitempty"`                   // 商品活动标记数组，例：[4,7]，4-秒杀 7-百亿补贴等
 	BrandName                   string   `json:"brand_name,omitempty"`                      // 商品品牌词信息，如“苹果”、“阿迪达斯”、“李宁”等
@@ -79,6 +79,11 @@ type GoodsDetail struct {
 	GoodsId                    int64    `json:"goods_id"`
 	CategoryId                 int64    `json:"category_id"`
 	CategoryName               string   `json:"category_name"`
+}
+type GoodsDetail struct {
+	GoodsDetailResponse struct {
+		GoodsDetails []GoodsDetailGoodsDetails `json:"goods_details"`
+	} `json:"goods_detail_response"`
 }
 
 // GoodsDetail 多多进宝商品详情查询
