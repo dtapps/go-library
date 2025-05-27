@@ -2,10 +2,11 @@ package dayuanren
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type PriceResponse struct {
+type Price struct {
 	Errno  int64  `json:"errno"`  // 错误码，0代表成功，非0代表失败
 	Errmsg string `json:"errmsg"` // 错误描述
 	Data   struct {
@@ -23,20 +24,10 @@ type PriceResponse struct {
 	} `json:"data,omitempty"`
 }
 
-type PriceResult struct {
-	Result PriceResponse      // 结果
-	Body   []byte             // 内容
-	Http   gorequest.Response // 请求
-}
-
-func newPriceResult(result PriceResponse, body []byte, http gorequest.Response) *PriceResult {
-	return &PriceResult{Result: result, Body: body, Http: http}
-}
-
 // Price 产品ID查询【新增】
 // id = 产品ID
 // https://www.showdoc.com.cn/dyr/9757701226597233
-func (c *Client) Price(ctx context.Context, id int64, notMustParams ...*gorequest.Params) (*PriceResult, error) {
+func (c *Client) Price(ctx context.Context, id int64, notMustParams ...*gorequest.Params) (response Price, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -44,7 +35,6 @@ func (c *Client) Price(ctx context.Context, id int64, notMustParams ...*goreques
 	params.Set("id", id)                // 产品ID
 
 	// 请求
-	var response PriceResponse
-	request, err := c.request(ctx, "index/price", params, &response)
-	return newPriceResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "index/price", params, &response)
+	return
 }

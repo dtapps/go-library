@@ -2,10 +2,11 @@ package dayuanren
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type ElecityResponse struct {
+type Elecity struct {
 	Errno  int64  `json:"errno"`  // 错误码，0代表成功，非0代表失败
 	Errmsg string `json:"errmsg"` // 错误描述
 	Data   []struct {
@@ -23,27 +24,16 @@ type ElecityResponse struct {
 	} `json:"data,omitempty"`
 }
 
-type ElecityResult struct {
-	Result ElecityResponse    // 结果
-	Body   []byte             // 内容
-	Http   gorequest.Response // 请求
-}
-
-func newElecityResult(result ElecityResponse, body []byte, http gorequest.Response) *ElecityResult {
-	return &ElecityResult{Result: result, Body: body, Http: http}
-}
-
 // Elecity 电费支持地区查询
 // https://www.showdoc.com.cn/dyr/9227008514209156
 // https://www.kancloud.cn/boyanyun/boyanyun_huafei/3097256
-func (c *Client) Elecity(ctx context.Context, notMustParams ...*gorequest.Params) (*ElecityResult, error) {
+func (c *Client) Elecity(ctx context.Context, notMustParams ...*gorequest.Params) (response Elecity, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserID()) // 账号ID
 
 	// 请求
-	var response ElecityResponse
-	request, err := c.request(ctx, "index/elecity", params, &response)
-	return newElecityResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "index/elecity", params, &response)
+	return
 }

@@ -2,8 +2,7 @@ package dayuanren
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
@@ -12,7 +11,7 @@ type CheckResponse struct {
 	Errmsg string `json:"errmsg"` // 错误描述
 }
 
-type CheckResponseContent struct {
+type Check struct {
 	Errno  int64  `json:"errno"`  // 错误码，0代表成功，非0代表失败
 	Errmsg string `json:"errmsg"` // 错误描述
 	Data   []struct {
@@ -34,21 +33,11 @@ type CheckResponseContent struct {
 	} `json:"data,omitempty"`
 }
 
-type CheckResult struct {
-	Result CheckResponse      // 结果
-	Body   []byte             // 内容
-	Http   gorequest.Response // 请求
-}
-
-func newCheckResult(result CheckResponse, body []byte, http gorequest.Response) *CheckResult {
-	return &CheckResult{Result: result, Body: body, Http: http}
-}
-
 // Check 自发查询订单状态
 // out_trade_nums = 商户订单号；多个用英文,分割
 // https://www.showdoc.com.cn/dyr/9227006175502841
 // https://www.kancloud.cn/boyanyun/boyanyun_huafei/3097254
-func (c *Client) Check(ctx context.Context, outTradeNums string, notMustParams ...*gorequest.Params) (*CheckResult, error) {
+func (c *Client) Check(ctx context.Context, outTradeNums string, notMustParams ...*gorequest.Params) (response Check, apiErr ErrorResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -56,20 +45,6 @@ func (c *Client) Check(ctx context.Context, outTradeNums string, notMustParams .
 	params.Set("out_trade_nums", outTradeNums) // 商户订单号；多个用英文,分割
 
 	// 请求
-	var response CheckResponse
-	request, err := c.request(ctx, "index/check", params, &response)
-	return newCheckResult(response, request.ResponseBody, request), err
-}
-
-// ParsingContent 解析内容
-func (cr *CheckResult) ParsingContent() (CheckResponseContent, error) {
-	checksContent := CheckResponseContent{}
-	err := json.Unmarshal(cr.Body, &checksContent)
-	if err != nil {
-		return CheckResponseContent{}, err
-	}
-	if len(checksContent.Data) <= 0 {
-		return CheckResponseContent{}, errors.New("接口查询异常")
-	}
-	return checksContent, err
+	err = c.requestAndErr(ctx, "index/check", params, &response, &apiErr)
+	return
 }

@@ -2,10 +2,11 @@ package dayuanren
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type ProductResponse struct {
+type Product struct {
 	Errno  int64  `json:"errno"`  // 错误码，0代表成功，非0代表失败
 	Errmsg string `json:"errmsg"` // 错误描述
 	Data   []struct {
@@ -42,29 +43,18 @@ type ProductResponse struct {
 	} `json:"data,omitempty"`
 }
 
-type ProductResult struct {
-	Result ProductResponse    // 结果
-	Body   []byte             // 内容
-	Http   gorequest.Response // 请求
-}
-
-func newProductResult(result ProductResponse, body []byte, http gorequest.Response) *ProductResult {
-	return &ProductResult{Result: result, Body: body, Http: http}
-}
-
 // Product 获取产品
 // type = 产品类型ID
 // cate_id = 分类ID
 // https://www.showdoc.com.cn/dyr/9227005691961526
 // https://www.kancloud.cn/boyanyun/boyanyun_huafei/3097253
-func (c *Client) Product(ctx context.Context, notMustParams ...*gorequest.Params) (*ProductResult, error) {
+func (c *Client) Product(ctx context.Context, notMustParams ...*gorequest.Params) (response Product, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserID()) // 商户ID
 
 	// 请求
-	var response ProductResponse
-	request, err := c.request(ctx, "index/product", params, &response)
-	return newProductResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "index/product", params, &response)
+	return
 }

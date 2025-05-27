@@ -7,9 +7,10 @@ package dayuanren
 */
 
 const (
-	LogTable = "dayuanren"
-)
-
-const (
 	ErrnoSuccess = 0 // 成功
 )
+
+type ErrorResponse struct {
+	Errno  int64  `json:"errno"`  // 错误码，0代表成功，非0代表失败
+	Errmsg string `json:"errmsg"` // 错误描述
+}

@@ -2,10 +2,11 @@ package dayuanren
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type TypecateResponse struct {
+type Typecate struct {
 	Errno  int64  `json:"errno"`  // 错误码，0代表成功，非0代表失败
 	Errmsg string `json:"errmsg"` // 错误描述
 	Data   []struct {
@@ -19,27 +20,16 @@ type TypecateResponse struct {
 	} `json:"data,omitempty"`
 }
 
-type TypecateResult struct {
-	Result TypecateResponse   // 结果
-	Body   []byte             // 内容
-	Http   gorequest.Response // 请求
-}
-
-func newTypecateResult(result TypecateResponse, body []byte, http gorequest.Response) *TypecateResult {
-	return &TypecateResult{Result: result, Body: body, Http: http}
-}
-
 // Typecate 获取产品类型和产品分类
 // https://www.showdoc.com.cn/dyr/9227005390454727
 // https://www.kancloud.cn/boyanyun/boyanyun_huafei/3097252
-func (c *Client) Typecate(ctx context.Context, notMustParams ...*gorequest.Params) (*TypecateResult, error) {
+func (c *Client) Typecate(ctx context.Context, notMustParams ...*gorequest.Params) (response Typecate, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("userid", c.GetUserID()) // 商户ID
 
 	// 请求
-	var response TypecateResponse
-	request, err := c.request(ctx, "index/typecate", params, &response)
-	return newTypecateResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "index/typecate", params, &response)
+	return
 }

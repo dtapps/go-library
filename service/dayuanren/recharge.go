@@ -2,7 +2,7 @@ package dayuanren
 
 import (
 	"context"
-	"encoding/json"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
@@ -11,7 +11,7 @@ type RechargeResponse struct {
 	Errmsg string `json:"errmsg"` // 错误描述
 }
 
-type RechargeResponseContent struct {
+type Recharge struct {
 	Errno  int64  `json:"errno"`  // 错误码，0代表成功，非0代表失败
 	Errmsg string `json:"errmsg"` // 错误描述
 	Data   struct {
@@ -25,16 +25,6 @@ type RechargeResponseContent struct {
 		Title       string `json:"title"`                 // 充值产品说明
 		TotalPrice  string `json:"total_price"`           // 消费金额
 	} `json:"data,omitempty"`
-}
-
-type RechargeResult struct {
-	Result RechargeResponse   // 结果
-	Body   []byte             // 内容
-	Http   gorequest.Response // 请求
-}
-
-func newRechargeResult(result RechargeResponse, body []byte, http gorequest.Response) *RechargeResult {
-	return &RechargeResult{Result: result, Body: body, Http: http}
 }
 
 // Recharge 充值提交接口
@@ -53,7 +43,7 @@ func newRechargeResult(result RechargeResponse, body []byte, http gorequest.Resp
 // param3 = 扩展参数，后台查看提交的产品类目是否需要提交此参数
 // https://www.showdoc.com.cn/dyr/9227003154511692
 // https://www.kancloud.cn/boyanyun/boyanyun_huafei/3097250
-func (c *Client) Recharge(ctx context.Context, outTradeNum string, productID int64, mobile string, notifyUrl string, notMustParams ...*gorequest.Params) (*RechargeResult, error) {
+func (c *Client) Recharge(ctx context.Context, outTradeNum string, productID int64, mobile string, notifyUrl string, notMustParams ...*gorequest.Params) (response Recharge, apiErr ErrorResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -64,17 +54,6 @@ func (c *Client) Recharge(ctx context.Context, outTradeNum string, productID int
 	params.Set("userid", c.GetUserID())      // 商户ID
 
 	// 请求
-	var response RechargeResponse
-	request, err := c.request(ctx, "index/recharge", params, &response)
-	return newRechargeResult(response, request.ResponseBody, request), err
-}
-
-// ParsingContent 解析内容
-func (cr *RechargeResult) ParsingContent() (RechargeResponseContent, error) {
-	checksContent := RechargeResponseContent{}
-	err := json.Unmarshal(cr.Body, &checksContent)
-	if err != nil {
-		return RechargeResponseContent{}, err
-	}
-	return checksContent, err
+	err = c.requestAndErr(ctx, "index/recharge", params, &response, &apiErr)
+	return
 }
