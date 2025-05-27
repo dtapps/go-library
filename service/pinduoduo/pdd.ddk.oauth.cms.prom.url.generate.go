@@ -2,10 +2,11 @@ package pinduoduo
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type PddDdkOauthCmsUrlGenerateUrlListResponse struct {
+type OauthCmsUrlGenerateUrlList struct {
 	MobileShortUrl           string `json:"mobile_short_url"`             // 唤醒拼多多app短链
 	MobileUrl                string `json:"mobile_url"`                   // 唤醒拼多多app链接
 	MultiGroupMobileShortUrl string `json:"multi_group_mobile_short_url"` // 多人团唤醒拼多多app链接
@@ -41,32 +42,21 @@ type PddDdkOauthCmsUrlGenerateUrlListResponse struct {
 	} `json:"we_app_info"` // 拼多多福利券微信小程序信息
 }
 
-type PddDdkOauthCmsUrlGenerateResponse struct {
+type OauthCmsUrlGenerate struct {
 	CmsPromotionUrlGenerateResponse struct {
-		Total   int64                                      `json:"total"`
-		UrlList []PddDdkOauthCmsUrlGenerateUrlListResponse `json:"url_list"` // 链接列表
+		Total   int64                        `json:"total"`
+		UrlList []OauthCmsUrlGenerateUrlList `json:"url_list"` // 链接列表
 	} `json:"cms_promotion_url_generate_response"`
-}
-
-type PddDdkOauthCmsUrlGenerateResult struct {
-	Result PddDdkOauthCmsUrlGenerateResponse // 结果
-	Body   []byte                            // 内容
-	Http   gorequest.Response                // 请求
-}
-
-func newPddDdkOauthCmsUrlGenerateResult(result PddDdkOauthCmsUrlGenerateResponse, body []byte, http gorequest.Response) *PddDdkOauthCmsUrlGenerateResult {
-	return &PddDdkOauthCmsUrlGenerateResult{Result: result, Body: body, Http: http}
 }
 
 // OauthCmsUrlGenerate 生成商城推广链接接口
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.cms.prom.url.generate
-func (c *Client) OauthCmsUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthCmsUrlGenerateResult, error) {
+func (c *Client) OauthCmsUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (response OauthCmsUrlGenerate, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.cms.prom.url.generate", notMustParams...)
 
 	// 请求
-	var response PddDdkOauthCmsUrlGenerateResponse
-	request, err := c.request(ctx, params, &response)
-	return newPddDdkOauthCmsUrlGenerateResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, params, &response)
+	return
 }

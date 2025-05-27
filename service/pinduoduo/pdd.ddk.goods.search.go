@@ -2,10 +2,11 @@ package pinduoduo
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type GoodsSearchGoodsListResponse struct {
+type GoodsSearchGoodsList struct {
 	ActivityPromotionRate       int64    `json:"activity_promotion_rate"`
 	ActivityTags                []int64  `json:"activity_tags"`
 	ActivityType                int64    `json:"activity_type"`
@@ -73,36 +74,25 @@ type GoodsSearchGoodsListResponse struct {
 	CategoryName                string   `json:"category_name"`
 }
 
-type GoodsSearchResponse struct {
+type GoodsSearch struct {
 	GoodsSearchResponse struct {
-		GoodsList  []GoodsSearchGoodsListResponse `json:"goods_list"`
-		ListId     string                         `json:"list_id"`
-		SearchId   string                         `json:"search_id"`
-		TotalCount int64                          `json:"total_count"`
+		GoodsList  []GoodsSearchGoodsList `json:"goods_list"`
+		ListId     string                 `json:"list_id"`
+		SearchId   string                 `json:"search_id"`
+		TotalCount int64                  `json:"total_count"`
 	} `json:"goods_search_response"`
-}
-
-type GoodsSearchResult struct {
-	Result GoodsSearchResponse // 结果
-	Body   []byte              // 内容
-	Http   gorequest.Response  // 请求
-}
-
-func newGoodsSearchResult(result GoodsSearchResponse, body []byte, http gorequest.Response) *GoodsSearchResult {
-	return &GoodsSearchResult{Result: result, Body: body, Http: http}
 }
 
 // GoodsSearch 多多进宝商品查询
 // https://open.pinduoduo.com/application/document/api?id=pdd.ddk.goods.search
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.search
-func (c *Client) GoodsSearch(ctx context.Context, notMustParams ...*gorequest.Params) (*GoodsSearchResult, error) {
+func (c *Client) GoodsSearch(ctx context.Context, notMustParams ...*gorequest.Params) (response GoodsSearch, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.search", notMustParams...)
 	params.Set("pid", c.GetPid())
 
 	// 请求
-	var response GoodsSearchResponse
-	request, err := c.request(ctx, params, &response)
-	return newGoodsSearchResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, params, &response)
+	return
 }

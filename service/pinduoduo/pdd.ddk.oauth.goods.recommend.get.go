@@ -2,10 +2,11 @@ package pinduoduo
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type PddDdkOauthGoodsRecommendGetResponse struct {
+type OauthGoodsRecommendGet struct {
 	OrderDetailResponse struct {
 		SepMarketFee          int64   `json:"sep_market_fee"`
 		GoodsPrice            int64   `json:"goods_price"`
@@ -54,25 +55,14 @@ type PddDdkOauthGoodsRecommendGetResponse struct {
 	} `json:"order_detail_response"`
 }
 
-type PddDdkOauthGoodsRecommendGetResult struct {
-	Result PddDdkOauthGoodsRecommendGetResponse // 结果
-	Body   []byte                               // 内容
-	Http   gorequest.Response                   // 请求
-}
-
-func newPddDdkOauthGoodsRecommendGetResult(result PddDdkOauthGoodsRecommendGetResponse, body []byte, http gorequest.Response) *PddDdkOauthGoodsRecommendGetResult {
-	return &PddDdkOauthGoodsRecommendGetResult{Result: result, Body: body, Http: http}
-}
-
 // OauthGoodsRecommendGet 运营频道商品查询API
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.goods.recommend.get
-func (c *Client) OauthGoodsRecommendGet(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthGoodsRecommendGetResult, error) {
+func (c *Client) OauthGoodsRecommendGet(ctx context.Context, notMustParams ...*gorequest.Params) (response OauthGoodsRecommendGet, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.goods.recommend.get", notMustParams...)
 
 	// 请求
-	var response PddDdkOauthGoodsRecommendGetResponse
-	request, err := c.request(ctx, params, &response)
-	return newPddDdkOauthGoodsRecommendGetResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, params, &response)
+	return
 }

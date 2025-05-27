@@ -2,12 +2,11 @@ package pinduoduo
 
 import (
 	"context"
-	"encoding/json"
 
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type ResourceUrlGenResponse struct {
+type ResourceUrlGen struct {
 	ResourceUrlResponse struct {
 		MultiUrlList struct {
 			ShortUrl string `json:"short_url"` // 频道推广短链接
@@ -31,36 +30,15 @@ type ResourceUrlGenResponse struct {
 	} `json:"resource_url_response"`
 }
 
-type ResourceUrlGenError struct {
-	ErrorResponse struct {
-		ErrorMsg string `json:"error_msg"`
-		SubMsg   string `json:"sub_msg"`
-		SubCode  string `json:"sub_code"`
-	} `json:"error_response"`
-}
-
-type ResourceUrlGenResult struct {
-	Result ResourceUrlGenResponse // 结果
-	Body   []byte                 // 内容
-	Http   gorequest.Response     // 请求
-}
-
-func newResourceUrlGenResult(result ResourceUrlGenResponse, body []byte, http gorequest.Response) *ResourceUrlGenResult {
-	return &ResourceUrlGenResult{Result: result, Body: body, Http: http}
-}
-
 // ResourceUrlGen 生成多多进宝频道推广
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.pid.generate
-func (c *Client) ResourceUrlGen(ctx context.Context, notMustParams ...*gorequest.Params) (*ResourceUrlGenResult, ResourceUrlGenError, error) {
+func (c *Client) ResourceUrlGen(ctx context.Context, notMustParams ...*gorequest.Params) (response ResourceUrlGen, apiErr ApiError, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.resource.url.gen", notMustParams...)
 	params.Set("pid", c.GetPid())
 
 	// 请求
-	var response ResourceUrlGenResponse
-	request, err := c.request(ctx, params, &response)
-	var responseError ResourceUrlGenError
-	_ = json.Unmarshal(request.ResponseBody, &responseError)
-	return newResourceUrlGenResult(response, request.ResponseBody, request), responseError, err
+	err = c.requestAndErr(ctx, params, &response, &apiErr)
+	return
 }

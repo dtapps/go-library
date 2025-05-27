@@ -2,10 +2,11 @@ package pinduoduo
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type PddDdkOauthCashGiftDataQueryListResponse struct {
+type OauthCashGiftDataQueryList struct {
 	Amount        float64 `json:"amount"`         // 礼金券创建总金额，单位为分
 	CashGiftId    float64 `json:"cash_gift_id"`   // 礼金ID
 	CashGiftName  string  `json:"cash_gift_name"` // 礼金名称
@@ -29,33 +30,22 @@ type PddDdkOauthCashGiftDataQueryListResponse struct {
 	Status             int64   `json:"status"`               // 礼金状态：1-未生效；2-生效中；3-已过期；4-活动中止（用户主动停止）；5-活动中止（佣金降低）；6-活动中止（推广活动异常）
 }
 
-type PddDdkOauthCashGiftDataQueryResponse struct {
+type OauthCashGiftDataQuery struct {
 	CashgiftDataResponse struct {
-		AvailableBalance float64                                    `json:"available_balance"` // 礼金账户余额，单位为分
-		List             []PddDdkOauthCashGiftDataQueryListResponse `json:"list"`              // 多多礼金数据列表
-		Total            int64                                      `json:"total"`             // 请求到的结果数
+		AvailableBalance float64                      `json:"available_balance"` // 礼金账户余额，单位为分
+		List             []OauthCashGiftDataQueryList `json:"list"`              // 多多礼金数据列表
+		Total            int64                        `json:"total"`             // 请求到的结果数
 	} `json:"cashgift_data_response"`
-}
-
-type PddDdkOauthCashGiftDataQueryResult struct {
-	Result PddDdkOauthCashGiftDataQueryResponse // 结果
-	Body   []byte                               // 内容
-	Http   gorequest.Response                   // 请求
-}
-
-func newPddDdkOauthCashGiftDataQueryResult(result PddDdkOauthCashGiftDataQueryResponse, body []byte, http gorequest.Response) *PddDdkOauthCashGiftDataQueryResult {
-	return &PddDdkOauthCashGiftDataQueryResult{Result: result, Body: body, Http: http}
 }
 
 // OauthCashGiftDataQuery 查询多多礼金效果数据
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.cashgift.data.query
-func (c *Client) OauthCashGiftDataQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthCashGiftDataQueryResult, error) {
+func (c *Client) OauthCashGiftDataQuery(ctx context.Context, notMustParams ...*gorequest.Params) (response OauthCashGiftDataQuery, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.cashgift.data.query", notMustParams...)
 
 	// 请求
-	var response PddDdkOauthCashGiftDataQueryResponse
-	request, err := c.request(ctx, params, &response)
-	return newPddDdkOauthCashGiftDataQueryResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, params, &response)
+	return
 }

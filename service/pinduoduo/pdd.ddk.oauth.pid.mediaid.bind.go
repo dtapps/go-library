@@ -2,10 +2,11 @@ package pinduoduo
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type PddDdkOauthPidMediaIdBindResponse struct {
+type OauthPidMediaIdBind struct {
 	OrderMediaIdBindResponse struct {
 		SepMarketFee          int64   `json:"sep_market_fee"`
 		PidPrice              int64   `json:"Pid_price"`
@@ -54,25 +55,14 @@ type PddDdkOauthPidMediaIdBindResponse struct {
 	} `json:"order_MediaIdBind_response"`
 }
 
-type PddDdkOauthPidMediaIdBindResult struct {
-	Result PddDdkOauthPidMediaIdBindResponse // 结果
-	Body   []byte                            // 内容
-	Http   gorequest.Response                // 请求
-}
-
-func newPddDdkOauthPidMediaIdBindResult(result PddDdkOauthPidMediaIdBindResponse, body []byte, http gorequest.Response) *PddDdkOauthPidMediaIdBindResult {
-	return &PddDdkOauthPidMediaIdBindResult{Result: result, Body: body, Http: http}
-}
-
 // OauthPidMediaIdBind 批量绑定推广位的媒体id
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.pid.mediaid.bind
-func (c *Client) OauthPidMediaIdBind(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthPidMediaIdBindResult, error) {
+func (c *Client) OauthPidMediaIdBind(ctx context.Context, notMustParams ...*gorequest.Params) (response OauthPidMediaIdBind, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.pid.mediaid.bind", notMustParams...)
 
 	// 请求
-	var response PddDdkOauthPidMediaIdBindResponse
-	request, err := c.request(ctx, params, &response)
-	return newPddDdkOauthPidMediaIdBindResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, params, &response)
+	return
 }

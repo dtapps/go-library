@@ -2,10 +2,11 @@ package pinduoduo
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type PddDdkOauthMemberAuthorityQueryResponse struct {
+type OauthMemberAuthorityQuery struct {
 	OrderAuthorityQueryResponse struct {
 		SepMarketFee          int64   `json:"sep_market_fee"`
 		MemberPrice           int64   `json:"Member_price"`
@@ -54,25 +55,14 @@ type PddDdkOauthMemberAuthorityQueryResponse struct {
 	} `json:"order_AuthorityQuery_response"`
 }
 
-type PddDdkOauthMemberAuthorityQueryResult struct {
-	Result PddDdkOauthMemberAuthorityQueryResponse // 结果
-	Body   []byte                                  // 内容
-	Http   gorequest.Response                      // 请求
-}
-
-func newPddDdkOauthMemberAuthorityQueryResult(result PddDdkOauthMemberAuthorityQueryResponse, body []byte, http gorequest.Response) *PddDdkOauthMemberAuthorityQueryResult {
-	return &PddDdkOauthMemberAuthorityQueryResult{Result: result, Body: body, Http: http}
-}
-
 // OauthMemberAuthorityQuery 查询是否绑定备案
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.member.authority.query
-func (c *Client) OauthMemberAuthorityQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthMemberAuthorityQueryResult, error) {
+func (c *Client) OauthMemberAuthorityQuery(ctx context.Context, notMustParams ...*gorequest.Params) (response OauthMemberAuthorityQuery, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.member.authority.query", notMustParams...)
 
 	// 请求
-	var response PddDdkOauthMemberAuthorityQueryResponse
-	request, err := c.request(ctx, params, &response)
-	return newPddDdkOauthMemberAuthorityQueryResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, params, &response)
+	return
 }

@@ -2,15 +2,16 @@ package pinduoduo
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type PddDdkOauthRpPromUrlGenerateResourceListResponse struct {
+type OauthRpPromUrlGenerateResourceList struct {
 	Desc string `json:"desc"`
 	Url  string `json:"url"`
 }
 
-type PddDdkOauthRpPromUrlGenerateResponse struct {
+type OauthRpPromUrlGenerateUrlList struct {
 	MobileShortUrl           string `json:"mobile_short_url"`
 	MobileUrl                string `json:"mobile_url"`
 	MultiGroupMobileShortUrl string `json:"multi_group_mobile_short_url"`
@@ -43,32 +44,21 @@ type PddDdkOauthRpPromUrlGenerateResponse struct {
 	} `json:"we_app_info"`
 }
 
-type PddDdkOauthRpPromUrlGenerateUrlListResponse struct {
+type OauthRpPromUrlGenerate struct {
 	RpPromotionUrlGenerateResponse struct {
-		ResourceList []PddDdkOauthRpPromUrlGenerateResourceListResponse `json:"resource_list"`
-		UrlList      []PddDdkOauthRpPromUrlGenerateResponse             `json:"url_list"`
+		ResourceList []OauthRpPromUrlGenerateResourceList `json:"resource_list"`
+		UrlList      []OauthRpPromUrlGenerateUrlList      `json:"url_list"`
 	} `json:"rp_promotion_url_generate_response"`
-}
-
-type PddDdkOauthRpPromUrlGenerateResult struct {
-	Result PddDdkOauthRpPromUrlGenerateResponse // 结果
-	Body   []byte                               // 内容
-	Http   gorequest.Response                   // 请求
-}
-
-func newPddDdkOauthRpPromUrlGenerateResult(result PddDdkOauthRpPromUrlGenerateResponse, body []byte, http gorequest.Response) *PddDdkOauthRpPromUrlGenerateResult {
-	return &PddDdkOauthRpPromUrlGenerateResult{Result: result, Body: body, Http: http}
 }
 
 // OauthRpPromUrlGenerate 生成营销工具推广链接
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.rp.prom.url.generate
-func (c *Client) OauthRpPromUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthRpPromUrlGenerateResult, error) {
+func (c *Client) OauthRpPromUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (response OauthRpPromUrlGenerate, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.rp.prom.url.generate", notMustParams...)
 
 	// 请求
-	var response PddDdkOauthRpPromUrlGenerateResponse
-	request, err := c.request(ctx, params, &response)
-	return newPddDdkOauthRpPromUrlGenerateResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, params, &response)
+	return
 }

@@ -2,10 +2,11 @@ package pinduoduo
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type OrderListIncrementGetResponse struct {
+type OrderListIncrementGet struct {
 	OrderListGetResponse struct {
 		TotalCount int64                               `json:"total_count"` // 请求到的结果数
 		OrderList  []OrderDetailGetOrderDetailResponse `json:"order_list"`  // 多多进宝推广位对象列表
@@ -13,19 +14,9 @@ type OrderListIncrementGetResponse struct {
 	} `json:"order_list_get_response"`
 }
 
-type OrderListIncrementGetResult struct {
-	Result OrderListIncrementGetResponse // 结果
-	Body   []byte                        // 内容
-	Http   gorequest.Response            // 请求
-}
-
-func newOrderListIncrementGetResult(result OrderListIncrementGetResponse, body []byte, http gorequest.Response) *OrderListIncrementGetResult {
-	return &OrderListIncrementGetResult{Result: result, Body: body, Http: http}
-}
-
 // OrderListIncrementGet 最后更新时间段增量同步推广订单信息
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.order.list.increment.get
-func (c *Client) OrderListIncrementGet(ctx context.Context, startUpdateTime int64, endUpdateTime int64, page int64, pageSize int64, notMustParams ...*gorequest.Params) (*OrderListIncrementGetResult, error) {
+func (c *Client) OrderListIncrementGet(ctx context.Context, startUpdateTime int64, endUpdateTime int64, page int64, pageSize int64, notMustParams ...*gorequest.Params) (response OrderListIncrementGet, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.order.list.increment.get", notMustParams...)
@@ -43,7 +34,6 @@ func (c *Client) OrderListIncrementGet(ctx context.Context, startUpdateTime int6
 	}
 
 	// 请求
-	var response OrderListIncrementGetResponse
-	request, err := c.request(ctx, params, &response)
-	return newOrderListIncrementGetResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, params, &response)
+	return
 }

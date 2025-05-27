@@ -2,10 +2,11 @@ package pinduoduo
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type TopGoodsListQueryListResponse struct {
+type TopGoodsListQueryList struct {
 	CatIds               []int64  `json:"cat_ids"`
 	CouponDiscount       int64    `json:"coupon_discount"`
 	CouponEndTime        int64    `json:"coupon_end_time"`
@@ -39,34 +40,24 @@ type TopGoodsListQueryListResponse struct {
 	CategoryId           int64    `json:"category_id"`
 	CategoryName         string   `json:"category_name"`
 }
-type TopGoodsListQueryResponse struct {
+type TopGoodsListQuery struct {
 	TopGoodsListGetResponse struct {
-		List     []TopGoodsListQueryListResponse `json:"list"`
-		ListId   string                          `json:"list_id"`
-		SearchId string                          `json:"search_id"`
-		Total    int64                           `json:"total"`
+		List     []TopGoodsListQueryList `json:"list"`
+		ListId   string                  `json:"list_id"`
+		SearchId string                  `json:"search_id"`
+		Total    int64                   `json:"total"`
 	} `json:"top_goods_list_get_response"`
-}
-type TopGoodsListQueryResult struct {
-	Result TopGoodsListQueryResponse // 结果
-	Body   []byte                    // 内容
-	Http   gorequest.Response        // 请求
-}
-
-func newTopGoodsListQueryResult(result TopGoodsListQueryResponse, body []byte, http gorequest.Response) *TopGoodsListQueryResult {
-	return &TopGoodsListQueryResult{Result: result, Body: body, Http: http}
 }
 
 // TopGoodsListQuery 多多客获取爆款排行商品接口
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.top.goods.list.query
-func (c *Client) TopGoodsListQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*TopGoodsListQueryResult, error) {
+func (c *Client) TopGoodsListQuery(ctx context.Context, notMustParams ...*gorequest.Params) (response TopGoodsListQuery, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.top.goods.list.query", notMustParams...)
 	params.Set("p_id", c.GetPid())
 
 	// 请求
-	var response TopGoodsListQueryResponse
-	request, err := c.request(ctx, params, &response)
-	return newTopGoodsListQueryResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, params, &response)
+	return
 }

@@ -7,7 +7,7 @@ import (
 )
 
 // ServeHttpAuthorizerApi 授权跳转
-func (c *Client) ServeHttpAuthorizerApi(ctx context.Context, w http.ResponseWriter, r *http.Request) (PddDdkPopAuthTokenCreateResponse, string, string, error) {
+func (c *Client) ServeHttpAuthorizerApi(ctx context.Context, w http.ResponseWriter, r *http.Request) (PopAuthTokenCreate, string, string, error) {
 
 	var (
 		query = r.URL.Query()
@@ -18,13 +18,13 @@ func (c *Client) ServeHttpAuthorizerApi(ctx context.Context, w http.ResponseWrit
 
 	if code == "" {
 		err := errors.New("找不到授权码参数")
-		return PddDdkPopAuthTokenCreateResponse{}, code, state, err
+		return PopAuthTokenCreate{}, code, state, err
 	}
 
 	response, err := c.PopAuthTokenCreate(ctx, code)
 	if err != nil {
-		return response.Result, code, state, err
+		return response, code, state, err
 	}
 
-	return response.Result, code, state, nil
+	return response, code, state, nil
 }

@@ -2,6 +2,7 @@ package pinduoduo
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
@@ -64,29 +65,18 @@ type OrderDetailGetOrderDetailResponse struct {
 	ActivityType                      int64   `json:"activity_type"`                                     // 活动类型
 }
 
-type OrderDetailGetResponse struct {
+type OrderDetailGet struct {
 	OrderDetailResponse OrderDetailGetOrderDetailResponse `json:"order_detail_response"`
 }
 
-type OrderDetailGetResult struct {
-	Result OrderDetailGetResponse // 结果
-	Body   []byte                 // 内容
-	Http   gorequest.Response     // 请求
-}
-
-func newOrderDetailGetResult(result OrderDetailGetResponse, body []byte, http gorequest.Response) *OrderDetailGetResult {
-	return &OrderDetailGetResult{Result: result, Body: body, Http: http}
-}
-
 // OrderDetailGet 多多进宝商品查询 https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.order.detail.get
-func (c *Client) OrderDetailGet(ctx context.Context, orderSn string, notMustParams ...*gorequest.Params) (*OrderDetailGetResult, error) {
+func (c *Client) OrderDetailGet(ctx context.Context, orderSn string, notMustParams ...*gorequest.Params) (response OrderDetailGet, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.order.detail.get", notMustParams...)
 	params.Set("order_sn", orderSn)
 
 	// 请求
-	var response OrderDetailGetResponse
-	request, err := c.request(ctx, params, &response)
-	return newOrderDetailGetResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, params, &response)
+	return
 }

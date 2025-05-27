@@ -2,10 +2,11 @@ package pinduoduo
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type GoodsPromotionUrlGenerateGoodsPromotionUrlListResponse struct {
+type GoodsPromotionUrlGenerateGoodsPromotionUrlList struct {
 	MobileShortUrl string `json:"mobile_short_url,omitempty"` // 对应出参mobile_url的短链接，与mobile_url功能一致。
 	MobileUrl      string `json:"mobile_url,omitempty"`       // 使用此推广链接，用户安装微信的情况下，默认拉起拼多多福利券微信小程序，否则唤起H5页面
 	QqAppInfo      struct {
@@ -37,32 +38,21 @@ type GoodsPromotionUrlGenerateGoodsPromotionUrlListResponse struct {
 	TzSchemaUrl          string `json:"tz_schema_url"`
 	WeixinShortLink      string `json:"weixin_short_link"`
 }
-type GoodsPromotionUrlGenerateResponse struct {
+type GoodsPromotionUrlGenerate struct {
 	GoodsPromotionUrlGenerateResponse struct {
-		GoodsPromotionUrlList []GoodsPromotionUrlGenerateGoodsPromotionUrlListResponse `json:"goods_promotion_url_list"`
+		GoodsPromotionUrlList []GoodsPromotionUrlGenerateGoodsPromotionUrlList `json:"goods_promotion_url_list"`
 	} `json:"goods_promotion_url_generate_response"`
-}
-
-type GoodsPromotionUrlGenerateResult struct {
-	Result GoodsPromotionUrlGenerateResponse // 结果
-	Body   []byte                            // 内容
-	Http   gorequest.Response                // 请求
-}
-
-func newGoodsPromotionUrlGenerateResult(result GoodsPromotionUrlGenerateResponse, body []byte, http gorequest.Response) *GoodsPromotionUrlGenerateResult {
-	return &GoodsPromotionUrlGenerateResult{Result: result, Body: body, Http: http}
 }
 
 // GoodsPromotionUrlGenerate 多多进宝推广链接生成
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.promotion.url.generate
-func (c *Client) GoodsPromotionUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (*GoodsPromotionUrlGenerateResult, error) {
+func (c *Client) GoodsPromotionUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (response GoodsPromotionUrlGenerate, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.promotion.url.generate", notMustParams...)
 	params.Set("p_id", c.GetPid())
 
 	// 请求
-	var response GoodsPromotionUrlGenerateResponse
-	request, err := c.request(ctx, params, &response)
-	return newGoodsPromotionUrlGenerateResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, params, &response)
+	return
 }

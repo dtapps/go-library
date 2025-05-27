@@ -2,10 +2,11 @@ package pinduoduo
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type PddDdkOauthGoodsPromUrlGenerateResponse struct {
+type OauthGoodsPromUrlGenerate struct {
 	OrderDetailResponse struct {
 		SepMarketFee          int64   `json:"sep_market_fee"`
 		GoodsPrice            int64   `json:"goods_price"`
@@ -54,25 +55,14 @@ type PddDdkOauthGoodsPromUrlGenerateResponse struct {
 	} `json:"order_detail_response"`
 }
 
-type PddDdkOauthGoodsPromUrlGenerateResult struct {
-	Result PddDdkOauthGoodsPromUrlGenerateResponse // 结果
-	Body   []byte                                  // 内容
-	Http   gorequest.Response                      // 请求
-}
-
-func newPddDdkOauthGoodsPromUrlGenerateResult(result PddDdkOauthGoodsPromUrlGenerateResponse, body []byte, http gorequest.Response) *PddDdkOauthGoodsPromUrlGenerateResult {
-	return &PddDdkOauthGoodsPromUrlGenerateResult{Result: result, Body: body, Http: http}
-}
-
 // OauthGoodsPromUrlGenerate 生成多多进宝推广链接
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.goods.prom.url.generate
-func (c *Client) OauthGoodsPromUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthGoodsPromUrlGenerateResult, error) {
+func (c *Client) OauthGoodsPromUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (response OauthGoodsPromUrlGenerate, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.goods.prom.url.generate", notMustParams...)
 
 	// 请求
-	var response PddDdkOauthGoodsPromUrlGenerateResponse
-	request, err := c.request(ctx, params, &response)
-	return newPddDdkOauthGoodsPromUrlGenerateResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, params, &response)
+	return
 }

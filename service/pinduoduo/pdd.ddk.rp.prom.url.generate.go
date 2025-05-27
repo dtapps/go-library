@@ -2,16 +2,15 @@ package pinduoduo
 
 import (
 	"context"
-	"encoding/json"
 
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type RpPromUrlGenerateResourceListResponse struct {
+type RpPromUrlGenerateResourceList struct {
 	Desc string `json:"desc"` // 活动描述
 	Url  string `json:"url"`  // 活动地址
 }
-type RpPromUrlGenerateUrlListResponse struct {
+type RpPromUrlGenerateUrlList struct {
 	MobileShortUrl           string `json:"mobile_short_url"`             // 推广移动短链接，对应出参mobile_url的短链接，与mobile_url功能一致。
 	MobileUrl                string `json:"mobile_url"`                   // 推广移动链接，用户安装拼多多APP的情况下会唤起APP，否则唤起H5页面
 	MultiGroupMobileShortUrl string `json:"multi_group_mobile_short_url"` // 推广多人团移动短链接
@@ -42,42 +41,22 @@ type RpPromUrlGenerateUrlListResponse struct {
 		WeAppIconUrl      string `json:"we_app_icon_url"`     // 小程序icon
 	} `json:"we_app_info"` // 拼多多福利券微信小程序信息
 }
-type RpPromUrlGenerateResponse struct {
+type RpPromUrlGenerate struct {
 	RpPromotionUrlGenerateResponse struct {
-		ResourceList []RpPromUrlGenerateResourceListResponse `json:"resource_list"`
-		UrlList      []RpPromUrlGenerateUrlListResponse      `json:"url_list"`
+		ResourceList []RpPromUrlGenerateResourceList `json:"resource_list"`
+		UrlList      []RpPromUrlGenerateUrlList      `json:"url_list"`
 	} `json:"rp_promotion_url_generate_response"`
-}
-type RpPromUrlGenerateError struct {
-	ErrorResponse struct {
-		ErrorMsg string `json:"error_msg"`
-		SubMsg   string `json:"sub_msg"`
-		SubCode  string `json:"sub_code"`
-	} `json:"error_response"`
-}
-
-type RpPromUrlGenerateResult struct {
-	Result RpPromUrlGenerateResponse // 结果
-	Body   []byte                    // 内容
-	Http   gorequest.Response        // 请求
-}
-
-func newRpPromUrlGenerateResult(result RpPromUrlGenerateResponse, body []byte, http gorequest.Response) *RpPromUrlGenerateResult {
-	return &RpPromUrlGenerateResult{Result: result, Body: body, Http: http}
 }
 
 // RpPromUrlGenerate 生成营销工具推广链接
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.rp.prom.url.generate
-func (c *Client) RpPromUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (*RpPromUrlGenerateResult, RpPromUrlGenerateError, error) {
+func (c *Client) RpPromUrlGenerate(ctx context.Context, notMustParams ...*gorequest.Params) (response RpPromUrlGenerate, apiErr ApiError, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.rp.prom.url.generate", notMustParams...)
 	SetPidList(params, []string{c.GetPid()})
 
 	// 请求
-	var response RpPromUrlGenerateResponse
-	request, err := c.request(ctx, params, &response)
-	var responseError RpPromUrlGenerateError
-	_ = json.Unmarshal(request.ResponseBody, &responseError)
-	return newRpPromUrlGenerateResult(response, request.ResponseBody, request), responseError, err
+	err = c.requestAndErr(ctx, params, &response, &apiErr)
+	return
 }

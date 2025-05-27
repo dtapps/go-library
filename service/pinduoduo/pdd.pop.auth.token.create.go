@@ -2,10 +2,11 @@ package pinduoduo
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type PddDdkPopAuthTokenPopAuthTokenResponse struct {
+type PopAuthTokenCreatePopAuthTokenCreateResponse struct {
 	AccessToken           string   `json:"access_token"`             // access_token
 	ExpiresAt             int64    `json:"expires_at"`               // access_token过期时间点
 	ExpiresIn             int64    `json:"expires_in"`               // access_token过期时间段，10（表示10秒后过期）
@@ -26,23 +27,13 @@ type PddDdkPopAuthTokenPopAuthTokenResponse struct {
 	RequestId             string   `json:"request_id"`
 }
 
-type PddDdkPopAuthTokenCreateResponse struct {
-	PopAuthTokenCreateResponse PddDdkPopAuthTokenPopAuthTokenResponse `json:"pop_auth_token_create_response"`
-}
-
-type PddDdkPopAuthTokenCreateResult struct {
-	Result PddDdkPopAuthTokenCreateResponse // 结果
-	Body   []byte                           // 内容
-	Http   gorequest.Response               // 请求
-}
-
-func newPddDdkPopAuthTokenCreateResult(result PddDdkPopAuthTokenCreateResponse, body []byte, http gorequest.Response) *PddDdkPopAuthTokenCreateResult {
-	return &PddDdkPopAuthTokenCreateResult{Result: result, Body: body, Http: http}
+type PopAuthTokenCreate struct {
+	PopAuthTokenCreateResponse PopAuthTokenCreatePopAuthTokenCreateResponse `json:"pop_auth_token_create_response"`
 }
 
 // PopAuthTokenCreate 获取Access Token
 // https://open.pinduoduo.com/application/document/api?id=pdd.pop.auth.token.create
-func (c *Client) PopAuthTokenCreate(ctx context.Context, code string, notMustParams ...*gorequest.Params) (*PddDdkPopAuthTokenCreateResult, error) {
+func (c *Client) PopAuthTokenCreate(ctx context.Context, code string, notMustParams ...*gorequest.Params) (response PopAuthTokenCreate, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.pop.auth.token.create", notMustParams...)
@@ -51,7 +42,6 @@ func (c *Client) PopAuthTokenCreate(ctx context.Context, code string, notMustPar
 	}
 
 	// 请求
-	var response PddDdkPopAuthTokenCreateResponse
-	request, err := c.request(ctx, params, &response)
-	return newPddDdkPopAuthTokenCreateResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, params, &response)
+	return
 }

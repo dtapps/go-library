@@ -11,7 +11,9 @@ type Option struct {
 }
 
 func NewOptions(opts []Option) *Options {
-	options := &Options{}
+	options := &Options{
+		httpClient: nil,
+	}
 	options.Apply(opts)
 	return options
 }

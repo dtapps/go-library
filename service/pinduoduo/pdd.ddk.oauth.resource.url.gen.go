@@ -2,10 +2,11 @@ package pinduoduo
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type PddDdkOauthResourceUrlGenResponse struct {
+type OauthResourceUrlGen struct {
 	OrderUrlGenResponse struct {
 		SepMarketFee          int64   `json:"sep_market_fee"`
 		ResourcePrice         int64   `json:"Resource_price"`
@@ -54,25 +55,14 @@ type PddDdkOauthResourceUrlGenResponse struct {
 	} `json:"order_UrlGen_response"`
 }
 
-type PddDdkOauthResourceUrlGenResult struct {
-	Result PddDdkOauthResourceUrlGenResponse // 结果
-	Body   []byte                            // 内容
-	Http   gorequest.Response                // 请求
-}
-
-func newPddDdkOauthResourceUrlGenResult(result PddDdkOauthResourceUrlGenResponse, body []byte, http gorequest.Response) *PddDdkOauthResourceUrlGenResult {
-	return &PddDdkOauthResourceUrlGenResult{Result: result, Body: body, Http: http}
-}
-
 // OauthResourceUrlGen 拼多多主站频道推广接口
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.resource.url.gen
-func (c *Client) OauthResourceUrlGen(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthResourceUrlGenResult, error) {
+func (c *Client) OauthResourceUrlGen(ctx context.Context, notMustParams ...*gorequest.Params) (response OauthResourceUrlGen, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.resource.url.gen", notMustParams...)
 
 	// 请求
-	var response PddDdkOauthResourceUrlGenResponse
-	request, err := c.request(ctx, params, &response)
-	return newPddDdkOauthResourceUrlGenResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, params, &response)
+	return
 }

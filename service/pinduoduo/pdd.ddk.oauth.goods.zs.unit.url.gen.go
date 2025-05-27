@@ -2,10 +2,11 @@ package pinduoduo
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type PddDdkOauthGoodsZsUnitUrlGenResponse struct {
+type OauthGoodsZsUnitUrlGen struct {
 	OrderDetailResponse struct {
 		SepMarketFee          int64   `json:"sep_market_fee"`
 		GoodsPrice            int64   `json:"goods_price"`
@@ -54,25 +55,14 @@ type PddDdkOauthGoodsZsUnitUrlGenResponse struct {
 	} `json:"order_detail_response"`
 }
 
-type PddDdkOauthGoodsZsUnitUrlGenResult struct {
-	Result PddDdkOauthGoodsZsUnitUrlGenResponse // 结果
-	Body   []byte                               // 内容
-	Http   gorequest.Response                   // 请求
-}
-
-func newPddDdkOauthGoodsZsUnitUrlGenResult(result PddDdkOauthGoodsZsUnitUrlGenResponse, body []byte, http gorequest.Response) *PddDdkOauthGoodsZsUnitUrlGenResult {
-	return &PddDdkOauthGoodsZsUnitUrlGenResult{Result: result, Body: body, Http: http}
-}
-
 // OauthGoodsZsUnitUrlGen 生成招商推广链接
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.oauth.goods.zs.unit.url.gen
-func (c *Client) OauthGoodsZsUnitUrlGen(ctx context.Context, notMustParams ...*gorequest.Params) (*PddDdkOauthGoodsZsUnitUrlGenResult, error) {
+func (c *Client) OauthGoodsZsUnitUrlGen(ctx context.Context, notMustParams ...*gorequest.Params) (response OauthGoodsZsUnitUrlGen, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.oauth.goods.zs.unit.url.gen", notMustParams...)
 
 	// 请求
-	var response PddDdkOauthGoodsZsUnitUrlGenResponse
-	request, err := c.request(ctx, params, &response)
-	return newPddDdkOauthGoodsZsUnitUrlGenResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, params, &response)
+	return
 }

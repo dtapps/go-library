@@ -2,10 +2,11 @@ package pinduoduo
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type OrderListRangeGetResponse struct {
+type OrderListRangeGet struct {
 	OrderListGetResponse struct {
 		LastOrderID string                              `json:"last_order_id"` // last_order_id
 		OrderList   []OrderDetailGetOrderDetailResponse `json:"order_list"`    // 多多进宝推广位对象列表
@@ -13,19 +14,9 @@ type OrderListRangeGetResponse struct {
 	} `json:"order_list_get_response"`
 }
 
-type OrderListRangeGetResult struct {
-	Result OrderListRangeGetResponse // 结果
-	Body   []byte                    // 内容
-	Http   gorequest.Response        // 请求
-}
-
-func newOrderListRangeGetResult(result OrderListRangeGetResponse, body []byte, http gorequest.Response) *OrderListRangeGetResult {
-	return &OrderListRangeGetResult{Result: result, Body: body, Http: http}
-}
-
 // OrderListRangeGet 用时间段查询推广订单接口
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.order.list.range.get
-func (c *Client) OrderListRangeGet(ctx context.Context, startTime string, endTime string, lastOrderID string, pageSize int64, notMustParams ...*gorequest.Params) (*OrderListRangeGetResult, error) {
+func (c *Client) OrderListRangeGet(ctx context.Context, startTime string, endTime string, lastOrderID string, pageSize int64, notMustParams ...*gorequest.Params) (response OrderListRangeGet, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.order.list.range.get", notMustParams...)
@@ -37,7 +28,6 @@ func (c *Client) OrderListRangeGet(ctx context.Context, startTime string, endTim
 	}
 
 	// 请求
-	var response OrderListRangeGetResponse
-	request, err := c.request(ctx, params, &response)
-	return newOrderListRangeGetResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, params, &response)
+	return
 }

@@ -6,7 +6,7 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type GoodsZsUnitUrlGenResponse struct {
+type GoodsZsUnitUrlGen struct {
 	GoodsZsUnitUrlGenResponse struct {
 		MobileShortUrl           string `json:"mobile_short_url,omitempty"`             // 对应出参mobile_url的短链接，与mobile_url功能一致。
 		MobileUrl                string `json:"mobile_url,omitempty"`                   // 普通长链，微信环境下进入领券页点领券拉起小程序，浏览器环境下直接拉起APP，未安装拼多多APP时落地页点领券拉起登录页
@@ -20,26 +20,15 @@ type GoodsZsUnitUrlGenResponse struct {
 	} `json:"goods_zs_unit_generate_response"`
 }
 
-type GoodsZsUnitUrlGenResult struct {
-	Result GoodsZsUnitUrlGenResponse // 结果
-	Body   []byte                    // 内容
-	Http   gorequest.Response        // 请求
-}
-
-func newGoodsZsUnitUrlGenResult(result GoodsZsUnitUrlGenResponse, body []byte, http gorequest.Response) *GoodsZsUnitUrlGenResult {
-	return &GoodsZsUnitUrlGenResult{Result: result, Body: body, Http: http}
-}
-
 // GoodsZsUnitUrlGen 多多进宝转链接口
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.zs.unit.url.gen
-func (c *Client) GoodsZsUnitUrlGen(ctx context.Context, notMustParams ...*gorequest.Params) (*GoodsZsUnitUrlGenResult, error) {
+func (c *Client) GoodsZsUnitUrlGen(ctx context.Context, notMustParams ...*gorequest.Params) (response GoodsZsUnitUrlGen, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.zs.unit.url.gen", notMustParams...)
 	params.Set("p_id", c.GetPid())
 
 	// 请求
-	var response GoodsZsUnitUrlGenResponse
-	request, err := c.request(ctx, params, &response)
-	return newGoodsZsUnitUrlGenResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, params, &response)
+	return
 }

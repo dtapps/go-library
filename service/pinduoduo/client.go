@@ -25,6 +25,7 @@ type Client struct {
 		accessToken      string   // 通过code获取的access_token(无需授权的接口，该字段不参与sign签名运算)
 		accessTokenScope []string // 授权范围
 	}
+	debug      bool
 	httpClient *resty.Client // 请求客户端
 }
 
@@ -60,11 +61,11 @@ func (c *Client) Close() {
 
 type ErrResp struct {
 	ErrorResponse struct {
-		ErrorMsg  string      `json:"error_msg"`
-		SubMsg    string      `json:"sub_msg"`
-		SubCode   interface{} `json:"sub_code"`
-		ErrorCode int         `json:"error_code"`
-		RequestId string      `json:"request_id"`
+		ErrorMsg  string `json:"error_msg"`
+		SubMsg    string `json:"sub_msg"`
+		SubCode   any    `json:"sub_code"`
+		ErrorCode int    `json:"error_code"`
+		RequestId string `json:"request_id"`
 	} `json:"error_response"`
 }
 

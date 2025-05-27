@@ -2,12 +2,11 @@ package pinduoduo
 
 import (
 	"context"
-	"encoding/json"
 
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type GoodsDetailGoodsDetailsResponse struct {
+type GoodsDetail struct {
 	ActivityPromotionRate       int64    `json:"activity_promotion_rate,omitempty"`         // 活动佣金比例，千分比（特定活动期间的佣金比例）
 	ActivityTags                []int64  `json:"activity_tags,omitempty"`                   // 商品活动标记数组，例：[4,7]，4-秒杀 7-百亿补贴等
 	BrandName                   string   `json:"brand_name,omitempty"`                      // 商品品牌词信息，如“苹果”、“阿迪达斯”、“李宁”等
@@ -82,44 +81,16 @@ type GoodsDetailGoodsDetailsResponse struct {
 	CategoryName               string   `json:"category_name"`
 }
 
-type GoodsDetailResponse struct {
-	GoodsDetailResponse struct {
-		GoodsDetails []GoodsDetailGoodsDetailsResponse `json:"goods_details"`
-	} `json:"goods_detail_response"`
-}
-type GoodsDetailResponseError struct {
-	ErrorResponse struct {
-		SubMsg    string `json:"sub_msg"`
-		SubCode   string `json:"sub_code"`
-		ErrorMsg  string `json:"error_msg"`
-		ErrorCode int    `json:"error_code"`
-		RequestId string `json:"request_id"`
-	} `json:"error_response"`
-}
-
-type GoodsDetailResult struct {
-	Result GoodsDetailResponse // 结果
-	Body   []byte              // 内容
-	Http   gorequest.Response  // 请求
-}
-
-func newGoodsDetailResult(result GoodsDetailResponse, body []byte, http gorequest.Response) *GoodsDetailResult {
-	return &GoodsDetailResult{Result: result, Body: body, Http: http}
-}
-
 // GoodsDetail 多多进宝商品详情查询
 // https://open.pinduoduo.com/application/document/api?id=pdd.ddk.goods.detail
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.detail
-func (c *Client) GoodsDetail(ctx context.Context, notMustParams ...*gorequest.Params) (*GoodsDetailResult, GoodsDetailResponseError, error) {
+func (c *Client) GoodsDetail(ctx context.Context, notMustParams ...*gorequest.Params) (response GoodsDetail, apiErr ApiError, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.detail", notMustParams...)
 	params.Set("pid", c.GetPid())
 
 	// 请求
-	var response GoodsDetailResponse
-	request, err := c.request(ctx, params, &response)
-	var responseError GoodsDetailResponseError
-	_ = json.Unmarshal(request.ResponseBody, &responseError)
-	return newGoodsDetailResult(response, request.ResponseBody, request), responseError, err
+	err = c.requestAndErr(ctx, params, &response, &apiErr)
+	return
 }

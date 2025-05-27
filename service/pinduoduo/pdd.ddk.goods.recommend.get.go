@@ -2,10 +2,11 @@ package pinduoduo
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type GoodsRecommendGetListResponse struct {
+type GoodsRecommendGetList struct {
 	ActivityPromotionRate      int64    `json:"activity_promotion_rate"`
 	ActivityTags               []int64  `json:"activity_tags"`
 	BrandName                  string   `json:"brand_name"`
@@ -59,36 +60,25 @@ type GoodsRecommendGetListResponse struct {
 	CategoryName               string   `json:"category_name"`
 }
 
-type GoodsRecommendGetResponse struct {
+type GoodsRecommendGet struct {
 	GoodsBasicDetailResponse struct {
-		List     []GoodsRecommendGetListResponse `json:"list"`
-		ListId   string                          `json:"list_id"`
-		SearchId string                          `json:"search_id"`
-		Total    int64                           `json:"total"`
+		List     []GoodsRecommendGetList `json:"list"`
+		ListId   string                  `json:"list_id"`
+		SearchId string                  `json:"search_id"`
+		Total    int64                   `json:"total"`
 	} `json:"goods_basic_detail_response"`
-}
-
-type GoodsRecommendGetResult struct {
-	Result GoodsRecommendGetResponse // 结果
-	Body   []byte                    // 内容
-	Http   gorequest.Response        // 请求
-}
-
-func newGoodsRecommendGetResult(result GoodsRecommendGetResponse, body []byte, http gorequest.Response) *GoodsRecommendGetResult {
-	return &GoodsRecommendGetResult{Result: result, Body: body, Http: http}
 }
 
 // GoodsRecommendGet 多多进宝商品推荐API
 // https://open.pinduoduo.com/application/document/api?id=pdd.ddk.goods.recommend.get
 // https://jinbao.pinduoduo.com/third-party/api-detail?apiName=pdd.ddk.goods.recommend.get
-func (c *Client) GoodsRecommendGet(ctx context.Context, notMustParams ...*gorequest.Params) (*GoodsRecommendGetResult, error) {
+func (c *Client) GoodsRecommendGet(ctx context.Context, notMustParams ...*gorequest.Params) (response GoodsRecommendGet, err error) {
 
 	// 参数
 	params := NewParamsWithType("pdd.ddk.goods.recommend.get", notMustParams...)
 	params.Set("pid", c.GetPid())
 
 	// 请求
-	var response GoodsRecommendGetResponse
-	request, err := c.request(ctx, params, &response)
-	return newGoodsRecommendGetResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, params, &response)
+	return
 }
