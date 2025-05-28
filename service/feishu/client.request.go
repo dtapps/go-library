@@ -2,34 +2,37 @@ package feishu
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, response any) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, response any) error {
 
 	if gorequest.IsHttpURL(url) == false {
-		return gorequest.Response{}, fmt.Errorf("不是有效地址: %s", url)
+		return fmt.Errorf("不是有效地址: %s", url)
 	}
 
-	// 设置请求地址
-	c.httpClient.SetUri(url)
-
-	// 设置格式
-	c.httpClient.SetContentTypeJson()
+	// 创建请求客户端
+	httpClient := c.httpClient.R().SetContext(ctx)
+	defer c.httpClient.Close()
 
 	// 设置参数
-	c.httpClient.SetParams(param)
+	httpClient.SetBody(param.DeepGetAny())
+
+	// 设置结果
+	httpClient.SetResult(&response)
 
 	// 发起请求
-	request, err := c.httpClient.Post(ctx)
+	resp, err := httpClient.Post(url)
 	if err != nil {
-		return gorequest.Response{}, err
+		return err
 	}
 
-	// 解析响应
-	err = json.Unmarshal(request.ResponseBody, &response)
+	// 检查 HTTP 状态码
+	if resp.IsError() {
+		return fmt.Errorf("请求失败，HTTP 状态码: %d", resp.StatusCode())
+	}
 
-	return request, err
+	return nil
 }

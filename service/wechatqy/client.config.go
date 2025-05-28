@@ -1,9 +1,5 @@
 package wechatqy
 
-import (
-	"go.dtapp.net/library/utils/gorequest"
-)
-
 func (c *Client) GetAppId() string {
 	return c.config.appId
 }
@@ -38,20 +34,4 @@ func (c *Client) GetRedirectUri() string {
 func (c *Client) SetRedirectUri(v string) *Client {
 	c.config.redirectUri = v
 	return c
-}
-
-// SetClientIP 配置
-func (c *Client) SetClientIP(clientIP string) *Client {
-	c.clientIP = clientIP
-	if c.httpClient != nil {
-		c.httpClient.SetClientIP(clientIP)
-	}
-	return c
-}
-
-// SetLogFun 设置日志记录函数
-func (c *Client) SetLogFun(logFun gorequest.LogFunc) {
-	if c.httpClient != nil {
-		c.httpClient.SetLogFunc(logFun)
-	}
 }

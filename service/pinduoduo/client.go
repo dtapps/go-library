@@ -1,6 +1,9 @@
 package pinduoduo
 
 import (
+	"path/filepath"
+
+	"go.dtapp.net/library/utils/resty_extend"
 	"resty.dev/v3"
 )
 
@@ -12,7 +15,10 @@ type ClientConfig struct {
 	Pid              string   // 推广位
 	AccessToken      string   // 通过code获取的access_token(无需授权的接口，该字段不参与sign签名运算)
 	AccessTokenScope []string // 授权范围
-	Debug            bool
+
+	Debug       bool   // 调试
+	LogPath     string // 日志地址
+	ServiceName string // 服务名称
 }
 
 // Client 实例
@@ -25,21 +31,17 @@ type Client struct {
 		accessToken      string   // 通过code获取的access_token(无需授权的接口，该字段不参与sign签名运算)
 		accessTokenScope []string // 授权范围
 	}
-	debug      bool
 	httpClient *resty.Client // 请求客户端
 }
 
 // NewClient 创建实例化
-func NewClient(config *ClientConfig, opts ...Option) (*Client, error) {
-
-	options := NewOptions(opts)
+func NewClient(config *ClientConfig) (*Client, error) {
 
 	c := &Client{}
 
-	if options.httpClient == nil {
-		c.httpClient = resty.New().SetDebug(config.Debug)
-	} else {
-		c.httpClient = options.httpClient
+	c.httpClient = resty.New().SetDebug(config.Debug)
+	if config.LogPath != "" {
+		c.httpClient.SetLogger(resty_extend.NewLog(filepath.Join(config.LogPath), config.ServiceName))
 	}
 
 	c.config.clientId = config.ClientId

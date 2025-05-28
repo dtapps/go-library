@@ -34,7 +34,6 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	}
 
 	return nil
-
 }
 
 // 请求接口
@@ -67,5 +66,4 @@ func (c *Client) requestAndErr(ctx context.Context, url string, param *gorequest
 	}
 
 	return nil
-
 }

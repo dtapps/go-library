@@ -1,6 +1,9 @@
 package dayuanren
 
 import (
+	"path/filepath"
+
+	"go.dtapp.net/library/utils/resty_extend"
 	"resty.dev/v3"
 )
 
@@ -9,7 +12,10 @@ type ClientConfig struct {
 	ApiURL string // 接口地址
 	UserID int64  // 商户ID
 	ApiKey string // 秘钥
-	Debug  bool
+
+	Debug       bool   // 调试
+	LogPath     string // 日志地址
+	ServiceName string // 服务名称
 }
 
 // Client 实例
@@ -19,21 +25,17 @@ type Client struct {
 		userID int64  // 商户ID
 		apiKey string // 秘钥
 	}
-	debug      bool
 	httpClient *resty.Client // 请求客户端
 }
 
 // NewClient 创建实例化
-func NewClient(config *ClientConfig, opts ...Option) (*Client, error) {
-
-	options := NewOptions(opts)
+func NewClient(config *ClientConfig) (*Client, error) {
 
 	c := &Client{}
 
-	if options.httpClient == nil {
-		c.httpClient = resty.New().SetDebug(config.Debug)
-	} else {
-		c.httpClient = options.httpClient
+	c.httpClient = resty.New().SetDebug(config.Debug)
+	if config.LogPath != "" {
+		c.httpClient.SetLogger(resty_extend.NewLog(filepath.Join(config.LogPath), config.ServiceName))
 	}
 
 	c.config.apiURL = config.ApiURL
@@ -41,4 +43,11 @@ func NewClient(config *ClientConfig, opts ...Option) (*Client, error) {
 	c.config.apiKey = config.ApiKey
 
 	return c, nil
+}
+
+// Close 关闭 请求客户端
+func (c *Client) Close() {
+	if c.httpClient != nil {
+		c.httpClient.Close()
+	}
 }

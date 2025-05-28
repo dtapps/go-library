@@ -6,11 +6,12 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
-	"go.dtapp.net/library/utils/gorequest"
 	"time"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
-type WebhookSendResponse struct {
+type WebhookSend struct {
 	Errcode   int64  `json:"errcode"`
 	Errmsg    string `json:"errmsg"`
 	Type      string `json:"type"`
@@ -18,45 +19,33 @@ type WebhookSendResponse struct {
 	CreatedAt string `json:"created_at"`
 }
 
-type WebhookSendResult struct {
-	Result WebhookSendResponse // 结果
-	Body   []byte              // 内容
-	Http   gorequest.Response  // 请求
-}
-
-func newWebhookSendResult(result WebhookSendResponse, body []byte, http gorequest.Response) *WebhookSendResult {
-	return &WebhookSendResult{Result: result, Body: body, Http: http}
-}
-
 // WebhookSend 发送消息
 // https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN
-func (c *Client) WebhookSend(ctx context.Context, key string, notMustParams ...*gorequest.Params) (*WebhookSendResult, error) {
+func (c *Client) WebhookSend(ctx context.Context, key string, notMustParams ...*gorequest.Params) (response WebhookSend, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response WebhookSendResponse
-	request, err := c.request(ctx, apiUrl+fmt.Sprintf("open-apis/bot/v2/hook/%s", key), params, &response)
-	return newWebhookSendResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, apiUrl+fmt.Sprintf("open-apis/bot/v2/hook/%s", key), params, &response)
+	return
 }
 
 // WebhookSendURL 发送消息
 // https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN
-func (c *Client) WebhookSendURL(ctx context.Context, url string, notMustParams ...*gorequest.Params) (*WebhookSendResult, error) {
+func (c *Client) WebhookSendURL(ctx context.Context, url string, notMustParams ...*gorequest.Params) (response WebhookSend, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response WebhookSendResponse
-	request, err := c.request(ctx, url, params, &response)
-	return newWebhookSendResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, url, params, &response)
+	return
 }
 
 // WebhookSendSign 发送消息签名版
 // https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN
-func (c *Client) WebhookSendSign(ctx context.Context, key string, secret string, notMustParams ...*gorequest.Params) (*WebhookSendResult, error) {
+func (c *Client) WebhookSendSign(ctx context.Context, key string, secret string, notMustParams ...*gorequest.Params) (response WebhookSend, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -65,14 +54,13 @@ func (c *Client) WebhookSendSign(ctx context.Context, key string, secret string,
 	params.Set("sign", sign)
 
 	// 请求
-	var response WebhookSendResponse
-	request, err := c.request(ctx, apiUrl+fmt.Sprintf("open-apis/bot/v2/hook/%s", key), params, &response)
-	return newWebhookSendResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, apiUrl+fmt.Sprintf("open-apis/bot/v2/hook/%s", key), params, &response)
+	return
 }
 
 // WebhookSendSignURL 发送消息签名版
 // https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN
-func (c *Client) WebhookSendSignURL(ctx context.Context, url string, secret string, notMustParams ...*gorequest.Params) (*WebhookSendResult, error) {
+func (c *Client) WebhookSendSignURL(ctx context.Context, url string, secret string, notMustParams ...*gorequest.Params) (response WebhookSend, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -81,9 +69,8 @@ func (c *Client) WebhookSendSignURL(ctx context.Context, url string, secret stri
 	params.Set("sign", sign)
 
 	// 请求
-	var response WebhookSendResponse
-	request, err := c.request(ctx, url, params, &response)
-	return newWebhookSendResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, url, params, &response)
+	return
 }
 
 func (c *Client) webhookSendSignGenSign(secret string, timestamp string) (string, error) {
