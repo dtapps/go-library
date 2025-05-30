@@ -12,6 +12,9 @@ import (
 
 func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, method string, response any) (err error) {
 
+	// 关闭时发送日志
+	defer cmn.WaitGlcFinish()
+
 	if gorequest.IsHttpURL(url) == false {
 		return fmt.Errorf("不是有效地址: %s", url)
 	}
@@ -47,9 +50,6 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	if resp.IsError() {
 		return fmt.Errorf("请求失败，HTTP 状态码: %d", resp.StatusCode())
 	}
-
-	// 关闭时发送日志
-	defer cmn.WaitGlcFinish()
 
 	return nil
 }
