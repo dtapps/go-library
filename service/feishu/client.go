@@ -10,6 +10,7 @@ import (
 // ClientConfig 实例配置
 type ClientConfig struct {
 	Debug       bool   // 调试
+	GlcStatus   bool   // 远程日志
 	LogPath     string // 日志地址
 	ServiceName string // 服务名称
 }
@@ -24,8 +25,12 @@ func NewClient(config *ClientConfig) (*Client, error) {
 	c := &Client{}
 
 	c.httpClient = resty.New().SetDebug(config.Debug)
-	if config.LogPath != "" {
-		c.httpClient.SetLogger(resty_extend.NewLog(filepath.Join(config.LogPath), config.ServiceName))
+	if config.GlcStatus {
+		c.httpClient.SetLogger(&resty_extend.GlcLogger{})
+	} else {
+		if config.LogPath != "" {
+			c.httpClient.SetLogger(resty_extend.NewLog(filepath.Join(config.LogPath), config.ServiceName))
+		}
 	}
 
 	return c, nil

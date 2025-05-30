@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/gotoeasy/glang/cmn"
 	"go.dtapp.net/library/utils/gorequest"
 )
 
@@ -33,6 +34,9 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	if resp.IsError() {
 		return fmt.Errorf("请求失败，HTTP 状态码: %d", resp.StatusCode())
 	}
+
+	// 关闭时发送日志
+	defer cmn.WaitGlcFinish()
 
 	return nil
 }
