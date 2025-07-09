@@ -52,6 +52,9 @@ func Split(s string, sep string) []string {
 	if len(s) <= 0 {
 		return []string{}
 	}
+	if !Contains(s, sep) {
+		return []string{s}
+	}
 	return strings.Split(s, sep)
 }
 
