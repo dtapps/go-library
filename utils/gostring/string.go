@@ -12,6 +12,11 @@ import (
 	"unsafe"
 )
 
+// TrimSpace 去除前后空格
+func TrimSpace(s string) string {
+	return strings.TrimSpace(s)
+}
+
 // Replace 字符串替换
 func Replace(str, old, new string) string {
 	return strings.Replace(str, old, new, -1)
@@ -47,15 +52,39 @@ func TrimLastChar(s string) string {
 	return s[:len(s)-size]
 }
 
-// Split 字符串分隔
-func Split(s string, sep string) []string {
-	if len(s) <= 0 {
+// SplitNoEmpty 将字符串按 sep 分割，并过滤空值
+func SplitNoEmpty(s string, sep string) []string {
+	ts := TrimSpace(s)
+	if len(ts) <= 0 {
 		return []string{}
 	}
-	if !Contains(s, sep) {
-		return []string{s}
+	// 如果不包含分隔符
+	if !Contains(ts, sep) {
+		return []string{ts}
+	}
+	// 开始分割并清理
+	parts := strings.Split(ts, sep)
+	var result []string
+	for _, part := range parts {
+		trimmed := TrimSpace(part)
+		if trimmed != "" {
+			result = append(result, trimmed)
+		}
 	}
 	return strings.Split(s, sep)
+}
+
+// Split 字符串分隔（保留空值）
+func Split(s string, sep string) []string {
+	ts := TrimSpace(s)
+	if len(ts) <= 0 {
+		return []string{}
+	}
+	// 如果不包含分隔符
+	if !Contains(ts, sep) {
+		return []string{ts}
+	}
+	return strings.Split(ts, sep)
 }
 
 // Contains 判断字符串是否包含某个字符
@@ -63,7 +92,7 @@ func Contains(s, sep string) bool {
 	return strings.Contains(s, sep)
 }
 
-func NumericalToString(value interface{}) (string, bool) {
+func NumericalToString(value any) (string, bool) {
 	var val string
 
 	switch value.(type) {
@@ -127,7 +156,7 @@ func ToLower(s string) string {
 	return strings.ToLower(s)
 }
 
-func GetString(i interface{}) string {
+func GetString(i any) string {
 	switch v := i.(type) {
 	case string:
 		return v
