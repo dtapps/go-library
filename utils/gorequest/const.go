@@ -6,3 +6,11 @@ var (
 	httpParamsModeXml  = "XML"
 	httpParamsModeForm = "FORM"
 )
+
+// SortByKey 排序方式
+type SortOrder int
+
+const (
+	Asc  SortOrder = iota // 升序
+	Desc                  // 降序
+)

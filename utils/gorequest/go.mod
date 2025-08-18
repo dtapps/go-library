@@ -10,6 +10,6 @@ require (
 require (
 	github.com/bitly/go-simplejson v0.5.1 // indirect
 	github.com/stretchr/testify v1.10.0 // indirect
-	golang.org/x/net v0.40.0 // indirect
-	golang.org/x/text v0.25.0 // indirect
+	golang.org/x/net v0.43.0 // indirect
+	golang.org/x/text v0.28.0 // indirect
 )

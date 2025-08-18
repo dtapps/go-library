@@ -2,6 +2,7 @@ package gorequest
 
 import (
 	"net/url"
+	"sort"
 	"sync"
 )
 
@@ -31,6 +32,7 @@ func NewNewHeadersWith(headers ...*Headers) *Headers {
 func (h *Headers) Set(key string, value string) {
 	h.Lock()
 	defer h.Unlock()
+
 	h.m[key] = value
 }
 
@@ -39,6 +41,7 @@ func (h *Headers) SetHeaders(headers *Headers) {
 	h.Lock()
 	defer h.Unlock()
 	for key, value := range headers.m {
+
 		h.m[key] = value
 	}
 }
@@ -72,18 +75,6 @@ func (h *Headers) DeepGet() map[string]string {
 	return targetMap
 }
 
-// DeepGetString 深度获取
-func (h *Headers) DeepGetString() map[string]string {
-	h.Lock()
-	defer h.Unlock()
-
-	targetMap := make(map[string]string)
-	for key, value := range h.m {
-		targetMap[key] = value
-	}
-	return targetMap
-}
-
 // DeepCopy 深度复制
 func (h *Headers) DeepCopy() *Headers {
 	h.Lock()
@@ -99,4 +90,59 @@ func (h *Headers) DeepCopy() *Headers {
 	h.m = make(map[string]string)
 
 	return targetHeader
+}
+
+// DeepGetString 深度获取
+func (h *Headers) DeepGetString() map[string]string {
+	h.Lock()
+	defer h.Unlock()
+
+	targetMap := make(map[string]string)
+	for key, value := range h.m {
+		targetMap[key] = value
+	}
+	return targetMap
+}
+
+// SortByKey 按 key 排序，返回一个新的 map[string]string
+func (h *Headers) SortByKey() map[string]string {
+	h.Lock()
+	defer h.Unlock()
+
+	keys := make([]string, 0, len(h.m))
+	for k := range h.m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	ordered := make(map[string]string, len(h.m))
+	for _, k := range keys {
+		ordered[k] = h.m[k]
+	}
+	return ordered
+}
+
+// SortByKeyString 按 key 排序，返回 map[string]string
+func (h *Headers) SortByKeyString(order SortOrder) map[string]string {
+	h.Lock()
+	defer h.Unlock()
+
+	// 收集 key 并排序
+	keys := make([]string, 0, len(h.m))
+	for k := range h.m {
+		keys = append(keys, k)
+	}
+	sort.Slice(keys, func(i, j int) bool {
+		if order == Asc {
+			return keys[i] < keys[j]
+		}
+		return keys[i] > keys[j]
+	})
+
+	// 生成新的 map[string]string
+	ordered := make(map[string]string, len(h.m))
+	for _, k := range keys {
+		ordered[k] = h.m[k]
+	}
+	return ordered
 }

@@ -2,6 +2,7 @@ package gorequest
 
 import (
 	"fmt"
+	"sort"
 	"sync"
 )
 
@@ -31,6 +32,7 @@ func NewParamsWith(params ...*Params) *Params {
 func (p *Params) Set(key string, value any) {
 	p.Lock()
 	defer p.Unlock()
+
 	p.m[key] = value
 }
 
@@ -39,6 +41,7 @@ func (p *Params) SetParams(params *Params) {
 	p.Lock()
 	defer p.Unlock()
 	for key, value := range params.m {
+
 		p.m[key] = value
 	}
 }
@@ -61,6 +64,23 @@ func (p *Params) DeepGet() map[string]any {
 		targetMap[key] = value
 	}
 	return targetMap
+}
+
+// DeepCopy 深度复制
+func (p *Params) DeepCopy() *Params {
+	p.Lock()
+	defer p.Unlock()
+
+	// 深度复制数据
+	targetParam := NewParams()
+	for key, value := range p.m {
+		targetParam.Set(key, value)
+	}
+
+	// 清空原始数据
+	p.m = make(map[string]any)
+
+	return targetParam
 }
 
 // DeepGetString 深度获取
@@ -87,19 +107,52 @@ func (p *Params) DeepGetAny() map[string]any {
 	return targetMap
 }
 
-// DeepCopy 深度复制
-func (p *Params) DeepCopy() *Params {
+// SortByKeyString 按 key 排序，返回 map[string]string
+func (p *Params) SortByKeyString(order SortOrder) map[string]string {
 	p.Lock()
 	defer p.Unlock()
 
-	// 深度复制数据
-	targetParam := NewParams()
-	for key, value := range p.m {
-		targetParam.Set(key, value)
+	// 收集 key 并排序
+	keys := make([]string, 0, len(p.m))
+	for k := range p.m {
+		keys = append(keys, k)
 	}
+	sort.Slice(keys, func(i, j int) bool {
+		if order == Asc {
+			return keys[i] < keys[j]
+		}
+		return keys[i] > keys[j]
+	})
 
-	// 清空原始数据
-	p.m = make(map[string]any)
+	// 生成新的 map[string]string
+	ordered := make(map[string]string, len(p.m))
+	for _, k := range keys {
+		ordered[k] = fmt.Sprintf("%v", p.m[k])
+	}
+	return ordered
+}
 
-	return targetParam
+// SortByKeyAny 按 key 排序，返回 map[string]any
+func (p *Params) SortByKeyAny(order SortOrder) map[string]any {
+	p.Lock()
+	defer p.Unlock()
+
+	// 收集 key 并排序
+	keys := make([]string, 0, len(p.m))
+	for k := range p.m {
+		keys = append(keys, k)
+	}
+	sort.Slice(keys, func(i, j int) bool {
+		if order == Asc {
+			return keys[i] < keys[j]
+		}
+		return keys[i] > keys[j]
+	})
+
+	// 生成新的 map[string]any
+	ordered := make(map[string]any, len(p.m))
+	for _, k := range keys {
+		ordered[k] = p.m[k]
+	}
+	return ordered
 }
