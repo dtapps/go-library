@@ -5,30 +5,22 @@ import (
 	"time"
 )
 
-const numbers string = "0123456789"
-const letters string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+const numbers = "0123456789"
+const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 const specials = "~!@#$%^*()_+-=[]{}|;:,./<>?"
-const alphanumerics string = letters + numbers
-const ascii string = alphanumerics + specials
+const alphanumerics = letters + numbers
+const ascii = alphanumerics + specials
 
 func random[T int | int64](n T, chars string) string {
 	if n <= 0 {
 		return ""
 	}
 
-	// 随机数生成器，加入时间戳保证每次生成的随机数不一样
-	seed := time.Now().UnixNano()                          // rand内部运算的随机数
-	r := rand.New(rand.NewPCG(uint64(seed), uint64(seed))) // rand计算得到的随机数
+	bytes := make([]byte, n)
+	charsLen := len(chars)
 
-	bytes := make([]byte, n, n)
-	l := len(chars)
-	var i T = 0
-	for {
-		if i >= n {
-			break
-		}
-		bytes[i] = chars[r.IntN(l)]
-		i++
+	for i := T(0); i < n; i++ {
+		bytes[i] = chars[rand.IntN(charsLen)]
 	}
 	return string(bytes)
 }
@@ -53,18 +45,15 @@ func Ascii[T int | int64](n T) string {
 	return random(n, ascii)
 }
 
+// Range 返回一个在 [min, max) 范围内的随机整数
 func Range(min int64, max int64) int64 {
-
-	var number int64
-	for {
-		// 生成在范围 [min, max) 内的随机数
-		number = int64(rand.IntN(int(max)-int(min)) + int(min))
-
-		// 检查随机数是否大于 min 且小于 max
-		if number > min && number < max {
-			break
-		}
+	if min >= max {
+		return min
 	}
+	return int64(rand.IntN(int(max-min))) + min
+}
 
-	return number
+// RangeTime 返回一个在 [min, max) 范围内的随机时间间隔
+func RangeTime(min int64, max int64) time.Duration {
+	return time.Duration(Range(min, max))
 }
