@@ -1,11 +1,12 @@
 package golog
 
 import (
-	"gopkg.in/natefinch/lumberjack.v2"
 	"io"
 	"log/slog"
 	"os"
 	"time"
+
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 type SLogFun func() *SLog
@@ -17,6 +18,7 @@ type sLogConfig struct {
 	setJSONFormat          bool               // 设置为json格式
 	lumberjackConfig       *lumberjack.Logger // 配置lumberjack
 	lumberjackConfigStatus bool               // 配置lumberjack状态
+	disableLogging         bool               // 新增：完全禁用日志输出（静默模式，使用 io.Discard）
 }
 
 type SLog struct {
@@ -39,6 +41,7 @@ func NewSlog(opts ...SLogOption) *SLog {
 
 func (sl *SLog) start() {
 
+	// 配置 slog 的 Handler 选项
 	opts := slog.HandlerOptions{
 		AddSource: sl.option.showLine, // 输出日志语句的位置信息
 		Level:     slog.LevelDebug,    // 设置最低日志等级
@@ -51,20 +54,36 @@ func (sl *SLog) start() {
 		},
 	}
 
-	// 输出
+	// 核心：决定日志输出目的地
 	var mw io.Writer
-	if sl.option.lumberjackConfigStatus {
-		// 同时控制台和文件输出日志
+
+	// 使用 switch 语句清晰地处理三种情况
+	switch {
+	case sl.option.disableLogging:
+		// 🎯 场景一：完全静默
+		// 在生产环境或性能敏感场景下，使用 io.Discard 优雅丢弃所有日志。
+		// 优势：零内存开销，避免无用 I/O，防止敏感信息泄露。
+		mw = io.Discard
+
+	case sl.option.lumberjackConfigStatus:
+		// 🎯 场景二：同时输出
+		// 开发或调试环境，同时输出到控制台和文件，便于实时查看。
 		mw = io.MultiWriter(os.Stdout, sl.option.lumberjackConfig)
-	} else {
-		// 只在文件输出日志
-		mw = io.MultiWriter(os.Stdout)
+
+	default:
+		// 🎯 场景三：仅文件输出（修正了原逻辑错误）
+		// 原代码错误地将“仅文件输出”写成了 os.Stdout。
+		// 现在修正为：如果 lumberjack 已配置，则输出到文件；否则，作为兜底，输出到控制台。
+		if sl.option.lumberjackConfig != nil {
+			mw = sl.option.lumberjackConfig
+		} else {
+			mw = os.Stdout // 兜底方案，避免 nil Writer 导致 panic
+		}
 	}
 
+	// 根据用户选择的格式（JSON/Text）创建对应的 Handler
 	if sl.option.setJSONFormat {
-		// 控制台输出
 		sl.jsonHandler = slog.NewJSONHandler(mw, &opts)
-		// 设置默认上下文
 		if sl.option.setDefaultCtx {
 			sl.ctxHandler = &ContextHandler{sl.jsonHandler}
 			sl.logger = slog.New(sl.ctxHandler)
@@ -72,9 +91,7 @@ func (sl *SLog) start() {
 			sl.logger = slog.New(sl.jsonHandler)
 		}
 	} else {
-		// 控制台输出
 		sl.textHandler = slog.NewTextHandler(mw, &opts)
-		// 设置默认上下文
 		if sl.option.setDefaultCtx {
 			sl.ctxHandler = &ContextHandler{sl.textHandler}
 			sl.logger = slog.New(sl.ctxHandler)
@@ -83,7 +100,7 @@ func (sl *SLog) start() {
 		}
 	}
 
-	// 将这个 slog 对象设置为默认的实例
+	// 如果用户要求，将此 logger 设置为全局默认 logger
 	if sl.option.setDefault {
 		slog.SetDefault(sl.logger)
 	}

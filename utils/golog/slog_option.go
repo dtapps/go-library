@@ -2,6 +2,7 @@ package golog
 
 import "gopkg.in/natefinch/lumberjack.v2"
 
+// SLogOption 定义了配置 SLog 的函数类型
 type SLogOption func(*SLog)
 
 // WithSLogLumberjack Lumberjack配置
@@ -71,5 +72,13 @@ func WithSLogSetJSONFormat() SLogOption {
 func WithSLogSetJSONFormatPass(status bool) SLogOption {
 	return func(sl *SLog) {
 		sl.option.setJSONFormat = status
+	}
+}
+
+// SetDisableLogging 设置是否完全禁用日志输出。
+// 当设置为 true 时，所有日志将被 io.Discard 丢弃，适用于生产环境以提升性能。
+func SetDisableLogging(disable bool) SLogOption {
+	return func(sl *SLog) {
+		sl.option.disableLogging = disable
 	}
 }
