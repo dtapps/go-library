@@ -69,7 +69,7 @@ func (c *Aliyun) Query(ctx context.Context, bizId, phoneNumber string, sendDate 
 // phoneNumbers = 接收短信的手机号码
 // templateCode = 短信模板Code
 // templateParam = 短信模板变量对应的实际值
-func (c *Aliyun) Send(signName string, phoneNumbers string, templateCode string, templateParam string) (bizID string, err error) {
+func (c *Aliyun) Send(ctx context.Context, signName string, phoneNumbers string, templateCode string, templateParam string) (bizID string, err error) {
 
 	// 参数
 	sendSmsRequest := &dysmsapi20170525.SendSmsRequest{
@@ -84,12 +84,12 @@ func (c *Aliyun) Send(signName string, phoneNumbers string, templateCode string,
 	}
 
 	if !tea.BoolValue(util.EqualString(response.Body.Code, tea.String("OK"))) {
-		return bizID, fmt.Errorf(tea.StringValue(response.Body.Message))
+		return bizID, fmt.Errorf("%s", tea.StringValue(response.Body.Message))
 	}
 
 	bizID = tea.StringValue(response.Body.BizId)
 	if bizID == "" {
-		return bizID, fmt.Errorf(tea.StringValue(response.Body.Message))
+		return bizID, fmt.Errorf("%s", tea.StringValue(response.Body.Message))
 	}
 	return bizID, nil
 }
