@@ -31,57 +31,105 @@ func NewPro() Pro {
 	}
 }
 
-// BeforeSeconds 获取n秒前的时间
+// BeforeSeconds 获取 n 秒前的时间
 func (p Pro) BeforeSeconds(seconds int64) Pro {
 	st, _ := time.ParseDuration(fmt.Sprintf("-%ds", seconds))
 	p.Time = p.Time.Add(st)
 	return p
 }
 
-// AfterSeconds 获取n秒后的时间
+// AfterSeconds 获取 n 后的时间
 func (p Pro) AfterSeconds(seconds int64) Pro {
 	st, _ := time.ParseDuration(fmt.Sprintf("+%ds", seconds))
 	p.Time = p.Time.Add(st)
 	return p
 }
 
-// BeforeMinute 获取n分钟前的时间
+// BeforeMinute 获取 n 分钟前的时间
 func (p Pro) BeforeMinute(seconds int64) Pro {
 	st, _ := time.ParseDuration(fmt.Sprintf("-%dm", seconds))
 	p.Time = p.Time.Add(st)
 	return p
 }
 
-// AfterMinute 获取n分钟后的时间
+// AfterMinute 获取 n 分钟后的时间
 func (p Pro) AfterMinute(seconds int64) Pro {
 	st, _ := time.ParseDuration(fmt.Sprintf("+%dm", seconds))
 	p.Time = p.Time.Add(st)
 	return p
 }
 
-// BeforeHour 获取n小时前的时间
+// BeforeHour 获取 n 小时前的时间
 func (p Pro) BeforeHour(hour int64) Pro {
 	st, _ := time.ParseDuration(fmt.Sprintf("-%dh", hour))
 	p.Time = p.Time.Add(st)
 	return p
 }
 
-// AfterHour 获取n小时后的时间
+// AfterHour 获取 n 小时后的时间
 func (p Pro) AfterHour(hour int64) Pro {
 	st, _ := time.ParseDuration(fmt.Sprintf("+%dh", hour))
 	p.Time = p.Time.Add(st)
 	return p
 }
 
-// BeforeDay 获取n天前的时间
+// BeforeDay 获取 n 天前的时间
 func (p Pro) BeforeDay(day int) Pro {
 	p.Time = p.Time.AddDate(0, 0, -day)
 	return p
 }
 
-// AfterDay 获取n天后的时间
+// AfterDay 获取 n 天后的时间
 func (p Pro) AfterDay(day int) Pro {
 	p.Time = p.Time.AddDate(0, 0, day)
+	return p
+}
+
+// BeforeWeek 获取 n 周前的时间
+func (p Pro) BeforeWeek(weeks int) Pro {
+	p.Time = p.Time.AddDate(0, 0, -weeks*7)
+	return p
+}
+
+// AfterWeek 获取 n 周后的时间
+func (p Pro) AfterWeek(weeks int) Pro {
+	p.Time = p.Time.AddDate(0, 0, weeks*7)
+	return p
+}
+
+// BeforeMonth 获取 n 个月前的时间
+func (p Pro) BeforeMonth(months int) Pro {
+	p.Time = p.Time.AddDate(0, -months, 0)
+	return p
+}
+
+// AfterMonth 获取 n 个月后的时间
+func (p Pro) AfterMonth(months int) Pro {
+	p.Time = p.Time.AddDate(0, months, 0)
+	return p
+}
+
+// BeforeQuarter 获取 n 个季度前的时间（1 季度 = 3 个月）
+func (p Pro) BeforeQuarter(quarters int) Pro {
+	p.Time = p.Time.AddDate(0, -quarters*3, 0)
+	return p
+}
+
+// AfterQuarter 获取 n 个季度后的时间（1 季度 = 3 个月）
+func (p Pro) AfterQuarter(quarters int) Pro {
+	p.Time = p.Time.AddDate(0, quarters*3, 0)
+	return p
+}
+
+// BeforeYear 获取 n 年前的时间
+func (p Pro) BeforeYear(years int) Pro {
+	p.Time = p.Time.AddDate(-years, 0, 0)
+	return p
+}
+
+// AfterYear 获取 n 年后的时间
+func (p Pro) AfterYear(years int) Pro {
+	p.Time = p.Time.AddDate(years, 0, 0)
 	return p
 }
 
