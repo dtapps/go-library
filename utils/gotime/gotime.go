@@ -1,7 +1,6 @@
 package gotime
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -32,44 +31,38 @@ func NewPro() Pro {
 }
 
 // BeforeSeconds 获取 n 秒前的时间
-func (p Pro) BeforeSeconds(seconds int64) Pro {
-	st, _ := time.ParseDuration(fmt.Sprintf("-%ds", seconds))
-	p.Time = p.Time.Add(st)
+func (p Pro) BeforeSeconds(n int) Pro {
+	p.Time = p.Time.Add(-time.Duration(n) * time.Second)
 	return p
 }
 
-// AfterSeconds 获取 n 后的时间
-func (p Pro) AfterSeconds(seconds int64) Pro {
-	st, _ := time.ParseDuration(fmt.Sprintf("+%ds", seconds))
-	p.Time = p.Time.Add(st)
+// AfterSeconds 获取 n 秒后的时间
+func (p Pro) AfterSeconds(n int) Pro {
+	p.Time = p.Time.Add(time.Duration(n) * time.Second)
 	return p
 }
 
 // BeforeMinute 获取 n 分钟前的时间
-func (p Pro) BeforeMinute(seconds int64) Pro {
-	st, _ := time.ParseDuration(fmt.Sprintf("-%dm", seconds))
-	p.Time = p.Time.Add(st)
+func (p Pro) BeforeMinute(n int) Pro {
+	p.Time = p.Time.Add(-time.Duration(n) * time.Minute)
 	return p
 }
 
 // AfterMinute 获取 n 分钟后的时间
-func (p Pro) AfterMinute(seconds int64) Pro {
-	st, _ := time.ParseDuration(fmt.Sprintf("+%dm", seconds))
-	p.Time = p.Time.Add(st)
+func (p Pro) AfterMinute(n int) Pro {
+	p.Time = p.Time.Add(time.Duration(n) * time.Minute)
 	return p
 }
 
 // BeforeHour 获取 n 小时前的时间
-func (p Pro) BeforeHour(hour int64) Pro {
-	st, _ := time.ParseDuration(fmt.Sprintf("-%dh", hour))
-	p.Time = p.Time.Add(st)
+func (p Pro) BeforeHour(n int) Pro {
+	p.Time = p.Time.Add(-time.Duration(n) * time.Hour)
 	return p
 }
 
 // AfterHour 获取 n 小时后的时间
-func (p Pro) AfterHour(hour int64) Pro {
-	st, _ := time.ParseDuration(fmt.Sprintf("+%dh", hour))
-	p.Time = p.Time.Add(st)
+func (p Pro) AfterHour(n int) Pro {
+	p.Time = p.Time.Add(time.Duration(n) * time.Hour)
 	return p
 }
 
