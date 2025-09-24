@@ -31,37 +31,37 @@ func NewPro() Pro {
 }
 
 // BeforeSeconds 获取 n 秒前的时间
-func (p Pro) BeforeSeconds(n int) Pro {
+func (p Pro) BeforeSeconds(n int64) Pro {
 	p.Time = p.Time.Add(-time.Duration(n) * time.Second)
 	return p
 }
 
 // AfterSeconds 获取 n 秒后的时间
-func (p Pro) AfterSeconds(n int) Pro {
+func (p Pro) AfterSeconds(n int64) Pro {
 	p.Time = p.Time.Add(time.Duration(n) * time.Second)
 	return p
 }
 
 // BeforeMinute 获取 n 分钟前的时间
-func (p Pro) BeforeMinute(n int) Pro {
+func (p Pro) BeforeMinute(n int64) Pro {
 	p.Time = p.Time.Add(-time.Duration(n) * time.Minute)
 	return p
 }
 
 // AfterMinute 获取 n 分钟后的时间
-func (p Pro) AfterMinute(n int) Pro {
+func (p Pro) AfterMinute(n int64) Pro {
 	p.Time = p.Time.Add(time.Duration(n) * time.Minute)
 	return p
 }
 
 // BeforeHour 获取 n 小时前的时间
-func (p Pro) BeforeHour(n int) Pro {
+func (p Pro) BeforeHour(n int64) Pro {
 	p.Time = p.Time.Add(-time.Duration(n) * time.Hour)
 	return p
 }
 
 // AfterHour 获取 n 小时后的时间
-func (p Pro) AfterHour(n int) Pro {
+func (p Pro) AfterHour(n int64) Pro {
 	p.Time = p.Time.Add(time.Duration(n) * time.Hour)
 	return p
 }
