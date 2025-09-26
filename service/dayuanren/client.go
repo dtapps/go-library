@@ -1,9 +1,8 @@
 package dayuanren
 
 import (
-	"path/filepath"
+	"context"
 
-	"go.dtapp.net/library/utils/resty_extend"
 	"resty.dev/v3"
 )
 
@@ -30,22 +29,35 @@ type Client struct {
 }
 
 // NewClient 创建实例化
-func NewClient(config *ClientConfig) (*Client, error) {
+func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
+	options := NewOptions(opts)
 
 	c := &Client{}
+	c.config.apiURL = options.apiURL
+	c.config.userID = options.userID
+	c.config.apiKey = options.apiKey
 
-	c.httpClient = resty.New().SetDebug(config.Debug)
-	if config.GlcStatus {
-		c.httpClient.SetLogger(&resty_extend.GlcLogger{})
+	if options.restyClient != nil {
+		c.httpClient = options.restyClient
 	} else {
-		if config.LogPath != "" {
-			c.httpClient.SetLogger(resty_extend.NewLog(filepath.Join(config.LogPath), config.ServiceName))
+		c.httpClient = resty.New()
+
+		// 绑定日志钩子
+		if options.restyLog != nil {
+			// 请求中间件
+			c.httpClient.SetRequestMiddlewares(
+				resty.PrepareRequestMiddleware, // 必须放第一，用于生成原始 http.Request（RawRequest），
+				options.restyLog.BeforeRequest, // 自定义请求中间件，记录请求开始时间、可做日志记录或其他请求预处理
+			)
+			// 响应中间件
+			c.httpClient.SetResponseMiddlewares(
+				options.restyLog.CopyResponseBodyMiddleware, // 放在 AutoParse 前，备份 Body
+				resty.AutoParseResponseMiddleware,           // Resty 自动解析 JSON
+				options.restyLog.AfterResponse,              // 最后打印 / 保存
+			)
 		}
 	}
-
-	c.config.apiURL = config.ApiURL
-	c.config.userID = config.UserID
-	c.config.apiKey = config.ApiKey
+	c.httpClient.SetDebug(options.debug)
 
 	return c, nil
 }
