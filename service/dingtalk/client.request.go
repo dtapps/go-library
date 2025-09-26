@@ -5,15 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gotoeasy/glang/cmn"
 	"go.dtapp.net/library/utils/gorequest"
 	"resty.dev/v3"
 )
 
 func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, method string, response any) (err error) {
-
-	// 关闭时发送日志
-	defer cmn.WaitGlcFinish()
 
 	if gorequest.IsHttpURL(url) == false {
 		return fmt.Errorf("不是有效地址: %s", url)
