@@ -38,9 +38,33 @@ func LineBreak(str string) string {
 	return strings.Replace(str, "\n", "", -1)
 }
 
-// SpaceAndLineBreak 去除空格和去除换行符
+// SpaceAndLineBreak 去除空格和换行符（仅处理 ASCII 空格 ' ' 和换行 '\n'，不处理制表符 \t 等）。
+// ⚠️ 注意：此函数不会移除制表符（\t）、回车（\r）等其他空白字符，如需完整清理请使用 CleanWhitespace。
 func SpaceAndLineBreak(str string) string {
 	return LineBreak(Space(str))
+}
+
+// CleanWhitespace 移除字符串中所有常见的空白字符，包括：
+// 空格(' ')、制表符('\t')、换行符('\n')、回车符('\r')。
+// 适用于清理用户输入需要严格格式化的场景。
+func CleanWhitespace(str string) string {
+	str = strings.ReplaceAll(str, " ", "")
+	str = strings.ReplaceAll(str, "\t", "")
+	str = strings.ReplaceAll(str, "\n", "")
+	str = strings.ReplaceAll(str, "\r", "")
+	return str
+}
+
+// RemoveAllWhitespace 移除字符串中所有 Unicode 定义的空白字符（包括中文全角空格、不间断空格等）。
+// 使用 unicode.IsSpace 判断，覆盖范围最广，适用于国际化文本处理。
+// 性能略低于 CleanWhitespace，但在处理普通 ASCII 数据时差异可忽略。
+func RemoveAllWhitespace(str string) string {
+	return strings.Map(func(r rune) rune {
+		if unicode.IsSpace(r) {
+			return -1 // 删除该字符
+		}
+		return r
+	}, str)
 }
 
 // TrimLastChar 删除字符串中的最后一个

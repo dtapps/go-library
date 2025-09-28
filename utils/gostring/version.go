@@ -1,3 +1,3 @@
 package gostring
 
-const Version = "1.0.31"
+const Version = "1.0.32"
