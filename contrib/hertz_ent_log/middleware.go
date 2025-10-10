@@ -9,7 +9,6 @@ import (
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"go.dtapp.net/library/contrib/hertz_requestid"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
@@ -20,7 +19,9 @@ type HertzLogFunc func(ctx context.Context, response *HertzLogData)
 
 // HertzLog 框架日志
 type HertzLog struct {
-	hertzLogFunc HertzLogFunc // Hertz框架日志函数
+	hertzLogFunc      HertzLogFunc // Hertz框架日志函数
+	debug             bool         // 是否开启调试模式
+	debugPathPrefixes []string     // 仅当 path 匹配这些前缀时才 debug
 }
 
 // HertzLogFun *HertzLog 框架日志驱动
@@ -33,8 +34,34 @@ func NewHertzLog(ctx context.Context) (*HertzLog, error) {
 	return hg, nil
 }
 
+// SetDebug 设置 debug
+func (hg *HertzLog) SetDebug(debug bool) {
+	hg.debug = debug
+}
+
+// SetDebugPathPrefixes 设置 debug 路径前缀（例如：[]string{"/notify", "/api/debug"}）
+func (hg *HertzLog) SetDebugPathPrefixes(prefixes []string) {
+	hg.debugPathPrefixes = prefixes
+}
+
+// shouldDebug 根据路径判断是否应打印 debug 日志
+func (hg *HertzLog) shouldDebug(path string) bool {
+	if !hg.debug {
+		return false
+	}
+	if len(hg.debugPathPrefixes) == 0 {
+		return true // 无前缀限制，全部打印
+	}
+	for _, prefix := range hg.debugPathPrefixes {
+		if strings.HasPrefix(path, prefix) {
+			return true
+		}
+	}
+	return false
+}
+
 // Middleware 中间件
-func (hg *HertzLog) Middleware(debug bool) app.HandlerFunc {
+func (hg *HertzLog) Middleware() app.HandlerFunc {
 	return func(c context.Context, h *app.RequestContext) {
 
 		// 开始时间
@@ -89,16 +116,21 @@ func (hg *HertzLog) Middleware(debug bool) app.HandlerFunc {
 		// 请求方式
 		log.RequestMethod = string(h.Request.Header.Method())
 
-		if strings.Contains(string(h.ContentType()), consts.MIMEApplicationHTMLForm) {
+		// 请求内容
+		lowerCT := strings.ToLower(string(h.ContentType()))
+		switch {
+		case strings.Contains(lowerCT, MIMEApplicationHTMLForm):
 			log.RequestBody = gorequest.ParseQueryString(string(h.Request.Body()))
-		} else if strings.Contains(string(h.ContentType()), consts.MIMEMultipartPOSTForm) {
-			//log.RequestBody = h.Request.Body()
+		case strings.Contains(lowerCT, MIMEMultipartPOSTForm):
 			log.RequestBody = gorequest.JsonDecodeNoError(string(h.Request.Body()))
-		} else if strings.Contains(string(h.ContentType()), consts.MIMEApplicationJSON) {
+		case strings.Contains(lowerCT, MIMEApplicationJSON):
 			log.RequestBody = gorequest.JsonDecodeNoError(string(h.Request.Body()))
-		} else {
-			//log.RequestBody = string(h.Request.Body())
-			log.RequestBody = gorequest.JsonDecodeNoError(string(h.Request.Body()))
+		case strings.Contains(lowerCT, MIMEApplicationXML) || strings.Contains(lowerCT, MIMETextXML):
+			log.RequestBody = gorequest.XmlDecodeNoError(h.Request.Body())
+		default:
+			if gorequest.IsValidJSON(string(h.Request.Body())) {
+				log.RequestBody = gorequest.JsonDecodeNoError(string(h.Request.Body()))
+			}
 		}
 
 		// 请求IP
@@ -135,7 +167,8 @@ func (hg *HertzLog) Middleware(debug bool) app.HandlerFunc {
 		}
 
 		// 打印
-		if debug {
+		currentPath := string(h.Request.URI().Path())
+		if hg.shouldDebug(currentPath) {
 			// 拷贝 body 防止后续 handler 读不到
 			bodyCopy := append([]byte(nil), h.Request.Body()...)
 			h.Request.SetBody(bodyCopy)

@@ -1,6 +1,19 @@
 package hertz_ent_log
 
-import "time"
+import (
+	"time"
+
+	"github.com/cloudwego/hertz/pkg/protocol/consts"
+)
+
+const (
+	MIMEApplicationHTMLForm = consts.MIMEApplicationHTMLForm
+	MIMEMultipartPOSTForm   = consts.MIMEMultipartPOSTForm
+	MIMEApplicationJSON     = consts.MIMEApplicationJSON
+
+	MIMEApplicationXML = consts.MIMEApplicationXML
+	MIMETextXML        = "text/xml"
+)
 
 // HertzLogData Hertz框架日志模型
 type HertzLogData struct {
