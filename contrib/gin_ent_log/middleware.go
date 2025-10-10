@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	gin_requestid "go.dtapp.net/library/contrib/gin-requestid"
+	"go.dtapp.net/library/contrib/gin_requestid"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
 )

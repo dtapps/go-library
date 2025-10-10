@@ -3,13 +3,14 @@ package hertz_ent_log
 import (
 	"context"
 	"encoding/json"
+	"log/slog"
 	"strings"
 	"time"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
-	hertz_requestid "go.dtapp.net/library/contrib/hertz-requestid"
+	"go.dtapp.net/library/contrib/hertz_requestid"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
 )
@@ -33,7 +34,7 @@ func NewHertzLog(ctx context.Context) (*HertzLog, error) {
 }
 
 // Middleware 中间件
-func (hg *HertzLog) Middleware() app.HandlerFunc {
+func (hg *HertzLog) Middleware(debug bool) app.HandlerFunc {
 	return func(c context.Context, h *app.RequestContext) {
 
 		// 开始时间
@@ -131,6 +132,56 @@ func (hg *HertzLog) Middleware() app.HandlerFunc {
 		// 调用Hertz框架日志函数
 		if hg.hertzLogFunc != nil {
 			hg.hertzLogFunc(c, &log)
+		}
+
+		// 打印
+		if debug {
+			// 拷贝 body 防止后续 handler 读不到
+			bodyCopy := append([]byte(nil), h.Request.Body()...)
+			h.Request.SetBody(bodyCopy)
+
+			// 路由参数
+			pathParams := make(map[string]string)
+			for _, p := range h.Params {
+				pathParams[p.Key] = p.Value
+			}
+
+			// 获取 Query 参数
+			queryParams := make(map[string]string)
+			h.Request.URI().QueryArgs().VisitAll(func(key, value []byte) {
+				queryParams[string(key)] = string(value)
+			})
+
+			// 获取 Header
+			headers := make(map[string]string)
+			h.Request.Header.VisitAll(func(key, value []byte) {
+				headers[string(key)] = string(value)
+			})
+
+			// 获取 Form 数据
+			formData := make(map[string]string)
+			h.Request.PostArgs().VisitAll(func(key, value []byte) {
+				formData[string(key)] = string(value)
+			})
+
+			// Body 内容（截断保护）
+			bodyStr := string(bodyCopy)
+			const MaxBodyLogSize = 2048
+			if len(bodyStr) > MaxBodyLogSize {
+				bodyStr = bodyStr[:MaxBodyLogSize] + "..."
+			}
+
+			// 输出结构化日志
+			slog.Debug("hertz request debug",
+				slog.String("client_ip", h.ClientIP()),
+				slog.String("method", string(h.Request.Header.Method())),
+				slog.String("path", string(h.Request.URI().Path())),
+				slog.Any("path_params", pathParams),
+				slog.Any("query_params", queryParams),
+				slog.Any("headers", headers),
+				slog.Any("form_data", formData),
+				slog.String("body", bodyStr),
+			)
 		}
 
 	}
