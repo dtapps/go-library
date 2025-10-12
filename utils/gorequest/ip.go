@@ -111,15 +111,16 @@ func GetInsideIp(ctx context.Context) string {
 }
 
 // GetOutsideIp 获取公网 IP，任一服务成功即返回
+// timeout: 总超时时间
 // 成功返回 IP 和 nil；失败返回 0.0.0.0 和 error
-func GetOutsideIp(ctx context.Context) (string, error) {
+func GetOutsideIp(ctx context.Context, timeout time.Duration) (string, error) {
 
-	// 总超时 5 秒
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	// 超时
+	ctx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
 	client := &http.Client{
-		Timeout: 3 * time.Second,
+		Timeout: timeout / 2, // 每个请求的超时可以设置为总超时的一半
 	}
 
 	result := make(chan string, 1) // 缓冲 1，避免 goroutine 泄漏
