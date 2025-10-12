@@ -1,5 +1,5 @@
 package gorequest
 
-var (
+const (
 	TraceID = "trace-Id"
 )

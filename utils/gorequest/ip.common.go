@@ -1,6 +1,12 @@
 package gorequest
 
-import "net"
+import (
+	"context"
+	"io"
+	"net"
+	"net/http"
+	"strings"
+)
 
 func IsIPV4(s string) bool {
 	ip := net.ParseIP(s)
@@ -73,4 +79,59 @@ func IsIPv6Public(ip net.IP) bool {
 	return prefix == 0x20 || // 2000::/3
 		(prefix == 0x20 && ip[1] == 0x01) || // 2001::/16
 		(prefix == 0x20 && ip[1]&0xF0 == 0x20) // 2000::/4
+}
+
+var ipServices = []string{
+	"https://api.dtapp.net/ip",
+	"http://v6.66666.host:66/ip",
+	"http://myip6.ipip.net",
+	"https://6.ipw.cn",
+	"http://v6.666666.host:66/ip",
+	"https://ddns.oray.com/checkip",
+	"http://v4.66666.host:66/ip",
+	"https://myip.ipip.net",
+	"http://v4.666666.host:66/ip",
+	"https://4.ipw.cn",
+	"https://ip.3322.net",
+	"https://api.ipify.org",
+	"https://icanhazip.com",
+	"https://ident.me",
+	"https://ipecho.net/plain",
+	"https://ifconfig.me/ip",
+}
+
+func fetchIP(ctx context.Context, client *http.Client, url string, result chan<- string) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
+
+	ip := strings.TrimSpace(string(body))
+	if isValidIP(ip) {
+		select {
+		case result <- ip:
+		default: // 避免阻塞（主 goroutine 可能已退出）
+		}
+	}
+}
+
+// isValidIP 简单校验是否为 IPv4 或 IPv6
+func isValidIP(s string) bool {
+	ip := net.ParseIP(s)
+	return ip != nil
 }

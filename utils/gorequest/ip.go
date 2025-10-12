@@ -2,10 +2,11 @@ package gorequest
 
 import (
 	"context"
-	"encoding/json"
+	"errors"
 	"net"
 	"net/http"
 	"strings"
+	"time"
 )
 
 // ClientIp 尽最大努力实现获取客户端 IP 的算法。
@@ -109,34 +110,31 @@ func GetInsideIp(ctx context.Context) string {
 	return localAddr.IP.String()
 }
 
-// GetOutsideIp 外网IP
-func GetOutsideIp(ctx context.Context) string {
+// GetOutsideIp 获取公网 IP，任一服务成功即返回
+// 成功返回 IP 和 nil；失败返回 0.0.0.0 和 error
+func GetOutsideIp(ctx context.Context) (string, error) {
 
-	// 返回结果
-	type respGetOutsideIp struct {
-		Data struct {
-			Ip string `json:"ip,omitempty"`
-		} `json:"data"`
+	// 总超时 5 秒
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	client := &http.Client{
+		Timeout: 3 * time.Second,
 	}
 
-	// 请求
-	getHttp := NewHttp()
-	getHttp.SetUri("https://api.dtapp.net/ip")
-	getHttp.SetUserAgent(GetRandomUserAgentSystem())
-	response, err := getHttp.Get(ctx)
-	if err != nil {
-		return "0.0.0.0"
+	result := make(chan string, 1) // 缓冲 1，避免 goroutine 泄漏
+
+	// 启动所有 goroutine
+	for _, url := range ipServices {
+		go fetchIP(ctx, client, url, result)
 	}
-	// 解析
-	var responseJson respGetOutsideIp
-	err = json.Unmarshal(response.ResponseBody, &responseJson)
-	if err != nil {
-		return "0.0.0.0"
+
+	select {
+	case ip := <-result:
+		return ip, nil
+	case <-ctx.Done():
+		return "", errors.New("获取公网 IP 超时")
 	}
-	if responseJson.Data.Ip == "" {
-		responseJson.Data.Ip = "0.0.0.0"
-	}
-	return responseJson.Data.Ip
 }
 
 // GetOutsideIPV4All 外网IPV4地址
