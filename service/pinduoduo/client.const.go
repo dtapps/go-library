@@ -1,9 +1,5 @@
 package pinduoduo
 
-const (
-	apiUrl = "https://gw-api.pinduoduo.com/api/router"
-)
-
 type ApiError struct {
 	ErrorResponse struct {
 		ErrorMsg  string `json:"error_msg"`

@@ -23,7 +23,7 @@ func (c *Client) request(ctx context.Context, param *gorequest.Params, response 
 	httpClient.SetResult(&response)
 
 	// 发起请求
-	resp, err := httpClient.Post(apiUrl)
+	resp, err := httpClient.Post(baseURL)
 	if err != nil {
 		return err
 	}
@@ -55,7 +55,7 @@ func (c *Client) requestAndErr(ctx context.Context, param *gorequest.Params, res
 	httpClient.SetError(&apiErr)
 
 	// 发起请求
-	resp, err := httpClient.Post(apiUrl)
+	resp, err := httpClient.Post(baseURL)
 	if err != nil {
 		return err
 	}
