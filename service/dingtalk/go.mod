@@ -7,8 +7,8 @@ replace go.dtapp.net/library/contrib/resty_log => ../../contrib/resty_log
 replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 
 require (
-	go.dtapp.net/library/contrib/resty_log v1.0.0
-	go.dtapp.net/library/utils/gorequest v1.1.0
+	go.dtapp.net/library/contrib/resty_log v1.0.2
+	go.dtapp.net/library/utils/gorequest v1.1.2
 	resty.dev/v3 v3.0.0-beta.3
 )
 
@@ -17,7 +17,7 @@ require (
 	github.com/basgys/goxml2json v1.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	golang.org/x/net v0.44.0 // indirect
-	golang.org/x/text v0.29.0 // indirect
+	golang.org/x/net v0.46.0 // indirect
+	golang.org/x/text v0.30.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

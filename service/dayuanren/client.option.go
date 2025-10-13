@@ -10,9 +10,9 @@ type Options struct {
 	restyLog    *resty_log.Logger
 	debug       bool
 
-	apiURL string // 接口地址
-	userID int64  // 商户ID
-	apiKey string // 秘钥
+	baseURL string // 接口地址
+	userID  int64  // 商户ID
+	apiKey  string // 秘钥
 }
 
 type Option struct {
@@ -55,10 +55,10 @@ func WithDebug(debug bool) Option {
 	}}
 }
 
-// WithResty 设置 apiURL
-func WithApiURL(apiURL string) Option {
+// WithResty 设置 URL
+func WithURL(baseURL string) Option {
 	return Option{F: func(o *Options) {
-		o.apiURL = apiURL
+		o.baseURL = baseURL
 	}}
 }
 

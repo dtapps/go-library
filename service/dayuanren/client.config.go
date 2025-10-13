@@ -1,11 +1,11 @@
 package dayuanren
 
-func (c *Client) GetApiURL() string {
-	return c.config.apiURL
+func (c *Client) GetURL() string {
+	return c.config.baseURL
 }
 
-func (c *Client) SetApiURL(v string) *Client {
-	c.config.apiURL = v
+func (c *Client) SetURL(v string) *Client {
+	c.config.baseURL = v
 	return c
 }
 
