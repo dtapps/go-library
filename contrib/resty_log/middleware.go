@@ -8,15 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/propagation"
-	"go.opentelemetry.io/otel/trace"
 	"resty.dev/v3"
-)
-
-const (
-	Version = "1.0.3"
 )
 
 // LogData 表示每次请求/响应的日志数据
@@ -56,67 +48,108 @@ func NewLogger(saveFunc LoggerSaveFunc, saver LogSaver, debug bool) *Logger {
 	}
 }
 
-// BeforeRequest Hook
+// IntrusionRequest Hook 注入开始时间
+// 可以放 resty.PrepareRequestMiddleware 前面
+func (l *Logger) IntrusionRequest(c *resty.Client, req *resty.Request) error {
+
+	// 记录开始时间
+	start := time.Now().UTC()
+
+	// 获取上下文
+	ctx := req.Context()
+
+	// 保存上下文与开始时间（供 AfterResponse 计算耗时）
+	// 这里的 start_time 是最准确的计时起点
+	req.SetContext(context.WithValue(ctx, "start_time", start))
+
+	return nil
+}
+
+// BeforeRequest Hook 记录开始时间和OTel
+// 必须放 resty.PrepareRequestMiddleware 后面，否则无法获取到请求体
 func (l *Logger) BeforeRequest(c *resty.Client, req *resty.Request) error {
-	// 记录开始时间并创建 span + 注入上下文
-	start := time.Now()
-	parentCtx := req.Context()
-	tracer := otel.Tracer("go.dtapp.net/library/contrib/resty_log")
-	spanCtx, _ := tracer.Start(parentCtx, "HTTP "+req.Method, trace.WithSpanKind(trace.SpanKindClient))
 
-	// 注入 TraceContext 到请求头
-	otel.GetTextMapPropagator().Inject(spanCtx, propagation.HeaderCarrier(req.Header))
+	// 获取上下文
+	spanCtx := req.Context()
 
-	// 保存上下文与开始时间
+	// 获取准确的计时起点（由 IntrusionRequest 存入）
+	start, ok := spanCtx.Value("start_time").(time.Time)
+	if !ok {
+		start = time.Now().UTC()
+	}
+
+	// 可插拔 tracer
+	if tracer != nil {
+		// 组装 RequestInfo
+		var host string
+		if req.RawRequest != nil && req.RawRequest.URL != nil {
+			host = req.RawRequest.URL.Hostname()
+		}
+		reqInfo := RequestInfo{
+			Method: req.Method,
+			URL:    req.URL,
+			Host:   host,
+			Header: req.Header, // resty 的 Header 就是 http.Header，便于 tracer 注入
+			Start:  start,
+		}
+		spanCtx = tracer.Start(spanCtx, reqInfo)
+	}
+
+	// 保存上下文与开始时间（供 AfterResponse 计算耗时）
 	req.SetContext(context.WithValue(spanCtx, "start_time", start))
+
 	return nil
 }
 
 // CopyResponseBodyMiddleware 将响应体拷贝到 Context
+// 必须放 resty.AutoParseResponseMiddleware 前面，否则无法获取到响应体
 func (l *Logger) CopyResponseBodyMiddleware(c *resty.Client, resp *resty.Response) error {
-	bodyBytes := resp.Bytes()                                                                 // 读取 body
-	resp.Request.SetContext(context.WithValue(resp.Request.Context(), "raw_body", bodyBytes)) // 保存到 Context，方便外部获取
+
+	// 获取上下文
+	ctx := resp.Request.Context()
+
+	// 读取 body
+	bodyBytes := resp.Bytes()
+
+	// 保存到 Context，方便外部获取
+	resp.Request.SetContext(context.WithValue(ctx, "raw_body", bodyBytes))
+
 	return nil
 }
 
 // AfterResponse Hook
 func (l *Logger) AfterResponse(c *resty.Client, resp *resty.Response) error {
+
+	// 获取上下文
 	ctx := resp.Request.Context()
 
-	// 耗时统计
+	// 开始时间
 	startTime, _ := ctx.Value("start_time").(time.Time)
-	elapse := time.Since(startTime).Milliseconds()
 
-	// 取回 span 并在这里设置所有可用属性，然后结束 span
-	if span := trace.SpanFromContext(ctx); span != nil {
-		// 请求属性
-		span.SetAttributes(
-			attribute.String("http.method", resp.Request.Method),
-			attribute.String("http.url", resp.Request.URL),
-			attribute.String("component", "resty"),
-		)
-		if raw := resp.Request.RawRequest; raw != nil && raw.URL != nil {
-			span.SetAttributes(
-				attribute.String("net.peer.name", raw.URL.Hostname()),
-				attribute.String("net.peer.port", raw.URL.Port()),
-				attribute.String("http.scheme", raw.URL.Scheme),
-			)
-			if ua := raw.Header.Get("User-Agent"); ua != "" {
-				span.SetAttributes(attribute.String("http.user_agent", ua))
-			}
+	// 结束时间
+	endTime := time.Now().UTC()
+
+	// 耗时统计
+	elapse := endTime.Sub(startTime).Milliseconds()
+
+	// 可插拔 tracer
+	if tracer != nil {
+		// 组装 ResponseInfo
+		var respBodyBytes []byte
+		if v := ctx.Value("raw_body"); v != nil {
+			respBodyBytes = v.([]byte)
 		}
 
-		// 响应属性
-		span.SetAttributes(
-			attribute.Int("http.status_code", resp.StatusCode()),
-			attribute.Int("http.response_content_length", len(resp.Bytes())),
-			attribute.Int64("http.elapsed_ms", elapse),
-		)
-		if resp.IsError() {
-			span.SetAttributes(attribute.Bool("http.response.error", true))
+		respInfo := ResponseInfo{
+			Status:     resp.StatusCode(),
+			Header:     resp.Header(),
+			Body:       respBodyBytes,
+			End:        endTime, // 记录结束时间
+			DurationMs: elapse,  // 使用计算出的总耗时
 		}
 
-		span.End()
+		// 调用 End 方法，传递包含 Span 的 context
+		tracer.End(ctx, respInfo)
 	}
 
 	// 获取 Hostname

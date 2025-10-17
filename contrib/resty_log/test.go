@@ -9,14 +9,21 @@ import (
 type TestEntLogSaver struct{}
 
 func (s *TestEntLogSaver) SaveLog(ctx context.Context, data *LogData) error {
-	slog.Info("[接口方式]准备保存日志")
+	slog.Info("[接口方式]准备保存日志",
+		slog.String("Hostname", data.Hostname),
+		slog.String("Method", data.Method),
+		slog.String("URL", data.URL),
+	)
 	if data == nil {
 		return nil
 	}
 	slog.Info("[接口方式]保存日志",
 		slog.String("Hostname", data.Hostname),
 		slog.String("Method", data.Method),
+		slog.Int("StatusCode", data.StatusCode),
 		slog.String("URL", data.URL),
+		slog.Int64("ElapseTime", data.ElapseTime),
+		slog.Bool("IsError", data.IsError),
 	)
 	return nil
 }
@@ -26,14 +33,21 @@ func NewTestLogger(debug bool) *Logger {
 
 	// 定义回调函数
 	saveFunc := func(ctx context.Context, data *LogData) error {
-		slog.Info("[回调方式]准备保存日志")
+		slog.Info("[回调方式]准备保存日志",
+			slog.String("Hostname", data.Hostname),
+			slog.String("Method", data.Method),
+			slog.String("URL", data.URL),
+		)
 		if data == nil {
 			return nil
 		}
 		slog.Info("[回调方式]保存日志",
 			slog.String("Hostname", data.Hostname),
 			slog.String("Method", data.Method),
+			slog.Int("StatusCode", data.StatusCode),
 			slog.String("URL", data.URL),
+			slog.Int64("ElapseTime", data.ElapseTime),
+			slog.Bool("IsError", data.IsError),
 		)
 		return nil
 	}
