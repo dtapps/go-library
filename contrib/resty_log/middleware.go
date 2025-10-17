@@ -121,7 +121,8 @@ func (l *Logger) CopyResponseBodyMiddleware(c *resty.Client, resp *resty.Respons
 	return nil
 }
 
-// AfterResponse Hook
+// AfterResponse Hook 打印/保存
+// 必须放 resty.AutoParseResponseMiddleware 后面
 func (l *Logger) AfterResponse(c *resty.Client, resp *resty.Response) error {
 
 	// 获取上下文

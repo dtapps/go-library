@@ -9,7 +9,7 @@ replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 replace go.dtapp.net/library/utils/gomd5 => ../../utils/gomd5
 
 require (
-	go.dtapp.net/library/contrib/resty_log v1.0.2
+	go.dtapp.net/library/contrib/resty_log v1.0.6
 	go.dtapp.net/library/utils/gomd5 v1.0.3
 	go.dtapp.net/library/utils/gorequest v1.1.2
 	resty.dev/v3 v3.0.0-beta.3
