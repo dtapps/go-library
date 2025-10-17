@@ -8,12 +8,16 @@ import (
 
 // RequestInfo 提供请求阶段可用的最小信息，避免依赖第三方框架类型
 type RequestInfo struct {
+	Version string // 版本号
+
 	Header http.Header
 	Start  time.Time
 
 	Method string
 	Path   string
-	Host   string
+	URL    string
+
+	Host string
 }
 
 // ResponseInfo 提供响应阶段可用的最小信息

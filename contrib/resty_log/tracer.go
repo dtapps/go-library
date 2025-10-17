@@ -8,11 +8,15 @@ import (
 
 // RequestInfo 出站请求阶段的最小信息
 type RequestInfo struct {
-	Method string
-	URL    string
-	Host   string
+	Version string // 版本号
+
 	Header http.Header
 	Start  time.Time
+
+	Method string
+	URL    string
+
+	Host string
 }
 
 // ResponseInfo 出站响应阶段的最小信息

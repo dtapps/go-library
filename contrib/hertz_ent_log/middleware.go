@@ -94,11 +94,16 @@ func (hg *HertzLog) Middleware() app.HandlerFunc {
 			})
 			// 组装 RequestInfo
 			reqInfo := RequestInfo{
-				Method: string(h.Request.Header.Method()),
-				Path:   string(h.Request.URI().Path()),
-				Host:   string(h.Request.Host()),
+				Version: Version,
+
 				Header: reqHeader,
 				Start:  start,
+
+				Method: string(h.Request.Header.Method()),
+				Path:   string(h.Request.URI().Path()),
+				URL:    string(h.Request.URI().String()),
+
+				Host: string(h.Request.Host()),
 			}
 			spanCtx = tracer.Start(c, reqInfo)
 		}

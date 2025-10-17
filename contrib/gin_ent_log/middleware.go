@@ -106,11 +106,16 @@ func (gg *GinLog) Middleware() gin.HandlerFunc {
 		if tracer != nil {
 			// 组装 RequestInfo
 			reqInfo := RequestInfo{
-				Method: g.Request.Method,
-				Path:   gorequest.NewUri(g.Request.RequestURI).UriFilterExcludeQueryString(),
-				Host:   g.Request.Host,
+				Version: Version,
+
 				Header: g.Request.Header,
 				Start:  start,
+
+				Method: g.Request.Method,
+				Path:   gorequest.NewUri(g.Request.RequestURI).UriFilterExcludeQueryString(),
+				URL:    g.Request.RequestURI,
+
+				Host: g.Request.Host,
 			}
 			spanCtx = tracer.Start(spanCtx, reqInfo)
 			// 将新的上下文注入到 http.Request

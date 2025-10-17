@@ -3,7 +3,7 @@ package gin_ent_log
 import "time"
 
 const (
-	Version = "1.0.4"
+	Version = "1.0.5"
 )
 
 // GinLogData Gin框架日志模型

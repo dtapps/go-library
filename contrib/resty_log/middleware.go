@@ -86,11 +86,15 @@ func (l *Logger) BeforeRequest(c *resty.Client, req *resty.Request) error {
 			host = req.RawRequest.URL.Hostname()
 		}
 		reqInfo := RequestInfo{
-			Method: req.Method,
-			URL:    req.URL,
-			Host:   host,
+			Version: resty.Version,
+
 			Header: req.Header, // resty 的 Header 就是 http.Header，便于 tracer 注入
 			Start:  start,
+
+			Method: req.Method,
+			URL:    req.URL,
+
+			Host: host,
 		}
 		spanCtx = tracer.Start(spanCtx, reqInfo)
 	}
