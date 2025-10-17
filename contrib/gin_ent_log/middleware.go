@@ -104,6 +104,7 @@ func (gg *GinLog) Middleware() gin.HandlerFunc {
 		// 可插拔 Tracer
 		spanCtx := g.Request.Context()
 		if tracer != nil {
+			// 组装 RequestInfo
 			reqInfo := RequestInfo{
 				Method: g.Request.Method,
 				Path:   gorequest.NewUri(g.Request.RequestURI).UriFilterExcludeQueryString(),
@@ -190,6 +191,7 @@ func (gg *GinLog) Middleware() gin.HandlerFunc {
 
 		// 可插拔 Tracer
 		if tracer != nil {
+			// 组装 ResponseInfo
 			respInfo := ResponseInfo{
 				Status:     g.Writer.Status(),
 				Header:     blw.Header(),

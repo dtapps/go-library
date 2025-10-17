@@ -92,6 +92,7 @@ func (hg *HertzLog) Middleware() app.HandlerFunc {
 			h.Request.Header.VisitAll(func(k, v []byte) {
 				reqHeader.Add(string(k), string(v))
 			})
+			// 组装 RequestInfo
 			reqInfo := RequestInfo{
 				Method: string(h.Request.Header.Method()),
 				Path:   string(h.Request.URI().Path()),
@@ -206,6 +207,7 @@ func (hg *HertzLog) Middleware() app.HandlerFunc {
 			h.Response.Header.VisitAll(func(k, v []byte) {
 				respHeader.Add(string(k), string(v))
 			})
+			// 组装 ResponseInfo
 			respInfo := ResponseInfo{
 				Status:     h.Response.StatusCode(),
 				Header:     respHeader,
