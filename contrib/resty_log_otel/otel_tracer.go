@@ -1,10 +1,10 @@
-package hertz_ent_log_otel
+package resty_log_otel
 
 import (
 	"context"
 	"net/http"
 
-	"go.dtapp.net/library/contrib/hertz_ent_log"
+	"go.dtapp.net/library/contrib/resty_log"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
@@ -12,7 +12,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-// otelTracer 使用 OpenTelemetry 实现 hertz_ent_log.Tracer
+// otelTracer 使用 OpenTelemetry 实现 resty_log.Tracer
 type otelTracer struct {
 	tracer      trace.Tracer
 	serviceName string
@@ -26,16 +26,16 @@ func Enable(serviceName string) {
 		propagation.TraceContext{},
 		propagation.Baggage{},
 	))
-	hertz_ent_log.SetTracer(&otelTracer{
-		tracer:      tp.Tracer("go.dtapp.net/library/contrib/hertz_ent_log_otel"),
+	resty_log.SetTracer(&otelTracer{
+		tracer:      tp.Tracer("go.dtapp.net/library/contrib/resty_log_otel"),
 		serviceName: serviceName,
 	})
 }
 
-func (t *otelTracer) Start(parent context.Context, req hertz_ent_log.RequestInfo) context.Context {
+func (t *otelTracer) Start(parent context.Context, req resty_log.RequestInfo) context.Context {
 	// 从请求头提取上游上下文
 	parent = otel.GetTextMapPropagator().Extract(parent, propagation.HeaderCarrier(req.Header))
-	spanCtx, span := t.tracer.Start(parent, "Hertz HTTP "+req.Method, trace.WithSpanKind(trace.SpanKindServer))
+	spanCtx, span := t.tracer.Start(parent, "Resty HTTP "+req.Method, trace.WithSpanKind(trace.SpanKindServer))
 	// 记录请求属性（响应属性待 End 阶段设置）
 	span.SetAttributes(
 		attribute.String("service.name", t.serviceName),
@@ -45,7 +45,6 @@ func (t *otelTracer) Start(parent context.Context, req hertz_ent_log.RequestInfo
 
 		// HTTP 语义约定属性
 		attribute.String("http.method", req.Method),
-		attribute.String("http.path", req.Path),
 		attribute.String("http.url", req.URL),
 
 		// 目标主机
@@ -55,7 +54,7 @@ func (t *otelTracer) Start(parent context.Context, req hertz_ent_log.RequestInfo
 	return spanCtx
 }
 
-func (t *otelTracer) End(ctx context.Context, resp hertz_ent_log.ResponseInfo) {
+func (t *otelTracer) End(ctx context.Context, resp resty_log.ResponseInfo) {
 	span := trace.SpanFromContext(ctx)
 	if span == nil {
 		return

@@ -5,7 +5,7 @@ go 1.24.2
 replace go.dtapp.net/library/contrib/hertz_ent_log => ../../contrib/hertz_ent_log
 
 require (
-	go.dtapp.net/library/contrib/hertz_ent_log v1.0.4
+	go.dtapp.net/library/contrib/hertz_ent_log v1.0.6
 	go.opentelemetry.io/otel v1.38.0
 	go.opentelemetry.io/otel/trace v1.38.0
 )

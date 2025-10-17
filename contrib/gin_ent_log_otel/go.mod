@@ -5,7 +5,7 @@ go 1.24.2
 replace go.dtapp.net/library/contrib/gin_ent_log => ../../contrib/gin_ent_log
 
 require (
-	go.dtapp.net/library/contrib/gin_ent_log v1.0.3
+	go.dtapp.net/library/contrib/gin_ent_log v1.0.5
 	go.opentelemetry.io/otel v1.38.0
 	go.opentelemetry.io/otel/trace v1.38.0
 )
