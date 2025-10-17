@@ -11,6 +11,10 @@ import (
 	"go.dtapp.net/library/contrib/hertz_requestid"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/trace"
 )
 
 const (
@@ -76,8 +80,21 @@ func (hg *HertzLog) Middleware() app.HandlerFunc {
 		// 请求时间
 		log.RequestTime = gotime.Current().Time
 
+		// 构造 MapCarrier 来提取上游 TraceContext
+		carrier := propagation.MapCarrier{}
+		h.Request.Header.VisitAll(func(k, v []byte) {
+			// 只保留一个值即可满足 Extract（如需多值，可自行拼接或扩展）
+			carrier[string(k)] = string(v)
+		})
+		parentCtx := otel.GetTextMapPropagator().Extract(c, carrier)
+		tracer := otel.Tracer("go-library/contrib/hertz_ent_log")
+		spanCtx, span := tracer.Start(parentCtx, "HTTP "+string(h.Request.Header.Method()), trace.WithSpanKind(trace.SpanKindServer))
+
+		// 将开始时间保存到新的上下文，后续统计耗时 & 结束 Span
+		spanCtx = context.WithValue(spanCtx, "start_time", start)
+
 		// 处理请求
-		h.Next(c)
+		h.Next(spanCtx)
 
 		// 结束时间
 		end := time.Now().UTC()
@@ -169,6 +186,23 @@ func (hg *HertzLog) Middleware() app.HandlerFunc {
 			//log.ResponseBody = gojson.JsonDecodeNoError(string(h.Response.Body()))
 		} else {
 			//log.ResponseBody = string(h.Response.Body())
+		}
+
+		if span != nil {
+			span.SetAttributes(
+				attribute.String("http.method", string(h.Request.Header.Method())),
+				attribute.String("http.target", string(h.Request.URI().Path())),
+				attribute.String("http.host", string(h.Request.Host())),
+				attribute.String("http.client_ip", h.ClientIP()),
+				attribute.Int("http.status_code", h.Response.StatusCode()),
+				attribute.Int("http.response_content_length", len(h.Response.Body())),
+				attribute.Int64("http.elapsed_ms", log.RequestCostTime),
+			)
+			// 错误标记
+			if status >= 500 {
+				span.SetAttributes(attribute.Bool("http.server.error", true))
+			}
+			span.End()
 		}
 
 		// 调用Hertz框架日志函数
