@@ -11,8 +11,8 @@ replace go.dtapp.net/library/contrib/gin_requestid => ../../contrib/gin_requesti
 require (
 	entgo.io/ent v0.14.5
 	github.com/gin-gonic/gin v1.11.0
-	go.dtapp.net/library/contrib/gin_requestid v1.0.4
-	go.dtapp.net/library/utils/gorequest v1.1.0
+	go.dtapp.net/library/contrib/gin_requestid v1.0.6
+	go.dtapp.net/library/utils/gorequest v1.1.2
 	go.dtapp.net/library/utils/gotime v1.0.15
 )
 
@@ -43,7 +43,6 @@ require (
 	github.com/quic-go/quic-go v0.55.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.3.0 // indirect
-	go.uber.org/mock v0.6.0 // indirect
 	golang.org/x/arch v0.22.0 // indirect
 	golang.org/x/crypto v0.43.0 // indirect
 	golang.org/x/mod v0.29.0 // indirect

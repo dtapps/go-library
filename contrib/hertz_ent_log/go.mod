@@ -11,8 +11,8 @@ replace go.dtapp.net/library/contrib/hertz_requestid => ../../contrib/hertz_requ
 require (
 	entgo.io/ent v0.14.5
 	github.com/cloudwego/hertz v0.10.2
-	go.dtapp.net/library/contrib/hertz_requestid v1.0.4
-	go.dtapp.net/library/utils/gorequest v1.1.0
+	go.dtapp.net/library/contrib/hertz_requestid v1.0.6
+	go.dtapp.net/library/utils/gorequest v1.1.2
 	go.dtapp.net/library/utils/gotime v1.0.15
 )
 
@@ -27,7 +27,7 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/hertz-contrib/requestid v1.1.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
-	github.com/nyaruka/phonenumbers v1.6.5 // indirect
+	github.com/nyaruka/phonenumbers v1.6.6 // indirect
 	github.com/tidwall/gjson v1.18.0 // indirect
 	github.com/tidwall/match v1.2.0 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
