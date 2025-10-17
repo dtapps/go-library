@@ -7,6 +7,10 @@ import (
 )
 
 const (
+	Version = "1.0.4"
+)
+
+const (
 	MIMEApplicationHTMLForm = consts.MIMEApplicationHTMLForm
 	MIMEMultipartPOSTForm   = consts.MIMEMultipartPOSTForm
 	MIMEApplicationJSON     = consts.MIMEApplicationJSON
