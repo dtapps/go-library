@@ -14,10 +14,6 @@ import (
 	"go.dtapp.net/library/utils/gotime"
 )
 
-const (
-	Version = "1.0.2"
-)
-
 // GinLogFunc Gin框架日志函数
 type GinLogFunc func(ctx context.Context, response *GinLogData)
 
@@ -93,6 +89,21 @@ func (gg *GinLog) Middleware() gin.HandlerFunc {
 		}
 		g.Writer = blw
 
+		// 可插拔 Tracer
+		spanCtx := g.Request.Context()
+		if tracer != nil {
+			reqInfo := RequestInfo{
+				Method: g.Request.Method,
+				Path:   gorequest.NewUri(g.Request.RequestURI).UriFilterExcludeQueryString(),
+				Host:   g.Request.Host,
+				Header: g.Request.Header,
+				Start:  start,
+			}
+			spanCtx = tracer.Start(spanCtx, reqInfo)
+			// 将新的上下文注入到 http.Request
+			g.Request = g.Request.WithContext(spanCtx)
+		}
+
 		// 处理请求
 		g.Next()
 
@@ -144,6 +155,18 @@ func (gg *GinLog) Middleware() gin.HandlerFunc {
 			//log.ResponseBody = gojson.JsonDecodeNoError(blw.body.String())
 		} else {
 			//log.ResponseBody = blw.body.String()
+		}
+
+		// 可插拔 Tracer
+		if tracer != nil {
+			respInfo := ResponseInfo{
+				Status:     g.Writer.Status(),
+				Header:     blw.Header(),
+				Body:       blw.body.Bytes(),
+				End:        end,
+				DurationMs: log.RequestCostTime,
+			}
+			tracer.End(spanCtx, respInfo)
 		}
 
 		// 调用Gin框架日志函数

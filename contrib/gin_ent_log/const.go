@@ -2,6 +2,10 @@ package gin_ent_log
 
 import "time"
 
+const (
+	Version = "1.0.3"
+)
+
 // GinLogData Gin框架日志模型
 type GinLogData struct {
 	TraceID         string              `json:"trace_id,omitempty"`          // 跟踪编号
