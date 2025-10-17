@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"io"
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -20,6 +21,7 @@ type GinLogFunc func(ctx context.Context, response *GinLogData)
 // GinLog 框架日志
 type GinLog struct {
 	ginLogFunc GinLogFunc // Gin框架日志函数
+	routeDebug bool       // 路由是否开启调试
 }
 
 // GinLogFun *GinLog 框架日志驱动
@@ -30,6 +32,16 @@ func NewGinLog(ctx context.Context) (*GinLog, error) {
 	gg := &GinLog{}
 
 	return gg, nil
+}
+
+// SetLogFunc 设置 hertzLogFunc
+func (gg *GinLog) SetLogFunc(ginLogFunc GinLogFunc) {
+	gg.ginLogFunc = ginLogFunc
+}
+
+// SetRouteDebug 设置 routeDebug
+func (gg *GinLog) SetRouteDebug(routeDebug bool) {
+	gg.routeDebug = routeDebug
 }
 
 // GinLogBodyWriter 定义一个自定义的 ResponseWriter
@@ -116,12 +128,31 @@ func (gg *GinLog) Middleware() gin.HandlerFunc {
 		// 响应时间
 		log.ResponseTime = gotime.Current().Time
 
+		// 输出路由日志
+		if gg.routeDebug {
+			status := g.Writer.Status()
+			logFn := slog.InfoContext
+			if status >= 500 {
+				logFn = slog.ErrorContext
+			} else if status >= 400 {
+				logFn = slog.WarnContext
+			}
+			logFn(spanCtx, "hertz route",
+				slog.Int("status", status),
+				slog.Int64("cost_ms", log.RequestCostTime),
+				slog.String("method", g.Request.Method),
+				slog.String("full_path", gorequest.NewUri(g.Request.RequestURI).UriFilterExcludeQueryString()),
+				slog.String("client_ip", g.ClientIP()),
+				slog.String("host", g.Request.Host),
+			)
+		}
+
 		// 请求编号
 		log.RequestID = gin_requestid.Get(g)
 		if log.RequestID == "" {
 			log.RequestID = gin_requestid.GetX(g)
 			if log.RequestID == "" {
-				log.RequestID = gorequest.GetRequestIDContext(g)
+				log.RequestID = gorequest.GetRequestIDContext(spanCtx)
 			}
 		}
 
@@ -171,13 +202,8 @@ func (gg *GinLog) Middleware() gin.HandlerFunc {
 
 		// 调用Gin框架日志函数
 		if gg.ginLogFunc != nil {
-			gg.ginLogFunc(g, &log)
+			gg.ginLogFunc(spanCtx, &log)
 		}
 
 	}
-}
-
-// SetLogFunc 设置日志记录方法
-func (gg *GinLog) SetLogFunc(ginLogFunc GinLogFunc) {
-	gg.ginLogFunc = ginLogFunc
 }

@@ -20,6 +20,7 @@ type HertzLogFunc func(ctx context.Context, response *HertzLogData)
 // HertzLog 框架日志
 type HertzLog struct {
 	hertzLogFunc      HertzLogFunc // Hertz框架日志函数
+	routeDebug        bool         // 路由是否开启调试
 	debug             bool         // 是否开启调试模式
 	debugPathPrefixes []string     // 仅当 path 匹配这些前缀时才 debug
 }
@@ -32,6 +33,16 @@ func NewHertzLog(ctx context.Context) (*HertzLog, error) {
 	hg := &HertzLog{}
 
 	return hg, nil
+}
+
+// SetLogFunc 设置 hertzLogFunc
+func (hg *HertzLog) SetLogFunc(hertzLogFunc HertzLogFunc) {
+	hg.hertzLogFunc = hertzLogFunc
+}
+
+// SetRouteDebug 设置 routeDebug
+func (hg *HertzLog) SetRouteDebug(routeDebug bool) {
+	hg.routeDebug = routeDebug
 }
 
 // SetDebug 设置 debug
@@ -104,28 +115,30 @@ func (hg *HertzLog) Middleware() app.HandlerFunc {
 		log.ResponseTime = gotime.Current().Time
 
 		// 输出路由日志
-		status := h.Response.StatusCode()
-		logFn := slog.InfoContext
-		if status >= 500 {
-			logFn = slog.ErrorContext
-		} else if status >= 400 {
-			logFn = slog.WarnContext
+		if hg.routeDebug {
+			status := h.Response.StatusCode()
+			logFn := slog.InfoContext
+			if status >= 500 {
+				logFn = slog.ErrorContext
+			} else if status >= 400 {
+				logFn = slog.WarnContext
+			}
+			logFn(spanCtx, "hertz route",
+				slog.Int("status", status),
+				slog.Int64("cost_ms", log.RequestCostTime),
+				slog.String("method", string(h.Request.Header.Method())),
+				slog.String("full_path", string(h.Request.URI().PathOriginal())),
+				slog.String("client_ip", h.ClientIP()),
+				slog.String("host", string(h.Request.Host())),
+			)
 		}
-		logFn(c, "hertz route",
-			slog.Int("status", status),
-			slog.Int64("cost_ms", log.RequestCostTime),
-			slog.String("method", string(h.Request.Header.Method())),
-			slog.String("full_path", string(h.Request.URI().PathOriginal())),
-			slog.String("client_ip", h.ClientIP()),
-			slog.String("host", string(h.Request.Host())),
-		)
 
 		// 请求编号
 		log.RequestID = hertz_requestid.Get(h)
 		if log.RequestID == "" {
 			log.RequestID = hertz_requestid.GetX(h)
 			if log.RequestID == "" {
-				log.RequestID = gorequest.GetRequestIDContext(c)
+				log.RequestID = gorequest.GetRequestIDContext(spanCtx)
 			}
 		}
 
@@ -205,7 +218,7 @@ func (hg *HertzLog) Middleware() app.HandlerFunc {
 
 		// 调用Hertz框架日志函数
 		if hg.hertzLogFunc != nil {
-			hg.hertzLogFunc(c, &log)
+			hg.hertzLogFunc(spanCtx, &log)
 		}
 
 		// 打印
@@ -247,7 +260,7 @@ func (hg *HertzLog) Middleware() app.HandlerFunc {
 			}
 
 			// 输出结构化日志
-			slog.Debug("hertz request debug",
+			slog.DebugContext(spanCtx, "hertz request",
 				slog.String("client_ip", h.ClientIP()),
 				slog.String("method", string(h.Request.Header.Method())),
 				slog.String("path", string(h.Request.URI().Path())),
@@ -260,9 +273,4 @@ func (hg *HertzLog) Middleware() app.HandlerFunc {
 		}
 
 	}
-}
-
-// SetLogFunc 设置日志记录方法
-func (hg *HertzLog) SetLogFunc(hertzLogFunc HertzLogFunc) {
-	hg.hertzLogFunc = hertzLogFunc
 }
