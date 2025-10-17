@@ -11,6 +11,10 @@ import (
 	"resty.dev/v3"
 )
 
+const (
+	Version = "1.0.3"
+)
+
 // LogData 表示每次请求/响应的日志数据
 type LogData struct {
 	Hostname        string

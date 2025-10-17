@@ -14,6 +14,10 @@ import (
 	"go.dtapp.net/library/utils/gotime"
 )
 
+const (
+	Version = "1.0.2"
+)
+
 // GinLogFunc Gin框架日志函数
 type GinLogFunc func(ctx context.Context, response *GinLogData)
 
@@ -136,7 +140,7 @@ func (gg *GinLog) Middleware() gin.HandlerFunc {
 
 		// 响应内容
 		if gorequest.IsValidJSON(blw.body.String()) {
-			_ = json.Unmarshal([]byte(blw.body.String()), &log.ResponseBody)
+			_ = json.Unmarshal(blw.body.Bytes(), &log.ResponseBody)
 			//log.ResponseBody = gojson.JsonDecodeNoError(blw.body.String())
 		} else {
 			//log.ResponseBody = blw.body.String()

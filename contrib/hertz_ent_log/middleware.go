@@ -8,10 +8,13 @@ import (
 	"time"
 
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"go.dtapp.net/library/contrib/hertz_requestid"
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
+)
+
+const (
+	Version = "1.0.3"
 )
 
 // HertzLogFunc Hertz框架日志函数
@@ -86,13 +89,20 @@ func (hg *HertzLog) Middleware() app.HandlerFunc {
 		log.ResponseTime = gotime.Current().Time
 
 		// 输出路由日志
-		hlog.CtxTracef(c, "status=%d cost=%d method=%s full_path=%s client_ip=%s host=%s",
-			h.Response.StatusCode(),
-			log.RequestCostTime,
-			h.Request.Header.Method(),
-			h.Request.URI().PathOriginal(),
-			h.ClientIP(),
-			h.Request.Host(),
+		status := h.Response.StatusCode()
+		logFn := slog.InfoContext
+		if status >= 500 {
+			logFn = slog.ErrorContext
+		} else if status >= 400 {
+			logFn = slog.WarnContext
+		}
+		logFn(c, "hertz route",
+			slog.Int("status", status),
+			slog.Int64("cost_ms", log.RequestCostTime),
+			slog.String("method", string(h.Request.Header.Method())),
+			slog.String("full_path", string(h.Request.URI().PathOriginal())),
+			slog.String("client_ip", h.ClientIP()),
+			slog.String("host", string(h.Request.Host())),
 		)
 
 		// 请求编号
