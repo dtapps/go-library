@@ -75,6 +75,27 @@ func WithSLogSetJSONFormatPass(status bool) SLogOption {
 	}
 }
 
+// WithSLogEnableOTel 启用 OpenTelemetry slog 桥接
+func WithSLogEnableOTel() SLogOption {
+	return func(sl *SLog) {
+		sl.option.enableOTel = true
+	}
+}
+
+// WithSLogEnableOTelPass 启用/关闭 OpenTelemetry slog 桥接
+func WithSLogEnableOTelPass(status bool) SLogOption {
+	return func(sl *SLog) {
+		sl.option.enableOTel = status
+	}
+}
+
+// WithSLogOTelName 配置 otelslog 的 logger 名称（留空则默认 "slog"）
+func WithSLogOTelName(name string) SLogOption {
+	return func(sl *SLog) {
+		sl.option.oTelLoggerName = name
+	}
+}
+
 // SetDisableLogging 设置是否完全禁用日志输出。
 // 当设置为 true 时，所有日志将被 io.Discard 丢弃，适用于生产环境以提升性能。
 func SetDisableLogging(disable bool) SLogOption {
