@@ -99,9 +99,10 @@ func (hg *HertzLog) Middleware() app.HandlerFunc {
 				Header: reqHeader,
 				Start:  start,
 
-				Method: string(h.Request.Header.Method()),
-				Path:   string(h.Request.URI().Path()),
-				URL:    string(h.Request.URI().String()),
+				Method:    string(h.Request.Header.Method()),
+				Path:      string(h.Request.URI().Path()),
+				URL:       string(h.Request.URI().String()),
+				UserAgent: string(h.Request.Header.UserAgent()),
 
 				Host: string(h.Request.Host()),
 			}

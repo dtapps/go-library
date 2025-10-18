@@ -13,9 +13,10 @@ type RequestInfo struct {
 	Header http.Header
 	Start  time.Time
 
-	Method string
-	Path   string
-	URL    string
+	Method    string
+	Path      string
+	URL       string
+	UserAgent string
 
 	Host string
 }

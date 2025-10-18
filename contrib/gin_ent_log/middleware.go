@@ -111,9 +111,10 @@ func (gg *GinLog) Middleware() gin.HandlerFunc {
 				Header: g.Request.Header,
 				Start:  start,
 
-				Method: g.Request.Method,
-				Path:   gorequest.NewUri(g.Request.RequestURI).UriFilterExcludeQueryString(),
-				URL:    g.Request.RequestURI,
+				Method:    g.Request.Method,
+				Path:      gorequest.NewUri(g.Request.RequestURI).UriFilterExcludeQueryString(),
+				URL:       g.Request.RequestURI,
+				UserAgent: g.Request.UserAgent(),
 
 				Host: g.Request.Host,
 			}
