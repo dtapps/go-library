@@ -14,8 +14,7 @@ import (
 
 // otelTracer 使用 OpenTelemetry 实现 gin_ent_log.Tracer
 type otelTracer struct {
-	tracer      trace.Tracer
-	serviceName string
+	tracer trace.Tracer
 }
 
 // Enable 在调用方启用 OTel 追踪（不改动原库的依赖）。
@@ -27,8 +26,7 @@ func Enable(serviceName string) {
 		propagation.Baggage{},
 	))
 	gin_ent_log.SetTracer(&otelTracer{
-		tracer:      tp.Tracer("go.dtapp.net/library/contrib/gin_ent_log_otel"),
-		serviceName: serviceName,
+		tracer: tp.Tracer("go.dtapp.net/library/contrib/gin_ent_log_otel"),
 	})
 }
 
@@ -38,8 +36,6 @@ func (t *otelTracer) Start(parent context.Context, req gin_ent_log.RequestInfo) 
 	spanCtx, span := t.tracer.Start(parent, "Gin HTTP "+req.Method, trace.WithSpanKind(trace.SpanKindServer))
 	// 记录请求属性（响应属性待 End 阶段设置）
 	span.SetAttributes(
-		attribute.String("service.name", t.serviceName),
-
 		// 库版本号
 		attribute.String("instrumentation.version", req.Version),
 
