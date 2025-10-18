@@ -17,9 +17,9 @@ type otelTracer struct {
 	tracer trace.Tracer
 }
 
-// Enable 在调用方启用 OTel 追踪（不改动原库的依赖）。
+// Enable 在调用方启用 OTel 追踪
 // 需要调用方在应用入口处先初始化全局 TracerProvider/Exporter/Propagator。
-func Enable(serviceName string) {
+func Enable() {
 	tp := otel.GetTracerProvider()
 	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(
 		propagation.TraceContext{},
@@ -43,6 +43,7 @@ func (t *otelTracer) Start(parent context.Context, req gin_ent_log.RequestInfo) 
 		attribute.String("http.method", req.Method),
 		attribute.String("http.path", req.Path),
 		attribute.String("http.url", req.URL),
+		attribute.String("http.user_agent", req.UserAgent),
 
 		// 目标主机
 		attribute.String("net.peer.name", req.Host),

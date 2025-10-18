@@ -1,5 +1,5 @@
 package gin_ent_log_otel
 
 const (
-	Version = "1.0.3"
+	Version = "1.0.4"
 )

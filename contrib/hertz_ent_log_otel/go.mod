@@ -5,7 +5,7 @@ go 1.24.2
 replace go.dtapp.net/library/contrib/hertz_ent_log => ../../contrib/hertz_ent_log
 
 require (
-	go.dtapp.net/library/contrib/hertz_ent_log v1.0.6
+	go.dtapp.net/library/contrib/hertz_ent_log v1.0.7
 	go.opentelemetry.io/otel v1.38.0
 	go.opentelemetry.io/otel/trace v1.38.0
 )
@@ -36,7 +36,7 @@ require (
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/otel/metric v1.38.0 // indirect
 	golang.org/x/arch v0.22.0 // indirect
-	golang.org/x/exp v0.0.0-20251009144603-d2f985daa21b // indirect
+	golang.org/x/exp v0.0.0-20251017212417-90e834f514db // indirect
 	golang.org/x/net v0.46.0 // indirect
 	golang.org/x/sys v0.37.0 // indirect
 	golang.org/x/text v0.30.0 // indirect
