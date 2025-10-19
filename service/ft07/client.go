@@ -21,7 +21,10 @@ func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
 	options := NewOptions(opts)
 
 	c := &Client{}
-	c.config.baseURL = options.baseURL
+	c.config.baseURL = "https://sctapi.ftqq.com/"
+	if options.baseURL != "" {
+		c.config.baseURL = options.baseURL
+	}
 	c.config.sendKey = options.sendKey
 
 	// 创建请求客户端
@@ -31,7 +34,7 @@ func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
 	}
 
 	// 设置基础 URL
-	c.httpClient.SetBaseURL(options.baseURL)
+	c.httpClient.SetBaseURL(c.config.baseURL)
 
 	// 设置 Debug
 	if options.debug {
