@@ -25,6 +25,6 @@ func (c *Client) MessagePush(ctx context.Context, text string, notMustParams ...
 	params.Set("text", text) // 推送消息内容
 
 	// 请求
-	err = c.request(ctx, c.config.pushKey+"message/push", params, http.MethodPost, &response)
+	err = c.request(ctx, "message/push", params, http.MethodPost, &response)
 	return
 }

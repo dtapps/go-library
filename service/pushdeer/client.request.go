@@ -9,10 +9,6 @@ import (
 
 func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, method string, response any) error {
 
-	if gorequest.IsHttpURL(url) == false {
-		return fmt.Errorf("不是有效地址: %s", url)
-	}
-
 	// 创建请求客户端
 	httpClient := c.httpClient.R().SetContext(ctx)
 

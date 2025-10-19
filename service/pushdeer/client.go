@@ -22,6 +22,9 @@ func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
 
 	c := &Client{}
 	c.config.baseURL = "https://api2.pushdeer.com/"
+	if options.baseURL != "" {
+		c.config.baseURL = options.baseURL
+	}
 	c.config.pushKey = options.pushKey
 
 	// 创建请求客户端
@@ -31,7 +34,7 @@ func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
 	}
 
 	// 设置基础 URL
-	c.httpClient.SetBaseURL(options.baseURL)
+	c.httpClient.SetBaseURL(c.config.baseURL)
 
 	// 设置 Debug
 	if options.debug {
