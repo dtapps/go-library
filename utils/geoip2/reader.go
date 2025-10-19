@@ -2,8 +2,9 @@ package geoip2
 
 import (
 	"fmt"
-	"github.com/oschwald/maxminddb-golang/v2"
 	"net/netip"
+
+	"github.com/oschwald/maxminddb-golang/v2"
 )
 
 // The Enterprise struct corresponds to the data in the GeoIP2 Enterprise
@@ -265,7 +266,7 @@ func Open(file string, selectLanguage string) (*Reader, error) {
 // used directly; any modification of it after opening the database will result
 // in errors while reading from the database.
 func FromBytes(bytes []byte, selectLanguage string) (*Reader, error) {
-	reader, err := maxminddb.FromBytes(bytes)
+	reader, err := maxminddb.OpenBytes(bytes)
 	if err != nil {
 		return nil, err
 	}

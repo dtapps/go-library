@@ -1,7 +1,7 @@
 module go.dtapp.net/library/utils/geoip2
 
-go 1.23.0
+go 1.24.0
 
-require github.com/oschwald/maxminddb-golang/v2 v2.0.0-beta.3
+require github.com/oschwald/maxminddb-golang/v2 v2.0.0
 
-require golang.org/x/sys v0.31.0 // indirect
+require golang.org/x/sys v0.37.0 // indirect
