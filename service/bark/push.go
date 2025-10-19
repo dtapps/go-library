@@ -24,6 +24,6 @@ func (c *Client) Push(ctx context.Context, notMustParams ...*gorequest.Params) (
 	}
 
 	// 请求
-	err = c.request(ctx, c.config.baseURL+"push", params, http.MethodPost, &response)
+	err = c.request(ctx, "push", params, http.MethodPost, &response)
 	return
 }
