@@ -2,8 +2,9 @@ package aswzk
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type IotCardOrderGetResponse struct {
@@ -23,24 +24,13 @@ type IotCardOrderGetResponse struct {
 	TraceId string `json:"trace_id"`
 }
 
-type IotCardOrderGetResult struct {
-	Result IotCardOrderGetResponse // 结果
-	Body   []byte                  // 内容
-	Http   gorequest.Response      // 请求
-}
-
-func newIotCardOrderGetResult(result IotCardOrderGetResponse, body []byte, http gorequest.Response) *IotCardOrderGetResult {
-	return &IotCardOrderGetResult{Result: result, Body: body, Http: http}
-}
-
 // IotCardOrderGet 物联卡订单查询
-func (c *Client) IotCardOrderGet(ctx context.Context, notMustParams ...*gorequest.Params) (*IotCardOrderGetResult, error) {
+func (c *Client) IotCardOrderGet(ctx context.Context, notMustParams ...*gorequest.Params) (response IotCardOrderGetResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response IotCardOrderGetResponse
-	request, err := c.request(ctx, "iot_card/order", params, http.MethodGet, &response)
-	return newIotCardOrderGetResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "iot_card/order", params, http.MethodGet, &response)
+	return
 }

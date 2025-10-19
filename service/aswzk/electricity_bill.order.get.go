@@ -2,8 +2,9 @@ package aswzk
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type ElectricityBillOrderQueryResponse struct {
@@ -24,18 +25,8 @@ type ElectricityBillOrderQueryResponse struct {
 	TraceId string `json:"trace_id"`
 }
 
-type ElectricityBillOrderQueryResult struct {
-	Result ElectricityBillOrderQueryResponse // 结果
-	Body   []byte                            // 内容
-	Http   gorequest.Response                // 请求
-}
-
-func newElectricityBillOrderQueryResult(result ElectricityBillOrderQueryResponse, body []byte, http gorequest.Response) *ElectricityBillOrderQueryResult {
-	return &ElectricityBillOrderQueryResult{Result: result, Body: body, Http: http}
-}
-
 // ElectricityBillOrderQuery 电费订单查询
-func (c *Client) ElectricityBillOrderQuery(ctx context.Context, orderID string, orderNo string, notMustParams ...*gorequest.Params) (*ElectricityBillOrderQueryResult, error) {
+func (c *Client) ElectricityBillOrderQuery(ctx context.Context, orderID string, orderNo string, notMustParams ...*gorequest.Params) (response ElectricityBillOrderQueryResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -43,7 +34,6 @@ func (c *Client) ElectricityBillOrderQuery(ctx context.Context, orderID string, 
 	params.Set("order_no", orderNo) // 商户订单编号
 
 	// 请求
-	var response ElectricityBillOrderQueryResponse
-	request, err := c.request(ctx, "electricity_bill/order", params, http.MethodGet, &response)
-	return newElectricityBillOrderQueryResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "electricity_bill/order", params, http.MethodGet, &response)
+	return
 }

@@ -2,8 +2,9 @@ package aswzk
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type PackageListResponse struct {
@@ -18,25 +19,14 @@ type PackageListResponse struct {
 	TraceId string `json:"trace_id"`
 }
 
-type PackageListResult struct {
-	Result PackageListResponse // 结果
-	Body   []byte              // 内容
-	Http   gorequest.Response  // 请求
-}
-
-func newPackageListResult(result PackageListResponse, body []byte, http gorequest.Response) *PackageListResult {
-	return &PackageListResult{Result: result, Body: body, Http: http}
-}
-
 // PackageList 套餐列表
 // package_type = 套餐类型 phone_bill=话费 electricity=电费)
-func (c *Client) PackageList(ctx context.Context, notMustParams ...*gorequest.Params) (*PackageListResult, error) {
+func (c *Client) PackageList(ctx context.Context, notMustParams ...*gorequest.Params) (response PackageListResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response PackageListResponse
-	request, err := c.request(ctx, "package/list", params, http.MethodGet, &response)
-	return newPackageListResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "package/list", params, http.MethodGet, &response)
+	return
 }

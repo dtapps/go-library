@@ -2,8 +2,9 @@ package aswzk
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type AssetsBalanceResponse struct {
@@ -16,24 +17,13 @@ type AssetsBalanceResponse struct {
 	TraceId string `json:"trace_id"`
 }
 
-type AssetsBalanceResult struct {
-	Result AssetsBalanceResponse // 结果
-	Body   []byte                // 内容
-	Http   gorequest.Response    // 请求
-}
-
-func newAssetsBalanceResult(result AssetsBalanceResponse, body []byte, http gorequest.Response) *AssetsBalanceResult {
-	return &AssetsBalanceResult{Result: result, Body: body, Http: http}
-}
-
 // AssetsBalance 余额查询
-func (c *Client) AssetsBalance(ctx context.Context, notMustParams ...*gorequest.Params) (*AssetsBalanceResult, error) {
+func (c *Client) AssetsBalance(ctx context.Context, notMustParams ...*gorequest.Params) (response AssetsBalanceResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response AssetsBalanceResponse
-	request, err := c.request(ctx, "assets/balance", params, http.MethodGet, &response)
-	return newAssetsBalanceResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "assets/balance", params, http.MethodGet, &response)
+	return
 }

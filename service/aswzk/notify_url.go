@@ -2,12 +2,12 @@ package aswzk
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
+	"net/url"
+
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
-	"net/url"
 )
 
 type NotifyUrlParams struct {
@@ -30,43 +30,47 @@ func (c *Client) NotifyUrl(ctx context.Context, params NotifyUrlParams, param *g
 		return errors.New("api_key cannot be empty")
 	}
 
+	// 定义
+	var response struct {
+		Code int `json:"code"` // 状态码
+	}
+
 	// 获取时间戳
 	xTimestamp := fmt.Sprintf("%v", gotime.Current().Timestamp())
 
 	// 签名
 	xSign := sign(param, params.ApiKey, xTimestamp)
 
-	// 设置请求地址
-	c.httpClient.SetUri(params.NotifyUrl)
+	// 创建请求客户端
+	httpClient := c.httpClient.R().SetContext(ctx)
 
 	// 设置格式
-	c.httpClient.SetContentTypeJson()
+	httpClient.SetContentType("application/json")
 
 	// 设置参数
-	c.httpClient.SetParams(param)
+	httpClient.SetBody(param.DeepGetAny())
 
 	// 添加请求头
-	c.httpClient.SetHeader("X-Timestamp", xTimestamp)
-	c.httpClient.SetHeader("X-Sign", xSign)
+	httpClient.SetHeader("X-Timestamp", xTimestamp)
+	httpClient.SetHeader("X-Sign", xSign)
+
+	// 设置结果
+	httpClient.SetResult(&response)
 
 	// 发起请求
-	request, err := c.httpClient.Post(ctx)
+	resp, err := httpClient.Post(params.NotifyUrl)
 	if err != nil {
 		return err
 	}
 
-	// 定义
-	var response struct {
-		Code int `json:"code"` // 状态码
-	}
-	err = json.Unmarshal(request.ResponseBody, &response)
-	if err != nil {
-		return err
+	// 检查 HTTP 状态码
+	if resp.IsError() {
+		return fmt.Errorf("请求失败，HTTP 状态码: %d", resp.StatusCode())
 	}
 
 	if response.Code == CodeSuccess {
 		return nil
 	}
 
-	return errors.New(fmt.Sprintf("code: %v", response.Code))
+	return fmt.Errorf("code: %v", response.Code)
 }

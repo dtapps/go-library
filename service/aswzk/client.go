@@ -1,41 +1,67 @@
 package aswzk
 
 import (
-	"errors"
-	"go.dtapp.net/library/utils/gorequest"
-)
+	"context"
 
-// ClientConfig 实例配置
-type ClientConfig struct {
-	ApiUrl string // 接口地址
-	UserID string // 用户编号
-	ApiKey string // 秘钥
-}
+	"resty.dev/v3"
+)
 
 // Client 实例
 type Client struct {
 	config struct {
-		apiUrl string // 接口地址
-		userID string // 用户编号
-		apiKey string // 秘钥
+		baseURL string // 接口地址
+		userID  string // 用户编号
+		apiKey  string // 秘钥
 	}
-	httpClient *gorequest.App // HTTP请求客户端
-	clientIP   string         // 客户端IP
+
+	httpClient *resty.Client // 请求客户端
 }
 
 // NewClient 创建实例化
-func NewClient(config *ClientConfig) (*Client, error) {
-	c := &Client{}
+func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
+	options := NewOptions(opts)
 
-	if config.ApiUrl == "" {
-		return nil, errors.New("ApiUrl is empty")
+	c := &Client{}
+	c.config.baseURL = options.baseURL
+	c.config.userID = options.userID
+	c.config.apiKey = options.apiKey
+
+	// 创建请求客户端
+	c.httpClient = resty.New()
+	if options.restyClient != nil {
+		c.httpClient = options.restyClient
 	}
 
-	c.httpClient = gorequest.NewHttp()
+	// 设置基础 URL
+	c.httpClient.SetBaseURL(options.baseURL)
 
-	c.config.apiUrl = config.ApiUrl
-	c.config.userID = config.UserID
-	c.config.apiKey = config.ApiKey
+	// 设置 Debug
+	if options.debug {
+		c.httpClient.EnableDebug()
+	}
+
+	// 绑定日志钩子
+	if options.restyLog != nil {
+		// 请求中间件
+		c.httpClient.SetRequestMiddlewares(
+			options.restyLog.IntrusionRequest, // 自定义请求中间件，注入开始时间
+			resty.PrepareRequestMiddleware,    // 官方请求中间件，创建RawRequest
+			options.restyLog.BeforeRequest,    // 自定义请求中间件，记录开始时间和OTel
+		)
+		// 响应中间件
+		c.httpClient.SetResponseMiddlewares(
+			options.restyLog.CopyResponseBodyMiddleware, // 自定义请求中间件，将响应体拷贝到Context
+			resty.AutoParseResponseMiddleware,           // 官方请求中间件，自动解析
+			options.restyLog.AfterResponse,              // 自定义请求中间件，打印/保存
+		)
+	}
 
 	return c, nil
+}
+
+// Close 关闭 请求客户端
+func (c *Client) Close() {
+	if c.httpClient != nil {
+		c.httpClient.Close()
+	}
 }

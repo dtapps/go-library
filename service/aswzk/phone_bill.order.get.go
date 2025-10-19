@@ -2,8 +2,9 @@ package aswzk
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type PhoneBillOrderQueryResponse struct {
@@ -24,18 +25,8 @@ type PhoneBillOrderQueryResponse struct {
 	TraceId string `json:"trace_id"`
 }
 
-type PhoneBillOrderQueryResult struct {
-	Result PhoneBillOrderQueryResponse // 结果
-	Body   []byte                      // 内容
-	Http   gorequest.Response          // 请求
-}
-
-func newPhoneBillOrderQueryResult(result PhoneBillOrderQueryResponse, body []byte, http gorequest.Response) *PhoneBillOrderQueryResult {
-	return &PhoneBillOrderQueryResult{Result: result, Body: body, Http: http}
-}
-
 // PhoneBillOrderQuery 话费订单查询
-func (c *Client) PhoneBillOrderQuery(ctx context.Context, orderID, orderNo string, notMustParams ...*gorequest.Params) (*PhoneBillOrderQueryResult, error) {
+func (c *Client) PhoneBillOrderQuery(ctx context.Context, orderID, orderNo string, notMustParams ...*gorequest.Params) (response PhoneBillOrderQueryResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -43,7 +34,6 @@ func (c *Client) PhoneBillOrderQuery(ctx context.Context, orderID, orderNo strin
 	params.Set("order_no", orderNo) // 商户订单编号
 
 	// 请求
-	var response PhoneBillOrderQueryResponse
-	request, err := c.request(ctx, "phone_bill/order", params, http.MethodGet, &response)
-	return newPhoneBillOrderQueryResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "phone_bill/order", params, http.MethodGet, &response)
+	return
 }

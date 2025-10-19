@@ -2,8 +2,9 @@ package aswzk
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type IotCardPackageListResponse struct {
@@ -23,25 +24,14 @@ type IotCardPackageListResponse struct {
 	TraceId string `json:"trace_id"`
 }
 
-type IotCardPackageListResult struct {
-	Result IotCardPackageListResponse // 结果
-	Body   []byte                     // 内容
-	Http   gorequest.Response         // 请求
-}
-
-func newIotCardPackageListResult(result IotCardPackageListResponse, body []byte, http gorequest.Response) *IotCardPackageListResult {
-	return &IotCardPackageListResult{Result: result, Body: body, Http: http}
-}
-
 // IotCardPackageList 物联卡套餐列表
-func (c *Client) IotCardPackageList(ctx context.Context, iccid string, notMustParams ...*gorequest.Params) (*IotCardPackageListResult, error) {
+func (c *Client) IotCardPackageList(ctx context.Context, iccid string, notMustParams ...*gorequest.Params) (response IotCardPackageListResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("iccid", iccid)
 
 	// 请求
-	var response IotCardPackageListResponse
-	request, err := c.request(ctx, "iot_card/package/list", params, http.MethodGet, &response)
-	return newIotCardPackageListResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "iot_card/package/list", params, http.MethodGet, &response)
+	return
 }
