@@ -33,7 +33,7 @@ func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
 	}
 
 	// 设置基础 URL
-	c.httpClient.SetBaseURL(options.baseURL)
+	c.httpClient.SetBaseURL(c.config.baseURL)
 
 	// 设置 Debug
 	if options.debug {
