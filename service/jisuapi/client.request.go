@@ -1,4 +1,4 @@
-package kuaidi100
+package jisuapi
 
 import (
 	"context"
@@ -8,18 +8,6 @@ import (
 )
 
 func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, method string, response any) error {
-
-	// 参数
-	newParams := gorequest.NewParams()
-
-	// 公共参数
-	newParams.Set("customer", c.GetCustomer())
-
-	// 请求参数
-	newParams.Set("param", gorequest.JsonEncodeNoError(param.DeepGetAny()))
-
-	// 签名
-	newParams.Set("sign", c.getSign(gorequest.JsonEncodeNoError(param.DeepGetAny())))
 
 	// 创建请求客户端
 	httpClient := c.httpClient.R().SetContext(ctx)
@@ -32,7 +20,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 
 	// 设置参数
 	httpClient.SetContentType("application/x-www-form-urlencoded")
-	httpClient.SetFormData(newParams.DeepGetString())
+	httpClient.SetFormData(param.DeepGetString())
 
 	// 设置结果
 	httpClient.SetResult(&response)

@@ -2,6 +2,8 @@ module go.dtapp.net/library/service/kuaidi100
 
 go 1.25.1
 
+replace go.dtapp.net/library/contrib/resty_log => ../../contrib/resty_log
+
 replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 
 replace go.dtapp.net/library/utils/gomd5 => ../../utils/gomd5

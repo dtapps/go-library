@@ -2,8 +2,9 @@ package juhe
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type MobileGetResponse struct {
@@ -19,19 +20,9 @@ type MobileGetResponse struct {
 	} `json:"result"` // 返回结果集
 }
 
-type MobileGetResult struct {
-	Result MobileGetResponse  // 结果
-	Body   []byte             // 内容
-	Http   gorequest.Response // 请求
-}
-
-func newMobileGetResult(result MobileGetResponse, body []byte, http gorequest.Response) *MobileGetResult {
-	return &MobileGetResult{Result: result, Body: body, Http: http}
-}
-
 // MobileGet 手机号码归属地
 // https://www.juhe.cn/docs/api/id/11
-func (c *Client) MobileGet(ctx context.Context, phone string, key string, notMustParams ...*gorequest.Params) (*MobileGetResult, error) {
+func (c *Client) MobileGet(ctx context.Context, phone string, key string, notMustParams ...*gorequest.Params) (response MobileGetResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -40,7 +31,6 @@ func (c *Client) MobileGet(ctx context.Context, phone string, key string, notMus
 	params.Set("dtype", "json") // 返回数据的格式,xml或json，默认json
 
 	// 请求
-	var response MobileGetResponse
-	request, err := c.request(ctx, "mobile/get", params, http.MethodGet, &response)
-	return newMobileGetResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "mobile/get", params, http.MethodGet, &response)
+	return
 }
