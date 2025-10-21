@@ -2,8 +2,9 @@ package chengquan
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type OrderGetResponse struct {
@@ -20,28 +21,19 @@ type OrderGetResponse struct {
 	} `json:"data"`
 }
 
-type OrderGetResult struct {
-	Result OrderGetResponse   // 结果
-	Body   []byte             // 内容
-	Http   gorequest.Response // 请求
-}
-
-func newOrderGetResult(result OrderGetResponse, body []byte, http gorequest.Response) *OrderGetResult {
-	return &OrderGetResult{Result: result, Body: body, Http: http}
-}
-
 // OrderGet 订单查询接口
 // order_no = 商户提交的订单号，最长32位(商户保证其唯一性)
 // https://www.chengquan.cn/rechargeInterface/queryOrder.html
-func (c *Client) OrderGet(ctx context.Context, orderNo string, notMustParams ...*gorequest.Params) (*OrderGetResult, error) {
+func (c *Client) OrderGet(ctx context.Context, orderNo string, notMustParams ...*gorequest.Params) (response OrderGetResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("order_no", orderNo)         // 商户提交的订单号，最长32位(商户保证其唯一性)
-	params.Set("version", c.config.version) // 版本号
+	params.Set("order_no", orderNo) // 商户提交的订单号，最长32位(商户保证其唯一性)
+	if c.config.version != "" {
+		params.Set("version", c.config.version) // 版本号
+	}
 
 	// 请求
-	var response OrderGetResponse
-	request, err := c.request(ctx, "order/get", params, http.MethodPost, &response)
-	return newOrderGetResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "order/get", params, http.MethodPost, &response)
+	return
 }

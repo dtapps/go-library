@@ -1,49 +1,74 @@
 package chengquan
 
 import (
-	"errors"
-	"go.dtapp.net/library/utils/gorequest"
-)
+	"context"
 
-// ClientConfig 实例配置
-type ClientConfig struct {
-	ApiURL string
-	AppID  string
-	AppKey string
-	AesKey string
-	AesIv  string
-}
+	"resty.dev/v3"
+)
 
 // Client 实例
 type Client struct {
 	config struct {
-		apiURL  string
+		baseURL string // 接口地址
 		appID   string
 		appKey  string
 		aesKey  string
 		aesIv   string
 		version string
 	}
-	httpClient *gorequest.App // HTTP请求客户端
-	clientIP   string         // 客户端IP
+
+	httpClient *resty.Client // 请求客户端
 }
 
 // NewClient 创建实例化
-func NewClient(config *ClientConfig) (*Client, error) {
-	c := &Client{}
+func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
+	options := NewOptions(opts)
 
-	if config.ApiURL == "" {
-		return nil, errors.New("需要配置ApiURL")
+	c := &Client{}
+	c.config.baseURL = options.baseURL
+	c.config.appID = options.appID
+	c.config.appKey = options.appKey
+	c.config.aesKey = options.aesKey
+	c.config.aesIv = options.aesIv
+	c.config.version = options.version
+
+	// 创建请求客户端
+	c.httpClient = resty.New()
+	if options.restyClient != nil {
+		c.httpClient = options.restyClient
 	}
 
-	c.httpClient = gorequest.NewHttp()
+	// 设置基础 URL
+	c.httpClient.SetBaseURL(c.config.baseURL)
 
-	c.config.apiURL = config.ApiURL
-	c.config.appID = config.AppID
-	c.config.appKey = config.AppKey
-	c.config.aesKey = config.AesKey
-	c.config.aesIv = config.AesKey
-	c.config.version = "1.0.0"
+	// 设置 Debug
+	if options.debug {
+		c.httpClient.EnableDebug()
+	}
+
+	// 绑定日志钩子
+	if options.restyLog != nil {
+		// 请求中间件
+		c.httpClient.SetRequestMiddlewares(
+			options.restyLog.IntrusionRequest, // 自定义请求中间件，注入开始时间
+			resty.PrepareRequestMiddleware,    // 官方请求中间件，创建RawRequest
+			options.restyLog.BeforeRequest,    // 自定义请求中间件，记录开始时间和OTel
+		)
+		// 响应中间件
+		c.httpClient.SetResponseMiddlewares(
+			options.restyLog.CopyResponseBodyMiddleware, // 自定义请求中间件，将响应体拷贝到Context
+			resty.AutoParseResponseMiddleware,           // 官方请求中间件，自动解析
+			options.restyLog.AfterResponse,              // 自定义请求中间件，打印/保存
+		)
+	}
 
 	return c, nil
+}
+
+// Close 关闭 请求客户端
+func (c *Client) Close() (err error) {
+	if c.httpClient != nil {
+		err = c.httpClient.Close()
+	}
+	return
 }

@@ -2,8 +2,9 @@ package chengquan
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type UserBalanceGetResponse struct {
@@ -15,25 +16,14 @@ type UserBalanceGetResponse struct {
 	} `json:"data"`
 }
 
-type UserBalanceGetResult struct {
-	Result UserBalanceGetResponse // 结果
-	Body   []byte                 // 内容
-	Http   gorequest.Response     // 请求
-}
-
-func newUserBalanceGetResult(result UserBalanceGetResponse, body []byte, http gorequest.Response) *UserBalanceGetResult {
-	return &UserBalanceGetResult{Result: result, Body: body, Http: http}
-}
-
 // UserBalanceGet 账号余额查询接口
 // https://chengquan.cn/basicData/queryBalance.html
-func (c *Client) UserBalanceGet(ctx context.Context, notMustParams ...*gorequest.Params) (*UserBalanceGetResult, error) {
+func (c *Client) UserBalanceGet(ctx context.Context, notMustParams ...*gorequest.Params) (response UserBalanceGetResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response UserBalanceGetResponse
-	request, err := c.request(ctx, "user/balance/get", params, http.MethodPost, &response)
-	return newUserBalanceGetResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "user/balance/get", params, http.MethodPost, &response)
+	return
 }

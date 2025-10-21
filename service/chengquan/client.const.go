@@ -3,10 +3,6 @@ package chengquan
 import "fmt"
 
 const (
-	LogTable = "chengquan"
-)
-
-const (
 	CodeSuccess = 7000
 )
 

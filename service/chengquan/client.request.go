@@ -2,15 +2,13 @@ package chengquan
 
 import (
 	"context"
-	"encoding/json"
+	"fmt"
+
 	"go.dtapp.net/library/utils/gorequest"
 	"go.dtapp.net/library/utils/gotime"
 )
 
-func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, method string, response any) (gorequest.Response, error) {
-
-	// 请求地址
-	uri := c.GetApiURL() + url
+func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, method string, response any) error {
 
 	// 公共参数
 	param.Set("timestamp", gotime.Current().TimestampWithMillisecond()) // 时间戳，以毫秒为单位。校验开发者与橙券的时间差，橙券允许开发者请求最大时间误差为3分钟 (3*60*1000)
@@ -19,26 +17,34 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	// 签名
 	param.Set("sign", c.sign(ctx, param))
 
+	// 创建请求客户端
+	httpClient := c.httpClient.R().SetContext(ctx)
+
 	// 设置请求地址
-	c.httpClient.SetUri(uri)
+	httpClient.SetURL(url)
 
 	// 设置方式
-	c.httpClient.SetMethod(method)
+	httpClient.SetMethod(method)
 
 	// 设置格式
-	c.httpClient.SetContentTypeForm()
+	httpClient.SetContentType("application/x-www-form-urlencoded")
 
 	// 设置参数
-	c.httpClient.SetParams(param)
+	httpClient.SetFormData(param.DeepGetString())
+
+	// 设置结果
+	httpClient.SetResult(&response)
 
 	// 发起请求
-	request, err := c.httpClient.Request(ctx)
+	resp, err := httpClient.Send()
 	if err != nil {
-		return gorequest.Response{}, err
+		return err
 	}
 
-	// 解析响应
-	err = json.Unmarshal(request.ResponseBody, &response)
+	// 检查 HTTP 状态码
+	if resp.IsError() {
+		return fmt.Errorf("请求失败，HTTP 状态码: %d", resp.StatusCode())
+	}
 
-	return request, err
+	return nil
 }

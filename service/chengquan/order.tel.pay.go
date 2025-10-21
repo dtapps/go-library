@@ -2,8 +2,9 @@ package chengquan
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type OrderTelPayResponse struct {
@@ -20,23 +21,13 @@ type OrderTelPayResponse struct {
 	} `json:"data"`
 }
 
-type OrderTelPayResult struct {
-	Result OrderTelPayResponse // 结果
-	Body   []byte              // 内容
-	Http   gorequest.Response  // 请求
-}
-
-func newOrderTelPayResult(result OrderTelPayResponse, body []byte, http gorequest.Response) *OrderTelPayResult {
-	return &OrderTelPayResult{Result: result, Body: body, Http: http}
-}
-
 // OrderTelPay 话费下单接口
 // order_no = 商户提交的订单号，最长32位(商户保证其唯一性)
 // recharge_number = 充值手机号码
 // price = 充值面值(单位：分)
 // notify_url = 橙券主动通知订单结果地址
 // https://www.chengquan.cn/rechargeInterface/tel.html
-func (c *Client) OrderTelPay(ctx context.Context, orderNo string, rechargeNumber string, price int64, notMustParams ...*gorequest.Params) (*OrderTelPayResult, error) {
+func (c *Client) OrderTelPay(ctx context.Context, orderNo string, rechargeNumber string, price int64, notMustParams ...*gorequest.Params) (response OrderTelPayResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -45,7 +36,6 @@ func (c *Client) OrderTelPay(ctx context.Context, orderNo string, rechargeNumber
 	params.Set("price", price)                    // 充值面值(单位：分)
 
 	// 请求
-	var response OrderTelPayResponse
-	request, err := c.request(ctx, "order/tel/pay", params, http.MethodPost, &response)
-	return newOrderTelPayResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "order/tel/pay", params, http.MethodPost, &response)
+	return
 }

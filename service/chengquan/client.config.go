@@ -1,15 +1,11 @@
 package chengquan
 
-import (
-	"go.dtapp.net/library/utils/gorequest"
-)
-
-func (c *Client) GetApiURL() string {
-	return c.config.apiURL
+func (c *Client) GetURL() string {
+	return c.config.baseURL
 }
 
-func (c *Client) SetApiURL(v string) *Client {
-	c.config.apiURL = v
+func (c *Client) SetURL(v string) *Client {
+	c.config.baseURL = v
 	return c
 }
 
@@ -47,20 +43,4 @@ func (c *Client) GetAesIv() string {
 func (c *Client) SetAesIv(v string) *Client {
 	c.config.aesIv = v
 	return c
-}
-
-// SetClientIP 配置
-func (c *Client) SetClientIP(clientIP string) *Client {
-	c.clientIP = clientIP
-	if c.httpClient != nil {
-		c.httpClient.SetClientIP(clientIP)
-	}
-	return c
-}
-
-// SetLogFun 设置日志记录函数
-func (c *Client) SetLogFun(logFun gorequest.LogFunc) {
-	if c.httpClient != nil {
-		c.httpClient.SetLogFunc(logFun)
-	}
 }
