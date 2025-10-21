@@ -2,11 +2,11 @@ package itboy
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/godecimal"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 	"regexp"
+
+	"go.dtapp.net/library/utils/godecimal"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type ApiWeatherCityResponse struct {
@@ -58,30 +58,16 @@ type ApiWeatherCityResponse struct {
 	} `json:"data"`
 }
 
-type ApiWeatherCityResult struct {
-	Result ApiWeatherCityResponse // 结果
-	Body   []byte                 // 内容
-	Http   gorequest.Response     // 请求
-}
-
-func newApiWeatherCityResult(result ApiWeatherCityResponse, body []byte, http gorequest.Response) *ApiWeatherCityResult {
-	return &ApiWeatherCityResult{Result: result, Body: body, Http: http}
-}
-
 // ApiWeatherCity 国内天气
 // https://www.sojson.com/blog/305.html
-func (c *Client) ApiWeatherCity(ctx context.Context, cityCode string, notMustParams ...gorequest.Params) (*ApiWeatherCityResult, error) {
+func (c *Client) ApiWeatherCity(ctx context.Context, cityCode string, notMustParams ...*gorequest.Params) (response ApiWeatherCityResponse, err error) {
+
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
 	// 请求
-	request, err := c.request(ctx, "api/weather/city/"+cityCode, params, http.MethodGet)
-	if err != nil {
-		return newApiWeatherCityResult(ApiWeatherCityResponse{}, request.ResponseBody, request), err
-	}
-	// 定义
-	var response ApiWeatherCityResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
-	return newApiWeatherCityResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "api/weather/city/"+cityCode, params, http.MethodGet, &response)
+	return
 }
 
 func ApiWeatherCityLow(low string) float64 {
