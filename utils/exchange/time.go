@@ -74,15 +74,10 @@ func SGETime(now time.Time) (sge SGETimeRes) {
 }
 
 // SGEActiveTime 判断是否在“活跃时段”
-// 即：正常开市时间 ± 30 分钟内 都认为是活跃状态（返回 MarketClosed=false）
+// 即：正常开市时间 ± minute 分钟内，都认为是活跃状态（返回 MarketClosed=false）
 func SGEActiveTime(now time.Time, minute int64) SGETimeRes {
 	now = now.In(CstLocation)
 
-	if minute == 0 {
-		minute = 30
-	}
-
-	// 定义当日各交易时间段（含夜盘跨天）
 	type timeRange struct {
 		start time.Time
 		end   time.Time
@@ -92,11 +87,27 @@ func SGEActiveTime(now time.Time, minute int64) SGETimeRes {
 	year, month, day := now.Date()
 	location := CstLocation
 
-	// 定义时间段
+	// 基本时间段
 	ranges := []timeRange{
 		{time.Date(year, month, day, 9, 0, 0, 0, location), time.Date(year, month, day, 11, 30, 0, 0, location), "日盘"},
 		{time.Date(year, month, day, 13, 30, 0, 0, location), time.Date(year, month, day, 15, 30, 0, 0, location), "日盘"},
-		{time.Date(year, month, day, 20, 0, 0, 0, location), time.Date(year, month, day+1, 2, 30, 0, 0, location), "夜盘"},
+	}
+
+	// 处理夜盘
+	// 如果当前时间在凌晨（0点-2:30），夜盘属于前一天 20:00 开始
+	if now.Hour() < 3 {
+		prev := now.AddDate(0, 0, -1)
+		ranges = append(ranges, timeRange{
+			start: time.Date(prev.Year(), prev.Month(), prev.Day(), 20, 0, 0, 0, location),
+			end:   time.Date(year, month, day, 2, 30, 0, 0, location),
+			label: "夜盘",
+		})
+	} else {
+		ranges = append(ranges, timeRange{
+			start: time.Date(year, month, day, 20, 0, 0, 0, location),
+			end:   time.Date(year, month, day+1, 2, 30, 0, 0, location),
+			label: "夜盘",
+		})
 	}
 
 	weekday := now.Weekday()
@@ -104,15 +115,14 @@ func SGEActiveTime(now time.Time, minute int64) SGETimeRes {
 		return SGETimeRes{MarketClosed: true, Reason: "周末休市"}
 	}
 	if weekday == time.Friday {
-		// 周五夜盘没有
+		// 周五夜盘休市
 		ranges = ranges[:2]
 	}
 
 	for _, tr := range ranges {
-		start := tr.start.Add(-time.Duration(minute) * time.Minute) // 提前30分钟
-		end := tr.end.Add(time.Duration(minute) * time.Minute)      // 延后30分钟
-
-		if now.After(start) && now.Before(end) {
+		start := tr.start.Add(-time.Duration(minute) * time.Minute)
+		end := tr.end.Add(time.Duration(minute) * time.Minute)
+		if !now.Before(start) && !now.After(end) { // 使用闭区间
 			return SGETimeRes{MarketClosed: false, Reason: tr.label + "活跃时段"}
 		}
 	}
