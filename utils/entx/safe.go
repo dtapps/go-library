@@ -5,7 +5,9 @@ import (
 	"sync"
 )
 
+// ---------------------------------------------
 // 全局写锁，保证写操作串行化
+// ---------------------------------------------
 var dbWriteLock sync.Mutex
 
 // SafeWrite 封装写事务，避免并发写冲突
@@ -18,6 +20,13 @@ var dbWriteLock sync.Mutex
 // 返回值:
 //
 //	error: 如果事务或写操作失败，则返回错误
+//
+// 使用方法示例:
+//
+//	entx.SafeWrite(txFactory, func(tx entx.Txer) error {
+//	    t := tx.(*ent.Tx)  // 断言为具体 ent.Tx
+//	    return t.User.Create().SetName("Alice").Exec(ctx)
+//	})
 func SafeWrite(txFactory func(ctx context.Context) (Txer, error), f func(tx Txer) error) error {
 	dbWriteLock.Lock()
 	defer dbWriteLock.Unlock()
@@ -26,12 +35,15 @@ func SafeWrite(txFactory func(ctx context.Context) (Txer, error), f func(tx Txer
 	if err != nil {
 		return err
 	}
+
+	// 确保事务最终被回滚（如果 Commit 已经执行，这里不会影响）
 	defer tx.Rollback()
 
 	if err := f(tx); err != nil {
 		return err
 	}
 
+	// 提交事务
 	return tx.Commit()
 }
 
@@ -45,6 +57,11 @@ func SafeWrite(txFactory func(ctx context.Context) (Txer, error), f func(tx Txer
 // 返回值:
 //
 //	error: 读取失败时返回错误
+//
+// 说明:
+//
+//	SafeRead 会创建一个事务，但不加写锁。
+//	适合多协程并发读取，保证读取的一致性
 func SafeRead(txFactory func(ctx context.Context) (Txer, error), f func(tx Txer) error) error {
 	tx, err := txFactory(context.Background())
 	if err != nil {
