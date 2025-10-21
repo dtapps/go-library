@@ -2,8 +2,9 @@ package kuaidi100
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type PollQueryResponse struct {
@@ -40,25 +41,14 @@ type PollQueryResponse struct {
 	IsLoop bool `json:"isLoop"`
 }
 
-type PollQueryResult struct {
-	Result PollQueryResponse  // 结果
-	Body   []byte             // 内容
-	Http   gorequest.Response // 请求
-}
-
-func newPollQueryResult(result PollQueryResponse, body []byte, http gorequest.Response) *PollQueryResult {
-	return &PollQueryResult{Result: result, Body: body, Http: http}
-}
-
 // PollQuery 实时快递查询接口
 // https://api.kuaidi100.com/document/5f0ffb5ebc8da837cbd8aefc
-func (c *Client) PollQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*PollQueryResult, error) {
+func (c *Client) PollQuery(ctx context.Context, notMustParams ...*gorequest.Params) (response PollQueryResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response PollQueryResponse
-	request, err := c.request(ctx, "poll/query.do", params, http.MethodPost, &response)
-	return newPollQueryResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "poll/query.do", params, http.MethodPost, &response)
+	return
 }

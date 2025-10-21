@@ -1,34 +1,71 @@
 package kuaidi100
 
 import (
-	"go.dtapp.net/library/utils/gorequest"
-)
+	"context"
 
-// ClientConfig 实例配置
-type ClientConfig struct {
-	Customer string // 授权码
-	Key      string // 密钥
-}
+	"resty.dev/v3"
+)
 
 // Client 实例
 type Client struct {
 	config struct {
+		baseURL  string // 接口地址
 		customer string // 授权码
 		key      string // 密钥
 	}
-	httpClient *gorequest.App // HTTP请求客户端
-	clientIP   string         // 客户端IP
+
+	httpClient *resty.Client // 请求客户端
 }
 
 // NewClient 创建实例化
-func NewClient(config *ClientConfig) (*Client, error) {
+func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
+	options := NewOptions(opts)
 
 	c := &Client{}
+	c.config.baseURL = "https://poll.kuaidi100.com/"
+	if options.baseURL != "" {
+		c.config.baseURL = options.baseURL
+	}
+	c.config.customer = options.customer
+	c.config.key = options.key
 
-	c.httpClient = gorequest.NewHttp()
+	// 创建请求客户端
+	c.httpClient = resty.New()
+	if options.restyClient != nil {
+		c.httpClient = options.restyClient
+	}
 
-	c.config.customer = config.Customer
-	c.config.key = config.Key
+	// 设置基础 URL
+	c.httpClient.SetBaseURL(c.config.baseURL)
+
+	// 设置 Debug
+	if options.debug {
+		c.httpClient.EnableDebug()
+	}
+
+	// 绑定日志钩子
+	if options.restyLog != nil {
+		// 请求中间件
+		c.httpClient.SetRequestMiddlewares(
+			options.restyLog.IntrusionRequest, // 自定义请求中间件，注入开始时间
+			resty.PrepareRequestMiddleware,    // 官方请求中间件，创建RawRequest
+			options.restyLog.BeforeRequest,    // 自定义请求中间件，记录开始时间和OTel
+		)
+		// 响应中间件
+		c.httpClient.SetResponseMiddlewares(
+			options.restyLog.CopyResponseBodyMiddleware, // 自定义请求中间件，将响应体拷贝到Context
+			resty.AutoParseResponseMiddleware,           // 官方请求中间件，自动解析
+			options.restyLog.AfterResponse,              // 自定义请求中间件，打印/保存
+		)
+	}
 
 	return c, nil
+}
+
+// Close 关闭 请求客户端
+func (c *Client) Close() (err error) {
+	if c.httpClient != nil {
+		err = c.httpClient.Close()
+	}
+	return
 }
