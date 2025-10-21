@@ -47,9 +47,9 @@ func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
 		// 请求中间件
 		c.httpClient.SetRequestMiddlewares(
 			options.restyLog.IntrusionRequest, // 自定义请求中间件，注入开始时间
-			resty.PrepareRequestMiddleware,    // 官方请求中间件，创建RawRequest
-			options.restyLog.BeforeRequest,    // 自定义请求中间件，记录开始时间和OTel
-			PreRequestMiddleware(options.debug, options.userName, options.appKey, options.appSecret), // 自定义请求中间件，签名
+			// PreRequestMiddleware(options.debug, options.userName, options.appKey, options.appSecret), // 自定义请求中间件，签名
+			resty.PrepareRequestMiddleware, // 官方请求中间件，创建RawRequest
+			options.restyLog.BeforeRequest, // 自定义请求中间件，记录开始时间和OTel
 		)
 		// 响应中间件
 		c.httpClient.SetResponseMiddlewares(
@@ -61,8 +61,8 @@ func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
 	} else {
 		// 请求中间件
 		c.httpClient.SetRequestMiddlewares(
+			// PreRequestMiddleware(options.debug, options.userName, options.appKey, options.appSecret), // 自定义请求中间件，签名
 			resty.PrepareRequestMiddleware, // 官方请求中间件，创建RawRequest
-			PreRequestMiddleware(options.debug, options.userName, options.appKey, options.appSecret), // 自定义请求中间件，签名
 		)
 		// 响应中间件
 		c.httpClient.SetResponseMiddlewares(
@@ -72,6 +72,11 @@ func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
 	}
 
 	return c, nil
+}
+
+// R 返回一个自定义的 Request，以便我们可以调用 SetBodyMap() SetBodyStruct() 解决因 body 顺序不同导致 SHA256 不一样的问题
+func (c *Client) R() *Request {
+	return &Request{c.httpClient.R()}
 }
 
 // Close 关闭 请求客户端

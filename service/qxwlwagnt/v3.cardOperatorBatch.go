@@ -23,6 +23,6 @@ func (c *Client) V3CardOperatorBatch(ctx context.Context, iccids []string, actio
 	params.Set("action", action)                    // 动作（具体参数请联系接口提供方索取）
 
 	// 请求
-	err = c.Request(ctx, "/api/v3/cardOperatorBatch", params, http.MethodPost, &response)
+	err = c.Request(ctx, "/api/v3/cardOperatorBatch", params, http.MethodGet, &response)
 	return
 }

@@ -1,7 +1,7 @@
 package qxwlwagnt
 
 type BaseResponse struct {
-	Status  int    `json:"status"`  // 接口调用状态码
+	Status  string `json:"status"`  // 接口调用状态码
 	Message string `json:"message"` // 状态描述
 }
 

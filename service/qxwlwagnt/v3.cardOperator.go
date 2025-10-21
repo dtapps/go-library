@@ -21,6 +21,6 @@ func (c *Client) V3CardOperator(ctx context.Context, iccid string, action string
 	params.Set("action", action) // 动作（具体参数请联系接口提供方索取）
 
 	// 请求
-	err = c.Request(ctx, "/api/v3/cardOperator", params, http.MethodPost, &response)
+	err = c.Request(ctx, "/api/v3/cardOperator", params, http.MethodGet, &response)
 	return
 }

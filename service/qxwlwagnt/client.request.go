@@ -2,42 +2,23 @@ package qxwlwagnt
 
 import (
 	"context"
-	"fmt"
 
-	"go.dtapp.net/library/utils/gorequest"
+	"resty.dev/v3"
 )
 
-func (c *Client) Request(ctx context.Context, url string, param *gorequest.Params, method string, response any) error {
+type contextKey string
 
-	// 参数
-	newParams := gorequest.NewParams()
+const (
+	bodyMapKey contextKey = "bodyMap"
+)
 
-	// 创建请求客户端
-	httpClient := c.httpClient.R().SetContext(ctx)
+type Request struct {
+	*resty.Request
+}
 
-	// 设置请求地址
-	httpClient.SetURL(url)
-
-	// 设置方式
-	httpClient.SetMethod(method)
-
-	// 设置参数
-	httpClient.SetContentType("application/json")
-	httpClient.SetBody(newParams.DeepGetString())
-
-	// 设置结果
-	httpClient.SetResult(&response)
-
-	// 发起请求
-	resp, err := httpClient.Send()
-	if err != nil {
-		return err
-	}
-
-	// 检查 HTTP 状态码
-	if resp.IsError() {
-		return fmt.Errorf("请求失败，HTTP 状态码: %d", resp.StatusCode())
-	}
-
-	return nil
+func (r *Request) SetBodyMap(bodyMap map[string]any) *Request {
+	ctx := context.WithValue(r.Context(), bodyMapKey, bodyMap)
+	r.SetContext(ctx)
+	// 注意：不设置 r.Body，留到中间件处理
+	return r
 }

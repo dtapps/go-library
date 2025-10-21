@@ -8,10 +8,10 @@ import (
 )
 
 type V3QueryFlowHistoryResponse struct {
-	Iccid        string  `json:"iccid"`        // 物联网号码的ICCID
-	BillingMonth string  `json:"billingMonth"` // 月份，格式：yyyyMM
-	UsageTotal   float64 `json:"usageTotal"`   // 数据使用量，单位 M
-	Status       string  `json:"status"`       // Y:成功，N:数据未同步
+	Iccid        string `json:"iccid"`        // 物联网号码的ICCID
+	BillingMonth string `json:"billingMonth"` // 月份，格式：yyyyMM
+	UsageTotal   string `json:"usageTotal"`   // 数据使用量，单位 M
+	Status       string `json:"status"`       // Y:成功，N:数据未同步
 }
 
 // V3QueryFlowHistory 历史流量查询
@@ -24,6 +24,6 @@ func (c *Client) V3QueryFlowHistory(ctx context.Context, iccid string, billingMo
 	params.Set("billingMonth", billingMonth) // 月份，格式：yyyyMM, 例如202111
 
 	// 请求
-	err = c.Request(ctx, "/api/v3/queryFlowHistory", params, http.MethodPost, &response)
+	err = c.Request(ctx, "/api/v3/queryFlowHistory", params, http.MethodGet, &response)
 	return
 }

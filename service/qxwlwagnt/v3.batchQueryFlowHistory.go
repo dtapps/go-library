@@ -28,6 +28,6 @@ func (c *Client) V3BatchQueryFlowHistory(ctx context.Context, iccids []string, b
 	params.Set("billingMonth", billingMonth)        // 月份，格式：yyyyMM, 例如202111
 
 	// 请求
-	err = c.Request(ctx, "/api/v3/batchQueryFlowHistory", params, http.MethodPost, &response)
+	err = c.Request(ctx, "/api/v3/batchQueryFlowHistory", params, http.MethodGet, &response)
 	return
 }
