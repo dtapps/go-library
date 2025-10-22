@@ -1,4 +1,4 @@
-module go.dtapp.net/library/service/kuaidi100
+module go.dtapp.net/library/service/qxwlwagnt
 
 go 1.25.1
 
