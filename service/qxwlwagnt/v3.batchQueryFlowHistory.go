@@ -2,20 +2,30 @@ package qxwlwagnt
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"strings"
 
 	"go.dtapp.net/library/utils/gorequest"
 )
 
+type V3BatchQueryFlowHistoryIccidResultResponse struct {
+	Iccid        string `json:"iccid"`        // 物联网号码的ICCID
+	BillingMonth string `json:"billingMonth"` // 月份，格式：yyyyMM
+	UsageTotal   string `json:"usageTotal"`   // 数据使用量，单位 M
+	Status       string `json:"status"`       // Y:成功，N:数据未同步
+}
+
 type V3BatchQueryFlowHistoryResponse struct {
-	Iccid       string `json:"iccid"` // 物联网号码的ICCID
-	IccidResult struct {
-		Iccid        string `json:"iccid"`        // 物联网号码的ICCID
-		BillingMonth string `json:"billingMonth"` // 月份，格式：yyyyMM
-		UsageTotal   string `json:"usageTotal"`   // 数据使用量，单位 M
-		Status       string `json:"status"`       // Y:成功，N:数据未同步
-	} `json:"iccidResult"` // 物联网号码的ICCID相关数据
+	Iccid       string          `json:"iccid"`       // 物联网号码的ICCID
+	IccidResult json.RawMessage `json:"iccidResult"` // 物联网号码的ICCID相关数据
+}
+
+// ParseIccidResult 解析 iccidResult 字段
+func (r *V3BatchQueryFlowHistoryResponse) ParseIccidResult() (*V3BatchQueryFlowHistoryIccidResultResponse, error) {
+	var data V3BatchQueryFlowHistoryIccidResultResponse
+	err := json.Unmarshal(r.IccidResult, &data)
+	return &data, err
 }
 
 // V3 BatchQueryFlowHistory 批量历史流量查询
