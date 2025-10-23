@@ -17,11 +17,11 @@ func (s *TestEntLogSaver) SaveLog(ctx context.Context, data *LogData) error {
 	if data == nil {
 		return nil
 	}
-	slog.Info("[接口方式]保存日志",
+	slog.Info("[接口方式]执行保存日志",
 		slog.String("Hostname", data.Hostname),
 		slog.String("Method", data.Method),
-		slog.Int("StatusCode", data.StatusCode),
 		slog.String("URL", data.URL),
+		slog.Int("StatusCode", data.StatusCode),
 		slog.Int64("ElapseTime", data.ElapseTime),
 		slog.Bool("IsError", data.IsError),
 	)
@@ -41,11 +41,11 @@ func NewTestLogger(debug bool) *Logger {
 		if data == nil {
 			return nil
 		}
-		slog.Info("[回调方式]保存日志",
+		slog.Info("[回调方式]执行保存日志",
 			slog.String("Hostname", data.Hostname),
 			slog.String("Method", data.Method),
-			slog.Int("StatusCode", data.StatusCode),
 			slog.String("URL", data.URL),
+			slog.Int("StatusCode", data.StatusCode),
 			slog.Int64("ElapseTime", data.ElapseTime),
 			slog.Bool("IsError", data.IsError),
 		)
