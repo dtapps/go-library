@@ -3,6 +3,7 @@ package qxwlwagnt
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -10,10 +11,10 @@ import (
 )
 
 type V3BatchQueryFlowHistoryIccidResultResponse struct {
-	Iccid        string `json:"iccid"`        // 物联网号码的ICCID
-	BillingMonth string `json:"billingMonth"` // 月份，格式：yyyyMM
-	UsageTotal   string `json:"usageTotal"`   // 数据使用量，单位 M
-	Status       string `json:"status"`       // Y:成功，N:数据未同步
+	Iccid        string `json:"iccid,omitempty"`        // 物联网号码的ICCID
+	BillingMonth string `json:"billingMonth,omitempty"` // 月份，格式：yyyyMM
+	UsageTotal   string `json:"usageTotal,omitempty"`   // 数据使用量，单位 M
+	Status       string `json:"status,omitempty"`       // Y:成功，N:数据未同步
 }
 
 type V3BatchQueryFlowHistoryResponse struct {
@@ -23,9 +24,19 @@ type V3BatchQueryFlowHistoryResponse struct {
 
 // ParseIccidResult 解析 iccidResult 字段
 func (r *V3BatchQueryFlowHistoryResponse) ParseIccidResult() (*V3BatchQueryFlowHistoryIccidResultResponse, error) {
+	// 第一步：把 iccidResult 解析为字符串（因为它是 JSON 字符串）
+	var jsonString string
+	if err := json.Unmarshal(r.IccidResult, &jsonString); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal iccidResult as string: %w, raw=%s", err, r.IccidResult)
+	}
+
+	// 第二步：把该字符串再解析为结构体
 	var data V3BatchQueryFlowHistoryIccidResultResponse
-	err := json.Unmarshal(r.IccidResult, &data)
-	return &data, err
+	if err := json.Unmarshal([]byte(jsonString), &data); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal iccidResult JSON string to struct: %w, content=%s", err, jsonString)
+	}
+
+	return &data, nil
 }
 
 // V3 BatchQueryFlowHistory 批量历史流量查询
