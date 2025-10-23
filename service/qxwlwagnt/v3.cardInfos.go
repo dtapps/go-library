@@ -24,9 +24,9 @@ type V3CardInfosResponse struct {
 		ActiveTime string `json:"activeTime"` // 激活时间
 		ExpTime    string `json:"expTime"`    // 过期时间
 		UpdateTime string `json:"updateTime"` // 数据同步时间
+		Imsi       string `json:"imsi"`       // 物联网号码的imsi
+		FlowPoolId string `json:"flowPoolId"` // 流量池编号
 	} `json:"iccidData"` // 物联网号码的ICCID相关数据
-	Imsi       string `json:"imsi"`       // 物联网号码的imsi
-	FlowPoolId string `json:"flowPoolId"` // 流量池编号
 }
 
 // V3CardInfos 批量物联卡信息查询
