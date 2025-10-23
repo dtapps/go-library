@@ -65,19 +65,9 @@ func (p Pro) EndOfYear() Pro {
 	return p
 }
 
-// Quarter 获取当前季度
-func (p Pro) Quarter() (quarter int) {
-	switch {
-	case p.Time.Month() >= 10:
-		quarter = 4
-	case p.Time.Month() >= 7:
-		quarter = 3
-	case p.Time.Month() >= 4:
-		quarter = 2
-	case p.Time.Month() >= 1:
-		quarter = 1
-	}
-	return
+// Quarter 获取当前季度（1~4）
+func (p Pro) Quarter() int {
+	return (int(p.Time.Month()) + 2) / 3
 }
 
 // StartOfQuarter 本季度开始时间
@@ -88,14 +78,8 @@ func (p Pro) StartOfQuarter() Pro {
 
 // EndOfQuarter 本季度结束时间
 func (p Pro) EndOfQuarter() Pro {
-	quarter, day := p.Quarter(), 30
-	switch quarter {
-	case 1, 4:
-		day = 31
-	case 2, 3:
-		day = 30
-	}
-	p.Time = time.Date(p.Time.Year(), time.Month(3*quarter), day, 23, 59, 59, 999999999, p.Time.Location())
+	next := time.Date(p.Time.Year(), time.Month(3*p.Quarter()+1), 1, 0, 0, 0, 0, p.Time.Location())
+	p.Time = next.Add(-time.Nanosecond)
 	return p
 }
 
@@ -107,17 +91,16 @@ func (p Pro) StartOfMonth() Pro {
 
 // EndOfMonth 本月结束时间
 func (p Pro) EndOfMonth() Pro {
-	p.Time = time.Date(p.Time.Year(), time.Month(p.Month())+1, 0, 23, 59, 59, 999999999, p.Time.Location())
+	next := time.Date(p.Time.Year(), time.Month(p.Month())+1, 1, 0, 0, 0, 0, p.Time.Location())
+	p.Time = next.Add(-time.Nanosecond)
 	return p
 }
 
 // StartOfWeek 本周开始时间
 func (p Pro) StartOfWeek() Pro {
 	t := p.Time
-	p.Time = t.AddDate(0, 0, -int(t.Weekday()-1)).Truncate(24 * time.Hour)
-	if t.Weekday() == time.Sunday {
-		p.Time = t.AddDate(0, 0, -6).Truncate(24 * time.Hour)
-	}
+	offset := (int(t.Weekday()) + 6) % 7
+	p.Time = time.Date(t.Year(), t.Month(), t.Day()-offset, 0, 0, 0, 0, t.Location())
 	return p
 }
 
@@ -136,6 +119,6 @@ func (p Pro) StartOfDay() Pro {
 
 // EndOfDay 本日结束时间
 func (p Pro) EndOfDay() Pro {
-	p.Time = time.Date(p.Time.Year(), p.Time.Month(), p.Time.Day(), 23, 59, 59, 0, p.Time.Location())
+	p.Time = time.Date(p.Time.Year(), p.Time.Month(), p.Time.Day(), 23, 59, 59, 999999999, p.Time.Location())
 	return p
 }
