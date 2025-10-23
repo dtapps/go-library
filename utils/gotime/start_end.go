@@ -11,7 +11,7 @@ const (
 	MonthsPerYear              = 12      // 每年12月
 	MonthsPerQuarter           = 3       // 每季度3月
 	WeeksPerNormalYear         = 52      // 每常规年52周
-	weeksPerLongYear           = 53      // 每长年53周
+	WeeksPerLongYear           = 53      // 每长年53周
 	WeeksPerMonth              = 4       // 每月4周
 	DaysPerLeapYear            = 366     // 每闰年366天
 	DaysPerNormalYear          = 365     // 每常规年365天
@@ -107,7 +107,24 @@ func (p Pro) StartOfMonth() Pro {
 
 // EndOfMonth 本月结束时间
 func (p Pro) EndOfMonth() Pro {
-	p.Time = time.Date(p.Time.Year(), time.Month(p.Month()), 1, 23, 59, 59, 999999999, p.Time.Location())
+	p.Time = time.Date(p.Time.Year(), time.Month(p.Month())+1, 0, 23, 59, 59, 999999999, p.Time.Location())
+	return p
+}
+
+// StartOfWeek 本周开始时间
+func (p Pro) StartOfWeek() Pro {
+	t := p.Time
+	p.Time = t.AddDate(0, 0, -int(t.Weekday()-1)).Truncate(24 * time.Hour)
+	if t.Weekday() == time.Sunday {
+		p.Time = t.AddDate(0, 0, -6).Truncate(24 * time.Hour)
+	}
+	return p
+}
+
+// EndOfWeek 本周结束时间
+func (p Pro) EndOfWeek() Pro {
+	start := p.StartOfWeek().Time
+	p.Time = time.Date(start.Year(), start.Month(), start.Day()+6, 23, 59, 59, 999999999, start.Location())
 	return p
 }
 
