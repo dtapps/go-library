@@ -33,3 +33,27 @@ func (c *Client) FundAppMchTransferTransferBillsTransferBillNo(ctx context.Conte
 	err = c.request(ctx, "/v3/fund-app/mch-transfer/transfer-bills/transfer-bill-no/"+transfer_bill_no, params, http.MethodGet, &response, &apiError)
 	return
 }
+
+// 【单据状态】 商家转账订单状态
+func (resp FundAppMchTransferTransferBillsBillsTransferBillNoResponse) GetStateDesc() string {
+	switch resp.State {
+	case "ACCEPTED":
+		return "转账已受理，可原单重试（非终态）"
+	case "PROCESSING":
+		return "转账锁定资金中。如果一直停留在该状态，建议检查账户余额是否足够，如余额不足，可充值后再原单重试（非终态）"
+	case "WAIT_USER_CONFIRM":
+		return "待收款用户确认，当前转账单据资金已锁定，可拉起微信收款确认页面进行收款确认（非终态）"
+	case "TRANSFERING":
+		return "转账中，可拉起微信收款确认页面再次重试确认收款（非终态）"
+	case "SUCCESS":
+		return "转账成功，表示转账单据已成功（终态）"
+	case "FAIL":
+		return "转账失败，表示该笔转账单据已失败。若需重新向用户转账，请重新生成单据并再次发起（终态）"
+	case "CANCELING":
+		return "转账撤销中，商户撤销请求受理成功，该笔转账正在撤销中，需查单确认撤销的转账单据状态（非终态）"
+	case "CANCELLED":
+		return "转账撤销完成，代表转账单据已撤销成功（终态）"
+	default:
+		return "未知状态"
+	}
+}

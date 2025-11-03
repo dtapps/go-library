@@ -25,3 +25,15 @@ func (c *Client) FundAppMchTransferTransferBillsOutBillNoCancel(ctx context.Cont
 	err = c.request(ctx, "/v3/fund-app/mch-transfer/transfer-bills/out-bill-no/"+out_bill_no+"/cancel", params, http.MethodPost, &response, &apiError)
 	return
 }
+
+// 【单据状态】
+func (resp FundAppMchTransferTransferBillsOutBillNoCancelResponse) GetStateDesc() string {
+	switch resp.State {
+	case "CANCELING":
+		return "转账撤销中，商户撤销请求受理成功，该笔转账正在撤销中，需查单确认撤销的转账单据状态（非终态）"
+	case "CANCELLED":
+		return "转账撤销完成，代表转账单据已撤销成功（终态）"
+	default:
+		return "未知状态"
+	}
+}
