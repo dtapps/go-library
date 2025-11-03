@@ -3,8 +3,9 @@ package wechatpayopen
 import (
 	"context"
 	"fmt"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type PayPartnerTransactionsIdResponse struct {
@@ -51,26 +52,14 @@ type PayPartnerTransactionsIdResponse struct {
 	}
 }
 
-type PayPartnerTransactionsIdResult struct {
-	Result PayPartnerTransactionsIdResponse // 结果
-	Body   []byte                           // 内容
-	Http   gorequest.Response               // 请求
-}
-
-func newPayPartnerTransactionsIdResult(result PayPartnerTransactionsIdResponse, body []byte, http gorequest.Response) *PayPartnerTransactionsIdResult {
-	return &PayPartnerTransactionsIdResult{Result: result, Body: body, Http: http}
-}
-
 // PayPartnerTransactionsId 微信支付订单号查询
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_2.shtml
-func (c *Client) PayPartnerTransactionsId(ctx context.Context, transactionId string, notMustParams ...*gorequest.Params) (*PayPartnerTransactionsIdResult, ApiError, error) {
+func (c *Client) PayPartnerTransactionsId(ctx context.Context, transactionId string, notMustParams ...*gorequest.Params) (response PayPartnerTransactionsIdResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response PayPartnerTransactionsIdResponse
-	var apiError ApiError
-	request, err := c.request(ctx, fmt.Sprintf("v3/pay/partner/transactions/id/%s?sp_mchid=%s&sub_mchid=%s", transactionId, c.GetSpMchId(), c.GetSubMchId()), params, http.MethodGet, &response, &apiError)
-	return newPayPartnerTransactionsIdResult(response, request.ResponseBody, request), apiError, err
+	err = c.request(ctx, fmt.Sprintf("v3/pay/partner/transactions/id/%s?sp_mchid=%s&sub_mchid=%s", transactionId, c.GetSpMchId(), c.GetSubMchId()), params, http.MethodGet, &response, &apiError)
+	return
 }

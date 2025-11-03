@@ -1,15 +1,5 @@
 package wechatpayopen
 
-// 微信支付 API 地址
-const (
-	apiUrl                   = "https://api.mch.weixin.qq.com/"
-	WechatPayAPIServerBackup = "https://api2.mch.weixin.qq.com/" // 微信支付 API 备份地址
-)
-
-const (
-	LogTable = "wechatpayopen"
-)
-
 // 请求报文签名相关常量
 const (
 	SignatureMessageFormat = "%s\n%s\n%d\n%s\n%s\n" // 数字签名原文格式

@@ -2,8 +2,9 @@ package wechatpayopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type ProfitSharingOrdersUnfreezeResponse struct {
@@ -25,19 +26,9 @@ type ProfitSharingOrdersUnfreezeResponse struct {
 	} `json:"receivers,omitempty"` // 分账接收方列表
 }
 
-type ProfitSharingOrdersUnfreezeResult struct {
-	Result ProfitSharingOrdersUnfreezeResponse // 结果
-	Body   []byte                              // 内容
-	Http   gorequest.Response                  // 请求
-}
-
-func newProfitSharingOrdersUnfreezeResult(result ProfitSharingOrdersUnfreezeResponse, body []byte, http gorequest.Response) *ProfitSharingOrdersUnfreezeResult {
-	return &ProfitSharingOrdersUnfreezeResult{Result: result, Body: body, Http: http}
-}
-
 // ProfitSharingOrdersUnfreeze 解冻剩余资金API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_5.shtml
-func (c *Client) ProfitSharingOrdersUnfreeze(ctx context.Context, transactionId, outOrderNo, description string, notMustParams ...*gorequest.Params) (*ProfitSharingOrdersUnfreezeResult, ApiError, error) {
+func (c *Client) ProfitSharingOrdersUnfreeze(ctx context.Context, transactionId, outOrderNo, description string, notMustParams ...*gorequest.Params) (response ProfitSharingOrdersUnfreezeResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -47,8 +38,6 @@ func (c *Client) ProfitSharingOrdersUnfreeze(ctx context.Context, transactionId,
 	params.Set("description", description)      // 分账描述
 
 	// 请求
-	var response ProfitSharingOrdersUnfreezeResponse
-	var apiError ApiError
-	request, err := c.request(ctx, "v3/profitsharing/orders/unfreeze", params, http.MethodPost, &response, &apiError)
-	return newProfitSharingOrdersUnfreezeResult(response, request.ResponseBody, request), apiError, err
+	err = c.request(ctx, "v3/profitsharing/orders/unfreeze", params, http.MethodPost, &response, &apiError)
+	return
 }

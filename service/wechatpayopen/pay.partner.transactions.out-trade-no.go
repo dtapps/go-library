@@ -3,8 +3,9 @@ package wechatpayopen
 import (
 	"context"
 	"fmt"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type PayPartnerTransactionsOutTradeNoResponse struct {
@@ -54,26 +55,14 @@ type PayPartnerTransactionsOutTradeNoResponse struct {
 	} `json:"promotion_detail"` // 优惠功能
 }
 
-type PayPartnerTransactionsOutTradeNoResult struct {
-	Result PayPartnerTransactionsOutTradeNoResponse // 结果
-	Body   []byte                                   // 内容
-	Http   gorequest.Response                       // 请求
-}
-
-func newPayPartnerTransactionsOutTradeNoResult(result PayPartnerTransactionsOutTradeNoResponse, body []byte, http gorequest.Response) *PayPartnerTransactionsOutTradeNoResult {
-	return &PayPartnerTransactionsOutTradeNoResult{Result: result, Body: body, Http: http}
-}
-
 // PayPartnerTransactionsOutTradeNo 商户订单号查询
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_2.shtml
-func (c *Client) PayPartnerTransactionsOutTradeNo(ctx context.Context, outTradeNo string, notMustParams ...*gorequest.Params) (*PayPartnerTransactionsOutTradeNoResult, ApiError, error) {
+func (c *Client) PayPartnerTransactionsOutTradeNo(ctx context.Context, outTradeNo string, notMustParams ...*gorequest.Params) (response PayPartnerTransactionsOutTradeNoResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response PayPartnerTransactionsOutTradeNoResponse
-	var apiError ApiError
-	request, err := c.request(ctx, fmt.Sprintf("v3/pay/partner/transactions/out-trade-no/%s?sp_mchid=%s&sub_mchid=%s", outTradeNo, c.GetSpMchId(), c.GetSubMchId()), params, http.MethodGet, &response, &apiError)
-	return newPayPartnerTransactionsOutTradeNoResult(response, request.ResponseBody, request), apiError, err
+	err = c.request(ctx, fmt.Sprintf("v3/pay/partner/transactions/out-trade-no/%s?sp_mchid=%s&sub_mchid=%s", outTradeNo, c.GetSpMchId(), c.GetSubMchId()), params, http.MethodGet, &response, &apiError)
+	return
 }

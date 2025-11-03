@@ -2,8 +2,9 @@ package wechatpayopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type billSubMerchantFundFlowBillGetResponse struct {
@@ -18,27 +19,15 @@ type billSubMerchantFundFlowBillGetResponse struct {
 	} `json:"download_bill_list"` // 下载信息明细
 }
 
-type billSubMerchantFundFlowBillGetResult struct {
-	Result billSubMerchantFundFlowBillGetResponse // 结果
-	Body   []byte                                 // 内容
-	Http   gorequest.Response                     // 请求
-}
-
-func newbillSubMerchantFundFlowBillGetResult(result billSubMerchantFundFlowBillGetResponse, body []byte, http gorequest.Response) *billSubMerchantFundFlowBillGetResult {
-	return &billSubMerchantFundFlowBillGetResult{Result: result, Body: body, Http: http}
-}
-
 // billSubMerchantFundFlowBillGet 申请单个子商户资金账单API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_12.shtml
-func (c *Client) billSubMerchantFundFlowBillGet(ctx context.Context, notMustParams ...*gorequest.Params) (*billSubMerchantFundFlowBillGetResult, ApiError, error) {
+func (c *Client) billSubMerchantFundFlowBillGet(ctx context.Context, notMustParams ...*gorequest.Params) (response billSubMerchantFundFlowBillGetResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
 
 	// 请求
-	var response billSubMerchantFundFlowBillGetResponse
-	var apiError ApiError
-	request, err := c.request(ctx, "v3/bill/sub-merchant-fundflowbill", params, http.MethodGet, &response, &apiError)
-	return newbillSubMerchantFundFlowBillGetResult(response, request.ResponseBody, request), apiError, err
+	err = c.request(ctx, "v3/bill/sub-merchant-fundflowbill", params, http.MethodGet, &response, &apiError)
+	return
 }

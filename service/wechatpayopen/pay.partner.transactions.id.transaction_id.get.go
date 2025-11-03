@@ -3,9 +3,10 @@ package wechatpayopen
 import (
 	"context"
 	"fmt"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 	"time"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type PayPartnerTransactionsIdTransactionIdGetResponse struct {
@@ -37,19 +38,9 @@ type PayPartnerTransactionsIdTransactionIdGetResponse struct {
 	PromotionDetail []interface{} `json:"promotion_detail"` // 优惠功能
 }
 
-type PayPartnerTransactionsIdTransactionIdGetResult struct {
-	Result PayPartnerTransactionsIdTransactionIdGetResponse // 结果
-	Body   []byte                                           // 内容
-	Http   gorequest.Response                               // 请求
-}
-
-func newPayPartnerTransactionsIdTransactionIdGetResult(result PayPartnerTransactionsIdTransactionIdGetResponse, body []byte, http gorequest.Response) *PayPartnerTransactionsIdTransactionIdGetResult {
-	return &PayPartnerTransactionsIdTransactionIdGetResult{Result: result, Body: body, Http: http}
-}
-
 // PayPartnerTransactionsIdTransactionIdGet 微信支付订单号查询
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_2.shtml
-func (c *Client) PayPartnerTransactionsIdTransactionIdGet(ctx context.Context, transactionId string, notMustParams ...*gorequest.Params) (*PayPartnerTransactionsIdTransactionIdGetResult, ApiError, error) {
+func (c *Client) PayPartnerTransactionsIdTransactionIdGet(ctx context.Context, transactionId string, notMustParams ...*gorequest.Params) (response PayPartnerTransactionsIdTransactionIdGetResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -57,8 +48,6 @@ func (c *Client) PayPartnerTransactionsIdTransactionIdGet(ctx context.Context, t
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
 
 	// 请求
-	var response PayPartnerTransactionsIdTransactionIdGetResponse
-	var apiError ApiError
-	request, err := c.request(ctx, fmt.Sprintf("v3/pay/partner/transactions/id/%s", transactionId), params, http.MethodGet, &response, &apiError)
-	return newPayPartnerTransactionsIdTransactionIdGetResult(response, request.ResponseBody, request), apiError, err
+	err = c.request(ctx, fmt.Sprintf("v3/pay/partner/transactions/id/%s", transactionId), params, http.MethodGet, &response, &apiError)
+	return
 }

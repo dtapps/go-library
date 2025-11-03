@@ -3,9 +3,10 @@ package wechatpayopen
 import (
 	"context"
 	"fmt"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 	"time"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type RefundDomesticRefundsOutRefundNoGetResponse struct {
@@ -51,26 +52,14 @@ type RefundDomesticRefundsOutRefundNoGetResponse struct {
 	} `json:"promotion_detail"` // 优惠退款信息
 }
 
-type RefundDomesticRefundsOutRefundNoGetResult struct {
-	Result RefundDomesticRefundsOutRefundNoGetResponse // 结果
-	Body   []byte                                      // 内容
-	Http   gorequest.Response                          // 请求
-}
-
-func newRefundDomesticRefundsOutRefundNoGetResult(result RefundDomesticRefundsOutRefundNoGetResponse, body []byte, http gorequest.Response) *RefundDomesticRefundsOutRefundNoGetResult {
-	return &RefundDomesticRefundsOutRefundNoGetResult{Result: result, Body: body, Http: http}
-}
-
 // RefundDomesticRefundsOutRefundNoGet 查询单笔退款API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_10.shtml
-func (c *Client) RefundDomesticRefundsOutRefundNoGet(ctx context.Context, outRefundNo string, notMustParams ...*gorequest.Params) (*RefundDomesticRefundsOutRefundNoGetResult, ApiError, error) {
+func (c *Client) RefundDomesticRefundsOutRefundNoGet(ctx context.Context, outRefundNo string, notMustParams ...*gorequest.Params) (response RefundDomesticRefundsOutRefundNoGetResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response RefundDomesticRefundsOutRefundNoGetResponse
-	var apiError ApiError
-	request, err := c.request(ctx, fmt.Sprintf("v3/refund/domestic/refunds/%s", outRefundNo), params, http.MethodGet, &response, &apiError)
-	return newRefundDomesticRefundsOutRefundNoGetResult(response, request.ResponseBody, request), apiError, err
+	err = c.request(ctx, fmt.Sprintf("v3/refund/domestic/refunds/%s", outRefundNo), params, http.MethodGet, &response, &apiError)
+	return
 }

@@ -1,9 +1,5 @@
 package wechatpayopen
 
-import (
-	"go.dtapp.net/library/utils/gorequest"
-)
-
 func (c *Client) GetSpAppid() string {
 	return c.config.spAppid
 }
@@ -92,20 +88,4 @@ func (c *Client) GetMchSslKey() string {
 func (c *Client) SetMchSslKey(v string) *Client {
 	c.config.mchSslKey = v
 	return c
-}
-
-// SetClientIP 配置
-func (c *Client) SetClientIP(clientIP string) *Client {
-	c.clientIP = clientIP
-	if c.httpClient != nil {
-		c.httpClient.SetClientIP(clientIP)
-	}
-	return c
-}
-
-// SetLogFun 设置日志记录函数
-func (c *Client) SetLogFun(logFun gorequest.LogFunc) {
-	if c.httpClient != nil {
-		c.httpClient.SetLogFunc(logFun)
-	}
 }

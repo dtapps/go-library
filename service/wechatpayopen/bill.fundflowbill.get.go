@@ -2,8 +2,9 @@ package wechatpayopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type BillFundFlowBillGetResponse struct {
@@ -12,26 +13,14 @@ type BillFundFlowBillGetResponse struct {
 	HashValue   string `json:"hash_value"`   // 账单下载地址
 }
 
-type BillFundFlowBillGetResult struct {
-	Result BillFundFlowBillGetResponse // 结果
-	Body   []byte                      // 内容
-	Http   gorequest.Response          // 请求
-}
-
-func newBillFundFlowBillGetResult(result BillFundFlowBillGetResponse, body []byte, http gorequest.Response) *BillFundFlowBillGetResult {
-	return &BillFundFlowBillGetResult{Result: result, Body: body, Http: http}
-}
-
 // BillFundFlowBillGet 申请资金账单API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_7.shtml
-func (c *Client) BillFundFlowBillGet(ctx context.Context, notMustParams ...*gorequest.Params) (*BillFundFlowBillGetResult, ApiError, error) {
+func (c *Client) BillFundFlowBillGet(ctx context.Context, notMustParams ...*gorequest.Params) (response BillFundFlowBillGetResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response BillFundFlowBillGetResponse
-	var apiError ApiError
-	request, err := c.request(ctx, "v3/bill/fundflowbill", params, http.MethodGet, &response, &apiError)
-	return newBillFundFlowBillGetResult(response, request.ResponseBody, request), apiError, err
+	err = c.request(ctx, "v3/bill/fundflowbill", params, http.MethodGet, &response, &apiError)
+	return
 }

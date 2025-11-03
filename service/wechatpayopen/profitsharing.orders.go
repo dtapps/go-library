@@ -2,8 +2,9 @@ package wechatpayopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type ProfitSharingOrdersResponse struct {
@@ -25,19 +26,9 @@ type ProfitSharingOrdersResponse struct {
 	} `json:"receivers,omitempty"` // 分账接收方列表
 }
 
-type ProfitSharingOrdersResult struct {
-	Result ProfitSharingOrdersResponse // 结果
-	Body   []byte                      // 内容
-	Http   gorequest.Response          // 请求
-}
-
-func newProfitSharingOrdersResult(result ProfitSharingOrdersResponse, body []byte, http gorequest.Response) *ProfitSharingOrdersResult {
-	return &ProfitSharingOrdersResult{Result: result, Body: body, Http: http}
-}
-
 // ProfitSharingOrders 请求分账API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_1.shtml
-func (c *Client) ProfitSharingOrders(ctx context.Context, notMustParams ...*gorequest.Params) (*ProfitSharingOrdersResult, ApiError, error) {
+func (c *Client) ProfitSharingOrders(ctx context.Context, notMustParams ...*gorequest.Params) (response ProfitSharingOrdersResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -46,8 +37,6 @@ func (c *Client) ProfitSharingOrders(ctx context.Context, notMustParams ...*gore
 	params.Set("sub_appid", c.GetSubAppid()) // 子商户应用ID
 
 	// 请求
-	var response ProfitSharingOrdersResponse
-	var apiError ApiError
-	request, err := c.request(ctx, "v3/profitsharing/orders", params, http.MethodPost, &response, &apiError)
-	return newProfitSharingOrdersResult(response, request.ResponseBody, request), apiError, err
+	err = c.request(ctx, "v3/profitsharing/orders", params, http.MethodPost, &response, &apiError)
+	return
 }

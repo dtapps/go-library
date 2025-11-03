@@ -3,8 +3,9 @@ package wechatpayopen
 import (
 	"context"
 	"fmt"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type ProfitSharingOrdersOutOrderNoResponse struct {
@@ -26,19 +27,9 @@ type ProfitSharingOrdersOutOrderNoResponse struct {
 	} `json:"receivers,omitempty"` // 分账接收方列表
 }
 
-type ProfitSharingOrdersOutOrderNoResult struct {
-	Result ProfitSharingOrdersOutOrderNoResponse // 结果
-	Body   []byte                                // 内容
-	Http   gorequest.Response                    // 请求
-}
-
-func newProfitSharingOrdersOutOrderNoResult(result ProfitSharingOrdersOutOrderNoResponse, body []byte, http gorequest.Response) *ProfitSharingOrdersOutOrderNoResult {
-	return &ProfitSharingOrdersOutOrderNoResult{Result: result, Body: body, Http: http}
-}
-
 // ProfitSharingOrdersOutOrderNo 查询分账结果API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_2.shtml
-func (c *Client) ProfitSharingOrdersOutOrderNo(ctx context.Context, transactionId, outOrderNo string, notMustParams ...*gorequest.Params) (*ProfitSharingOrdersOutOrderNoResult, ApiError, error) {
+func (c *Client) ProfitSharingOrdersOutOrderNo(ctx context.Context, transactionId, outOrderNo string, notMustParams ...*gorequest.Params) (response ProfitSharingOrdersOutOrderNoResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -47,8 +38,6 @@ func (c *Client) ProfitSharingOrdersOutOrderNo(ctx context.Context, transactionI
 	params.Set("out_order_no", outOrderNo)      // 商户分账单号
 
 	// 请求
-	var response ProfitSharingOrdersOutOrderNoResponse
-	var apiError ApiError
-	request, err := c.request(ctx, fmt.Sprintf("v3/profitsharing/orders/%s", outOrderNo), params, http.MethodGet, &response, &apiError)
-	return newProfitSharingOrdersOutOrderNoResult(response, request.ResponseBody, request), apiError, err
+	err = c.request(ctx, fmt.Sprintf("v3/profitsharing/orders/%s", outOrderNo), params, http.MethodGet, &response, &apiError)
+	return
 }

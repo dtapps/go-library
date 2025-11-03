@@ -2,9 +2,10 @@ package wechatpayopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 	"time"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type RefundDomesticRefundsPostResponse struct {
@@ -50,27 +51,15 @@ type RefundDomesticRefundsPostResponse struct {
 	} `json:"promotion_detail"` // 优惠退款信息
 }
 
-type RefundDomesticRefundsPostResult struct {
-	Result RefundDomesticRefundsPostResponse // 结果
-	Body   []byte                            // 内容
-	Http   gorequest.Response                // 请求
-}
-
-func newRefundDomesticRefundsPostResult(result RefundDomesticRefundsPostResponse, body []byte, http gorequest.Response) *RefundDomesticRefundsPostResult {
-	return &RefundDomesticRefundsPostResult{Result: result, Body: body, Http: http}
-}
-
 // RefundDomesticRefundsPost 申请退款API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_9.shtml
-func (c *Client) RefundDomesticRefundsPost(ctx context.Context, outRefundNo string, notMustParams ...*gorequest.Params) (*RefundDomesticRefundsPostResult, ApiError, error) {
+func (c *Client) RefundDomesticRefundsPost(ctx context.Context, outRefundNo string, notMustParams ...*gorequest.Params) (response RefundDomesticRefundsPostResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
 
 	// 请求
-	var response RefundDomesticRefundsPostResponse
-	var apiError ApiError
-	request, err := c.request(ctx, "v3/refund/domestic/refunds", params, http.MethodPost, &response, &apiError)
-	return newRefundDomesticRefundsPostResult(response, request.ResponseBody, request), apiError, err
+	err = c.request(ctx, "v3/refund/domestic/refunds", params, http.MethodPost, &response, &apiError)
+	return
 }

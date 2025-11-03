@@ -2,8 +2,9 @@ package wechatpayopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type ProfitSharingReceiversAddResponse struct {
@@ -15,19 +16,9 @@ type ProfitSharingReceiversAddResponse struct {
 	CustomRelation string `json:"custom_relation,omitempty"` // 自定义的分账关系
 }
 
-type ProfitSharingReceiversAddResult struct {
-	Result ProfitSharingReceiversAddResponse // 结果
-	Body   []byte                            // 内容
-	Http   gorequest.Response                // 请求
-}
-
-func newProfitSharingReceiversAddResult(result ProfitSharingReceiversAddResponse, body []byte, http gorequest.Response) *ProfitSharingReceiversAddResult {
-	return &ProfitSharingReceiversAddResult{Result: result, Body: body, Http: http}
-}
-
 // ProfitSharingReceiversAdd 添加分账接收方API
 // https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_8.shtml
-func (c *Client) ProfitSharingReceiversAdd(ctx context.Context, Type, account, name, relationType, customRelation string, notMustParams ...*gorequest.Params) (*ProfitSharingReceiversAddResult, ApiError, error) {
+func (c *Client) ProfitSharingReceiversAdd(ctx context.Context, Type, account, name, relationType, customRelation string, notMustParams ...*gorequest.Params) (response ProfitSharingReceiversAddResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -53,8 +44,6 @@ func (c *Client) ProfitSharingReceiversAdd(ctx context.Context, Type, account, n
 	}
 
 	// 请求
-	var response ProfitSharingReceiversAddResponse
-	var apiError ApiError
-	request, err := c.request(ctx, "v3/profitsharing/receivers/delete", params, http.MethodPost, &response, &apiError)
-	return newProfitSharingReceiversAddResult(response, request.ResponseBody, request), apiError, err
+	err = c.request(ctx, "v3/profitsharing/receivers/delete", params, http.MethodPost, &response, &apiError)
+	return
 }
