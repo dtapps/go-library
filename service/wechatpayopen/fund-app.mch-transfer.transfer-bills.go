@@ -23,6 +23,14 @@ func (c *Client) FundAppMchTransferTransferBills(ctx context.Context, notMustPar
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", c.GetSpAppid()) // 商户AppID
 
+	if params.Get("user_name").(string) != "" {
+		userName, err := EncryptOAEPWithPublicKey(params.Get("user_name").(string), c.config.publicKey)
+		if err != nil {
+			return response, apiError, err
+		}
+		params.Set("user_name", userName)
+	}
+
 	// 请求
 	err = c.NewRequest(ctx, "/v3/fund-app/mch-transfer/transfer-bills", params, http.MethodPost, &response, &apiError)
 	return
