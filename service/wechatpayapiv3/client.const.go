@@ -1,9 +1,6 @@
 package wechatpayapiv3
 
-const (
-	apiUrl = "https://api.mch.weixin.qq.com/"
-)
-
-const (
-	LogTable = "wechatpayapiv3"
-)
+type ApiError struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}

@@ -2,8 +2,9 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type MerchantServiceComplaintsV2Response struct {
@@ -50,25 +51,14 @@ type MerchantServiceComplaintsV2Response struct {
 	}
 }
 
-type MerchantServiceComplaintsV2Result struct {
-	Result MerchantServiceComplaintsV2Response // 结果
-	Body   []byte                              // 内容
-	Http   gorequest.Response                  // 请求
-}
-
-func newMerchantServiceComplaintsV2Result(result MerchantServiceComplaintsV2Response, body []byte, http gorequest.Response) *MerchantServiceComplaintsV2Result {
-	return &MerchantServiceComplaintsV2Result{Result: result, Body: body, Http: http}
-}
-
 // MerchantServiceComplaintsV2 查询投诉单列表API
 // https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter10_2_11.shtml
-func (c *Client) MerchantServiceComplaintsV2(ctx context.Context, notMustParams ...*gorequest.Params) (*MerchantServiceComplaintsV2Result, error) {
+func (c *Client) MerchantServiceComplaintsV2(ctx context.Context, notMustParams ...*gorequest.Params) (response MerchantServiceComplaintsV2Response, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response MerchantServiceComplaintsV2Response
-	request, err := c.request(ctx, "v3/merchant-service/complaints-v2", params, http.MethodGet, false, &response)
-	return newMerchantServiceComplaintsV2Result(response, request.ResponseBody, request), err
+	err = c.DoRequest(ctx, "v3/merchant-service/complaints-v2", params, http.MethodGet, false, &response)
+	return
 }

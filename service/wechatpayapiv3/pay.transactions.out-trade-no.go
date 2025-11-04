@@ -3,8 +3,9 @@ package wechatpayapiv3
 import (
 	"context"
 	"fmt"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type PayTransactionsOutTradeNoResponse struct {
@@ -51,24 +52,13 @@ type PayTransactionsOutTradeNoResponse struct {
 	} `json:"promotion_detail"`
 }
 
-type PayTransactionsOutTradeNoResult struct {
-	Result PayTransactionsOutTradeNoResponse // 结果
-	Body   []byte                            // 内容
-	Http   gorequest.Response                // 请求
-}
-
-func newPayTransactionsOutTradeNoResult(result PayTransactionsOutTradeNoResponse, body []byte, http gorequest.Response) *PayTransactionsOutTradeNoResult {
-	return &PayTransactionsOutTradeNoResult{Result: result, Body: body, Http: http}
-}
-
 // PayTransactionsOutTradeNo 商户订单号查询 https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_2.shtml
-func (c *Client) PayTransactionsOutTradeNo(ctx context.Context, outTradeNo string, notMustParams ...*gorequest.Params) (*PayTransactionsOutTradeNoResult, error) {
+func (c *Client) PayTransactionsOutTradeNo(ctx context.Context, outTradeNo string, notMustParams ...*gorequest.Params) (response PayTransactionsOutTradeNoResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response PayTransactionsOutTradeNoResponse
-	request, err := c.request(ctx, fmt.Sprintf("v3/pay/transactions/out-trade-no/%s?mchid=%s", outTradeNo, c.GetMchId()), params, http.MethodGet, true, &response)
-	return newPayTransactionsOutTradeNoResult(response, request.ResponseBody, request), err
+	err = c.DoRequest(ctx, fmt.Sprintf("/v3/pay/transactions/out-trade-no/%s?mchid=%s", outTradeNo, c.GetMchId()), params, http.MethodGet, true, &response)
+	return
 }

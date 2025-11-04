@@ -2,9 +2,10 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 	"time"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type TransferBillReceiptResponse struct {
@@ -18,25 +19,14 @@ type TransferBillReceiptResponse struct {
 	UpdateTime      time.Time `json:"update_time"`      // 电子签章单最近一次状态变更的时间，按照使用rfc3339所定义的格式，格式为YYYY-MM-DDThh:mm:ss+TIMEZONE
 }
 
-type TransferBillReceiptResult struct {
-	Result TransferBillReceiptResponse // 结果
-	Body   []byte                      // 内容
-	Http   gorequest.Response          // 请求
-}
-
-func newTransferBillReceiptResult(result TransferBillReceiptResponse, body []byte, http gorequest.Response) *TransferBillReceiptResult {
-	return &TransferBillReceiptResult{Result: result, Body: body, Http: http}
-}
-
 // TransferBillReceipt 转账账单电子回单申请受理接口
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/electronic-signature/create-electronic-signature.html
-func (c *Client) TransferBillReceipt(ctx context.Context, notMustParams ...*gorequest.Params) (*TransferBillReceiptResult, error) {
+func (c *Client) TransferBillReceipt(ctx context.Context, notMustParams ...*gorequest.Params) (response TransferBillReceiptResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response TransferBillReceiptResponse
-	request, err := c.request(ctx, "v3/transfer/bill-receipt", params, http.MethodPost, false, &response)
-	return newTransferBillReceiptResult(response, request.ResponseBody, request), err
+	err = c.DoRequest(ctx, "v3/transfer/bill-receipt", params, http.MethodPost, false, &response)
+	return
 }

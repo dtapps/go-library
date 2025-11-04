@@ -13,9 +13,12 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"go.dtapp.net/library/utils/gorandom"
+	"log/slog"
 	"net/url"
+	"strconv"
 	"time"
+
+	"go.dtapp.net/library/utils/gorandom"
 )
 
 // 对消息的散列值进行数字签名
@@ -52,38 +55,6 @@ func (c *Client) haSha256(str string) []byte {
 	return h.Sum(nil)
 }
 
-// 生成身份认证信息
-func (c *Client) authorization(method string, paramMap map[string]any, rawUrl string) (token string, err error) {
-	var body string
-	if len(paramMap) != 0 {
-		paramJsonBytes, err := json.Marshal(paramMap)
-		if err != nil {
-			return token, err
-		}
-		body = string(paramJsonBytes)
-	}
-	urlPart, err := url.Parse(rawUrl)
-	if err != nil {
-		return token, err
-	}
-	canonicalUrl := urlPart.RequestURI()
-	timestamp := time.Now().Unix()
-	nonce := gorandom.Alphanumeric(32)
-	message := fmt.Sprintf("%s\n%s\n%d\n%s\n%s\n", method, canonicalUrl, timestamp, nonce, body)
-
-	signBytes, err := c.signPKCS1v15(message, []byte(c.GetMchSslKey()))
-
-	if err != nil {
-		return token, err
-	}
-
-	sign := c.base64EncodeStr(signBytes)
-
-	token = fmt.Sprintf("mchid=\"%s\",nonce_str=\"%s\",timestamp=\"%d\",serial_no=\"%s\",signature=\"%s\"",
-		c.GetMchId(), nonce, timestamp, c.GetMchSslSerialNo(), sign)
-	return token, nil
-}
-
 // 报文解密
 func (c *Client) decryptGCM(aesKey, nonceV, ciphertextV, additionalDataV string) ([]byte, error) {
 	key := []byte(aesKey)
@@ -106,4 +77,84 @@ func (c *Client) decryptGCM(aesKey, nonceV, ciphertextV, additionalDataV string)
 		return nil, err
 	}
 	return plaintext, err
+}
+
+type SignParams struct {
+	Method              string          // HTTP请求方法
+	Body                map[string]any  // 请求参数
+	Url                 string          // 请求路径
+	PrivateKey          *rsa.PrivateKey // 商户私钥
+	MchId               string          // 微信支付的商户id
+	CertificateSerialNo string          // 证书序列号
+}
+type SignResult struct {
+	Authorization string
+	BodyBytes     []byte // 用于 SetBody
+}
+
+// 签名
+// https://pay.weixin.qq.com/doc/v3/partner/4012365870
+func Sign(param *SignParams) (resule *SignResult, err error) {
+
+	// 构造请求体
+	var bodyBytes []byte
+	var bodyStr string
+	if len(param.Body) > 0 {
+		var err error
+		bodyBytes, err = json.Marshal(param.Body)
+		if err != nil {
+			return nil, err
+		}
+		bodyStr = string(bodyBytes)
+	} else {
+		bodyStr = ""
+	}
+
+	// 解析 URL 路径（不含 query）
+	urlPart, err := url.Parse(param.Url)
+	if err != nil {
+		return nil, err
+	}
+	urlPath := urlPart.Path
+
+	// 时间戳和 nonce
+	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
+	nonce := gorandom.Alphanumeric(32)
+
+	// 生成签名
+	sig, err := generateSignature(param.Method, urlPath, timestamp, nonce, bodyStr, param.PrivateKey)
+	if err != nil {
+		slog.Error("[authorization] generateSignature failed", slog.Any("err", err))
+		return nil, err
+	}
+
+	// 构造完整的 Authorization Header
+	authz := fmt.Sprintf(
+		`WECHATPAY2-SHA256-RSA2048 mchid="%s",nonce_str="%s",signature="%s",timestamp="%s",serial_no="%s"`,
+		param.MchId,
+		nonce,
+		sig,
+		timestamp,
+		param.CertificateSerialNo,
+	)
+
+	return &SignResult{
+		Authorization: authz,
+		BodyBytes:     bodyBytes,
+	}, nil
+}
+
+func generateSignature(method, urlPath, timestamp, nonce, body string, privateKey *rsa.PrivateKey) (string, error) {
+	message := fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n", method, urlPath, timestamp, nonce, body)
+
+	h := sha256.New()
+	h.Write([]byte(message))
+	digest := h.Sum(nil)
+
+	signature, err := rsa.SignPKCS1v15(rand.Reader, privateKey, crypto.SHA256, digest)
+	if err != nil {
+		return "", err
+	}
+
+	return base64.StdEncoding.EncodeToString(signature), nil
 }

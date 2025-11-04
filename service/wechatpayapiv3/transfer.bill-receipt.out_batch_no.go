@@ -3,9 +3,10 @@ package wechatpayapiv3
 import (
 	"context"
 	"fmt"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 	"time"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type TransferBillReceiptOutBatchNoResponse struct {
@@ -19,25 +20,14 @@ type TransferBillReceiptOutBatchNoResponse struct {
 	UpdateTime      time.Time `json:"update_time"`      // 电子签章单最近一次状态变更的时间，按照使用rfc3339所定义的格式，格式为YYYY-MM-DDThh:mm:ss+TIMEZONE
 }
 
-type TransferBillReceiptOutBatchNoResult struct {
-	Result TransferBillReceiptOutBatchNoResponse // 结果
-	Body   []byte                                // 内容
-	Http   gorequest.Response                    // 请求
-}
-
-func newTransferBillReceiptOutBatchNoResult(result TransferBillReceiptOutBatchNoResponse, body []byte, http gorequest.Response) *TransferBillReceiptOutBatchNoResult {
-	return &TransferBillReceiptOutBatchNoResult{Result: result, Body: body, Http: http}
-}
-
 // TransferBillReceiptOutBatchNo 查询转账账单电子回单接口
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/electronic-signature/get-electronic-signature-by-out-no.html
-func (c *Client) TransferBillReceiptOutBatchNo(ctx context.Context, outBatchNo string, notMustParams ...*gorequest.Params) (*TransferBillReceiptOutBatchNoResult, error) {
+func (c *Client) TransferBillReceiptOutBatchNo(ctx context.Context, outBatchNo string, notMustParams ...*gorequest.Params) (response TransferBillReceiptOutBatchNoResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response TransferBillReceiptOutBatchNoResponse
-	request, err := c.request(ctx, fmt.Sprintf("v3/transfer/bill-receipt/%s", outBatchNo), params, http.MethodGet, false, &response)
-	return newTransferBillReceiptOutBatchNoResult(response, request.ResponseBody, request), err
+	err = c.DoRequest(ctx, fmt.Sprintf("/v3/transfer/bill-receipt/%s", outBatchNo), params, http.MethodGet, false, &response)
+	return
 }

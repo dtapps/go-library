@@ -3,8 +3,9 @@ package wechatpayapiv3
 import (
 	"context"
 	"fmt"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type PayTransactionsIdResponse struct {
@@ -51,24 +52,13 @@ type PayTransactionsIdResponse struct {
 	}
 }
 
-type PayTransactionsIdResult struct {
-	Result PayTransactionsIdResponse // 结果
-	Body   []byte                    // 内容
-	Http   gorequest.Response        // 请求
-}
-
-func newPayTransactionsIdResult(result PayTransactionsIdResponse, body []byte, http gorequest.Response) *PayTransactionsIdResult {
-	return &PayTransactionsIdResult{Result: result, Body: body, Http: http}
-}
-
 // PayTransactionsId 微信支付订单号查询 https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_2.shtml
-func (c *Client) PayTransactionsId(ctx context.Context, transactionId string, notMustParams ...*gorequest.Params) (*PayTransactionsIdResult, error) {
+func (c *Client) PayTransactionsId(ctx context.Context, transactionId string, notMustParams ...*gorequest.Params) (response PayTransactionsIdResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response PayTransactionsIdResponse
-	request, err := c.request(ctx, fmt.Sprintf("v3/pay/transactions/id/%s?mchid=%s", transactionId, c.GetMchId()), params, http.MethodGet, true, &response)
-	return newPayTransactionsIdResult(response, request.ResponseBody, request), err
+	err = c.DoRequest(ctx, fmt.Sprintf("/v3/pay/transactions/id/%s?mchid=%s", transactionId, c.GetMchId()), params, http.MethodGet, true, &response)
+	return
 }

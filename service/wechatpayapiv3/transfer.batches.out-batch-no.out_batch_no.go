@@ -3,8 +3,9 @@ package wechatpayapiv3
 import (
 	"context"
 	"fmt"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type TransferBatchesOutBatchNoOutBatchNoResponse struct {
@@ -35,25 +36,14 @@ type TransferBatchesOutBatchNoOutBatchNoResponse struct {
 	} `json:"transfer_detail_list,omitempty"` // 当批次状态为“FINISHED”（已完成），且成功查询到转账明细单时返回。包括微信明细单号、明细状态信息
 }
 
-type TransferBatchesOutBatchNoOutBatchNoResult struct {
-	Result TransferBatchesOutBatchNoOutBatchNoResponse // 结果
-	Body   []byte                                      // 内容
-	Http   gorequest.Response                          // 请求
-}
-
-func newTransferBatchesOutBatchNoOutBatchNoResult(result TransferBatchesOutBatchNoOutBatchNoResponse, body []byte, http gorequest.Response) *TransferBatchesOutBatchNoOutBatchNoResult {
-	return &TransferBatchesOutBatchNoOutBatchNoResult{Result: result, Body: body, Http: http}
-}
-
 // TransferBatchesOutBatchNoOutBatchNo 通过商家批次单号查询批次单
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/get-transfer-batch-by-out-no.html
-func (c *Client) TransferBatchesOutBatchNoOutBatchNo(ctx context.Context, outBatchNo string, notMustParams ...*gorequest.Params) (*TransferBatchesOutBatchNoOutBatchNoResult, error) {
+func (c *Client) TransferBatchesOutBatchNoOutBatchNo(ctx context.Context, outBatchNo string, notMustParams ...*gorequest.Params) (response TransferBatchesOutBatchNoOutBatchNoResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response TransferBatchesOutBatchNoOutBatchNoResponse
-	request, err := c.request(ctx, fmt.Sprintf("v3/transfer/batches/out-batch-no/%s", outBatchNo), params, http.MethodGet, false, &response)
-	return newTransferBatchesOutBatchNoOutBatchNoResult(response, request.ResponseBody, request), err
+	err = c.DoRequest(ctx, fmt.Sprintf("/v3/transfer/batches/out-batch-no/%s", outBatchNo), params, http.MethodGet, false, &response)
+	return
 }

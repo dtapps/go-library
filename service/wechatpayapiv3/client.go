@@ -1,48 +1,96 @@
 package wechatpayapiv3
 
 import (
-	"go.dtapp.net/library/utils/gorequest"
-)
+	"context"
+	"crypto/rsa"
+	"crypto/x509"
 
-// ClientConfig 实例配置
-type ClientConfig struct {
-	AppId          string // 小程序或者公众号唯一凭证
-	AppSecret      string // 小程序或者公众号唯一凭证密钥
-	MchId          string // 微信支付的商户id
-	AesKey         string // 私钥
-	ApiV3          string // API v3密钥
-	MchSslSerialNo string // pem 证书号
-	MchSslKey      string // pem key 内容
-}
+	"resty.dev/v3"
+)
 
 // Client 实例
 type Client struct {
 	config struct {
-		appId          string // 小程序或者公众号唯一凭证
-		appSecret      string // 小程序或者公众号唯一凭证密钥
-		mchId          string // 微信支付的商户id
-		aesKey         string // 私钥
-		apiV3          string // API v3密钥
-		mchSslSerialNo string // pem 证书号
-		mchSslKey      string // pem key 内容
+		baseURL string // 接口地址
+
+		appId string // 小程序或者公众号唯一凭证
+		mchId string // 微信支付的商户id
+
+		apiV3 string // API v3密钥
+
+		certificateSerialNo string // 证书序列号
+
+		certificate *x509.Certificate // pem 证书
+		privateKey  *rsa.PrivateKey   // pem 私钥
+		publicKeyID string            // 公钥ID
+		publicKey   *rsa.PublicKey    // pem 公钥
 	}
-	httpClient *gorequest.App // HTTP请求客户端
-	clientIP   string         // 客户端IP
+
+	httpClient *resty.Client // 请求客户端
 }
 
 // NewClient 创建实例化
-func NewClient(config *ClientConfig) (*Client, error) {
+func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
+	options := NewOptions(opts)
+	if options.err != nil {
+		return nil, options.err
+	}
+
 	c := &Client{}
+	c.config.baseURL = "https://api.mch.weixin.qq.com"
+	// c.config.baseURL = "https://api2.mch.weixin.qq.com"
+	if options.baseURL != "" {
+		c.config.baseURL = options.baseURL
+	}
+	c.config.appId = options.appId
+	c.config.mchId = options.mchId
 
-	c.httpClient = gorequest.NewHttp()
+	c.config.apiV3 = options.apiV3
 
-	c.config.appId = config.AppId
-	c.config.appSecret = config.AppSecret
-	c.config.mchId = config.MchId
-	c.config.aesKey = config.AesKey
-	c.config.apiV3 = config.ApiV3
-	c.config.mchSslSerialNo = config.MchSslSerialNo
-	c.config.mchSslKey = config.MchSslKey
+	c.config.certificateSerialNo = options.certificateSerialNo
+
+	c.config.certificate = options.certificate
+	c.config.privateKey = options.privateKey
+	c.config.publicKeyID = options.publicKeyID
+	c.config.publicKey = options.publicKey
+
+	// 创建请求客户端
+	c.httpClient = resty.New()
+	if options.restyClient != nil {
+		c.httpClient = options.restyClient
+	}
+
+	// 设置基础 URL
+	c.httpClient.SetBaseURL(c.config.baseURL)
+
+	// 设置 Debug
+	if options.debug {
+		c.httpClient.EnableDebug()
+	}
+
+	// 绑定日志钩子
+	if options.restyLog != nil {
+		// 请求中间件
+		c.httpClient.SetRequestMiddlewares(
+			options.restyLog.IntrusionRequest, // 自定义请求中间件，注入开始时间
+			resty.PrepareRequestMiddleware,    // 官方请求中间件，创建RawRequest
+			options.restyLog.BeforeRequest,    // 自定义请求中间件，记录开始时间和OTel
+		)
+		// 响应中间件
+		c.httpClient.SetResponseMiddlewares(
+			options.restyLog.CopyResponseBodyMiddleware, // 自定义请求中间件，将响应体拷贝到Context
+			resty.AutoParseResponseMiddleware,           // 官方请求中间件，自动解析
+			options.restyLog.AfterResponse,              // 自定义请求中间件，打印/保存
+		)
+	}
 
 	return c, nil
+}
+
+// Close 关闭 请求客户端
+func (c *Client) Close() (err error) {
+	if c.httpClient != nil {
+		err = c.httpClient.Close()
+	}
+	return
 }

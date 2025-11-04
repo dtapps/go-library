@@ -3,9 +3,10 @@ package wechatpayapiv3
 import (
 	"context"
 	"fmt"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 	"time"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResponse struct {
@@ -25,25 +26,14 @@ type TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResponse st
 	UpdateTime     time.Time `json:"update_time"`     // 明细最后一次状态变更的时间，按照使用rfc3339所定义的格式，格式为YYYY-MM-DDThh:mm:ss+TIMEZONE
 }
 
-type TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult struct {
-	Result TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResponse // 结果
-	Body   []byte                                                                   // 内容
-	Http   gorequest.Response                                                       // 请求
-}
-
-func newTransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult(result TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResponse, body []byte, http gorequest.Response) *TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult {
-	return &TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult{Result: result, Body: body, Http: http}
-}
-
 // TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNo 通过商家明细单号查询明细单
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-detail/get-transfer-detail-by-out-no.html
-func (c *Client) TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNo(ctx context.Context, outBatchNo, outDetailNo string, notMustParams ...*gorequest.Params) (*TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult, error) {
+func (c *Client) TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNo(ctx context.Context, outBatchNo, outDetailNo string, notMustParams ...*gorequest.Params) (response TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response TransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResponse
-	request, err := c.request(ctx, fmt.Sprintf("v3/transfer/batches/out-batch-no/%s/details/out-detail-no/%s", outBatchNo, outDetailNo), params, http.MethodGet, false, &response)
-	return newTransferBatchesOutBatchNoOutBatchNoDetailsOutDetailNoOutDetailNoResult(response, request.ResponseBody, request), err
+	err = c.DoRequest(ctx, fmt.Sprintf("/v3/transfer/batches/out-batch-no/%s/details/out-detail-no/%s", outBatchNo, outDetailNo), params, http.MethodGet, false, &response)
+	return
 }

@@ -2,8 +2,9 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type TransferBatchesOutBatchNoResponse struct {
@@ -34,25 +35,14 @@ type TransferBatchesOutBatchNoResponse struct {
 	} `json:"transfer_detail_list,omitempty"` // 当批次状态为“FINISHED”（已完成），且成功查询到转账明细单时返回。包括微信明细单号、明细状态信息
 }
 
-type TransferBatchesOutBatchNoResult struct {
-	Result TransferBatchesOutBatchNoResponse // 结果
-	Body   []byte                            // 内容
-	Http   gorequest.Response                // 请求
-}
-
-func newTransferBatchesOutBatchNoResult(result TransferBatchesOutBatchNoResponse, body []byte, http gorequest.Response) *TransferBatchesOutBatchNoResult {
-	return &TransferBatchesOutBatchNoResult{Result: result, Body: body, Http: http}
-}
-
 // TransferBatchesOutBatchNo 通过微信批次单号查询批次单
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/get-transfer-batch-by-no.html
-func (c *Client) TransferBatchesOutBatchNo(ctx context.Context, notMustParams ...*gorequest.Params) (*TransferBatchesOutBatchNoResult, error) {
+func (c *Client) TransferBatchesOutBatchNo(ctx context.Context, notMustParams ...*gorequest.Params) (response TransferBatchesOutBatchNoResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response TransferBatchesOutBatchNoResponse
-	request, err := c.request(ctx, "v3/transfer/batches/out-batch-no", params, http.MethodGet, false, &response)
-	return newTransferBatchesOutBatchNoResult(response, request.ResponseBody, request), err
+	err = c.DoRequest(ctx, "v3/transfer/batches/out-batch-no", params, http.MethodGet, false, &response)
+	return
 }

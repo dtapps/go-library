@@ -3,9 +3,10 @@ package wechatpayapiv3
 import (
 	"context"
 	"fmt"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 	"time"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResponse struct {
@@ -25,25 +26,14 @@ type TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResponse struct {
 	UpdateTime     time.Time `json:"update_time"`     // 明细最后一次状态变更的时间，按照使用rfc3339所定义的格式，格式为YYYY-MM-DDThh:mm:ss+TIMEZONE
 }
 
-type TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult struct {
-	Result TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResponse // 结果
-	Body   []byte                                                       // 内容
-	Http   gorequest.Response                                           // 请求
-}
-
-func newTransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult(result TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResponse, body []byte, http gorequest.Response) *TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult {
-	return &TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult{Result: result, Body: body, Http: http}
-}
-
 // TransferBatchesBatchIdBatchIdDetailsDetailIdDetailId 通过微信明细单号查询明细单
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-detail/get-transfer-detail-by-no.html
-func (c *Client) TransferBatchesBatchIdBatchIdDetailsDetailIdDetailId(ctx context.Context, batchId string, detailId string, notMustParams ...*gorequest.Params) (*TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult, error) {
+func (c *Client) TransferBatchesBatchIdBatchIdDetailsDetailIdDetailId(ctx context.Context, batchId string, detailId string, notMustParams ...*gorequest.Params) (response TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response TransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResponse
-	request, err := c.request(ctx, fmt.Sprintf("v3/transfer/batches/batch-id/%sdetails/detail-id/%s", batchId, detailId), params, http.MethodGet, false, &response)
-	return newTransferBatchesBatchIdBatchIdDetailsDetailIdDetailIdResult(response, request.ResponseBody, request), err
+	err = c.DoRequest(ctx, fmt.Sprintf("/v3/transfer/batches/batch-id/%sdetails/detail-id/%s", batchId, detailId), params, http.MethodGet, false, &response)
+	return
 }

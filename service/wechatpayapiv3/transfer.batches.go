@@ -2,8 +2,9 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type TransferBatchesResponse struct {
@@ -12,26 +13,15 @@ type TransferBatchesResponse struct {
 	CreateTime string `json:"create_time"`  // 批次受理成功时返回，按照使用rfc3339所定义的格式，格式为YYYY-MM-DDThh:mm:ss+TIMEZONE
 }
 
-type TransferBatchesResult struct {
-	Result TransferBatchesResponse // 结果
-	Body   []byte                  // 内容
-	Http   gorequest.Response      // 请求
-}
-
-func newTransferBatchesResult(result TransferBatchesResponse, body []byte, http gorequest.Response) *TransferBatchesResult {
-	return &TransferBatchesResult{Result: result, Body: body, Http: http}
-}
-
 // TransferBatches 发起商家转账
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/initiate-batch-transfer.html
-func (c *Client) TransferBatches(ctx context.Context, notMustParams ...*gorequest.Params) (*TransferBatchesResult, error) {
+func (c *Client) TransferBatches(ctx context.Context, notMustParams ...*gorequest.Params) (response TransferBatchesResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", c.GetAppId())
 
 	// 请求
-	var response TransferBatchesResponse
-	request, err := c.request(ctx, "v3/transfer/batches", params, http.MethodPost, false, &response)
-	return newTransferBatchesResult(response, request.ResponseBody, request), err
+	err = c.DoRequest(ctx, "v3/transfer/batches", params, http.MethodPost, false, &response)
+	return
 }

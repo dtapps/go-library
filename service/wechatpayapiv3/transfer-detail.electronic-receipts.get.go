@@ -2,8 +2,9 @@ package wechatpayapiv3
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type TransferDetailElectronicReceiptsGetResponse struct {
@@ -17,25 +18,14 @@ type TransferDetailElectronicReceiptsGetResponse struct {
 	DownloadUrl     string `json:"download_url"`     // 电子回单文件的下载地址，回单状态为：FINISHED时返回。URL有效时长为10分钟，10分钟后需要重新去获取下载地址（但不需要走受理）
 }
 
-type TransferDetailElectronicReceiptsGetResult struct {
-	Result TransferDetailElectronicReceiptsGetResponse // 结果
-	Body   []byte                                      // 内容
-	Http   gorequest.Response                          // 请求
-}
-
-func newTransferDetailElectronicReceiptsGetResult(result TransferDetailElectronicReceiptsGetResponse, body []byte, http gorequest.Response) *TransferDetailElectronicReceiptsGetResult {
-	return &TransferDetailElectronicReceiptsGetResult{Result: result, Body: body, Http: http}
-}
-
 // TransferDetailElectronicReceiptsGet 查询转账明细电子回单受理结果API
 // https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/electronic-receipt-api/query-electronic-receipt.html
-func (c *Client) TransferDetailElectronicReceiptsGet(ctx context.Context, notMustParams ...*gorequest.Params) (*TransferDetailElectronicReceiptsGetResult, error) {
+func (c *Client) TransferDetailElectronicReceiptsGet(ctx context.Context, notMustParams ...*gorequest.Params) (response TransferDetailElectronicReceiptsGetResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response TransferDetailElectronicReceiptsGetResponse
-	request, err := c.request(ctx, "v3/transfer-detail/electronic-receipts", params, http.MethodGet, false, &response)
-	return newTransferDetailElectronicReceiptsGetResult(response, request.ResponseBody, request), err
+	err = c.DoRequest(ctx, "v3/transfer-detail/electronic-receipts", params, http.MethodGet, false, &response)
+	return
 }
