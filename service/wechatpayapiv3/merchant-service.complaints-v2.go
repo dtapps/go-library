@@ -59,6 +59,6 @@ func (c *Client) MerchantServiceComplaintsV2(ctx context.Context, notMustParams 
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.DoRequest(ctx, "v3/merchant-service/complaints-v2", params, http.MethodGet, false, &response)
+	err = c.DoRequest(ctx, "v3/merchant-service/complaints-v2", params, http.MethodGet, &response, &apiError)
 	return
 }
