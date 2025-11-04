@@ -23,6 +23,6 @@ func (c *Client) MerchantFundDayEndBalance(ctx context.Context, accountType, dat
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, fmt.Sprintf("v3/merchant/fund/dayendbalance/%s?date=%s", accountType, date), params, http.MethodGet, &response, &apiError)
+	err = c.request(ctx, fmt.Sprintf("/v3/merchant/fund/dayendbalance/%s?date=%s", accountType, date), params, http.MethodGet, &response, &apiError)
 	return
 }

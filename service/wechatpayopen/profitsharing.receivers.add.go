@@ -44,6 +44,6 @@ func (c *Client) ProfitSharingReceiversAdd(ctx context.Context, Type, account, n
 	}
 
 	// 请求
-	err = c.request(ctx, "v3/profitsharing/receivers/delete", params, http.MethodPost, &response, &apiError)
+	err = c.request(ctx, "/v3/profitsharing/receivers/delete", params, http.MethodPost, &response, &apiError)
 	return
 }

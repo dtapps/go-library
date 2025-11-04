@@ -21,6 +21,6 @@ func (c *Client) ProfitSharingTransactionsAmounts(ctx context.Context, transacti
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, fmt.Sprintf("v3/profitsharing/transactions/%s", transactionId), params, http.MethodGet, &response, &apiError)
+	err = c.request(ctx, fmt.Sprintf("/v3/profitsharing/transactions/%s", transactionId), params, http.MethodGet, &response, &apiError)
 	return
 }

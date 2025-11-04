@@ -34,6 +34,6 @@ func (c *Client) ProfitSharingReturnOrdersOutReturnNo(ctx context.Context, outRe
 	params.Set("out_order_no", outOrderNo)   // 商户分账单号
 
 	// 请求
-	err = c.request(ctx, fmt.Sprintf("v3/profitsharing/return-orders/%s", outReturnNo), params, http.MethodGet, &response, &apiError)
+	err = c.request(ctx, fmt.Sprintf("/v3/profitsharing/return-orders/%s", outReturnNo), params, http.MethodGet, &response, &apiError)
 	return
 }

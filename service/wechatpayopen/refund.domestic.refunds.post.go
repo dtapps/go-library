@@ -60,6 +60,6 @@ func (c *Client) RefundDomesticRefundsPost(ctx context.Context, outRefundNo stri
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
 
 	// 请求
-	err = c.request(ctx, "v3/refund/domestic/refunds", params, http.MethodPost, &response, &apiError)
+	err = c.request(ctx, "/v3/refund/domestic/refunds", params, http.MethodPost, &response, &apiError)
 	return
 }

@@ -28,6 +28,6 @@ func (c *Client) billSubMerchantFundFlowBillGet(ctx context.Context, notMustPara
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
 
 	// 请求
-	err = c.request(ctx, "v3/bill/sub-merchant-fundflowbill", params, http.MethodGet, &response, &apiError)
+	err = c.request(ctx, "/v3/bill/sub-merchant-fundflowbill", params, http.MethodGet, &response, &apiError)
 	return
 }

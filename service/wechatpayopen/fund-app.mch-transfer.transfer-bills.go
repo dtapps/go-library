@@ -21,9 +21,10 @@ func (c *Client) FundAppMchTransferTransferBills(ctx context.Context, notMustPar
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("appid", c.GetSpAppid()) // 商户AppID
 
 	// 请求
-	err = c.request(ctx, "/v3/fund-app/mch-transfer/transfer-bills", params, http.MethodPost, &response, &apiError)
+	err = c.NewRequest(ctx, "/v3/fund-app/mch-transfer/transfer-bills", params, http.MethodPost, &response, &apiError)
 	return
 }
 

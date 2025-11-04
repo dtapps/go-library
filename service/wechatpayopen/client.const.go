@@ -1,10 +1,9 @@
 package wechatpayopen
 
-// 请求报文签名相关常量
 const (
 	SignatureMessageFormat = "%s\n%s\n%d\n%s\n%s\n" // 数字签名原文格式
 	// HeaderAuthorizationFormat 请求头中的 Authorization 拼接格式
-	HeaderAuthorizationFormat = "%s mchid=\"%s\",nonce_str=\"%s\",timestamp=\"%d\",serial_no=\"%s\",signature=\"%s\""
+	HeaderAuthorizationFormat = "WECHATPAY2-SHA256-RSA2048 mchid=\"%s\",nonce_str=\"%s\",timestamp=\"%d\",serial_no=\"%s\",signature=\"%s\""
 )
 
 func getAuthorizationType() string {

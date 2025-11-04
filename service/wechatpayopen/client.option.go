@@ -1,6 +1,9 @@
 package wechatpayopen
 
 import (
+	"crypto/rsa"
+	"crypto/x509"
+
 	"go.dtapp.net/library/contrib/resty_log"
 	"resty.dev/v3"
 )
@@ -10,17 +13,22 @@ type Options struct {
 	restyLog    *resty_log.Logger
 	debug       bool
 
-	baseURL        string // 接口地址
-	spAppid        string // 服务商应用ID
-	spMchId        string // 服务商户号
-	subAppid       string // 子商户应用ID
-	subMchId       string // 子商户号
-	apiV2          string // APIv2密钥
-	apiV3          string // APIv3密钥
-	serialNo       string // 序列号
-	mchSslSerialNo string // pem 证书号
-	mchSslCer      string // pem 内容
-	mchSslKey      string // pem key 内容
+	baseURL string // 接口地址
+
+	spAppid  string // 服务商应用ID
+	spMchId  string // 服务商户号
+	subAppid string // 子商户应用ID
+	subMchId string // 子商户号
+
+	apiV3 string // APIv3密钥
+
+	certificateSerialNo string            // pem 证书号
+	certificate         *x509.Certificate // pem 证书
+	privateKey          *rsa.PrivateKey   // pem 私钥
+	publicKeyID         string            // 公钥ID
+	publicKey           *rsa.PublicKey    // pem 公钥
+
+	err error
 }
 
 type Option struct {
@@ -98,13 +106,6 @@ func WithSubMchId(subMchId string) Option {
 	}}
 }
 
-// WithApiV2 设置 apiV2
-func WithApiV2(apiV2 string) Option {
-	return Option{F: func(o *Options) {
-		o.apiV2 = apiV2
-	}}
-}
-
 // WithApiV3 设置 apiV3
 func WithApiV3(apiV3 string) Option {
 	return Option{F: func(o *Options) {
@@ -112,30 +113,55 @@ func WithApiV3(apiV3 string) Option {
 	}}
 }
 
-// WithSerialNo 设置 serialNo
-func WithSerialNo(serialNo string) Option {
+// WithCertificateSerialNo 设置 certificateSerialNo
+func WithCertificateSerialNo(certificateSerialNo string) Option {
 	return Option{F: func(o *Options) {
-		o.serialNo = serialNo
+		o.certificateSerialNo = certificateSerialNo
 	}}
 }
 
-// WithMchSslSerialNo 设置 mchSslSerialNo
-func WithMchSslSerialNo(mchSslSerialNo string) Option {
+// WithCertificate 设置 certificate
+func WithCertificate(certificate string) Option {
+	rsa, err := LoadCertificate(certificate)
+	if err != nil {
+		return Option{F: func(o *Options) {
+			o.err = err
+		}}
+	}
 	return Option{F: func(o *Options) {
-		o.mchSslSerialNo = mchSslSerialNo
+		o.certificate = rsa
 	}}
 }
 
-// WithMchSslCer 设置 mchSslCer
-func WithMchSslCer(mchSslCer string) Option {
+// WithPrivateKey 设置 privateKey
+func WithPrivateKey(privateKey string) Option {
+	rsa, err := LoadPrivateKey(privateKey)
+	if err != nil {
+		return Option{F: func(o *Options) {
+			o.err = err
+		}}
+	}
 	return Option{F: func(o *Options) {
-		o.mchSslCer = mchSslCer
+		o.privateKey = rsa
 	}}
 }
 
-// WithMchSslKey 设置 mchSslKey
-func WithMchSslKey(mchSslKey string) Option {
+// WithPublicKeyID 设置 publicKeyID
+func WithPublicKeyID(publicKeyID string) Option {
 	return Option{F: func(o *Options) {
-		o.mchSslKey = mchSslKey
+		o.publicKeyID = publicKeyID
+	}}
+}
+
+// WithPublicKey 设置 publicKey
+func WithPublicKey(publicKey string) Option {
+	rsa, err := LoadPublicKey(publicKey)
+	if err != nil {
+		return Option{F: func(o *Options) {
+			o.err = err
+		}}
+	}
+	return Option{F: func(o *Options) {
+		o.publicKey = rsa
 	}}
 }

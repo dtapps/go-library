@@ -7,6 +7,7 @@ replace go.dtapp.net/library/utils/gorandom => ../../utils/gorandom
 replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 
 require (
+	github.com/tjfoc/gmsm v1.4.1
 	go.dtapp.net/library/contrib/resty_log v1.0.8
 	go.dtapp.net/library/utils/gorandom v1.0.5
 	go.dtapp.net/library/utils/gorequest v1.1.2

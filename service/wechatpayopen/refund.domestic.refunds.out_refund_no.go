@@ -59,6 +59,6 @@ func (c *Client) RefundDomesticRefundsOutRefundNo(ctx context.Context, outRefund
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, fmt.Sprintf("v3/refund/domestic/refunds/%s?sub_mchid=%s", outRefundNo, c.GetSubMchId()), params, http.MethodGet, &response, &apiError)
+	err = c.request(ctx, fmt.Sprintf("/v3/refund/domestic/refunds/%s?sub_mchid=%s", outRefundNo, c.GetSubMchId()), params, http.MethodGet, &response, &apiError)
 	return
 }

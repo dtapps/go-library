@@ -60,6 +60,6 @@ func (c *Client) PayPartnerTransactionsId(ctx context.Context, transactionId str
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, fmt.Sprintf("v3/pay/partner/transactions/id/%s?sp_mchid=%s&sub_mchid=%s", transactionId, c.GetSpMchId(), c.GetSubMchId()), params, http.MethodGet, &response, &apiError)
+	err = c.request(ctx, fmt.Sprintf("/v3/pay/partner/transactions/id/%s?sp_mchid=%s&sub_mchid=%s", transactionId, c.GetSpMchId(), c.GetSubMchId()), params, http.MethodGet, &response, &apiError)
 	return
 }

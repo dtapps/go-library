@@ -21,6 +21,6 @@ func (c *Client) ProfitSharingMerchantConfigs(ctx context.Context, notMustParams
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, fmt.Sprintf("v3/profitsharing/merchant-configs/%s", c.GetSubMchId()), params, http.MethodGet, &response, &apiError)
+	err = c.request(ctx, fmt.Sprintf("/v3/profitsharing/merchant-configs/%s", c.GetSubMchId()), params, http.MethodGet, &response, &apiError)
 	return
 }

@@ -21,6 +21,6 @@ func (c *Client) BillFundFlowBillGet(ctx context.Context, notMustParams ...*gore
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "v3/bill/fundflowbill", params, http.MethodGet, &response, &apiError)
+	err = c.request(ctx, "/v3/bill/fundflowbill", params, http.MethodGet, &response, &apiError)
 	return
 }

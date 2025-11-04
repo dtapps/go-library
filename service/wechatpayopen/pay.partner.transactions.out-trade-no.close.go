@@ -18,6 +18,6 @@ func (c *Client) PayPartnerTransactionsOutTradeNoClose(ctx context.Context, outT
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
 
 	// 请求
-	err = c.request(ctx, fmt.Sprintf("v3/pay/partner/transactions/out-trade-no/%s/close", outTradeNo), params, http.MethodPost, nil, &apiError)
+	err = c.request(ctx, fmt.Sprintf("/v3/pay/partner/transactions/out-trade-no/%s/close", outTradeNo), params, http.MethodPost, nil, &apiError)
 	return
 }

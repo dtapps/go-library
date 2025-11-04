@@ -4,24 +4,27 @@ import (
 	"crypto"
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/sha256"
 	"encoding/base64"
-	"fmt"
+	"errors"
 )
 
 // 通过私钥对字符串以 SHA256WithRSA 算法生成签名信息
-func (c *Client) signSHA256WithRSA(source string, privateKey *rsa.PrivateKey) (signature string, err error) {
-	if privateKey == nil {
-		return "", fmt.Errorf("private key should not be nil")
+func (c *Client) signSHA256WithRSA(msg string, key *rsa.PrivateKey) (string, error) {
+	if key == nil {
+		return "", errors.New("private key is nil")
 	}
-	h := crypto.Hash.New(crypto.SHA256)
-	_, err = h.Write([]byte(source))
-	if err != nil {
-		return "", nil
-	}
-	hashed := h.Sum(nil)
-	signatureByte, err := rsa.SignPKCS1v15(rand.Reader, privateKey, crypto.SHA256, hashed)
+	h := sha256.New()
+	h.Write([]byte(msg))
+	digest := h.Sum(nil)
+
+	// 注意：这里应该用 SignPKCS1v15，但传的是 digest，且 hash 参数必须匹配
+	// 实际上，更稳妥的是用 SignPSS 或直接用 crypto.Signer
+	// 但微信要求 PKCS#1 v1.5，所以可以这样：
+
+	sign, err := rsa.SignPKCS1v15(rand.Reader, key, crypto.SHA256, digest)
 	if err != nil {
 		return "", err
 	}
-	return base64.StdEncoding.EncodeToString(signatureByte), nil
+	return base64.StdEncoding.EncodeToString(sign), nil
 }

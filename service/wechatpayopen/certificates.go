@@ -30,6 +30,6 @@ func (c *Client) Certificates(ctx context.Context, notMustParams ...*gorequest.P
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "v3/certificates", params, http.MethodGet, &response, nil)
+	err = c.request(ctx, "/v3/certificates", params, http.MethodGet, &response, nil)
 	return
 }

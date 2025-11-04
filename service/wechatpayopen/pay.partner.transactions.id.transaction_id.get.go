@@ -48,6 +48,6 @@ func (c *Client) PayPartnerTransactionsIdTransactionIdGet(ctx context.Context, t
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
 
 	// 请求
-	err = c.request(ctx, fmt.Sprintf("v3/pay/partner/transactions/id/%s", transactionId), params, http.MethodGet, &response, &apiError)
+	err = c.request(ctx, fmt.Sprintf("/v3/pay/partner/transactions/id/%s", transactionId), params, http.MethodGet, &response, &apiError)
 	return
 }

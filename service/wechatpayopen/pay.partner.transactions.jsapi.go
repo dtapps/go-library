@@ -12,7 +12,7 @@ type PayPartnerTransactionsJsapiResponse struct {
 }
 
 // PayPartnerTransactionsJsapi JSAPI下单
-// https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_5_1.shtml
+// https://pay.weixin.qq.com/doc/v3/partner/4012738519
 func (c *Client) PayPartnerTransactionsJsapi(ctx context.Context, notMustParams ...*gorequest.Params) (response PayPartnerTransactionsJsapiResponse, apiError ApiError, err error) {
 
 	// 参数
@@ -23,6 +23,6 @@ func (c *Client) PayPartnerTransactionsJsapi(ctx context.Context, notMustParams 
 	params.Set("sub_mchid", c.GetSubMchId()) // 子商户号
 
 	// 请求
-	err = c.request(ctx, "v3/pay/partner/transactions/jsapi", params, http.MethodPost, &response, &apiError)
+	err = c.request(ctx, "/v3/pay/partner/transactions/jsapi", params, http.MethodPost, &response, &apiError)
 	return
 }

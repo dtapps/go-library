@@ -2,6 +2,7 @@ package wechatpayopen
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"go.dtapp.net/library/utils/gorequest"
@@ -30,7 +31,7 @@ func (c *Client) FundAppMchTransferTransferBillsOutBillNo(ctx context.Context, o
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "/v3/fund-app/mch-transfer/transfer-bills/out-bill-no/"+out_bill_no, params, http.MethodGet, &response, &apiError)
+	err = c.request(ctx, fmt.Sprintf("/v3/fund-app/mch-transfer/transfer-bills/out-bill-no/%s", out_bill_no), params, http.MethodGet, &response, &apiError)
 	return
 }
 

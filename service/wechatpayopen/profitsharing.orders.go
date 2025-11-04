@@ -37,6 +37,6 @@ func (c *Client) ProfitSharingOrders(ctx context.Context, notMustParams ...*gore
 	params.Set("sub_appid", c.GetSubAppid()) // 子商户应用ID
 
 	// 请求
-	err = c.request(ctx, "v3/profitsharing/orders", params, http.MethodPost, &response, &apiError)
+	err = c.request(ctx, "/v3/profitsharing/orders", params, http.MethodPost, &response, &apiError)
 	return
 }

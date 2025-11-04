@@ -24,6 +24,6 @@ func (c *Client) EcommerceFundBalance(ctx context.Context, accountType string, n
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, fmt.Sprintf("v3/ecommerce/fund/balance/%s?account_type=%s", c.GetSubMchId(), accountType), params, http.MethodGet, &response, nil)
+	err = c.request(ctx, fmt.Sprintf("/v3/ecommerce/fund/balance/%s?account_type=%s", c.GetSubMchId(), accountType), params, http.MethodGet, &response, nil)
 	return
 }

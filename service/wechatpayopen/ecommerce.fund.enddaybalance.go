@@ -23,6 +23,6 @@ func (c *Client) EcommerceFundEndDayBalance(ctx context.Context, date string, no
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, fmt.Sprintf("v3/ecommerce/fund/enddaybalance/%s?date=%s", c.GetSubMchId(), date), params, http.MethodGet, &response, nil)
+	err = c.request(ctx, fmt.Sprintf("/v3/ecommerce/fund/enddaybalance/%s?date=%s", c.GetSubMchId(), date), params, http.MethodGet, &response, nil)
 	return
 }

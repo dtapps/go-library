@@ -45,6 +45,6 @@ func (c *Client) PayPartnerTransactionsOutTradeNoOutTradeNoGet(ctx context.Conte
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, fmt.Sprintf("v3/pay/partner/transactions/out-trade-no/%s?sp_mchid=%s&sub_mchid=%s", outTradeNo, c.GetSpMchId(), c.GetSubMchId()), params, http.MethodGet, &response, &apiError)
+	err = c.request(ctx, fmt.Sprintf("/v3/pay/partner/transactions/out-trade-no/%s?sp_mchid=%s&sub_mchid=%s", outTradeNo, c.GetSpMchId(), c.GetSubMchId()), params, http.MethodGet, &response, &apiError)
 	return
 }

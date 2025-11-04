@@ -38,6 +38,6 @@ func (c *Client) ProfitSharingOrdersUnfreeze(ctx context.Context, transactionId,
 	params.Set("description", description)      // 分账描述
 
 	// 请求
-	err = c.request(ctx, "v3/profitsharing/orders/unfreeze", params, http.MethodPost, &response, &apiError)
+	err = c.request(ctx, "/v3/profitsharing/orders/unfreeze", params, http.MethodPost, &response, &apiError)
 	return
 }
