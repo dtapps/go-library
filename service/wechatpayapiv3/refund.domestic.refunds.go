@@ -49,14 +49,14 @@ type RefundDomesticRefundsResponse struct {
 	} `json:"promotion_detail,omitempty"` // 优惠退款信息
 }
 
-// RefundDomesticRefunds 申请退款API
-// https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter6_1_26.shtml
+// RefundDomesticRefunds 退款申请
+// https://pay.weixin.qq.com/doc/v3/merchant/4012791903
 func (c *Client) RefundDomesticRefunds(ctx context.Context, notMustParams ...*gorequest.Params) (response RefundDomesticRefundsResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.DoRequest(ctx, "v3/refund/domestic/refunds", params, http.MethodPost, false, &response)
+	err = c.DoRequest(ctx, "v3/refund/domestic/refunds", params, http.MethodPost, &response, &apiError)
 	return
 }

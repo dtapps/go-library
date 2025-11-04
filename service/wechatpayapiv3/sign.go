@@ -13,7 +13,6 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"log/slog"
 	"net/url"
 	"strconv"
 	"time"
@@ -124,7 +123,6 @@ func Sign(param *SignParams) (resule *SignResult, err error) {
 	// 生成签名
 	sig, err := generateSignature(param.Method, urlPath, timestamp, nonce, bodyStr, param.PrivateKey)
 	if err != nil {
-		slog.Error("[authorization] generateSignature failed", slog.Any("err", err))
 		return nil, err
 	}
 

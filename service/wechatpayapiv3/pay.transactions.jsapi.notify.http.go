@@ -3,40 +3,39 @@ package wechatpayapiv3
 import (
 	"context"
 	"encoding/json"
-	"encoding/xml"
 	"net/http"
 )
 
 // PayTransactionsJsapiNotifyHttpRequest JSAPI下单 - 回调通知 - 请求参数
 type PayTransactionsJsapiNotifyHttpRequest struct {
-	Id           string `json:"status" xml:"id"`                   // 通知ID
-	CreateTime   string `json:"create_time" xml:"create_time"`     // 通知创建时间
-	EventType    string `json:"event_type" xml:"event_type"`       // 通知类型
-	ResourceType string `json:"resource_type" xml:"resource_type"` // 通知数据类型
+	Id           string `json:"status"`        // 【通知ID】回调通知的唯一编号
+	CreateTime   string `json:"create_time"`   // 【通知创建时间】
+	EventType    string `json:"event_type"`    // 【通知的类型】微信支付回调通知的类型
+	ResourceType string `json:"resource_type"` // 【通知数据类型】通知的资源数据类型
 	Resource     struct {
-		Algorithm      string `json:"algorithm" xml:"algorithm"`                                 // 加密算法类型
-		Ciphertext     string `json:"ciphertext" xml:"ciphertext"`                               // 数据密文
-		AssociatedData string `json:"associated_data,omitempty" xml:"associated_data,omitempty"` // 附加数据
-		OriginalType   string `json:"original_type" xml:"original_type"`                         // 原始类型
-		Nonce          string `json:"nonce" xml:"nonce"`                                         // 随机串
-	} `json:"resource" xml:"resource"` // 通知数据
-	Summary string `json:"summary" xml:"summary"` // 回调摘要
+		Algorithm      string `json:"algorithm"`                 // 【加密算法类型】回调数据密文的加密算法类型，目前为AEAD_AES_256_GCM，开发者需要使用同样类型的数据进行解密
+		Ciphertext     string `json:"ciphertext"`                // 【数据密文】Base64编码后的回调数据密文，商户需Base64解码并使用APIV3密钥解密
+		AssociatedData string `json:"associated_data,omitempty"` // 【附加数据】参与解密的附加数据，该字段可能为空
+		OriginalType   string `json:"original_type"`             // 【原始回调类型】加密前的对象类型
+		Nonce          string `json:"nonce"`                     // 【随机串】参与解密的随机串
+	} `json:"resource"` // 【通知数据】通知资源数据
+	Summary string `json:"summary"` // 【回调摘要】微信支付对回调内容的摘要备注
 }
 
-// PayTransactionsJsapiNotifyHttp JSAPI下单 - 回调通知
-// https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_5_1.shtml
-func (c *Client) PayTransactionsJsapiNotifyHttp(ctx context.Context, w http.ResponseWriter, r *http.Request) (validateXml PayTransactionsJsapiNotifyHttpRequest, response PayTransactionsJsapiNotifyHttpResponse, gcm []byte, err error) {
+// PayTransactionsJsapiNotifyHttp 支付成功回调通知
+// https://pay.weixin.qq.com/doc/v3/merchant/4012791902
+func (c *Client) PayTransactionsJsapiNotifyHttp(ctx context.Context, w http.ResponseWriter, r *http.Request) (validateJson PayTransactionsJsapiNotifyHttpRequest, response PayTransactionsJsapiNotifyHttpResponse, gcm []byte, err error) {
 
 	// 解析
-	_ = xml.NewDecoder(r.Body).Decode(&validateXml)
+	_ = json.NewDecoder(r.Body).Decode(&validateJson)
 
-	gcm, err = c.decryptGCM(c.GetApiV3(), validateXml.Resource.Nonce, validateXml.Resource.Ciphertext, validateXml.Resource.AssociatedData)
+	gcm, err = c.decryptGCM(c.GetApiV3(), validateJson.Resource.Nonce, validateJson.Resource.Ciphertext, validateJson.Resource.AssociatedData)
 	if err != nil {
-		return validateXml, response, gcm, err
+		return validateJson, response, gcm, err
 	}
 
 	err = json.Unmarshal(gcm, &response)
-	return validateXml, response, gcm, err
+	return validateJson, response, gcm, err
 }
 
 // PayTransactionsJsapiNotifyHttpResponse JSAPI下单 - 回调通知 - 解密后数据

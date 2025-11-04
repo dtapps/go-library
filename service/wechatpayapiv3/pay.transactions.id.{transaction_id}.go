@@ -8,7 +8,7 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type PayTransactionsOutTradeNoResponse struct {
+type PayTransactionsIdResponse struct {
 	Appid          string `json:"appid"`
 	Mchid          string `json:"mchid"`
 	OutTradeNo     string `json:"out_trade_no"`
@@ -30,7 +30,7 @@ type PayTransactionsOutTradeNoResponse struct {
 	} `json:"amount,omitempty"`
 	SceneInfo struct {
 		DeviceId string `json:"device_id,omitempty"`
-	} `json:"scene_info"`
+	}
 	PromotionDetail []struct {
 		CouponId            string `json:"coupon_id"`
 		Name                string `json:"name,omitempty"`
@@ -49,16 +49,17 @@ type PayTransactionsOutTradeNoResponse struct {
 			DiscountAmount int    `json:"discount_amount"`
 			GoodsRemark    string `json:"goods_remark,omitempty"`
 		} `json:"goods_detail"`
-	} `json:"promotion_detail"`
+	}
 }
 
-// PayTransactionsOutTradeNo 商户订单号查询 https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_2.shtml
-func (c *Client) PayTransactionsOutTradeNo(ctx context.Context, outTradeNo string, notMustParams ...*gorequest.Params) (response PayTransactionsOutTradeNoResponse, apiError ApiError, err error) {
+// PayTransactionsId 微信支付订单号查询订单
+// https://pay.weixin.qq.com/doc/v3/merchant/4012791899
+func (c *Client) PayTransactionsId(ctx context.Context, transactionId string, notMustParams ...*gorequest.Params) (response PayTransactionsIdResponse, apiError ApiError, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.DoRequest(ctx, fmt.Sprintf("/v3/pay/transactions/out-trade-no/%s?mchid=%s", outTradeNo, c.GetMchId()), params, http.MethodGet, true, &response)
+	err = c.DoRequest(ctx, fmt.Sprintf("/v3/pay/transactions/id/%s?mchid=%s", transactionId, c.GetMchId()), params, http.MethodGet, &response, &apiError)
 	return
 }

@@ -51,8 +51,8 @@ type MerchantServiceComplaintsV2Response struct {
 	}
 }
 
-// MerchantServiceComplaintsV2 查询投诉单列表API
-// https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter10_2_11.shtml
+// MerchantServiceComplaintsV2 查询投诉单列表
+// https://pay.weixin.qq.com/doc/v3/merchant/4012533431
 func (c *Client) MerchantServiceComplaintsV2(ctx context.Context, notMustParams ...*gorequest.Params) (response MerchantServiceComplaintsV2Response, apiError ApiError, err error) {
 
 	// 参数
