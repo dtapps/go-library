@@ -35,6 +35,7 @@ func (c *Client) NewRequest(ctx context.Context, path string, param *gorequest.P
 	// 设置头部
 	httpClient.SetContentType("application/json")
 	httpClient.SetHeader("Accept", "application/json")
+	httpClient.SetHeader("Wechatpay-Serial", c.config.publicKeyID)
 	httpClient.SetHeader("Authorization", signResult.Authorization)
 	httpClient.SetHeader("Accept-Language", "zh-CN")
 
