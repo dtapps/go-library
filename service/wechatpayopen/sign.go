@@ -76,13 +76,13 @@ type SignResult struct {
 // https://pay.weixin.qq.com/doc/v3/merchant/4012365342
 func Sign(param *SignParams) (resule *SignResult, err error) {
 
-	slog.Info("[authorization] 签名参数",
-		slog.String("Method", param.Method),
-		slog.Any("Body", param.Body),
-		slog.String("Url", param.Url),
-		slog.String("SpMchId", param.SpMchId),
-		slog.String("CertificateSerialNo", param.CertificateSerialNo),
-	)
+	// slog.Info("[authorization] 签名参数",
+	// 	slog.String("Method", param.Method),
+	// 	slog.Any("Body", param.Body),
+	// 	slog.String("Url", param.Url),
+	// 	slog.String("SpMchId", param.SpMchId),
+	// 	slog.String("CertificateSerialNo", param.CertificateSerialNo),
+	// )
 
 	// 构造请求体
 	var bodyBytes []byte
@@ -109,13 +109,13 @@ func Sign(param *SignParams) (resule *SignResult, err error) {
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
 	nonce := gorandom.Alphanumeric(32)
 
-	slog.Info("[authorization] 准备签名",
-		slog.String("Method", param.Method),
-		slog.String("urlPath", urlPath),
-		slog.String("timestamp", timestamp),
-		slog.String("nonce", nonce),
-		slog.String("bodyStr", bodyStr),
-	)
+	// slog.Info("[authorization] 准备签名",
+	// 	slog.String("Method", param.Method),
+	// 	slog.String("urlPath", urlPath),
+	// 	slog.String("timestamp", timestamp),
+	// 	slog.String("nonce", nonce),
+	// 	slog.String("bodyStr", bodyStr),
+	// )
 
 	// 生成签名
 	sig, err := generateSignature(param.Method, urlPath, timestamp, nonce, bodyStr, param.PrivateKey)
@@ -134,7 +134,7 @@ func Sign(param *SignParams) (resule *SignResult, err error) {
 		param.CertificateSerialNo,
 	)
 
-	slog.Info("[authorization] generated Authorization header", slog.String("authz", authz))
+	// slog.Info("[authorization] generated Authorization header", slog.String("authz", authz))
 	return &SignResult{
 		Authorization: authz,
 		BodyBytes:     bodyBytes,

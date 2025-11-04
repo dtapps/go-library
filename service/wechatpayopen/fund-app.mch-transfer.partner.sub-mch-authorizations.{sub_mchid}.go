@@ -28,6 +28,6 @@ func (c *Client) FundAppMchTransferPartnerSubMchAuthorizationsSubMchid(ctx conte
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.NewRequest(ctx, fmt.Sprintf("/v3/fund-app/mch-transfer/partner/sub-mch-authorizations/%s", c.GetSubMchId()), params, http.MethodGet, &response, &apiError)
+	err = c.request(ctx, fmt.Sprintf("/v3/fund-app/mch-transfer/partner/sub-mch-authorizations/%s", c.GetSubMchId()), params, http.MethodGet, &response, &apiError)
 	return
 }
