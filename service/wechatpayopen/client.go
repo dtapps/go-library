@@ -11,7 +11,8 @@ import (
 // Client 实例
 type Client struct {
 	config struct {
-		baseURL  string // 接口地址
+		baseURL string // 接口地址
+
 		spAppid  string // 服务商应用ID
 		spMchId  string // 服务商户号
 		subAppid string // 子商户应用ID

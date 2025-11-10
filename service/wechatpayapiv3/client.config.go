@@ -1,5 +1,10 @@
 package wechatpayapiv3
 
+import (
+	"crypto/rsa"
+	"crypto/x509"
+)
+
 func (c *Client) GetAppId() string {
 	return c.config.appId
 }
@@ -12,11 +17,22 @@ func (c *Client) GetApiV3() string {
 	return c.config.apiV3
 }
 
-func (c *Client) SetApiV3(v string) *Client {
-	c.config.apiV3 = v
-	return c
-}
-
 func (c *Client) GetCertificateSerialNo() string {
 	return c.config.certificateSerialNo
+}
+
+func (c *Client) GetCertificate() *x509.Certificate {
+	return c.config.certificate
+}
+
+func (c *Client) GetPrivateKey() *rsa.PrivateKey {
+	return c.config.privateKey
+}
+
+func (c *Client) GetPublicKeyID() string {
+	return c.config.publicKeyID
+}
+
+func (c *Client) GetPublicKey() *rsa.PublicKey {
+	return c.config.publicKey
 }

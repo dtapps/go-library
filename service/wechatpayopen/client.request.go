@@ -4,17 +4,24 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"strings"
 
 	"go.dtapp.net/library/utils/gorequest"
 )
 
 func (c *Client) NewRequest(ctx context.Context, path string, param *gorequest.Params, method string, response any, errResponse any) error {
 
+	// 判断path前面有没有/
+	if !strings.HasPrefix(path, "/") {
+		path = "/" + path
+	}
+	urlStr := fmt.Sprintf("%s%s", c.config.baseURL, path)
+
 	// 认证 + 获取统一的 body bytes
 	signResult, err := Sign(&SignParams{
 		Method:              method,
 		Body:                param.DeepGetAny(),
-		Url:                 fmt.Sprintf("%s%s", c.config.baseURL, path),
+		Url:                 urlStr,
 		PrivateKey:          c.config.privateKey,
 		SpMchId:             c.config.spMchId,
 		CertificateSerialNo: c.config.certificateSerialNo,
@@ -24,7 +31,7 @@ func (c *Client) NewRequest(ctx context.Context, path string, param *gorequest.P
 	httpClient := c.httpClient.R().SetContext(ctx)
 
 	// 设置请求地址
-	httpClient.SetURL(fmt.Sprintf("%s%s", c.config.baseURL, path))
+	httpClient.SetURL(urlStr)
 
 	// 设置方式
 	httpClient.SetMethod(method)
@@ -61,6 +68,12 @@ func (c *Client) NewRequest(ctx context.Context, path string, param *gorequest.P
 
 func (c *Client) request(ctx context.Context, path string, param *gorequest.Params, method string, response any, errResponse any) error {
 
+	// 判断path前面有没有/
+	if !strings.HasPrefix(path, "/") {
+		path = "/" + path
+	}
+	urlStr := fmt.Sprintf("%s%s", c.config.baseURL, path)
+
 	// TODO: 请准备商户开发必要参数，参考：https://pay.weixin.qq.com/doc/v3/partner/4013080340
 	config, err := CreateMchConfig(
 		c.config.spMchId,             // 商户号，是由微信支付系统生成并分配给每个商户的唯一标识符，商户号获取方式参考 https://pay.weixin.qq.com/doc/v3/partner/4013080340
@@ -73,7 +86,7 @@ func (c *Client) request(ctx context.Context, path string, param *gorequest.Para
 		return err
 	}
 
-	reqUrl, err := url.Parse(fmt.Sprintf("%s%s", c.config.baseURL, path))
+	reqUrl, err := url.Parse(urlStr)
 	if err != nil {
 		return err
 	}
@@ -87,7 +100,7 @@ func (c *Client) request(ctx context.Context, path string, param *gorequest.Para
 	httpClient := c.httpClient.R().SetContext(ctx)
 
 	// 设置请求地址
-	httpClient.SetURL(fmt.Sprintf("%s%s", c.config.baseURL, path))
+	httpClient.SetURL(urlStr)
 
 	// 设置方式
 	httpClient.SetMethod(method)
