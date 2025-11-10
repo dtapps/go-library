@@ -39,3 +39,7 @@ func (c *Client) GetAuthorizerAccessToken() string {
 func (c *Client) GetAuthorizerRefreshToken() string {
 	return c.config.authorizerRefreshToken
 }
+
+func (c *Client) GetAuthorizerReleaseVersion() string {
+	return c.config.authorizerReleaseVersion
+}

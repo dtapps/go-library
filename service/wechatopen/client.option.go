@@ -12,16 +12,17 @@ type Options struct {
 
 	baseURL string // 接口地址
 
-	componentAppId         string // 第三方平台appid
-	componentAppSecret     string // 第三方平台app_secret
-	messageToken           string // 第三方平台消息令牌
-	messageKey             string // 第三方平台消息密钥
-	componentAccessToken   string // 第三方平台access_token
-	componentVerifyTicket  string // 第三方平台推送ticket
-	componentPreAuthCode   string // 第三方平台预授权码
-	authorizerAppid        string // 授权方appid
-	authorizerAccessToken  string // 授权方access_token
-	authorizerRefreshToken string // 授权方refresh_token
+	componentAppId           string // 第三方平台appid
+	componentAppSecret       string // 第三方平台app_secret
+	messageToken             string // 第三方平台消息令牌
+	messageKey               string // 第三方平台消息密钥
+	componentAccessToken     string // 第三方平台access_token
+	componentVerifyTicket    string // 第三方平台推送ticket
+	componentPreAuthCode     string // 第三方平台预授权码
+	authorizerAppid          string // 授权方appid
+	authorizerAccessToken    string // 授权方access_token
+	authorizerRefreshToken   string // 授权方refresh_token
+	authorizerReleaseVersion string // 授权方release_version
 }
 
 type Option struct {
@@ -138,5 +139,12 @@ func WithAuthorizerAccessToken(authorizerAccessToken string) Option {
 func WithAuthorizerRefreshToken(authorizerRefreshToken string) Option {
 	return Option{F: func(o *Options) {
 		o.authorizerRefreshToken = authorizerRefreshToken
+	}}
+}
+
+// WithAuthorizerReleaseVersion 设置 authorizerReleaseVersion
+func WithAuthorizerReleaseVersion(authorizerReleaseVersion string) Option {
+	return Option{F: func(o *Options) {
+		o.authorizerReleaseVersion = authorizerReleaseVersion
 	}}
 }

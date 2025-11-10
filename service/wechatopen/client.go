@@ -11,16 +11,17 @@ type Client struct {
 	config struct {
 		baseURL string // 接口地址
 
-		componentAppId         string // 第三方平台appid
-		componentAppSecret     string // 第三方平台app_secret
-		messageToken           string // 第三方平台消息令牌
-		messageKey             string // 第三方平台消息密钥
-		componentAccessToken   string // 第三方平台access_token
-		componentVerifyTicket  string // 第三方平台推送ticket
-		componentPreAuthCode   string // 第三方平台预授权码
-		authorizerAppid        string // 授权方appid
-		authorizerAccessToken  string // 授权方access_token
-		authorizerRefreshToken string // 授权方refresh_token
+		componentAppId           string // 第三方平台appid
+		componentAppSecret       string // 第三方平台app_secret
+		messageToken             string // 第三方平台消息令牌
+		messageKey               string // 第三方平台消息密钥
+		componentAccessToken     string // 第三方平台access_token
+		componentVerifyTicket    string // 第三方平台推送ticket
+		componentPreAuthCode     string // 第三方平台预授权码
+		authorizerAppid          string // 授权方appid
+		authorizerAccessToken    string // 授权方access_token
+		authorizerRefreshToken   string // 授权方refresh_token
+		authorizerReleaseVersion string // 授权方release_version
 	}
 
 	httpClient *resty.Client // 请求客户端
