@@ -2,6 +2,7 @@ package wechatpayapiv2
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorandom"
 	"go.dtapp.net/library/utils/gorequest"
 )
@@ -36,23 +37,16 @@ type MmpaymkttransfersGethbinfoResponse struct {
 	} `json:"hblist" xml:"hblist"` // 裂变红包领取列表
 }
 
-type MmpaymkttransfersGethbinfoResult struct {
-	Result MmpaymkttransfersGethbinfoResponse // 结果
-	Body   []byte                             // 内容
-	Http   gorequest.Response                 // 请求
-}
-
-func newMmpaymkttransfersGethbinfoResult(result MmpaymkttransfersGethbinfoResponse, body []byte, http gorequest.Response) *MmpaymkttransfersGethbinfoResult {
-	return &MmpaymkttransfersGethbinfoResult{Result: result, Body: body, Http: http}
-}
-
 // MmpaymkttransfersGethbinfo
 // 现金红包 - 查询红包记录
 // https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon_sl.php?chapter=13_6&index=5
-func (c *Client) MmpaymkttransfersGethbinfo(ctx context.Context, notMustParams ...*gorequest.Params) (*MmpaymkttransfersGethbinfoResult, error) {
+func (c *Client) MmpaymkttransfersGethbinfo(ctx context.Context, notMustParams ...*gorequest.Params) (response MmpaymkttransfersGethbinfoResponse, err error) {
 
 	// 证书
 	cert, err := c.P12ToPem()
+	if err != nil {
+		return
+	}
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -62,7 +56,6 @@ func (c *Client) MmpaymkttransfersGethbinfo(ctx context.Context, notMustParams .
 	params.Set("sign", c.getMd5Sign(params))
 
 	// 	请求
-	var response MmpaymkttransfersGethbinfoResponse
-	request, err := c.request(ctx, "mmpaymkttransfers/gethbinfo", params, true, cert, &response)
-	return newMmpaymkttransfersGethbinfoResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "mmpaymkttransfers/gethbinfo", params, cert, &response)
+	return
 }

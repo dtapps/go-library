@@ -2,6 +2,7 @@ package wechatpayapiv2
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorandom"
 	"go.dtapp.net/library/utils/gorequest"
 )
@@ -23,24 +24,17 @@ type TransfersResponse struct {
 	PaymentTime    string `json:"payment_time" xml:"payment_time"`                   // 付款成功时间
 }
 
-type TransfersResult struct {
-	Result TransfersResponse  // 结果
-	Body   []byte             // 内容
-	Http   gorequest.Response // 请求
-}
-
-func newTransfersResult(result TransfersResponse, body []byte, http gorequest.Response) *TransfersResult {
-	return &TransfersResult{Result: result, Body: body, Http: http}
-}
-
 // Transfers
 // 付款到零钱 - 付款
 // 需要证书
 // https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_2
-func (c *Client) Transfers(ctx context.Context, notMustParams ...*gorequest.Params) (*TransfersResult, error) {
+func (c *Client) Transfers(ctx context.Context, notMustParams ...*gorequest.Params) (response TransfersResponse, err error) {
 
 	// 证书
 	cert, err := c.P12ToPem()
+	if err != nil {
+		return
+	}
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -52,7 +46,6 @@ func (c *Client) Transfers(ctx context.Context, notMustParams ...*gorequest.Para
 	params.Set("sign", c.getMd5Sign(params))
 
 	// 	请求
-	var response TransfersResponse
-	request, err := c.request(ctx, "mmpaymkttransfers/promotion/transfers", params, true, cert, &response)
-	return newTransfersResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "mmpaymkttransfers/promotion/transfers", params, cert, &response)
+	return
 }

@@ -2,6 +2,7 @@ package wechatpayapiv2
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorandom"
 	"go.dtapp.net/library/utils/gorequest"
 )
@@ -25,20 +26,10 @@ type PayUnifiedOrderResponse struct {
 	CodeUrl   string `json:"code_url,omitempty" xml:"code_url,omitempty"`     // 二维码链接
 }
 
-type PayUnifiedOrderResult struct {
-	Result PayUnifiedOrderResponse // 结果
-	Body   []byte                  // 内容
-	Http   gorequest.Response      // 请求
-}
-
-func newPayUnifiedOrderResult(result PayUnifiedOrderResponse, body []byte, http gorequest.Response) *PayUnifiedOrderResult {
-	return &PayUnifiedOrderResult{Result: result, Body: body, Http: http}
-}
-
 // PayUnifiedOrder
 // 小程序支付 - 统一下单
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1
-func (c *Client) PayUnifiedOrder(ctx context.Context, notMustParams ...*gorequest.Params) (*PayUnifiedOrderResult, error) {
+func (c *Client) PayUnifiedOrder(ctx context.Context, notMustParams ...*gorequest.Params) (response PayUnifiedOrderResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -50,7 +41,6 @@ func (c *Client) PayUnifiedOrder(ctx context.Context, notMustParams ...*goreques
 	params.Set("sign", c.getMd5Sign(params))
 
 	// 	请求
-	var response PayUnifiedOrderResponse
-	request, err := c.request(ctx, "pay/unifiedorder", params, false, nil, &response)
-	return newPayUnifiedOrderResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "pay/unifiedorder", params, nil, &response)
+	return
 }

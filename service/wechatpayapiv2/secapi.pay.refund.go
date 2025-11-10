@@ -2,6 +2,7 @@ package wechatpayapiv2
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorandom"
 	"go.dtapp.net/library/utils/gorequest"
 )
@@ -39,24 +40,17 @@ type SecApiPayRefundResponse struct {
 	CouponRefundId      string `json:"coupon_refund_id,omitempty" xml:"coupon_refund_id,omitempty"`           // 退款代金券ID
 }
 
-type SecApiPayRefundResult struct {
-	Result SecApiPayRefundResponse // 结果
-	Body   []byte                  // 内容
-	Http   gorequest.Response      // 请求
-}
-
-func newSecApiPayRefundResult(result SecApiPayRefundResponse, body []byte, http gorequest.Response) *SecApiPayRefundResult {
-	return &SecApiPayRefundResult{Result: result, Body: body, Http: http}
-}
-
 // SecApiPayRefund
 // 小程序支付 - 申请退款
 // 需要证书
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_4
-func (c *Client) SecApiPayRefund(ctx context.Context, notMustParams ...*gorequest.Params) (*SecApiPayRefundResult, error) {
+func (c *Client) SecApiPayRefund(ctx context.Context, notMustParams ...*gorequest.Params) (response SecApiPayRefundResponse, err error) {
 
 	// 证书
 	cert, err := c.P12ToPem()
+	if err != nil {
+		return
+	}
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -68,7 +62,6 @@ func (c *Client) SecApiPayRefund(ctx context.Context, notMustParams ...*goreques
 	params.Set("sign", c.getMd5Sign(params))
 
 	// 	请求
-	var response SecApiPayRefundResponse
-	request, err := c.request(ctx, "secapi/pay/refund", params, true, cert, &response)
-	return newSecApiPayRefundResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "secapi/pay/refund", params, cert, &response)
+	return
 }

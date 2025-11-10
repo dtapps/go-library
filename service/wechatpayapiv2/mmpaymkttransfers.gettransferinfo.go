@@ -2,6 +2,7 @@ package wechatpayapiv2
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorandom"
 	"go.dtapp.net/library/utils/gorequest"
 )
@@ -28,24 +29,17 @@ type TransfersQueryResponse struct {
 	Desc           string `json:"desc" xml:"desc"`                                       // 付款备注
 }
 
-type TransfersQueryResult struct {
-	Result TransfersQueryResponse // 结果
-	Body   []byte                 // 内容
-	Http   gorequest.Response     // 请求
-}
-
-func newTransfersQueryResult(result TransfersQueryResponse, body []byte, http gorequest.Response) *TransfersQueryResult {
-	return &TransfersQueryResult{Result: result, Body: body, Http: http}
-}
-
 // TransfersQuery
 // 付款到零钱 - 查询付款
 // 需要证书
 // https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_3
-func (c *Client) TransfersQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*TransfersQueryResult, error) {
+func (c *Client) TransfersQuery(ctx context.Context, notMustParams ...*gorequest.Params) (response TransfersQueryResponse, err error) {
 
 	// 证书
 	cert, err := c.P12ToPem()
+	if err != nil {
+		return
+	}
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -57,7 +51,6 @@ func (c *Client) TransfersQuery(ctx context.Context, notMustParams ...*gorequest
 	params.Set("sign", c.getMd5Sign(params))
 
 	// 	请求
-	var response TransfersQueryResponse
-	request, err := c.request(ctx, "mmpaymkttransfers/gettransferinfo", params, true, cert, &response)
-	return newTransfersQueryResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "mmpaymkttransfers/gettransferinfo", params, cert, &response)
+	return
 }

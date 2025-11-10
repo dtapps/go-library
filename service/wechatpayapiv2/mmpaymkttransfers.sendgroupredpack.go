@@ -2,6 +2,7 @@ package wechatpayapiv2
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorandom"
 	"go.dtapp.net/library/utils/gorequest"
 )
@@ -22,23 +23,16 @@ type MmpaymkttransfersSendgroupredpackResponse struct {
 	SendListid  string `json:"send_listid" xml:"send_listid"`   // 微信单号
 }
 
-type MmpaymkttransfersSendgroupredpackResult struct {
-	Result MmpaymkttransfersSendgroupredpackResponse // 结果
-	Body   []byte                                    // 内容
-	Http   gorequest.Response                        // 请求
-}
-
-func newMmpaymkttransfersSendgroupredpackResult(result MmpaymkttransfersSendgroupredpackResponse, body []byte, http gorequest.Response) *MmpaymkttransfersSendgroupredpackResult {
-	return &MmpaymkttransfersSendgroupredpackResult{Result: result, Body: body, Http: http}
-}
-
 // MmpaymkttransfersSendgroupredpack
 // 现金红包 - 发放裂变红包
 // https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon_sl.php?chapter=13_5&index=4
-func (c *Client) MmpaymkttransfersSendgroupredpack(ctx context.Context, notMustParams ...*gorequest.Params) (*MmpaymkttransfersSendgroupredpackResult, error) {
+func (c *Client) MmpaymkttransfersSendgroupredpack(ctx context.Context, notMustParams ...*gorequest.Params) (response MmpaymkttransfersSendgroupredpackResponse, err error) {
 
 	// 证书
 	cert, err := c.P12ToPem()
+	if err != nil {
+		return
+	}
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -48,7 +42,6 @@ func (c *Client) MmpaymkttransfersSendgroupredpack(ctx context.Context, notMustP
 	params.Set("sign", c.getMd5Sign(params))
 
 	// 	请求
-	var response MmpaymkttransfersSendgroupredpackResponse
-	request, err := c.request(ctx, "mmpaymkttransfers/sendgroupredpack", params, true, cert, &response)
-	return newMmpaymkttransfersSendgroupredpackResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "mmpaymkttransfers/sendgroupredpack", params, cert, &response)
+	return
 }

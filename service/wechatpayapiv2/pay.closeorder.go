@@ -2,6 +2,7 @@ package wechatpayapiv2
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorandom"
 	"go.dtapp.net/library/utils/gorequest"
 )
@@ -21,20 +22,10 @@ type PayCloseOrderResponse struct {
 	Sign     string `json:"sign,omitempty" xml:"sign,omitempty"`           // 签名
 }
 
-type PayCloseOrderResult struct {
-	Result PayCloseOrderResponse // 结果
-	Body   []byte                // 内容
-	Http   gorequest.Response    // 请求
-}
-
-func newPayCloseOrderResult(result PayCloseOrderResponse, body []byte, http gorequest.Response) *PayCloseOrderResult {
-	return &PayCloseOrderResult{Result: result, Body: body, Http: http}
-}
-
 // PayCloseOrder
 // 小程序支付 - 关闭订单
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_3
-func (c *Client) PayCloseOrder(ctx context.Context, outTradeNo string, notMustParams ...*gorequest.Params) (*PayCloseOrderResult, error) {
+func (c *Client) PayCloseOrder(ctx context.Context, outTradeNo string, notMustParams ...*gorequest.Params) (response PayCloseOrderResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -47,7 +38,6 @@ func (c *Client) PayCloseOrder(ctx context.Context, outTradeNo string, notMustPa
 	params.Set("sign", c.getMd5Sign(params))
 
 	// 	请求
-	var response PayCloseOrderResponse
-	request, err := c.request(ctx, "pay/closeorder", params, false, nil, &response)
-	return newPayCloseOrderResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "pay/closeorder", params, nil, &response)
+	return
 }

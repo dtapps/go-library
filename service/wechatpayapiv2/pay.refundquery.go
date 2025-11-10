@@ -2,6 +2,7 @@ package wechatpayapiv2
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorandom"
 	"go.dtapp.net/library/utils/gorequest"
 )
@@ -44,20 +45,10 @@ type PayRefundQueryResponse struct {
 	CashRefundFee       int    `json:"cash_refund_fee,omitempty" xml:"cash_refund_fee,omitempty"`             // 用户退款金额
 }
 
-type PayRefundQueryResult struct {
-	Result PayRefundQueryResponse // 结果
-	Body   []byte                 // 内容
-	Http   gorequest.Response     // 请求
-}
-
-func newPayRefundQueryResult(result PayRefundQueryResponse, body []byte, http gorequest.Response) *PayRefundQueryResult {
-	return &PayRefundQueryResult{Result: result, Body: body, Http: http}
-}
-
 // PayRefundQuery
 // 小程序支付 - 查询退款
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1
-func (c *Client) PayRefundQuery(ctx context.Context, notMustParams ...*gorequest.Params) (*PayRefundQueryResult, error) {
+func (c *Client) PayRefundQuery(ctx context.Context, notMustParams ...*gorequest.Params) (response PayRefundQueryResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -69,7 +60,6 @@ func (c *Client) PayRefundQuery(ctx context.Context, notMustParams ...*gorequest
 	params.Set("sign", c.getMd5Sign(params))
 
 	// 	请求
-	var response PayRefundQueryResponse
-	request, err := c.request(ctx, "pay/unifiedorder", params, false, nil, &response)
-	return newPayRefundQueryResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "pay/unifiedorder", params, nil, &response)
+	return
 }

@@ -2,6 +2,7 @@ package wechatpayapiv2
 
 import (
 	"context"
+
 	"go.dtapp.net/library/utils/gorandom"
 	"go.dtapp.net/library/utils/gorequest"
 )
@@ -41,20 +42,10 @@ type PayOrderQueryResponse struct {
 	TradeStateDesc     string `json:"trade_state_desc,omitempty" xml:"trade_state_desc,omitempty"`         // 交易状态描述
 }
 
-type PayOrderQueryResult struct {
-	Result PayOrderQueryResponse // 结果
-	Body   []byte                // 内容
-	Http   gorequest.Response    // 请求
-}
-
-func newPayOrderQueryResult(result PayOrderQueryResponse, body []byte, http gorequest.Response) *PayOrderQueryResult {
-	return &PayOrderQueryResult{Result: result, Body: body, Http: http}
-}
-
 // PayOrderQuery
 // 小程序支付 - 查询订单
 // https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_2
-func (c *Client) PayOrderQuery(ctx context.Context, transactionId, outTradeNo string, notMustParams ...*gorequest.Params) (*PayOrderQueryResult, error) {
+func (c *Client) PayOrderQuery(ctx context.Context, transactionId, outTradeNo string, notMustParams ...*gorequest.Params) (response PayOrderQueryResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -72,7 +63,6 @@ func (c *Client) PayOrderQuery(ctx context.Context, transactionId, outTradeNo st
 	params.Set("sign", c.getMd5Sign(params))
 
 	// 	请求
-	var response PayOrderQueryResponse
-	request, err := c.request(ctx, "pay/orderquery", params, false, nil, &response)
-	return newPayOrderQueryResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "pay/orderquery", params, nil, &response)
+	return
 }
