@@ -21,17 +21,17 @@ type ThirdpartyCode2SessionResponse struct {
 
 // ThirdpartyCode2Session 小程序登录
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/login/thirdpartyCode2Session.html
-func (c *Client) ThirdpartyCode2Session(ctx context.Context, componentAccessToken, authorizerAppid, jsCode string, notMustParams ...*gorequest.Params) (response ThirdpartyCode2SessionResponse, err error) {
+func (c *Client) ThirdpartyCode2Session(ctx context.Context, jsCode string, notMustParams ...*gorequest.Params) (response ThirdpartyCode2SessionResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("appid", authorizerAppid)                 // 小程序的 AppID
+	params.Set("appid", c.GetAuthorizerAppid())          // 小程序的 AppID
 	params.Set("grant_type", "authorization_code")       // 填 authorization_code
 	params.Set("component_appid", c.GetComponentAppId()) // 第三方平台 appid
 	params.Set("js_code", jsCode)                        // wx.login 获取的 code
 
 	// 请求
-	err = c.request(ctx, "sns/component/jscode2session?component_access_token="+componentAccessToken, params, http.MethodGet, &response)
+	err = c.request(ctx, "sns/component/jscode2session?component_access_token="+c.GetComponentAccessToken(), params, http.MethodGet, &response)
 	return
 }
 

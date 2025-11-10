@@ -71,14 +71,14 @@ type CgiBinComponentApiGetAuthorizerInfoResponse struct {
 
 // CgiBinComponentApiGetAuthorizerInfo 获取授权帐号详情
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/authorization-management/getAuthorizerInfo.html
-func (c *Client) CgiBinComponentApiGetAuthorizerInfo(ctx context.Context, authorizerAppid, componentAccessToken string, notMustParams ...*gorequest.Params) (response CgiBinComponentApiGetAuthorizerInfoResponse, err error) {
+func (c *Client) CgiBinComponentApiGetAuthorizerInfo(ctx context.Context, notMustParams ...*gorequest.Params) (response CgiBinComponentApiGetAuthorizerInfoResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("component_appid", c.GetComponentAppId()) // 第三方平台appid
-	params.Set("authorizer_appid", authorizerAppid)      // 授权方appid
+	params.Set("component_appid", c.GetComponentAppId())   // 第三方平台appid
+	params.Set("authorizer_appid", c.GetAuthorizerAppid()) // 授权方appid
 
 	// 请求
-	err = c.request(ctx, fmt.Sprintf("cgi-bin/component/api_get_authorizer_info?access_token=%s", componentAccessToken), params, http.MethodPost, &response)
+	err = c.request(ctx, fmt.Sprintf("cgi-bin/component/api_get_authorizer_info?access_token=%s", c.GetComponentAccessToken()), params, http.MethodPost, &response)
 	return
 }

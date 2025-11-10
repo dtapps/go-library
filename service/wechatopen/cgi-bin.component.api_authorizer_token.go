@@ -16,15 +16,15 @@ type CgiBinComponentApiAuthorizerTokenResponse struct {
 
 // CgiBinComponentApiAuthorizerToken 获取/刷新接口调用令牌
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/api_authorizer_token.html
-func (c *Client) CgiBinComponentApiAuthorizerToken(ctx context.Context, componentAccessToken, authorizerAppid, authorizerRefreshToken string, notMustParams ...*gorequest.Params) (response CgiBinComponentApiAuthorizerTokenResponse, err error) {
+func (c *Client) CgiBinComponentApiAuthorizerToken(ctx context.Context, notMustParams ...*gorequest.Params) (response CgiBinComponentApiAuthorizerTokenResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("component_appid", c.GetComponentAppId())           // 第三方平台appid
-	params.Set("authorizer_appid", authorizerAppid)                // 授权方appid
-	params.Set("authorizer_refresh_token", authorizerRefreshToken) // 授权码会在授权成功时返回给第三方平台
+	params.Set("component_appid", c.GetComponentAppId())                  // 第三方平台appid
+	params.Set("authorizer_appid", c.GetAuthorizerAppid())                // 授权方appid
+	params.Set("authorizer_refresh_token", c.GetAuthorizerRefreshToken()) // 授权码会在授权成功时返回给第三方平台
 
 	// 请求
-	err = c.request(ctx, fmt.Sprintf("cgi-bin/component/api_authorizer_token?component_access_token=%s", componentAccessToken), params, http.MethodPost, &response)
+	err = c.request(ctx, fmt.Sprintf("cgi-bin/component/api_authorizer_token?component_access_token=%s", c.GetComponentAccessToken()), params, http.MethodPost, &response)
 	return
 }
