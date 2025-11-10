@@ -9,13 +9,22 @@ import (
 
 // ClearQuota 重置API调用次数
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/openapi/clearQuota.html
-func (c *Client) ClearQuota(ctx context.Context, authorizerAccessToken, appid string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
+func (c *Client) ClearQuota(ctx context.Context, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+
+	access_token := c.GetAuthorizerAccessToken()
+	if access_token == "" {
+		access_token = c.GetComponentAccessToken()
+	}
+	appid := c.GetAuthorizerAppid()
+	if appid == "" {
+		appid = c.GetComponentAppId()
+	}
 	params.Set("appid", appid)
 
 	// 请求
-	err = c.request(ctx, "cgi-bin/clear_quota?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "cgi-bin/clear_quota?access_token="+access_token, params, http.MethodPost, &response)
 	return
 }

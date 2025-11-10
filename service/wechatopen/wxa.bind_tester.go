@@ -14,14 +14,14 @@ type BindTesterResponse struct {
 
 // BindTester 绑定体验者
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/member-management/bindTester.html
-func (c *Client) BindTester(ctx context.Context, authorizerAccessToken, wechatid string, notMustParams ...*gorequest.Params) (response BindTesterResponse, err error) {
+func (c *Client) BindTester(ctx context.Context, wechatid string, notMustParams ...*gorequest.Params) (response BindTesterResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("wechatid", wechatid)
 
 	// 请求
-	err = c.request(ctx, "wxa/bind_tester?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/bind_tester?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

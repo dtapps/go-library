@@ -113,8 +113,8 @@ func WithComponentVerifyTicket(componentVerifyTicket string) Option {
 	}}
 }
 
-// WithAomponentPreAuthCode 设置 componentPreAuthCode
-func WithAomponentPreAuthCode(componentPreAuthCode string) Option {
+// WithComponentPreAuthCode 设置 componentPreAuthCode
+func WithComponentPreAuthCode(componentPreAuthCode string) Option {
 	return Option{F: func(o *Options) {
 		o.componentPreAuthCode = componentPreAuthCode
 	}}

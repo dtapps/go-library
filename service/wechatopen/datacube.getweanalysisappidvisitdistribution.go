@@ -20,7 +20,7 @@ type DataCubeGetWeAnAlysIsAppidVisitDistributionResponse struct {
 
 // DataCubeGetWeAnAlysIsAppidVisitDistribution 获取用户小程序访问分布数据
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/others/getVisitDistribution.html
-func (c *Client) DataCubeGetWeAnAlysIsAppidVisitDistribution(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlysIsAppidVisitDistributionResponse, err error) {
+func (c *Client) DataCubeGetWeAnAlysIsAppidVisitDistribution(ctx context.Context, beginDate, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlysIsAppidVisitDistributionResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -28,6 +28,6 @@ func (c *Client) DataCubeGetWeAnAlysIsAppidVisitDistribution(ctx context.Context
 	params.Set("end_date", endDate)
 
 	// 请求
-	err = c.request(ctx, "datacube/getweanalysisappidvisitdistribution?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "datacube/getweanalysisappidvisitdistribution?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }

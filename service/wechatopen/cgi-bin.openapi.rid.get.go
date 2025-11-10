@@ -21,7 +21,7 @@ type CgiBinOpenapiRidGetResponse struct {
 
 // CgiBinOpenapiRidGet 查询rid信息
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/openapi/getRidInfo.html
-func (c *Client) CgiBinOpenapiRidGet(ctx context.Context, authorizerAccessToken, rid string, notMustParams ...*gorequest.Params) (response CgiBinOpenapiRidGetResponse, err error) {
+func (c *Client) CgiBinOpenapiRidGet(ctx context.Context, rid string, notMustParams ...*gorequest.Params) (response CgiBinOpenapiRidGetResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -30,6 +30,6 @@ func (c *Client) CgiBinOpenapiRidGet(ctx context.Context, authorizerAccessToken,
 	}
 
 	// 请求
-	err = c.request(ctx, "cgi-bin/openapi/rid/get?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "cgi-bin/openapi/rid/get?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }

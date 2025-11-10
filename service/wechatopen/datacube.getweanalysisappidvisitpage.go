@@ -23,7 +23,7 @@ type DataCubeGetWeAnAlySisAppidVisitPageResponse struct {
 
 // DataCubeGetWeAnAlySisAppidVisitPage 获取访问页面数据
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/others/getVisitPage.html
-func (c *Client) DataCubeGetWeAnAlySisAppidVisitPage(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlySisAppidVisitPageResponse, err error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidVisitPage(ctx context.Context, beginDate, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlySisAppidVisitPageResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -31,6 +31,6 @@ func (c *Client) DataCubeGetWeAnAlySisAppidVisitPage(ctx context.Context, author
 	params.Set("end_date", endDate)
 
 	// 请求
-	err = c.request(ctx, "datacube/getweanalysisappidvisitpage?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "datacube/getweanalysisappidvisitpage?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }

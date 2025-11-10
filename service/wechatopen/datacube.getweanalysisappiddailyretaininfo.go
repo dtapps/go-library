@@ -21,7 +21,7 @@ type DataCubeGetWeAnAlySisAppidDailyRetainInfoResponse struct {
 
 // DataCubeGetWeAnAlySisAppidDailyRetainInfo 获取用户访问小程序日留存
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/visit-retain/getDailyRetain.html
-func (c *Client) DataCubeGetWeAnAlySisAppidDailyRetainInfo(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlySisAppidDailyRetainInfoResponse, err error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidDailyRetainInfo(ctx context.Context, beginDate, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlySisAppidDailyRetainInfoResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -29,6 +29,6 @@ func (c *Client) DataCubeGetWeAnAlySisAppidDailyRetainInfo(ctx context.Context, 
 	params.Set("end_date", endDate)
 
 	// 请求
-	err = c.request(ctx, "datacube/getweanalysisappiddailyretaininfo?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "datacube/getweanalysisappiddailyretaininfo?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
