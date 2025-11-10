@@ -21,7 +21,7 @@ type GetPenaltyListResponse struct {
 
 // GetPenaltyList 获取小程序交易体验分违规记录
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/transaction-guarantee/GetPenaltyList.html
-func (c *Client) GetPenaltyList(ctx context.Context, authorizerAccessToken string, offset int64, limit int64, notMustParams ...*gorequest.Params) (response GetPenaltyListResponse, err error) {
+func (c *Client) GetPenaltyList(ctx context.Context, offset int64, limit int64, notMustParams ...*gorequest.Params) (response GetPenaltyListResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -29,6 +29,6 @@ func (c *Client) GetPenaltyList(ctx context.Context, authorizerAccessToken strin
 	params.Set("limit", limit)   // 获取从第offset条开始的limit条记录（序号从 0 开始），最大不超过 100
 
 	// 请求
-	err = c.request(ctx, "wxaapi/wxamptrade/get_penalty_list?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxaapi/wxamptrade/get_penalty_list?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }

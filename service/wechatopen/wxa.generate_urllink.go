@@ -14,13 +14,13 @@ type GenerateUrlLinkResponse struct {
 
 // GenerateUrlLink 获取加密URLLink
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/url-link/generateUrlLink.html
-func (c *Client) GenerateUrlLink(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response GenerateUrlLinkResponse, err error) {
+func (c *Client) GenerateUrlLink(ctx context.Context, notMustParams ...*gorequest.Params) (response GenerateUrlLinkResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/generate_urllink?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/generate_urllink?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

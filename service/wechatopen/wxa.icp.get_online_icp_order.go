@@ -80,13 +80,13 @@ type GetOnlineIcpOrderResponse struct {
 
 // GetOnlineIcpOrder 获取小程序已备案详情
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/record/getOnlineIcpOrder.html
-func (c *Client) GetOnlineIcpOrder(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response GetOnlineIcpOrderResponse, err error) {
+func (c *Client) GetOnlineIcpOrder(ctx context.Context, notMustParams ...*gorequest.Params) (response GetOnlineIcpOrderResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/icp/get_online_icp_order?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/icp/get_online_icp_order?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

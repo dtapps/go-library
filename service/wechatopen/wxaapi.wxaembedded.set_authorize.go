@@ -10,13 +10,13 @@ import (
 // WxaApiWxAembeddedSetAuthorize 设置授权方式
 // checkComponentIsConfig && checkAuthorizerConfig
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/embedded-management/setAuthorizedEmbedded.html
-func (c *Client) WxaApiWxAembeddedSetAuthorize(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
+func (c *Client) WxaApiWxAembeddedSetAuthorize(ctx context.Context, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxaapi/wxaembedded/set_authorize?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxaapi/wxaembedded/set_authorize?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

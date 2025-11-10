@@ -26,13 +26,13 @@ type WxaModifyDomainDirectlyResponse struct {
 
 // WxaModifyDomainDirectly 快速配置小程序服务器域名
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/modifyServerDomainDirectly.html
-func (c *Client) WxaModifyDomainDirectly(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response WxaModifyDomainDirectlyResponse, err error) {
+func (c *Client) WxaModifyDomainDirectly(ctx context.Context, notMustParams ...*gorequest.Params) (response WxaModifyDomainDirectlyResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/modify_domain_directly?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/modify_domain_directly?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

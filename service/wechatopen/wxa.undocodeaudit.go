@@ -9,14 +9,14 @@ import (
 
 // UndoAudit 撤回代码审核
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/undoAudit.html
-func (c *Client) UndoAudit(ctx context.Context, authorizerAccessToken string, auditid int64, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
+func (c *Client) UndoAudit(ctx context.Context, auditid int64, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("auditid", auditid)
 
 	// 请求
-	err = c.request(ctx, "wxa/undocodeaudit?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/undocodeaudit?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

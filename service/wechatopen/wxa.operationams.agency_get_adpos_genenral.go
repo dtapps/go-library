@@ -36,7 +36,7 @@ type WxaOperationamsAgencyGetAdposGenenralResponse struct {
 // WxaOperationamsAgencyGetAdposGenenral
 // 获取小程序广告汇总数据
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/ad-data/GetAdposGenenral.html
-func (c *Client) WxaOperationamsAgencyGetAdposGenenral(ctx context.Context, authorizerAccessToken string, page, pageSize int64, startDate, endDate, adSlot string, notMustParams ...*gorequest.Params) (response WxaOperationamsAgencyGetAdposGenenralResponse, err error) {
+func (c *Client) WxaOperationamsAgencyGetAdposGenenral(ctx context.Context, page, pageSize int64, startDate, endDate, adSlot string, notMustParams ...*gorequest.Params) (response WxaOperationamsAgencyGetAdposGenenralResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -49,6 +49,6 @@ func (c *Client) WxaOperationamsAgencyGetAdposGenenral(ctx context.Context, auth
 	}
 
 	// 请求
-	err = c.request(ctx, "wxa/operationams?action=agency_get_adpos_genenral&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/operationams?action=agency_get_adpos_genenral&access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }

@@ -24,13 +24,13 @@ type WxaSecurityGetPrivacyInterfaceResponse struct {
 
 // WxaSecurityGetPrivacyInterface 获取接口列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/apply_api/get_privacy_interface.html
-func (c *Client) WxaSecurityGetPrivacyInterface(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response WxaSecurityGetPrivacyInterfaceResponse, err error) {
+func (c *Client) WxaSecurityGetPrivacyInterface(ctx context.Context, notMustParams ...*gorequest.Params) (response WxaSecurityGetPrivacyInterfaceResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/security/get_privacy_interface?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
+	err = c.request(ctx, "wxa/security/get_privacy_interface?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodGet, &response)
 	return
 }
 

@@ -33,13 +33,13 @@ type GetAppealRecordsResponse struct {
 
 // GetAppealRecords 获取小程序申诉记录
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/record-management/getAppealRecords.html
-func (c *Client) GetAppealRecords(ctx context.Context, authorizerAccessToken string, illegalRecordId string, notMustParams ...*gorequest.Params) (response GetAppealRecordsResponse, err error) {
+func (c *Client) GetAppealRecords(ctx context.Context, illegalRecordId string, notMustParams ...*gorequest.Params) (response GetAppealRecordsResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("illegal_record_id", illegalRecordId)
 
 	// 请求
-	err = c.request(ctx, "wxa/getappealrecords?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/getappealrecords?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }

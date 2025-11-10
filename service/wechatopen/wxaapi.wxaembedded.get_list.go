@@ -22,13 +22,13 @@ type WxaApiWxaembeddedGetListResponse struct {
 
 // WxaApiWxaembeddedGetList 获取半屏小程序调用列表
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/embedded-management/getEmbeddedList.html
-func (c *Client) WxaApiWxaembeddedGetList(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response WxaApiWxaembeddedGetListResponse, err error) {
+func (c *Client) WxaApiWxaembeddedGetList(ctx context.Context, notMustParams ...*gorequest.Params) (response WxaApiWxaembeddedGetListResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxaapi/wxaembedded/get_list?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
+	err = c.request(ctx, "wxaapi/wxaembedded/get_list?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodGet, &response)
 	return
 }
 

@@ -17,13 +17,13 @@ type SetCodeAuditQuotaResponse struct {
 
 // SetCodeAuditQuota 查询服务商审核额度
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/setCodeAuditQuota.html
-func (c *Client) SetCodeAuditQuota(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response SetCodeAuditQuotaResponse, err error) {
+func (c *Client) SetCodeAuditQuota(ctx context.Context, notMustParams ...*gorequest.Params) (response SetCodeAuditQuotaResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/queryquota?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/queryquota?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

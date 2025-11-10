@@ -27,12 +27,12 @@ type WxaMsgSecCheckResponse struct {
 
 // WxaMsgSecCheck 文本内容安全识别
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.getUnlimited.html
-func (c *Client) WxaMsgSecCheck(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response WxaMsgSecCheckResponse, err error) {
+func (c *Client) WxaMsgSecCheck(ctx context.Context, notMustParams ...*gorequest.Params) (response WxaMsgSecCheckResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/msg_sec_check?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/msg_sec_check?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }

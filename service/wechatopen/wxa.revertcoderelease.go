@@ -19,13 +19,13 @@ type RevertCodeReleaseResponse struct {
 
 // RevertCodeRelease 小程序版本回退
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/revertCodeRelease.html
-func (c *Client) RevertCodeRelease(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response RevertCodeReleaseResponse, err error) {
+func (c *Client) RevertCodeRelease(ctx context.Context, notMustParams ...*gorequest.Params) (response RevertCodeReleaseResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/revertcoderelease?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
+	err = c.request(ctx, "wxa/revertcoderelease?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodGet, &response)
 	return
 }
 

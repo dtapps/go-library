@@ -9,13 +9,13 @@ import (
 
 // CreateQRCode 获取小程序二维码
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/qr-code/createQRCode.html
-func (c *Client) CreateQRCode(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response APIResponse, body []byte, err error) {
+func (c *Client) CreateQRCode(ctx context.Context, notMustParams ...*gorequest.Params) (response APIResponse, body []byte, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	body, err = c.requestImage(ctx, "cgi-bin/wxaapp/createwxaqrcode?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	body, err = c.requestImage(ctx, "cgi-bin/wxaapp/createwxaqrcode?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

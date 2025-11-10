@@ -15,13 +15,13 @@ type WxaOperationamsAgencyCheckCanOpenPublisherResponse struct {
 // WxaOperationamsAgencyCheckCanOpenPublisher
 // 检测是否能开通流量主
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/open/AgencyCheckCanOpenPublisher.html
-func (c *Client) WxaOperationamsAgencyCheckCanOpenPublisher(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response WxaOperationamsAgencyCheckCanOpenPublisherResponse, err error) {
+func (c *Client) WxaOperationamsAgencyCheckCanOpenPublisher(ctx context.Context, notMustParams ...*gorequest.Params) (response WxaOperationamsAgencyCheckCanOpenPublisherResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/operationams?action=agency_check_can_open_publisher&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/operationams?action=agency_check_can_open_publisher&access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

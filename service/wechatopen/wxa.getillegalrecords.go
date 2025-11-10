@@ -21,13 +21,13 @@ type GetIllegalRecordsResponse struct {
 
 // GetIllegalRecords 获取小程序违规处罚记录
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/record-management/getIllegalRecords.html
-func (c *Client) GetIllegalRecords(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response GetIllegalRecordsResponse, err error) {
+func (c *Client) GetIllegalRecords(ctx context.Context, notMustParams ...*gorequest.Params) (response GetIllegalRecordsResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/getillegalrecords?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/getillegalrecords?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

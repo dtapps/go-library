@@ -23,12 +23,12 @@ type GetVersionInfoResponse struct {
 
 // GetVersionInfo 查询小程序版本信息
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/getVersionInfo.html
-func (c *Client) GetVersionInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response GetVersionInfoResponse, err error) {
+func (c *Client) GetVersionInfo(ctx context.Context, notMustParams ...*gorequest.Params) (response GetVersionInfoResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/getversioninfo?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/getversioninfo?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }

@@ -9,13 +9,13 @@ import (
 
 // CgiBinComponentSetPrivacySetting 配置小程序用户隐私保护指引
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/privacy_config/set_privacy_setting.html
-func (c *Client) CgiBinComponentSetPrivacySetting(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
+func (c *Client) CgiBinComponentSetPrivacySetting(ctx context.Context, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "cgi-bin/component/setprivacysetting?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "cgi-bin/component/setprivacysetting?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

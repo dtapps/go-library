@@ -14,13 +14,13 @@ type GenerateSchemeResponse struct {
 
 // GenerateScheme 获取加密scheme码
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/url-scheme/generateScheme.html
-func (c *Client) GenerateScheme(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response GenerateSchemeResponse, err error) {
+func (c *Client) GenerateScheme(ctx context.Context, notMustParams ...*gorequest.Params) (response GenerateSchemeResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/generatescheme?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/generatescheme?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

@@ -9,13 +9,13 @@ import (
 
 // CgiBinWxOpenQrCodeJumpAdd 增加或修改二维码规则
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumpadd.html
-func (c *Client) CgiBinWxOpenQrCodeJumpAdd(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
+func (c *Client) CgiBinWxOpenQrCodeJumpAdd(ctx context.Context, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "cgi-bin/wxopen/qrcodejumpadd?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "cgi-bin/wxopen/qrcodejumpadd?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

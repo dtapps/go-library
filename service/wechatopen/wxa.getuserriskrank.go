@@ -15,13 +15,13 @@ type WxaGetUserRiskRankResponse struct {
 
 // WxaGetUserRiskRank 获取用户安全等级
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/sec-center/safety-control-capability/getUserRiskRank.html
-func (c *Client) WxaGetUserRiskRank(ctx context.Context, authorizerAppid, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response WxaGetUserRiskRankResponse, err error) {
+func (c *Client) WxaGetUserRiskRank(ctx context.Context, notMustParams ...*gorequest.Params) (response WxaGetUserRiskRankResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("appid", authorizerAppid)
+	params.Set("appid", c.GetAuthorizerAppid())
 
 	// 请求
-	err = c.request(ctx, "wxa/getuserriskrank?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/getuserriskrank?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }

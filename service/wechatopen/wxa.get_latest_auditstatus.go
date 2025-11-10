@@ -20,13 +20,13 @@ type GetLatestAuditStatusResponse struct {
 
 // GetLatestAuditStatus 查询最新一次审核单状态
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/getLatestAuditStatus.html
-func (c *Client) GetLatestAuditStatus(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response GetLatestAuditStatusResponse, err error) {
+func (c *Client) GetLatestAuditStatus(ctx context.Context, notMustParams ...*gorequest.Params) (response GetLatestAuditStatusResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/get_latest_auditstatus?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
+	err = c.request(ctx, "wxa/get_latest_auditstatus?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodGet, &response)
 	return
 }
 

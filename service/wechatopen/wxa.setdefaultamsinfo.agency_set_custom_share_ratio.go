@@ -10,7 +10,7 @@ import (
 // WxaSetDefaultamsInfoAgencySetCustomShareRatio
 // 设置自定义分账比例
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/percentage/SetCustomShareRatio.html
-func (c *Client) WxaSetDefaultamsInfoAgencySetCustomShareRatio(ctx context.Context, authorizerAccessToken string, appid string, shareRatio int64, notMustParams ...*gorequest.Params) (response APIRetResponse, err error) {
+func (c *Client) WxaSetDefaultamsInfoAgencySetCustomShareRatio(ctx context.Context, appid string, shareRatio int64, notMustParams ...*gorequest.Params) (response APIRetResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -18,7 +18,7 @@ func (c *Client) WxaSetDefaultamsInfoAgencySetCustomShareRatio(ctx context.Conte
 	params.Set("share_ratio", shareRatio)
 
 	// 请求
-	err = c.request(ctx, "wxa/setdefaultamsinfo?action=agency_set_custom_share_ratio&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/setdefaultamsinfo?action=agency_set_custom_share_ratio&access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

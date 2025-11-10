@@ -24,13 +24,13 @@ type QueryUrlLinkResponse struct {
 
 // QueryUrlLink 查询加密URLLink
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/url-link/queryUrlLink.html
-func (c *Client) QueryUrlLink(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response QueryUrlLinkResponse, err error) {
+func (c *Client) QueryUrlLink(ctx context.Context, notMustParams ...*gorequest.Params) (response QueryUrlLinkResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/query_urllink?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/query_urllink?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

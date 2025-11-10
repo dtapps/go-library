@@ -9,14 +9,14 @@ import (
 
 // WxaGetDefaultamsInfoGetShareRatio 查询分账比例
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/percentage/GetShareRatio.html
-func (c *Client) WxaGetDefaultamsInfoGetShareRatio(ctx context.Context, authorizerAppid, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response APIRetResponse, err error) {
+func (c *Client) WxaGetDefaultamsInfoGetShareRatio(ctx context.Context, notMustParams ...*gorequest.Params) (response APIRetResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("appid", authorizerAppid)
+	params.Set("appid", c.GetAuthorizerAppid())
 
 	// 请求
-	err = c.request(ctx, "wxa/getdefaultamsinfo?action=get_share_ratio&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/getdefaultamsinfo?action=get_share_ratio&access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

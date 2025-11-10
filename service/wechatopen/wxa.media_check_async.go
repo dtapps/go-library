@@ -32,12 +32,12 @@ type WxaMediaCheckAsyncResponse struct {
 
 // WxaMediaCheckAsync 音视频内容安全识别
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/sec-center/sec-check/mediaCheckAsync.html
-func (c *Client) WxaMediaCheckAsync(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response WxaMediaCheckAsyncResponse, err error) {
+func (c *Client) WxaMediaCheckAsync(ctx context.Context, notMustParams ...*gorequest.Params) (response WxaMediaCheckAsyncResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/media_check_async?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/media_check_async?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }

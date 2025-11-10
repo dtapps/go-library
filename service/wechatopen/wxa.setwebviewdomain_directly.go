@@ -9,7 +9,7 @@ import (
 
 // ModifyJumpDomainDirectly 快速配置小程序业务域名
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/modifyJumpDomainDirectly.html
-func (c *Client) ModifyJumpDomainDirectly(ctx context.Context, authorizerAccessToken string, action string, webviewdomain []string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
+func (c *Client) ModifyJumpDomainDirectly(ctx context.Context, action string, webviewdomain []string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -17,7 +17,7 @@ func (c *Client) ModifyJumpDomainDirectly(ctx context.Context, authorizerAccessT
 	params.Set("webviewdomain", webviewdomain)
 
 	// 请求
-	err = c.request(ctx, "wxa/setwebviewdomain_directly?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/setwebviewdomain_directly?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

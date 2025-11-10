@@ -44,12 +44,12 @@ type GetAccountBasicInfoResponse struct {
 
 // GetAccountBasicInfo 获取基本信息
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/basic-info-management/getAccountBasicInfo.html
-func (c *Client) GetAccountBasicInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response GetAccountBasicInfoResponse, err error) {
+func (c *Client) GetAccountBasicInfo(ctx context.Context, notMustParams ...*gorequest.Params) (response GetAccountBasicInfoResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, fmt.Sprintf("cgi-bin/account/getaccountbasicinfo?access_token=%s", authorizerAccessToken), params, http.MethodGet, &response)
+	err = c.request(ctx, fmt.Sprintf("cgi-bin/account/getaccountbasicinfo?access_token=%s", c.GetAuthorizerAccessToken()), params, http.MethodGet, &response)
 	return
 }

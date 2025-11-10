@@ -15,12 +15,12 @@ type GetThirdpartyJumpDomainConfirmFileResponse struct {
 
 // GetThirdpartyJumpDomainConfirmFile 获取第三方平台业务域名校验文件
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/thirdparty-management/domain-mgnt/getThirdpartyJumpDomainConfirmFile.html
-func (c *Client) GetThirdpartyJumpDomainConfirmFile(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response GetThirdpartyJumpDomainConfirmFileResponse, err error) {
+func (c *Client) GetThirdpartyJumpDomainConfirmFile(ctx context.Context, notMustParams ...*gorequest.Params) (response GetThirdpartyJumpDomainConfirmFileResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "cgi-bin/component/get_domain_confirmfile?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "cgi-bin/component/get_domain_confirmfile?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }

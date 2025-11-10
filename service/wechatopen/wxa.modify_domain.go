@@ -26,13 +26,13 @@ type WxaModifyDomainResponse struct {
 
 // WxaModifyDomain 配置小程序服务器域名
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/modifyServerDomain.html
-func (c *Client) WxaModifyDomain(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response WxaModifyDomainResponse, err error) {
+func (c *Client) WxaModifyDomain(ctx context.Context, notMustParams ...*gorequest.Params) (response WxaModifyDomainResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/modify_domain?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/modify_domain?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

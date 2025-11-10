@@ -14,13 +14,13 @@ type GenerateShortLinkResponse struct {
 
 // GenerateShortLink 获取ShortLink
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/short-link/generateShortLink.html
-func (c *Client) GenerateShortLink(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response GenerateShortLinkResponse, err error) {
+func (c *Client) GenerateShortLink(ctx context.Context, notMustParams ...*gorequest.Params) (response GenerateShortLinkResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/genwxashortlink?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/genwxashortlink?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

@@ -14,13 +14,13 @@ type GenerateNFCSchemeResponse struct {
 
 // GenerateNFCScheme 获取 NFC 的小程序 scheme
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/url-scheme/generateNFCScheme.html
-func (c *Client) GenerateNFCScheme(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response GenerateNFCSchemeResponse, err error) {
+func (c *Client) GenerateNFCScheme(ctx context.Context, notMustParams ...*gorequest.Params) (response GenerateNFCSchemeResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/generatenfcscheme?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/generatenfcscheme?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

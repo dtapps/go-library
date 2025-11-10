@@ -21,12 +21,12 @@ type WxaGetCategoryResponse struct {
 
 // WxaGetCategory 获取审核时可填写的类目信息
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/category/get_category.html
-func (c *Client) WxaGetCategory(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response WxaGetCategoryResponse, err error) {
+func (c *Client) WxaGetCategory(ctx context.Context, notMustParams ...*gorequest.Params) (response WxaGetCategoryResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/get_category?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
+	err = c.request(ctx, "wxa/get_category?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodGet, &response)
 	return
 }

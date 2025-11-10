@@ -24,13 +24,13 @@ type QuerySchemeResponse struct {
 
 // QueryScheme 查询scheme码
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/url-scheme/queryScheme.html
-func (c *Client) QueryScheme(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response QuerySchemeResponse, err error) {
+func (c *Client) QueryScheme(ctx context.Context, notMustParams ...*gorequest.Params) (response QuerySchemeResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/queryscheme?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/queryscheme?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

@@ -22,13 +22,13 @@ type WxaApiWxAembeddedGetOwnListResponse struct {
 
 // WxaApiWxAembeddedGetOwnList 获取半屏小程序授权列表
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/embedded-management/getOwnList.html
-func (c *Client) WxaApiWxAembeddedGetOwnList(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response WxaApiWxAembeddedGetOwnListResponse, err error) {
+func (c *Client) WxaApiWxAembeddedGetOwnList(ctx context.Context, notMustParams ...*gorequest.Params) (response WxaApiWxAembeddedGetOwnListResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxaapi/wxaembedded/get_own_list?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
+	err = c.request(ctx, "wxaapi/wxaembedded/get_own_list?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodGet, &response)
 	return
 }
 
