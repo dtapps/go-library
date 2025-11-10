@@ -7,26 +7,15 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type GetQRCodeResponse struct {
-	APIResponse        // 错误
-	ContentType string `json:"contentType,omitempty"` // 内容类型
-	Buffer      any    `json:"buffer"`                // 图片 Buffer
-}
-
 // GetQRCode 获取小程序码
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/qr-code/getQRCode.html
-func (c *Client) GetQRCode(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response GetQRCodeResponse, err error) {
+func (c *Client) GetQRCode(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response APIResponse, body []byte, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/getwxacode?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-
-	// 判断内容是否为图片
-	//if request.HeaderIsImg() == false {
-	//	err = json.Unmarshal(request.ResponseBody, &response)
-	//}
+	body, err = c.requestImage(ctx, "wxa/getwxacode?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
 	return
 }
 

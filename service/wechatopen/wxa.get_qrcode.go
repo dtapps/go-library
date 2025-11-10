@@ -9,7 +9,7 @@ import (
 
 // GetTrialQRCode 获取体验版二维码
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/getTrialQRCode.html
-func (c *Client) GetTrialQRCode(ctx context.Context, authorizerAccessToken, path string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
+func (c *Client) GetTrialQRCode(ctx context.Context, authorizerAccessToken, path string, notMustParams ...*gorequest.Params) (response APIResponse, body []byte, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -18,11 +18,6 @@ func (c *Client) GetTrialQRCode(ctx context.Context, authorizerAccessToken, path
 	}
 
 	// 请求
-	err = c.request(ctx, "wxa/get_qrcode?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
-
-	// 判断内容是否为图片
-	//if request.HeaderIsImg() == false {
-	//	err = json.Unmarshal(request.ResponseBody, &response)
-	//}
+	body, err = c.requestImage(ctx, "wxa/get_qrcode?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
 	return
 }
