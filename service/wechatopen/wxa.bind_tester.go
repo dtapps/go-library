@@ -2,43 +2,32 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type BindTesterResponse struct {
-	Errcode int    `json:"errcode"` // 错误码
-	Errmsg  string `json:"errmsg"`  // 错误信息
-	Userstr string `json:"userstr"` // 人员对应的唯一字符串
-}
-
-type BindTesterResult struct {
-	Result BindTesterResponse // 结果
-	Body   []byte             // 内容
-	Http   gorequest.Response // 请求
-}
-
-func newBindTesterResult(result BindTesterResponse, body []byte, http gorequest.Response) *BindTesterResult {
-	return &BindTesterResult{Result: result, Body: body, Http: http}
+	APIResponse        // 错误
+	Userstr     string `json:"userstr"` // 人员对应的唯一字符串
 }
 
 // BindTester 绑定体验者
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/member-management/bindTester.html
-func (c *Client) BindTester(ctx context.Context, authorizerAccessToken, wechatid string, notMustParams ...*gorequest.Params) (*BindTesterResult, error) {
+func (c *Client) BindTester(ctx context.Context, authorizerAccessToken, wechatid string, notMustParams ...*gorequest.Params) (response BindTesterResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("wechatid", wechatid)
 
 	// 请求
-	var response BindTesterResponse
-	request, err := c.request(ctx, "wxa/bind_tester?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newBindTesterResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxa/bind_tester?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }
 
 // ErrcodeInfo 错误描述
-func (resp *BindTesterResult) ErrcodeInfo() string {
-	switch resp.Result.Errcode {
+func GetBindTesterErrcodeInfo(errcode int, errmsg string) string {
+	switch errcode {
 	case 85001:
 		return "微信号不存在或微信号设置为不可搜索"
 	case 85002:
@@ -48,6 +37,6 @@ func (resp *BindTesterResult) ErrcodeInfo() string {
 	case 85004:
 		return "微信号已经绑定"
 	default:
-		return resp.Result.Errmsg
+		return errmsg
 	}
 }

@@ -2,15 +2,15 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type WxaMediaCheckAsyncResponse struct {
-	Errcode int    `json:"errcode"`  // 错误码
-	Errmsg  string `json:"errmsg"`   // 错误信息
-	TraceId string `json:"trace_id"` // 唯一请求标识，标记单次请求，用于匹配异步推送结果
-	Result  struct {
+	APIResponse        // 错误
+	TraceId     string `json:"trace_id"` // 唯一请求标识，标记单次请求，用于匹配异步推送结果
+	Result      struct {
 		Suggest string `json:"suggest"` // 小程序的username
 		Label   int    `json:"label"`   // 小程序的username
 	} `json:"result"` // 小程序的username
@@ -30,25 +30,14 @@ type WxaMediaCheckAsyncResponse struct {
 	} `json:"detail"` // 小程序的username
 }
 
-type WxaMediaCheckAsyncResult struct {
-	Result WxaMediaCheckAsyncResponse // 结果
-	Body   []byte                     // 内容
-	Http   gorequest.Response         // 请求
-}
-
-func newWxaMediaCheckAsyncResult(result WxaMediaCheckAsyncResponse, body []byte, http gorequest.Response) *WxaMediaCheckAsyncResult {
-	return &WxaMediaCheckAsyncResult{Result: result, Body: body, Http: http}
-}
-
 // WxaMediaCheckAsync 音视频内容安全识别
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/sec-center/sec-check/mediaCheckAsync.html
-func (c *Client) WxaMediaCheckAsync(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaMediaCheckAsyncResult, error) {
+func (c *Client) WxaMediaCheckAsync(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response WxaMediaCheckAsyncResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response WxaMediaCheckAsyncResponse
-	request, err := c.request(ctx, "wxa/media_check_async?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newWxaMediaCheckAsyncResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxa/media_check_async?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }

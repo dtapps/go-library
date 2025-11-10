@@ -2,14 +2,14 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type CgiBinOpenapiRidGetResponse struct {
-	Errcode int    `json:"errcode"`
-	Errmsg  string `json:"errmsg"`
-	Request struct {
+	APIResponse // 错误
+	Request     struct {
 		InvokeTime   int    `json:"invoke_time"`   // 发起请求的时间戳
 		CostInMs     int    `json:"cost_in_ms"`    // 请求毫秒级耗时
 		RequestUrl   string `json:"request_url"`   // 请求的URL参数
@@ -19,19 +19,9 @@ type CgiBinOpenapiRidGetResponse struct {
 	} `json:"request"`
 }
 
-type CgiBinOpenapiRidGetResult struct {
-	Result CgiBinOpenapiRidGetResponse // 结果
-	Body   []byte                      // 内容
-	Http   gorequest.Response          // 请求
-}
-
-func newCgiBinOpenapiRidGetResult(result CgiBinOpenapiRidGetResponse, body []byte, http gorequest.Response) *CgiBinOpenapiRidGetResult {
-	return &CgiBinOpenapiRidGetResult{Result: result, Body: body, Http: http}
-}
-
 // CgiBinOpenapiRidGet 查询rid信息
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/openapi/getRidInfo.html
-func (c *Client) CgiBinOpenapiRidGet(ctx context.Context, authorizerAccessToken, rid string, notMustParams ...*gorequest.Params) (*CgiBinOpenapiRidGetResult, error) {
+func (c *Client) CgiBinOpenapiRidGet(ctx context.Context, authorizerAccessToken, rid string, notMustParams ...*gorequest.Params) (response CgiBinOpenapiRidGetResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -40,7 +30,6 @@ func (c *Client) CgiBinOpenapiRidGet(ctx context.Context, authorizerAccessToken,
 	}
 
 	// 请求
-	var response CgiBinOpenapiRidGetResponse
-	request, err := c.request(ctx, "cgi-bin/openapi/rid/get?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newCgiBinOpenapiRidGetResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "cgi-bin/openapi/rid/get?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }

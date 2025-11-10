@@ -2,13 +2,13 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type QueryUrlLinkResponse struct {
-	Errcode     int    `json:"errcode"` // 错误码
-	Errmsg      string `json:"errmsg"`  // 错误信息
+	APIResponse // 错误
 	UrlLinkInfo struct {
 		Appid      string `json:"appid"`       // 小程序 appid
 		Path       string `json:"path"`        // 小程序页面路径
@@ -22,38 +22,26 @@ type QueryUrlLinkResponse struct {
 	} `json:"quota_info"`
 }
 
-type QueryUrlLinkResult struct {
-	Result QueryUrlLinkResponse // 结果
-	Body   []byte               // 内容
-	Http   gorequest.Response   // 请求
-}
-
-func newQueryUrlLinkResult(result QueryUrlLinkResponse, body []byte, http gorequest.Response) *QueryUrlLinkResult {
-	return &QueryUrlLinkResult{Result: result, Body: body, Http: http}
-}
-
 // QueryUrlLink 查询加密URLLink
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/url-link/queryUrlLink.html
-func (c *Client) QueryUrlLink(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*QueryUrlLinkResult, error) {
+func (c *Client) QueryUrlLink(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response QueryUrlLinkResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response QueryUrlLinkResponse
-	request, err := c.request(ctx, "wxa/query_urllink?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-
-	return newQueryUrlLinkResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxa/query_urllink?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }
 
 // ErrcodeInfo 错误描述
-func (resp *QueryUrlLinkResult) ErrcodeInfo() string {
-	switch resp.Result.Errcode {
+func GetQueryUrlLinkErrcodeInfo(errcode int, errmsg string) string {
+	switch errcode {
 	case 40097:
 		return "参数错误"
 	case 85403:
 		return "scheme/url link不存在"
 	default:
-		return resp.Result.Errmsg
+		return errmsg
 	}
 }

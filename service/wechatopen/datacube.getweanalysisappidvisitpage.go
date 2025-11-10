@@ -2,8 +2,9 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type DataCubeGetWeAnAlySisAppidVisitPageResponse struct {
@@ -20,19 +21,9 @@ type DataCubeGetWeAnAlySisAppidVisitPageResponse struct {
 	} `json:"list"` // 数据列表
 }
 
-type DataCubeGetWeAnAlySisAppidVisitPageResult struct {
-	Result DataCubeGetWeAnAlySisAppidVisitPageResponse // 结果
-	Body   []byte                                      // 内容
-	Http   gorequest.Response                          // 请求
-}
-
-func newDataCubeGetWeAnAlySisAppidVisitPageResult(result DataCubeGetWeAnAlySisAppidVisitPageResponse, body []byte, http gorequest.Response) *DataCubeGetWeAnAlySisAppidVisitPageResult {
-	return &DataCubeGetWeAnAlySisAppidVisitPageResult{Result: result, Body: body, Http: http}
-}
-
 // DataCubeGetWeAnAlySisAppidVisitPage 获取访问页面数据
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/others/getVisitPage.html
-func (c *Client) DataCubeGetWeAnAlySisAppidVisitPage(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (*DataCubeGetWeAnAlySisAppidVisitPageResult, error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidVisitPage(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlySisAppidVisitPageResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -40,7 +31,6 @@ func (c *Client) DataCubeGetWeAnAlySisAppidVisitPage(ctx context.Context, author
 	params.Set("end_date", endDate)
 
 	// 请求
-	var response DataCubeGetWeAnAlySisAppidVisitPageResponse
-	request, err := c.request(ctx, "datacube/getweanalysisappidvisitpage?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newDataCubeGetWeAnAlySisAppidVisitPageResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "datacube/getweanalysisappidvisitpage?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }

@@ -3,8 +3,9 @@ package wechatopen
 import (
 	"context"
 	"fmt"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type CgiBinComponentApiGetAuthorizerInfoResponse struct {
@@ -68,19 +69,9 @@ type CgiBinComponentApiGetAuthorizerInfoResponse struct {
 	} `json:"authorization_info"` // 授权信息
 }
 
-type CgiBinComponentApiGetAuthorizerInfoResult struct {
-	Result CgiBinComponentApiGetAuthorizerInfoResponse // 结果
-	Body   []byte                                      // 内容
-	Http   gorequest.Response                          // 请求
-}
-
-func newCgiBinComponentApiGetAuthorizerInfoResult(result CgiBinComponentApiGetAuthorizerInfoResponse, body []byte, http gorequest.Response) *CgiBinComponentApiGetAuthorizerInfoResult {
-	return &CgiBinComponentApiGetAuthorizerInfoResult{Result: result, Body: body, Http: http}
-}
-
 // CgiBinComponentApiGetAuthorizerInfo 获取授权帐号详情
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/authorization-management/getAuthorizerInfo.html
-func (c *Client) CgiBinComponentApiGetAuthorizerInfo(ctx context.Context, authorizerAppid, componentAccessToken string, notMustParams ...*gorequest.Params) (*CgiBinComponentApiGetAuthorizerInfoResult, error) {
+func (c *Client) CgiBinComponentApiGetAuthorizerInfo(ctx context.Context, authorizerAppid, componentAccessToken string, notMustParams ...*gorequest.Params) (response CgiBinComponentApiGetAuthorizerInfoResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -88,7 +79,6 @@ func (c *Client) CgiBinComponentApiGetAuthorizerInfo(ctx context.Context, author
 	params.Set("authorizer_appid", authorizerAppid)      // 授权方appid
 
 	// 请求
-	var response CgiBinComponentApiGetAuthorizerInfoResponse
-	request, err := c.request(ctx, fmt.Sprintf("cgi-bin/component/api_get_authorizer_info?access_token=%s", componentAccessToken), params, http.MethodPost, &response)
-	return newCgiBinComponentApiGetAuthorizerInfoResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, fmt.Sprintf("cgi-bin/component/api_get_authorizer_info?access_token=%s", componentAccessToken), params, http.MethodPost, &response)
+	return
 }

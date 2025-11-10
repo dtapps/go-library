@@ -7,9 +7,10 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 	"strings"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type ThirdpartyCode2SessionResponse struct {
@@ -18,19 +19,9 @@ type ThirdpartyCode2SessionResponse struct {
 	Unionid    string `json:"unionid"`     // 用户在开放平台的唯一标识符，在满足 UnionID 下发条件的情况下会返回，详见 UnionID 机制说明。
 }
 
-type ThirdpartyCode2SessionResult struct {
-	Result ThirdpartyCode2SessionResponse // 结果
-	Body   []byte                         // 内容
-	Http   gorequest.Response             // 请求
-}
-
-func newThirdpartyCode2SessionResult(result ThirdpartyCode2SessionResponse, body []byte, http gorequest.Response) *ThirdpartyCode2SessionResult {
-	return &ThirdpartyCode2SessionResult{Result: result, Body: body, Http: http}
-}
-
 // ThirdpartyCode2Session 小程序登录
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/login/thirdpartyCode2Session.html
-func (c *Client) ThirdpartyCode2Session(ctx context.Context, componentAccessToken, authorizerAppid, jsCode string, notMustParams ...*gorequest.Params) (*ThirdpartyCode2SessionResult, error) {
+func (c *Client) ThirdpartyCode2Session(ctx context.Context, componentAccessToken, authorizerAppid, jsCode string, notMustParams ...*gorequest.Params) (response ThirdpartyCode2SessionResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -40,9 +31,8 @@ func (c *Client) ThirdpartyCode2Session(ctx context.Context, componentAccessToke
 	params.Set("js_code", jsCode)                        // wx.login 获取的 code
 
 	// 请求
-	var response ThirdpartyCode2SessionResponse
-	request, err := c.request(ctx, "sns/component/jscode2session?component_access_token="+componentAccessToken, params, http.MethodGet, &response)
-	return newThirdpartyCode2SessionResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "sns/component/jscode2session?component_access_token="+componentAccessToken, params, http.MethodGet, &response)
+	return
 }
 
 type UserInfo struct {
@@ -76,9 +66,9 @@ func newUserInfoResult(result UserInfoResponse, err error) *UserInfoResult {
 }
 
 // UserInfo 解密用户信息
-func (r *ThirdpartyCode2SessionResult) UserInfo(param UserInfo) *UserInfoResult {
+func (r *ThirdpartyCode2SessionResponse) UserInfo(param UserInfo) *UserInfoResult {
 	var response UserInfoResponse
-	aesKey, err := base64.StdEncoding.DecodeString(r.Result.SessionKey)
+	aesKey, err := base64.StdEncoding.DecodeString(r.SessionKey)
 	if err != nil {
 		return newUserInfoResult(response, err)
 	}
@@ -147,7 +137,7 @@ func UserInfoAvatarUrlReal(avatarUrl string) string {
 	return strings.Replace(avatarUrl, "/132", "/0", -1)
 }
 
-func (r *ThirdpartyCode2SessionResult) pkcs7Unpaid(data []byte, blockSize int) ([]byte, error) {
+func (r *ThirdpartyCode2SessionResponse) pkcs7Unpaid(data []byte, blockSize int) ([]byte, error) {
 	if blockSize <= 0 {
 		return nil, errors.New("invalid block size")
 	}

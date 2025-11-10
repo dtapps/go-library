@@ -2,8 +2,9 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type DataCubeGetWeAnAlySisAppidDailyRetainInfoResponse struct {
@@ -18,19 +19,9 @@ type DataCubeGetWeAnAlySisAppidDailyRetainInfoResponse struct {
 	} `json:"visit_uv"` // 活跃用户留存
 }
 
-type DataCubeGetWeAnAlySisAppidDailyRetainInfoResult struct {
-	Result DataCubeGetWeAnAlySisAppidDailyRetainInfoResponse // 结果
-	Body   []byte                                            // 内容
-	Http   gorequest.Response                                // 请求
-}
-
-func newDataCubeGetWeAnAlySisAppidDailyRetainInfoResult(result DataCubeGetWeAnAlySisAppidDailyRetainInfoResponse, body []byte, http gorequest.Response) *DataCubeGetWeAnAlySisAppidDailyRetainInfoResult {
-	return &DataCubeGetWeAnAlySisAppidDailyRetainInfoResult{Result: result, Body: body, Http: http}
-}
-
 // DataCubeGetWeAnAlySisAppidDailyRetainInfo 获取用户访问小程序日留存
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/visit-retain/getDailyRetain.html
-func (c *Client) DataCubeGetWeAnAlySisAppidDailyRetainInfo(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (*DataCubeGetWeAnAlySisAppidDailyRetainInfoResult, error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidDailyRetainInfo(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlySisAppidDailyRetainInfoResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -38,7 +29,6 @@ func (c *Client) DataCubeGetWeAnAlySisAppidDailyRetainInfo(ctx context.Context, 
 	params.Set("end_date", endDate)
 
 	// 请求
-	var response DataCubeGetWeAnAlySisAppidDailyRetainInfoResponse
-	request, err := c.request(ctx, "datacube/getweanalysisappiddailyretaininfo?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newDataCubeGetWeAnAlySisAppidDailyRetainInfoResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "datacube/getweanalysisappiddailyretaininfo?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }

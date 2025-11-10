@@ -2,41 +2,26 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
-
-type WxaApiWxaembeddedAddEmbeddedResponse struct {
-	Errcode int    `json:"errcode"` // 返回码
-	Errmsg  string `json:"errmsg"`  // 返回码信息
-}
-
-type WxaApiWxaembeddedAddEmbeddedResult struct {
-	Result WxaApiWxaembeddedAddEmbeddedResponse // 结果
-	Body   []byte                               // 内容
-	Http   gorequest.Response                   // 请求
-}
-
-func newWxaApiWxaembeddedAddEmbeddedResult(result WxaApiWxaembeddedAddEmbeddedResponse, body []byte, http gorequest.Response) *WxaApiWxaembeddedAddEmbeddedResult {
-	return &WxaApiWxaembeddedAddEmbeddedResult{Result: result, Body: body, Http: http}
-}
 
 // WxaApiWxaembeddedAddEmbedded 添加半屏小程序
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/embedded-management/addEmbedded.html
-func (c *Client) WxaApiWxaembeddedAddEmbedded(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaApiWxaembeddedAddEmbeddedResult, error) {
+func (c *Client) WxaApiWxaembeddedAddEmbedded(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response WxaApiWxaembeddedAddEmbeddedResponse
-	request, err := c.request(ctx, "wxaapi/wxaembedded/add_embedded?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newWxaApiWxaembeddedAddEmbeddedResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxaapi/wxaembedded/add_embedded?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }
 
 // ErrcodeInfo 错误描述
-func (resp *WxaApiWxaembeddedAddEmbeddedResult) ErrcodeInfo() string {
-	switch resp.Result.Errcode {
+func GetWxaApiWxaembeddedAddEmbeddedErrcodeInfo(errcode int, errmsg string) string {
+	switch errcode {
 	case 89408:
 		return "半屏小程序系统错误"
 	case 89409:
@@ -78,6 +63,6 @@ func (resp *WxaApiWxaembeddedAddEmbeddedResult) ErrcodeInfo() string {
 	case 89419:
 		return "获取半屏小程序每日授权次数失败"
 	default:
-		return resp.Result.Errmsg
+		return errmsg
 	}
 }

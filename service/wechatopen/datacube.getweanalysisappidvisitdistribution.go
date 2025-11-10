@@ -2,8 +2,9 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type DataCubeGetWeAnAlysIsAppidVisitDistributionResponse struct {
@@ -17,19 +18,9 @@ type DataCubeGetWeAnAlysIsAppidVisitDistributionResponse struct {
 	} `json:"list"` // 数据列表
 }
 
-type DataCubeGetWeAnAlysIsAppidVisitDistributionResult struct {
-	Result DataCubeGetWeAnAlysIsAppidVisitDistributionResponse // 结果
-	Body   []byte                                              // 内容
-	Http   gorequest.Response                                  // 请求
-}
-
-func newDataCubeGetWeAnAlysIsAppidVisitDistributionResult(result DataCubeGetWeAnAlysIsAppidVisitDistributionResponse, body []byte, http gorequest.Response) *DataCubeGetWeAnAlysIsAppidVisitDistributionResult {
-	return &DataCubeGetWeAnAlysIsAppidVisitDistributionResult{Result: result, Body: body, Http: http}
-}
-
 // DataCubeGetWeAnAlysIsAppidVisitDistribution 获取用户小程序访问分布数据
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/others/getVisitDistribution.html
-func (c *Client) DataCubeGetWeAnAlysIsAppidVisitDistribution(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (*DataCubeGetWeAnAlysIsAppidVisitDistributionResult, error) {
+func (c *Client) DataCubeGetWeAnAlysIsAppidVisitDistribution(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlysIsAppidVisitDistributionResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -37,7 +28,6 @@ func (c *Client) DataCubeGetWeAnAlysIsAppidVisitDistribution(ctx context.Context
 	params.Set("end_date", endDate)
 
 	// 请求
-	var response DataCubeGetWeAnAlysIsAppidVisitDistributionResponse
-	request, err := c.request(ctx, "datacube/getweanalysisappidvisitdistribution?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newDataCubeGetWeAnAlysIsAppidVisitDistributionResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "datacube/getweanalysisappidvisitdistribution?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }

@@ -2,14 +2,14 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type QuerySchemeResponse struct {
-	Errcode    int    `json:"errcode"` // 错误码
-	Errmsg     string `json:"errmsg"`  // 错误信息
-	SchemeInfo struct {
+	APIResponse // 错误
+	SchemeInfo  struct {
 		Appid      string `json:"appid"`       // 小程序 appid
 		Path       string `json:"path"`        // 小程序页面路径
 		Query      string `json:"query"`       // 小程序页面query
@@ -22,38 +22,26 @@ type QuerySchemeResponse struct {
 	} `json:"quota_info"`
 }
 
-type QuerySchemeResult struct {
-	Result QuerySchemeResponse // 结果
-	Body   []byte              // 内容
-	Http   gorequest.Response  // 请求
-}
-
-func newQuerySchemeResult(result QuerySchemeResponse, body []byte, http gorequest.Response) *QuerySchemeResult {
-	return &QuerySchemeResult{Result: result, Body: body, Http: http}
-}
-
 // QueryScheme 查询scheme码
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/url-scheme/queryScheme.html
-func (c *Client) QueryScheme(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*QuerySchemeResult, error) {
+func (c *Client) QueryScheme(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response QuerySchemeResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response QuerySchemeResponse
-	request, err := c.request(ctx, "wxa/queryscheme?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-
-	return newQuerySchemeResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxa/queryscheme?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }
 
 // ErrcodeInfo 错误描述
-func (resp *QuerySchemeResult) ErrcodeInfo() string {
-	switch resp.Result.Errcode {
+func GetQuerySchemeErrcodeInfo(errcode int, errmsg string) string {
+	switch errcode {
 	case 40097:
 		return "参数错误"
 	case 85403:
 		return "scheme/url link不存在"
 	default:
-		return resp.Result.Errmsg
+		return errmsg
 	}
 }

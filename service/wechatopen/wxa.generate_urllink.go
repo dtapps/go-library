@@ -2,43 +2,31 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type GenerateUrlLinkResponse struct {
-	Errcode int    `json:"errcode"`  // 错误码
-	Errmsg  string `json:"errmsg"`   // 错误信息
-	UrlLink string `json:"url_link"` // 生成的小程序 URL Link
-}
-
-type GenerateUrlLinkResult struct {
-	Result GenerateUrlLinkResponse // 结果
-	Body   []byte                  // 内容
-	Http   gorequest.Response      // 请求
-}
-
-func newGenerateUrlLinkResult(result GenerateUrlLinkResponse, body []byte, http gorequest.Response) *GenerateUrlLinkResult {
-	return &GenerateUrlLinkResult{Result: result, Body: body, Http: http}
+	APIResponse        // 错误
+	UrlLink     string `json:"url_link"` // 生成的小程序 URL Link
 }
 
 // GenerateUrlLink 获取加密URLLink
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/url-link/generateUrlLink.html
-func (c *Client) GenerateUrlLink(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*GenerateUrlLinkResult, error) {
+func (c *Client) GenerateUrlLink(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response GenerateUrlLinkResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response GenerateUrlLinkResponse
-	request, err := c.request(ctx, "wxa/generate_urllink?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-
-	return newGenerateUrlLinkResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxa/generate_urllink?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }
 
 // ErrcodeInfo 错误描述
-func (resp *GenerateUrlLinkResult) ErrcodeInfo() string {
-	switch resp.Result.Errcode {
+func GetGenerateUrlLinkErrcodeInfo(errcode int, errmsg string) string {
+	switch errcode {
 	case 40001:
 		return "获取 access_token 时 AppSecret 错误，或者 access_token 无效。请开发者认真比对 AppSecret 的正确性，或查看是否正在为恰当的公众号调用接口"
 	case 40002:
@@ -64,6 +52,6 @@ func (resp *GenerateUrlLinkResult) ErrcodeInfo() string {
 	case 85088:
 		return "请先开通云开发"
 	default:
-		return resp.Result.Errmsg
+		return errmsg
 	}
 }

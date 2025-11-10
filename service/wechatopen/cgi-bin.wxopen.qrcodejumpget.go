@@ -2,14 +2,14 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type CgiBinWxOpenQrCodeJumpGetResponse struct {
-	Errcode  int    `json:"errcode"`
-	Errmsg   string `json:"errmsg"`
-	RuleList []struct {
+	APIResponse // 错误
+	RuleList    []struct {
 		Prefix        string   `json:"prefix"`          // 二维码规则
 		PermitSubRule int      `json:"permit_sub_rule"` // 是否独占符合二维码前缀匹配规则的所有子规 1 为不占用，2 为占用
 		Path          string   `json:"path"`            // 小程序功能页面
@@ -22,25 +22,14 @@ type CgiBinWxOpenQrCodeJumpGetResponse struct {
 	QrcodejumpPubQuota int `json:"qrcodejump_pub_quota"` // 本月还可发布的次数
 }
 
-type CgiBinWxOpenQrCodeJumpGetResult struct {
-	Result CgiBinWxOpenQrCodeJumpGetResponse // 结果
-	Body   []byte                            // 内容
-	Http   gorequest.Response                // 请求
-}
-
-func newCgiBinWxOpenQrCodeJumpGetResult(result CgiBinWxOpenQrCodeJumpGetResponse, body []byte, http gorequest.Response) *CgiBinWxOpenQrCodeJumpGetResult {
-	return &CgiBinWxOpenQrCodeJumpGetResult{Result: result, Body: body, Http: http}
-}
-
 // CgiBinWxOpenQrCodeJumpGet 获取已设置的二维码规则
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumpadd.html
-func (c *Client) CgiBinWxOpenQrCodeJumpGet(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*CgiBinWxOpenQrCodeJumpGetResult, error) {
+func (c *Client) CgiBinWxOpenQrCodeJumpGet(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response CgiBinWxOpenQrCodeJumpGetResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response CgiBinWxOpenQrCodeJumpGetResponse
-	request, err := c.request(ctx, "cgi-bin/wxopen/qrcodejumpget?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newCgiBinWxOpenQrCodeJumpGetResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "cgi-bin/wxopen/qrcodejumpget?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }

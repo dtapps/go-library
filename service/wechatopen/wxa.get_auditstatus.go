@@ -2,46 +2,35 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type GetAuditStatusResponse struct {
-	Errcode    int    `json:"errcode"`    // 返回码
-	Errmsg     string `json:"errmsg"`     // 错误信息
-	Auditid    int    `json:"auditid"`    // 最新的审核 ID
-	Status     int    `json:"status"`     // 审核状态
-	Reason     string `json:"reason"`     // 当审核被拒绝时，返回的拒绝原因
-	ScreenShot string `json:"ScreenShot"` // 当审核被拒绝时，会返回审核失败的小程序截图示例。用 | 分隔的 media_id 的列表，可通过获取永久素材接口拉取截图内容
-}
-
-type GetAuditStatusResult struct {
-	Result GetAuditStatusResponse // 结果
-	Body   []byte                 // 内容
-	Http   gorequest.Response     // 请求
-}
-
-func newGetAuditStatusResult(result GetAuditStatusResponse, body []byte, http gorequest.Response) *GetAuditStatusResult {
-	return &GetAuditStatusResult{Result: result, Body: body, Http: http}
+	APIResponse        // 错误
+	Auditid     int    `json:"auditid"`    // 最新的审核 ID
+	Status      int    `json:"status"`     // 审核状态
+	Reason      string `json:"reason"`     // 当审核被拒绝时，返回的拒绝原因
+	ScreenShot  string `json:"ScreenShot"` // 当审核被拒绝时，会返回审核失败的小程序截图示例。用 | 分隔的 media_id 的列表，可通过获取永久素材接口拉取截图内容
 }
 
 // GetAuditStatus 查询审核单状态
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/getAuditStatus.html
-func (c *Client) GetAuditStatus(ctx context.Context, authorizerAccessToken string, auditid int64, notMustParams ...*gorequest.Params) (*GetAuditStatusResult, error) {
+func (c *Client) GetAuditStatus(ctx context.Context, authorizerAccessToken string, auditid int64, notMustParams ...*gorequest.Params) (response GetAuditStatusResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("auditid", auditid)
 
 	// 请求
-	var response GetAuditStatusResponse
-	request, err := c.request(ctx, "wxa/get_auditstatus?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newGetAuditStatusResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxa/get_auditstatus?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }
 
 // ErrcodeInfo 错误描述
-func (resp *GetAuditStatusResult) ErrcodeInfo() string {
-	switch resp.Result.Errcode {
+func GetGetAuditStatusErrcodeInfo(errcode int, errmsg string) string {
+	switch errcode {
 	case 86000:
 		return "不是由第三方代小程序进行调用"
 	case 86001:
@@ -49,6 +38,6 @@ func (resp *GetAuditStatusResult) ErrcodeInfo() string {
 	case 85012:
 		return "无效的审核 id"
 	default:
-		return resp.Result.Errmsg
+		return errmsg
 	}
 }

@@ -2,41 +2,26 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
-
-type CgiBinWxOpenQrCodeJumpAddResponse struct {
-	Errcode int    `json:"errcode"`
-	Errmsg  string `json:"errmsg"`
-}
-
-type CgiBinWxOpenQrCodeJumpAddResult struct {
-	Result CgiBinWxOpenQrCodeJumpAddResponse // 结果
-	Body   []byte                            // 内容
-	Http   gorequest.Response                // 请求
-}
-
-func newCgiBinWxOpenQrCodeJumpAddResult(result CgiBinWxOpenQrCodeJumpAddResponse, body []byte, http gorequest.Response) *CgiBinWxOpenQrCodeJumpAddResult {
-	return &CgiBinWxOpenQrCodeJumpAddResult{Result: result, Body: body, Http: http}
-}
 
 // CgiBinWxOpenQrCodeJumpAdd 增加或修改二维码规则
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumpadd.html
-func (c *Client) CgiBinWxOpenQrCodeJumpAdd(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*CgiBinWxOpenQrCodeJumpAddResult, error) {
+func (c *Client) CgiBinWxOpenQrCodeJumpAdd(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response CgiBinWxOpenQrCodeJumpAddResponse
-	request, err := c.request(ctx, "cgi-bin/wxopen/qrcodejumpadd?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newCgiBinWxOpenQrCodeJumpAddResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "cgi-bin/wxopen/qrcodejumpadd?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }
 
 // ErrcodeInfo 错误描述
-func (resp *CgiBinWxOpenQrCodeJumpAddResult) ErrcodeInfo() string {
-	switch resp.Result.Errcode {
+func GetCgiBinWxOpenQrCodeJumpAddErrcodeInfo(errcode int, errmsg string) string {
+	switch errcode {
 	case 44990:
 		return "接口请求太快（超过5次/秒）"
 	case 85066:
@@ -56,6 +41,6 @@ func (resp *CgiBinWxOpenQrCodeJumpAddResult) ErrcodeInfo() string {
 	case 85075:
 		return "个人类型小程序无法设置二维码规则"
 	default:
-		return resp.Result.Errmsg
+		return errmsg
 	}
 }

@@ -2,29 +2,15 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
-
-type WxaSetDefaultamsInfoAgencySetCustomShareRatioResponse struct {
-	Ret    int    `json:"ret"`
-	ErrMsg string `json:"err_msg,omitempty"`
-}
-
-type WxaSetDefaultamsInfoAgencySetCustomShareRatioResult struct {
-	Result WxaSetDefaultamsInfoAgencySetCustomShareRatioResponse // 结果
-	Body   []byte                                                // 内容
-	Http   gorequest.Response                                    // 请求
-}
-
-func newWxaSetDefaultamsInfoAgencySetCustomShareRatioResult(result WxaSetDefaultamsInfoAgencySetCustomShareRatioResponse, body []byte, http gorequest.Response) *WxaSetDefaultamsInfoAgencySetCustomShareRatioResult {
-	return &WxaSetDefaultamsInfoAgencySetCustomShareRatioResult{Result: result, Body: body, Http: http}
-}
 
 // WxaSetDefaultamsInfoAgencySetCustomShareRatio
 // 设置自定义分账比例
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/percentage/SetCustomShareRatio.html
-func (c *Client) WxaSetDefaultamsInfoAgencySetCustomShareRatio(ctx context.Context, authorizerAccessToken string, appid string, shareRatio int64, notMustParams ...*gorequest.Params) (*WxaSetDefaultamsInfoAgencySetCustomShareRatioResult, error) {
+func (c *Client) WxaSetDefaultamsInfoAgencySetCustomShareRatio(ctx context.Context, authorizerAccessToken string, appid string, shareRatio int64, notMustParams ...*gorequest.Params) (response APIRetResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -32,14 +18,13 @@ func (c *Client) WxaSetDefaultamsInfoAgencySetCustomShareRatio(ctx context.Conte
 	params.Set("share_ratio", shareRatio)
 
 	// 请求
-	var response WxaSetDefaultamsInfoAgencySetCustomShareRatioResponse
-	request, err := c.request(ctx, "wxa/setdefaultamsinfo?action=agency_set_custom_share_ratio&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newWxaSetDefaultamsInfoAgencySetCustomShareRatioResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxa/setdefaultamsinfo?action=agency_set_custom_share_ratio&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }
 
 // ErrcodeInfo 错误描述
-func (resp *WxaSetDefaultamsInfoAgencySetCustomShareRatioResult) ErrcodeInfo() string {
-	switch resp.Result.Ret {
+func GetWxaSetDefaultamsInfoAgencySetCustomShareRatioErrcodeInfo(ret int, err_msg string) string {
+	switch ret {
 	case -202:
 		return "内部错误"
 	case 1700:
@@ -51,6 +36,6 @@ func (resp *WxaSetDefaultamsInfoAgencySetCustomShareRatioResult) ErrcodeInfo() s
 	case 2056:
 		return "服务商未在变现专区开通账户"
 	default:
-		return resp.Result.ErrMsg
+		return err_msg
 	}
 }

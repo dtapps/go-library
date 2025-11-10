@@ -2,13 +2,13 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type WxaGetTemplateListResponse struct {
-	Errcode      int    `json:"errcode"`
-	Errmsg       string `json:"errmsg"`
+	APIResponse  // 错误
 	TemplateList []struct {
 		CreateTime             int           `json:"create_time"`              // 被添加为模板的时间
 		UserVersion            string        `json:"user_version"`             // 模板版本号，开发者自定义字段
@@ -22,37 +22,26 @@ type WxaGetTemplateListResponse struct {
 	} `json:"template_list"` // 模板信息列表
 }
 
-type WxaGetTemplateListResult struct {
-	Result WxaGetTemplateListResponse // 结果
-	Body   []byte                     // 内容
-	Http   gorequest.Response         // 请求
-}
-
-func newWxaGetTemplateListResult(result WxaGetTemplateListResponse, body []byte, http gorequest.Response) *WxaGetTemplateListResult {
-	return &WxaGetTemplateListResult{Result: result, Body: body, Http: http}
-}
-
 // WxaGetTemplateList 获取代码模板列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/gettemplatelist.html
-func (c *Client) WxaGetTemplateList(ctx context.Context, componentAccessToken string, notMustParams ...*gorequest.Params) (*WxaGetTemplateListResult, error) {
+func (c *Client) WxaGetTemplateList(ctx context.Context, componentAccessToken string, notMustParams ...*gorequest.Params) (response WxaGetTemplateListResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response WxaGetTemplateListResponse
-	request, err := c.request(ctx, "wxa/gettemplatelist?access_token="+componentAccessToken, params, http.MethodGet, &response)
-	return newWxaGetTemplateListResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxa/gettemplatelist?access_token="+componentAccessToken, params, http.MethodGet, &response)
+	return
 }
 
 // ErrcodeInfo 错误描述
-func (resp *WxaGetTemplateListResult) ErrcodeInfo() string {
-	switch resp.Result.Errcode {
+func GetWxaGetTemplateListErrcodeInfo(errcode int, errmsg string) string {
+	switch errcode {
 	case 43001:
 		return "请使用GET，不要使用post"
 	case 85064:
 		return "找不到模板"
 	default:
-		return resp.Result.Errmsg
+		return errmsg
 	}
 }

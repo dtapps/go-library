@@ -2,13 +2,13 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type CgiBinComponentGetPrivacySettingResponse struct {
-	Errcode     int      `json:"errcode"`      // 返回码
-	Errmsg      string   `json:"errmsg"`       // 返回码信息
+	APIResponse          // 错误
 	CodeExist   int      `json:"code_exist"`   // 代码是否存在， 0 不存在， 1 存在 。如果最近没有通过commit接口上传代码，则会出现 code_exist=0的情况。
 	PrivacyList []string `json:"privacy_list"` // 代码检测出来的用户信息类型（privacy_key）
 	SettingList []struct {
@@ -43,27 +43,16 @@ type CgiBinComponentGetPrivacySettingResponse struct {
 	} `json:"sdk_privacy_info_list"` // sdk
 }
 
-type CgiBinComponentGetPrivacySettingResult struct {
-	Result CgiBinComponentGetPrivacySettingResponse // 结果
-	Body   []byte                                   // 内容
-	Http   gorequest.Response                       // 请求
-}
-
-func newCgiBinComponentGetPrivacySettingResult(result CgiBinComponentGetPrivacySettingResponse, body []byte, http gorequest.Response) *CgiBinComponentGetPrivacySettingResult {
-	return &CgiBinComponentGetPrivacySettingResult{Result: result, Body: body, Http: http}
-}
-
 // CgiBinComponentGetPrivacySetting 查询小程序用户隐私保护指引
 // @privacyVer 1表示现网版本，即，传1则该接口返回的内容是现网版本的；2表示开发版，即，传2则该接口返回的内容是开发版本的。默认是2。
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/privacy_config/get_privacy_setting.html
-func (c *Client) CgiBinComponentGetPrivacySetting(ctx context.Context, authorizerAccessToken string, privacyVer int, notMustParams ...*gorequest.Params) (*CgiBinComponentGetPrivacySettingResult, error) {
+func (c *Client) CgiBinComponentGetPrivacySetting(ctx context.Context, authorizerAccessToken string, privacyVer int, notMustParams ...*gorequest.Params) (response CgiBinComponentGetPrivacySettingResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("privacy_ver", privacyVer)
 
 	// 请求
-	var response CgiBinComponentGetPrivacySettingResponse
-	request, err := c.request(ctx, "cgi-bin/component/getprivacysetting?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newCgiBinComponentGetPrivacySettingResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "cgi-bin/component/getprivacysetting?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }

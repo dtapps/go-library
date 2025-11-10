@@ -2,43 +2,32 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type WxaOperationamsAgencyCheckCanOpenPublisherResponse struct {
-	Ret    int    `json:"ret"`
-	ErrMsg string `json:"err_msg,omitempty"`
-	Status int    `json:"status"`
-}
-
-type WxaOperationamsAgencyCheckCanOpenPublisherResult struct {
-	Result WxaOperationamsAgencyCheckCanOpenPublisherResponse // 结果
-	Body   []byte                                             // 内容
-	Http   gorequest.Response                                 // 请求
-}
-
-func newWxaOperationamsAgencyCheckCanOpenPublisherResult(result WxaOperationamsAgencyCheckCanOpenPublisherResponse, body []byte, http gorequest.Response) *WxaOperationamsAgencyCheckCanOpenPublisherResult {
-	return &WxaOperationamsAgencyCheckCanOpenPublisherResult{Result: result, Body: body, Http: http}
+	APIRetResponse     // 错误
+	Status         int `json:"status"`
 }
 
 // WxaOperationamsAgencyCheckCanOpenPublisher
 // 检测是否能开通流量主
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/open/AgencyCheckCanOpenPublisher.html
-func (c *Client) WxaOperationamsAgencyCheckCanOpenPublisher(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaOperationamsAgencyCheckCanOpenPublisherResult, error) {
+func (c *Client) WxaOperationamsAgencyCheckCanOpenPublisher(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response WxaOperationamsAgencyCheckCanOpenPublisherResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response WxaOperationamsAgencyCheckCanOpenPublisherResponse
-	request, err := c.request(ctx, "wxa/operationams?action=agency_check_can_open_publisher&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newWxaOperationamsAgencyCheckCanOpenPublisherResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxa/operationams?action=agency_check_can_open_publisher&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }
 
 // ErrcodeInfo 错误描述
-func (resp *WxaOperationamsAgencyCheckCanOpenPublisherResult) ErrcodeInfo() string {
-	switch resp.Result.Ret {
+func GetWxaOperationamsAgencyCheckCanOpenPublisherErrcodeInfo(ret int, err_msg string) string {
+	switch ret {
 	case 1700:
 		return "参数错误"
 	case 1701:
@@ -50,6 +39,6 @@ func (resp *WxaOperationamsAgencyCheckCanOpenPublisherResult) ErrcodeInfo() stri
 	case 2056:
 		return "服务商未在变现专区开通账户"
 	default:
-		return resp.Result.ErrMsg
+		return err_msg
 	}
 }

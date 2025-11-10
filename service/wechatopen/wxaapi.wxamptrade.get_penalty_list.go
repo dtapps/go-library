@@ -2,14 +2,14 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type GetPenaltyListResponse struct {
-	Errcode int    `json:"errcode"` // 返回码
-	Errmsg  string `json:"errmsg"`  // 返回码信息
-	Records []struct {
+	APIResponse // 错误
+	Records     []struct {
 		IllegalRecordId string `json:"illegal_record_id"` // 违规处罚记录id
 		CreateTime      int    `json:"create_time"`       // 违规处罚时间
 		IllegalReason   string `json:"illegal_reason"`    // 违规原因
@@ -19,19 +19,9 @@ type GetPenaltyListResponse struct {
 	} `json:"records"` // 违规处罚记录列表
 }
 
-type GetPenaltyListResult struct {
-	Result GetPenaltyListResponse // 结果
-	Body   []byte                 // 内容
-	Http   gorequest.Response     // 请求
-}
-
-func newGetPenaltyListResult(result GetPenaltyListResponse, body []byte, http gorequest.Response) *GetPenaltyListResult {
-	return &GetPenaltyListResult{Result: result, Body: body, Http: http}
-}
-
 // GetPenaltyList 获取小程序交易体验分违规记录
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/transaction-guarantee/GetPenaltyList.html
-func (c *Client) GetPenaltyList(ctx context.Context, authorizerAccessToken string, offset int64, limit int64, notMustParams ...*gorequest.Params) (*GetPenaltyListResult, error) {
+func (c *Client) GetPenaltyList(ctx context.Context, authorizerAccessToken string, offset int64, limit int64, notMustParams ...*gorequest.Params) (response GetPenaltyListResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -39,7 +29,6 @@ func (c *Client) GetPenaltyList(ctx context.Context, authorizerAccessToken strin
 	params.Set("limit", limit)   // 获取从第offset条开始的limit条记录（序号从 0 开始），最大不超过 100
 
 	// 请求
-	var response GetPenaltyListResponse
-	request, err := c.request(ctx, "wxaapi/wxamptrade/get_penalty_list?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newGetPenaltyListResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxaapi/wxamptrade/get_penalty_list?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }

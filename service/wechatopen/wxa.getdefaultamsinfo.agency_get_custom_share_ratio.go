@@ -2,43 +2,32 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type WxaGetDefaultamsInfoAgencyGetCustomShareRatioResponse struct {
-	Ret        int    `json:"ret"`
-	ErrMsg     string `json:"err_msg"`
-	ShareRatio int    `json:"share_ratio"`
-}
-
-type WxaGetDefaultamsInfoAgencyGetCustomShareRatioResult struct {
-	Result WxaGetDefaultamsInfoAgencyGetCustomShareRatioResponse // 结果
-	Body   []byte                                                // 内容
-	Http   gorequest.Response                                    // 请求
-}
-
-func newWxaGetDefaultamsInfoAgencyGetCustomShareRatioResult(result WxaGetDefaultamsInfoAgencyGetCustomShareRatioResponse, body []byte, http gorequest.Response) *WxaGetDefaultamsInfoAgencyGetCustomShareRatioResult {
-	return &WxaGetDefaultamsInfoAgencyGetCustomShareRatioResult{Result: result, Body: body, Http: http}
+	APIRetResponse     // 错误
+	ShareRatio     int `json:"share_ratio"`
 }
 
 // WxaGetDefaultamsInfoAgencyGetCustomShareRatio 查询自定义分账比例
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/percentage/GetCustomShareRatio.html
-func (c *Client) WxaGetDefaultamsInfoAgencyGetCustomShareRatio(ctx context.Context, authorizerAppid, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaGetDefaultamsInfoAgencyGetCustomShareRatioResult, error) {
+func (c *Client) WxaGetDefaultamsInfoAgencyGetCustomShareRatio(ctx context.Context, authorizerAppid, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response WxaGetDefaultamsInfoAgencyGetCustomShareRatioResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", authorizerAppid)
 
 	// 请求
-	var response WxaGetDefaultamsInfoAgencyGetCustomShareRatioResponse
-	request, err := c.request(ctx, "wxa/getdefaultamsinfo?action=agency_get_custom_share_ratio&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newWxaGetDefaultamsInfoAgencyGetCustomShareRatioResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxa/getdefaultamsinfo?action=agency_get_custom_share_ratio&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }
 
 // ErrcodeInfo 错误描述
-func (resp *WxaGetDefaultamsInfoAgencyGetCustomShareRatioResult) ErrcodeInfo() string {
-	switch resp.Result.Ret {
+func GetWxaGetDefaultamsInfoAgencyGetCustomShareRatioErrcodeInfo(ret int, err_msg string) string {
+	switch ret {
 	case -202:
 		return "内部错误"
 	case 1700:
@@ -54,6 +43,6 @@ func (resp *WxaGetDefaultamsInfoAgencyGetCustomShareRatioResult) ErrcodeInfo() s
 	case 2061:
 		return "不存在为该appid设置的个性化分成比例"
 	default:
-		return resp.Result.ErrMsg
+		return err_msg
 	}
 }

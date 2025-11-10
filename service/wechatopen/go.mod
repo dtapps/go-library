@@ -1,12 +1,14 @@
 module go.dtapp.net/library/service/wechatopen
 
-go 1.24.2
+go 1.25.1
 
 replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 
 require (
 	github.com/mitchellh/mapstructure v1.5.0
-	go.dtapp.net/library/utils/gorequest v1.0.95
+	go.dtapp.net/library/contrib/resty_log v1.0.8
+	go.dtapp.net/library/utils/gorequest v1.1.3
+	resty.dev/v3 v3.0.0-beta.3
 )
 
 require (
@@ -14,7 +16,7 @@ require (
 	github.com/basgys/goxml2json v1.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	golang.org/x/net v0.40.0 // indirect
-	golang.org/x/text v0.25.0 // indirect
+	golang.org/x/net v0.46.0 // indirect
+	golang.org/x/text v0.30.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

@@ -3,41 +3,26 @@ package wechatopen
 import (
 	"context"
 	"fmt"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
-
-type CgiBinComponentFastRegisterWeAppSearchResponse struct {
-	Errcode int    `json:"errcode"` // 错误码
-	Errmsg  string `json:"errmsg"`  // 错误信息
-}
-
-type CgiBinComponentFastRegisterWeAppSearchResult struct {
-	Result CgiBinComponentFastRegisterWeAppSearchResponse // 结果
-	Body   []byte                                         // 内容
-	Http   gorequest.Response                             // 请求
-}
-
-func newCgiBinComponentFastRegisterWeAppSearchResult(result CgiBinComponentFastRegisterWeAppSearchResponse, body []byte, http gorequest.Response) *CgiBinComponentFastRegisterWeAppSearchResult {
-	return &CgiBinComponentFastRegisterWeAppSearchResult{Result: result, Body: body, Http: http}
-}
 
 // CgiBinComponentFastRegisterWeAppSearch 快速注册企业小程序
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/register-management/fast-registration-ent/registerMiniprogram.html#%E4%BA%8C%E3%80%81%E6%9F%A5%E8%AF%A2%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1%E7%8A%B6%E6%80%81
-func (c *Client) CgiBinComponentFastRegisterWeAppSearch(ctx context.Context, componentAccessToken string, notMustParams ...*gorequest.Params) (*CgiBinComponentFastRegisterWeAppSearchResult, error) {
+func (c *Client) CgiBinComponentFastRegisterWeAppSearch(ctx context.Context, componentAccessToken string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response CgiBinComponentFastRegisterWeAppSearchResponse
-	request, err := c.request(ctx, "cgi-bin/component/fastregisterweapp?action=search&component_access_token="+componentAccessToken, params, http.MethodPost, &response)
-	return newCgiBinComponentFastRegisterWeAppSearchResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "cgi-bin/component/fastregisterweapp?action=search&component_access_token="+componentAccessToken, params, http.MethodPost, &response)
+	return
 }
 
-// ErrcodeInfo 错误描述
-func (resp *CgiBinComponentFastRegisterWeAppSearchResult) ErrcodeInfo() string {
-	switch resp.Result.Errcode {
+// GetCgiBinComponentFastRegisterWeAppSearchErrcodeInfo 错误描述
+func GetCgiBinComponentFastRegisterWeAppSearchErrcodeInfo(errcode int, errmsg string) string {
+	switch errcode {
 	case 89249:
 		return "该 appid 已有转正任务执行中，距上次任务 24h 后再试"
 	case 89247:
@@ -61,12 +46,12 @@ func (resp *CgiBinComponentFastRegisterWeAppSearchResult) ErrcodeInfo() string {
 	case 89255:
 		return "code参数无效，请检查 code 长度以及内容是否正确；注意code_type的值不同需要传的 code 长度不一样"
 	default:
-		return resp.Result.Errmsg
+		return errmsg
 	}
 }
 
 // StatusInfo 状态描述
-func (resp *CgiBinComponentFastRegisterWeAppSearchResult) StatusInfo(status int) string {
+func GetCgiBinComponentFastRegisterWeAppSearchStatusInfo(status int) string {
 	switch status {
 	case 100001:
 		return "已下发的模板消息法人并未确认且已超时（24h），未进行身份证校验"

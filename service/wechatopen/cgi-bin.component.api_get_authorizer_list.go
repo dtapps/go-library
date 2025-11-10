@@ -3,8 +3,9 @@ package wechatopen
 import (
 	"context"
 	"fmt"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type GetAuthorizerListResponse struct {
@@ -16,26 +17,15 @@ type GetAuthorizerListResponse struct {
 	} `json:"list"` // 当前查询的账号基本信息列表
 }
 
-type GetAuthorizerListResult struct {
-	Result GetAuthorizerListResponse // 结果
-	Body   []byte                    // 内容
-	Http   gorequest.Response        // 请求
-}
-
-func newGetAuthorizerListResult(result GetAuthorizerListResponse, body []byte, http gorequest.Response) *GetAuthorizerListResult {
-	return &GetAuthorizerListResult{Result: result, Body: body, Http: http}
-}
-
 // GetAuthorizerList 拉取已授权的账号信息
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/authorization-management/getAuthorizerList.html
-func (c *Client) GetAuthorizerList(ctx context.Context, authorizerAppid, componentAccessToken string, notMustParams ...*gorequest.Params) (*GetAuthorizerListResult, error) {
+func (c *Client) GetAuthorizerList(ctx context.Context, authorizerAppid, componentAccessToken string, notMustParams ...*gorequest.Params) (response GetAuthorizerListResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("component_appid", c.GetComponentAppId()) // 第三方平台appid
 
 	// 请求
-	var response GetAuthorizerListResponse
-	request, err := c.request(ctx, fmt.Sprintf("cgi-bin/component/api_get_authorizer_list?access_token=%s", componentAccessToken), params, http.MethodPost, &response)
-	return newGetAuthorizerListResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, fmt.Sprintf("cgi-bin/component/api_get_authorizer_list?access_token=%s", componentAccessToken), params, http.MethodPost, &response)
+	return
 }

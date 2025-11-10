@@ -2,8 +2,9 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type CgiBinComponentApiComponentTokenResponse struct {
@@ -11,19 +12,9 @@ type CgiBinComponentApiComponentTokenResponse struct {
 	ExpiresIn            int64  `json:"expires_in"`             // 有效期，单位：秒
 }
 
-type CgiBinComponentApiComponentTokenResult struct {
-	Result CgiBinComponentApiComponentTokenResponse // 结果
-	Body   []byte                                   // 内容
-	Http   gorequest.Response                       // 请求
-}
-
-func newCgiBinComponentApiComponentTokenResult(result CgiBinComponentApiComponentTokenResponse, body []byte, http gorequest.Response) *CgiBinComponentApiComponentTokenResult {
-	return &CgiBinComponentApiComponentTokenResult{Result: result, Body: body, Http: http}
-}
-
 // CgiBinComponentApiComponentToken 令牌
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/token/component_access_token.html
-func (c *Client) CgiBinComponentApiComponentToken(ctx context.Context, componentVerifyTicket string, notMustParams ...*gorequest.Params) (*CgiBinComponentApiComponentTokenResult, error) {
+func (c *Client) CgiBinComponentApiComponentToken(ctx context.Context, componentVerifyTicket string, notMustParams ...*gorequest.Params) (response CgiBinComponentApiComponentTokenResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -32,7 +23,6 @@ func (c *Client) CgiBinComponentApiComponentToken(ctx context.Context, component
 	params.Set("component_verify_ticket", componentVerifyTicket) // 微信后台推送的ticket
 
 	// 请求
-	var response CgiBinComponentApiComponentTokenResponse
-	request, err := c.request(ctx, "cgi-bin/component/api_component_token", params, http.MethodPost, &response)
-	return newCgiBinComponentApiComponentTokenResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "cgi-bin/component/api_component_token", params, http.MethodPost, &response)
+	return
 }

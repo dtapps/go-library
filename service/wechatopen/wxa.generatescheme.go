@@ -2,43 +2,31 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type GenerateSchemeResponse struct {
-	Errcode  int    `json:"errcode"`  // 错误码
-	Errmsg   string `json:"errmsg"`   // 错误信息
-	Openlink string `json:"openlink"` // 生成的小程序 scheme 码
-}
-
-type GenerateSchemeResult struct {
-	Result GenerateSchemeResponse // 结果
-	Body   []byte                 // 内容
-	Http   gorequest.Response     // 请求
-}
-
-func newGenerateSchemeResult(result GenerateSchemeResponse, body []byte, http gorequest.Response) *GenerateSchemeResult {
-	return &GenerateSchemeResult{Result: result, Body: body, Http: http}
+	APIResponse        // 错误
+	Openlink    string `json:"openlink"` // 生成的小程序 scheme 码
 }
 
 // GenerateScheme 获取加密scheme码
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/url-scheme/generateScheme.html
-func (c *Client) GenerateScheme(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*GenerateSchemeResult, error) {
+func (c *Client) GenerateScheme(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response GenerateSchemeResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response GenerateSchemeResponse
-	request, err := c.request(ctx, "wxa/generatescheme?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-
-	return newGenerateSchemeResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxa/generatescheme?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }
 
 // ErrcodeInfo 错误描述
-func (resp *GenerateSchemeResult) ErrcodeInfo() string {
-	switch resp.Result.Errcode {
+func GetGenerateSchemeErrcodeInfo(errcode int, errmsg string) string {
+	switch errcode {
 	case 40001:
 		return "获取 access_token 时 AppSecret 错误，或者 access_token 无效。请开发者认真比对 AppSecret 的正确性，或查看是否正在为恰当的公众号调用接口"
 	case 40165:
@@ -62,6 +50,6 @@ func (resp *GenerateSchemeResult) ErrcodeInfo() string {
 	case 85406:
 		return "URL Scheme（加密+明文）/加密 URL Link 单天累加访问次数超过上限"
 	default:
-		return resp.Result.Errmsg
+		return errmsg
 	}
 }

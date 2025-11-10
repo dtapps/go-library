@@ -2,13 +2,13 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type WxaSecurityGetPrivacyInterfaceResponse struct {
-	Errcode       int    `json:"errcode"` // 返回码
-	Errmsg        string `json:"errmsg"`  // 返回码信息
+	APIResponse   // 错误
 	InterfaceList []struct {
 		ApiName    string `json:"api_name"`              // api 英文名
 		ApiChName  string `json:"api_ch_name"`           // api 中文名
@@ -22,35 +22,24 @@ type WxaSecurityGetPrivacyInterfaceResponse struct {
 	} `json:"interface_list"` // 隐私接口
 }
 
-type WxaSecurityGetPrivacyInterfaceResult struct {
-	Result WxaSecurityGetPrivacyInterfaceResponse // 结果
-	Body   []byte                                 // 内容
-	Http   gorequest.Response                     // 请求
-}
-
-func newWxaSecurityGetPrivacyInterfaceResult(result WxaSecurityGetPrivacyInterfaceResponse, body []byte, http gorequest.Response) *WxaSecurityGetPrivacyInterfaceResult {
-	return &WxaSecurityGetPrivacyInterfaceResult{Result: result, Body: body, Http: http}
-}
-
 // WxaSecurityGetPrivacyInterface 获取接口列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/apply_api/get_privacy_interface.html
-func (c *Client) WxaSecurityGetPrivacyInterface(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaSecurityGetPrivacyInterfaceResult, error) {
+func (c *Client) WxaSecurityGetPrivacyInterface(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response WxaSecurityGetPrivacyInterfaceResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response WxaSecurityGetPrivacyInterfaceResponse
-	request, err := c.request(ctx, "wxa/security/get_privacy_interface?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
-	return newWxaSecurityGetPrivacyInterfaceResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxa/security/get_privacy_interface?access_token="+authorizerAccessToken, params, http.MethodGet, &response)
+	return
 }
 
 // ErrcodeInfo 错误描述
-func (resp *WxaSecurityGetPrivacyInterfaceResult) ErrcodeInfo() string {
-	switch resp.Result.Errcode {
+func GetWxaSecurityGetPrivacyInterfaceErrcodeInfo(errcode int, errmsg string) string {
+	switch errcode {
 	case 61031:
 		return "审核中，请不要重复申请"
 	default:
-		return resp.Result.Errmsg
+		return errmsg
 	}
 }

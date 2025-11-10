@@ -2,43 +2,31 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type GenerateNFCSchemeResponse struct {
-	Errcode  int    `json:"errcode"`  // 错误码
-	Errmsg   string `json:"errmsg"`   // 错误信息
-	Openlink string `json:"openlink"` // 生成的小程序 scheme 码
-}
-
-type GenerateNFCSchemeResult struct {
-	Result GenerateNFCSchemeResponse // 结果
-	Body   []byte                    // 内容
-	Http   gorequest.Response        // 请求
-}
-
-func newGenerateNFCSchemeResult(result GenerateNFCSchemeResponse, body []byte, http gorequest.Response) *GenerateNFCSchemeResult {
-	return &GenerateNFCSchemeResult{Result: result, Body: body, Http: http}
+	APIResponse        // 错误
+	Openlink    string `json:"openlink"` // 生成的小程序 scheme 码
 }
 
 // GenerateNFCScheme 获取 NFC 的小程序 scheme
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/url-scheme/generateNFCScheme.html
-func (c *Client) GenerateNFCScheme(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*GenerateNFCSchemeResult, error) {
+func (c *Client) GenerateNFCScheme(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response GenerateNFCSchemeResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response GenerateNFCSchemeResponse
-	request, err := c.request(ctx, "wxa/generatenfcscheme?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-
-	return newGenerateNFCSchemeResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxa/generatenfcscheme?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }
 
 // ErrcodeInfo 错误描述
-func (resp *GenerateNFCSchemeResult) ErrcodeInfo() string {
-	switch resp.Result.Errcode {
+func GetGenerateNFCSchemeErrcodeInfo(errcode int, errmsg string) string {
+	switch errcode {
 	case 40002:
 		return "暂无生成权限（个人主体小程序无权限，或者NFC 能力的小程序未申请权限）"
 	case 40013:
@@ -64,6 +52,6 @@ func (resp *GenerateNFCSchemeResult) ErrcodeInfo() string {
 	case 9800009:
 		return "能力类型为一型一码，sn需为空"
 	default:
-		return resp.Result.Errmsg
+		return errmsg
 	}
 }

@@ -2,13 +2,13 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type WxaModifyDomainResponse struct {
-	Errcode                int      `json:"errcode"`                 // 错误码
-	Errmsg                 string   `json:"errmsg"`                  // 错误信息
+	APIResponse                     // 错误
 	Requestdomain          []string `json:"requestdomain"`           // request 合法域名
 	Wsrequestdomain        []string `json:"wsrequestdomain"`         // socket 合法域名
 	Uploaddomain           []string `json:"uploaddomain"`            // uploadFile 合法域名
@@ -24,32 +24,21 @@ type WxaModifyDomainResponse struct {
 	NoIcpDomain            []string `json:"no_icp_domain"`           // 没有经过icp备案的域名
 }
 
-type WxaModifyDomainResult struct {
-	Result WxaModifyDomainResponse // 结果
-	Body   []byte                  // 内容
-	Http   gorequest.Response      // 请求
-}
-
-func newWxaModifyDomainResult(result WxaModifyDomainResponse, body []byte, http gorequest.Response) *WxaModifyDomainResult {
-	return &WxaModifyDomainResult{Result: result, Body: body, Http: http}
-}
-
 // WxaModifyDomain 配置小程序服务器域名
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/modifyServerDomain.html
-func (c *Client) WxaModifyDomain(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaModifyDomainResult, error) {
+func (c *Client) WxaModifyDomain(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response WxaModifyDomainResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response WxaModifyDomainResponse
-	request, err := c.request(ctx, "wxa/modify_domain?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newWxaModifyDomainResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxa/modify_domain?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }
 
 // ErrcodeInfo 错误描述
-func (resp *WxaModifyDomainResult) ErrcodeInfo() string {
-	switch resp.Result.Errcode {
+func GetWxaModifyDomainErrcodeInfo(errcode int, errmsg string) string {
+	switch errcode {
 	case 85015:
 		return "该账号不是小程序账号"
 	case 85016:
@@ -65,6 +54,6 @@ func (resp *WxaModifyDomainResult) ErrcodeInfo() string {
 	case 85303:
 		return "同时存在“不符合域名规则的域名”以及“ 缺少ICP备案的域名”导致无修改"
 	default:
-		return resp.Result.Errmsg
+		return errmsg
 	}
 }

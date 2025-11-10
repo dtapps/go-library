@@ -2,39 +2,48 @@ package wechatopen
 
 import (
 	"context"
-	"encoding/json"
+	"fmt"
+	"strings"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-func (c *Client) request(ctx context.Context, url string, param *gorequest.Params, method string, response any) (resp gorequest.Response, err error) {
+func (c *Client) request(ctx context.Context, path string, param *gorequest.Params, method string, response any) (err error) {
 
-	// 请求地址
-	uri := apiUrl + url
+	// 判断path前面有没有/
+	if !strings.HasPrefix(path, "/") {
+		path = "/" + path
+	}
+	urlStr := fmt.Sprintf("%s%s", c.config.baseURL, path)
+
+	// 创建请求客户端
+	httpClient := c.httpClient.R().SetContext(ctx)
 
 	// 设置请求地址
-	c.httpClient.SetUri(uri)
+	httpClient.SetURL(urlStr)
 
 	// 设置方式
-	c.httpClient.SetMethod(method)
+	httpClient.SetMethod(method)
 
 	// 设置格式
-	c.httpClient.SetContentTypeJson()
+	httpClient.SetContentType("application/json")
 
 	// 设置参数
-	c.httpClient.SetParams(param)
+	httpClient.SetBody(param.DeepCopy())
 
-	c.httpClient.SetHeader("authorizer_appid", c.GetAuthorizerAppid())
+	// 设置结果
+	httpClient.SetResult(&response)
 
 	// 发起请求
-	request, err := c.httpClient.Request(ctx)
+	resp, err := httpClient.Send()
 	if err != nil {
-		return gorequest.Response{}, err
+		return err
 	}
 
-	// 解析响应
-	if request.HeaderIsImg() == false {
-		err = json.Unmarshal(request.ResponseBody, &response)
+	// 检查 HTTP 状态码
+	if resp.IsError() {
+		return fmt.Errorf("请求失败，HTTP 状态码: %d", resp.StatusCode())
 	}
 
-	return request, err
+	return nil
 }

@@ -2,13 +2,13 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type WxaModifyDomainDirectlyResponse struct {
-	Errcode                int      `json:"errcode"`                 // 错误码
-	Errmsg                 string   `json:"errmsg"`                  // 错误信息
+	APIResponse                     // 错误
 	Requestdomain          []string `json:"requestdomain"`           // request 合法域名
 	Wsrequestdomain        []string `json:"wsrequestdomain"`         // socket 合法域名
 	Uploaddomain           []string `json:"uploaddomain"`            // uploadFile 合法域名
@@ -24,32 +24,21 @@ type WxaModifyDomainDirectlyResponse struct {
 	NoIcpDomain            []string `json:"no_icp_domain"`           // 没有经过icp备案的域名
 }
 
-type WxaModifyDomainDirectlyResult struct {
-	Result WxaModifyDomainDirectlyResponse // 结果
-	Body   []byte                          // 内容
-	Http   gorequest.Response              // 请求
-}
-
-func newWxaModifyDomainDirectlyResult(result WxaModifyDomainDirectlyResponse, body []byte, http gorequest.Response) *WxaModifyDomainDirectlyResult {
-	return &WxaModifyDomainDirectlyResult{Result: result, Body: body, Http: http}
-}
-
 // WxaModifyDomainDirectly 快速配置小程序服务器域名
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/modifyServerDomainDirectly.html
-func (c *Client) WxaModifyDomainDirectly(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*WxaModifyDomainDirectlyResult, error) {
+func (c *Client) WxaModifyDomainDirectly(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response WxaModifyDomainDirectlyResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response WxaModifyDomainDirectlyResponse
-	request, err := c.request(ctx, "wxa/modify_domain_directly?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newWxaModifyDomainDirectlyResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxa/modify_domain_directly?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }
 
 // ErrcodeInfo 错误描述
-func (resp *WxaModifyDomainDirectlyResult) ErrcodeInfo() string {
-	switch resp.Result.Errcode {
+func GetWxaModifyDomainDirectlyErrcodeInfo(errcode int, errmsg string) string {
+	switch errcode {
 	case 85015:
 		return "该账号不是小程序账号"
 	case 86100:
@@ -63,6 +52,6 @@ func (resp *WxaModifyDomainDirectlyResult) ErrcodeInfo() string {
 	case 86102:
 		return "每个月只能修改50次，超过域名修改次数限制"
 	default:
-		return resp.Result.Errmsg
+		return errmsg
 	}
 }

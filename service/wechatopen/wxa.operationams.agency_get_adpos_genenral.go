@@ -2,14 +2,14 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type WxaOperationamsAgencyGetAdposGenenralResponse struct {
-	Ret    int    `json:"ret"`
-	ErrMsg string `json:"err_msg,omitempty"`
-	List   []struct {
+	APIRetResponse // 错误
+	List           []struct {
 		SlotId          int64   `json:"slot_id"`
 		AdSlot          string  `json:"ad_slot"`
 		Date            string  `json:"date"`
@@ -33,20 +33,10 @@ type WxaOperationamsAgencyGetAdposGenenralResponse struct {
 	TotalNum int `json:"total_num"`
 }
 
-type WxaOperationamsAgencyGetAdposGenenralResult struct {
-	Result WxaOperationamsAgencyGetAdposGenenralResponse // 结果
-	Body   []byte                                        // 内容
-	Http   gorequest.Response                            // 请求
-}
-
-func newWxaOperationamsAgencyGetAdposGenenralResult(result WxaOperationamsAgencyGetAdposGenenralResponse, body []byte, http gorequest.Response) *WxaOperationamsAgencyGetAdposGenenralResult {
-	return &WxaOperationamsAgencyGetAdposGenenralResult{Result: result, Body: body, Http: http}
-}
-
 // WxaOperationamsAgencyGetAdposGenenral
 // 获取小程序广告汇总数据
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/ad-data/GetAdposGenenral.html
-func (c *Client) WxaOperationamsAgencyGetAdposGenenral(ctx context.Context, authorizerAccessToken string, page, pageSize int64, startDate, endDate, adSlot string, notMustParams ...*gorequest.Params) (*WxaOperationamsAgencyGetAdposGenenralResult, error) {
+func (c *Client) WxaOperationamsAgencyGetAdposGenenral(ctx context.Context, authorizerAccessToken string, page, pageSize int64, startDate, endDate, adSlot string, notMustParams ...*gorequest.Params) (response WxaOperationamsAgencyGetAdposGenenralResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -59,7 +49,6 @@ func (c *Client) WxaOperationamsAgencyGetAdposGenenral(ctx context.Context, auth
 	}
 
 	// 请求
-	var response WxaOperationamsAgencyGetAdposGenenralResponse
-	request, err := c.request(ctx, "wxa/operationams?action=agency_get_adpos_genenral&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newWxaOperationamsAgencyGetAdposGenenralResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxa/operationams?action=agency_get_adpos_genenral&access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }

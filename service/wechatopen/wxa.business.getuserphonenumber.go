@@ -2,14 +2,14 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type WxaBusinessGetUserPhoneNumberResponse struct {
-	Errcode   int    `json:"errcode"`
-	Errmsg    string `json:"errmsg"`
-	PhoneInfo struct {
+	APIResponse // 错误
+	PhoneInfo   struct {
 		PhoneNumber     string `json:"phoneNumber"`     // 用户绑定的手机号（国外手机号会有区号）
 		PurePhoneNumber string `json:"purePhoneNumber"` // 没有区号的手机号
 		CountryCode     string `json:"countryCode"`     // 区号
@@ -20,33 +20,22 @@ type WxaBusinessGetUserPhoneNumberResponse struct {
 	} `json:"phone_info"` // 用户手机号信息
 }
 
-type WxaBusinessGetUserPhoneNumberResult struct {
-	Result WxaBusinessGetUserPhoneNumberResponse // 结果
-	Body   []byte                                // 内容
-	Http   gorequest.Response                    // 请求
-}
-
-func newWxaBusinessGetUserPhoneNumberResult(result WxaBusinessGetUserPhoneNumberResponse, body []byte, http gorequest.Response) *WxaBusinessGetUserPhoneNumberResult {
-	return &WxaBusinessGetUserPhoneNumberResult{Result: result, Body: body, Http: http}
-}
-
 // WxaBusinessGetUserPhoneNumber code换取用户手机号。 每个 code 只能使用一次，code的有效期为5min
 // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/phonenumber/phonenumber.getPhoneNumber.html
-func (c *Client) WxaBusinessGetUserPhoneNumber(ctx context.Context, authorizerAccessToken, code string, notMustParams ...*gorequest.Params) (*WxaBusinessGetUserPhoneNumberResult, error) {
+func (c *Client) WxaBusinessGetUserPhoneNumber(ctx context.Context, authorizerAccessToken, code string, notMustParams ...*gorequest.Params) (response WxaBusinessGetUserPhoneNumberResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("code", code)
 
 	// 请求
-	var response WxaBusinessGetUserPhoneNumberResponse
-	request, err := c.request(ctx, "wxa/business/getuserphonenumber?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newWxaBusinessGetUserPhoneNumberResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxa/business/getuserphonenumber?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }
 
 // ErrcodeInfo 错误描述
-func (resp *WxaBusinessGetUserPhoneNumberResult) ErrcodeInfo() string {
-	switch resp.Result.Errcode {
+func GetWxaBusinessGetUserPhoneNumberErrcodeInfo(errcode int, errmsg string) string {
+	switch errcode {
 	case 85013:
 		return "无效的自定义配置"
 	case 85014:
@@ -74,6 +63,6 @@ func (resp *WxaBusinessGetUserPhoneNumberResult) ErrcodeInfo() string {
 	case 9402203:
 		return `标准模板ext_json错误，传了不合法的参数， 如果是标准模板库的模板，则ext_json支持的参数仅为{"extAppid":'', "ext": {}, "window": {}}`
 	default:
-		return resp.Result.Errmsg
+		return errmsg
 	}
 }

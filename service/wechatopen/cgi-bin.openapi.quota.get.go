@@ -2,14 +2,14 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type cgiBinOpenapiQuotaGetResponse struct {
-	Errcode int    `json:"errcode"`
-	Errmsg  string `json:"errmsg"`
-	Quota   struct {
+	APIResponse // 错误
+	Quota       struct {
 		DailyLimit int `json:"daily_limit"` // 当天该账号可调用该接口的次数
 		Used       int `json:"used"`        // 当天已经调用的次数
 		Remain     int `json:"remain"`      // 当天剩余调用次数
@@ -24,38 +24,27 @@ type cgiBinOpenapiQuotaGetResponse struct {
 	} `json:"component_rate_limit"` // 代调用频率限制
 }
 
-type cgiBinOpenapiQuotaGetResult struct {
-	Result cgiBinOpenapiQuotaGetResponse // 结果
-	Body   []byte                        // 内容
-	Http   gorequest.Response            // 请求
-}
-
-func newcgiBinOpenapiQuotaGetResult(result cgiBinOpenapiQuotaGetResponse, body []byte, http gorequest.Response) *cgiBinOpenapiQuotaGetResult {
-	return &cgiBinOpenapiQuotaGetResult{Result: result, Body: body, Http: http}
-}
-
 // CgiBinOpenapiQuotaGet 查询API调用额度
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/openapi/getApiQuota.html
-func (c *Client) CgiBinOpenapiQuotaGet(ctx context.Context, componentAccessToken string, cgiPath string, notMustParams ...*gorequest.Params) (*cgiBinOpenapiQuotaGetResult, error) {
+func (c *Client) CgiBinOpenapiQuotaGet(ctx context.Context, componentAccessToken string, cgiPath string, notMustParams ...*gorequest.Params) (response cgiBinOpenapiQuotaGetResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("cgi_path", cgiPath)
 
 	// 请求
-	var response cgiBinOpenapiQuotaGetResponse
-	request, err := c.request(ctx, "cgi-bin/openapi/quota/get?access_token="+componentAccessToken, params, http.MethodPost, &response)
-	return newcgiBinOpenapiQuotaGetResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "cgi-bin/openapi/quota/get?access_token="+componentAccessToken, params, http.MethodPost, &response)
+	return
 }
 
 // ErrcodeInfo 错误描述
-func (resp *cgiBinOpenapiQuotaGetResult) ErrcodeInfo() string {
-	switch resp.Result.Errcode {
+func GetCgiBinOpenapiQuotaGetErrcodeInfo(errcode int, errmsg string) string {
+	switch errcode {
 	case 76021:
 		return "cgi_path填错了"
 	case 76022:
 		return "当前调用接口使用的token与api所属账号不符，详情可看注意事项的说明"
 	default:
-		return resp.Result.Errmsg
+		return errmsg
 	}
 }

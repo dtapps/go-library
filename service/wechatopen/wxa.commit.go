@@ -2,41 +2,26 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
-
-type CommitResponse struct {
-	Errcode int    `json:"errcode"`
-	Errmsg  string `json:"errmsg"`
-}
-
-type CommitResult struct {
-	Result CommitResponse     // 结果
-	Body   []byte             // 内容
-	Http   gorequest.Response // 请求
-}
-
-func newCommitResult(result CommitResponse, body []byte, http gorequest.Response) *CommitResult {
-	return &CommitResult{Result: result, Body: body, Http: http}
-}
 
 // Commit 上传代码并生成体验版
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/commit.html
-func (c *Client) Commit(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*CommitResult, error) {
+func (c *Client) Commit(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response CommitResponse
-	request, err := c.request(ctx, "wxa/commit?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newCommitResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxa/commit?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }
 
 // ErrcodeInfo 错误描述
-func (resp *CommitResult) ErrcodeInfo() string {
-	switch resp.Result.Errcode {
+func GetCommitErrcodeInfo(errcode int, errmsg string) string {
+	switch errcode {
 	case 85013:
 		return "无效的自定义配置"
 	case 85014:
@@ -64,6 +49,6 @@ func (resp *CommitResult) ErrcodeInfo() string {
 	case 9402203:
 		return `标准模板ext_json错误，传了不合法的参数， 如果是标准模板库的模板，则ext_json支持的参数仅为{"extAppid":'', "ext": {}, "window": {}}`
 	default:
-		return resp.Result.Errmsg
+		return errmsg
 	}
 }

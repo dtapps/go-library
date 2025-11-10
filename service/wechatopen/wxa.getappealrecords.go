@@ -2,14 +2,14 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type GetAppealRecordsResponse struct {
-	Errcode int    `json:"errcode"` // 返回码
-	Errmsg  string `json:"errmsg"`  // 返回码信息
-	Records []struct {
+	APIResponse // 错误
+	Records     []struct {
 		AppealRecordId    int    `json:"appeal_record_id"`   // 申诉单id
 		AppealTime        int    `json:"appeal_time"`        // 申诉时间
 		AppealCount       int    `json:"appeal_count"`       // 申诉次数
@@ -31,26 +31,15 @@ type GetAppealRecordsResponse struct {
 	} `json:"records"` // 申诉记录列表
 }
 
-type GetAppealRecordsResult struct {
-	Result GetAppealRecordsResponse // 结果
-	Body   []byte                   // 内容
-	Http   gorequest.Response       // 请求
-}
-
-func newGetAppealRecordsResult(result GetAppealRecordsResponse, body []byte, http gorequest.Response) *GetAppealRecordsResult {
-	return &GetAppealRecordsResult{Result: result, Body: body, Http: http}
-}
-
 // GetAppealRecords 获取小程序申诉记录
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/record-management/getAppealRecords.html
-func (c *Client) GetAppealRecords(ctx context.Context, authorizerAccessToken string, illegalRecordId string, notMustParams ...*gorequest.Params) (*GetAppealRecordsResult, error) {
+func (c *Client) GetAppealRecords(ctx context.Context, authorizerAccessToken string, illegalRecordId string, notMustParams ...*gorequest.Params) (response GetAppealRecordsResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("illegal_record_id", illegalRecordId)
 
 	// 请求
-	var response GetAppealRecordsResponse
-	request, err := c.request(ctx, "wxa/getappealrecords?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newGetAppealRecordsResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "wxa/getappealrecords?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }

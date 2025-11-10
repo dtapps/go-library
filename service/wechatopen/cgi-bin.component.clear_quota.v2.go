@@ -2,28 +2,14 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
-
-type ClearComponentQuotaByAppSecretResponse struct {
-	Errcode int    `json:"errcode"`
-	Errmsg  string `json:"errmsg"`
-}
-
-type ClearComponentQuotaByAppSecretResult struct {
-	Result ClearComponentQuotaByAppSecretResponse // 结果
-	Body   []byte                                 // 内容
-	Http   gorequest.Response                     // 请求
-}
-
-func newClearComponentQuotaByAppSecretResult(result ClearComponentQuotaByAppSecretResponse, body []byte, http gorequest.Response) *ClearComponentQuotaByAppSecretResult {
-	return &ClearComponentQuotaByAppSecretResult{Result: result, Body: body, Http: http}
-}
 
 // ClearComponentQuotaByAppSecret 使用AppSecret重置第三方平台 API 调用次数
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/openapi/clearComponentQuotaByAppSecret.html
-func (c *Client) ClearComponentQuotaByAppSecret(ctx context.Context, authorizerAccessToken, appid string, notMustParams ...*gorequest.Params) (*ClearComponentQuotaByAppSecretResult, error) {
+func (c *Client) ClearComponentQuotaByAppSecret(ctx context.Context, authorizerAccessToken, appid string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -32,7 +18,6 @@ func (c *Client) ClearComponentQuotaByAppSecret(ctx context.Context, authorizerA
 	params.Set("appsecret", c.GetComponentAppSecret())
 
 	// 请求
-	var response ClearComponentQuotaByAppSecretResponse
-	request, err := c.request(ctx, "cgi-bin/component/clear_quota/v2?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newClearComponentQuotaByAppSecretResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "cgi-bin/component/clear_quota/v2?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }

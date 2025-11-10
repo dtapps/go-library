@@ -2,8 +2,9 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type DataCubeGetWeAnAlySisAppidMonthlyRetainInfoResponse struct {
@@ -18,19 +19,9 @@ type DataCubeGetWeAnAlySisAppidMonthlyRetainInfoResponse struct {
 	} `json:"visit_uv"` // 活跃用户留存
 }
 
-type DataCubeGetWeAnAlySisAppidMonthlyRetainInfoResult struct {
-	Result DataCubeGetWeAnAlySisAppidMonthlyRetainInfoResponse // 结果
-	Body   []byte                                              // 内容
-	Http   gorequest.Response                                  // 请求
-}
-
-func newDataCubeGetWeAnAlySisAppidMonthlyRetainInfoResult(result DataCubeGetWeAnAlySisAppidMonthlyRetainInfoResponse, body []byte, http gorequest.Response) *DataCubeGetWeAnAlySisAppidMonthlyRetainInfoResult {
-	return &DataCubeGetWeAnAlySisAppidMonthlyRetainInfoResult{Result: result, Body: body, Http: http}
-}
-
 // DataCubeGetWeAnAlySisAppidMonthlyRetainInfo 获取用户访问小程序月留存
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/visit-retain/getMonthlyRetain.html
-func (c *Client) DataCubeGetWeAnAlySisAppidMonthlyRetainInfo(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (*DataCubeGetWeAnAlySisAppidMonthlyRetainInfoResult, error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidMonthlyRetainInfo(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlySisAppidMonthlyRetainInfoResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -38,7 +29,6 @@ func (c *Client) DataCubeGetWeAnAlySisAppidMonthlyRetainInfo(ctx context.Context
 	params.Set("end_date", endDate)
 
 	// 请求
-	var response DataCubeGetWeAnAlySisAppidMonthlyRetainInfoResponse
-	request, err := c.request(ctx, "datacube/getweanalysisappidmonthlyretaininfo?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newDataCubeGetWeAnAlySisAppidMonthlyRetainInfoResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "datacube/getweanalysisappidmonthlyretaininfo?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }

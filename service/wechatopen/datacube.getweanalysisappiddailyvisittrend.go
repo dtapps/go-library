@@ -2,8 +2,9 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type DataCubeGetWeAnAlySisAppidDailyVisitTrendResponse struct {
@@ -19,19 +20,9 @@ type DataCubeGetWeAnAlySisAppidDailyVisitTrendResponse struct {
 	} `json:"list"` // 数据列表
 }
 
-type DataCubeGetWeAnAlySisAppidDailyVisitTrendResult struct {
-	Result DataCubeGetWeAnAlySisAppidDailyVisitTrendResponse // 结果
-	Body   []byte                                            // 内容
-	Http   gorequest.Response                                // 请求
-}
-
-func newDataCubeGetWeAnAlySisAppidDailyVisitTrendResult(result DataCubeGetWeAnAlySisAppidDailyVisitTrendResponse, body []byte, http gorequest.Response) *DataCubeGetWeAnAlySisAppidDailyVisitTrendResult {
-	return &DataCubeGetWeAnAlySisAppidDailyVisitTrendResult{Result: result, Body: body, Http: http}
-}
-
 // DataCubeGetWeAnAlySisAppidDailyVisitTrend 获取用户访问小程序数据日趋势
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/visit-trend/getDailyVisitTrend.html
-func (c *Client) DataCubeGetWeAnAlySisAppidDailyVisitTrend(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (*DataCubeGetWeAnAlySisAppidDailyVisitTrendResult, error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidDailyVisitTrend(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlySisAppidDailyVisitTrendResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -39,7 +30,6 @@ func (c *Client) DataCubeGetWeAnAlySisAppidDailyVisitTrend(ctx context.Context, 
 	params.Set("end_date", endDate)
 
 	// 请求
-	var response DataCubeGetWeAnAlySisAppidDailyVisitTrendResponse
-	request, err := c.request(ctx, "datacube/getweanalysisappiddailyvisittrend?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newDataCubeGetWeAnAlySisAppidDailyVisitTrendResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "datacube/getweanalysisappiddailyvisittrend?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }

@@ -33,10 +33,10 @@ func (c *Client) ServeHttpAuthorizerAppid(ctx context.Context, w http.ResponseWr
 		return resp, agentUserId, err
 	}
 
-	if info.Result.AuthorizationInfo.AuthorizerAppid == "" {
+	if info.AuthorizationInfo.AuthorizerAppid == "" {
 		err = errors.New("获取失败")
 		return resp, agentUserId, err
 	}
 
-	return info.Result, agentUserId, nil
+	return info, agentUserId, nil
 }

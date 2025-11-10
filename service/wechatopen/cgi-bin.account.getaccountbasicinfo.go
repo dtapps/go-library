@@ -3,13 +3,13 @@ package wechatopen
 import (
 	"context"
 	"fmt"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type GetAccountBasicInfoResponse struct {
-	Errcode        int    `json:"errcode"`         // 返回码
-	Errmsg         string `json:"errmsg"`          // 错误信息
+	APIResponse           // 错误
 	Appid          string `json:"appid"`           // 帐号 appid
 	AccountType    int    `json:"account_type"`    // 帐号类型（1：订阅号，2：服务号，3：小程序）
 	PrincipalType  int    `json:"principal_type"`  // 主体类型
@@ -42,25 +42,14 @@ type GetAccountBasicInfoResponse struct {
 	Nickname          string `json:"nickname"`           // 小程序名称
 }
 
-type GetAccountBasicInfoResult struct {
-	Result GetAccountBasicInfoResponse // 结果
-	Body   []byte                      // 内容
-	Http   gorequest.Response          // 请求
-}
-
-func newGetAccountBasicInfoResult(result GetAccountBasicInfoResponse, body []byte, http gorequest.Response) *GetAccountBasicInfoResult {
-	return &GetAccountBasicInfoResult{Result: result, Body: body, Http: http}
-}
-
 // GetAccountBasicInfo 获取基本信息
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/basic-info-management/getAccountBasicInfo.html
-func (c *Client) GetAccountBasicInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (*GetAccountBasicInfoResult, error) {
+func (c *Client) GetAccountBasicInfo(ctx context.Context, authorizerAccessToken string, notMustParams ...*gorequest.Params) (response GetAccountBasicInfoResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	var response GetAccountBasicInfoResponse
-	request, err := c.request(ctx, fmt.Sprintf("cgi-bin/account/getaccountbasicinfo?access_token=%s", authorizerAccessToken), params, http.MethodGet, &response)
-	return newGetAccountBasicInfoResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, fmt.Sprintf("cgi-bin/account/getaccountbasicinfo?access_token=%s", authorizerAccessToken), params, http.MethodGet, &response)
+	return
 }

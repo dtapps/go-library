@@ -2,8 +2,9 @@ package wechatopen
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type DataCubeGetWeAnAlySisAppidUserPortraitResponse struct {
@@ -72,19 +73,9 @@ type DataCubeGetWeAnAlySisAppidUserPortraitResponse struct {
 	} `json:"visit_uv"` // 活跃用户画像
 }
 
-type DataCubeGetWeAnAlySisAppidUserPortraitResult struct {
-	Result DataCubeGetWeAnAlySisAppidUserPortraitResponse // 结果
-	Body   []byte                                         // 内容
-	Http   gorequest.Response                             // 请求
-}
-
-func newDataCubeGetWeAnAlySisAppidUserPortraitResult(result DataCubeGetWeAnAlySisAppidUserPortraitResponse, body []byte, http gorequest.Response) *DataCubeGetWeAnAlySisAppidUserPortraitResult {
-	return &DataCubeGetWeAnAlySisAppidUserPortraitResult{Result: result, Body: body, Http: http}
-}
-
 // DataCubeGetWeAnAlySisAppidUserPortrait 获取小程序用户画像分布
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/others/getUserPortrait.html
-func (c *Client) DataCubeGetWeAnAlySisAppidUserPortrait(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (*DataCubeGetWeAnAlySisAppidUserPortraitResult, error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidUserPortrait(ctx context.Context, authorizerAccessToken, beginDate, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlySisAppidUserPortraitResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -92,7 +83,6 @@ func (c *Client) DataCubeGetWeAnAlySisAppidUserPortrait(ctx context.Context, aut
 	params.Set("end_date", endDate)
 
 	// 请求
-	var response DataCubeGetWeAnAlySisAppidUserPortraitResponse
-	request, err := c.request(ctx, "datacube/getweanalysisappiduserportrait?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
-	return newDataCubeGetWeAnAlySisAppidUserPortraitResult(response, request.ResponseBody, request), err
+	err = c.request(ctx, "datacube/getweanalysisappiduserportrait?access_token="+authorizerAccessToken, params, http.MethodPost, &response)
+	return
 }
