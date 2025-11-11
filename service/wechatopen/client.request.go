@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"go.dtapp.net/library/utils/gorequest"
@@ -39,7 +40,11 @@ func (c *Client) request(ctx context.Context, path string, param *gorequest.Para
 	httpClient.SetContentType("application/json")
 
 	// 设置参数
-	httpClient.SetBody(param.DeepCopy())
+	if method == http.MethodGet {
+		httpClient.SetQueryParams(param.DeepGetString())
+	} else {
+		httpClient.SetBody(param.DeepCopy())
+	}
 
 	// 设置结果
 	httpClient.SetResult(&response)

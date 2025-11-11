@@ -3,6 +3,7 @@ package wechatpayopen
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"net/url"
 	"strings"
 
@@ -34,7 +35,11 @@ func (c *Client) NewRequest(ctx context.Context, path string, param *gorequest.P
 	httpClient.SetURL(urlStr)
 
 	// 设置方式
-	httpClient.SetMethod(method)
+	if method == http.MethodGet {
+		httpClient.SetQueryParams(param.DeepGetString())
+	} else {
+		httpClient.SetBody(param.DeepCopy())
+	}
 
 	// 设置参数
 	httpClient.SetBody(signResult.BodyBytes)
