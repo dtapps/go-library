@@ -27,7 +27,7 @@ func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
 	options := NewOptions(opts)
 
 	c := &Client{}
-	c.config.baseURL = "https://api.mch.weixin.qq.com/"
+	c.config.baseURL = "https://api.mch.weixin.qq.com"
 	if options.baseURL != "" {
 		c.config.baseURL = options.baseURL
 	}
