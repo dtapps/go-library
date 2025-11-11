@@ -39,7 +39,7 @@ func (c *Client) NewRequest(ctx context.Context, path string, param *gorequest.P
 	if method == http.MethodGet {
 		httpClient.SetQueryParams(param.DeepGetString())
 	} else {
-		httpClient.SetBody(param.DeepCopy())
+		httpClient.SetBody(param.DeepGetAny())
 	}
 
 	// 设置参数

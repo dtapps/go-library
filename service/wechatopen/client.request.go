@@ -43,7 +43,7 @@ func (c *Client) request(ctx context.Context, path string, param *gorequest.Para
 	if method == http.MethodGet {
 		httpClient.SetQueryParams(param.DeepGetString())
 	} else {
-		httpClient.SetBody(param.DeepCopy())
+		httpClient.SetBody(param.DeepGetAny())
 	}
 
 	// 发起请求
@@ -91,7 +91,7 @@ func (c *Client) requestImage(ctx context.Context, path string, param *gorequest
 	if method == http.MethodGet {
 		httpClient.SetQueryParams(param.DeepGetString())
 	} else {
-		httpClient.SetBody(param.DeepCopy())
+		httpClient.SetBody(param.DeepGetAny())
 	}
 
 	// 发起请求
