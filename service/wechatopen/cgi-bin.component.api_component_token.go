@@ -8,6 +8,7 @@ import (
 )
 
 type CgiBinComponentApiComponentTokenResponse struct {
+	APIResponse                 // 错误
 	ComponentAccessToken string `json:"component_access_token"` // 第三方平台 access_token
 	ExpiresIn            int64  `json:"expires_in"`             // 有效期，单位：秒
 }

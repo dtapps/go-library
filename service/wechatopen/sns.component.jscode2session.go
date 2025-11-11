@@ -35,7 +35,7 @@ func (c *Client) ThirdpartyCode2Session(ctx context.Context, jsCode string, notM
 	return
 }
 
-type UserInfo struct {
+type UserInfoParams struct {
 	SessionKey    string `json:"session_key"`
 	EncryptedData string `json:"encrypted_data"`
 	Iv            string `json:"iv"`
@@ -66,7 +66,7 @@ func newUserInfoResult(result UserInfoResponse, err error) *UserInfoResult {
 }
 
 // UserInfo 解密用户信息
-func (r *ThirdpartyCode2SessionResponse) UserInfo(param UserInfo) *UserInfoResult {
+func (r *ThirdpartyCode2SessionResponse) UserInfo(param UserInfoParams) *UserInfoResult {
 	var response UserInfoResponse
 	aesKey, err := base64.StdEncoding.DecodeString(r.SessionKey)
 	if err != nil {
@@ -98,7 +98,7 @@ func (r *ThirdpartyCode2SessionResponse) UserInfo(param UserInfo) *UserInfoResul
 }
 
 // DecryptionUserInfo 解密用户信息
-func DecryptionUserInfo(param UserInfo) *UserInfoResult {
+func DecryptionUserInfo(param UserInfoParams) *UserInfoResult {
 	var response UserInfoResponse
 	aesKey, err := base64.StdEncoding.DecodeString(param.SessionKey)
 	if err != nil {

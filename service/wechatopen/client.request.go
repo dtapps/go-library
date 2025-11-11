@@ -9,6 +9,14 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
+func (c *Client) WithUrlComponentAccessToken(url string) string {
+	return url + "?access_token=" + c.GetComponentAccessToken()
+}
+
+func (c *Client) WithUrlAuthorizerAccessToken(url string) string {
+	return url + "?access_token=" + c.GetAuthorizerAccessToken()
+}
+
 // requestImage 请求
 func (c *Client) request(ctx context.Context, path string, param *gorequest.Params, method string, response any) (err error) {
 
