@@ -14,9 +14,10 @@ import (
 )
 
 type ThirdpartyCode2SessionResponse struct {
-	Openid     string `json:"openid"`      // 用户唯一标识的 openid
-	SessionKey string `json:"session_key"` // 会话密钥
-	Unionid    string `json:"unionid"`     // 用户在开放平台的唯一标识符，在满足 UnionID 下发条件的情况下会返回，详见 UnionID 机制说明。
+	APIResponse        // 错误
+	Openid      string `json:"openid"`      // 用户唯一标识的 openid
+	SessionKey  string `json:"session_key"` // 会话密钥
+	Unionid     string `json:"unionid"`     // 用户在开放平台的唯一标识符，在满足 UnionID 下发条件的情况下会返回，详见 UnionID 机制说明。
 }
 
 // ThirdpartyCode2Session 小程序登录

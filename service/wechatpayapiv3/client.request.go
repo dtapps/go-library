@@ -2,13 +2,14 @@ package wechatpayapiv3
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strings"
 
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-func (c *Client) DoRequest(ctx context.Context, path string, param *gorequest.Params, method string, response any, errResponse any) error {
+func (c *Client) DoRequest(ctx context.Context, path string, param *gorequest.Params, method string, response any, errResponse any) (err error) {
 
 	// 判断path前面有没有/
 	if !strings.HasPrefix(path, "/") {
@@ -45,9 +46,6 @@ func (c *Client) DoRequest(ctx context.Context, path string, param *gorequest.Pa
 	httpClient.SetHeader("Authorization", signResult.Authorization)
 	httpClient.SetHeader("Accept-Language", "zh-CN")
 
-	// 设置结果
-	httpClient.SetResult(&response)
-
 	// 设置错误结果
 	httpClient.SetError(&errResponse)
 
@@ -57,10 +55,16 @@ func (c *Client) DoRequest(ctx context.Context, path string, param *gorequest.Pa
 		return err
 	}
 
+	// 解析结果
+	err = json.Unmarshal(resp.Bytes(), &response)
+	if err != nil {
+		return err
+	}
+
 	// 检查 HTTP 状态码
 	if resp.IsError() {
 		return fmt.Errorf("请求失败，HTTP 状态码: %d", resp.StatusCode())
 	}
 
-	return nil
+	return err
 }

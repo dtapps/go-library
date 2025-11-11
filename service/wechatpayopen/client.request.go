@@ -2,6 +2,7 @@ package wechatpayopen
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -10,7 +11,7 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-func (c *Client) NewRequest(ctx context.Context, path string, param *gorequest.Params, method string, response any, errResponse any) error {
+func (c *Client) NewRequest(ctx context.Context, path string, param *gorequest.Params, method string, response any, errResponse any) (err error) {
 
 	// 判断path前面有没有/
 	if !strings.HasPrefix(path, "/") {
@@ -51,9 +52,6 @@ func (c *Client) NewRequest(ctx context.Context, path string, param *gorequest.P
 	httpClient.SetHeader("Authorization", signResult.Authorization)
 	httpClient.SetHeader("Accept-Language", "zh-CN")
 
-	// 设置结果
-	httpClient.SetResult(&response)
-
 	// 设置错误结果
 	httpClient.SetError(&errResponse)
 
@@ -63,15 +61,21 @@ func (c *Client) NewRequest(ctx context.Context, path string, param *gorequest.P
 		return err
 	}
 
+	// 解析结果
+	err = json.Unmarshal(resp.Bytes(), &response)
+	if err != nil {
+		return err
+	}
+
 	// 检查 HTTP 状态码
 	if resp.IsError() {
 		return fmt.Errorf("请求失败，HTTP 状态码: %d", resp.StatusCode())
 	}
 
-	return nil
+	return err
 }
 
-func (c *Client) request(ctx context.Context, path string, param *gorequest.Params, method string, response any, errResponse any) error {
+func (c *Client) request(ctx context.Context, path string, param *gorequest.Params, method string, response any, errResponse any) (err error) {
 
 	// 判断path前面有没有/
 	if !strings.HasPrefix(path, "/") {
@@ -120,9 +124,6 @@ func (c *Client) request(ctx context.Context, path string, param *gorequest.Para
 	httpClient.SetHeader("Authorization", authorization)
 	httpClient.SetHeader("Accept-Language", "zh-CN")
 
-	// 设置结果
-	httpClient.SetResult(&response)
-
 	// 设置错误结果
 	httpClient.SetError(&errResponse)
 
@@ -132,10 +133,16 @@ func (c *Client) request(ctx context.Context, path string, param *gorequest.Para
 		return err
 	}
 
+	// 解析结果
+	err = json.Unmarshal(resp.Bytes(), &response)
+	if err != nil {
+		return err
+	}
+
 	// 检查 HTTP 状态码
 	if resp.IsError() {
 		return fmt.Errorf("请求失败，HTTP 状态码: %d", resp.StatusCode())
 	}
 
-	return nil
+	return err
 }

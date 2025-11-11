@@ -3,6 +3,7 @@ package wechatpayapiv2
 import (
 	"context"
 	"crypto/tls"
+	"encoding/xml"
 	"fmt"
 	"net/http"
 	"strings"
@@ -11,7 +12,7 @@ import (
 	"resty.dev/v3"
 )
 
-func (c *Client) request(ctx context.Context, path string, param *gorequest.Params, cert *tls.Certificate, response any) error {
+func (c *Client) request(ctx context.Context, path string, param *gorequest.Params, cert *tls.Certificate, response any) (err error) {
 
 	// 判断path前面有没有/
 	if !strings.HasPrefix(path, "/") {
@@ -43,11 +44,14 @@ func (c *Client) request(ctx context.Context, path string, param *gorequest.Para
 	// 设置参数
 	httpClient.SetBody(param.DeepGetAny())
 
-	// 设置结果
-	httpClient.SetResult(&response)
-
 	// 发起请求
 	resp, err := httpClient.Send()
+	if err != nil {
+		return err
+	}
+
+	// 解析结果
+	err = xml.Unmarshal(resp.Bytes(), &response)
 	if err != nil {
 		return err
 	}
@@ -57,5 +61,5 @@ func (c *Client) request(ctx context.Context, path string, param *gorequest.Para
 		return fmt.Errorf("请求失败，HTTP 状态码: %d", resp.StatusCode())
 	}
 
-	return nil
+	return err
 }

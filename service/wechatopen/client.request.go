@@ -46,11 +46,14 @@ func (c *Client) request(ctx context.Context, path string, param *gorequest.Para
 		httpClient.SetBody(param.DeepCopy())
 	}
 
-	// 设置结果
-	httpClient.SetResult(&response)
-
 	// 发起请求
 	resp, err := httpClient.Send()
+	if err != nil {
+		return err
+	}
+
+	// 解析结果
+	err = json.Unmarshal(resp.Bytes(), &response)
 	if err != nil {
 		return err
 	}
@@ -60,7 +63,7 @@ func (c *Client) request(ctx context.Context, path string, param *gorequest.Para
 		return fmt.Errorf("请求失败，HTTP 状态码: %d", resp.StatusCode())
 	}
 
-	return nil
+	return err
 }
 
 // requestImage 请求图片
@@ -85,7 +88,11 @@ func (c *Client) requestImage(ctx context.Context, path string, param *gorequest
 	httpClient.SetContentType("application/json")
 
 	// 设置参数
-	httpClient.SetBody(param.DeepCopy())
+	if method == http.MethodGet {
+		httpClient.SetQueryParams(param.DeepGetString())
+	} else {
+		httpClient.SetBody(param.DeepCopy())
+	}
 
 	// 发起请求
 	resp, err := httpClient.Send()
@@ -101,9 +108,7 @@ func (c *Client) requestImage(ctx context.Context, path string, param *gorequest
 	// 尝试判断是否为 JSON 错误（微信失败时返回 JSON，成功时返回 image/png）
 	contentType := resp.Header().Get("Content-Type")
 	if strings.Contains(contentType, "application/json") {
-		// 解析错误信息
-		err = json.Unmarshal(resp.Bytes(), &response)
-		return nil, err
+		return nil, json.Unmarshal(resp.Bytes(), &response)
 	}
 
 	// 否则认为是图片二进制数据
