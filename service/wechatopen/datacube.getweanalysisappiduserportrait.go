@@ -75,7 +75,7 @@ type DataCubeGetWeAnAlySisAppidUserPortraitResponse struct {
 
 // DataCubeGetWeAnAlySisAppidUserPortrait 获取小程序用户画像分布
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/others/getUserPortrait.html
-func (c *Client) DataCubeGetWeAnAlySisAppidUserPortrait(ctx context.Context, beginDate, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlySisAppidUserPortraitResponse, err error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidUserPortrait(ctx context.Context, beginDate string, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlySisAppidUserPortraitResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

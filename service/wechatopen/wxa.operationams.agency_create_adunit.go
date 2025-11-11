@@ -15,7 +15,7 @@ type WxaOperationamsAgencyCreateAdunitResponse struct {
 // WxaOperationamsAgencyCreateAdunit
 // 创建广告单元
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/ad-mgnt/AgencyCreateAdunit.html
-func (c *Client) WxaOperationamsAgencyCreateAdunit(ctx context.Context, name, Type string, videoDurationMin, videoDurationMax int64, notMustParams ...*gorequest.Params) (response WxaOperationamsAgencyCreateAdunitResponse, err error) {
+func (c *Client) WxaOperationamsAgencyCreateAdunit(ctx context.Context, name string, Type string, videoDurationMin int64, videoDurationMax int64, notMustParams ...*gorequest.Params) (response WxaOperationamsAgencyCreateAdunitResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

@@ -4,13 +4,13 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/xml"
-	"errors"
 	"fmt"
-	"github.com/mitchellh/mapstructure"
-	"go.dtapp.net/library/utils/gorequest"
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/mitchellh/mapstructure"
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 // ResponseServeHttpVerifyTicket 验证票据推送
@@ -48,34 +48,28 @@ func (c *Client) ServeHttpVerifyTicket(ctx context.Context, w http.ResponseWrite
 	)
 
 	if haveSignature == "" {
-		err = errors.New("找不到签名参数")
-		return
+		return resp, fmt.Errorf("找不到签名参数")
 	}
 
 	if timestamp == "" {
-		err = errors.New("找不到时间戳参数")
-		return resp, err
+		return resp, fmt.Errorf("找不到时间戳参数")
 	}
 
 	if nonce == "" {
-		err = errors.New("未找到随机数参数")
-		return resp, err
+		return resp, fmt.Errorf("未找到随机数参数")
 	}
 
 	wantSignature = Sign(c.GetMessageToken(), timestamp, nonce)
 	if haveSignature != wantSignature {
-		err = errors.New("签名错误")
-		return resp, err
+		return resp, fmt.Errorf("签名错误")
 	}
 
 	// 进入事件执行
 	if encryptType != "aes" {
-		err = fmt.Errorf("未知的加密类型: %s", encryptType)
-		return resp, err
+		return resp, fmt.Errorf("未知的加密类型: %s", encryptType)
 	}
 	if haveMsgSignature == "" {
-		err = errors.New("找不到签名参数")
-		return resp, err
+		return resp, fmt.Errorf("找不到签名参数")
 	}
 
 	data, err = io.ReadAll(r.Body)
@@ -85,62 +79,52 @@ func (c *Client) ServeHttpVerifyTicket(ctx context.Context, w http.ResponseWrite
 
 	xmlDecode := gorequest.XmlDecodeNoError(data)
 	if len(xmlDecode) <= 0 {
-		err = fmt.Errorf("xml解码错误：%s", xmlDecode)
-		return resp, err
+		return resp, fmt.Errorf("xml解码错误：%s", xmlDecode)
 	}
 
 	err = mapstructure.Decode(xmlDecode, &requestHttpBody)
 	if err != nil {
-		err = fmt.Errorf("mapstructure 解码错误：%s", xmlDecode)
-		return resp, err
+		return resp, fmt.Errorf("mapstructure 解码错误：%s", xmlDecode)
 	}
 
 	if requestHttpBody.Encrypt == "" {
-		err = fmt.Errorf("未找到加密数据：%s", requestHttpBody)
-		return resp, err
+		return resp, fmt.Errorf("未找到加密数据：%s", requestHttpBody)
 	}
 
 	cipherData, err := base64.StdEncoding.DecodeString(requestHttpBody.Encrypt)
 	if err != nil {
-		err = fmt.Errorf("encrypt 解码字符串错误：%v", err)
-		return resp, err
+		return resp, fmt.Errorf("encrypt 解码字符串错误：%v", err)
 	}
 
 	AesKey, err := base64.StdEncoding.DecodeString(c.GetMessageKey() + "=")
 	if err != nil {
-		err = fmt.Errorf("messageKey 解码字符串错误：%v", err)
-		return resp, err
+		return resp, fmt.Errorf("messageKey 解码字符串错误：%v", err)
 	}
 
 	msg, err := AesDecrypt(cipherData, AesKey)
 	if err != nil {
-		err = fmt.Errorf("AES解密错误：%v", err)
-		return resp, err
+		return resp, fmt.Errorf("AES解密错误：%v", err)
 	}
 
 	str := string(msg)
 
 	left := strings.Index(str, "<xml>")
 	if left <= 0 {
-		err = fmt.Errorf("匹配不到<xml>：%v", left)
-		return resp, err
+		return resp, fmt.Errorf("匹配不到<xml>：%v", left)
 	}
 	right := strings.Index(str, "</xml>")
 	if right <= 0 {
-		err = fmt.Errorf("匹配不到</xml>：%v", right)
-		return resp, err
+		return resp, fmt.Errorf("匹配不到</xml>：%v", right)
 	}
 	msgStr := str[left:right]
 	if len(msgStr) == 0 {
-		err = fmt.Errorf("提取错误：%v", msgStr)
-		return resp, err
+		return resp, fmt.Errorf("提取错误：%v", msgStr)
 	}
 
 	resp = &ResponseServeHttpVerifyTicket{}
 	err = xml.Unmarshal([]byte(msgStr+"</xml>"), resp)
 	if err != nil {
-		err = fmt.Errorf("解析错误：%v", err)
-		return resp, err
+		return resp, fmt.Errorf("解析错误：%v", err)
 	}
 
 	return resp, nil

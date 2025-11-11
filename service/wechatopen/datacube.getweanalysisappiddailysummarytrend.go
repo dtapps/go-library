@@ -18,7 +18,7 @@ type DataCubeGetWeAnAlySisAppidDailySummaryTrendResponse struct {
 
 // DataCubeGetWeAnAlySisAppidDailySummaryTrend 获取用户访问小程序数据概况
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/others/getDailySummary.html
-func (c *Client) DataCubeGetWeAnAlySisAppidDailySummaryTrend(ctx context.Context, beginDate, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlySisAppidDailySummaryTrendResponse, err error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidDailySummaryTrend(ctx context.Context, beginDate string, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlySisAppidDailySummaryTrendResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

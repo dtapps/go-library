@@ -16,13 +16,13 @@ type ModifyThirdpartyJumpDomainResponse struct {
 
 // ModifyThirdpartyJumpDomain 设置第三方平台业务域名
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/thirdparty-management/domain-mgnt/modifyThirdpartyJumpDomain.html
-func (c *Client) ModifyThirdpartyJumpDomain(ctx context.Context, componentAccessToken string, action string, notMustParams ...*gorequest.Params) (response ModifyThirdpartyJumpDomainResponse, err error) {
+func (c *Client) ModifyThirdpartyJumpDomain(ctx context.Context, action string, notMustParams ...*gorequest.Params) (response ModifyThirdpartyJumpDomainResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("action", action)
 
 	// 请求
-	err = c.request(ctx, "cgi-bin/component/modify_wxa_jump_domain?access_token="+componentAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "cgi-bin/component/modify_wxa_jump_domain?access_token="+c.GetComponentAccessToken(), params, http.MethodPost, &response)
 	return
 }

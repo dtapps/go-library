@@ -22,7 +22,7 @@ type DataCubeGetWeAnAlySisAppidDailyVisitTrendResponse struct {
 
 // DataCubeGetWeAnAlySisAppidDailyVisitTrend 获取用户访问小程序数据日趋势
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/visit-trend/getDailyVisitTrend.html
-func (c *Client) DataCubeGetWeAnAlySisAppidDailyVisitTrend(ctx context.Context, beginDate, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlySisAppidDailyVisitTrendResponse, err error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidDailyVisitTrend(ctx context.Context, beginDate string, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlySisAppidDailyVisitTrendResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

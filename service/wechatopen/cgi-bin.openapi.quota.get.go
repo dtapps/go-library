@@ -26,14 +26,14 @@ type cgiBinOpenapiQuotaGetResponse struct {
 
 // CgiBinOpenapiQuotaGet 查询API调用额度
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/openapi/getApiQuota.html
-func (c *Client) CgiBinOpenapiQuotaGet(ctx context.Context, componentAccessToken string, cgiPath string, notMustParams ...*gorequest.Params) (response cgiBinOpenapiQuotaGetResponse, err error) {
+func (c *Client) CgiBinOpenapiQuotaGet(ctx context.Context, cgiPath string, notMustParams ...*gorequest.Params) (response cgiBinOpenapiQuotaGetResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("cgi_path", cgiPath)
 
 	// 请求
-	err = c.request(ctx, "cgi-bin/openapi/quota/get?access_token="+componentAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "cgi-bin/openapi/quota/get?access_token="+c.GetComponentAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

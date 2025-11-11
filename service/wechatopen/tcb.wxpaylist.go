@@ -21,13 +21,13 @@ type TckWxPayListResponse struct {
 
 // TckWxPayList 获取授权绑定的商户号列表
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/cloudbase-common/wechatpay/getWechatPayList.html
-func (c *Client) TckWxPayList(ctx context.Context, componentAccessToken string, notMustParams ...*gorequest.Params) (response TckWxPayListResponse, err error) {
+func (c *Client) TckWxPayList(ctx context.Context, notMustParams ...*gorequest.Params) (response TckWxPayListResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "tcb/wxpaylist?access_token="+componentAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "tcb/wxpaylist?access_token="+c.GetComponentAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

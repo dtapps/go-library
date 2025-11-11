@@ -24,13 +24,13 @@ type WxaGetTemplateListResponse struct {
 
 // WxaGetTemplateList 获取代码模板列表
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/ThirdParty/code_template/gettemplatelist.html
-func (c *Client) WxaGetTemplateList(ctx context.Context, componentAccessToken string, notMustParams ...*gorequest.Params) (response WxaGetTemplateListResponse, err error) {
+func (c *Client) WxaGetTemplateList(ctx context.Context, notMustParams ...*gorequest.Params) (response WxaGetTemplateListResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/gettemplatelist?access_token="+componentAccessToken, params, http.MethodGet, &response)
+	err = c.request(ctx, "wxa/gettemplatelist?access_token="+c.GetComponentAccessToken(), params, http.MethodGet, &response)
 	return
 }
 

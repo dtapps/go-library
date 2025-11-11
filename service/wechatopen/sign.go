@@ -7,7 +7,7 @@ import (
 	"crypto/rand"
 	"crypto/sha1"
 	"encoding/hex"
-	"errors"
+	"fmt"
 	"io"
 	"sort"
 )
@@ -65,7 +65,7 @@ func AesDecrypt(cipherData []byte, aesKey []byte) ([]byte, error) {
 	k := len(aesKey) //PKCS#7
 
 	if len(cipherData)%k != 0 {
-		return nil, errors.New("crypto/cipher: 密文大小不是aes密钥长度的倍数")
+		return nil, fmt.Errorf("crypto/cipher: 密文大小不是aes密钥长度的倍数")
 	}
 
 	// 创建加密算法实例

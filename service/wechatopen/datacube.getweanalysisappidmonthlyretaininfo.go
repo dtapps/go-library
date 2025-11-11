@@ -21,7 +21,7 @@ type DataCubeGetWeAnAlySisAppidMonthlyRetainInfoResponse struct {
 
 // DataCubeGetWeAnAlySisAppidMonthlyRetainInfo 获取用户访问小程序月留存
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/visit-retain/getMonthlyRetain.html
-func (c *Client) DataCubeGetWeAnAlySisAppidMonthlyRetainInfo(ctx context.Context, beginDate, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlySisAppidMonthlyRetainInfoResponse, err error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidMonthlyRetainInfo(ctx context.Context, beginDate string, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlySisAppidMonthlyRetainInfoResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

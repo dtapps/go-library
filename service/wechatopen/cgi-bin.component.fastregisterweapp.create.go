@@ -10,13 +10,13 @@ import (
 
 // CgiBinComponentFastRegisterWeAppCreate 快速注册企业小程序
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/register-management/fast-registration-ent/registerMiniprogram.html
-func (c *Client) CgiBinComponentFastRegisterWeAppCreate(ctx context.Context, componentAccessToken string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
+func (c *Client) CgiBinComponentFastRegisterWeAppCreate(ctx context.Context, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "cgi-bin/component/fastregisterweapp?action=create&component_access_token="+componentAccessToken, params, http.MethodPost, &response)
+	err = c.request(ctx, "cgi-bin/component/fastregisterweapp?action=create&component_access_token="+c.GetComponentAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

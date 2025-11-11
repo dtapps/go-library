@@ -56,6 +56,6 @@ func (c *Client) WxaGetdefaultamsinfoGetAgencyAdsStat(ctx context.Context, page,
 	}
 
 	// 请求
-	err = c.request(ctx, "wxa/getdefaultamsinfo?action=get_agency_ads_stat&access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/getdefaultamsinfo?action=get_agency_ads_stat&access_token="+c.GetComponentAccessToken(), params, http.MethodPost, &response)
 	return
 }

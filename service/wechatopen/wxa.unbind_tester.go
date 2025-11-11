@@ -9,7 +9,7 @@ import (
 
 // UnbindTester 解除绑定体验者
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/member-management/unbindTester.html
-func (c *Client) UnbindTester(ctx context.Context, wechatid, userstr string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
+func (c *Client) UnbindTester(ctx context.Context, wechatid string, userstr string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

@@ -14,12 +14,12 @@ type CgiBinOpenSameEnTityResponse struct {
 
 // CgiBinOpenSameEnTity 获取授权绑定的商户号列表
 // https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/cloudbase-common/wechatpay/getWechatPayList.html
-func (c *Client) CgiBinOpenSameEnTity(ctx context.Context, componentAccessToken string, notMustParams ...*gorequest.Params) (response CgiBinOpenSameEnTityResponse, err error) {
+func (c *Client) CgiBinOpenSameEnTity(ctx context.Context, notMustParams ...*gorequest.Params) (response CgiBinOpenSameEnTityResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "cgi-bin/open/sameentity?access_token="+componentAccessToken, params, http.MethodGet, &response)
+	err = c.request(ctx, "cgi-bin/open/sameentity?access_token="+c.GetComponentAccessToken(), params, http.MethodGet, &response)
 	return
 }

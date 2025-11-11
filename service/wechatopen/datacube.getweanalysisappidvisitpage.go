@@ -23,7 +23,7 @@ type DataCubeGetWeAnAlySisAppidVisitPageResponse struct {
 
 // DataCubeGetWeAnAlySisAppidVisitPage 获取访问页面数据
 // https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/data-analysis/others/getVisitPage.html
-func (c *Client) DataCubeGetWeAnAlySisAppidVisitPage(ctx context.Context, beginDate, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlySisAppidVisitPageResponse, err error) {
+func (c *Client) DataCubeGetWeAnAlySisAppidVisitPage(ctx context.Context, beginDate string, endDate string, notMustParams ...*gorequest.Params) (response DataCubeGetWeAnAlySisAppidVisitPageResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
