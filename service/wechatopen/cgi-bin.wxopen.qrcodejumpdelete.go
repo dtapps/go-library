@@ -7,9 +7,9 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-// CgiBinWxOpenQrCodeJumpDelete 删除已设置的二维码规则
+// DeleteJumpQRCode 删除已设置的二维码规则
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumpdelete.html
-func (c *Client) CgiBinWxOpenQrCodeJumpDelete(ctx context.Context, prefix string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
+func (c *Client) DeleteJumpQRCode(ctx context.Context, prefix string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

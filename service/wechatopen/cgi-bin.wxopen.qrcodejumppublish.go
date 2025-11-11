@@ -7,9 +7,9 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-// CgiBinWxOpenQrCodeJumpPublish 发布已设置的二维码规则
+// PublishJumpQRCode 发布已设置的二维码规则
 // https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumppublish.html
-func (c *Client) CgiBinWxOpenQrCodeJumpPublish(ctx context.Context, prefix string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
+func (c *Client) PublishJumpQRCode(ctx context.Context, prefix string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -21,7 +21,7 @@ func (c *Client) CgiBinWxOpenQrCodeJumpPublish(ctx context.Context, prefix strin
 }
 
 // ErrcodeInfo 错误描述
-func GetCgiBinWxOpenQrCodeJumpPublishErrcodeInfo(errcode int, errmsg string) string {
+func GetPublishJumpQRCodeErrcodeInfo(errcode int, errmsg string) string {
 	switch errcode {
 	case 44990:
 		return "接口请求太快（超过5次/秒）"
