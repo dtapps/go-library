@@ -2,6 +2,7 @@ package wechatopen
 
 import (
 	"context"
+	"time"
 
 	"resty.dev/v3"
 )
@@ -11,17 +12,22 @@ type Client struct {
 	config struct {
 		baseURL string // 接口地址
 
-		componentAppId           string // 第三方平台appid
-		componentAppSecret       string // 第三方平台app_secret
-		messageToken             string // 第三方平台消息令牌
-		messageKey               string // 第三方平台消息密钥
-		componentAccessToken     string // 第三方平台access_token
-		componentVerifyTicket    string // 第三方平台推送ticket
-		componentPreAuthCode     string // 第三方平台预授权码
-		authorizerAppid          string // 授权方appid
-		authorizerAccessToken    string // 授权方access_token
-		authorizerRefreshToken   string // 授权方refresh_token
-		authorizerReleaseVersion string // 授权方release_version
+		componentAppId                  string    // 第三方平台appid
+		componentAppSecret              string    // 第三方平台app_secret
+		messageToken                    string    // 第三方平台消息令牌
+		messageKey                      string    // 第三方平台消息密钥
+		componentAccessToken            string    // 第三方平台access_token
+		componentAccessTokenUpdateTime  time.Time // 第三方平台access_token 更新时间
+		componentVerifyTicket           string    // 第三方平台推送ticket
+		componentVerifyTicketUpdateTime time.Time // 第三方平台推送ticket 更新时间
+		componentPreAuthCode            string    // 第三方平台预授权码
+		componentPreAuthCodeUpdateTime  time.Time // 第三方平台预授权码 更新时间
+
+		authorizerAppid                 string    // 授权方appid
+		authorizerAccessToken           string    // 授权方access_token
+		authorizerAccessTokenUpdateTime time.Time // 授权方access_token 更新时间
+		authorizerRefreshToken          string    // 授权方refresh_token
+		authorizerReleaseVersion        string    // 授权方release_version
 	}
 
 	httpClient *resty.Client // 请求客户端
@@ -41,10 +47,15 @@ func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
 	c.config.messageToken = options.messageToken
 	c.config.messageKey = options.messageKey
 	c.config.componentAccessToken = options.componentAccessToken
+	c.config.componentAccessTokenUpdateTime = options.componentAccessTokenUpdateTime
 	c.config.componentVerifyTicket = options.componentVerifyTicket
+	c.config.componentVerifyTicketUpdateTime = options.componentVerifyTicketUpdateTime
 	c.config.componentPreAuthCode = options.componentPreAuthCode
+	c.config.componentPreAuthCodeUpdateTime = options.componentPreAuthCodeUpdateTime
+
 	c.config.authorizerAppid = options.authorizerAppid
 	c.config.authorizerAccessToken = options.authorizerAccessToken
+	c.config.authorizerAccessTokenUpdateTime = options.authorizerAccessTokenUpdateTime
 	c.config.authorizerRefreshToken = options.authorizerRefreshToken
 
 	// 创建请求客户端

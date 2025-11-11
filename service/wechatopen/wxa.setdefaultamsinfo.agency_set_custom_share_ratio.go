@@ -18,7 +18,7 @@ func (c *Client) WxaSetDefaultamsInfoAgencySetCustomShareRatio(ctx context.Conte
 	params.Set("share_ratio", shareRatio)
 
 	// 请求
-	err = c.request(ctx, "wxa/setdefaultamsinfo?action=agency_set_custom_share_ratio&access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/setdefaultamsinfo?action=agency_set_custom_share_ratio&access_token="+c.GetComponentAccessToken(), params, http.MethodPost, &response)
 	return
 }
 

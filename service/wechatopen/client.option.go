@@ -1,6 +1,8 @@
 package wechatopen
 
 import (
+	"time"
+
 	"go.dtapp.net/library/contrib/resty_log"
 	"resty.dev/v3"
 )
@@ -12,17 +14,22 @@ type Options struct {
 
 	baseURL string // 接口地址
 
-	componentAppId           string // 第三方平台appid
-	componentAppSecret       string // 第三方平台app_secret
-	messageToken             string // 第三方平台消息令牌
-	messageKey               string // 第三方平台消息密钥
-	componentAccessToken     string // 第三方平台access_token
-	componentVerifyTicket    string // 第三方平台推送ticket
-	componentPreAuthCode     string // 第三方平台预授权码
-	authorizerAppid          string // 授权方appid
-	authorizerAccessToken    string // 授权方access_token
-	authorizerRefreshToken   string // 授权方refresh_token
-	authorizerReleaseVersion string // 授权方release_version
+	componentAppId                  string    // 第三方平台appid
+	componentAppSecret              string    // 第三方平台app_secret
+	messageToken                    string    // 第三方平台消息令牌
+	messageKey                      string    // 第三方平台消息密钥
+	componentAccessToken            string    // 第三方平台access_token
+	componentAccessTokenUpdateTime  time.Time // 第三方平台access_token 更新时间
+	componentVerifyTicket           string    // 第三方平台推送ticket
+	componentVerifyTicketUpdateTime time.Time // 第三方平台推送ticket 更新时间
+	componentPreAuthCode            string    // 第三方平台预授权码
+	componentPreAuthCodeUpdateTime  time.Time // 第三方平台预授权码 更新时间
+
+	authorizerAppid                 string    // 授权方appid
+	authorizerAccessToken           string    // 授权方access_token
+	authorizerAccessTokenUpdateTime time.Time // 授权方access_token 更新时间
+	authorizerRefreshToken          string    // 授权方refresh_token
+	authorizerReleaseVersion        string    // 授权方release_version
 }
 
 type Option struct {
@@ -107,6 +114,13 @@ func WithComponentAccessToken(componentAccessToken string) Option {
 	}}
 }
 
+// WithComponentAccessTokenUpdateTime 设置 componentAccessTokenUpdateTime
+func WithComponentAccessTokenUpdateTime(componentAccessTokenUpdateTime time.Time) Option {
+	return Option{F: func(o *Options) {
+		o.componentAccessTokenUpdateTime = componentAccessTokenUpdateTime
+	}}
+}
+
 // WithComponentVerifyTicket 设置 componentVerifyTicket
 func WithComponentVerifyTicket(componentVerifyTicket string) Option {
 	return Option{F: func(o *Options) {
@@ -114,10 +128,24 @@ func WithComponentVerifyTicket(componentVerifyTicket string) Option {
 	}}
 }
 
+// WithComponentVerifyTicketUpdateTime 设置 componentVerifyTicketUpdateTime
+func WithComponentVerifyTicketUpdateTime(componentVerifyTicketUpdateTime time.Time) Option {
+	return Option{F: func(o *Options) {
+		o.componentVerifyTicketUpdateTime = componentVerifyTicketUpdateTime
+	}}
+}
+
 // WithComponentPreAuthCode 设置 componentPreAuthCode
 func WithComponentPreAuthCode(componentPreAuthCode string) Option {
 	return Option{F: func(o *Options) {
 		o.componentPreAuthCode = componentPreAuthCode
+	}}
+}
+
+// WithComponentPreAuthCodeUpdateTime 设置 componentPreAuthCodeUpdateTime
+func WithComponentPreAuthCodeUpdateTime(componentPreAuthCodeUpdateTime time.Time) Option {
+	return Option{F: func(o *Options) {
+		o.componentPreAuthCodeUpdateTime = componentPreAuthCodeUpdateTime
 	}}
 }
 
@@ -132,6 +160,13 @@ func WithAuthorizerAppid(authorizerAppid string) Option {
 func WithAuthorizerAccessToken(authorizerAccessToken string) Option {
 	return Option{F: func(o *Options) {
 		o.authorizerAccessToken = authorizerAccessToken
+	}}
+}
+
+// WithAuthorizerAccessTokenUpdateTime 设置 authorizerAccessTokenUpdateTime
+func WithAuthorizerAccessTokenUpdateTime(authorizerAccessTokenUpdateTime time.Time) Option {
+	return Option{F: func(o *Options) {
+		o.authorizerAccessTokenUpdateTime = authorizerAccessTokenUpdateTime
 	}}
 }
 
