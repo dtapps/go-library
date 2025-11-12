@@ -7,14 +7,14 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type WxaSecurityApplyPrivacyInterfaceResponse struct {
+type ApplyPrivacyInterfaceResponse struct {
 	APIResponse       // 错误
 	AuditId     int64 `json:"audit_id"` // 审核单id
 }
 
-// WxaSecurityApplyPrivacyInterface 申请接口
-// https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/apply_api/apply_privacy_interface.html
-func (c *Client) WxaSecurityApplyPrivacyInterface(ctx context.Context, notMustParams ...*gorequest.Params) (response WxaSecurityApplyPrivacyInterfaceResponse, err error) {
+// ApplyPrivacyInterface 申请接口
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/privacy-api-management/api_applyprivacyinterface.html
+func (c *Client) ApplyPrivacyInterface(ctx context.Context, notMustParams ...*gorequest.Params) (response ApplyPrivacyInterfaceResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -25,7 +25,7 @@ func (c *Client) WxaSecurityApplyPrivacyInterface(ctx context.Context, notMustPa
 }
 
 // ErrcodeInfo 错误描述
-func GetWxaSecurityApplyPrivacyInterfaceErrcodeInfo(errcode int, errmsg string) string {
+func GetApplyPrivacyInterfaceErrcodeInfo(errcode int, errmsg string) string {
 	switch errcode {
 	case 61031:
 		return "审核中，请不要重复申请"

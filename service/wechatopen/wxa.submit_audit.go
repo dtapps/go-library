@@ -13,7 +13,7 @@ type SubmitAuditResponse struct {
 }
 
 // SubmitAudit 提交代码审核
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/submitAudit.html
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/code-management/api_submitaudit.html
 func (c *Client) SubmitAudit(ctx context.Context, notMustParams ...*gorequest.Params) (response SubmitAuditResponse, err error) {
 
 	// 参数

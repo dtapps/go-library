@@ -7,9 +7,9 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-// AddJumpQRCode 增加或修改二维码规则
-// https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumpadd.html
-func (c *Client) AddJumpQRCode(ctx context.Context, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
+// QrcodeJumpAdd 增加或修改二维码规则
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/jumpqrcode-config/api_qrcodejumpadd.html
+func (c *Client) QrcodeJumpAdd(ctx context.Context, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -20,7 +20,7 @@ func (c *Client) AddJumpQRCode(ctx context.Context, notMustParams ...*gorequest.
 }
 
 // ErrcodeInfo 错误描述
-func GetAddJumpQRCodeErrcodeInfo(errcode int, errmsg string) string {
+func GetQrcodeJumpAddErrcodeInfo(errcode int, errmsg string) string {
 	switch errcode {
 	case 44990:
 		return "接口请求太快（超过5次/秒）"

@@ -8,7 +8,7 @@ import (
 )
 
 // GetTrialQRCode 获取体验版二维码
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/getTrialQRCode.html
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/code-management/api_gettrialqrcode.html
 func (c *Client) GetTrialQRCode(ctx context.Context, path string, notMustParams ...*gorequest.Params) (response APIResponse, body []byte, err error) {
 
 	// 参数

@@ -7,7 +7,7 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type GetJumpQRCodeResponse struct {
+type QrcodeJumpGetResponse struct {
 	APIResponse // 错误
 	RuleList    []struct {
 		Prefix        string   `json:"prefix"`          // 二维码规则
@@ -22,9 +22,9 @@ type GetJumpQRCodeResponse struct {
 	QrcodejumpPubQuota int `json:"qrcodejump_pub_quota"` // 本月还可发布的次数
 }
 
-// GetJumpQRCode 获取已设置的二维码规则
-// https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/qrcode/qrcodejumpadd.html
-func (c *Client) GetJumpQRCode(ctx context.Context, notMustParams ...*gorequest.Params) (response GetJumpQRCodeResponse, err error) {
+// QrcodeJumpGet 获取已设置的二维码规则
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/jumpqrcode-config/api_qrcodejumpget.html
+func (c *Client) QrcodeJumpGet(ctx context.Context, notMustParams ...*gorequest.Params) (response QrcodeJumpGetResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

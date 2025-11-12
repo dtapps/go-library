@@ -18,7 +18,7 @@ type RevertCodeReleaseResponse struct {
 }
 
 // RevertCodeRelease 小程序版本回退
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/revertCodeRelease.html
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/code-management/api_revertcoderelease.html
 func (c *Client) RevertCodeRelease(ctx context.Context, notMustParams ...*gorequest.Params) (response RevertCodeReleaseResponse, err error) {
 
 	// 参数

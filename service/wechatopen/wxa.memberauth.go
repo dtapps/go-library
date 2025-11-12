@@ -15,7 +15,7 @@ type GetTesterResponse struct {
 }
 
 // GetTester 获取体验者列表
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/member-management/getTester.html
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/member-management/api_gettester.html
 func (c *Client) GetTester(ctx context.Context, notMustParams ...*gorequest.Params) (response GetTesterResponse, err error) {
 
 	// 参数

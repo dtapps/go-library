@@ -7,9 +7,9 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-// CgiBinComponentSetPrivacySetting 配置小程序用户隐私保护指引
-// https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/privacy_config/set_privacy_setting.html
-func (c *Client) CgiBinComponentSetPrivacySetting(ctx context.Context, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
+// SetPrivacySetting 配置小程序用户隐私保护指引
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/privacy-management/api_setprivacysetting.html
+func (c *Client) SetPrivacySetting(ctx context.Context, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -19,8 +19,8 @@ func (c *Client) CgiBinComponentSetPrivacySetting(ctx context.Context, notMustPa
 	return
 }
 
-// GetCgiBinComponentSetPrivacySettingErrcodeInfo 错误描述
-func GetCgiBinComponentSetPrivacySettingErrcodeInfo(errcode int, errmsg string) string {
+// GetSetPrivacySettingErrcodeInfo 错误描述
+func GetSetPrivacySettingErrcodeInfo(errcode int, errmsg string) string {
 	switch errcode {
 	case 86069:
 		return "owner_setting必填字段字段缺失"

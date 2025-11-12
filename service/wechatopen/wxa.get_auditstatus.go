@@ -16,7 +16,7 @@ type GetAuditStatusResponse struct {
 }
 
 // GetAuditStatus 查询审核单状态
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/getAuditStatus.html
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/code-management/api_getauditstatus.html
 func (c *Client) GetAuditStatus(ctx context.Context, auditid int64, notMustParams ...*gorequest.Params) (response GetAuditStatusResponse, err error) {
 
 	// 参数

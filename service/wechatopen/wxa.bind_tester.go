@@ -13,7 +13,7 @@ type BindTesterResponse struct {
 }
 
 // BindTester 绑定体验者
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/member-management/bindTester.html
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/member-management/api_bindtester.html
 func (c *Client) BindTester(ctx context.Context, wechatid string, notMustParams ...*gorequest.Params) (response BindTesterResponse, err error) {
 
 	// 参数

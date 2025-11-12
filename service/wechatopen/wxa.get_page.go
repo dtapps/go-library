@@ -7,14 +7,14 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type WxaGetPageResponse struct {
+type GetCodePageResponse struct {
 	APIResponse          // 错误
 	PageList    []string `json:"page_list"` // page_list 页面配置列表
 }
 
-// WxaGetPage 获取已上传的代码的页面列表
-// https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/code/get_page.html
-func (c *Client) WxaGetPage(ctx context.Context, notMustParams ...*gorequest.Params) (response WxaGetPageResponse, err error) {
+// GetCodePage 获取已上传的代码的页面列表
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/code-management/api_getcodepage.html
+func (c *Client) GetCodePage(ctx context.Context, notMustParams ...*gorequest.Params) (response GetCodePageResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

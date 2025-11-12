@@ -8,7 +8,7 @@ import (
 )
 
 // UnbindTester 解除绑定体验者
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/member-management/unbindTester.html
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/member-management/api_unbindtester.html
 func (c *Client) UnbindTester(ctx context.Context, wechatid string, userstr string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数

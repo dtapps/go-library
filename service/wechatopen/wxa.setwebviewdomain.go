@@ -7,9 +7,9 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-// WxaSetWebViewDoMain 配置小程序业务域名
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/modifyJumpDomain.html
-func (c *Client) WxaSetWebViewDoMain(ctx context.Context, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
+// ModifyJumpDomain 配置小程序业务域名
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/domain-management/api_modifyjumpdomain.html
+func (c *Client) ModifyJumpDomain(ctx context.Context, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -20,7 +20,7 @@ func (c *Client) WxaSetWebViewDoMain(ctx context.Context, notMustParams ...*gore
 }
 
 // ErrcodeInfo 错误描述
-func GetWxaSetWebViewDoMainErrcodeInfo(errcode int, errmsg string) string {
+func GetModifyJumpDomainErrcodeInfo(errcode int, errmsg string) string {
 	switch errcode {
 	case 40001:
 		return "获取 access_token 时 AppSecret 错误，或者 access_token 无效。请开发者认真比对 AppSecret 的正确性，或查看是否正在为恰当的公众号调用接口"

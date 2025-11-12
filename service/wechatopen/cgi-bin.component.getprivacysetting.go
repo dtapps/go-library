@@ -7,7 +7,7 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type CgiBinComponentGetPrivacySettingResponse struct {
+type GetPrivacySettingResponse struct {
 	APIResponse          // 错误
 	CodeExist   int      `json:"code_exist"`   // 代码是否存在， 0 不存在， 1 存在 。如果最近没有通过commit接口上传代码，则会出现 code_exist=0的情况。
 	PrivacyList []string `json:"privacy_list"` // 代码检测出来的用户信息类型（privacy_key）
@@ -43,10 +43,10 @@ type CgiBinComponentGetPrivacySettingResponse struct {
 	} `json:"sdk_privacy_info_list"` // sdk
 }
 
-// CgiBinComponentGetPrivacySetting 查询小程序用户隐私保护指引
+// GetPrivacySetting 查询小程序用户隐私保护指引
 // @privacyVer 1表示现网版本，即，传1则该接口返回的内容是现网版本的；2表示开发版，即，传2则该接口返回的内容是开发版本的。默认是2。
-// https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/privacy_config/get_privacy_setting.html
-func (c *Client) CgiBinComponentGetPrivacySetting(ctx context.Context, privacyVer int, notMustParams ...*gorequest.Params) (response CgiBinComponentGetPrivacySettingResponse, err error) {
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/privacy-management/api_getprivacysetting.html
+func (c *Client) GetPrivacySetting(ctx context.Context, privacyVer int, notMustParams ...*gorequest.Params) (response GetPrivacySettingResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

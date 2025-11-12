@@ -14,7 +14,7 @@ type GetJumpDomainConfirmFileResponse struct {
 }
 
 // GetJumpDomainConfirmFile 获取业务域名校验文件
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/getJumpDomainConfirmFile.html
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/domain-management/api_getjumpdomainconfirmfile.html
 func (c *Client) GetJumpDomainConfirmFile(ctx context.Context, notMustParams ...*gorequest.Params) (response GetJumpDomainConfirmFileResponse, err error) {
 
 	// 参数

@@ -7,7 +7,7 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type WxaGetEffectiveDomainResponse struct {
+type GetEffectiveServerDomainResponse struct {
 	APIResponse // 错误
 	MpDomain    struct {
 		Requestdomain   []interface{} `json:"requestdomain"`
@@ -35,9 +35,9 @@ type WxaGetEffectiveDomainResponse struct {
 	} `json:"direct_domain"`
 }
 
-// WxaGetEffectiveDomain 获取发布后生效服务器域名列表
-// https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Mini_Program_Basic_Info/get_effective_domain.html
-func (c *Client) WxaGetEffectiveDomain(ctx context.Context, notMustParams ...*gorequest.Params) (response WxaGetEffectiveDomainResponse, err error) {
+// GetEffectiveServerDomain 获取发布后生效服务器域名列表
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/domain-management/api_geteffectiveserverdomain.html
+func (c *Client) GetEffectiveServerDomain(ctx context.Context, notMustParams ...*gorequest.Params) (response GetEffectiveServerDomainResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

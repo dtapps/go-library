@@ -14,7 +14,7 @@ type DownloadQRCodeTextResponse struct {
 }
 
 // DownloadQRCodeText 获取校验文件名称及内容
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/jumpqrcode-config/downloadQRCodeText.html
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/jumpqrcode-config/api_downloadqrcodetext.html
 func (c *Client) DownloadQRCodeText(ctx context.Context, notMustParams ...*gorequest.Params) (response DownloadQRCodeTextResponse, err error) {
 
 	// 参数

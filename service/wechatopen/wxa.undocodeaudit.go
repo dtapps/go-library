@@ -8,7 +8,7 @@ import (
 )
 
 // UndoAudit 撤回代码审核
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/undoAudit.html
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/code-management/api_undoaudit.html
 func (c *Client) UndoAudit(ctx context.Context, auditid int64, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数

@@ -8,7 +8,7 @@ import (
 )
 
 // Release 发布已通过审核的小程序
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/release.html
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/code-management/api_release.html
 func (c *Client) Release(ctx context.Context, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数

@@ -16,7 +16,7 @@ type SetCodeAuditQuotaResponse struct {
 }
 
 // SetCodeAuditQuota 查询服务商审核额度
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/setCodeAuditQuota.html
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/code-management/api_setcodeauditquota.html
 func (c *Client) SetCodeAuditQuota(ctx context.Context, notMustParams ...*gorequest.Params) (response SetCodeAuditQuotaResponse, err error) {
 
 	// 参数

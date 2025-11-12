@@ -8,7 +8,7 @@ import (
 )
 
 // ModifyJumpDomainDirectly 快速配置小程序业务域名
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/modifyJumpDomainDirectly.html
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/domain-management/api_modifyjumpdomaindirectly.html
 func (c *Client) ModifyJumpDomainDirectly(ctx context.Context, action string, webviewdomain []string, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数

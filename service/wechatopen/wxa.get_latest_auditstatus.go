@@ -19,7 +19,7 @@ type GetLatestAuditStatusResponse struct {
 }
 
 // GetLatestAuditStatus 查询最新一次审核单状态
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/getLatestAuditStatus.html
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/code-management/api_getlatestauditstatus.html
 func (c *Client) GetLatestAuditStatus(ctx context.Context, notMustParams ...*gorequest.Params) (response GetLatestAuditStatusResponse, err error) {
 
 	// 参数

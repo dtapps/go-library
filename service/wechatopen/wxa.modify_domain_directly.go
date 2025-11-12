@@ -7,7 +7,7 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type WxaModifyDomainDirectlyResponse struct {
+type ModifyServerDomainDirectlyResponse struct {
 	APIResponse                     // 错误
 	Requestdomain          []string `json:"requestdomain"`           // request 合法域名
 	Wsrequestdomain        []string `json:"wsrequestdomain"`         // socket 合法域名
@@ -24,9 +24,9 @@ type WxaModifyDomainDirectlyResponse struct {
 	NoIcpDomain            []string `json:"no_icp_domain"`           // 没有经过icp备案的域名
 }
 
-// WxaModifyDomainDirectly 快速配置小程序服务器域名
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/domain-management/modifyServerDomainDirectly.html
-func (c *Client) WxaModifyDomainDirectly(ctx context.Context, notMustParams ...*gorequest.Params) (response WxaModifyDomainDirectlyResponse, err error) {
+// ModifyServerDomainDirectly 快速配置小程序服务器域名
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/domain-management/api_modifyserverdomaindirectly.html
+func (c *Client) ModifyServerDomainDirectly(ctx context.Context, notMustParams ...*gorequest.Params) (response ModifyServerDomainDirectlyResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -37,7 +37,7 @@ func (c *Client) WxaModifyDomainDirectly(ctx context.Context, notMustParams ...*
 }
 
 // ErrcodeInfo 错误描述
-func GetWxaModifyDomainDirectlyErrcodeInfo(errcode int, errmsg string) string {
+func GetModifyServerDomainDirectlyErrcodeInfo(errcode int, errmsg string) string {
 	switch errcode {
 	case 85015:
 		return "该账号不是小程序账号"

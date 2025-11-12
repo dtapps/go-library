@@ -8,7 +8,7 @@ import (
 )
 
 // Commit 上传代码并生成体验版
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/commit.html
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/code-management/api_commit.html
 func (c *Client) Commit(ctx context.Context, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数
