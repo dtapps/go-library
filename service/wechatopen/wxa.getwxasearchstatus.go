@@ -14,7 +14,7 @@ type GetSearchStatusResponse struct {
 
 // GetSearchStatus 获取搜索状态
 // https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/basic-info-management/api_getsearchstatus.html
-func (c *Client) GetSearchStatus(ctx context.Context, notMustParams ...*gorequest.Params) (response GetSearchStatusResponse, body []byte, err error) {
+func (c *Client) GetSearchStatus(ctx context.Context, notMustParams ...*gorequest.Params) (response GetSearchStatusResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

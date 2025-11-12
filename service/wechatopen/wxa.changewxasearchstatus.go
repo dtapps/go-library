@@ -9,7 +9,7 @@ import (
 
 // SetSearchStatus 设置搜索状态
 // https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/basic-info-management/api_setsearchstatus.html
-func (c *Client) SetSearchStatus(ctx context.Context, notMustParams ...*gorequest.Params) (response APIResponse, body []byte, err error) {
+func (c *Client) SetSearchStatus(ctx context.Context, notMustParams ...*gorequest.Params) (response APIResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
