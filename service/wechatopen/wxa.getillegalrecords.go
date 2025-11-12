@@ -20,20 +20,22 @@ type GetIllegalRecordsResponse struct {
 }
 
 // GetIllegalRecords 获取小程序违规处罚记录
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/record-management/getIllegalRecords.html
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/record-management/api_getillegalrecords.html
 func (c *Client) GetIllegalRecords(ctx context.Context, notMustParams ...*gorequest.Params) (response GetIllegalRecordsResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 
 	// 请求
-	err = c.request(ctx, "wxa/getillegalrecords?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
+	err = c.request(ctx, c.WithUrlAuthorizerAccessToken("wxa/getillegalrecords"), params, http.MethodPost, &response)
 	return
 }
 
 // ErrcodeInfo 错误描述
 func GetGetIllegalRecordsErrcodeInfo(errcode int, errmsg string) string {
 	switch errcode {
+	case 40001:
+		return "获取 access_token 时 AppSecret 错误，或者 access_token 无效。请开发者认真比对 AppSecret 的正确性，或查看是否正在为恰当的公众号调用接口"
 	case 43007:
 		return "检查授权关系"
 	default:
