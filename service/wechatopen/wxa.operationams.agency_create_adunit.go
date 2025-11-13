@@ -7,15 +7,14 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type WxaOperationamsAgencyCreateAdunitResponse struct {
+type AgencyCreateAdunitResponse struct {
 	APIRetResponse        // 错误
 	AdUnitId       string `json:"ad_unit_id"`
 }
 
-// WxaOperationamsAgencyCreateAdunit
-// 创建广告单元
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/ad-mgnt/AgencyCreateAdunit.html
-func (c *Client) WxaOperationamsAgencyCreateAdunit(ctx context.Context, name string, Type string, videoDurationMin int64, videoDurationMax int64, notMustParams ...*gorequest.Params) (response WxaOperationamsAgencyCreateAdunitResponse, err error) {
+// AgencyCreateAdunit 创建广告单元
+// https://developers.weixin.qq.com/doc/oplatform/openApi/ams/ad-mgnt/api_agencycreateadunit.html
+func (c *Client) AgencyCreateAdunit(ctx context.Context, name string, Type string, videoDurationMin int64, videoDurationMax int64, notMustParams ...*gorequest.Params) (response AgencyCreateAdunitResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

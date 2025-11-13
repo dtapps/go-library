@@ -7,10 +7,9 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-// WxaOperationamsAgencyCreatePublisher
-// 开通流量主
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/open/AgencyCreatePublisher.html
-func (c *Client) WxaOperationamsAgencyCreatePublisher(ctx context.Context, notMustParams ...*gorequest.Params) (response APIRetResponse, err error) {
+// AgencyCreatePublisher 开通流量主
+// https://developers.weixin.qq.com/doc/oplatform/openApi/ams/open/api_agencycreatepublisher.html
+func (c *Client) AgencyCreatePublisher(ctx context.Context, notMustParams ...*gorequest.Params) (response APIRetResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -21,7 +20,7 @@ func (c *Client) WxaOperationamsAgencyCreatePublisher(ctx context.Context, notMu
 }
 
 // ErrcodeInfo 错误描述
-func GetWxaOperationamsAgencyCreatePublisherErrcodeInfo(ret int, err_msg string) string {
+func GetAgencyCreatePublisherErrcodeInfo(ret int, err_msg string) string {
 	switch ret {
 	case 1700:
 		return "参数错误"

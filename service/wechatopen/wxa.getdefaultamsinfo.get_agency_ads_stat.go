@@ -7,7 +7,7 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type WxaGetdefaultamsinfoGetAgencyAdsStatResponse struct {
+type GetAgencyAdsStatResponse struct {
 	APIRetResponse // 错误
 	List           []struct {
 		SlotId          int64   `json:"slot_id"`
@@ -40,10 +40,9 @@ type WxaGetdefaultamsinfoGetAgencyAdsStatResponse struct {
 	TotalNum int `json:"total_num"`
 }
 
-// WxaGetdefaultamsinfoGetAgencyAdsStat
-// 获取服务商广告汇总数据
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/ad-data/GetAgencyAdsStat.html
-func (c *Client) WxaGetdefaultamsinfoGetAgencyAdsStat(ctx context.Context, page, pageSize int64, startDate, endDate, adSlot string, notMustParams ...*gorequest.Params) (response WxaGetdefaultamsinfoGetAgencyAdsStatResponse, err error) {
+// GetAgencyAdsStat 获取服务商广告汇总数据
+// https://developers.weixin.qq.com/doc/oplatform/openApi/ams/ad-data/api_getagencyadsstat.html
+func (c *Client) GetAgencyAdsStat(ctx context.Context, page, pageSize int64, startDate, endDate, adSlot string, notMustParams ...*gorequest.Params) (response GetAgencyAdsStatResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)

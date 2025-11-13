@@ -7,26 +7,26 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type WxaGetDefaultamsInfoAgencyGetCustomShareRatioResponse struct {
+type GetCustomShareRatioResponse struct {
 	APIRetResponse     // 错误
 	ShareRatio     int `json:"share_ratio"`
 }
 
-// WxaGetDefaultamsInfoAgencyGetCustomShareRatio 查询自定义分账比例
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/percentage/GetCustomShareRatio.html
-func (c *Client) WxaGetDefaultamsInfoAgencyGetCustomShareRatio(ctx context.Context, notMustParams ...*gorequest.Params) (response WxaGetDefaultamsInfoAgencyGetCustomShareRatioResponse, err error) {
+// GetCustomShareRatio 查询自定义分账比例
+// https://developers.weixin.qq.com/doc/oplatform/openApi/ams/percentage/api_getcustomshareratio.html
+func (c *Client) GetCustomShareRatio(ctx context.Context, notMustParams ...*gorequest.Params) (response GetCustomShareRatioResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("appid", c.GetAuthorizerAppid())
 
 	// 请求
-	err = c.request(ctx, "wxa/getdefaultamsinfo?action=agency_get_custom_share_ratio&access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/getdefaultamsinfo?action=agency_get_custom_share_ratio&access_token="+c.GetComponentAccessToken(), params, http.MethodPost, &response)
 	return
 }
 
 // ErrcodeInfo 错误描述
-func GetWxaGetDefaultamsInfoAgencyGetCustomShareRatioErrcodeInfo(ret int, err_msg string) string {
+func GetGetCustomShareRatioErrcodeInfo(ret int, err_msg string) string {
 	switch ret {
 	case -202:
 		return "内部错误"

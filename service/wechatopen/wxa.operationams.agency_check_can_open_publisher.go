@@ -7,15 +7,14 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type WxaOperationamsAgencyCheckCanOpenPublisherResponse struct {
+type AgencyCheckCanOpenPublisherResponse struct {
 	APIRetResponse     // 错误
 	Status         int `json:"status"`
 }
 
-// WxaOperationamsAgencyCheckCanOpenPublisher
-// 检测是否能开通流量主
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/open/AgencyCheckCanOpenPublisher.html
-func (c *Client) WxaOperationamsAgencyCheckCanOpenPublisher(ctx context.Context, notMustParams ...*gorequest.Params) (response WxaOperationamsAgencyCheckCanOpenPublisherResponse, err error) {
+// AgencyCheckCanOpenPublisher 检测是否能开通流量主
+// https://developers.weixin.qq.com/doc/oplatform/openApi/ams/open/api_agencycheckcanopenpublisher.html
+func (c *Client) AgencyCheckCanOpenPublisher(ctx context.Context, notMustParams ...*gorequest.Params) (response AgencyCheckCanOpenPublisherResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -26,7 +25,7 @@ func (c *Client) WxaOperationamsAgencyCheckCanOpenPublisher(ctx context.Context,
 }
 
 // ErrcodeInfo 错误描述
-func GetWxaOperationamsAgencyCheckCanOpenPublisherErrcodeInfo(ret int, err_msg string) string {
+func GetAgencyCheckCanOpenPublisherErrcodeInfo(ret int, err_msg string) string {
 	switch ret {
 	case 1700:
 		return "参数错误"
