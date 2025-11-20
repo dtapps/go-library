@@ -1,5 +1,7 @@
 package goarray
 
+import "slices"
+
 func Grouping() {
 
 }
@@ -31,7 +33,7 @@ func SplitSliceIntoChunks[T any](slice []T, chunkSize int) [][]T {
 }
 
 // RemoveDuplicateElement 去重
-func RemoveDuplicateElement[T string | int | int16 | int32](ss []T) []T {
+func RemoveDuplicateElement[T string | int | int16 | int32 | int64 | float32 | float64](ss []T) []T {
 	result := make([]T, 0, len(ss))
 	temp := map[T]struct{}{}
 	for _, item := range ss {
@@ -41,4 +43,24 @@ func RemoveDuplicateElement[T string | int | int16 | int32](ss []T) []T {
 		}
 	}
 	return result
+}
+
+// CompareStringSlicesIgnoreOrder 比较两个字符串切片是否包含相同元素（忽略顺序）
+func CompareStringSlicesIgnoreOrder(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+
+	// 创建副本以避免修改原切片
+	sortedA := make([]string, len(a))
+	copy(sortedA, a)
+	sortedB := make([]string, len(b))
+	copy(sortedB, b)
+
+	// 排序
+	slices.Sort(sortedA)
+	slices.Sort(sortedB)
+
+	// 比较排序后的切片
+	return slices.Equal(sortedA, sortedB)
 }
