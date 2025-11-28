@@ -11,10 +11,6 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-const (
-	Version = "1.0.177"
-)
-
 type SLogFun func() *SLog
 
 type sLogConfig struct {
