@@ -12,12 +12,13 @@ type ApplyPrivacyInterfaceResponse struct {
 	AuditId     int64 `json:"audit_id"` // 审核单id
 }
 
-// ApplyPrivacyInterface 申请接口
+// ApplyPrivacyInterface 申请地理位置接口
 // https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/privacy-api-management/api_applyprivacyinterface.html
-func (c *Client) ApplyPrivacyInterface(ctx context.Context, notMustParams ...*gorequest.Params) (response ApplyPrivacyInterfaceResponse, err error) {
+func (c *Client) ApplyPrivacyInterface(ctx context.Context, api_name string, notMustParams ...*gorequest.Params) (response ApplyPrivacyInterfaceResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("api_name", api_name) // 申请的 api 英文名，例如wx.choosePoi，严格区分大小写
 
 	// 请求
 	err = c.request(ctx, "wxa/security/apply_privacy_interface?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)

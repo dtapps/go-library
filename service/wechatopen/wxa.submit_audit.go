@@ -14,10 +14,11 @@ type SubmitAuditResponse struct {
 
 // SubmitAudit 提交代码审核
 // https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/code-management/api_submitaudit.html
-func (c *Client) SubmitAudit(ctx context.Context, notMustParams ...*gorequest.Params) (response SubmitAuditResponse, err error) {
+func (c *Client) SubmitAudit(ctx context.Context, item_list map[string]any, notMustParams ...*gorequest.Params) (response SubmitAuditResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
+	params.Set("item_list", item_list) // 审核项列表
 
 	// 请求
 	err = c.request(ctx, "wxa/submit_audit?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)

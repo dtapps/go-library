@@ -48,6 +48,7 @@ func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
 	c.config.authorizerAppid = options.authorizerAppid
 	c.config.authorizerAccessToken = options.authorizerAccessToken
 	c.config.authorizerRefreshToken = options.authorizerRefreshToken
+	c.config.authorizerReleaseVersion = options.authorizerReleaseVersion
 
 	// 创建请求客户端
 	c.httpClient = resty.New()

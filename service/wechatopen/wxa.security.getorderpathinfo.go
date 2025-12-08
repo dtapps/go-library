@@ -7,9 +7,9 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-type WxaSecurityGetOrderPathInfoResponse struct {
+type GetOrderPathInfoResponse struct {
 	APIResponse // 错误
-	msg         struct {
+	Msg         struct {
 		Path        string   `json:"path"`
 		ImgList     []string `json:"img_list"`
 		Video       string   `json:"video"`
@@ -21,9 +21,9 @@ type WxaSecurityGetOrderPathInfoResponse struct {
 	} `json:"msg"`
 }
 
-// WxaSecurityGetOrderPathInfo 获取订单页 path 信息
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/basic-info-management/getOrderPathInfo.html
-func (c *Client) WxaSecurityGetOrderPathInfo(ctx context.Context, infoType int, notMustParams ...*gorequest.Params) (response WxaSecurityGetOrderPathInfoResponse, err error) {
+// GetOrderPathInfo 获取订单页path信息
+// https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/basic-info-management/api_getorderpathinfo.html
+func (c *Client) GetOrderPathInfo(ctx context.Context, infoType int, notMustParams ...*gorequest.Params) (response GetOrderPathInfoResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
@@ -35,7 +35,7 @@ func (c *Client) WxaSecurityGetOrderPathInfo(ctx context.Context, infoType int, 
 }
 
 // ErrcodeInfo 错误描述
-func GetWxaSecurityGetOrderPathInfoErrcodeInfo(errcode int, errmsg string) string {
+func GetGetOrderPathInfoErrcodeInfo(errcode int, errmsg string) string {
 	switch errcode {
 	case 61041:
 		return "订单页 path 未设置"

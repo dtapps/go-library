@@ -22,7 +22,7 @@ type GetPrivacyInterfaceResponse struct {
 	} `json:"interface_list"` // 隐私接口
 }
 
-// GetPrivacyInterface 获取接口列表
+// GetPrivacyInterface 获取地理位置接口列表
 // https://developers.weixin.qq.com/doc/oplatform/openApi/miniprogram-management/privacy-api-management/api_getprivacyinterface.html
 func (c *Client) GetPrivacyInterface(ctx context.Context, notMustParams ...*gorequest.Params) (response GetPrivacyInterfaceResponse, err error) {
 

@@ -7,22 +7,21 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 )
 
-// WxaSetDefaultamsInfoSetShareRatio
-// 设置默认分账比例
-// https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/ams/percentage/SetShareRatio.html
-func (c *Client) WxaSetDefaultamsInfoSetShareRatio(ctx context.Context, shareRatio int64, notMustParams ...*gorequest.Params) (response APIRetResponse, err error) {
+// SetShareRatio 设置默认分账比例
+// https://developers.weixin.qq.com/doc/oplatform/openApi/ams/percentage/api_setshareratio.html
+func (c *Client) SetShareRatio(ctx context.Context, shareRatio int64, notMustParams ...*gorequest.Params) (response APIRetResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("share_ratio", shareRatio)
+	params.Set("share_ratio", shareRatio) // 服务商默认分账比例。如share_ratio为40，则代表服务商获得收益的40%，小程序商家获得收益的60%
 
 	// 请求
-	err = c.request(ctx, "wxa/setdefaultamsinfo?action=set_share_ratio&access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)
+	err = c.request(ctx, "wxa/setdefaultamsinfo?action=set_share_ratio&access_token="+c.GetComponentAccessToken(), params, http.MethodPost, &response)
 	return
 }
 
 // ErrcodeInfo 错误描述
-func GetWxaSetDefaultamsInfoSetShareRatioErrcodeInfo(ret int, err_msg string) string {
+func GetSetShareRatioErrcodeInfo(ret int, err_msg string) string {
 	switch ret {
 	case -202:
 		return "内部错误"

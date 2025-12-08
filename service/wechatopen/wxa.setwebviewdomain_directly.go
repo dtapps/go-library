@@ -13,8 +13,10 @@ func (c *Client) ModifyJumpDomainDirectly(ctx context.Context, action string, we
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
-	params.Set("action", action)
-	params.Set("webviewdomain", webviewdomain)
+	params.Set("action", action) // 操作类型
+	if action != "get" {
+		params.Set("webviewdomain", webviewdomain) // 小程序业务域名，当 action 参数是 get 时不需要此字段
+	}
 
 	// 请求
 	err = c.request(ctx, "wxa/setwebviewdomain_directly?access_token="+c.GetAuthorizerAccessToken(), params, http.MethodPost, &response)

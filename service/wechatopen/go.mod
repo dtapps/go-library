@@ -10,7 +10,7 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0
 	go.dtapp.net/library/contrib/resty_log v1.0.8
 	go.dtapp.net/library/utils/gorequest v1.1.3
-	resty.dev/v3 v3.0.0-beta.3
+	resty.dev/v3 v3.0.0-beta.4
 )
 
 require (
