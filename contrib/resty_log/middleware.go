@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"runtime"
 	"time"
 
 	"resty.dev/v3"
@@ -13,6 +14,8 @@ import (
 
 // LogData 表示每次请求/响应的日志数据
 type LogData struct {
+	GoVersion       string
+	RestyVersion    string
 	Hostname        string
 	Method          string
 	URL             string
@@ -171,6 +174,8 @@ func (l *Logger) AfterResponse(c *resty.Client, resp *resty.Response) error {
 
 	// 创建 LogData
 	logData := &LogData{
+		GoVersion:       runtime.Version(),
+		RestyVersion:    resty.Version,
 		Hostname:        hostname,
 		Method:          resp.Request.Method,
 		URL:             resp.Request.URL,
