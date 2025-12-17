@@ -16,6 +16,7 @@ import (
 type LogData struct {
 	GoVersion       string
 	RestyVersion    string
+	PluginVersion   string
 	Hostname        string
 	Method          string
 	URL             string
@@ -28,13 +29,13 @@ type LogData struct {
 	IsError         bool
 }
 
-// LoggerSaveFunc 是保存日志数据的回调类型
-type LoggerSaveFunc func(ctx context.Context, data *LogData) error
-
 // LogSaver 定义保存日志的接口
 type LogSaver interface {
 	SaveLog(ctx context.Context, data *LogData) error
 }
+
+// LoggerSaveFunc 是保存日志数据的回调类型
+type LoggerSaveFunc func(ctx context.Context, data *LogData) error
 
 type Logger struct {
 	saveFunc LoggerSaveFunc // 回调函数
@@ -176,6 +177,7 @@ func (l *Logger) AfterResponse(c *resty.Client, resp *resty.Response) error {
 	logData := &LogData{
 		GoVersion:       runtime.Version(),
 		RestyVersion:    resty.Version,
+		PluginVersion:   Version,
 		Hostname:        hostname,
 		Method:          resp.Request.Method,
 		URL:             resp.Request.URL,
@@ -215,21 +217,26 @@ func (l *Logger) AfterResponse(c *resty.Client, resp *resty.Response) error {
 	}
 
 	// 保存日志：优先使用回调函数，如果没有回调则使用接口
-	if l.saveFunc != nil {
-		go func() {
-			if err := l.saveFunc(context.Background(), logData); err != nil {
-				fmt.Println("save log failed (callback):", err)
-			}
-		}()
-	} else if l.saver != nil {
-		go func() {
-			if err := l.saver.SaveLog(context.Background(), logData); err != nil {
-				fmt.Println("save log failed (saver):", err)
-			}
-		}()
-	}
+	l.emit(context.Background(), logData)
 
 	return nil
+}
+
+// 内部辅助方法：触发接口或回调
+func (l *Logger) emit(ctx context.Context, data *LogData) {
+	if l.saveFunc != nil {
+		go func(ctx context.Context, data *LogData) {
+			if err := l.saveFunc(ctx, data); err != nil {
+				fmt.Println("save log failed (saveFunc):", err)
+			}
+		}(ctx, data)
+	} else if l.saver != nil {
+		go func(ctx context.Context, data *LogData) {
+			if err := l.saver.SaveLog(ctx, data); err != nil {
+				fmt.Println("save log failed (saver):", err)
+			}
+		}(ctx, data)
+	}
 }
 
 // reqBodyToBytes 将请求体转换为 []byte
