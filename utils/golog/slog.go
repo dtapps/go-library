@@ -1,20 +1,18 @@
 package golog
 
 import (
-	"context"
 	"io"
 	"log/slog"
 	"os"
 	"time"
 
-	"go.opentelemetry.io/contrib/bridges/otelslog"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 type SLogFun func() *SLog
 
 type sLogConfig struct {
-	lumberjackConfig       *lumberjack.Logger // 配置lumberjack
+	lumberjackConfig       *lumberjack.Logger // 配置 lumberjack
 	setLevel               slog.Level         // 设置日志级别
 	showLine               bool               // 显示代码行
 	setDefault             bool               // 设置为默认的实例
@@ -22,11 +20,10 @@ type sLogConfig struct {
 	setJSONFormat          bool               // 设置为json格式
 	lumberjackConfigStatus bool               // 配置lumberjack状态
 	disableLogging         bool               // 完全禁用日志输出（静默模式，使用 io.Discard）
-	enableOTel             bool               // 启用 OpenTelemetry slog 桥接
-	oTelLoggerName         string             // otelslog 的 logger 名称
 }
 
 type SLog struct {
+	middlewares  []SlogMiddleware // 可插拔中间件（运行期追加）
 	option       sLogConfig
 	logger       *slog.Logger
 	ctxHandler   *ContextHandler
@@ -35,45 +32,9 @@ type SLog struct {
 	finalHandler slog.Handler // 最终用于构建 logger 的 handler（可能是 Tee 后的）
 }
 
-// multiHandler 会将日志分发到多个 slog.Handler
-type multiHandler struct {
-	hs []slog.Handler
-}
-
-func (m multiHandler) Enabled(ctx context.Context, level slog.Level) bool {
-	for _, h := range m.hs {
-		if h.Enabled(ctx, level) {
-			return true
-		}
-	}
-	return false
-}
-
-func (m multiHandler) Handle(ctx context.Context, r slog.Record) error {
-	var firstErr error
-	for _, h := range m.hs {
-		// 克隆 Record，避免下游修改互相影响
-		if err := h.Handle(ctx, r.Clone()); err != nil && firstErr == nil {
-			firstErr = err
-		}
-	}
-	return firstErr
-}
-
-func (m multiHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
-	nhs := make([]slog.Handler, len(m.hs))
-	for i, h := range m.hs {
-		nhs[i] = h.WithAttrs(attrs)
-	}
-	return multiHandler{hs: nhs}
-}
-
-func (m multiHandler) WithGroup(name string) slog.Handler {
-	nhs := make([]slog.Handler, len(m.hs))
-	for i, h := range m.hs {
-		nhs[i] = h.WithGroup(name)
-	}
-	return multiHandler{hs: nhs}
+// Use 在构建链尾部追加一个或多个 SlogMiddleware（从后往前应用）
+func (sl *SLog) Use(mws ...SlogMiddleware) {
+	sl.middlewares = append(sl.middlewares, mws...)
 }
 
 // NewSlog 创建
@@ -139,16 +100,12 @@ func (sl *SLog) start() {
 		baseHandler = sl.textHandler
 	}
 
-	// 如果启用 OTel，则合并一个 OTel Handler，实现同时输出
-	if sl.option.enableOTel {
-		name := sl.option.oTelLoggerName
-		if name == "" {
-			name = "slog"
-		}
-		sl.finalHandler = multiHandler{hs: []slog.Handler{baseHandler, otelslog.NewHandler(name)}}
-	} else {
-		sl.finalHandler = baseHandler
+	// 中间件链：从后往前包装，保持与原有语义一致
+	handler := baseHandler
+	for i := len(sl.middlewares) - 1; i >= 0; i-- {
+		handler = sl.middlewares[i](handler)
 	}
+	sl.finalHandler = handler
 
 	// 是否需要默认上下文包装
 	if sl.option.setDefaultCtx {

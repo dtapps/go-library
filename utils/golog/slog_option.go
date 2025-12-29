@@ -65,17 +65,3 @@ func SetDisableLogging(disable bool) SLogOption {
 		sl.option.disableLogging = disable
 	}
 }
-
-// WithSLogEnableOTel 启用/关闭 OpenTelemetry slog 桥接
-func WithSLogEnableOTel(status bool) SLogOption {
-	return func(sl *SLog) {
-		sl.option.enableOTel = status
-	}
-}
-
-// WithSLogOTelName 配置 otelslog 的 logger 名称（留空则默认 "slog"）
-func WithSLogOTelName(name string) SLogOption {
-	return func(sl *SLog) {
-		sl.option.oTelLoggerName = name
-	}
-}
