@@ -1,6 +1,10 @@
 package golog
 
-import "gopkg.in/natefinch/lumberjack.v2"
+import (
+	"log/slog"
+
+	"gopkg.in/natefinch/lumberjack.v2"
+)
 
 // SLogOption 定义了配置 SLog 的函数类型
 type SLogOption func(*SLog)
@@ -19,71 +23,51 @@ func WithSLogLumberjack(config *lumberjack.Logger) SLogOption {
 	}
 }
 
-// WithSLogShowLine 显示代码行
-func WithSLogShowLine() SLogOption {
+// WithSLogSetLevel 设置日志级别
+func WithSLogSetLevel(level slog.Level) SLogOption {
 	return func(sl *SLog) {
-		sl.option.showLine = true
+		sl.option.setLevel = level
 	}
 }
 
-// WithSLogShowLinePass 显示代码行
-func WithSLogShowLinePass(status bool) SLogOption {
+// WithSLogShowLine 显示代码行
+func WithSLogShowLine(status bool) SLogOption {
 	return func(sl *SLog) {
 		sl.option.showLine = status
 	}
 }
 
 // WithSLogSetDefault 设置为默认的实例
-func WithSLogSetDefault() SLogOption {
-	return func(sl *SLog) {
-		sl.option.setDefault = true
-	}
-}
-
-// WithSLogSetDefaultPass 设置为默认的实例
-func WithSLogSetDefaultPass(status bool) SLogOption {
+func WithSLogSetDefault(status bool) SLogOption {
 	return func(sl *SLog) {
 		sl.option.setDefault = status
 	}
 }
 
 // WithSLogSetDefaultCtx 设置默认上下文
-func WithSLogSetDefaultCtx() SLogOption {
-	return func(sl *SLog) {
-		sl.option.setDefaultCtx = true
-	}
-}
-
-// WithSLogSetDefaultCtxPass 设置默认上下文
-func WithSLogSetDefaultCtxPass(status bool) SLogOption {
+func WithSLogSetDefaultCtx(status bool) SLogOption {
 	return func(sl *SLog) {
 		sl.option.setDefaultCtx = status
 	}
 }
 
 // WithSLogSetJSONFormat 设置JSON格式
-func WithSLogSetJSONFormat() SLogOption {
-	return func(sl *SLog) {
-		sl.option.setJSONFormat = true
-	}
-}
-
-// WithSLogSetJSONFormatPass 设置JSON格式
-func WithSLogSetJSONFormatPass(status bool) SLogOption {
+func WithSLogSetJSONFormat(status bool) SLogOption {
 	return func(sl *SLog) {
 		sl.option.setJSONFormat = status
 	}
 }
 
-// WithSLogEnableOTel 启用 OpenTelemetry slog 桥接
-func WithSLogEnableOTel() SLogOption {
+// SetDisableLogging 设置是否完全禁用日志输出。
+// 当设置为 true 时，所有日志将被 io.Discard 丢弃，适用于生产环境以提升性能。
+func SetDisableLogging(disable bool) SLogOption {
 	return func(sl *SLog) {
-		sl.option.enableOTel = true
+		sl.option.disableLogging = disable
 	}
 }
 
-// WithSLogEnableOTelPass 启用/关闭 OpenTelemetry slog 桥接
-func WithSLogEnableOTelPass(status bool) SLogOption {
+// WithSLogEnableOTel 启用/关闭 OpenTelemetry slog 桥接
+func WithSLogEnableOTel(status bool) SLogOption {
 	return func(sl *SLog) {
 		sl.option.enableOTel = status
 	}
@@ -93,13 +77,5 @@ func WithSLogEnableOTelPass(status bool) SLogOption {
 func WithSLogOTelName(name string) SLogOption {
 	return func(sl *SLog) {
 		sl.option.oTelLoggerName = name
-	}
-}
-
-// SetDisableLogging 设置是否完全禁用日志输出。
-// 当设置为 true 时，所有日志将被 io.Discard 丢弃，适用于生产环境以提升性能。
-func SetDisableLogging(disable bool) SLogOption {
-	return func(sl *SLog) {
-		sl.option.disableLogging = disable
 	}
 }

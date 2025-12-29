@@ -14,11 +14,12 @@ import (
 type SLogFun func() *SLog
 
 type sLogConfig struct {
+	lumberjackConfig       *lumberjack.Logger // 配置lumberjack
+	setLevel               slog.Level         // 设置日志级别
 	showLine               bool               // 显示代码行
 	setDefault             bool               // 设置为默认的实例
 	setDefaultCtx          bool               // 设置默认上下文
 	setJSONFormat          bool               // 设置为json格式
-	lumberjackConfig       *lumberjack.Logger // 配置lumberjack
 	lumberjackConfigStatus bool               // 配置lumberjack状态
 	disableLogging         bool               // 完全禁用日志输出（静默模式，使用 io.Discard）
 	enableOTel             bool               // 启用 OpenTelemetry slog 桥接
@@ -78,6 +79,7 @@ func (m multiHandler) WithGroup(name string) slog.Handler {
 // NewSlog 创建
 func NewSlog(opts ...SLogOption) *SLog {
 	sl := &SLog{}
+	sl.option.setLevel = slog.LevelDebug // 默认日志等级
 	for _, opt := range opts {
 		opt(sl)
 	}
@@ -90,7 +92,7 @@ func (sl *SLog) start() {
 	// 配置 slog 的 Handler 选项
 	opts := slog.HandlerOptions{
 		AddSource: sl.option.showLine, // 输出日志语句的位置信息
-		Level:     slog.LevelDebug,    // 设置最低日志等级
+		Level:     sl.option.setLevel, // 设置最低日志等级
 		ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
 			if a.Key == slog.TimeKey { // 格式化 key 为 "time" 的属性值
 				a.Value = slog.StringValue(a.Value.Time().Format(time.DateTime))
