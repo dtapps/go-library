@@ -30,7 +30,7 @@ func (s *TestEntLogSaver) HandleLog(ctx context.Context, data *LogData) error {
 }
 
 // 返回一个测试的 Logger
-func NewTestLogger(debug bool) http.RoundTripper {
+func NewTestLogger() http.RoundTripper {
 
 	// 定义回调函数
 	saveFunc := func(ctx context.Context, data *LogData) error {
