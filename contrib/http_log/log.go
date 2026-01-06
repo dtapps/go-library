@@ -81,8 +81,7 @@ func (l *LoggingTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 	// 异常处理：即使 err != nil，我们也应该触发日志记录
 	if err != nil {
 		logData.IsError = true
-		// l.emit(req.Context(), logData)
-		l.emit(context.Background(), logData)
+		l.emit(context.WithoutCancel(req.Context()), logData)
 		return nil, err
 	}
 
@@ -98,8 +97,7 @@ func (l *LoggingTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 	}
 
 	// 触发保存
-	l.emit(context.Background(), logData)
-	// l.emit(req.Context(), logData)
+	l.emit(context.WithoutCancel(req.Context()), logData)
 
 	return resp, nil
 }

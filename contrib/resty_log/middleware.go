@@ -217,7 +217,7 @@ func (l *Logger) AfterResponse(c *resty.Client, resp *resty.Response) error {
 	}
 
 	// 保存日志：优先使用回调函数，如果没有回调则使用接口
-	l.emit(context.Background(), logData)
+	l.emit(context.WithoutCancel(ctx), logData)
 
 	return nil
 }
