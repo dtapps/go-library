@@ -19,7 +19,7 @@ type RobotSend struct {
 }
 
 // RobotSend 发送消息
-// https://open.dingtalk.com/document/group/custom-robot-access
+// https://open.dingtalk.com/document/dingstart/custom-bot-send-message-type
 func (c *Client) RobotSend(ctx context.Context, accessToken string, notMustParams ...*gorequest.Params) (response RobotSend, err error) {
 
 	// 参数
@@ -31,7 +31,7 @@ func (c *Client) RobotSend(ctx context.Context, accessToken string, notMustParam
 }
 
 // RobotSendURL 发送消息
-// https://open.dingtalk.com/document/group/custom-robot-access
+// https://open.dingtalk.com/document/dingstart/custom-bot-send-message-type
 func (c *Client) RobotSendURL(ctx context.Context, url string, notMustParams ...*gorequest.Params) (response RobotSend, err error) {
 
 	// 参数
@@ -43,7 +43,7 @@ func (c *Client) RobotSendURL(ctx context.Context, url string, notMustParams ...
 }
 
 // RobotSendSign 发送消息签名版
-// https://open.dingtalk.com/document/group/custom-robot-access
+// https://open.dingtalk.com/document/dingstart/custom-bot-send-message-type
 func (c *Client) RobotSendSign(ctx context.Context, accessToken string, secret string, notMustParams ...*gorequest.Params) (response RobotSend, err error) {
 
 	// 参数
@@ -57,7 +57,7 @@ func (c *Client) RobotSendSign(ctx context.Context, accessToken string, secret s
 }
 
 // RobotSendSignURL 发送消息签名版
-// https://open.dingtalk.com/document/group/custom-robot-access
+// https://open.dingtalk.com/document/dingstart/custom-bot-send-message-type
 func (c *Client) RobotSendSignURL(ctx context.Context, url string, secret string, notMustParams ...*gorequest.Params) (response RobotSend, err error) {
 
 	// 参数

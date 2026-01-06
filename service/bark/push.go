@@ -14,13 +14,13 @@ type PushResponse struct {
 }
 
 // Push 推送消息
-// https://bark.day.app/#/tutorial?id=json-%e8%af%b7%e6%b1%82-key-%e5%8f%af%e4%bb%a5%e6%94%be%e8%bf%9b%e8%af%b7%e6%b1%82%e4%bd%93%e4%b8%adurl-%e8%b7%af%e5%be%84%e9%a1%bb%e4%b8%ba-push%ef%bc%8c%e4%be%8b%e5%a6%82
+// https://bark.day.app/#/tutorial?id=请求方式
 func (c *Client) Push(ctx context.Context, notMustParams ...*gorequest.Params) (response PushResponse, err error) {
 
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	if c.config.pushKey != "" {
-		params.Set("device_key", c.config.pushKey)
+		params.Set("device_key", c.config.pushKey) // 设备key
 	}
 
 	// 请求

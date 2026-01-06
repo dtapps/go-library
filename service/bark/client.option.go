@@ -33,17 +33,35 @@ func (o *Options) Apply(opts []Option) {
 	}
 }
 
-// WithResty 设置 RestyClient
+// WithRestyClient 设置 RestyClient
 func WithRestyClient(restyClient *resty.Client) Option {
 	return Option{F: func(o *Options) {
 		o.restyClient = restyClient
 	}}
 }
 
-// WithResty 设置 restyLog
+// WithRestyClientIf 设置 RestyClient
+func WithRestyClientIf(enable bool, restyClient *resty.Client) Option {
+	return Option{F: func(o *Options) {
+		if enable {
+			o.restyClient = restyClient
+		}
+	}}
+}
+
+// WithRestyLog 设置 restyLog
 func WithRestyLog(restyLog *resty_log.Logger) Option {
 	return Option{F: func(o *Options) {
 		o.restyLog = restyLog
+	}}
+}
+
+// WithRestyLogIf 设置 restyLog
+func WithRestyLogIf(enable bool, restyLog *resty_log.Logger) Option {
+	return Option{F: func(o *Options) {
+		if enable {
+			o.restyLog = restyLog
+		}
 	}}
 }
 

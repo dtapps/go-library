@@ -34,7 +34,7 @@ type PushResponse struct {
 }
 
 // Push 推送消息
-// https://doc.sc3.ft07.com/server/api
+// https://doc.sc3.ft07.com/zh/serverchan3/server/api
 func (c *Client) Push(ctx context.Context, notMustParams ...*gorequest.Params) (response PushResponse, err error) {
 
 	// 参数
