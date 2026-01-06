@@ -15,7 +15,6 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 
 	// 创建请求客户端
 	httpClient := c.httpClient.R().SetContext(ctx)
-	defer c.httpClient.Close()
 
 	// 设置参数
 	httpClient.SetBody(param.DeepGetAny())

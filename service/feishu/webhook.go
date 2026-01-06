@@ -20,7 +20,7 @@ type WebhookSend struct {
 }
 
 // WebhookSend 发送消息
-// https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN
+// https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot
 func (c *Client) WebhookSend(ctx context.Context, key string, notMustParams ...*gorequest.Params) (response WebhookSend, err error) {
 
 	// 参数
@@ -32,7 +32,7 @@ func (c *Client) WebhookSend(ctx context.Context, key string, notMustParams ...*
 }
 
 // WebhookSendURL 发送消息
-// https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN
+// https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot
 func (c *Client) WebhookSendURL(ctx context.Context, url string, notMustParams ...*gorequest.Params) (response WebhookSend, err error) {
 
 	// 参数
@@ -44,7 +44,7 @@ func (c *Client) WebhookSendURL(ctx context.Context, url string, notMustParams .
 }
 
 // WebhookSendSign 发送消息签名版
-// https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN
+// https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot
 func (c *Client) WebhookSendSign(ctx context.Context, key string, secret string, notMustParams ...*gorequest.Params) (response WebhookSend, err error) {
 
 	// 参数
@@ -59,7 +59,7 @@ func (c *Client) WebhookSendSign(ctx context.Context, key string, secret string,
 }
 
 // WebhookSendSignURL 发送消息签名版
-// https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN
+// https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot
 func (c *Client) WebhookSendSignURL(ctx context.Context, url string, secret string, notMustParams ...*gorequest.Params) (response WebhookSend, err error) {
 
 	// 参数
