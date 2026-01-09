@@ -2,7 +2,8 @@ package http_log
 
 import (
 	"context"
-	"log/slog"
+	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -10,22 +11,11 @@ import (
 type TestEntLogSaver struct{}
 
 func (s *TestEntLogSaver) HandleLog(ctx context.Context, data *LogData) error {
-	slog.WarnContext(ctx, "[接口方式]准备保存日志",
-		slog.String("Hostname", data.Hostname),
-		slog.String("Method", data.Method),
-		slog.String("URL", data.URL),
-	)
-	if data == nil {
-		return nil
-	}
-	slog.InfoContext(ctx, "[接口方式]执行保存日志",
-		slog.String("Hostname", data.Hostname),
-		slog.String("Method", data.Method),
-		slog.String("URL", data.URL),
-		slog.Int("StatusCode", data.StatusCode),
-		slog.Int64("ElapseTime", data.ElapseTime),
-		slog.Bool("IsError", data.IsError),
-	)
+	// json 人性化打印 data
+	jsonData, _ := json.MarshalIndent(data, "", "  ")
+	fmt.Println("[接口方式]打印日志数据:")
+	fmt.Println(string(jsonData))
+	fmt.Println("-----------------")
 	return nil
 }
 
@@ -34,22 +24,11 @@ func NewTestLogger(base http.RoundTripper) http.RoundTripper {
 
 	// 定义回调函数
 	saveFunc := func(ctx context.Context, data *LogData) error {
-		slog.WarnContext(ctx, "[回调方式]准备保存日志",
-			slog.String("Hostname", data.Hostname),
-			slog.String("Method", data.Method),
-			slog.String("URL", data.URL),
-		)
-		if data == nil {
-			return nil
-		}
-		slog.InfoContext(ctx, "[回调方式]执行保存日志",
-			slog.String("Hostname", data.Hostname),
-			slog.String("Method", data.Method),
-			slog.String("URL", data.URL),
-			slog.Int("StatusCode", data.StatusCode),
-			slog.Int64("ElapseTime", data.ElapseTime),
-			slog.Bool("IsError", data.IsError),
-		)
+		// json 人性化打印 data
+		jsonData, _ := json.MarshalIndent(data, "", "  ")
+		fmt.Println("[回调方式]打印日志数据:")
+		fmt.Println(string(jsonData))
+		fmt.Println("-----------------")
 		return nil
 	}
 

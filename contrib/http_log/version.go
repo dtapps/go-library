@@ -1,5 +1,5 @@
 package http_log
 
 const (
-	Version = "1.0.3"
+	Version = "1.0.4"
 )

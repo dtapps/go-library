@@ -8,27 +8,29 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/http/httptrace"
 	"runtime"
 	"strings"
+	"sync"
 	"time"
 )
 
 // LogData 表示每次请求/响应的日志数据
 type LogData struct {
-	GoVersion        string
-	PluginVersion    string
-	Hostname         string
-	Method           string
-	URL              string
-	RequestHeaders   http.Header
-	RequestBodyJSON  []byte // JSON 格式的请求体
-	RequestBodyXML   []byte // XML 格式的请求体
-	StatusCode       int
-	ResponseHeaders  http.Header
-	ResponseBodyJSON []byte // JSON 格式的响应体
-	ResponseBodyXML  []byte // XML 格式的响应体
-	ElapseTime       int64
-	IsError          bool
+	GoVersion        string              // Go 版本
+	PluginVersion    string              // 插件版本
+	Hostname         string              // 主机名
+	Method           string              // HTTP 方法
+	URL              string              // 请求 URL
+	RequestHeaders   map[string][]string // 请求头
+	RequestBodyJSON  json.RawMessage     // JSON 格式的请求体
+	RequestBodyXML   json.RawMessage     // XML 格式的请求体
+	StatusCode       int                 // HTTP 状态码
+	ResponseHeaders  map[string][]string // 响应头
+	ResponseBodyJSON json.RawMessage     // JSON 格式的响应体
+	ResponseBodyXML  json.RawMessage     // XML 格式的响应体
+	ElapseTime       int64               // 处理时间（毫秒）
+	IsError          bool                // 是否出错
 }
 
 // LogHandler 定义了处理日志数据的接口
@@ -41,9 +43,11 @@ type LogCallback func(ctx context.Context, data *LogData) error
 
 // 定义拦截器
 type LoggingTransport struct {
-	Proxied http.RoundTripper // 被拦截的 Transport
-	Handler LogHandler        // 接口方式
-	OnLog   LogCallback       // 回调方式
+	Proxied             http.RoundTripper // 被拦截的 Transport
+	Handler             LogHandler        // 接口方式
+	OnLog               LogCallback       // 回调方式
+	DisableRequestBody  bool              // 是否禁用请求体记录
+	DisableResponseBody bool              // 是否禁用响应体记录
 }
 
 // NewTransport 标准构造器
@@ -58,15 +62,63 @@ func NewTransport(base http.RoundTripper, handler LogHandler, callback LogCallba
 	}
 }
 
-// Middleware 返回一个符合 req.WrapRoundTrip 签名的函数
-// 它会复用当前实例（l）中配置好的 Handler 和 OnLog
+// Middleware 返回一个 http.RoundTripper 方法
 func (l *LoggingTransport) Middleware() func(http.RoundTripper) http.RoundTripper {
 	return func(next http.RoundTripper) http.RoundTripper {
-		return &LoggingTransport{
-			Proxied: next,
-			Handler: l.Handler,
-			OnLog:   l.OnLog,
+		if next == nil {
+			next = http.DefaultTransport
 		}
+		return &LoggingTransport{
+			Proxied:             next,                  // 被拦截的 Transport
+			Handler:             l.Handler,             // 接口方式
+			OnLog:               l.OnLog,               // 回调方式
+			DisableRequestBody:  l.DisableRequestBody,  // 保持配置
+			DisableResponseBody: l.DisableResponseBody, // 保持配置
+		}
+	}
+}
+
+// MiddlewareNoBody 返回一个强制不记录 Body 的 http.RoundTripper 方法
+func (l *LoggingTransport) MiddlewareNoBody() func(http.RoundTripper) http.RoundTripper {
+	return func(next http.RoundTripper) http.RoundTripper {
+		if next == nil {
+			next = http.DefaultTransport
+		}
+		return &LoggingTransport{
+			Proxied:             next,      // 被拦截的 Transport
+			Handler:             l.Handler, // 接口方式
+			OnLog:               l.OnLog,   // 回调方式
+			DisableRequestBody:  true,      // 强制禁用
+			DisableResponseBody: true,      // 强制禁用
+		}
+	}
+}
+
+// Instance 返回一个 http.RoundTripper 实例
+func (l *LoggingTransport) Instance(next http.RoundTripper) http.RoundTripper {
+	if next == nil {
+		next = http.DefaultTransport
+	}
+	return &LoggingTransport{
+		Proxied:             next,
+		Handler:             l.Handler,
+		OnLog:               l.OnLog,
+		DisableRequestBody:  l.DisableRequestBody,
+		DisableResponseBody: l.DisableResponseBody,
+	}
+}
+
+// InstanceNoBody 返回一个强制不记录 Body 的 http.RoundTripper 实例
+func (l *LoggingTransport) InstanceNoBody(next http.RoundTripper) http.RoundTripper {
+	if next == nil {
+		next = http.DefaultTransport
+	}
+	return &LoggingTransport{
+		Proxied:             next,
+		Handler:             l.Handler,
+		OnLog:               l.OnLog,
+		DisableRequestBody:  true, // 强制禁用
+		DisableResponseBody: true, // 强制禁用
 	}
 }
 
@@ -74,8 +126,39 @@ func (l *LoggingTransport) Middleware() func(http.RoundTripper) http.RoundTrippe
 func (l *LoggingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	startTime := time.Now()
 
+	// 异步捕获网线上真正跑的 Header
+	var mu sync.Mutex
+
+	// 初始值为应用层设置的头
+	finalReqHeaders := req.Header.Clone()
+
+	// 注入 httptrace 钩子
+	// WroteHeaderField 会在每一行 Header 真正写入二进制流时触发
+	trace := &httptrace.ClientTrace{
+		WroteHeaderField: func(key string, value []string) {
+			mu.Lock()
+			defer mu.Unlock()
+
+			// 过滤掉 HTTP/2 的伪头部 (如 :method, :path)
+			// 这些是协议层逻辑，记在 Header Map 里显得不专业
+			if strings.HasPrefix(key, ":") {
+				return
+			}
+
+			// 规范化 Key 的名称 (例如把 "user-agent" 转回 "User-Agent")
+			canonicalKey := http.CanonicalHeaderKey(key)
+
+			if finalReqHeaders == nil {
+				finalReqHeaders = make(http.Header)
+			}
+			finalReqHeaders[canonicalKey] = value
+		},
+	}
+	req = req.WithContext(httptrace.WithClientTrace(req.Context(), trace))
+
+	// 获取主机名
 	hostname := req.Host
-	if hostname == "" {
+	if hostname == "" && req.URL != nil {
 		hostname = req.URL.Host
 	}
 
@@ -86,23 +169,34 @@ func (l *LoggingTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 		Hostname:       hostname,
 		Method:         req.Method,
 		URL:            req.URL.String(),
-		RequestHeaders: req.Header,
+		RequestHeaders: finalReqHeaders,
 	}
 
 	// 捕获请求 Body
-	if req.Body != nil {
+	if !l.DisableRequestBody && req.Body != nil {
 		bodyBytes, _ := io.ReadAll(req.Body)
 		l.processBody(bodyBytes, req.Header.Get("Content-Type"), &logData.RequestBodyJSON, &logData.RequestBodyXML)
 		req.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 	}
 
 	// 执行请求
+	// 调用 Proxied.RoundTrip 会触发上面的 WroteHeaderField 回调
 	resp, err := l.Proxied.RoundTrip(req)
+
+	// 请求结束后，更新最终捕获到的真实请求头
+	mu.Lock()
+	logData.RequestHeaders = finalReqHeaders
+	mu.Unlock()
+
+	// 记录真实 Host (如果 Header 里没写，通常取 req.Host)
+	if logData.RequestHeaders["Host"] == nil && hostname != "" {
+		logData.RequestHeaders["Host"] = []string{hostname}
+	}
 
 	// 计算耗时
 	logData.ElapseTime = time.Since(startTime).Milliseconds()
 
-	// 异常处理：即使 err != nil，我们也应该触发日志记录
+	// 异常处理
 	if err != nil {
 		logData.IsError = true
 		l.emit(context.WithoutCancel(req.Context()), logData)
@@ -111,10 +205,10 @@ func (l *LoggingTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 
 	// 捕获响应信息
 	logData.StatusCode = resp.StatusCode
-	logData.ResponseHeaders = resp.Header
+	logData.ResponseHeaders = resp.Header.Clone()
 	logData.IsError = resp.StatusCode >= 400
 
-	if resp != nil && resp.Body != nil {
+	if !l.DisableResponseBody && resp.Body != nil {
 		respBytes, _ := io.ReadAll(resp.Body)
 		l.processBody(respBytes, resp.Header.Get("Content-Type"), &logData.ResponseBodyJSON, &logData.ResponseBodyXML)
 		resp.Body = io.NopCloser(bytes.NewBuffer(respBytes))
@@ -127,7 +221,7 @@ func (l *LoggingTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 }
 
 // 内部辅助方法：处理 body，根据类型存到 JSON 或 XML 字段
-func (l *LoggingTransport) processBody(data []byte, contentType string, jsonField, xmlField *[]byte) {
+func (l *LoggingTransport) processBody(data []byte, contentType string, jsonField, xmlField *json.RawMessage) {
 	if len(data) == 0 {
 		return
 	}
