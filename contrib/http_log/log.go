@@ -66,7 +66,7 @@ func NewTransport(base http.RoundTripper, handler LogHandler, callback LogCallba
 func (l *LoggingTransport) Middleware() func(http.RoundTripper) http.RoundTripper {
 	return func(next http.RoundTripper) http.RoundTripper {
 		if next == nil {
-			next = http.DefaultTransport
+			next = l.Proxied
 		}
 		return &LoggingTransport{
 			Proxied:             next,                  // 被拦截的 Transport
@@ -82,7 +82,7 @@ func (l *LoggingTransport) Middleware() func(http.RoundTripper) http.RoundTrippe
 func (l *LoggingTransport) MiddlewareNoBody() func(http.RoundTripper) http.RoundTripper {
 	return func(next http.RoundTripper) http.RoundTripper {
 		if next == nil {
-			next = http.DefaultTransport
+			next = l.Proxied
 		}
 		return &LoggingTransport{
 			Proxied:             next,      // 被拦截的 Transport
@@ -97,7 +97,7 @@ func (l *LoggingTransport) MiddlewareNoBody() func(http.RoundTripper) http.Round
 // Instance 返回一个 http.RoundTripper 实例
 func (l *LoggingTransport) Instance(next http.RoundTripper) http.RoundTripper {
 	if next == nil {
-		next = http.DefaultTransport
+		next = l.Proxied
 	}
 	return &LoggingTransport{
 		Proxied:             next,
@@ -111,7 +111,7 @@ func (l *LoggingTransport) Instance(next http.RoundTripper) http.RoundTripper {
 // InstanceNoBody 返回一个强制不记录 Body 的 http.RoundTripper 实例
 func (l *LoggingTransport) InstanceNoBody(next http.RoundTripper) http.RoundTripper {
 	if next == nil {
-		next = http.DefaultTransport
+		next = l.Proxied
 	}
 	return &LoggingTransport{
 		Proxied:             next,
