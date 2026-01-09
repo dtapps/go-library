@@ -46,6 +46,30 @@ type LoggingTransport struct {
 	OnLog   LogCallback       // 回调方式
 }
 
+// NewTransport 标准构造器
+func NewTransport(base http.RoundTripper, handler LogHandler, callback LogCallback) http.RoundTripper {
+	if base == nil {
+		base = http.DefaultTransport
+	}
+	return &LoggingTransport{
+		Proxied: base,
+		Handler: handler,
+		OnLog:   callback,
+	}
+}
+
+// Middleware 返回一个符合 req.WrapRoundTrip 签名的函数
+// 它会复用当前实例（l）中配置好的 Handler 和 OnLog
+func (l *LoggingTransport) Middleware() func(http.RoundTripper) http.RoundTripper {
+	return func(next http.RoundTripper) http.RoundTripper {
+		return &LoggingTransport{
+			Proxied: next,
+			Handler: l.Handler,
+			OnLog:   l.OnLog,
+		}
+	}
+}
+
 // RoundTrip 实现了 http.RoundTripper 接口
 func (l *LoggingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	startTime := time.Now()

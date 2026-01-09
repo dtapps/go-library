@@ -30,7 +30,7 @@ func (s *TestEntLogSaver) HandleLog(ctx context.Context, data *LogData) error {
 }
 
 // 返回一个测试的 Logger
-func NewTestLogger() http.RoundTripper {
+func NewTestLogger(base http.RoundTripper) http.RoundTripper {
 
 	// 定义回调函数
 	saveFunc := func(ctx context.Context, data *LogData) error {
@@ -57,9 +57,5 @@ func NewTestLogger() http.RoundTripper {
 	saver := &TestEntLogSaver{}
 
 	// 初始化 Logger，传入回调和接口（回调优先）
-	return &LoggingTransport{
-		Proxied: http.DefaultTransport,
-		OnLog:   saveFunc,
-		Handler: saver,
-	}
+	return NewTransport(base, saver, saveFunc)
 }
