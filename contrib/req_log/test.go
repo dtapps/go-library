@@ -1,10 +1,9 @@
-package http_log
+package req_log
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 )
 
 // 实现 LogSaver 接口
@@ -20,7 +19,7 @@ func (s *TestEntLogSaver) HandleLog(ctx context.Context, data *LogData) error {
 }
 
 // 返回一个测试的 Logger
-func NewTestLogger(base http.RoundTripper) *LoggingRoundTripper {
+func NewTestLogger() *LoggerMiddleware {
 
 	// 定义回调函数
 	callbackFunc := func(ctx context.Context, data *LogData) error {
@@ -35,6 +34,6 @@ func NewTestLogger(base http.RoundTripper) *LoggingRoundTripper {
 	// 创建 LogSaver 实现
 	saver := &TestEntLogSaver{}
 
-	// 初始化 LoggingRoundTripper 传入回调和接口（回调优先）
-	return NewLoggingRoundTripper(base, saver, callbackFunc)
+	// 初始化 LoggerMiddleware 传入回调和接口（回调优先）
+	return NewLoggerMiddleware(saver, callbackFunc)
 }

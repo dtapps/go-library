@@ -1,4 +1,4 @@
-package resty_log
+package req_log
 
 import (
 	"context"
@@ -7,13 +7,12 @@ import (
 	"runtime"
 	"time"
 
-	"resty.dev/v3"
+	"github.com/imroc/req/v3"
 )
 
 // LogData 表示每次请求/响应的日志数据
 type LogData struct {
 	GoVersion          string              // Go 版本
-	RestyVersion       string              // Resty 版本
 	PluginVersion      string              // 插件版本
 	Hostname           string              // 主机名
 	Method             string              // 请求方法
@@ -66,14 +65,13 @@ func (l *LoggerMiddleware) EnableDebug() {
 	l.debug = true
 }
 
-// IntrusionRequest Hook 注入开始时间
-// 可以放 resty.PrepareRequestMiddleware 前面
-func (l *LoggerMiddleware) IntrusionRequest(c *resty.Client, req *resty.Request) error {
+// OnBeforeRequest 注入开始时间
+func (l *LoggerMiddleware) OnBeforeRequest(c *req.Client, req *req.Request) error {
 
 	// 开启调试模式时
 	if l.debug {
-		fmt.Printf("[LoggerMiddleware] IntrusionRequest Start: %s %s\n", req.Method, req.URL)
-		defer fmt.Printf("[LoggerMiddleware] IntrusionRequest End: %s %s\n", req.Method, req.URL)
+		fmt.Printf("[LoggerMiddleware] OnBeforeRequest Start: %s %s\n", req.Method, req.RawURL)
+		defer fmt.Printf("[LoggerMiddleware] OnBeforeRequest End: %s %s\n", req.Method, req.RawURL)
 	}
 
 	// 获取上下文
@@ -82,85 +80,31 @@ func (l *LoggerMiddleware) IntrusionRequest(c *resty.Client, req *resty.Request)
 	// 记录开始时间
 	startTime := time.Now().UTC()
 
-	// 保存上下文与开始时间（供 AfterResponse 计算耗时）
-	// 这里的 startTimeKey 是最准确的计时起点
+	// 保存上下文与开始时间（供 OnAfterResponse 计算耗时）
 	req.SetContext(WithStartTimeKey(ctx, startTime))
 
 	return nil
 }
 
-// BeforeRequest Hook 记录开始时间和OTel
-// 必须放 resty.PrepareRequestMiddleware 后面，否则无法获取到请求体
-func (l *LoggerMiddleware) BeforeRequest(c *resty.Client, req *resty.Request) error {
+// OnAfterResponse 打印/保存
+func (l *LoggerMiddleware) OnAfterResponse(c *req.Client, resp *req.Response) error {
 
 	// 开启调试模式时
 	if l.debug {
-		fmt.Printf("[LoggerMiddleware] BeforeRequest Start: %s %s\n", req.Method, req.URL)
-		defer fmt.Printf("[LoggerMiddleware] BeforeRequest End: %s %s\n", req.Method, req.URL)
-	}
-
-	// 获取上下文
-	ctx := req.Context()
-
-	// 获取准确的计时起点（由 IntrusionRequest 存入）
-	startTime := GetStartTimeKey(ctx)
-
-	// 可插拔 tracer
-	ctx = setTracerRequestInfo(
-		ctx,
-		startTime,
-		req,
-	)
-
-	// 保存上下文与开始时间（供 AfterResponse 计算耗时）
-	req.SetContext(WithStartTimeKey(ctx, startTime))
-
-	return nil
-}
-
-// CopyResponseBodyMiddleware 将响应体拷贝到 Context
-// 必须放 resty.AutoParseResponseMiddleware 前面，否则无法获取到响应体
-func (l *LoggerMiddleware) CopyResponseBodyMiddleware(c *resty.Client, resp *resty.Response) error {
-
-	// 开启调试模式时
-	if l.debug {
-		fmt.Printf("[LoggerMiddleware] CopyResponseBodyMiddleware Start: %s %s\n", resp.Request.Method, resp.Request.URL)
-		defer fmt.Printf("[LoggerMiddleware] CopyResponseBodyMiddleware End: %s %s\n", resp.Request.Method, resp.Request.URL)
-	}
-
-	// 获取上下文
-	ctx := resp.Request.Context()
-
-	// 读取 body
-	bodyBytes := resp.Bytes()
-
-	// 保存到 Context，方便外部获取
-	resp.Request.SetContext(WithResponseBodyKey(ctx, bodyBytes))
-
-	return nil
-}
-
-// AfterResponse Hook 打印/保存
-// 必须放 resty.AutoParseResponseMiddleware 后面，否则无法获取到响应体
-func (l *LoggerMiddleware) AfterResponse(c *resty.Client, resp *resty.Response) error {
-
-	// 开启调试模式时
-	if l.debug {
-		fmt.Printf("[LoggerMiddleware] AfterResponse Start: %d %s %s\n", resp.StatusCode(), resp.Request.Method, resp.Request.URL)
-		defer fmt.Printf("[LoggerMiddleware] AfterResponse End: %d %s %s\n", resp.StatusCode(), resp.Request.Method, resp.Request.URL)
+		fmt.Printf("[LoggerMiddleware] OnAfterResponse Start: %d %s %s\n", resp.StatusCode, resp.Request.Method, resp.Request.RawURL)
+		defer fmt.Printf("[LoggerMiddleware] OnAfterResponse End: %d %s %s\n", resp.StatusCode, resp.Request.Method, resp.Request.RawURL)
 	}
 
 	// 创建 LogData
 	logData := &LogData{
 		GoVersion:       runtime.Version(),
-		RestyVersion:    resty.Version,
 		PluginVersion:   Version,
 		Method:          resp.Request.Method,
-		URL:             resp.Request.URL,
-		RequestHeaders:  resp.Request.Header.Clone(),
-		StatusCode:      resp.StatusCode(),
-		ResponseHeaders: resp.Header().Clone(),
-		IsError:         resp.IsError(),
+		URL:             resp.Request.RawURL,
+		RequestHeaders:  resp.Request.Headers.Clone(),
+		StatusCode:      resp.StatusCode,
+		ResponseHeaders: resp.Header.Clone(),
+		IsError:         resp.IsErrorState(),
 	}
 
 	// 获取上下文
@@ -190,7 +134,7 @@ func (l *LoggerMiddleware) AfterResponse(c *resty.Client, resp *resty.Response) 
 
 	// 请求体
 	if !l.disableRequestBody && resp.Request.Body != nil {
-		contentType := resp.Request.Header.Get("Content-Type")
+		contentType := resp.Request.Headers.Get("Content-Type")
 		logData.RequestBody = l.processBodyAny(contentType, resp.Request.Body)
 	}
 
@@ -210,22 +154,13 @@ func (l *LoggerMiddleware) AfterResponse(c *resty.Client, resp *resty.Response) 
 	}
 
 	// 响应体
-	if !l.disableResponseBody {
-		contentType := resp.Header().Get("Content-Type")
-		logData.ResponseBody = l.processBodyByte(contentType, GetResponseBodyKey(ctx))
+	if !l.disableResponseBody && ctx != nil {
+		contentType := resp.Header.Get("Content-Type")
+		logData.ResponseBody = l.processBodyByte(contentType, resp.Bytes())
 	}
 
-	// 可插拔 tracer
-	setTracerResponseInfo(
-		ctx,
-		logData.elapseTimeStart,
-		logData.elapseTimeEnd,
-		resp,
-		logData.ResponseBody,
-	)
-
 	if l.debug {
-		fmt.Printf("[LoggerMiddleware] AfterResponse TraceInfo:\n")
+		fmt.Printf("[LoggerMiddleware] OnAfterResponse TraceInfo:\n")
 		fmt.Printf("%+v\n", resp.Request.TraceInfo())
 	}
 
