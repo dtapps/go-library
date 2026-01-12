@@ -5,6 +5,8 @@ import (
 	"encoding/xml"
 	"fmt"
 	"strings"
+
+	xml2json "github.com/basgys/goxml2json"
 )
 
 const (
@@ -66,7 +68,8 @@ func (l *LoggerMiddleware) processBodyByte(contentType string, data []byte) json
 		}
 	case XMLBodyType:
 		if l.isValidXML(data) {
-			return data
+			xj, _ := xml2json.Convert(strings.NewReader(string(data)))
+			return xj.Bytes()
 		}
 	}
 
