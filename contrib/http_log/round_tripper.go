@@ -20,7 +20,7 @@ type LogData struct {
 	GoVersion         string              // Go 版本
 	PluginVersion     string              // 插件版本
 	Hostname          string              // 主机名
-	Method            string              // HTTP 方法
+	Method            string              // 请求方法
 	URL               string              // 请求 URL
 	RequestHeaders    map[string][]string // 请求头
 	RequestBody       json.RawMessage     // 请求体

@@ -1,4 +1,4 @@
-module go.dtapp.net/library/contrib/resty_log
+module go.dtapp.net/library/contrib/req_log
 
 go 1.25.1
 
