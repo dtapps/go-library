@@ -7,7 +7,7 @@ import (
 
 type Options struct {
 	restyClient *resty.Client
-	restyLog    *resty_log.Logger
+	restyLog    *resty_log.LoggerMiddleware
 	debug       bool
 
 	appId       string
@@ -52,14 +52,14 @@ func WithRestyClientIf(enable bool, restyClient *resty.Client) Option {
 }
 
 // WithRestyLog 设置 restyLog
-func WithRestyLog(restyLog *resty_log.Logger) Option {
+func WithRestyLog(restyLog *resty_log.LoggerMiddleware) Option {
 	return Option{F: func(o *Options) {
 		o.restyLog = restyLog
 	}}
 }
 
 // WithRestyLogIf 设置 restyLog
-func WithRestyLogIf(enable bool, restyLog *resty_log.Logger) Option {
+func WithRestyLogIf(enable bool, restyLog *resty_log.LoggerMiddleware) Option {
 	return Option{F: func(o *Options) {
 		if enable {
 			o.restyLog = restyLog
