@@ -1,5 +1,5 @@
 package dayuanren
 
 const (
-	Version = "1.0.4"
+	Version = "1.0.34"
 )
