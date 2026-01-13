@@ -9,7 +9,7 @@ replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 replace go.dtapp.net/library/utils/godecimal => ../../utils/godecimal
 
 require (
-	go.dtapp.net/library/contrib/resty_log v1.0.11
+	go.dtapp.net/library/contrib/resty_log v1.0.13
 	go.dtapp.net/library/utils/godecimal v1.0.13
 	go.dtapp.net/library/utils/gorequest v1.1.3
 	resty.dev/v3 v3.0.0-beta.6
@@ -20,7 +20,7 @@ require (
 	github.com/basgys/goxml2json v1.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	golang.org/x/net v0.48.0 // indirect
-	golang.org/x/text v0.32.0 // indirect
+	golang.org/x/net v0.49.0 // indirect
+	golang.org/x/text v0.33.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
