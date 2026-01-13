@@ -60,8 +60,9 @@ func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
 }
 
 // Close 关闭 请求客户端
-func (c *Client) Close() {
+func (c *Client) Close() (err error) {
 	if c.httpClient != nil {
-		c.httpClient.Close()
+		err = c.httpClient.Close()
 	}
+	return
 }
