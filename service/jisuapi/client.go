@@ -6,10 +6,6 @@ import (
 	"resty.dev/v3"
 )
 
-// ClientConfig 实例配置
-type ClientConfig struct {
-}
-
 // Client 实例
 type Client struct {
 	config struct {
