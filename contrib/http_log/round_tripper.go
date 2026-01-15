@@ -81,6 +81,30 @@ func (l *LoggingRoundTripper) EnableDebug() {
 	l.debug = true
 }
 
+// Clone 复制一个新的 LoggingRoundTripper
+func (l *LoggingRoundTripper) Clone() *LoggingRoundTripper {
+	return &LoggingRoundTripper{
+		Proxied:             l.Proxied,             // 被拦截的 Transport
+		Handler:             l.Handler,             // 接口方式
+		OnLog:               l.OnLog,               // 回调方式
+		debug:               l.debug,               // 是否开启调试模式
+		disableRequestBody:  l.disableRequestBody,  // 是否禁用请求体记录
+		disableResponseBody: l.disableResponseBody, // 是否禁用响应体记录
+	}
+}
+
+// CloneNoBody 复制一个新的 LoggingRoundTripper，禁用请求体和响应体记录
+func (l *LoggingRoundTripper) CloneNoBody() *LoggingRoundTripper {
+	return &LoggingRoundTripper{
+		Proxied:             l.Proxied, // 被拦截的 Transport
+		Handler:             l.Handler, // 接口方式
+		OnLog:               l.OnLog,   // 回调方式
+		debug:               l.debug,   // 是否开启调试模式
+		disableRequestBody:  true,      // 是否禁用请求体记录
+		disableResponseBody: true,      // 是否禁用响应体记录
+	}
+}
+
 // Middleware 返回一个 http.RoundTripper 方法
 func (l *LoggingRoundTripper) Middleware() func(http.RoundTripper) http.RoundTripper {
 	return func(next http.RoundTripper) http.RoundTripper {

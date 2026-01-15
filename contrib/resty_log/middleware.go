@@ -66,6 +66,28 @@ func (l *LoggerMiddleware) EnableDebug() {
 	l.debug = true
 }
 
+// Clone 复制一个新的 LoggerMiddleware
+func (l *LoggerMiddleware) Clone() *LoggerMiddleware {
+	return &LoggerMiddleware{
+		Handler:             l.Handler,             // 接口实现
+		OnLog:               l.OnLog,               // 回调方式
+		debug:               l.debug,               // 是否开启调试模式
+		disableRequestBody:  l.disableRequestBody,  // 是否禁用请求体记录
+		disableResponseBody: l.disableResponseBody, // 是否禁用响应体记录
+	}
+}
+
+// CloneNoBody 复制一个新的 LoggerMiddleware，禁用请求体和响应体记录
+func (l *LoggerMiddleware) CloneNoBody() *LoggerMiddleware {
+	return &LoggerMiddleware{
+		Handler:             l.Handler, // 接口实现
+		OnLog:               l.OnLog,   // 回调方式
+		debug:               l.debug,   // 是否开启调试模式
+		disableRequestBody:  true,      // 是否禁用请求体记录
+		disableResponseBody: true,      // 是否禁用响应体记录
+	}
+}
+
 // IntrusionRequest Hook 注入开始时间
 // 可以放 resty.PrepareRequestMiddleware 前面
 func (l *LoggerMiddleware) IntrusionRequest(c *resty.Client, req *resty.Request) error {
