@@ -19,7 +19,7 @@ const (
 	TextBodyType = "text"
 )
 
-// processResponseBody 处理响应体，根据 Content-Type 转换为 JSON 或 XML
+// processResponseBody 处理请求体/响应体，根据 Content-Type 转换为 JSON 或 XML
 func (l *LoggingRoundTripper) processResponseBody(headers http.Header, body []byte) json.RawMessage {
 	contentType := headers.Get("Content-Type")
 
