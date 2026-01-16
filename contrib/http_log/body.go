@@ -1,9 +1,13 @@
 package http_log
 
 import (
+	"bytes"
+	"compress/gzip"
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
+	"io"
+	"net/http"
 	"strings"
 
 	xml2json "github.com/basgys/goxml2json"
@@ -14,6 +18,23 @@ const (
 	XMLBodyType  = "xml"
 	TextBodyType = "text"
 )
+
+// processResponseBody 处理响应体，根据 Content-Type 转换为 JSON 或 XML
+func (l *LoggingRoundTripper) processResponseBody(headers http.Header, body []byte) json.RawMessage {
+	contentType := headers.Get("Content-Type")
+
+	// 先解压（如果需要）
+	if headers.Get("Content-Encoding") == "gzip" {
+		if gr, err := gzip.NewReader(bytes.NewReader(body)); err == nil {
+			defer gr.Close()
+			if decompressed, err := io.ReadAll(gr); err == nil {
+				body = decompressed
+			}
+		}
+	}
+
+	return l.processBodyByte(contentType, body)
+}
 
 // processBodyAny 处理任意类型的 Body 并转换为 json.RawMessage
 func (l *LoggingRoundTripper) processBodyAny(contentType string, body any) json.RawMessage {

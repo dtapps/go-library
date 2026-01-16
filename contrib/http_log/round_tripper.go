@@ -230,9 +230,8 @@ func (l *LoggingRoundTripper) RoundTrip(req *http.Request) (*http.Response, erro
 
 	// 请求体
 	if !l.disableRequestBody && req.Body != nil {
-		contentType := req.Header.Get("Content-Type")
 		bodyBytes, _ := io.ReadAll(req.Body)
-		logData.RequestBody = l.processBodyByte(contentType, bodyBytes)
+		logData.RequestBody = l.processResponseBody(req.Header, bodyBytes)
 		req.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 	}
 
@@ -277,9 +276,8 @@ func (l *LoggingRoundTripper) RoundTrip(req *http.Request) (*http.Response, erro
 
 	// 响应体
 	if !l.disableResponseBody && resp.Body != nil {
-		contentType := resp.Header.Get("Content-Type")
 		respBytes, _ := io.ReadAll(resp.Body)
-		logData.ResponseBody = l.processBodyByte(contentType, respBytes)
+		logData.ResponseBody = l.processResponseBody(resp.Header, respBytes)
 		resp.Body = io.NopCloser(bytes.NewBuffer(respBytes))
 	}
 
