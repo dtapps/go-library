@@ -251,11 +251,11 @@ func (l *LoggingRoundTripper) RoundTrip(req *http.Request) (*http.Response, erro
 	logData.ElapseTime = time.Since(logData.elapseTimeEnd).Milliseconds()
 
 	// 记录真实 Host
-	if logData.RequestHeaders["Host"] == nil && logData.Hostname != "" {
-		logData.RequestHeaders["Host"] = []string{
-			logData.Hostname,
-		}
-	}
+	// if logData.RequestHeaders["Host"] == nil && logData.Hostname != "" {
+	// 	logData.RequestHeaders["Host"] = []string{
+	// 		logData.Hostname,
+	// 	}
+	// }
 
 	// 异常处理
 	if err != nil {
