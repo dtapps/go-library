@@ -62,38 +62,38 @@ func NewLoggerMiddleware(handler LogHandler, callback LogCallback) *LoggerMiddle
 }
 
 // EnableDebug 开启调试模式
-func (l *LoggerMiddleware) EnableDebug() {
-	l.debug = true
+func (m *LoggerMiddleware) EnableDebug() {
+	m.debug = true
 }
 
 // Clone 复制一个新的 LoggerMiddleware
-func (l *LoggerMiddleware) Clone() *LoggerMiddleware {
+func (m *LoggerMiddleware) Clone() *LoggerMiddleware {
 	return &LoggerMiddleware{
-		Handler:             l.Handler,             // 接口实现
-		OnLog:               l.OnLog,               // 回调方式
-		debug:               l.debug,               // 是否开启调试模式
-		disableRequestBody:  l.disableRequestBody,  // 是否禁用请求体记录
-		disableResponseBody: l.disableResponseBody, // 是否禁用响应体记录
+		Handler:             m.Handler,             // 接口实现
+		OnLog:               m.OnLog,               // 回调方式
+		debug:               m.debug,               // 是否开启调试模式
+		disableRequestBody:  m.disableRequestBody,  // 是否禁用请求体记录
+		disableResponseBody: m.disableResponseBody, // 是否禁用响应体记录
 	}
 }
 
 // CloneNoBody 复制一个新的 LoggerMiddleware，禁用请求体和响应体记录
-func (l *LoggerMiddleware) CloneNoBody() *LoggerMiddleware {
+func (m *LoggerMiddleware) CloneNoBody() *LoggerMiddleware {
 	return &LoggerMiddleware{
-		Handler:             l.Handler, // 接口实现
-		OnLog:               l.OnLog,   // 回调方式
-		debug:               l.debug,   // 是否开启调试模式
-		disableRequestBody:  true,      // 是否禁用请求体记录
-		disableResponseBody: true,      // 是否禁用响应体记录
+		Handler:             m.Handler, // 接口实现
+		OnLog:               m.OnLog,   // 回调方式
+		debug:               m.debug,   // 是否开启调试模式
+		disableRequestBody:  true,      // 强制禁用
+		disableResponseBody: true,      // 强制禁用
 	}
 }
 
 // IntrusionRequest Hook 注入开始时间
 // 可以放 resty.PrepareRequestMiddleware 前面
-func (l *LoggerMiddleware) IntrusionRequest(c *resty.Client, req *resty.Request) error {
+func (m *LoggerMiddleware) IntrusionRequest(c *resty.Client, req *resty.Request) error {
 
 	// 开启调试模式时
-	if l.debug {
+	if m.debug {
 		fmt.Printf("[LoggerMiddleware] IntrusionRequest Start: %s %s\n", req.Method, req.URL)
 		defer fmt.Printf("[LoggerMiddleware] IntrusionRequest End: %s %s\n", req.Method, req.URL)
 	}
@@ -113,10 +113,10 @@ func (l *LoggerMiddleware) IntrusionRequest(c *resty.Client, req *resty.Request)
 
 // BeforeRequest Hook 记录开始时间和OTel
 // 必须放 resty.PrepareRequestMiddleware 后面，否则无法获取到请求体
-func (l *LoggerMiddleware) BeforeRequest(c *resty.Client, req *resty.Request) error {
+func (m *LoggerMiddleware) BeforeRequest(c *resty.Client, req *resty.Request) error {
 
 	// 开启调试模式时
-	if l.debug {
+	if m.debug {
 		fmt.Printf("[LoggerMiddleware] BeforeRequest Start: %s %s\n", req.Method, req.URL)
 		defer fmt.Printf("[LoggerMiddleware] BeforeRequest End: %s %s\n", req.Method, req.URL)
 	}
@@ -142,10 +142,10 @@ func (l *LoggerMiddleware) BeforeRequest(c *resty.Client, req *resty.Request) er
 
 // CopyResponseBodyMiddleware 将响应体拷贝到 Context
 // 必须放 resty.AutoParseResponseMiddleware 前面，否则无法获取到响应体
-func (l *LoggerMiddleware) CopyResponseBodyMiddleware(c *resty.Client, resp *resty.Response) error {
+func (m *LoggerMiddleware) CopyResponseBodyMiddleware(c *resty.Client, resp *resty.Response) error {
 
 	// 开启调试模式时
-	if l.debug {
+	if m.debug {
 		fmt.Printf("[LoggerMiddleware] CopyResponseBodyMiddleware Start: %s %s\n", resp.Request.Method, resp.Request.URL)
 		defer fmt.Printf("[LoggerMiddleware] CopyResponseBodyMiddleware End: %s %s\n", resp.Request.Method, resp.Request.URL)
 	}
@@ -164,10 +164,10 @@ func (l *LoggerMiddleware) CopyResponseBodyMiddleware(c *resty.Client, resp *res
 
 // AfterResponse Hook 打印/保存
 // 必须放 resty.AutoParseResponseMiddleware 后面，否则无法获取到响应体
-func (l *LoggerMiddleware) AfterResponse(c *resty.Client, resp *resty.Response) error {
+func (m *LoggerMiddleware) AfterResponse(c *resty.Client, resp *resty.Response) error {
 
 	// 开启调试模式时
-	if l.debug {
+	if m.debug {
 		fmt.Printf("[LoggerMiddleware] AfterResponse Start: %d %s %s\n", resp.StatusCode(), resp.Request.Method, resp.Request.URL)
 		defer fmt.Printf("[LoggerMiddleware] AfterResponse End: %d %s %s\n", resp.StatusCode(), resp.Request.Method, resp.Request.URL)
 	}
@@ -204,37 +204,37 @@ func (l *LoggerMiddleware) AfterResponse(c *resty.Client, resp *resty.Response) 
 	}
 
 	// 记录真实 Host
-	if logData.RequestHeaders["Host"] == nil && logData.Hostname != "" {
-		logData.RequestHeaders["Host"] = []string{
-			logData.Hostname,
-		}
-	}
+	// if logData.RequestHeaders["Host"] == nil && logData.Hostname != "" {
+	// 	logData.RequestHeaders["Host"] = []string{
+	// 		logData.Hostname,
+	// 	}
+	// }
 
 	// 请求体
-	if !l.disableRequestBody && resp.Request.Body != nil {
-		contentType := resp.Request.Header.Get("Content-Type")
-		logData.RequestBody = l.processBodyAny(contentType, resp.Request.Body)
+	if !m.disableRequestBody && resp.Request.Body != nil {
+		contentType := resp.Request.Header.Get(ContentTypeHeader)
+		logData.RequestBody = m.processBodyAny(contentType, resp.Request.Body)
 	}
 
 	// 请求参数
-	if !l.disableRequestBody && resp.Request.QueryParams != nil {
+	if !m.disableRequestBody && resp.Request.QueryParams != nil {
 		logData.RequestQueryParams = resp.Request.QueryParams
 	}
 
 	// 请求表单数据
-	if !l.disableRequestBody && resp.Request.FormData != nil {
+	if !m.disableRequestBody && resp.Request.FormData != nil {
 		logData.RequestFormData = resp.Request.FormData
 	}
 
 	// 请求路径参数
-	if !l.disableRequestBody {
+	if !m.disableRequestBody {
 		logData.RequestPathParams = resp.Request.PathParams
 	}
 
 	// 响应体
-	if !l.disableResponseBody {
-		contentType := resp.Header().Get("Content-Type")
-		logData.ResponseBody = l.processBodyByte(contentType, GetResponseBodyKey(ctx))
+	if !m.disableResponseBody {
+		contentType := resp.Header().Get(ContentTypeHeader)
+		logData.ResponseBody = m.processBodyByte(contentType, GetResponseBodyKey(ctx))
 	}
 
 	// 可插拔 tracer
@@ -246,22 +246,22 @@ func (l *LoggerMiddleware) AfterResponse(c *resty.Client, resp *resty.Response) 
 		logData.ResponseBody,
 	)
 
-	if l.debug {
+	if m.debug {
 		fmt.Printf("[LoggerMiddleware] AfterResponse TraceInfo:\n")
 		fmt.Printf("%+v\n", resp.Request.TraceInfo())
 	}
 
 	// 触发保存
-	l.emit(context.WithoutCancel(ctx), logData)
+	m.emit(context.WithoutCancel(ctx), logData)
 
 	return nil
 }
 
 // emit 触发接口或回调
-func (l *LoggerMiddleware) emit(ctx context.Context, logData *LogData) {
+func (m *LoggerMiddleware) emit(ctx context.Context, logData *LogData) {
 
 	// 开启调试模式时
-	if l.debug {
+	if m.debug {
 		fmt.Printf("[LoggerMiddleware] emit Start: %s %s\n", logData.Method, logData.URL)
 		defer fmt.Printf("[LoggerMiddleware] emit End: %s %s\n", logData.Method, logData.URL)
 	}
@@ -271,15 +271,15 @@ func (l *LoggerMiddleware) emit(ctx context.Context, logData *LogData) {
 
 	// 计算处理耗时
 	logData.ProcessElapseTime = time.Since(logData.processElapseTimeStart).Milliseconds()
-	if l.OnLog != nil {
+	if m.OnLog != nil {
 		go func(ctx context.Context, data *LogData) {
-			if err := l.OnLog(ctx, data); err != nil {
+			if err := m.OnLog(ctx, data); err != nil {
 				fmt.Println("save log failed (OnLog):", err)
 			}
 		}(context.WithoutCancel(ctx), logData)
-	} else if l.Handler != nil {
+	} else if m.Handler != nil {
 		go func(ctx context.Context, data *LogData) {
-			if err := l.Handler.HandleLog(ctx, data); err != nil {
+			if err := m.Handler.HandleLog(ctx, data); err != nil {
 				fmt.Println("save log failed (HandleLog):", err)
 			}
 		}(context.WithoutCancel(ctx), logData)

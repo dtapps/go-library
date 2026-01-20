@@ -17,14 +17,17 @@ const (
 	JSONBodyType = "json"
 	XMLBodyType  = "xml"
 	TextBodyType = "text"
+
+	ContentTypeHeader     = "Content-Type"
+	ContentEncodingHeader = "Content-Encoding"
 )
 
 // processResponseBody 处理请求体/响应体，根据 Content-Type 转换为 JSON 或 XML
-func (l *LoggingRoundTripper) processResponseBody(headers http.Header, body []byte) json.RawMessage {
-	contentType := headers.Get("Content-Type")
+func (t *LoggingRoundTripper) processResponseBody(headers http.Header, body []byte) json.RawMessage {
+	contentType := headers.Get(ContentTypeHeader)
 
 	// 先解压（如果需要）
-	if headers.Get("Content-Encoding") == "gzip" {
+	if headers.Get(ContentEncodingHeader) == "gzip" {
 		if gr, err := gzip.NewReader(bytes.NewReader(body)); err == nil {
 			defer gr.Close()
 			if decompressed, err := io.ReadAll(gr); err == nil {
@@ -33,14 +36,14 @@ func (l *LoggingRoundTripper) processResponseBody(headers http.Header, body []by
 		}
 	}
 
-	return l.processBodyByte(contentType, body)
+	return t.processBodyByte(contentType, body)
 }
 
 // processBodyAny 处理任意类型的 Body 并转换为 json.RawMessage
-func (l *LoggingRoundTripper) processBodyAny(contentType string, body any) json.RawMessage {
+func (t *LoggingRoundTripper) processBodyAny(contentType string, body any) json.RawMessage {
 
 	// 开启调试模式时
-	if l.debug {
+	if t.debug {
 		fmt.Println("[processBodyAny] contentType:", contentType)
 		fmt.Println("[processBodyAny] body:", body)
 		fmt.Printf("[processBodyAny] body type: %T\n", body)
@@ -52,9 +55,9 @@ func (l *LoggingRoundTripper) processBodyAny(contentType string, body any) json.
 
 	switch v := body.(type) {
 	case []byte:
-		return l.processBodyByte(contentType, v)
+		return t.processBodyByte(contentType, v)
 	case string:
-		return l.processBodyByte(contentType, []byte(v))
+		return t.processBodyByte(contentType, []byte(v))
 	case json.RawMessage:
 		return v
 	default:
@@ -69,10 +72,10 @@ func (l *LoggingRoundTripper) processBodyAny(contentType string, body any) json.
 }
 
 // 处理 body，根据类型存到 JSON 或 XML 字段
-func (l *LoggingRoundTripper) processBodyByte(contentType string, data []byte) json.RawMessage {
+func (t *LoggingRoundTripper) processBodyByte(contentType string, data []byte) json.RawMessage {
 
 	// 开启调试模式时
-	if l.debug {
+	if t.debug {
 		fmt.Println("[processBodyByte] contentType:", contentType)
 		fmt.Println("[processBodyByte] body:", string(data))
 	}
@@ -81,14 +84,14 @@ func (l *LoggingRoundTripper) processBodyByte(contentType string, data []byte) j
 		return nil
 	}
 
-	bodyType := l.detectBodyType(contentType, data)
+	bodyType := t.detectBodyType(contentType, data)
 	switch bodyType {
 	case JSONBodyType:
-		if l.isValidJSON(data) {
+		if t.isValidJSON(data) {
 			return data
 		}
 	case XMLBodyType:
-		if l.isValidXML(data) {
+		if t.isValidXML(data) {
 			xj, _ := xml2json.Convert(strings.NewReader(string(data)))
 			return xj.Bytes()
 		}
@@ -98,29 +101,29 @@ func (l *LoggingRoundTripper) processBodyByte(contentType string, data []byte) j
 }
 
 // 判断是否为 JSON 格式
-func (l *LoggingRoundTripper) isValidJSON(data []byte) bool {
+func (t *LoggingRoundTripper) isValidJSON(data []byte) bool {
 	var js json.RawMessage
 	return json.Unmarshal(data, &js) == nil
 }
 
 // 判断是否为 XML 格式
-func (l *LoggingRoundTripper) isValidXML(data []byte) bool {
+func (t *LoggingRoundTripper) isValidXML(data []byte) bool {
 	var v any
 	return xml.Unmarshal(data, &v) == nil
 }
 
 // 根据 Content-Type 或内容判断 body 类型
-func (l *LoggingRoundTripper) detectBodyType(contentType string, data []byte) string {
+func (t *LoggingRoundTripper) detectBodyType(contentType string, data []byte) string {
 	if strings.Contains(contentType, "application/json") || strings.HasPrefix(string(data), "{") || strings.HasPrefix(string(data), "[") {
 		return JSONBodyType
 	}
 	if strings.Contains(contentType, "xml") || strings.Contains(contentType, "soap+xml") || strings.HasPrefix(string(data), "<") {
 		return XMLBodyType
 	}
-	if l.isValidJSON(data) {
+	if t.isValidJSON(data) {
 		return JSONBodyType
 	}
-	if l.isValidXML(data) {
+	if t.isValidXML(data) {
 		return XMLBodyType
 	}
 	return TextBodyType

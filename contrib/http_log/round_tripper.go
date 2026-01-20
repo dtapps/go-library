@@ -3,7 +3,6 @@ package http_log
 import (
 	"bytes"
 	"context"
-	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -47,7 +46,7 @@ type LogCallback func(ctx context.Context, data *LogData) error
 
 // LoggingRoundTripper 定义拦截器
 type LoggingRoundTripper struct {
-	Proxied             http.RoundTripper // 被拦截的 Transport
+	Transport           http.RoundTripper // 被拦截的 Transport
 	Handler             LogHandler        // 接口方式
 	OnLog               LogCallback       // 回调方式
 	debug               bool              // 是否开启调试模式
@@ -61,76 +60,77 @@ func NewLoggingRoundTripper(base http.RoundTripper, handler LogHandler, callback
 		base = http.DefaultTransport
 	}
 	return &LoggingRoundTripper{
-		Proxied: base,
-		Handler: handler,
-		OnLog:   callback,
+		Transport: base,
+		Handler:   handler,
+		OnLog:     callback,
 	}
 }
 
-// SkipTLSVerify 跳过证书验证
-func (l *LoggingRoundTripper) SkipTLSVerify() {
-	if tr, ok := l.Proxied.(*http.Transport); ok {
-		tr.TLSClientConfig = &tls.Config{
-			InsecureSkipVerify: true,
-		}
+// baseTransport 获取基础 Transport
+func (t *LoggingRoundTripper) baseTransport() http.RoundTripper {
+	if t.Transport != nil {
+		return t.Transport
 	}
+	return http.DefaultTransport
 }
 
 // EnableDebug 开启调试模式
-func (l *LoggingRoundTripper) EnableDebug() {
-	l.debug = true
+func (t *LoggingRoundTripper) EnableDebug() {
+	t.debug = true
 }
 
 // Clone 复制一个新的 LoggingRoundTripper
-func (l *LoggingRoundTripper) Clone() *LoggingRoundTripper {
+func (t *LoggingRoundTripper) Clone() *LoggingRoundTripper {
 	return &LoggingRoundTripper{
-		Proxied:             l.Proxied,             // 被拦截的 Transport
-		Handler:             l.Handler,             // 接口方式
-		OnLog:               l.OnLog,               // 回调方式
-		debug:               l.debug,               // 是否开启调试模式
-		disableRequestBody:  l.disableRequestBody,  // 是否禁用请求体记录
-		disableResponseBody: l.disableResponseBody, // 是否禁用响应体记录
+		Transport:           t.baseTransport(),     // 被拦截的 Transport
+		Handler:             t.Handler,             // 接口方式
+		OnLog:               t.OnLog,               // 回调方式
+		debug:               t.debug,               // 是否开启调试模式
+		disableRequestBody:  t.disableRequestBody,  // 是否禁用请求体记录
+		disableResponseBody: t.disableResponseBody, // 是否禁用响应体记录
 	}
 }
 
 // CloneNoBody 复制一个新的 LoggingRoundTripper，禁用请求体和响应体记录
-func (l *LoggingRoundTripper) CloneNoBody() *LoggingRoundTripper {
+func (t *LoggingRoundTripper) CloneNoBody() *LoggingRoundTripper {
 	return &LoggingRoundTripper{
-		Proxied:             l.Proxied, // 被拦截的 Transport
-		Handler:             l.Handler, // 接口方式
-		OnLog:               l.OnLog,   // 回调方式
-		debug:               l.debug,   // 是否开启调试模式
-		disableRequestBody:  true,      // 是否禁用请求体记录
-		disableResponseBody: true,      // 是否禁用响应体记录
+		Transport:           t.baseTransport(), // 被拦截的 Transport
+		Handler:             t.Handler,         // 接口方式
+		OnLog:               t.OnLog,           // 回调方式
+		debug:               t.debug,           // 是否开启调试模式
+		disableRequestBody:  true,              // 强制禁用
+		disableResponseBody: true,              // 强制禁用
 	}
 }
 
 // Middleware 返回一个 http.RoundTripper 方法
-func (l *LoggingRoundTripper) Middleware() func(http.RoundTripper) http.RoundTripper {
+func (t *LoggingRoundTripper) Middleware() func(http.RoundTripper) http.RoundTripper {
 	return func(next http.RoundTripper) http.RoundTripper {
 		if next == nil {
-			next = l.Proxied
+			next = t.baseTransport()
 		}
 		return &LoggingRoundTripper{
-			Proxied:             next,                  // 被拦截的 Transport
-			Handler:             l.Handler,             // 接口方式
-			OnLog:               l.OnLog,               // 回调方式
-			disableRequestBody:  l.disableRequestBody,  // 保持配置
-			disableResponseBody: l.disableResponseBody, // 保持配置
+			Transport:           next,                  // 被拦截的 Transport
+			Handler:             t.Handler,             // 接口方式
+			OnLog:               t.OnLog,               // 回调方式
+			debug:               t.debug,               // 是否开启调试模式
+			disableRequestBody:  t.disableRequestBody,  // 是否禁用请求体记录
+			disableResponseBody: t.disableResponseBody, // 是否禁用响应体记录
 		}
 	}
 }
 
 // MiddlewareNoBody 返回一个强制不记录 Body 的 http.RoundTripper 方法
-func (l *LoggingRoundTripper) MiddlewareNoBody() func(http.RoundTripper) http.RoundTripper {
+func (t *LoggingRoundTripper) MiddlewareNoBody() func(http.RoundTripper) http.RoundTripper {
 	return func(next http.RoundTripper) http.RoundTripper {
 		if next == nil {
-			next = l.Proxied
+			next = t.baseTransport()
 		}
 		return &LoggingRoundTripper{
-			Proxied:             next,      // 被拦截的 Transport
-			Handler:             l.Handler, // 接口方式
-			OnLog:               l.OnLog,   // 回调方式
+			Transport:           next,      // 被拦截的 Transport
+			Handler:             t.Handler, // 接口方式
+			OnLog:               t.OnLog,   // 回调方式
+			debug:               t.debug,   // 是否开启调试模式
 			disableRequestBody:  true,      // 强制禁用
 			disableResponseBody: true,      // 强制禁用
 		}
@@ -138,38 +138,40 @@ func (l *LoggingRoundTripper) MiddlewareNoBody() func(http.RoundTripper) http.Ro
 }
 
 // Instance 返回一个 http.RoundTripper 实例
-func (l *LoggingRoundTripper) Instance(next http.RoundTripper) http.RoundTripper {
+func (t *LoggingRoundTripper) Instance(next http.RoundTripper) http.RoundTripper {
 	if next == nil {
-		next = l.Proxied
+		next = t.baseTransport()
 	}
 	return &LoggingRoundTripper{
-		Proxied:             next,
-		Handler:             l.Handler,
-		OnLog:               l.OnLog,
-		disableRequestBody:  l.disableRequestBody,
-		disableResponseBody: l.disableResponseBody,
+		Transport:           next,                  // 被拦截的 Transport
+		Handler:             t.Handler,             // 接口方式
+		OnLog:               t.OnLog,               // 回调方式
+		debug:               t.debug,               // 是否开启调试模式
+		disableRequestBody:  t.disableRequestBody,  // 是否禁用请求体记录
+		disableResponseBody: t.disableResponseBody, // 是否禁用响应体记录
 	}
 }
 
 // InstanceNoBody 返回一个强制不记录 Body 的 http.RoundTripper 实例
-func (l *LoggingRoundTripper) InstanceNoBody(next http.RoundTripper) http.RoundTripper {
+func (t *LoggingRoundTripper) InstanceNoBody(next http.RoundTripper) http.RoundTripper {
 	if next == nil {
-		next = l.Proxied
+		next = t.baseTransport()
 	}
 	return &LoggingRoundTripper{
-		Proxied:             next,
-		Handler:             l.Handler,
-		OnLog:               l.OnLog,
-		disableRequestBody:  true, // 强制禁用
-		disableResponseBody: true, // 强制禁用
+		Transport:           next,      // 被拦截的 Transport
+		Handler:             t.Handler, // 接口方式
+		OnLog:               t.OnLog,   // 回调方式
+		debug:               t.debug,   // 是否开启调试模式
+		disableRequestBody:  true,      // 强制禁用
+		disableResponseBody: true,      // 强制禁用
 	}
 }
 
 // RoundTrip 实现了 http.RoundTripper 接口
-func (l *LoggingRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
+func (t *LoggingRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
 
 	// 开启调试模式时
-	if l.debug {
+	if t.debug {
 		fmt.Printf("[LoggingRoundTripper] RoundTrip Start: %s %s\n", req.Method, req.URL.String())
 		defer fmt.Printf("[LoggingRoundTripper] RoundTrip End: %s %s\n", req.Method, req.URL.String())
 	}
@@ -229,15 +231,15 @@ func (l *LoggingRoundTripper) RoundTrip(req *http.Request) (*http.Response, erro
 	logData.RequestHeaders = finalReqHeaders
 
 	// 请求体
-	if !l.disableRequestBody && req.Body != nil {
+	if !t.disableRequestBody && req.Body != nil {
 		bodyBytes, _ := io.ReadAll(req.Body)
-		logData.RequestBody = l.processResponseBody(req.Header, bodyBytes)
+		logData.RequestBody = t.processResponseBody(req.Header, bodyBytes)
 		req.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 	}
 
 	// 执行请求
-	// 调用 Proxied.RoundTrip 会触发上面的 WroteHeaderField 回调
-	resp, err := l.Proxied.RoundTrip(req)
+	// 调用 Transport.RoundTrip 会触发上面的 WroteHeaderField 回调
+	resp, err := t.baseTransport().RoundTrip(req)
 
 	// 请求结束后，更新最终捕获到的真实请求头
 	mu.Lock()
@@ -261,7 +263,7 @@ func (l *LoggingRoundTripper) RoundTrip(req *http.Request) (*http.Response, erro
 	if err != nil {
 		logData.IsError = true
 		// 触发保存
-		l.emit(context.WithoutCancel(ctx), logData)
+		t.emit(context.WithoutCancel(ctx), logData)
 		return nil, err
 	}
 
@@ -275,23 +277,23 @@ func (l *LoggingRoundTripper) RoundTrip(req *http.Request) (*http.Response, erro
 	logData.IsError = resp.StatusCode >= 400
 
 	// 响应体
-	if !l.disableResponseBody && resp.Body != nil {
+	if !t.disableResponseBody && resp.Body != nil {
 		respBytes, _ := io.ReadAll(resp.Body)
-		logData.ResponseBody = l.processResponseBody(resp.Header, respBytes)
+		logData.ResponseBody = t.processResponseBody(resp.Header, respBytes)
 		resp.Body = io.NopCloser(bytes.NewBuffer(respBytes))
 	}
 
 	// 触发保存
-	l.emit(context.WithoutCancel(ctx), logData)
+	t.emit(context.WithoutCancel(ctx), logData)
 
 	return resp, nil
 }
 
 // emit 触发接口或回调
-func (l *LoggingRoundTripper) emit(ctx context.Context, logData *LogData) {
+func (t *LoggingRoundTripper) emit(ctx context.Context, logData *LogData) {
 
 	// 开启调试模式时
-	if l.debug {
+	if t.debug {
 		fmt.Printf("[LoggingRoundTripper] emit Start: %s %s\n", logData.Method, logData.URL)
 		defer fmt.Printf("[LoggingRoundTripper] emit End: %s %s\n", logData.Method, logData.URL)
 	}
@@ -301,15 +303,15 @@ func (l *LoggingRoundTripper) emit(ctx context.Context, logData *LogData) {
 
 	// 计算处理耗时
 	logData.ProcessElapseTime = time.Since(logData.processElapseTimeStart).Milliseconds()
-	if l.OnLog != nil {
+	if t.OnLog != nil {
 		go func(ctx context.Context, data *LogData) {
-			if err := l.OnLog(ctx, data); err != nil {
+			if err := t.OnLog(ctx, data); err != nil {
 				fmt.Println("save log failed (OnLog):", err)
 			}
 		}(context.WithoutCancel(ctx), logData)
-	} else if l.Handler != nil {
+	} else if t.Handler != nil {
 		go func(ctx context.Context, data *LogData) {
-			if err := l.Handler.HandleLog(ctx, data); err != nil {
+			if err := t.Handler.HandleLog(ctx, data); err != nil {
 				fmt.Println("save log failed (HandleLog):", err)
 			}
 		}(context.WithoutCancel(ctx), logData)
