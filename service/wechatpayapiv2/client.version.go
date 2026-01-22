@@ -1,5 +1,5 @@
 package wechatpayapiv2
 
 const (
-	Version = "1.0.27"
+	Version = "1.0.28"
 )

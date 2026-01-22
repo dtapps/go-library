@@ -4,13 +4,11 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 
-	"go.dtapp.net/library/contrib/resty_log"
 	"resty.dev/v3"
 )
 
 type Options struct {
 	restyClient *resty.Client
-	restyLog    *resty_log.LoggerMiddleware
 	debug       bool
 
 	baseURL string // 接口地址
@@ -37,7 +35,6 @@ type Option struct {
 func NewOptions(opts []Option) *Options {
 	options := &Options{
 		restyClient: nil,
-		restyLog:    nil,
 	}
 	options.Apply(opts)
 	return options
@@ -61,22 +58,6 @@ func WithRestyClientIf(enable bool, restyClient *resty.Client) Option {
 	return Option{F: func(o *Options) {
 		if enable {
 			o.restyClient = restyClient
-		}
-	}}
-}
-
-// WithRestyLog 设置 restyLog
-func WithRestyLog(restyLog *resty_log.LoggerMiddleware) Option {
-	return Option{F: func(o *Options) {
-		o.restyLog = restyLog
-	}}
-}
-
-// WithRestyLogIf 设置 restyLog
-func WithRestyLogIf(enable bool, restyLog *resty_log.LoggerMiddleware) Option {
-	return Option{F: func(o *Options) {
-		if enable {
-			o.restyLog = restyLog
 		}
 	}}
 }
