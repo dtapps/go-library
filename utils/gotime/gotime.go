@@ -1,6 +1,7 @@
 package gotime
 
 import (
+	"log/slog"
 	"time"
 )
 
@@ -16,6 +17,18 @@ const (
 	ShortDateFormat     = "20060102"
 	ShortTimeFormat     = "150405"
 )
+
+// 缓存上海时区，避免重复加载
+var shangHaiLoc = func() *time.Location {
+	loc, err := time.LoadLocation("Asia/Shanghai")
+	if err != nil {
+		slog.Warn("时区加载失败，使用系统本地时区",
+			slog.Any("err", err),
+		)
+		return time.Local
+	}
+	return loc
+}()
 
 // Pro 结构体
 type Pro struct {

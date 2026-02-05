@@ -9,41 +9,24 @@ import (
 
 // Current 获取当前的时间
 func Current() Pro {
-
-	var err error
 	p := NewPro()
-
-	p.loc, err = time.LoadLocation("Asia/Shanghai")
-	if err != nil {
-		// TODO 时区错误
-		slog.Error("时区错误", "err", err.Error())
-		p.Time = time.Now().Add(time.Hour * 8)
-	} else {
-		p.Time = time.Now().In(p.loc)
-	}
-
+	p.loc = shangHaiLoc
+	p.Time = time.Now().In(p.loc)
 	return p
 }
 
 // SetCurrent 设置当前的时间
 func SetCurrent(sTime time.Time) Pro {
 	p := NewPro()
-	p.Time = sTime
+	p.loc = shangHaiLoc
+	p.Time = sTime.In(p.loc)
 	return p
 }
 
 // SetCurrentParse 设置当前的时间
 func SetCurrentParse(str string) Pro {
-
-	var err error
 	p := NewPro()
-
-	p.loc, err = time.LoadLocation("Asia/Shanghai")
-	if err != nil {
-		// TODO 时区错误
-		slog.Error("时区错误", "err", err.Error())
-		p.Time = time.Now().Add(time.Hour * 8)
-	}
+	p.loc = shangHaiLoc
 
 	layout := DateTimeFormat
 	if str == "" || str == "0" || str == "0000-00-00 00:00:00" || str == "0000-00-00" || str == "00:00:00" {
@@ -63,23 +46,34 @@ func SetCurrentParse(str string) Pro {
 			layout = FormatYearMonthDayHourMinuteSeconds
 		}
 	}
-	location, _ := time.ParseInLocation(layout, str, p.loc)
+	t, err := time.ParseInLocation(layout, str, p.loc)
+	if err != nil {
+		slog.Warn("时间解析失败",
+			slog.String("input", str),
+			slog.String("layout", layout),
+			slog.Any("err", err),
+		)
+	}
 
-	p.Time = location
+	p.Time = t
 	return p
 }
 
 // SetCurrentUnix 设置当前的时间 Unix时间戳
 func SetCurrentUnix(ts int64) Pro {
 	p := NewPro()
-	p.Time = time.Unix(ts, 0)
+	p.loc = shangHaiLoc
+	p.Time = time.Unix(ts, 0).In(p.loc)
 	return p
 }
 
 // SetCurrentMillisecondUnix 设置当前的时间 毫秒Unix时间戳
 func SetCurrentMillisecondUnix(ts int64) Pro {
 	p := NewPro()
-	p.Time = time.Unix(ts/1000, 0)
+	p.loc = shangHaiLoc
+	sec := ts / 1000
+	nsec := (ts % 1000) * int64(time.Millisecond) // 保留毫秒
+	p.Time = time.Unix(sec, nsec).In(p.loc)
 	return p
 }
 
