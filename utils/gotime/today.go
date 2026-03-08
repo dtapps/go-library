@@ -2,7 +2,6 @@ package gotime
 
 import (
 	"log/slog"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -32,21 +31,64 @@ func SetCurrentParse(str string) Pro {
 	if str == "" || str == "0" || str == "0000-00-00 00:00:00" || str == "0000-00-00" || str == "00:00:00" {
 		return p
 	}
-	if len(str) == 10 && strings.Count(str, "-") == 2 {
-		layout = DateFormat
+
+	// 纯数字格式 (20260308 / 20251224150405)
+	isNumeric := true
+	for _, r := range str {
+		if r < '0' || r > '9' {
+			isNumeric = false
+			break
+		}
 	}
-	if strings.Index(str, "T") == 10 {
-		layout = RFC3339Format
-	}
-	if _, err := strconv.ParseInt(str, 10, 64); err == nil {
+	if isNumeric {
 		switch len(str) {
 		case 8:
 			layout = FormatYearMonthDay
 		case 14:
 			layout = FormatYearMonthDayHourMinuteSeconds
 		}
+		t, err := time.ParseInLocation(layout, str, p.loc)
+		if err != nil {
+			slog.Warn("时间解析失败",
+				slog.String("input", str),
+				slog.String("layout", layout),
+				slog.Any("err", err),
+			)
+		}
+		p.Time = t.In(p.loc)
+		return p
 	}
-	t, err := time.ParseInLocation(layout, str, p.loc)
+
+	// 混合格式: "20251224 15:04:05" (8位数字+空格+时间)
+	if len(str) == 17 && str[8] == ' ' && strings.Count(str, ":") == 2 {
+		normalized := str[:4] + "-" + str[4:6] + "-" + str[6:8] + str[8:]
+		t, err := time.ParseInLocation(DateTimeFormat, normalized, p.loc)
+		if err != nil {
+			slog.Warn("时间解析失败",
+				slog.String("input", str),
+				slog.String("layout", DateTimeFormat),
+				slog.Any("err", err),
+			)
+		}
+		p.Time = t.In(p.loc)
+		return p
+	}
+
+	// 统一分隔符：将 / 和 . 替换为 -
+	normalized := strings.NewReplacer("/", "-", ".", "-").Replace(str)
+
+	// 短日期格式 (2006-01-02)
+	if len(normalized) == 10 && strings.Count(normalized, "-") == 2 {
+		layout = DateFormat
+	}
+
+	// RFC3339/ISO8601 格式 (2006-01-02T15:04:05Z)
+	if len(normalized) > 10 && normalized[10] == 'T' {
+		layout = RFC3339Format
+	}
+
+	// 执行解析
+	t, err := time.ParseInLocation(layout, normalized, p.loc)
 	if err != nil {
 		slog.Warn("时间解析失败",
 			slog.String("input", str),
@@ -55,7 +97,7 @@ func SetCurrentParse(str string) Pro {
 		)
 	}
 
-	p.Time = t
+	p.Time = t.In(p.loc)
 	return p
 }
 
