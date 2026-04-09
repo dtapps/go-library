@@ -1,7 +1,6 @@
 package goip
 
 import (
-	"go.dtapp.net/library/utils/gostring"
 	"net"
 	"strings"
 )
@@ -46,7 +45,7 @@ func IsIp(ipStr string) string {
 	}
 
 	// ipv4
-	if gostring.Contains(ipStr, "/32") {
+	if strings.Contains(ipStr, "/32") {
 		cidr, _, _ := net.ParseCIDR(ipStr)
 		if cidr != nil {
 			return cidr.String()
@@ -54,7 +53,7 @@ func IsIp(ipStr string) string {
 	}
 
 	// ipv6
-	if gostring.Contains(ipStr, "/128") {
+	if strings.Contains(ipStr, "/128") {
 		cidr, _, _ := net.ParseCIDR(ipStr)
 		if cidr != nil {
 			return cidr.String()

@@ -1,22 +1,28 @@
 package goip
 
 import (
-	"errors"
+	"github.com/tagphi/czdb-search-golang/pkg/db"
+	"go.dtapp.net/library/utils/goip/czdb"
 	"go.dtapp.net/library/utils/goip/geoip"
-	"go.dtapp.net/library/utils/goip/qqwry"
+	"go.dtapp.net/library/utils/goip/ip2region"
 )
 
 type ClientConfig struct {
+	CzdbV4Path       string
+	CzdbV6Path       string
+	CzdbKey          string
 	GeoipAsnPath     string
 	GeoipCityPath    string
 	GeoipCountryPath string
-	QqwryPath        string
+	IpRegionV4Path   string
+	IpRegionV6Path   string
 }
 
 type Client struct {
-	geoIpClient *geoip.Client
-	qqwryClient *qqwry.Client
-	config      *ClientConfig
+	config         *ClientConfig
+	czdbClient     *czdb.Client
+	geoIpClient    *geoip.Client
+	ipRegionClient *ip2region.Client
 }
 
 // NewIp 实例化
@@ -25,16 +31,22 @@ func NewIp(config *ClientConfig) (*Client, error) {
 	var err error
 	c := &Client{config: config}
 
-	if config.GeoipCityPath == "" {
-		return nil, errors.New("请配置 GeoipCityPath 文件")
-	}
-	c.geoIpClient, err = geoip.New(config.GeoipAsnPath, config.GeoipCityPath, config.GeoipCountryPath)
-	if err != nil {
-		return nil, err
+	if (config.CzdbV4Path != "" || config.CzdbV6Path != "") && config.CzdbKey != "" {
+		c.czdbClient, err = czdb.New(config.CzdbV4Path, config.CzdbV6Path, config.CzdbKey, db.MEMORY)
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	if config.QqwryPath != "" {
-		c.qqwryClient, err = qqwry.New(config.QqwryPath)
+	if config.GeoipCityPath != "" {
+		c.geoIpClient, err = geoip.New(config.GeoipAsnPath, config.GeoipCityPath, config.GeoipCountryPath)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if config.IpRegionV4Path != "" || config.IpRegionV6Path != "" {
+		c.ipRegionClient, err = ip2region.New(config.IpRegionV4Path, config.IpRegionV6Path)
 		if err != nil {
 			return nil, err
 		}
@@ -44,5 +56,13 @@ func NewIp(config *ClientConfig) (*Client, error) {
 }
 
 func (c *Client) Close() {
-	c.geoIpClient.Close()
+	if c.config.GeoipCityPath != "" {
+		c.geoIpClient.Close()
+	}
+	if (c.config.CzdbV4Path != "" || c.config.CzdbV6Path != "") && c.config.CzdbKey != "" {
+		c.czdbClient.Close()
+	}
+	if c.config.IpRegionV4Path != "" || c.config.IpRegionV6Path != "" {
+		c.ipRegionClient.Close()
+	}
 }

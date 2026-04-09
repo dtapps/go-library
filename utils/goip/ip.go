@@ -2,6 +2,8 @@ package goip
 
 import (
 	"context"
+	"time"
+
 	"go.dtapp.net/library/utils/gorequest"
 )
 
@@ -17,7 +19,11 @@ func Ips(ctx context.Context) (map[string]string, error) {
 
 // GetOutsideIp 外网ip
 func GetOutsideIp(ctx context.Context) string {
-	return gorequest.GetOutsideIp(ctx)
+	ip, err := gorequest.GetOutsideIp(ctx, 5*time.Second)
+	if err != nil {
+		return ""
+	}
+	return ip
 }
 
 // GetMacAddr 获取Mac地址

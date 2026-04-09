@@ -2,18 +2,19 @@ package goip
 
 import (
 	"strconv"
+	"strings"
 )
 
 type AnalyseResult struct {
-	Ip                string  `json:"ip"`                 // ip
-	Continent         string  `json:"continent"`          // 大陆
-	Country           string  `json:"country"`            // 国家
-	Province          string  `json:"province"`           // 省份
-	City              string  `json:"city"`               // 城市
-	Isp               string  `json:"isp"`                // 运营商
-	LocationTimeZone  string  `json:"location_time_zone"` // 位置时区
-	LocationLatitude  float64 `json:"location_latitude"`  // 位置纬度
-	LocationLongitude float64 `json:"location_longitude"` // 位置经度
+	Ip                string  `json:"ip"`                  // ip
+	Continent         string  `json:"continent,omitempty"` // 大陆
+	Country           string  `json:"country,omitempty"`   // 国家
+	Province          string  `json:"province,omitempty"`  // 省份
+	City              string  `json:"city,omitempty"`      // 城市
+	Isp               string  `json:"isp,omitempty"`       // 运营商
+	LocationTimeZone  string  `json:"location_time_zone"`  // 位置时区
+	LocationLatitude  float64 `json:"location_latitude"`   // 位置纬度
+	LocationLongitude float64 `json:"location_longitude"`  // 位置经度
 }
 
 func (c *Client) Analyse(ip string) (resp AnalyseResult) {
@@ -29,14 +30,34 @@ func (c *Client) Analyse(ip string) (resp AnalyseResult) {
 			resp.LocationTimeZone = geoIpInfo.Location.TimeZone
 			resp.LocationLatitude = geoIpInfo.Location.Latitude
 			resp.LocationLongitude = geoIpInfo.Location.Longitude
+
+			if (c.config.CzdbV4Path != "" && c.config.CzdbV6Path != "") && c.config.CzdbKey != "" {
+				czdbIpInfo, err := c.QueryCzdb(ip)
+				if err == nil && czdbIpInfo.RawData != "" {
+					// 查找最后一个空格
+					idx := strings.LastIndex(czdbIpInfo.RawData, " ")
+					if idx != -1 {
+						// 存在空格，取空格后的部分并去除可能的首尾空白
+						isp := strings.TrimSpace(czdbIpInfo.RawData[idx+1:])
+						if isp != "" {
+							resp.Isp = isp
+						}
+					}
+				}
+			}
 		}
+		return resp
 	}
 
-	if c.config.GeoipCityPath != "" {
-		qqwryIpInfo, err := c.QueryQqWry(ip)
+	if c.config.IpRegionV4Path != "" || c.config.IpRegionV6Path != "" {
+		ipRegionInfo, err := c.QueryIpRegion(ip)
 		if err == nil {
-			resp.Isp = qqwryIpInfo.Area
+			resp.Country = ipRegionInfo.Country
+			resp.Province = ipRegionInfo.Province
+			resp.City = ipRegionInfo.City
+			resp.Isp = ipRegionInfo.Isp
 		}
+		return resp
 	}
 
 	return resp
