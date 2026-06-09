@@ -4,7 +4,7 @@ go 1.24.0
 
 require (
 	github.com/aliyun/alibabacloud-oss-go-sdk-v2 v1.3.0
-	github.com/baidubce/bce-sdk-go v0.9.245
+	github.com/baidubce/bce-sdk-go v0.9.268
 	github.com/gabriel-vasile/mimetype v1.4.10
 	github.com/huaweicloud/huaweicloud-sdk-go-obs v3.25.4+incompatible
 	github.com/minio/minio-go/v7 v7.0.95
