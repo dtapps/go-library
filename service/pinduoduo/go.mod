@@ -9,8 +9,7 @@ replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 require (
 	github.com/shopspring/decimal v1.4.0
 	go.dtapp.net/library/utils/gorequest v1.1.3
-	go.dtapp.net/library/utils/gotime v1.0.13
-	resty.dev/v3 v3.0.0-beta.6
+	resty.dev/v3 v3.0.0-rc.1
 )
 
 require (
