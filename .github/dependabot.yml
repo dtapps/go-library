@@ -1,0 +1,873 @@
+version: 2
+
+updates:
+
+  # Go 依赖 - fgen
+  - package-ecosystem: "gomod"
+    directory: "/framework/cmd/fgen"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "fgen"
+
+  # Go 依赖 - framework
+  - package-ecosystem: "gomod"
+    directory: "/framework"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "framework"
+
+  # Go 依赖 - captureresponse
+  - package-ecosystem: "gomod"
+    directory: "/contrib/captureresponse"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "captureresponse"
+
+  # Go 依赖 - fiber_requestid
+  - package-ecosystem: "gomod"
+    directory: "/contrib/fiber_requestid"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "fiber_requestid"
+
+  # Go 依赖 - gin_ent_log
+  - package-ecosystem: "gomod"
+    directory: "/contrib/gin_ent_log"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gin_ent_log"
+
+  # Go 依赖 - gin_ent_log_otel
+  - package-ecosystem: "gomod"
+    directory: "/contrib/gin_ent_log_otel"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gin_ent_log_otel"
+
+  # Go 依赖 - gin_monitor_prometheus
+  - package-ecosystem: "gomod"
+    directory: "/contrib/gin_monitor_prometheus"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gin_monitor_prometheus"
+
+  # Go 依赖 - gin_requestid
+  - package-ecosystem: "gomod"
+    directory: "/contrib/gin_requestid"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gin_requestid"
+
+  # Go 依赖 - hertz_ent_log
+  - package-ecosystem: "gomod"
+    directory: "/contrib/hertz_ent_log"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "hertz_ent_log"
+
+  # Go 依赖 - hertz_ent_log_otel
+  - package-ecosystem: "gomod"
+    directory: "/contrib/hertz_ent_log_otel"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "hertz_ent_log_otel"
+
+  # Go 依赖 - hertz_monitor_prometheus
+  - package-ecosystem: "gomod"
+    directory: "/contrib/hertz_monitor_prometheus"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "hertz_monitor_prometheus"
+
+  # Go 依赖 - hertz_requestid
+  - package-ecosystem: "gomod"
+    directory: "/contrib/hertz_requestid"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "hertz_requestid"
+
+  # Go 依赖 - http_log
+  - package-ecosystem: "gomod"
+    directory: "/contrib/http_log"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "http_log"
+
+  # Go 依赖 - req_log
+  - package-ecosystem: "gomod"
+    directory: "/contrib/req_log"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "req_log"
+
+  # Go 依赖 - requestid
+  - package-ecosystem: "gomod"
+    directory: "/contrib/requestid"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "requestid"
+
+  # Go 依赖 - resty_log
+  - package-ecosystem: "gomod"
+    directory: "/contrib/resty_log"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "resty_log"
+
+  # Go 依赖 - resty_log_otel
+  - package-ecosystem: "gomod"
+    directory: "/contrib/resty_log_otel"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "resty_log_otel"
+
+  # Go 依赖 - slog_otel
+  - package-ecosystem: "gomod"
+    directory: "/contrib/slog_otel"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "slog_otel"
+
+  # Go 依赖 - aliyun
+  - package-ecosystem: "gomod"
+    directory: "/service/aliyun"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "aliyun"
+
+  # Go 依赖 - amap
+  - package-ecosystem: "gomod"
+    directory: "/service/amap"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "amap"
+
+  # Go 依赖 - aswzk
+  - package-ecosystem: "gomod"
+    directory: "/service/aswzk"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "aswzk"
+
+  # Go 依赖 - baidu
+  - package-ecosystem: "gomod"
+    directory: "/service/baidu"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "baidu"
+
+  # Go 依赖 - bark
+  - package-ecosystem: "gomod"
+    directory: "/service/bark"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "bark"
+
+  # Go 依赖 - caiyunapp
+  - package-ecosystem: "gomod"
+    directory: "/service/caiyunapp"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "caiyunapp"
+
+  # Go 依赖 - chengquan
+  - package-ecosystem: "gomod"
+    directory: "/service/chengquan"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "chengquan"
+
+  # Go 依赖 - cloudflare
+  - package-ecosystem: "gomod"
+    directory: "/service/cloudflare"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "cloudflare"
+
+  # Go 依赖 - cma
+  - package-ecosystem: "gomod"
+    directory: "/service/cma"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "cma"
+
+  # Go 依赖 - dayuanren
+  - package-ecosystem: "gomod"
+    directory: "/service/dayuanren"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "dayuanren"
+
+  # Go 依赖 - dingtalk
+  - package-ecosystem: "gomod"
+    directory: "/service/dingtalk"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "dingtalk"
+
+  # Go 依赖 - ejiaofei
+  - package-ecosystem: "gomod"
+    directory: "/service/ejiaofei"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "ejiaofei"
+
+  # Go 依赖 - feishu
+  - package-ecosystem: "gomod"
+    directory: "/service/feishu"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "feishu"
+
+  # Go 依赖 - ft07
+  - package-ecosystem: "gomod"
+    directory: "/service/ft07"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "ft07"
+
+  # Go 依赖 - itboy
+  - package-ecosystem: "gomod"
+    directory: "/service/itboy"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "itboy"
+
+  # Go 依赖 - jisuapi
+  - package-ecosystem: "gomod"
+    directory: "/service/jisuapi"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "jisuapi"
+
+  # Go 依赖 - juhe
+  - package-ecosystem: "gomod"
+    directory: "/service/juhe"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "juhe"
+
+  # Go 依赖 - kashangwl
+  - package-ecosystem: "gomod"
+    directory: "/service/kashangwl"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "kashangwl"
+
+  # Go 依赖 - kuaidi100
+  - package-ecosystem: "gomod"
+    directory: "/service/kuaidi100"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "kuaidi100"
+
+  # Go 依赖 - meituan
+  - package-ecosystem: "gomod"
+    directory: "/service/meituan"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "meituan"
+
+  # Go 依赖 - pinduoduo
+  - package-ecosystem: "gomod"
+    directory: "/service/pinduoduo"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "pinduoduo"
+
+  # Go 依赖 - praise_goodness
+  - package-ecosystem: "gomod"
+    directory: "/service/praise_goodness"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "praise_goodness"
+
+  # Go 依赖 - pushdeer
+  - package-ecosystem: "gomod"
+    directory: "/service/pushdeer"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "pushdeer"
+
+  # Go 依赖 - qiniu
+  - package-ecosystem: "gomod"
+    directory: "/service/qiniu"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "qiniu"
+
+  # Go 依赖 - qweather
+  - package-ecosystem: "gomod"
+    directory: "/service/qweather"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "qweather"
+
+  # Go 依赖 - qxwlwagnt
+  - package-ecosystem: "gomod"
+    directory: "/service/qxwlwagnt"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "qxwlwagnt"
+
+  # Go 依赖 - seniverse
+  - package-ecosystem: "gomod"
+    directory: "/service/seniverse"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "seniverse"
+
+  # Go 依赖 - tencent
+  - package-ecosystem: "gomod"
+    directory: "/service/tencent"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "tencent"
+
+  # Go 依赖 - upyun
+  - package-ecosystem: "gomod"
+    directory: "/service/upyun"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "upyun"
+
+  # Go 依赖 - wechatopen
+  - package-ecosystem: "gomod"
+    directory: "/service/wechatopen"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "wechatopen"
+
+  # Go 依赖 - wechatpayapiv2
+  - package-ecosystem: "gomod"
+    directory: "/service/wechatpayapiv2"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "wechatpayapiv2"
+
+  # Go 依赖 - wechatpayapiv3
+  - package-ecosystem: "gomod"
+    directory: "/service/wechatpayapiv3"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "wechatpayapiv3"
+
+  # Go 依赖 - wechatpayopen
+  - package-ecosystem: "gomod"
+    directory: "/service/wechatpayopen"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "wechatpayopen"
+
+  # Go 依赖 - wechatqy
+  - package-ecosystem: "gomod"
+    directory: "/service/wechatqy"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "wechatqy"
+
+  # Go 依赖 - wikeyun
+  - package-ecosystem: "gomod"
+    directory: "/service/wikeyun"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "wikeyun"
+
+  # Go 依赖 - x7s
+  - package-ecosystem: "gomod"
+    directory: "/service/x7s"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "x7s"
+
+  # Go 依赖 - yytianqi
+  - package-ecosystem: "gomod"
+    directory: "/service/yytianqi"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "yytianqi"
+
+  # Go 依赖 - bigcache-cache
+  - package-ecosystem: "gomod"
+    directory: "/utils/bigcache-cache"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "bigcache-cache"
+
+  # Go 依赖 - dorm
+  - package-ecosystem: "gomod"
+    directory: "/utils/dorm"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "dorm"
+
+  # Go 依赖 - entx
+  - package-ecosystem: "gomod"
+    directory: "/utils/entx"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "entx"
+
+  # Go 依赖 - exchange
+  - package-ecosystem: "gomod"
+    directory: "/utils/exchange"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "exchange"
+
+  # Go 依赖 - geoip2
+  - package-ecosystem: "gomod"
+    directory: "/utils/geoip2"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "geoip2"
+
+  # Go 依赖 - goarray
+  - package-ecosystem: "gomod"
+    directory: "/utils/goarray"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "goarray"
+
+  # Go 依赖 - gobarcode
+  - package-ecosystem: "gomod"
+    directory: "/utils/gobarcode"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gobarcode"
+
+  # Go 依赖 - gobase64
+  - package-ecosystem: "gomod"
+    directory: "/utils/gobase64"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gobase64"
+
+  # Go 依赖 - godecimal
+  - package-ecosystem: "gomod"
+    directory: "/utils/godecimal"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "godecimal"
+
+  # Go 依赖 - goenv
+  - package-ecosystem: "gomod"
+    directory: "/utils/goenv"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "goenv"
+
+  # Go 依赖 - gofiles
+  - package-ecosystem: "gomod"
+    directory: "/utils/gofiles"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gofiles"
+
+  # Go 依赖 - goip-czdb
+  - package-ecosystem: "gomod"
+    directory: "/utils/goip-czdb"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "goip-czdb"
+
+  # Go 依赖 - goip
+  - package-ecosystem: "gomod"
+    directory: "/utils/goip"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "goip"
+
+  # Go 依赖 - gojobs
+  - package-ecosystem: "gomod"
+    directory: "/utils/gojobs"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gojobs"
+
+  # Go 依赖 - gojson
+  - package-ecosystem: "gomod"
+    directory: "/utils/gojson"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gojson"
+
+  # Go 依赖 - golog
+  - package-ecosystem: "gomod"
+    directory: "/utils/golog"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "golog"
+
+  # Go 依赖 - gomd5
+  - package-ecosystem: "gomod"
+    directory: "/utils/gomd5"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gomd5"
+
+  # Go 依赖 - gophp
+  - package-ecosystem: "gomod"
+    directory: "/utils/gophp"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gophp"
+
+  # Go 依赖 - goqc
+  - package-ecosystem: "gomod"
+    directory: "/utils/goqc"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "goqc"
+
+  # Go 依赖 - gorandom
+  - package-ecosystem: "gomod"
+    directory: "/utils/gorandom"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gorandom"
+
+  # Go 依赖 - gorequest
+  - package-ecosystem: "gomod"
+    directory: "/utils/gorequest"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gorequest"
+
+  # Go 依赖 - gosms
+  - package-ecosystem: "gomod"
+    directory: "/utils/gosms"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gosms"
+
+  # Go 依赖 - gossh
+  - package-ecosystem: "gomod"
+    directory: "/utils/gossh"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gossh"
+
+  # Go 依赖 - gostorage
+  - package-ecosystem: "gomod"
+    directory: "/utils/gostorage"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gostorage"
+
+  # Go 依赖 - gostring
+  - package-ecosystem: "gomod"
+    directory: "/utils/gostring"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gostring"
+
+  # Go 依赖 - gotime
+  - package-ecosystem: "gomod"
+    directory: "/utils/gotime"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gotime"
+
+  # Go 依赖 - gotrace_id
+  - package-ecosystem: "gomod"
+    directory: "/utils/gotrace_id"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gotrace_id"
+
+  # Go 依赖 - gotypeop
+  - package-ecosystem: "gomod"
+    directory: "/utils/gotypeop"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gotypeop"
+
+  # Go 依赖 - gourl
+  - package-ecosystem: "gomod"
+    directory: "/utils/gourl"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "gourl"
+
+  # Go 依赖 - govalidator
+  - package-ecosystem: "gomod"
+    directory: "/utils/govalidator"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "govalidator"
+
+  # Go 依赖 - goverify
+  - package-ecosystem: "gomod"
+    directory: "/utils/goverify"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "goverify"
+
+  # Go 依赖 - resty_extend
+  - package-ecosystem: "gomod"
+    directory: "/utils/resty_extend"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+      - "resty_extend"
