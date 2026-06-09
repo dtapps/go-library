@@ -6,7 +6,7 @@ require (
 	github.com/redis/go-redis/v9 v9.6.1
 	github.com/sirupsen/logrus v1.9.3
 	go.dtapp.net/library/utils/gojson v1.0.7
-	go.dtapp.net/library/utils/gotime v1.0.12
+	go.dtapp.net/library/utils/gotime v1.0.19
 	go.mongodb.org/mongo-driver v1.16.1
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/driver/postgres v1.5.9
