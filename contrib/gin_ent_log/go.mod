@@ -9,7 +9,7 @@ replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 replace go.dtapp.net/library/contrib/gin_requestid => ../../contrib/gin_requestid
 
 require (
-	entgo.io/ent v0.14.5
+	entgo.io/ent v0.14.6
 	github.com/gin-gonic/gin v1.11.0
 	go.dtapp.net/library/contrib/gin_requestid v1.0.6
 	go.dtapp.net/library/utils/gorequest v1.1.2
