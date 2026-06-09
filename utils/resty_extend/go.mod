@@ -5,7 +5,7 @@ go 1.24.0
 require (
 	github.com/gotoeasy/glang v0.21.4
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
-	resty.dev/v3 v3.0.0-beta.3
+	resty.dev/v3 v3.0.0-rc.1
 )
 
 require (
@@ -40,8 +40,8 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.55.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
-	golang.org/x/crypto v0.31.0 // indirect
-	golang.org/x/net v0.33.0 // indirect
-	golang.org/x/sys v0.28.0 // indirect
-	golang.org/x/text v0.21.0 // indirect
+	golang.org/x/crypto v0.41.0 // indirect
+	golang.org/x/net v0.43.0 // indirect
+	golang.org/x/sys v0.35.0 // indirect
+	golang.org/x/text v0.28.0 // indirect
 )
