@@ -8,7 +8,7 @@ require (
 	github.com/alibabacloud-go/tea v1.3.12
 	github.com/alibabacloud-go/tea-utils v1.3.1
 	github.com/baidubce/bce-sdk-go v0.9.245
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.1.30
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.3.112
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.1.0
 	github.com/volcengine/volc-sdk-golang v1.0.220
 )
