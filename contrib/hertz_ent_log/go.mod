@@ -9,7 +9,7 @@ replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 replace go.dtapp.net/library/contrib/hertz_requestid => ../../contrib/hertz_requestid
 
 require (
-	entgo.io/ent v0.14.5
+	entgo.io/ent v0.14.6
 	github.com/cloudwego/hertz v0.10.2
 	go.dtapp.net/library/contrib/hertz_requestid v1.0.6
 	go.dtapp.net/library/utils/gorequest v1.1.2
