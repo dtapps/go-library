@@ -1,13 +1,13 @@
 module go.dtapp.net/library/contrib/hertz_ent_log_otel
 
-go 1.24.2
+go 1.25.0
 
 replace go.dtapp.net/library/contrib/hertz_ent_log => ../../contrib/hertz_ent_log
 
 require (
 	go.dtapp.net/library/contrib/hertz_ent_log v1.0.7
-	go.opentelemetry.io/otel v1.38.0
-	go.opentelemetry.io/otel/trace v1.38.0
+	go.opentelemetry.io/otel v1.44.0
+	go.opentelemetry.io/otel/trace v1.44.0
 )
 
 require (
@@ -17,6 +17,7 @@ require (
 	github.com/bytedance/gopkg v0.1.3 // indirect
 	github.com/bytedance/sonic v1.14.1 // indirect
 	github.com/bytedance/sonic/loader v0.3.0 // indirect
+	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cloudwego/base64x v0.1.6 // indirect
 	github.com/cloudwego/hertz v0.10.2 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
@@ -34,7 +35,7 @@ require (
 	go.dtapp.net/library/utils/gorequest v1.1.2 // indirect
 	go.dtapp.net/library/utils/gotime v1.0.15 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
-	go.opentelemetry.io/otel/metric v1.38.0 // indirect
+	go.opentelemetry.io/otel/metric v1.44.0 // indirect
 	golang.org/x/arch v0.22.0 // indirect
 	golang.org/x/exp v0.0.0-20251017212417-90e834f514db // indirect
 	golang.org/x/net v0.46.0 // indirect
