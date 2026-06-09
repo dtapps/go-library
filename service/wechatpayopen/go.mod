@@ -10,7 +10,7 @@ require (
 	github.com/tjfoc/gmsm v1.4.1
 	go.dtapp.net/library/utils/gorandom v1.0.5
 	go.dtapp.net/library/utils/gorequest v1.1.3
-	resty.dev/v3 v3.0.0-beta.6
+	resty.dev/v3 v3.0.0-rc.1
 )
 
 require (
