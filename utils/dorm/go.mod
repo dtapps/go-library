@@ -4,7 +4,7 @@ go 1.23
 
 require (
 	github.com/redis/go-redis/v9 v9.6.1
-	github.com/sirupsen/logrus v1.9.3
+	github.com/sirupsen/logrus v1.9.4
 	go.dtapp.net/library/utils/gojson v1.0.7
 	go.dtapp.net/library/utils/gotime v1.0.12
 	go.mongodb.org/mongo-driver v1.16.1
