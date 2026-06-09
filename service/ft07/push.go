@@ -29,7 +29,7 @@ type PushResponse struct {
 			} `json:"ios"`
 			Devices []string `json:"devices"`
 		} `json:"meta"`
-	} `json:"data,omitempty"`
+	} `json:"data"`
 	Message string `json:"message"`
 }
 

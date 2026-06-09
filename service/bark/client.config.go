@@ -12,8 +12,8 @@ func (c *Client) SetUrl(baseURL string) *Client {
 }
 
 func (c *Client) SetPushKey(pushKey string) *Client {
-	if strings.HasPrefix(pushKey, c.config.baseURL) {
-		c.config.pushKey = strings.TrimPrefix(pushKey, c.config.baseURL)
+	if after, ok := strings.CutPrefix(pushKey, c.config.baseURL); ok {
+		c.config.pushKey = after
 	} else {
 		c.config.pushKey = pushKey
 	}
