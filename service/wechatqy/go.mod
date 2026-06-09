@@ -6,7 +6,7 @@ replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 
 require (
 	go.dtapp.net/library/utils/gorequest v1.1.3
-	resty.dev/v3 v3.0.0-beta.6
+	resty.dev/v3 v3.0.0-rc.1
 )
 
 require (
