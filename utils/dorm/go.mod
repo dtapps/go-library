@@ -1,11 +1,11 @@
 module go.dtapp.net/library/utils/dorm
 
-go 1.23
+go 1.24.1
 
 require (
 	github.com/redis/go-redis/v9 v9.6.1
 	github.com/sirupsen/logrus v1.9.3
-	go.dtapp.net/library/utils/gojson v1.0.7
+	go.dtapp.net/library/utils/gojson v1.0.13
 	go.dtapp.net/library/utils/gotime v1.0.12
 	go.mongodb.org/mongo-driver v1.16.1
 	gorm.io/driver/mysql v1.5.7
@@ -33,12 +33,12 @@ require (
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78 // indirect
-	golang.org/x/crypto v0.26.0 // indirect
+	golang.org/x/crypto v0.37.0 // indirect
 	golang.org/x/mod v0.20.0 // indirect
-	golang.org/x/net v0.28.0 // indirect
-	golang.org/x/sync v0.8.0 // indirect
-	golang.org/x/sys v0.24.0 // indirect
-	golang.org/x/text v0.17.0 // indirect
+	golang.org/x/net v0.39.0 // indirect
+	golang.org/x/sync v0.13.0 // indirect
+	golang.org/x/sys v0.32.0 // indirect
+	golang.org/x/text v0.24.0 // indirect
 	golang.org/x/tools v0.24.0 // indirect
 	gorm.io/datatypes v1.2.1 // indirect
 	gorm.io/hints v1.1.2 // indirect
