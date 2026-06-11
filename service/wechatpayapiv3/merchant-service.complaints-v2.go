@@ -26,7 +26,7 @@ type MerchantServiceComplaintsV2Response struct {
 		PayerTotal    int    `json:"payer_total,omitempty"`
 		Currency      string `json:"currency,omitempty"`
 		PayerCurrency string `json:"payer_currency,omitempty"`
-	} `json:"amount,omitempty"`
+	} `json:"amount"`
 	SceneInfo struct {
 		DeviceId string `json:"device_id,omitempty"`
 	}

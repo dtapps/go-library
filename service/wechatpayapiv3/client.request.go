@@ -47,7 +47,7 @@ func (c *Client) DoRequest(ctx context.Context, path string, param *gorequest.Pa
 	httpClient.SetHeader("Accept-Language", "zh-CN")
 
 	// 设置错误结果
-	httpClient.SetError(&errResponse)
+	httpClient.SetResultError(&errResponse)
 
 	// 发起请求
 	resp, err := httpClient.Send()
@@ -62,7 +62,7 @@ func (c *Client) DoRequest(ctx context.Context, path string, param *gorequest.Pa
 	}
 
 	// 检查 HTTP 状态码
-	if resp.IsError() {
+	if resp.IsStatusFailure() {
 		return fmt.Errorf("请求失败，HTTP 状态码: %d", resp.StatusCode())
 	}
 

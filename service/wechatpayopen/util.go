@@ -425,7 +425,7 @@ func NewApiException(statusCode int, header http.Header, body []byte) error {
 		body:       body,
 	}
 
-	bodyObject := map[string]interface{}{}
+	bodyObject := map[string]any{}
 	if err := json.Unmarshal(body, &bodyObject); err == nil {
 		if val, ok := bodyObject["code"]; ok {
 			ret.errorCode = val.(string)
@@ -439,43 +439,59 @@ func NewApiException(statusCode int, header http.Header, body []byte) error {
 }
 
 // Time 复制 time.Time 对象，并返回复制体的指针
+//
+//go:fix inline
 func Time(t time.Time) *time.Time {
-	return &t
+	return new(t)
 }
 
 // String 复制 string 对象，并返回复制体的指针
+//
+//go:fix inline
 func String(s string) *string {
-	return &s
+	return new(s)
 }
 
 // Bytes 复制 []byte 对象，并返回复制体的指针
+//
+//go:fix inline
 func Bytes(b []byte) *[]byte {
-	return &b
+	return new(b)
 }
 
 // Bool 复制 bool 对象，并返回复制体的指针
+//
+//go:fix inline
 func Bool(b bool) *bool {
-	return &b
+	return new(b)
 }
 
 // Float64 复制 float64 对象，并返回复制体的指针
+//
+//go:fix inline
 func Float64(f float64) *float64 {
-	return &f
+	return new(f)
 }
 
 // Float32 复制 float32 对象，并返回复制体的指针
+//
+//go:fix inline
 func Float32(f float32) *float32 {
-	return &f
+	return new(f)
 }
 
 // Int64 复制 int64 对象，并返回复制体的指针
+//
+//go:fix inline
 func Int64(i int64) *int64 {
-	return &i
+	return new(i)
 }
 
 // Int32 复制 int64 对象，并返回复制体的指针
+//
+//go:fix inline
 func Int32(i int32) *int32 {
-	return &i
+	return new(i)
 }
 
 // generateHashFromStream 从io.Reader流中生成哈希值的通用函数

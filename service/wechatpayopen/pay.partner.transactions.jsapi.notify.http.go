@@ -66,7 +66,7 @@ type PayPartnerTransactionsJsapiNotifyHttpResponse struct {
 	} `json:"amount"` // 订单金额
 	SceneInfo struct {
 		DeviceId string `json:"device_id,omitempty"` //商户端设备号
-	} `json:"scene_info,omitempty"` // 场景信息
+	} `json:"scene_info"` // 场景信息
 	PromotionDetail []struct {
 		CouponId            string `json:"coupon_id"`                      // 券ID
 		Name                string `json:"name,omitempty"`                 // 优惠名称

@@ -10,15 +10,15 @@ import (
 type WxaGetTemplateListResponse struct {
 	APIResponse  // 错误
 	TemplateList []struct {
-		CreateTime             int           `json:"create_time"`              // 被添加为模板的时间
-		UserVersion            string        `json:"user_version"`             // 模板版本号，开发者自定义字段
-		UserDesc               string        `json:"user_desc"`                // 模板描述，开发者自定义字段
-		TemplateId             int64         `json:"template_id"`              // 模板 id
-		TemplateType           int           `json:"template_type"`            // 0对应普通模板，1对应标准模板
-		SourceMiniprogramAppid string        `json:"source_miniprogram_appid"` // 开发小程序的appid
-		SourceMiniprogram      string        `json:"source_miniprogram"`       // 开发小程序的名称
-		Developer              string        `json:"developer"`                // 开发者
-		CategoryList           []interface{} `json:"category_list"`
+		CreateTime             int    `json:"create_time"`              // 被添加为模板的时间
+		UserVersion            string `json:"user_version"`             // 模板版本号，开发者自定义字段
+		UserDesc               string `json:"user_desc"`                // 模板描述，开发者自定义字段
+		TemplateId             int64  `json:"template_id"`              // 模板 id
+		TemplateType           int    `json:"template_type"`            // 0对应普通模板，1对应标准模板
+		SourceMiniprogramAppid string `json:"source_miniprogram_appid"` // 开发小程序的appid
+		SourceMiniprogram      string `json:"source_miniprogram"`       // 开发小程序的名称
+		Developer              string `json:"developer"`                // 开发者
+		CategoryList           []any  `json:"category_list"`
 	} `json:"template_list"` // 模板信息列表
 }
 

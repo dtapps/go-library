@@ -53,7 +53,7 @@ func (c *Client) NewRequest(ctx context.Context, path string, param *gorequest.P
 	httpClient.SetHeader("Accept-Language", "zh-CN")
 
 	// 设置错误结果
-	httpClient.SetError(&errResponse)
+	httpClient.SetResultError(&errResponse)
 
 	// 发起请求
 	resp, err := httpClient.Send()
@@ -68,7 +68,7 @@ func (c *Client) NewRequest(ctx context.Context, path string, param *gorequest.P
 	}
 
 	// 检查 HTTP 状态码
-	if resp.IsError() {
+	if resp.IsStatusFailure() {
 		return fmt.Errorf("请求失败，HTTP 状态码: %d", resp.StatusCode())
 	}
 
@@ -125,7 +125,7 @@ func (c *Client) request(ctx context.Context, path string, param *gorequest.Para
 	httpClient.SetHeader("Accept-Language", "zh-CN")
 
 	// 设置错误结果
-	httpClient.SetError(&errResponse)
+	httpClient.SetResultError(&errResponse)
 
 	// 发起请求
 	resp, err := httpClient.Send()
@@ -140,7 +140,7 @@ func (c *Client) request(ctx context.Context, path string, param *gorequest.Para
 	}
 
 	// 检查 HTTP 状态码
-	if resp.IsError() {
+	if resp.IsStatusFailure() {
 		return fmt.Errorf("请求失败，HTTP 状态码: %d", resp.StatusCode())
 	}
 

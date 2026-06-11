@@ -10,28 +10,28 @@ import (
 type GetEffectiveServerDomainResponse struct {
 	APIResponse // 错误
 	MpDomain    struct {
-		Requestdomain   []interface{} `json:"requestdomain"`
-		Wsrequestdomain []interface{} `json:"wsrequestdomain"`
-		Uploaddomain    []interface{} `json:"uploaddomain"`
-		Downloaddomain  []interface{} `json:"downloaddomain"`
-		Udpdomain       []interface{} `json:"udpdomain"`
-		Tcpdomain       []interface{} `json:"tcpdomain"`
+		Requestdomain   []any `json:"requestdomain"`
+		Wsrequestdomain []any `json:"wsrequestdomain"`
+		Uploaddomain    []any `json:"uploaddomain"`
+		Downloaddomain  []any `json:"downloaddomain"`
+		Udpdomain       []any `json:"udpdomain"`
+		Tcpdomain       []any `json:"tcpdomain"`
 	} `json:"mp_domain"`
 	ThirdDomain struct {
-		Requestdomain   []interface{} `json:"requestdomain"`
-		Wsrequestdomain []interface{} `json:"wsrequestdomain"`
-		Uploaddomain    []interface{} `json:"uploaddomain"`
-		Downloaddomain  []interface{} `json:"downloaddomain"`
-		Udpdomain       []interface{} `json:"udpdomain"`
-		Tcpdomain       []interface{} `json:"tcpdomain"`
+		Requestdomain   []any `json:"requestdomain"`
+		Wsrequestdomain []any `json:"wsrequestdomain"`
+		Uploaddomain    []any `json:"uploaddomain"`
+		Downloaddomain  []any `json:"downloaddomain"`
+		Udpdomain       []any `json:"udpdomain"`
+		Tcpdomain       []any `json:"tcpdomain"`
 	} `json:"third_domain"`
 	DirectDomain struct {
-		Requestdomain   []interface{} `json:"requestdomain"`
-		Wsrequestdomain []interface{} `json:"wsrequestdomain"`
-		Uploaddomain    []interface{} `json:"uploaddomain"`
-		Downloaddomain  []interface{} `json:"downloaddomain"`
-		Udpdomain       []interface{} `json:"udpdomain"`
-		Tcpdomain       []interface{} `json:"tcpdomain"`
+		Requestdomain   []any `json:"requestdomain"`
+		Wsrequestdomain []any `json:"wsrequestdomain"`
+		Uploaddomain    []any `json:"uploaddomain"`
+		Downloaddomain  []any `json:"downloaddomain"`
+		Udpdomain       []any `json:"udpdomain"`
+		Tcpdomain       []any `json:"tcpdomain"`
 	} `json:"direct_domain"`
 }
 

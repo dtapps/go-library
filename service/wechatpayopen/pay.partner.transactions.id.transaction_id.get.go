@@ -35,7 +35,7 @@ type PayPartnerTransactionsIdTransactionIdGetResponse struct {
 	SceneInfo struct {
 		DeviceId string `json:"device_id"` // 商户端设备号
 	} `json:"scene_info"` // 场景信息
-	PromotionDetail []interface{} `json:"promotion_detail"` // 优惠功能
+	PromotionDetail []any `json:"promotion_detail"` // 优惠功能
 }
 
 // PayPartnerTransactionsIdTransactionIdGet 微信支付订单号查询

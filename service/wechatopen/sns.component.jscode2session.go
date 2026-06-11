@@ -150,7 +150,7 @@ func (r *ThirdpartyCode2SessionResponse) pkcs7Unpaid(data []byte, blockSize int)
 	if n == 0 || n > len(data) {
 		return nil, fmt.Errorf("invalid padding on input")
 	}
-	for i := 0; i < n; i++ {
+	for i := range n {
 		if data[len(data)-n+i] != c {
 			return nil, fmt.Errorf("invalid padding on input")
 		}
@@ -170,7 +170,7 @@ func pkcs7Unpaid(data []byte, blockSize int) ([]byte, error) {
 	if n == 0 || n > len(data) {
 		return nil, fmt.Errorf("invalid padding on input")
 	}
-	for i := 0; i < n; i++ {
+	for i := range n {
 		if data[len(data)-n+i] != c {
 			return nil, fmt.Errorf("invalid padding on input")
 		}

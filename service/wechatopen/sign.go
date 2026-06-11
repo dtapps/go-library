@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"sort"
+	"strings"
 )
 
 // Sign 微信公众号 url 签名.
@@ -49,14 +50,14 @@ func CheckSignature(signature, timeStamp, nonce string, token string) bool {
 	paramsArray := []string{token, timeStamp, nonce}
 	// 字典序排序
 	sort.Strings(paramsArray)
-	paramsMsg := ""
+	var paramsMsg strings.Builder
 	for _, value := range paramsArray {
 		//fmt.Println(value)
-		paramsMsg += value
+		paramsMsg.WriteString(value)
 	}
 	//sha1
 	sha1Param := sha1.New()
-	sha1Param.Write([]byte(paramsMsg))
+	sha1Param.Write([]byte(paramsMsg.String()))
 	msg := hex.EncodeToString(sha1Param.Sum([]byte("")))
 	return msg == signature
 }

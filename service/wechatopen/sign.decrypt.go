@@ -14,7 +14,7 @@ import (
 // strXml 反射结构体
 // resp 加密数据
 // err 错误信息
-func (c *Client) SignDecrypt(ctx context.Context, params SignDecryptParams, strXml interface{}) (resp []byte, err error) {
+func (c *Client) SignDecrypt(ctx context.Context, params SignDecryptParams, strXml any) (resp []byte, err error) {
 
 	if params.Signature == "" {
 		return nil, fmt.Errorf("找不到签名参数")

@@ -22,7 +22,7 @@ type CgiBinComponentApiQueryAuthResponse struct {
 				NeedConfirm    int `json:"need_confirm"`
 				AlreadyConfirm int `json:"already_confirm"`
 				CanConfirm     int `json:"can_confirm"`
-			} `json:"confirm_info,omitempty"`
+			} `json:"confirm_info"`
 		} `json:"func_info"`
 	} `json:"authorization_info"`
 }
