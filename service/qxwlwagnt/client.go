@@ -39,7 +39,7 @@ func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
 
 	// 设置 Debug
 	if options.debug {
-		c.httpClient.EnableDebug()
+		c.httpClient.SetDebug(true)
 	}
 
 	// 请求中间件
@@ -50,7 +50,7 @@ func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
 	// 响应中间件
 	c.httpClient.SetResponseMiddlewares(
 		Ensure2xxResponseMiddleware,       // 自定义请求中间件，判断状态
-		resty.AutoParseResponseMiddleware, // 官方请求中间件，自动解析
+		resty.MiddlewareResponseAutoParse, // 官方请求中间件，自动解析
 	)
 
 	return c, nil

@@ -36,7 +36,7 @@ type PollQueryResponse struct {
 			Number string `json:"number"`
 			Name   string `json:"name"`
 		} `json:"cur"`
-		To interface{} `json:"to"`
+		To any `json:"to"`
 	} `json:"routeInfo"`
 	IsLoop bool `json:"isLoop"`
 }

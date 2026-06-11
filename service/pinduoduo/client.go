@@ -46,7 +46,7 @@ func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
 
 	// 设置 Debug
 	if options.debug {
-		c.httpClient.EnableDebug()
+		c.httpClient.SetDebug(true)
 	}
 
 	return c, nil

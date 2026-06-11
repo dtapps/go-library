@@ -5,6 +5,7 @@ import (
 	"go.dtapp.net/library/utils/gorequest"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -40,18 +41,19 @@ func (c *Client) Sign(p *gorequest.Params) {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
-	signStr := c.GetClientSecret()
+	var signStr strings.Builder
+	signStr.WriteString(c.GetClientSecret())
 	for _, key := range keys {
 		if isFilterAccessToken {
 			if key != "access_token" {
-				signStr += key + gorequest.GetString(p.Get(key))
+				signStr.WriteString(key + gorequest.GetString(p.Get(key)))
 			}
 		} else {
-			signStr += key + gorequest.GetString(p.Get(key))
+			signStr.WriteString(key + gorequest.GetString(p.Get(key)))
 		}
 	}
-	signStr += c.GetClientSecret()
-	p.Set("sign", createSign(signStr))
+	signStr.WriteString(c.GetClientSecret())
+	p.Set("sign", createSign(signStr.String()))
 }
 
 // SetCustomParameters 设置 自定义参数

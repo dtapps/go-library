@@ -29,7 +29,7 @@ func (c *Client) request(ctx context.Context, param *gorequest.Params, response 
 	}
 
 	// 检查 HTTP 状态码
-	if resp.IsError() {
+	if resp.IsStatusFailure() {
 		return fmt.Errorf("请求失败，HTTP 状态码: %d", resp.StatusCode())
 	}
 
@@ -52,7 +52,7 @@ func (c *Client) requestAndErr(ctx context.Context, param *gorequest.Params, res
 	httpClient.SetResult(&response)
 
 	// 设置错误
-	httpClient.SetError(&apiErr)
+	httpClient.SetResultError(&apiErr)
 
 	// 发起请求
 	resp, err := httpClient.Post(baseURL)
@@ -61,7 +61,7 @@ func (c *Client) requestAndErr(ctx context.Context, param *gorequest.Params, res
 	}
 
 	// 检查 HTTP 状态码
-	if resp.IsError() {
+	if resp.IsStatusFailure() {
 		return fmt.Errorf("请求失败，HTTP 状态码: %d", resp.StatusCode())
 	}
 
