@@ -42,7 +42,7 @@ func (c *Client) request(ctx context.Context, url string, param *gorequest.Param
 	}
 
 	// 检查 HTTP 状态码
-	if resp.IsError() {
+	if resp.IsStatusFailure() {
 		return fmt.Errorf("请求失败，HTTP 状态码: %d", resp.StatusCode())
 	}
 

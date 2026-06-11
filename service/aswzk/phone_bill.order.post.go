@@ -8,11 +8,11 @@ import (
 )
 
 type PhoneBillOrderResponse struct {
-	Code    int         `json:"code"`
-	Info    string      `json:"info"`
-	Data    interface{} `json:"data"`
-	Time    int64       `json:"time"`
-	TraceID string      `json:"trace_id"`
+	Code    int    `json:"code"`
+	Info    string `json:"info"`
+	Data    any    `json:"data"`
+	Time    int64  `json:"time"`
+	TraceID string `json:"trace_id"`
 }
 
 // PhoneBillOrder 话费订单下单

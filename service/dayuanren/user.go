@@ -13,7 +13,7 @@ type User struct {
 		Id       int64  `json:"id"`       // userid
 		Username string `json:"username"` // 名称
 		Balance  string `json:"balance"`  // 余额
-	} `json:"data,omitempty"`
+	} `json:"data"`
 }
 
 // User 查询用户信息

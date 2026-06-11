@@ -19,15 +19,15 @@ func (c *Client) sign(ctx context.Context, param *gorequest.Params) string {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
-	signStr := ""
+	var signStr strings.Builder
 	for _, key := range keys {
 		if key != "" {
-			signStr += fmt.Sprintf("%s=%s&", key, gorequest.GetString(param.Get(key)))
+			signStr.WriteString(fmt.Sprintf("%s=%s&", key, gorequest.GetString(param.Get(key))))
 		}
 	}
-	signStr += "key=" + c.GetAppKey()
+	signStr.WriteString("key=" + c.GetAppKey())
 
-	return c.createSign(signStr)
+	return c.createSign(signStr.String())
 }
 
 // 签名

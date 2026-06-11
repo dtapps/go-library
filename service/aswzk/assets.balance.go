@@ -12,7 +12,7 @@ type AssetsBalanceResponse struct {
 	Info string `json:"info"`
 	Data struct {
 		Balance float64 `json:"balance"` // 余额
-	} `json:"data,omitempty"`
+	} `json:"data"`
 	Time    int    `json:"time"`
 	TraceId string `json:"trace_id"`
 }

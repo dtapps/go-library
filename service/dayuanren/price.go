@@ -21,7 +21,7 @@ type Price struct {
 		Type     string `json:"type"`      // 产品类型ID
 		CateName string `json:"cate_name"` // 产品分类名称
 		TypeName string `json:"type_name"` // 产品类型名称
-	} `json:"data,omitempty"`
+	} `json:"data"`
 }
 
 // Price 产品ID查询【新增】

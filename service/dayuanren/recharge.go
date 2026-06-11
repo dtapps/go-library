@@ -24,7 +24,7 @@ type Recharge struct {
 		ProductId   int64  `json:"product_id"`            // 产品ID
 		Title       string `json:"title"`                 // 充值产品说明
 		TotalPrice  string `json:"total_price"`           // 消费金额
-	} `json:"data,omitempty"`
+	} `json:"data"`
 }
 
 // Recharge 充值提交接口

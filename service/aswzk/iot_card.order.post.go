@@ -8,11 +8,11 @@ import (
 )
 
 type IotCardOrderPostResponse struct {
-	Code    int         `json:"code"`
-	Info    string      `json:"info"`
-	Data    interface{} `json:"data"`
-	Time    int64       `json:"time"`
-	TraceID string      `json:"trace_id"`
+	Code    int    `json:"code"`
+	Info    string `json:"info"`
+	Data    any    `json:"data"`
+	Time    int64  `json:"time"`
+	TraceID string `json:"trace_id"`
 }
 
 // IotCardOrderPost 物联卡订单下单

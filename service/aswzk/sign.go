@@ -5,6 +5,7 @@ import (
 	"go.dtapp.net/library/utils/gomd5"
 	"go.dtapp.net/library/utils/gorequest"
 	"sort"
+	"strings"
 )
 
 // 签名
@@ -14,10 +15,11 @@ func sign(param *gorequest.Params, apiKey string, timestamp string) string {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
-	signStr := fmt.Sprintf("api_key=%s&", apiKey)
+	var signStr strings.Builder
+	signStr.WriteString(fmt.Sprintf("api_key=%s&", apiKey))
 	for _, key := range keys {
-		signStr += fmt.Sprintf("%s=%s&", key, gorequest.GetString(param.Get(key)))
+		signStr.WriteString(fmt.Sprintf("%s=%s&", key, gorequest.GetString(param.Get(key))))
 	}
-	signStr += fmt.Sprintf("timestamp=%s", timestamp)
-	return gomd5.ToLower(signStr)
+	signStr.WriteString(fmt.Sprintf("timestamp=%s", timestamp))
+	return gomd5.ToLower(signStr.String())
 }

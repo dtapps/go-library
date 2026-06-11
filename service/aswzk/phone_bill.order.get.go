@@ -20,7 +20,7 @@ type PhoneBillOrderQueryResponse struct {
 		Remark          string  `json:"remark"`                    // 订单备注
 		OrderStatus     string  `json:"order_status"`              // 订单状态
 		OrderCost       float64 `json:"order_cost,omitempty"`      // 订单成本价
-	} `json:"data,omitempty"`
+	} `json:"data"`
 	Time    int    `json:"time"`
 	TraceId string `json:"trace_id"`
 }
