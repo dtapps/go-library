@@ -182,7 +182,7 @@ func (m *LoggerMiddleware) AfterResponse(c *resty.Client, resp *resty.Response) 
 		RequestHeaders:  resp.Request.Header.Clone(),
 		StatusCode:      resp.StatusCode(),
 		ResponseHeaders: resp.Header().Clone(),
-		IsError:         resp.IsError(),
+		IsError:         resp.IsStatusFailure(),
 	}
 
 	// 获取上下文
