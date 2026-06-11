@@ -15,7 +15,7 @@ type ShoujiQueryResponse struct {
 		City     string `json:"city,omitempty"`     // 市
 		Company  string `json:"company,omitempty"`  // 运营商
 		Cardtype string `json:"cardtype,omitempty"` // 卡类型
-	} `json:"result,omitempty"`
+	} `json:"result"`
 }
 
 // ShoujiQuery 手机号码归属地

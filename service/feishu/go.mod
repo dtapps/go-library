@@ -1,12 +1,12 @@
 module go.dtapp.net/library/service/feishu
 
-go 1.25.1
+go 1.26.0
 
 replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 
 require (
 	go.dtapp.net/library/utils/gorequest v1.1.3
-	resty.dev/v3 v3.0.0-beta.6
+	resty.dev/v3 v3.0.0-rc.1
 )
 
 require (
@@ -14,7 +14,7 @@ require (
 	github.com/basgys/goxml2json v1.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	golang.org/x/net v0.49.0 // indirect
-	golang.org/x/text v0.33.0 // indirect
+	golang.org/x/net v0.56.0 // indirect
+	golang.org/x/text v0.38.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
