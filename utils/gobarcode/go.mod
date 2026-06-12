@@ -1,6 +1,6 @@
 module go.dtapp.net/library/utils/gobarcode
 
-go 1.23
+go 1.25.0
 
 require (
 	github.com/boombuler/barcode v1.0.2
@@ -8,4 +8,4 @@ require (
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 )
 
-require golang.org/x/image v0.19.0 // indirect
+require golang.org/x/image v0.38.0 // indirect
