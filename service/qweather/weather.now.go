@@ -2,9 +2,10 @@ package qweather
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gorequest"
+	"encoding/json"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type WeatherNowResponse struct {
@@ -47,7 +48,7 @@ func newWeatherNowResult(result WeatherNowResponse, body []byte, http gorequest.
 // WeatherNow 实时天气
 // location = 需要查询地区的LocationID或以英文逗号分隔的经度,纬度坐标（十进制，最多支持小数点后两位），LocationID可通过GeoAPI获取。例如 location=101010100 或 location=116.41,39.92
 // https://dev.qweather.com/docs/api/weather/weather-now/
-func (c *Client) WeatherNow(ctx context.Context, location string, notMustParams ...gorequest.Params) (*WeatherNowResult, error) {
+func (c *Client) WeatherNow(ctx context.Context, location string, notMustParams ...*gorequest.Params) (*WeatherNowResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("location", location)
@@ -59,6 +60,6 @@ func (c *Client) WeatherNow(ctx context.Context, location string, notMustParams 
 	}
 	// 定义
 	var response WeatherNowResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newWeatherNowResult(response, request.ResponseBody, request), err
 }

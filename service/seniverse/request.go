@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func (c *V3Client) request(ctx context.Context, url string, param gorequest.Params) (gorequest.Response, error) {
+func (c *V3Client) request(ctx context.Context, url string, param *gorequest.Params) (gorequest.Response, error) {
 
 	// 请求地址
 	uri := apiUrlV3 + url
@@ -34,7 +34,7 @@ func (c *V3Client) request(ctx context.Context, url string, param gorequest.Para
 	return request, err
 }
 
-func (c *V4Client) request(ctx context.Context, url string, param gorequest.Params, method string) (gorequest.Response, error) {
+func (c *V4Client) request(ctx context.Context, url string, param *gorequest.Params, method string) (gorequest.Response, error) {
 
 	// 请求地址
 	uri := apiUrlV4 + url
@@ -45,7 +45,7 @@ func (c *V4Client) request(ctx context.Context, url string, param gorequest.Para
 	param.Set("public_key", c.publicKey)
 
 	// 签名并返回请求地址
-	urlStr := c.sign(uri, param)
+	urlStr := c.sign(uri, *param)
 
 	// 设置请求地址
 	c.httpClient.SetUri(urlStr)

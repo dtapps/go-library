@@ -2,7 +2,7 @@ package amap
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
+	"encoding/json"
 	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
@@ -59,7 +59,7 @@ func newWeatherWeatherInfoResult(result WeatherWeatherInfoResponse, body []byte,
 
 // WeatherWeatherInfo 天气查询
 // https://lbs.amap.com/api/webservice/guide/api/weatherinfo
-func (c *Client) WeatherWeatherInfo(ctx context.Context, city string, notMustParams ...gorequest.Params) (*WeatherWeatherInfoResult, error) {
+func (c *Client) WeatherWeatherInfo(ctx context.Context, city string, notMustParams ...*gorequest.Params) (*WeatherWeatherInfoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("key", c.GetKey())
@@ -72,6 +72,6 @@ func (c *Client) WeatherWeatherInfo(ctx context.Context, city string, notMustPar
 	}
 	// 定义
 	var response WeatherWeatherInfoResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newWeatherWeatherInfoResult(response, request.ResponseBody, request), err
 }

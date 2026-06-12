@@ -2,7 +2,7 @@ package cloud
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
+	"encoding/json"
 	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
@@ -37,7 +37,7 @@ func newRpc2AiCustomV1WenxinworkshopChatQianfanChineseLlama213bResult(result Rpc
 // Rpc2AiCustomV1WenxinworkshopChatQianfanChineseLlama213b Llama-2-13B
 // https://console.bce.baidu.com/qianfan/modelcenter/model/buildIn/detail/2259
 // https://cloud.baidu.com/doc/WENXINWORKSHOP/s/8lo479b4b
-func (c *Client) Rpc2AiCustomV1WenxinworkshopChatQianfanChineseLlama213b(ctx context.Context, notMustParams ...gorequest.Params) (*Rpc2AiCustomV1WenxinworkshopChatQianfanChineseLlama213bResult, error) {
+func (c *Client) Rpc2AiCustomV1WenxinworkshopChatQianfanChineseLlama213b(ctx context.Context, notMustParams ...*gorequest.Params) (*Rpc2AiCustomV1WenxinworkshopChatQianfanChineseLlama213bResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
@@ -47,6 +47,6 @@ func (c *Client) Rpc2AiCustomV1WenxinworkshopChatQianfanChineseLlama213b(ctx con
 	}
 	// 定义
 	var response Rpc2AiCustomV1WenxinworkshopChatQianfanChineseLlama213bResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newRpc2AiCustomV1WenxinworkshopChatQianfanChineseLlama213bResult(response, request.ResponseBody, request), err
 }

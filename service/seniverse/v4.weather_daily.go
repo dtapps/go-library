@@ -2,9 +2,10 @@ package seniverse
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gorequest"
+	"encoding/json"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type V4WeatherDailyResponse struct {
@@ -246,7 +247,7 @@ func newV4WeatherDailyResult(result V4WeatherDailyResponse, body []byte, http go
 
 // WeatherDaily 天气网格预报（中国/15天/逐日）
 // https://seniverse.yuque.com/hyper_data/api_v4/weather_daily
-func (c *V4Client) WeatherDaily(ctx context.Context, locations string, notMustParams ...gorequest.Params) (*V4WeatherDailyResult, ApiError, error) {
+func (c *V4Client) WeatherDaily(ctx context.Context, locations string, notMustParams ...*gorequest.Params) (*V4WeatherDailyResult, ApiError, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("locations", locations)
@@ -257,9 +258,9 @@ func (c *V4Client) WeatherDaily(ctx context.Context, locations string, notMustPa
 	}
 	// 定义
 	var response V4WeatherDailyResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	// 错误
 	var apiError ApiError
-	err = gojson.Unmarshal(request.ResponseBody, &apiError)
+	err = json.Unmarshal(request.ResponseBody, &apiError)
 	return newV4WeatherDailyResult(response, request.ResponseBody, request), apiError, err
 }

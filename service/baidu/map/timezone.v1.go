@@ -2,9 +2,10 @@ package _map
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gorequest"
+	"encoding/json"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type TimezoneV1Response struct {
@@ -29,7 +30,7 @@ func newTimezoneV1Result(result TimezoneV1Response, body []byte, http gorequest.
 // coord_type => 请求参数中坐标的类型，wgs84即GPS经纬度，gcj02即国测局经纬度坐标，bd09ll即百度经纬度坐标，bd09mc即百度米制坐标
 // timestamp => 所需时间（用于判断夏令时）。以协调世界时 1970 年 1 月 1 日午夜以来的秒数表示（即Unix时间戳）
 // https://lbsyun.baidu.com/faq/api?title=webapi/guide/timezone-base
-func (c *Client) TimezoneV1(ctx context.Context, notMustParams ...gorequest.Params) (*TimezoneV1Result, error) {
+func (c *Client) TimezoneV1(ctx context.Context, notMustParams ...*gorequest.Params) (*TimezoneV1Result, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("ak", c.ak)
@@ -41,6 +42,6 @@ func (c *Client) TimezoneV1(ctx context.Context, notMustParams ...gorequest.Para
 	}
 	// 定义
 	var response TimezoneV1Response
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newTimezoneV1Result(response, request.ResponseBody, request), err
 }

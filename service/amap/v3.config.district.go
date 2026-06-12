@@ -2,7 +2,7 @@ package amap
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
+	"encoding/json"
 	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
@@ -13,8 +13,8 @@ type V3ConfigDistrictResponse struct {
 	Infocode   string `json:"infocode"` // 返回状态说明,10000代表正确
 	Count      string `json:"count"`    // 返回结果总数目
 	Suggestion struct {
-		Keywords []interface{} `json:"keywords"` // 建议关键字列表
-		Cities   []interface{} `json:"cities"`   // 建议城市列表
+		Keywords []any `json:"keywords"` // 建议关键字列表
+		Cities   []any `json:"cities"`   // 建议城市列表
 	} `json:"suggestion"` // 建议结果列表
 	Districts []struct {
 		//Citycode  []interface{} `json:"citycode,omitempty"` // 城市编码
@@ -39,12 +39,12 @@ type V3ConfigDistrictResponse struct {
 				Level     string `json:"level"`    // 行政区划级别
 				Districts []struct {
 					//Citycode  interface{}   `json:"citycode,omitempty"`  // 城市编码
-					Adcode    string        `json:"adcode"`              // 区域编码
-					Name      string        `json:"name"`                // 行政区名称
-					Polyline  string        `json:"polyline"`            // 行政区边界坐标点
-					Center    string        `json:"center"`              // 区域中心点
-					Level     string        `json:"level"`               // 行政区划级别
-					Districts []interface{} `json:"districts,omitempty"` // 下级行政区列表
+					Adcode    string `json:"adcode"`              // 区域编码
+					Name      string `json:"name"`                // 行政区名称
+					Polyline  string `json:"polyline"`            // 行政区边界坐标点
+					Center    string `json:"center"`              // 区域中心点
+					Level     string `json:"level"`               // 行政区划级别
+					Districts []any  `json:"districts,omitempty"` // 下级行政区列表
 				} `json:"districts"`
 			} `json:"districts"`
 		} `json:"districts"`
@@ -63,7 +63,7 @@ func newV3ConfigDistrictResult(result V3ConfigDistrictResponse, body []byte, htt
 
 // V3ConfigDistrict 行政区域查询
 // https://lbs.amap.com/api/webservice/guide/api/district
-func (c *Client) V3ConfigDistrict(ctx context.Context, notMustParams ...gorequest.Params) (*V3ConfigDistrictResult, error) {
+func (c *Client) V3ConfigDistrict(ctx context.Context, notMustParams ...*gorequest.Params) (*V3ConfigDistrictResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("key", c.GetKey())
@@ -75,6 +75,6 @@ func (c *Client) V3ConfigDistrict(ctx context.Context, notMustParams ...goreques
 	}
 	// 定义
 	var response V3ConfigDistrictResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newV3ConfigDistrictResult(response, request.ResponseBody, request), err
 }

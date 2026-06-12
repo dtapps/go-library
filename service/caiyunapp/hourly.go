@@ -2,9 +2,10 @@ package caiyunapp
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gorequest"
+	"encoding/json"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type HourlyResponse struct {
@@ -118,7 +119,7 @@ func newHourlyResult(result HourlyResponse, body []byte, http gorequest.Response
 
 // Hourly 小时级别预报
 // https://docs.caiyunapp.com/docs/hourly
-func (c *Client) Hourly(ctx context.Context, location string, notMustParams ...gorequest.Params) (*HourlyResult, error) {
+func (c *Client) Hourly(ctx context.Context, location string, notMustParams ...*gorequest.Params) (*HourlyResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
@@ -128,6 +129,6 @@ func (c *Client) Hourly(ctx context.Context, location string, notMustParams ...g
 	}
 	// 定义
 	var response HourlyResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newHourlyResult(response, request.ResponseBody, request), err
 }

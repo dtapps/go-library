@@ -1,13 +1,11 @@
 package _map
 
 import (
-	"go.dtapp.net/library/utils/gorequest"
-)
-
-import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
+	"encoding/json"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type GeocodingV3Response struct {
@@ -36,7 +34,7 @@ func newGeocodingV3Result(result GeocodingV3Response, body []byte, http goreques
 
 // GeocodingV3 地理编码服务
 // https://lbsyun.baidu.com/faq/api?title=webapi/guide/webservice-geocoding-base
-func (c *Client) GeocodingV3(ctx context.Context, address string, notMustParams ...gorequest.Params) (*GeocodingV3Result, error) {
+func (c *Client) GeocodingV3(ctx context.Context, address string, notMustParams ...*gorequest.Params) (*GeocodingV3Result, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("ak", c.ak)
@@ -49,6 +47,6 @@ func (c *Client) GeocodingV3(ctx context.Context, address string, notMustParams 
 	}
 	// 定义
 	var response GeocodingV3Response
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newGeocodingV3Result(response, request.ResponseBody, request), err
 }

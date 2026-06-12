@@ -2,9 +2,10 @@ package _map
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gorequest"
+	"encoding/json"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type ReverseGeocodingV3Response struct {
@@ -53,7 +54,7 @@ func newReverseGeocodingV3Result(result ReverseGeocodingV3Response, body []byte,
 
 // ReverseGeocodingV3 全球逆地理编码服务
 // https://lbsyun.baidu.com/faq/api?title=webapi/guide/webservice-geocoding-abroad-base
-func (c *Client) ReverseGeocodingV3(ctx context.Context, location string, notMustParams ...gorequest.Params) (*ReverseGeocodingV3Result, error) {
+func (c *Client) ReverseGeocodingV3(ctx context.Context, location string, notMustParams ...*gorequest.Params) (*ReverseGeocodingV3Result, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("ak", c.ak)
@@ -66,6 +67,6 @@ func (c *Client) ReverseGeocodingV3(ctx context.Context, location string, notMus
 	}
 	// 定义
 	var response ReverseGeocodingV3Response
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newReverseGeocodingV3Result(response, request.ResponseBody, request), err
 }

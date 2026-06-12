@@ -2,9 +2,10 @@ package seniverse
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gorequest"
+	"encoding/json"
 	"time"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type V3WeatherDailyResponse struct {
@@ -49,7 +50,7 @@ func newV3WeatherDailyResult(result V3WeatherDailyResponse, body []byte, http go
 
 // WeatherDaily 未来15天逐日天气预报和昨日天气
 // https://seniverse.yuque.com/hyper_data/api_v3/sl6gvt
-func (c *V3Client) WeatherDaily(ctx context.Context, location string, notMustParams ...gorequest.Params) (*V3WeatherDailyResult, ApiError, error) {
+func (c *V3Client) WeatherDaily(ctx context.Context, location string, notMustParams ...*gorequest.Params) (*V3WeatherDailyResult, ApiError, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("location", location)
@@ -60,9 +61,9 @@ func (c *V3Client) WeatherDaily(ctx context.Context, location string, notMustPar
 	}
 	// 定义
 	var response V3WeatherDailyResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	// 错误
 	var apiError ApiError
-	err = gojson.Unmarshal(request.ResponseBody, &apiError)
+	err = json.Unmarshal(request.ResponseBody, &apiError)
 	return newV3WeatherDailyResult(response, request.ResponseBody, request), apiError, err
 }

@@ -2,9 +2,10 @@ package cma
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gorequest"
+	"encoding/json"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type ApiWeatherViewResponse struct {
@@ -57,7 +58,7 @@ func newApiWeatherViewResult(result ApiWeatherViewResponse, body []byte, http go
 	return &ApiWeatherViewResult{Result: result, Body: body, Http: http}
 }
 
-func (c *Client) ApiWeatherView(ctx context.Context, stationid string, notMustParams ...gorequest.Params) (*ApiWeatherViewResult, error) {
+func (c *Client) ApiWeatherView(ctx context.Context, stationid string, notMustParams ...*gorequest.Params) (*ApiWeatherViewResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("stationid", stationid)
@@ -68,6 +69,6 @@ func (c *Client) ApiWeatherView(ctx context.Context, stationid string, notMustPa
 	}
 	// 定义
 	var response ApiWeatherViewResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newApiWeatherViewResult(response, request.ResponseBody, request), err
 }

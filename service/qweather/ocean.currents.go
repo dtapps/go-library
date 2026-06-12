@@ -2,9 +2,10 @@ package qweather
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gorequest"
+	"encoding/json"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type OceanCurrentsResponse struct {
@@ -39,7 +40,7 @@ func newOceanCurrentsResult(result OceanCurrentsResponse, body []byte, http gore
 
 // OceanCurrents 潮汐
 // https://dev.qweather.com/docs/api/ocean/tide/
-func (c *Client) OceanCurrents(ctx context.Context, location string, notMustParams ...gorequest.Params) (*OceanCurrentsResult, error) {
+func (c *Client) OceanCurrents(ctx context.Context, location string, notMustParams ...*gorequest.Params) (*OceanCurrentsResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("location", location)
@@ -51,6 +52,6 @@ func (c *Client) OceanCurrents(ctx context.Context, location string, notMustPara
 	}
 	// 定义
 	var response OceanCurrentsResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newOceanCurrentsResult(response, request.ResponseBody, request), err
 }

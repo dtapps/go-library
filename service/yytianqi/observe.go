@@ -2,9 +2,10 @@ package yytianqi
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gorequest"
+	"encoding/json"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type ObserveResponse struct {
@@ -40,7 +41,7 @@ func newObserveResult(result ObserveResponse, body []byte, http gorequest.Respon
 // Observe 天气实况
 // city 城市ID / IP地址或"ip"两个字母 / 经纬度
 // http://www.yytianqi.com/api.html
-func (c *Client) Observe(ctx context.Context, city string, notMustParams ...gorequest.Params) (*ObserveResult, error) {
+func (c *Client) Observe(ctx context.Context, city string, notMustParams ...*gorequest.Params) (*ObserveResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("city", city)
@@ -52,6 +53,6 @@ func (c *Client) Observe(ctx context.Context, city string, notMustParams ...gore
 	}
 	// 定义
 	var response ObserveResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newObserveResult(response, request.ResponseBody, request), err
 }

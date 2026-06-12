@@ -2,9 +2,10 @@ package caiyunapp
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gorequest"
+	"encoding/json"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type DailyResponse struct {
@@ -246,7 +247,7 @@ func newDailyResult(result DailyResponse, body []byte, http gorequest.Response) 
 
 // Daily 天级别预报
 // https://docs.caiyunapp.com/docs/daily
-func (c *Client) Daily(ctx context.Context, location string, notMustParams ...gorequest.Params) (*DailyResult, error) {
+func (c *Client) Daily(ctx context.Context, location string, notMustParams ...*gorequest.Params) (*DailyResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
@@ -256,6 +257,6 @@ func (c *Client) Daily(ctx context.Context, location string, notMustParams ...go
 	}
 	// 定义
 	var response DailyResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newDailyResult(response, request.ResponseBody, request), err
 }

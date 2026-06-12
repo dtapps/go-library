@@ -2,9 +2,10 @@ package _map
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gorequest"
+	"encoding/json"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type WeatherAbroadV1Response struct {
@@ -85,7 +86,7 @@ func newWeatherAbroadV1Result(result WeatherAbroadV1Response, body []byte, http 
 
 // WeatherAbroadV1 海外天气查询
 // https://lbsyun.baidu.com/faq/api?title=webapi/weather-abroad
-func (c *Client) WeatherAbroadV1(ctx context.Context, notMustParams ...gorequest.Params) (*WeatherAbroadV1Result, error) {
+func (c *Client) WeatherAbroadV1(ctx context.Context, notMustParams ...*gorequest.Params) (*WeatherAbroadV1Result, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("ak", c.ak)
@@ -97,6 +98,6 @@ func (c *Client) WeatherAbroadV1(ctx context.Context, notMustParams ...gorequest
 	}
 	// 定义
 	var response WeatherAbroadV1Response
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newWeatherAbroadV1Result(response, request.ResponseBody, request), err
 }

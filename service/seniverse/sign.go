@@ -26,7 +26,7 @@ func (c *V3Client) mapToUrl(urlStr string, params gorequest.Params) string {
 	}
 
 	// 遍历 map，并将键值对添加到 url.Values 中
-	for key, value := range params {
+	for key, value := range params.DeepGetAny() {
 		values.Add(key, fmt.Sprint(value)) // 使用 fmt.Sprint 将值转换为字符串
 	}
 
@@ -106,7 +106,7 @@ func (c *V4Client) sign(urlStr string, params gorequest.Params) string {
 	}
 
 	// 遍历提供的参数并更新 URL 的查询参数
-	for key, value := range params {
+	for key, value := range params.DeepGetAny() {
 		values[key] = []string{fmt.Sprintf("%v", value)} // 使用字符串切片形式设置参数值
 	}
 

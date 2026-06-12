@@ -2,7 +2,7 @@ package amap
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
+	"encoding/json"
 	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
@@ -13,20 +13,20 @@ type GeocodeGeoResponse struct {
 	Infocode string `json:"infocode"`
 	Count    string `json:"count"`
 	Geocodes []struct {
-		FormattedAddress string        `json:"formatted_address"`
-		Country          string        `json:"country"`
-		Province         string        `json:"province"`
-		Citycode         string        `json:"citycode"`
-		City             string        `json:"city"`
-		District         string        `json:"district"`
-		Township         []interface{} `json:"township"`
+		FormattedAddress string `json:"formatted_address"`
+		Country          string `json:"country"`
+		Province         string `json:"province"`
+		Citycode         string `json:"citycode"`
+		City             string `json:"city"`
+		District         string `json:"district"`
+		Township         []any  `json:"township"`
 		Neighborhood     struct {
-			Name []interface{} `json:"name"`
-			Type []interface{} `json:"type"`
+			Name []any `json:"name"`
+			Type []any `json:"type"`
 		} `json:"neighborhood"`
 		Building struct {
-			Name []interface{} `json:"name"`
-			Type []interface{} `json:"type"`
+			Name []any `json:"name"`
+			Type []any `json:"type"`
 		} `json:"building"`
 		Adcode   string `json:"adcode"`
 		Street   string `json:"street"`
@@ -48,7 +48,7 @@ func newGeocodeGeoResult(result GeocodeGeoResponse, body []byte, http gorequest.
 
 // GeocodeGeo 地理编码
 // https://lbs.amap.com/api/webservice/guide/api/georegeo
-func (c *Client) GeocodeGeo(ctx context.Context, address string, notMustParams ...gorequest.Params) (*GeocodeGeoResult, error) {
+func (c *Client) GeocodeGeo(ctx context.Context, address string, notMustParams ...*gorequest.Params) (*GeocodeGeoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("key", c.GetKey())
@@ -61,6 +61,6 @@ func (c *Client) GeocodeGeo(ctx context.Context, address string, notMustParams .
 	}
 	// 定义
 	var response GeocodeGeoResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newGeocodeGeoResult(response, request.ResponseBody, request), err
 }

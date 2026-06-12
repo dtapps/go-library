@@ -2,9 +2,10 @@ package qweather
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gorequest"
+	"encoding/json"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type Minutely5MResponse struct {
@@ -35,7 +36,7 @@ func newMinutely5MResult(result Minutely5MResponse, body []byte, http gorequest.
 
 // Minutely5M 分钟级降水
 // https://dev.qweather.com/docs/api/weather/weather-daily-forecast/
-func (c *Client) Minutely5M(ctx context.Context, location string, notMustParams ...gorequest.Params) (*Minutely5MResult, error) {
+func (c *Client) Minutely5M(ctx context.Context, location string, notMustParams ...*gorequest.Params) (*Minutely5MResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("location", location)
@@ -47,6 +48,6 @@ func (c *Client) Minutely5M(ctx context.Context, location string, notMustParams 
 	}
 	// 定义
 	var response Minutely5MResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newMinutely5MResult(response, request.ResponseBody, request), err
 }

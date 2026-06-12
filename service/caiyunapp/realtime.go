@@ -2,9 +2,10 @@ package caiyunapp
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gorequest"
+	"encoding/json"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type RealtimeResponse struct {
@@ -110,7 +111,7 @@ func newRealtimeResult(result RealtimeResponse, body []byte, http gorequest.Resp
 
 // Realtime 实况
 // https://docs.caiyunapp.com/docs/realtime
-func (c *Client) Realtime(ctx context.Context, location string, notMustParams ...gorequest.Params) (*RealtimeResult, error) {
+func (c *Client) Realtime(ctx context.Context, location string, notMustParams ...*gorequest.Params) (*RealtimeResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
@@ -120,6 +121,6 @@ func (c *Client) Realtime(ctx context.Context, location string, notMustParams ..
 	}
 	// 定义
 	var response RealtimeResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newRealtimeResult(response, request.ResponseBody, request), err
 }

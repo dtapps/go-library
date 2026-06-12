@@ -2,9 +2,10 @@ package caiyunapp
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gorequest"
+	"encoding/json"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type WeatherResponse struct {
@@ -367,7 +368,7 @@ func newWeatherResult(result WeatherResponse, body []byte, http gorequest.Respon
 
 // Weather 综合
 // https://docs.caiyunapp.com/docs/weather
-func (c *Client) Weather(ctx context.Context, location string, notMustParams ...gorequest.Params) (*WeatherResult, error) {
+func (c *Client) Weather(ctx context.Context, location string, notMustParams ...*gorequest.Params) (*WeatherResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
@@ -381,6 +382,6 @@ func (c *Client) Weather(ctx context.Context, location string, notMustParams ...
 	}
 	// 定义
 	var response WeatherResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newWeatherResult(response, request.ResponseBody, request), err
 }

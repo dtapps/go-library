@@ -2,9 +2,10 @@ package qweather
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gorequest"
+	"encoding/json"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type Weather7DResponse struct {
@@ -58,7 +59,7 @@ func newWeather7DResult(result Weather7DResponse, body []byte, http gorequest.Re
 
 // Weather7D 每日天气预报
 // https://dev.qweather.com/docs/api/weather/weather-daily-forecast/
-func (c *Client) Weather7D(ctx context.Context, location string, notMustParams ...gorequest.Params) (*Weather7DResult, error) {
+func (c *Client) Weather7D(ctx context.Context, location string, notMustParams ...*gorequest.Params) (*Weather7DResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("location", location)
@@ -70,6 +71,6 @@ func (c *Client) Weather7D(ctx context.Context, location string, notMustParams .
 	}
 	// 定义
 	var response Weather7DResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newWeather7DResult(response, request.ResponseBody, request), err
 }

@@ -2,9 +2,10 @@ package yytianqi
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gorequest"
+	"encoding/json"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type Forecast7dResponse struct {
@@ -48,7 +49,7 @@ func newForecast7dResult(result Forecast7dResponse, body []byte, http gorequest.
 
 // Forecast7d 7天预报
 // http://www.yytianqi.com/api.html
-func (c *Client) Forecast7d(ctx context.Context, city string, notMustParams ...gorequest.Params) (*Forecast7dResult, error) {
+func (c *Client) Forecast7d(ctx context.Context, city string, notMustParams ...*gorequest.Params) (*Forecast7dResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("city", city)
@@ -60,6 +61,6 @@ func (c *Client) Forecast7d(ctx context.Context, city string, notMustParams ...g
 	}
 	// 定义
 	var response Forecast7dResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newForecast7dResult(response, request.ResponseBody, request), err
 }

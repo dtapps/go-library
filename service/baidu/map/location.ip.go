@@ -2,9 +2,10 @@ package _map
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gorequest"
+	"encoding/json"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type LocationIpResponse struct {
@@ -40,7 +41,7 @@ func newLocationIpResult(result LocationIpResponse, body []byte, http gorequest.
 
 // LocationIp 普通IP定位
 // https://lbsyun.baidu.com/index.php?title=webapi/ip-api
-func (c *Client) LocationIp(ctx context.Context, ip string, notMustParams ...gorequest.Params) (*LocationIpResult, error) {
+func (c *Client) LocationIp(ctx context.Context, ip string, notMustParams ...*gorequest.Params) (*LocationIpResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("ak", c.ak)
@@ -52,6 +53,6 @@ func (c *Client) LocationIp(ctx context.Context, ip string, notMustParams ...gor
 	}
 	// 定义
 	var response LocationIpResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newLocationIpResult(response, request.ResponseBody, request), err
 }

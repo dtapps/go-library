@@ -2,7 +2,7 @@ package cloud
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
+	"encoding/json"
 	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
@@ -27,7 +27,7 @@ func newOauth2TokenResult(result Oauth2TokenResponse, body []byte, http goreques
 }
 
 // Oauth2Token Oauth2Token
-func (c *Client) Oauth2Token(ctx context.Context, notMustParams ...gorequest.Params) (*Oauth2TokenResult, error) {
+func (c *Client) Oauth2Token(ctx context.Context, notMustParams ...*gorequest.Params) (*Oauth2TokenResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("grant_type", "client_credentials")
@@ -40,6 +40,6 @@ func (c *Client) Oauth2Token(ctx context.Context, notMustParams ...gorequest.Par
 	}
 	// 定义
 	var response Oauth2TokenResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newOauth2TokenResult(response, request.ResponseBody, request), err
 }

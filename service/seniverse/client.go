@@ -2,15 +2,12 @@ package seniverse
 
 import (
 	"go.dtapp.net/library/utils/gorequest"
-	"go.opentelemetry.io/otel/trace"
 )
 
 type V3Client struct {
 	key        string         // API密钥
 	httpClient *gorequest.App // HTTP请求客户端
 	clientIP   string         // 客户端IP
-	trace      bool           // OpenTelemetry链路追踪
-	span       trace.Span     // OpenTelemetry链路追踪
 }
 
 func NewV3Client(key string) (*V3Client, error) {
@@ -22,8 +19,6 @@ type V4Client struct {
 	secret     string
 	httpClient *gorequest.App // HTTP请求客户端
 	clientIP   string         // 客户端IP
-	trace      bool           // OpenTelemetry链路追踪
-	span       trace.Span     // OpenTelemetry链路追踪
 }
 
 func NewV4Client(publicKey string, secret string) (*V4Client, error) {

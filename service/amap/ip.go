@@ -2,7 +2,7 @@ package amap
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
+	"encoding/json"
 	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
@@ -29,7 +29,7 @@ func newIpResult(result IpResponse, body []byte, http gorequest.Response) *IpRes
 
 // Ip IP定位
 // https://lbs.amap.com/api/webservice/guide/api/ipconfig
-func (c *Client) Ip(ctx context.Context, ip string, notMustParams ...gorequest.Params) (*IpResult, error) {
+func (c *Client) Ip(ctx context.Context, ip string, notMustParams ...*gorequest.Params) (*IpResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("key", c.GetKey())
@@ -41,6 +41,6 @@ func (c *Client) Ip(ctx context.Context, ip string, notMustParams ...gorequest.P
 	}
 	// 定义
 	var response IpResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newIpResult(response, request.ResponseBody, request), err
 }

@@ -2,7 +2,7 @@ package amap
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
+	"encoding/json"
 	"go.dtapp.net/library/utils/gorequest"
 	"net/http"
 )
@@ -28,11 +28,11 @@ type GeocodeRegeoResponse struct {
 		} `json:"roadinters"`
 		FormattedAddress string `json:"formatted_address"`
 		AddressComponent struct {
-			City         []interface{} `json:"city"`
-			Province     string        `json:"province"`
-			Adcode       string        `json:"adcode"`
-			District     string        `json:"district"`
-			Towncode     string        `json:"towncode"`
+			City         []any  `json:"city"`
+			Province     string `json:"province"`
+			Adcode       string `json:"adcode"`
+			District     string `json:"district"`
+			Towncode     string `json:"towncode"`
 			StreetNumber struct {
 				Number    string `json:"number"`
 				Location  string `json:"location"`
@@ -67,16 +67,16 @@ type GeocodeRegeoResponse struct {
 			Distance string `json:"distance"`
 		} `json:"aois"`
 		Pois []struct {
-			Id           string      `json:"id"`
-			Direction    string      `json:"direction"`
-			Businessarea string      `json:"businessarea"`
-			Address      string      `json:"address"`
-			Poiweight    string      `json:"poiweight"`
-			Name         string      `json:"name"`
-			Location     string      `json:"location"`
-			Distance     string      `json:"distance"`
-			Tel          interface{} `json:"tel"`
-			Type         string      `json:"type"`
+			Id           string `json:"id"`
+			Direction    string `json:"direction"`
+			Businessarea string `json:"businessarea"`
+			Address      string `json:"address"`
+			Poiweight    string `json:"poiweight"`
+			Name         string `json:"name"`
+			Location     string `json:"location"`
+			Distance     string `json:"distance"`
+			Tel          any    `json:"tel"`
+			Type         string `json:"type"`
 		} `json:"pois"`
 	} `json:"regeocode"`
 	Info     string `json:"info"`
@@ -95,7 +95,7 @@ func newGeocodeRegeoResult(result GeocodeRegeoResponse, body []byte, http gorequ
 
 // GeocodeRegeo 逆地理编码
 // https://lbs.amap.com/api/webservice/guide/api/georegeo
-func (c *Client) GeocodeRegeo(ctx context.Context, location string, notMustParams ...gorequest.Params) (*GeocodeRegeoResult, error) {
+func (c *Client) GeocodeRegeo(ctx context.Context, location string, notMustParams ...*gorequest.Params) (*GeocodeRegeoResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	params.Set("key", c.GetKey())
@@ -108,6 +108,6 @@ func (c *Client) GeocodeRegeo(ctx context.Context, location string, notMustParam
 	}
 	// 定义
 	var response GeocodeRegeoResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newGeocodeRegeoResult(response, request.ResponseBody, request), err
 }

@@ -2,9 +2,10 @@ package caiyunapp
 
 import (
 	"context"
-	"go.dtapp.net/library/utils/gojson"
-	"go.dtapp.net/library/utils/gorequest"
+	"encoding/json"
 	"net/http"
+
+	"go.dtapp.net/library/utils/gorequest"
 )
 
 type MinutelyResponse struct {
@@ -67,7 +68,7 @@ func newMinutelyResult(result MinutelyResponse, body []byte, http gorequest.Resp
 
 // Minutely 分钟级预报
 // https://docs.caiyunapp.com/docs/minutely
-func (c *Client) Minutely(ctx context.Context, location string, notMustParams ...gorequest.Params) (*MinutelyResult, error) {
+func (c *Client) Minutely(ctx context.Context, location string, notMustParams ...*gorequest.Params) (*MinutelyResult, error) {
 	// 参数
 	params := gorequest.NewParamsWith(notMustParams...)
 	// 请求
@@ -77,6 +78,6 @@ func (c *Client) Minutely(ctx context.Context, location string, notMustParams ..
 	}
 	// 定义
 	var response MinutelyResponse
-	err = gojson.Unmarshal(request.ResponseBody, &response)
+	err = json.Unmarshal(request.ResponseBody, &response)
 	return newMinutelyResult(response, request.ResponseBody, request), err
 }

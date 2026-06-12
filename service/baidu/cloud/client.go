@@ -3,7 +3,6 @@ package cloud
 import (
 	"context"
 	"go.dtapp.net/library/utils/gorequest"
-	"go.opentelemetry.io/otel/trace"
 )
 
 type Client struct {
@@ -12,8 +11,6 @@ type Client struct {
 	accessToken string
 	httpClient  *gorequest.App // HTTP请求客户端
 	clientIP    string         // 客户端IP
-	trace       bool           // OpenTelemetry链路追踪
-	span        trace.Span     // OpenTelemetry链路追踪
 }
 
 // NewClient 创建实例化
