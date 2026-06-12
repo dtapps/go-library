@@ -1,5 +1,5 @@
 package hertz_ent_log_otel
 
 const (
-	Version = "1.0.4"
+	Version = "1.0.5"
 )
