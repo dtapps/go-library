@@ -9,6 +9,7 @@ import (
 )
 
 type Client struct {
+	options *Options
 	*resty.Client
 }
 
@@ -38,43 +39,29 @@ func NewClient(ctx context.Context, opts ...Option) (*Client, error) {
 
 	// 设置 Debug
 	if options.debug {
-		client.EnableDebug()
+		client.SetDebug(true)
 	}
 
-	// 绑定日志钩子
-	if options.restyLog != nil {
-		// 请求中间件
-		client.SetRequestMiddlewares(
-			options.restyLog.IntrusionRequest,                                           // 自定义请求中间件，注入开始时间
-			resty.PrepareRequestMiddleware,                                              // 官方请求中间件，创建RawRequest
-			PreRequestMiddleware(options.endpoint, options.secretID, options.secretKey), // 自定义请求中间件，签名
-			options.restyLog.BeforeRequest,                                              // 自定义请求中间件，记录开始时间和OTel
-		)
-		// 响应中间件
-		client.SetResponseMiddlewares(
-			options.restyLog.CopyResponseBodyMiddleware, // 自定义请求中间件，将响应体拷贝到Context
-			Ensure2xxResponseMiddleware,                 // 自定义请求中间件，判断状态
-			resty.AutoParseResponseMiddleware,           // 官方请求中间件，自动解析
-			options.restyLog.AfterResponse,              // 自定义请求中间件，打印/保存
-		)
-	} else {
-		client.SetRequestMiddlewares(
-			resty.PrepareRequestMiddleware,                                              // 先调用，创建 RawRequest
-			PreRequestMiddleware(options.endpoint, options.secretID, options.secretKey), // 自定义请求中间件，签名
-		)
-		// 响应中间件
-		client.SetResponseMiddlewares(
-			Ensure2xxResponseMiddleware,       // 自定义请求中间件，判断状态
-			resty.AutoParseResponseMiddleware, // 官方请求中间件，自动解析
-		)
-	}
+	// 请求中间件
+	client.SetRequestMiddlewares(
+		resty.MiddlewareRequestCreate,                                              // 官方请求中间件，创建RawRequest
+		PreRequestMiddleware(options.endpoint, options.secretID, options.secretKey), // 自定义请求中间件，签名
+	)
+	// 响应中间件
+	client.SetResponseMiddlewares(
+		Ensure2xxResponseMiddleware,       // 自定义请求中间件，判断状态
+		resty.MiddlewareResponseAutoParse, // 官方请求中间件，自动解析
+	)
 
-	return &Client{client}, nil
+	return &Client{
+		options: options,
+		Client:  client,
+	}, nil
 }
 
 // WithDebug 开启调试模式
 func (c *Client) WithDebug() *Client {
-	c.EnableDebug()
+	c.SetDebug(true)
 	return c
 }
 

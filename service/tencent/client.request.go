@@ -2,7 +2,6 @@ package tencent
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"resty.dev/v3"
 )
@@ -29,7 +28,6 @@ func (r *Request) SetXTCRegion(region string) *Request {
 func (r *Request) SetBodyMap(bodyMap map[string]any) *Request {
 	bodyBytes, err := json.Marshal(bodyMap)
 	if err != nil {
-		r.SetError(fmt.Errorf("failed to canonicalize JSON body from struct: %w", err))
 		return r
 	}
 	r.Body = string(bodyBytes)
@@ -39,7 +37,6 @@ func (r *Request) SetBodyMap(bodyMap map[string]any) *Request {
 func (r *Request) SetBodyStruct(bodyStruct any) *Request {
 	bodyBytes, err := json.Marshal(bodyStruct)
 	if err != nil {
-		r.SetError(fmt.Errorf("failed to canonicalize JSON body from struct: %w", err))
 		return r
 	}
 	r.Body = string(bodyBytes)

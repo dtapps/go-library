@@ -1,13 +1,11 @@
 package cloudflare
 
 import (
-	"go.dtapp.net/library/contrib/resty_log"
 	"resty.dev/v3"
 )
 
 type Options struct {
 	restyClient *resty.Client
-	restyLog    *resty_log.Logger
 	debug       bool
 
 	baseURL string // 接口地址
@@ -21,7 +19,6 @@ type Option struct {
 func NewOptions(opts []Option) *Options {
 	options := &Options{
 		restyClient: nil,
-		restyLog:    nil,
 	}
 	options.Apply(opts)
 	return options
@@ -40,10 +37,12 @@ func WithRestyClient(restyClient *resty.Client) Option {
 	}}
 }
 
-// WithRestyLog 设置 restyLog
-func WithRestyLog(restyLog *resty_log.Logger) Option {
+// WithRestyClientIf 设置 RestyClient
+func WithRestyClientIf(enable bool, restyClient *resty.Client) Option {
 	return Option{F: func(o *Options) {
-		o.restyLog = restyLog
+		if enable {
+			o.restyClient = restyClient
+		}
 	}}
 }
 
