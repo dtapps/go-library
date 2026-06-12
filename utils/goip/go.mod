@@ -11,7 +11,6 @@ replace go.dtapp.net/library/utils/gorandom => ../../utils/gorandom
 replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 
 require (
-	github.com/ip2location/ip2location-go/v9 v9.7.0
 	github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20260611083731-7b320846c910
 	github.com/oschwald/geoip2-golang/v2 v2.2.0
 	github.com/tagphi/czdb-search-golang v1.0.5
@@ -27,5 +26,4 @@ require (
 	golang.org/x/net v0.56.0 // indirect
 	golang.org/x/sys v0.46.0 // indirect
 	golang.org/x/text v0.38.0 // indirect
-	lukechampine.com/uint128 v1.3.0 // indirect
 )
