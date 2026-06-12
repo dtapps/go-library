@@ -3,6 +3,7 @@ package goip_czdb
 import (
 	"github.com/zhengjianyang/goCzdb"
 	"go.dtapp.net/library/utils/gostring"
+	"strings"
 )
 
 type Client struct {
@@ -73,10 +74,10 @@ func (c *Client) Analyse(ip string) (resp AnalyseResult) {
 
 	resp.Ip = gostring.SpaceAndLineBreak(ip)
 	if search != "" {
-		split1 := gostring.Split(search, "\t")
+		split1 := strings.Split(search, "\t")
 		if len(split1) == 2 {
 			resp.Isp = gostring.SpaceAndLineBreak(split1[1])
-			split2 := gostring.Split(split1[0], "–")
+			split2 := strings.Split(split1[0], "–")
 			if len(split2) == 3 {
 				resp.Country = gostring.SpaceAndLineBreak(split2[0])
 				resp.Province = gostring.SpaceAndLineBreak(split2[1])
