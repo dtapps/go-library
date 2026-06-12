@@ -12,7 +12,7 @@ import (
 // 扩展 gin.Context 的方法，用于读取并反序列化请求体
 func (c *Context) ginBindPathParams(ginCtx *gin.Context, obj any) error {
 	v := reflect.ValueOf(obj)
-	if v.Kind() != reflect.Ptr || v.IsNil() {
+	if v.Kind() != reflect.Pointer || v.IsNil() {
 		return errors.New("obj 必须是非 nil 的指针")
 	}
 	v = v.Elem()

@@ -113,7 +113,7 @@ func (c *Context) ValidatorError(err error) map[string]string {
 // setDefaultValues 设置默认值
 func setDefaultValues(obj any) error {
 	v := reflect.ValueOf(obj)
-	if v.Kind() != reflect.Ptr || v.IsNil() {
+	if v.Kind() != reflect.Pointer || v.IsNil() {
 		return errors.New("input must be a non-nil pointer")
 	}
 
