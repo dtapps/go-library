@@ -15,7 +15,7 @@ func (r *RedisClient) NewSimpleOperation() *SimpleOperation {
 }
 
 // Set 设置
-func (o *SimpleOperation) Set(ctx context.Context, key string, value interface{}, attrs ...*OperationAttr) *SimpleResult {
+func (o *SimpleOperation) Set(ctx context.Context, key string, value any, attrs ...*OperationAttr) *SimpleResult {
 	exp := OperationAttrs(attrs).Find(AttrExpr)
 	if exp == nil {
 		exp = time.Second * 0

@@ -43,7 +43,7 @@ type writer struct{}
 // 日志路径
 var logsURL = ""
 
-func (w writer) Printf(format string, args ...interface{}) {
+func (w writer) Printf(format string, args ...any) {
 
 	now := time.Now()
 	logFilePath := ""

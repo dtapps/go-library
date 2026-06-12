@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type DBGttInterfaceFunc func() interface{}
+type DBGttInterfaceFunc func() any
 
 // SimpleInterfaceCache 缓存
 type SimpleInterfaceCache struct {
@@ -23,13 +23,13 @@ func (r *RedisClient) NewSimpleInterfaceCache(operation *SimpleOperation, expire
 }
 
 // SetCache 设置缓存
-func (c *SimpleInterfaceCache) SetCache(ctx context.Context, key string, value interface{}) {
+func (c *SimpleInterfaceCache) SetCache(ctx context.Context, key string, value any) {
 	c.Operation.Set(ctx, key, value, WithExpire(c.Expire)).Unwrap()
 }
 
 // GetCache 获取缓存
-func (c *SimpleInterfaceCache) GetCache(ctx context.Context, key string) (ret interface{}) {
-	f := func() interface{} {
+func (c *SimpleInterfaceCache) GetCache(ctx context.Context, key string) (ret any) {
+	f := func() any {
 		return c.DBGetter()
 	}
 	ret = c.Operation.Get(ctx, key).UnwrapOrElse(f)

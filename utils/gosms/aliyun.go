@@ -12,7 +12,10 @@ import (
 
 // 阿里云
 type Aliyun struct {
-	config openapi.Config           // 配置
+	accessKeyId     string // 账号信息
+	accessKeySecret string // 账号信息
+	endpoint        string // 地域节点
+
 	client *dysmsapi20170525.Client // 实例
 }
 
@@ -23,11 +26,18 @@ func NewAliyun(ctx context.Context, opts ...Option) (client *Aliyun, err error) 
 	// 初始化
 	client = &Aliyun{}
 
-	client.config.AccessKeyId = tea.String(options.accessKeyId)
-	client.config.AccessKeySecret = tea.String(options.accessKeySecret)
-	client.config.Endpoint = tea.String("dysmsapi.aliyuncs.com")
+	client.accessKeyId = options.accessKeyId
+	client.accessKeySecret = options.accessKeySecret
+	client.endpoint = "dysmsapi.aliyuncs.com"
 
-	client.client, err = dysmsapi20170525.NewClient(&client.config)
+	// 配置
+	cfg := &openapi.Config{}
+	cfg.AccessKeyId = new(client.accessKeyId)
+	cfg.AccessKeySecret = new(client.accessKeySecret)
+	cfg.Endpoint = new(client.endpoint)
+
+	// 实例
+	client.client, err = dysmsapi20170525.NewClient(cfg)
 
 	return client, err
 }
@@ -41,9 +51,9 @@ func (c *Aliyun) Query(ctx context.Context, bizId, phoneNumber string, sendDate 
 
 	// 参数
 	querySendDetailsRequest := &dysmsapi20170525.QuerySendDetailsRequest{
-		PhoneNumber: tea.String(phoneNumber),
-		BizId:       tea.String(bizId),
-		SendDate:    tea.String(sendDate),
+		PhoneNumber: new(phoneNumber),
+		BizId:       new(bizId),
+		SendDate:    new(sendDate),
 		CurrentPage: tea.Int64(1),
 		PageSize:    tea.Int64(50),
 	}
@@ -53,9 +63,9 @@ func (c *Aliyun) Query(ctx context.Context, bizId, phoneNumber string, sendDate 
 	}
 
 	for _, dto := range response.Body.SmsSendDetailDTOs.SmsSendDetailDTO {
-		if tea.BoolValue(util.EqualString(tea.String(tea.ToString(tea.Int64Value(dto.SendStatus))), tea.String("3"))) {
+		if tea.BoolValue(util.EqualString(new(tea.ToString(tea.Int64Value(dto.SendStatus))), new("3"))) {
 			return SuccessStatus // 发送成功
-		} else if tea.BoolValue(util.EqualString(tea.String(tea.ToString(tea.Int64Value(dto.SendStatus))), tea.String("2"))) {
+		} else if tea.BoolValue(util.EqualString(new(tea.ToString(tea.Int64Value(dto.SendStatus))), new("2"))) {
 			return FailureStatus // 发送失败
 		} else {
 			return WaitingStatus // 正在发送中
@@ -73,17 +83,17 @@ func (c *Aliyun) Send(ctx context.Context, signName string, phoneNumbers string,
 
 	// 参数
 	sendSmsRequest := &dysmsapi20170525.SendSmsRequest{
-		SignName:      tea.String(signName),
-		PhoneNumbers:  tea.String(phoneNumbers),
-		TemplateCode:  tea.String(templateCode),
-		TemplateParam: tea.String(templateParam),
+		SignName:      new(signName),
+		PhoneNumbers:  new(phoneNumbers),
+		TemplateCode:  new(templateCode),
+		TemplateParam: new(templateParam),
 	}
 	response, err := c.client.SendSms(sendSmsRequest)
 	if err != nil {
 		return bizID, err
 	}
 
-	if !tea.BoolValue(util.EqualString(response.Body.Code, tea.String("OK"))) {
+	if !tea.BoolValue(util.EqualString(response.Body.Code, new("OK"))) {
 		return bizID, fmt.Errorf("%s", tea.StringValue(response.Body.Message))
 	}
 

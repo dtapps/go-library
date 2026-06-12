@@ -11,12 +11,12 @@ const (
 
 type OperationAttr struct {
 	Name  string
-	Value interface{}
+	Value any
 }
 
 type OperationAttrs []*OperationAttr
 
-func (a OperationAttrs) Find(name string) interface{} {
+func (a OperationAttrs) Find(name string) any {
 	for _, attr := range a {
 		if attr.Name == name {
 			return attr.Value

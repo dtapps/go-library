@@ -1,12 +1,12 @@
 package dorm
 
 type Iterator struct {
-	data  []interface{}
+	data  []any
 	index int
 }
 
 // NewIterator 构造函数
-func NewIterator(data []interface{}) *Iterator {
+func NewIterator(data []any) *Iterator {
 	return &Iterator{data: data}
 }
 
@@ -19,7 +19,7 @@ func (i *Iterator) HasNext() bool {
 }
 
 // Next 循环下一个
-func (i *Iterator) Next() (Ret interface{}) {
+func (i *Iterator) Next() (Ret any) {
 	Ret = i.data[i.index]
 	i.index = i.index + 1
 	return

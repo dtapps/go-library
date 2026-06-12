@@ -10,7 +10,7 @@ import (
 type GttStringFunc func() string
 
 // GttInterfaceFunc Interface缓存结构
-type GttInterfaceFunc func() interface{}
+type GttInterfaceFunc func() any
 
 // RedisCacheConfig 配置
 type RedisCacheConfig struct {
@@ -59,7 +59,7 @@ func (rc *RedisClientCache) GetString(ctx context.Context, key string) (ret stri
 }
 
 // GetInterface 缓存操作
-func (rc *RedisClientCache) GetInterface(ctx context.Context, key string, result interface{}) {
+func (rc *RedisClientCache) GetInterface(ctx context.Context, key string, result any) {
 
 	f := func() string {
 		marshal, _ := gojson.Marshal(rc.GetterInterface())
@@ -80,7 +80,7 @@ func (rc *RedisClientCache) GetInterface(ctx context.Context, key string, result
 }
 
 // GetInterfaceKey 获取key值
-func (rc *RedisClientCache) GetInterfaceKey(ctx context.Context, key string, result interface{}) error {
+func (rc *RedisClientCache) GetInterfaceKey(ctx context.Context, key string, result any) error {
 	ret, err := rc.operation.Get(ctx, key).Result()
 	if err != nil {
 		return err
@@ -90,7 +90,7 @@ func (rc *RedisClientCache) GetInterfaceKey(ctx context.Context, key string, res
 }
 
 // SetInterfaceKey 设置key值
-func (rc *RedisClientCache) SetInterfaceKey(ctx context.Context, key string, value interface{}) (string, error) {
+func (rc *RedisClientCache) SetInterfaceKey(ctx context.Context, key string, value any) (string, error) {
 	marshal, _ := gojson.Marshal(value)
 	return rc.operation.Set(ctx, key, marshal, rc.defaultExpiration).Result()
 }

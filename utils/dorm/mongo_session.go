@@ -2,8 +2,9 @@ package dorm
 
 import (
 	"context"
-	"go.mongodb.org/mongo-driver/mongo"
 	"log"
+
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type MongoSessionOptions struct {
@@ -16,7 +17,7 @@ type MongoSessionOptions struct {
 // Begin 开始事务，会同时创建开始会话需要在退出时关闭会话
 func (c *MongoClient) Begin() *MongoSessionOptions {
 
-	var ctx = context.TODO()
+	var ctx = context.Background()
 	var err error
 	ms := &MongoSessionOptions{}
 
@@ -40,7 +41,7 @@ func (c *MongoClient) Begin() *MongoSessionOptions {
 
 // Rollback 回滚事务
 func (cs *MongoSessionOptions) Rollback() {
-	var ctx = context.TODO()
+	var ctx = context.Background()
 	err := cs.session.AbortTransaction(ctx)
 	if err != nil {
 		log.Println("回滚事务异常：", err)
@@ -50,7 +51,7 @@ func (cs *MongoSessionOptions) Rollback() {
 
 // Commit 提交事务
 func (cs *MongoSessionOptions) Commit() {
-	var ctx = context.TODO()
+	var ctx = context.Background()
 	err := cs.session.CommitTransaction(ctx)
 	if err != nil {
 		log.Println("提交事务异常：", err)

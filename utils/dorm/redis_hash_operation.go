@@ -16,7 +16,7 @@ func NewHashOperation(db *redis.Client) *HashOperation {
 }
 
 // Set 根据key和field字段设置，field字段的值
-func (cl *HashOperation) Set(ctx context.Context, key string, value interface{}) *redis.IntCmd {
+func (cl *HashOperation) Set(ctx context.Context, key string, value any) *redis.IntCmd {
 	return cl.db.HSet(ctx, key, value)
 }
 

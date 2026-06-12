@@ -16,7 +16,7 @@ func (r *RedisClient) PSubscribe(ctx context.Context, channels ...string) *redis
 }
 
 // Publish 将信息发送到指定的channel
-func (r *RedisClient) Publish(ctx context.Context, channel string, message interface{}) *redis.IntCmd {
+func (r *RedisClient) Publish(ctx context.Context, channel string, message any) *redis.IntCmd {
 	return r.db.Publish(ctx, channel, message)
 }
 

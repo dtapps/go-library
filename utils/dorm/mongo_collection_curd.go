@@ -7,52 +7,52 @@ import (
 )
 
 // InsertOne 插入一个文档
-func (cc *MongoCollectionOptions) InsertOne(ctx context.Context, document interface{}, opts ...*options.InsertOneOptions) (*mongo.InsertOneResult, error) {
+func (cc *MongoCollectionOptions) InsertOne(ctx context.Context, document any, opts ...*options.InsertOneOptions) (*mongo.InsertOneResult, error) {
 	return cc.dbCollection.InsertOne(ctx, document, opts...)
 }
 
 // InsertMany 插入多个文档
-func (cc *MongoCollectionOptions) InsertMany(ctx context.Context, document []interface{}, opts ...*options.InsertManyOptions) (*mongo.InsertManyResult, error) {
+func (cc *MongoCollectionOptions) InsertMany(ctx context.Context, document []any, opts ...*options.InsertManyOptions) (*mongo.InsertManyResult, error) {
 	return cc.dbCollection.InsertMany(ctx, document, opts...)
 }
 
 // DeleteOne 删除一个文档
-func (cc *MongoCollectionOptions) DeleteOne(ctx context.Context, filter interface{}, opts ...*options.DeleteOptions) (*mongo.DeleteResult, error) {
+func (cc *MongoCollectionOptions) DeleteOne(ctx context.Context, filter any, opts ...*options.DeleteOptions) (*mongo.DeleteResult, error) {
 	return cc.dbCollection.DeleteOne(ctx, filter, opts...)
 }
 
 // DeleteMany 删除多个文档
-func (cc *MongoCollectionOptions) DeleteMany(ctx context.Context, filter interface{}, opts ...*options.DeleteOptions) (*mongo.DeleteResult, error) {
+func (cc *MongoCollectionOptions) DeleteMany(ctx context.Context, filter any, opts ...*options.DeleteOptions) (*mongo.DeleteResult, error) {
 	return cc.dbCollection.DeleteMany(ctx, filter, opts...)
 }
 
 // UpdateByID 按ID更新
-func (cc *MongoCollectionOptions) UpdateByID(ctx context.Context, id interface{}, update interface{}, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
+func (cc *MongoCollectionOptions) UpdateByID(ctx context.Context, id any, update any, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
 	return cc.dbCollection.UpdateByID(ctx, id, update, opts...)
 }
 
 // UpdateOne 更新一个文档
-func (cc *MongoCollectionOptions) UpdateOne(ctx context.Context, filter interface{}, update interface{}, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
+func (cc *MongoCollectionOptions) UpdateOne(ctx context.Context, filter any, update any, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
 	return cc.dbCollection.UpdateOne(ctx, filter, update, opts...)
 }
 
 // UpdateMany 更新多个文档
-func (cc *MongoCollectionOptions) UpdateMany(ctx context.Context, filter interface{}, update interface{}, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
+func (cc *MongoCollectionOptions) UpdateMany(ctx context.Context, filter any, update any, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
 	return cc.dbCollection.UpdateMany(ctx, filter, update, opts...)
 }
 
 // ReplaceOne 替换一个文档
-func (cc *MongoCollectionOptions) ReplaceOne(ctx context.Context, filter interface{}, update interface{}, opts ...*options.ReplaceOptions) (*mongo.UpdateResult, error) {
+func (cc *MongoCollectionOptions) ReplaceOne(ctx context.Context, filter any, update any, opts ...*options.ReplaceOptions) (*mongo.UpdateResult, error) {
 	return cc.dbCollection.ReplaceOne(ctx, filter, update, opts...)
 }
 
 // Aggregate 统计分析
-func (cc *MongoCollectionOptions) Aggregate(ctx context.Context, pipeline interface{}, opts ...*options.AggregateOptions) (*mongo.Cursor, error) {
+func (cc *MongoCollectionOptions) Aggregate(ctx context.Context, pipeline any, opts ...*options.AggregateOptions) (*mongo.Cursor, error) {
 	return cc.dbCollection.Aggregate(ctx, pipeline, opts...)
 }
 
 // CountDocuments 计数文档
-func (cc *MongoCollectionOptions) CountDocuments(ctx context.Context, filter interface{}, opts ...*options.CountOptions) (int64, error) {
+func (cc *MongoCollectionOptions) CountDocuments(ctx context.Context, filter any, opts ...*options.CountOptions) (int64, error) {
 	return cc.dbCollection.CountDocuments(ctx, filter, opts...)
 }
 
@@ -61,33 +61,33 @@ func (cc *MongoCollectionOptions) EstimatedDocumentCount(ctx context.Context, op
 	return cc.dbCollection.EstimatedDocumentCount(ctx, opts...)
 }
 
-func (cc *MongoCollectionOptions) Distinct(ctx context.Context, fieldName string, filter interface{}, opts ...*options.DistinctOptions) ([]interface{}, error) {
+func (cc *MongoCollectionOptions) Distinct(ctx context.Context, fieldName string, filter any, opts ...*options.DistinctOptions) ([]any, error) {
 	return cc.dbCollection.Distinct(ctx, fieldName, filter, opts...)
 }
 
 // Find 查询多个文档
-func (cc *MongoCollectionOptions) Find(ctx context.Context, filter interface{}, opts ...*options.FindOptions) (*mongo.Cursor, error) {
+func (cc *MongoCollectionOptions) Find(ctx context.Context, filter any, opts ...*options.FindOptions) (*mongo.Cursor, error) {
 	return cc.dbCollection.Find(ctx, filter, opts...)
 }
 
 // FindOne 查询一个文档
-func (cc *MongoCollectionOptions) FindOne(ctx context.Context, filter interface{}, opts ...*options.FindOneOptions) *mongo.SingleResult {
+func (cc *MongoCollectionOptions) FindOne(ctx context.Context, filter any, opts ...*options.FindOneOptions) *mongo.SingleResult {
 	return cc.dbCollection.FindOne(ctx, filter, opts...)
 }
 
-func (cc *MongoCollectionOptions) FindOneAndDelete(ctx context.Context, filter interface{}, opts ...*options.FindOneAndDeleteOptions) *mongo.SingleResult {
+func (cc *MongoCollectionOptions) FindOneAndDelete(ctx context.Context, filter any, opts ...*options.FindOneAndDeleteOptions) *mongo.SingleResult {
 	return cc.dbCollection.FindOneAndDelete(ctx, filter, opts...)
 }
 
-func (cc *MongoCollectionOptions) FindOneAndReplace(ctx context.Context, filter interface{}, replacement interface{}, opts ...*options.FindOneAndReplaceOptions) *mongo.SingleResult {
+func (cc *MongoCollectionOptions) FindOneAndReplace(ctx context.Context, filter any, replacement any, opts ...*options.FindOneAndReplaceOptions) *mongo.SingleResult {
 	return cc.dbCollection.FindOneAndReplace(ctx, filter, replacement, opts...)
 }
 
-func (cc *MongoCollectionOptions) FindOneAndUpdate(ctx context.Context, filter interface{}, replacement interface{}, opts ...*options.FindOneAndUpdateOptions) *mongo.SingleResult {
+func (cc *MongoCollectionOptions) FindOneAndUpdate(ctx context.Context, filter any, replacement any, opts ...*options.FindOneAndUpdateOptions) *mongo.SingleResult {
 	return cc.dbCollection.FindOneAndUpdate(ctx, filter, replacement, opts...)
 }
 
-func (cc *MongoCollectionOptions) Watch(ctx context.Context, pipeline interface{}, opts ...*options.ChangeStreamOptions) (*mongo.ChangeStream, error) {
+func (cc *MongoCollectionOptions) Watch(ctx context.Context, pipeline any, opts ...*options.ChangeStreamOptions) (*mongo.ChangeStream, error) {
 	return cc.dbCollection.Watch(ctx, pipeline, opts...)
 }
 

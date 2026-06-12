@@ -29,7 +29,7 @@ func (cs *MongoSessionOptions) Database(name string, opts ...*options.DatabaseOp
 // https://studygolang.com/articles/896
 // DatabaseName 库名
 // CollectionName 集合名
-func (cs *MongoSessionOptions) Model(value interface{}) *MongoSessionCollectionOptions {
+func (cs *MongoSessionOptions) Model(value any) *MongoSessionCollectionOptions {
 
 	var sessionDatabaseOptions *MongoSessionDatabaseOptions
 	var sessionCollectionOptions *MongoSessionCollectionOptions

@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type DBGttJsonFunc func() interface{}
+type DBGttJsonFunc func() any
 
 // SimpleJsonCache 缓存
 type SimpleJsonCache struct {
@@ -24,12 +24,12 @@ func (r *RedisClient) NewSimpleJsonCache(operation *StringOperation, expire time
 }
 
 // SetCache 设置缓存
-func (c *SimpleJsonCache) SetCache(ctx context.Context, key string, value interface{}) {
+func (c *SimpleJsonCache) SetCache(ctx context.Context, key string, value any) {
 	c.Operation.Set(ctx, key, value, WithExpire(c.Expire)).Unwrap()
 }
 
 // GetCache 获取缓存
-func (c *SimpleJsonCache) GetCache(ctx context.Context, key string) (ret interface{}) {
+func (c *SimpleJsonCache) GetCache(ctx context.Context, key string) (ret any) {
 	f := func() string {
 		obj := c.DBGetter()
 		b, err := gojson.Marshal(obj)

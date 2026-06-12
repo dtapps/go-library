@@ -7,7 +7,7 @@ import (
 )
 
 // Set 设置一个key的值
-func (r *RedisClient) Set(ctx context.Context, key string, value interface{}, expiration time.Duration) *redis.StatusCmd {
+func (r *RedisClient) Set(ctx context.Context, key string, value any, expiration time.Duration) *redis.StatusCmd {
 	return r.db.Set(ctx, key, value, expiration)
 }
 
@@ -17,12 +17,12 @@ func (r *RedisClient) Get(ctx context.Context, key string) *redis.StringCmd {
 }
 
 // GetSet 设置一个key的值，并返回这个key的旧值
-func (r *RedisClient) GetSet(ctx context.Context, key string, value interface{}) *redis.StringCmd {
+func (r *RedisClient) GetSet(ctx context.Context, key string, value any) *redis.StringCmd {
 	return r.db.GetSet(ctx, key, value)
 }
 
 // SetNX 如果key不存在，则设置这个key的值
-func (r *RedisClient) SetNX(ctx context.Context, key string, value interface{}, expiration time.Duration) *redis.BoolCmd {
+func (r *RedisClient) SetNX(ctx context.Context, key string, value any, expiration time.Duration) *redis.BoolCmd {
 	return r.db.SetNX(ctx, key, value, expiration)
 }
 
@@ -33,7 +33,7 @@ func (r *RedisClient) MGet(ctx context.Context, keys ...string) *redis.SliceCmd 
 
 // MSet 批量设置key的值
 // MSet(map[string]interface{}{"key1": "value1", "key2": "value2"})
-func (r *RedisClient) MSet(ctx context.Context, values map[string]interface{}) *redis.StatusCmd {
+func (r *RedisClient) MSet(ctx context.Context, values map[string]any) *redis.StatusCmd {
 	return r.db.MSet(ctx, values)
 }
 
@@ -89,7 +89,7 @@ func (r *RedisClient) KeysValue(ctx context.Context, prefix string) *redis.Slice
 }
 
 // AddKeyToSet 将值添加到集合
-func (r *RedisClient) AddKeyToSet(ctx context.Context, setKey string, value interface{}) error {
+func (r *RedisClient) AddKeyToSet(ctx context.Context, setKey string, value any) error {
 	return r.db.SAdd(ctx, setKey, value).Err()
 }
 
@@ -99,12 +99,12 @@ func (r *RedisClient) GetAllKeysInSet(ctx context.Context, setKey string) ([]str
 }
 
 // DoesKeyExistInSet 检查值是否存在于集合中
-func (r *RedisClient) DoesKeyExistInSet(ctx context.Context, setKey string, targetKey interface{}) (bool, error) {
+func (r *RedisClient) DoesKeyExistInSet(ctx context.Context, setKey string, targetKey any) (bool, error) {
 	return r.db.SIsMember(ctx, setKey, targetKey).Result()
 }
 
 // RemoveKeyFromSet 从集合中删除指定的元素
-func (r *RedisClient) RemoveKeyFromSet(ctx context.Context, setKey string, targetKey interface{}) error {
+func (r *RedisClient) RemoveKeyFromSet(ctx context.Context, setKey string, targetKey any) error {
 	return r.db.SRem(ctx, setKey, targetKey).Err()
 }
 

@@ -11,7 +11,7 @@ const (
 	SerializerString = "string"
 )
 
-type JsonGttFunc func() interface{}
+type JsonGttFunc func() any
 
 type DBGttFunc func() string
 
@@ -34,12 +34,12 @@ func (r *RedisClient) NewSimpleCache(operation *StringOperation, expire time.Dur
 }
 
 // SetCache 设置缓存
-func (c *SimpleCache) SetCache(ctx context.Context, key string, value interface{}) {
+func (c *SimpleCache) SetCache(ctx context.Context, key string, value any) {
 	c.Operation.Set(ctx, key, value, WithExpire(c.Expire)).Unwrap()
 }
 
 // GetCache 获取缓存
-func (c *SimpleCache) GetCache(ctx context.Context, key string) (ret interface{}) {
+func (c *SimpleCache) GetCache(ctx context.Context, key string) (ret any) {
 	if c.Serializer == SerializerJson {
 		f := func() string {
 			obj := c.JsonGetter()

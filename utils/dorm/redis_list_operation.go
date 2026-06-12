@@ -17,12 +17,12 @@ func (r *RedisClient) NewListOperation() *ListOperation {
 }
 
 // LPush 从列表左边插入数据
-func (cl *ListOperation) LPush(key string, value interface{}) *redis.IntCmd {
+func (cl *ListOperation) LPush(key string, value any) *redis.IntCmd {
 	return cl.db.LPush(cl.ctx, key, value)
 }
 
 // LPushX 跟LPush的区别是，仅当列表存在的时候才插入数据
-func (cl *ListOperation) LPushX(key string, value interface{}) *redis.IntCmd {
+func (cl *ListOperation) LPushX(key string, value any) *redis.IntCmd {
 	return cl.db.LPushX(cl.ctx, key, value)
 }
 
@@ -32,12 +32,12 @@ func (cl *ListOperation) RPop(key string) *redis.StringCmd {
 }
 
 // RPush 从列表右边插入数据
-func (cl *ListOperation) RPush(key string, value interface{}) *redis.IntCmd {
+func (cl *ListOperation) RPush(key string, value any) *redis.IntCmd {
 	return cl.db.RPush(cl.ctx, key, value)
 }
 
 // RPushX 跟RPush的区别是，仅当列表存在的时候才插入数据
-func (cl *ListOperation) RPushX(key string, value interface{}) *redis.IntCmd {
+func (cl *ListOperation) RPushX(key string, value any) *redis.IntCmd {
 	return cl.db.RPushX(cl.ctx, key, value)
 }
 
@@ -62,7 +62,7 @@ func (cl *ListOperation) RangeAli(key string) *redis.StringSliceCmd {
 }
 
 // Rem 删除key中的数据
-func (cl *ListOperation) Rem(key string, count int64, value interface{}) *redis.IntCmd {
+func (cl *ListOperation) Rem(key string, count int64, value any) *redis.IntCmd {
 	return cl.db.LRem(cl.ctx, key, count, value)
 }
 
@@ -72,6 +72,6 @@ func (cl *ListOperation) Index(key string, index int64) *redis.StringCmd {
 }
 
 // Insert 在指定位置插入数据
-func (cl *ListOperation) Insert(key, op string, pivot, value interface{}) *redis.IntCmd {
+func (cl *ListOperation) Insert(key, op string, pivot, value any) *redis.IntCmd {
 	return cl.db.LInsert(cl.ctx, key, op, pivot, value)
 }

@@ -36,7 +36,7 @@ func (cd *MongoDatabaseOptions) CreateTimeSeriesCollection(ctx context.Context, 
 // https://studygolang.com/articles/896
 // DatabaseName 库名
 // CollectionName 集合名
-func (c *MongoClient) Model(value interface{}) *MongoCollectionOptions {
+func (c *MongoClient) Model(value any) *MongoCollectionOptions {
 
 	var databaseOptions *MongoDatabaseOptions
 	var collectionOptions *MongoCollectionOptions
