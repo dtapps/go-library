@@ -25,7 +25,7 @@ type ModelTask struct {
 	SpecifyIP      string          `json:"specify_ip,omitempty"`      // 指定外网IP
 	UpdatedIP      string          `json:"updated_ip,omitempty"`      // 更新外网IP
 	Result         string          `json:"result,omitempty"`          // 结果
-	NextRunTime    time.Time       `json:"next_run_time,omitempty"`   // 下次运行时间
-	CreatedAt      time.Time       `json:"created_at,omitempty"`      // 创建时间
-	UpdatedAt      time.Time       `json:"updated_at,omitempty"`      // 更新时间
+	NextRunTime    time.Time       `json:"next_run_time"`             // 下次运行时间
+	CreatedAt      time.Time       `json:"created_at"`                // 创建时间
+	UpdatedAt      time.Time       `json:"updated_at"`                // 更新时间
 }

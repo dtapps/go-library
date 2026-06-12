@@ -143,8 +143,8 @@ func (th *TaskHelper) FilterTaskList(ctx context.Context, isMandatoryIp bool, sp
 				if specifyIpFind {
 					// 进入强制性多IP
 					// 分割字符串
-					parts := strings.Split(vTask.SpecifyIP, ",")
-					for _, vv := range parts {
+					parts := strings.SplitSeq(vTask.SpecifyIP, ",")
+					for vv := range parts {
 						if vv == specifyIp {
 							// 进入强制性多IP，可添加任务
 							newTaskLists = append(newTaskLists, vTask)
