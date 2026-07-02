@@ -13,8 +13,8 @@ github.com/google/go-querystring v1.2.0 h1:yhqkPbu2/OH+V9BfpCVPZkNmUXhb2gBxJArfh
 github.com/google/go-querystring v1.2.0/go.mod h1:8IFJqpSRITyJ8QhQ13bmbeMBDfmeEJZD5A0egEOmkqU=
 github.com/icholy/digest v1.1.0 h1:HfGg9Irj7i+IX1o1QAmPfIBNu/Q5A5Tu3n/MED9k9H4=
 github.com/icholy/digest v1.1.0/go.mod h1:QNrsSGQ5v7v9cReDI0+eyjsXGUoRSUZQHeQ5C4XLa0Y=
-github.com/imroc/req/v3 v3.58.0 h1:rBqJhv2gZjMymGot4vKmNSUs/mAITMpGASqElhuMvS4=
-github.com/imroc/req/v3 v3.58.0/go.mod h1:rC7NTGgfMSkVWR4GO46rMeJsUfaeOpa6pLsgpq9q3zI=
+github.com/imroc/req/v3 v3.59.0 h1:PqKhJHyBmJYob47LVuTHwRZE00ZO6icbLHe5Zra13jo=
+github.com/imroc/req/v3 v3.59.0/go.mod h1:cwLwwaE90Pq6ZMmKuHA9FivJbg3avnCH8/RA5lUUs74=
 github.com/klauspost/compress v1.19.0 h1:sXLILfc9jV2QYWkzFOPWStmcUVH2RHEB1JCdY2oVvCQ=
 github.com/klauspost/compress v1.19.0/go.mod h1:cwPg85FWrGar70rWktvGQj8/hthj3wpl0PGDogxkrSQ=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

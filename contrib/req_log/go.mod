@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/basgys/goxml2json v1.1.0
-	github.com/imroc/req/v3 v3.58.0
+	github.com/imroc/req/v3 v3.59.0
 )
 
 require (
