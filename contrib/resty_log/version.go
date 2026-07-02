@@ -1,5 +1,5 @@
 package resty_log
 
 const (
-	Version = "1.0.16"
+	Version = "1.0.17"
 )
