@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/basgys/goxml2json v1.1.0
-	resty.dev/v3 v3.0.0-rc.2
+	resty.dev/v3 v3.0.0-rc.3
 )
 
 require (
