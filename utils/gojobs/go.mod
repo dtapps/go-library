@@ -12,7 +12,7 @@ require (
 	github.com/redis/go-redis/v9 v9.20.1
 	go.dtapp.net/library/utils/gorequest v1.1.3
 	go.dtapp.net/library/utils/gotime v1.0.19
-	golang.org/x/sync v0.21.0
+	golang.org/x/sync v0.22.0
 )
 
 require (
