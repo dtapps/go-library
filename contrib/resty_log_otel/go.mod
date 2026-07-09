@@ -8,7 +8,6 @@ require (
 	go.dtapp.net/library/contrib/resty_log v1.0.15
 	go.opentelemetry.io/otel v1.44.0
 	go.opentelemetry.io/otel/trace v1.44.0
-	resty.dev/v3 v3.0.0-rc.1
 )
 
 require (
@@ -21,4 +20,5 @@ require (
 	go.opentelemetry.io/otel/metric v1.44.0 // indirect
 	golang.org/x/net v0.56.0 // indirect
 	golang.org/x/text v0.38.0 // indirect
+	resty.dev/v3 v3.0.0-rc.3 // indirect
 )
