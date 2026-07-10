@@ -10,7 +10,7 @@ require (
 	github.com/baidubce/bce-sdk-go v0.9.269
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.3.115
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.3.93
-	github.com/volcengine/volc-sdk-golang v1.0.250
+	github.com/volcengine/volc-sdk-golang v1.0.251
 )
 
 require (
