@@ -189,8 +189,9 @@ func (t *LoggingRoundTripper) RoundTrip(req *http.Request) (*http.Response, erro
 	ctx := req.Context()
 
 	// 开始时间
-	logData.elapseTimeStart = time.Now().UTC()
-	logData.processElapseTimeStart = time.Now().UTC()
+	now := time.Now().UTC()
+	logData.elapseTimeStart = now
+	logData.processElapseTimeStart = now
 
 	// 异步捕获网线上真正跑的 Header
 	var mu sync.Mutex
@@ -232,9 +233,18 @@ func (t *LoggingRoundTripper) RoundTrip(req *http.Request) (*http.Response, erro
 
 	// 请求体
 	if !t.disableRequestBody && req.Body != nil {
-		bodyBytes, _ := io.ReadAll(req.Body)
+		bodyBytes, err := io.ReadAll(req.Body)
+		if err != nil {
+			logData.IsError = true
+			t.emit(ctx, logData)
+			return nil, fmt.Errorf("read request body failed: %w", err)
+		}
 		logData.RequestBody = t.processResponseBody(req.Header, bodyBytes)
-		req.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+		req.Body = io.NopCloser(bytes.NewReader(bodyBytes))
+		// 更新 GetBody，确保重定向时能重新获取请求体
+		req.GetBody = func() (io.ReadCloser, error) {
+			return io.NopCloser(bytes.NewReader(bodyBytes)), nil
+		}
 	}
 
 	// 执行请求
@@ -250,7 +260,7 @@ func (t *LoggingRoundTripper) RoundTrip(req *http.Request) (*http.Response, erro
 	logData.elapseTimeEnd = time.Now().UTC()
 
 	// 计算耗时
-	logData.ElapseTime = time.Since(logData.elapseTimeEnd).Milliseconds()
+	logData.ElapseTime = time.Since(logData.elapseTimeStart).Milliseconds()
 
 	// 记录真实 Host
 	// if logData.RequestHeaders["Host"] == nil && logData.Hostname != "" {
@@ -263,7 +273,7 @@ func (t *LoggingRoundTripper) RoundTrip(req *http.Request) (*http.Response, erro
 	if err != nil {
 		logData.IsError = true
 		// 触发保存
-		t.emit(context.WithoutCancel(ctx), logData)
+		t.emit(ctx, logData)
 		return nil, err
 	}
 
@@ -278,13 +288,18 @@ func (t *LoggingRoundTripper) RoundTrip(req *http.Request) (*http.Response, erro
 
 	// 响应体
 	if !t.disableResponseBody && resp.Body != nil {
-		respBytes, _ := io.ReadAll(resp.Body)
+		respBytes, err := io.ReadAll(resp.Body)
+		if err != nil {
+			logData.IsError = true
+			t.emit(ctx, logData)
+			return nil, fmt.Errorf("read response body failed: %w", err)
+		}
 		logData.ResponseBody = t.processResponseBody(resp.Header, respBytes)
-		resp.Body = io.NopCloser(bytes.NewBuffer(respBytes))
+		resp.Body = io.NopCloser(bytes.NewReader(respBytes))
 	}
 
 	// 触发保存
-	t.emit(context.WithoutCancel(ctx), logData)
+	t.emit(ctx, logData)
 
 	return resp, nil
 }
@@ -303,17 +318,21 @@ func (t *LoggingRoundTripper) emit(ctx context.Context, logData *LogData) {
 
 	// 计算处理耗时
 	logData.ProcessElapseTime = time.Since(logData.processElapseTimeStart).Milliseconds()
+
+	// 脱离请求上下文，确保异步日志不受请求取消影响
+	ctx = context.WithoutCancel(ctx)
+
 	if t.OnLog != nil {
 		go func(ctx context.Context, data *LogData) {
 			if err := t.OnLog(ctx, data); err != nil {
 				fmt.Println("save log failed (OnLog):", err)
 			}
-		}(context.WithoutCancel(ctx), logData)
+		}(ctx, logData)
 	} else if t.Handler != nil {
 		go func(ctx context.Context, data *LogData) {
 			if err := t.Handler.HandleLog(ctx, data); err != nil {
 				fmt.Println("save log failed (HandleLog):", err)
 			}
-		}(context.WithoutCancel(ctx), logData)
+		}(ctx, logData)
 	}
 }

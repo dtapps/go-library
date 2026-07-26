@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 
 	xml2json "github.com/basgys/goxml2json"
@@ -20,6 +21,13 @@ const (
 
 	ContentTypeHeader     = "Content-Type"
 	ContentEncodingHeader = "Content-Encoding"
+
+	// Content-Type 值常量
+	ApplicationJSON = "application/json"
+	ApplicationXML  = "application/xml"
+	TextXML         = "text/xml"
+	SOAPXML         = "soap+xml"
+	FormURLEncoded  = "application/x-www-form-urlencoded"
 )
 
 // processResponseBody 处理请求体/响应体，根据 Content-Type 转换为 JSON 或 XML
@@ -90,10 +98,39 @@ func (t *LoggingRoundTripper) processBodyByte(contentType string, data []byte) j
 		if t.isValidJSON(data) {
 			return data
 		}
+		// JSON 校验失败，降级为文本处理
+		if result, err := json.Marshal(string(data)); err == nil {
+			return result
+		}
 	case XMLBodyType:
 		if t.isValidXML(data) {
-			xj, _ := xml2json.Convert(strings.NewReader(string(data)))
+			xj, _ := xml2json.Convert(bytes.NewReader(data))
 			return xj.Bytes()
+		}
+		// XML 校验失败（如 HTML），降级为文本处理
+		if result, err := json.Marshal(string(data)); err == nil {
+			return result
+		}
+	case TextBodyType:
+		// 处理 form-urlencoded：解析为 JSON 对象
+		if strings.Contains(contentType, FormURLEncoded) {
+			if values, err := url.ParseQuery(string(data)); err == nil {
+				m := make(map[string]any, len(values))
+				for k, v := range values {
+					if len(v) == 1 {
+						m[k] = v[0]
+					} else {
+						m[k] = v
+					}
+				}
+				if result, err := json.Marshal(m); err == nil {
+					return result
+				}
+			}
+		}
+		// 其他文本类型，作为 JSON 字符串返回
+		if result, err := json.Marshal(string(data)); err == nil {
+			return result
 		}
 	}
 
@@ -114,10 +151,10 @@ func (t *LoggingRoundTripper) isValidXML(data []byte) bool {
 
 // 根据 Content-Type 或内容判断 body 类型
 func (t *LoggingRoundTripper) detectBodyType(contentType string, data []byte) string {
-	if strings.Contains(contentType, "application/json") || strings.HasPrefix(string(data), "{") || strings.HasPrefix(string(data), "[") {
+	if strings.Contains(contentType, ApplicationJSON) || len(data) > 0 && (data[0] == '{' || data[0] == '[') {
 		return JSONBodyType
 	}
-	if strings.Contains(contentType, "xml") || strings.Contains(contentType, "soap+xml") || strings.HasPrefix(string(data), "<") {
+	if strings.Contains(contentType, "xml") || len(data) > 0 && data[0] == '<' {
 		return XMLBodyType
 	}
 	if t.isValidJSON(data) {
