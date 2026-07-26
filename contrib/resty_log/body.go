@@ -1,9 +1,11 @@
 package resty_log
 
 import (
+	"bytes"
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
+	"net/url"
 	"strings"
 
 	xml2json "github.com/basgys/goxml2json"
@@ -15,6 +17,12 @@ const (
 	TextBodyType = "text"
 
 	ContentTypeHeader = "Content-Type"
+
+	ApplicationJSON = "application/json"
+	ApplicationXML  = "application/xml"
+	TextXML         = "text/xml"
+	SOAPXML         = "soap+xml"
+	FormURLEncoded  = "application/x-www-form-urlencoded"
 )
 
 // processBodyAny 处理任意类型的 Body 并转换为 json.RawMessage
@@ -49,7 +57,7 @@ func (m *LoggerMiddleware) processBodyAny(contentType string, body any) json.Raw
 	}
 }
 
-// 处理 body，根据类型存到 JSON 或 XML 字段
+// processBodyByte 处理 body，根据类型转换为 JSON
 func (m *LoggerMiddleware) processBodyByte(contentType string, data []byte) json.RawMessage {
 
 	// 开启调试模式时
@@ -68,34 +76,61 @@ func (m *LoggerMiddleware) processBodyByte(contentType string, data []byte) json
 		if m.isValidJSON(data) {
 			return data
 		}
+		// 降级为文本
+		if result, err := json.Marshal(string(data)); err == nil {
+			return result
+		}
 	case XMLBodyType:
 		if m.isValidXML(data) {
-			xj, _ := xml2json.Convert(strings.NewReader(string(data)))
+			xj, _ := xml2json.Convert(bytes.NewReader(data))
 			return xj.Bytes()
+		}
+		// 降级为文本（如 HTML）
+		if result, err := json.Marshal(string(data)); err == nil {
+			return result
+		}
+	case TextBodyType:
+		if strings.Contains(contentType, FormURLEncoded) {
+			if values, err := url.ParseQuery(string(data)); err == nil {
+				m := make(map[string]any, len(values))
+				for k, v := range values {
+					if len(v) == 1 {
+						m[k] = v[0]
+					} else {
+						m[k] = v
+					}
+				}
+				if result, err := json.Marshal(m); err == nil {
+					return result
+				}
+			}
+		}
+		if result, err := json.Marshal(string(data)); err == nil {
+			return result
 		}
 	}
 
 	return nil
 }
 
-// 判断是否为 JSON 格式
+// isValidJSON 判断是否为 JSON 格式
 func (m *LoggerMiddleware) isValidJSON(data []byte) bool {
 	var js json.RawMessage
 	return json.Unmarshal(data, &js) == nil
 }
 
-// 判断是否为 XML 格式
+// isValidXML 判断是否为 XML 格式
 func (m *LoggerMiddleware) isValidXML(data []byte) bool {
 	var v any
 	return xml.Unmarshal(data, &v) == nil
 }
 
-// 根据 Content-Type 或内容判断 body 类型
+// detectBodyType 根据 Content-Type 或内容判断 body 类型
 func (m *LoggerMiddleware) detectBodyType(contentType string, data []byte) string {
-	if strings.Contains(contentType, "application/json") || strings.HasPrefix(string(data), "{") || strings.HasPrefix(string(data), "[") {
+	if strings.Contains(contentType, ApplicationJSON) || len(data) > 0 && (data[0] == '{' || data[0] == '[') {
 		return JSONBodyType
 	}
-	if strings.Contains(contentType, "xml") || strings.Contains(contentType, "soap+xml") || strings.HasPrefix(string(data), "<") {
+	if strings.Contains(contentType, "xml") || strings.Contains(contentType, SOAPXML) || len(data) > 0 && data[0] == '<' {
 		return XMLBodyType
 	}
 	if m.isValidJSON(data) {

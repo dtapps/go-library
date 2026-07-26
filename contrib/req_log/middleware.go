@@ -140,7 +140,7 @@ func (m *LoggerMiddleware) OnAfterResponse(c *req.Client, resp *req.Response) er
 	logData.elapseTimeEnd = time.Now().UTC()
 
 	// 计算耗时
-	logData.ElapseTime = time.Since(logData.elapseTimeEnd).Milliseconds()
+	logData.ElapseTime = time.Since(logData.elapseTimeStart).Milliseconds()
 
 	// 主机名
 	if rawReq := resp.Request.RawRequest; rawReq != nil {
@@ -187,7 +187,7 @@ func (m *LoggerMiddleware) OnAfterResponse(c *req.Client, resp *req.Response) er
 	}
 
 	// 触发保存
-	m.emit(context.WithoutCancel(ctx), logData)
+	m.emit(ctx, logData)
 
 	return nil
 }
@@ -206,17 +206,31 @@ func (m *LoggerMiddleware) emit(ctx context.Context, logData *LogData) {
 
 	// 计算处理耗时
 	logData.ProcessElapseTime = time.Since(logData.processElapseTimeStart).Milliseconds()
+
+	// 确保日志在请求 context 取消后仍可发送
+	ctx = context.WithoutCancel(ctx)
+
 	if m.OnLog != nil {
 		go func(ctx context.Context, data *LogData) {
+			defer func() {
+				if r := recover(); r != nil {
+					fmt.Printf("[req_log] OnLog callback panic: %v\n", r)
+				}
+			}()
 			if err := m.OnLog(ctx, data); err != nil {
 				fmt.Println("save log failed (OnLog):", err)
 			}
-		}(context.WithoutCancel(ctx), logData)
+		}(ctx, logData)
 	} else if m.Handler != nil {
 		go func(ctx context.Context, data *LogData) {
+			defer func() {
+				if r := recover(); r != nil {
+					fmt.Printf("[req_log] Handler.HandleLog panic: %v\n", r)
+				}
+			}()
 			if err := m.Handler.HandleLog(ctx, data); err != nil {
 				fmt.Println("save log failed (HandleLog):", err)
 			}
-		}(context.WithoutCancel(ctx), logData)
+		}(ctx, logData)
 	}
 }

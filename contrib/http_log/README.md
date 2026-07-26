@@ -25,7 +25,7 @@ import (
     "fmt"
     "net/http"
 
-    http_log "github.com/your-org/go-library/contrib/http_log"
+    http_log "go.dtapp.net/library/contrib/http_log"
 )
 
 func main() {
