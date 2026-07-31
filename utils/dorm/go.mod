@@ -9,7 +9,7 @@ require (
 	go.dtapp.net/library/utils/gotime v1.0.19
 	go.mongodb.org/mongo-driver v1.17.9
 	gorm.io/driver/mysql v1.6.0
-	gorm.io/driver/postgres v1.6.0
+	gorm.io/driver/postgres v1.6.1
 	gorm.io/gen v0.3.28
 	gorm.io/gorm v1.31.1
 )
