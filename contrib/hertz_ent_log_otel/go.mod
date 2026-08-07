@@ -6,8 +6,8 @@ replace go.dtapp.net/library/contrib/hertz_ent_log => ../../contrib/hertz_ent_lo
 
 require (
 	go.dtapp.net/library/contrib/hertz_ent_log v1.0.7
-	go.opentelemetry.io/otel v1.44.0
-	go.opentelemetry.io/otel/trace v1.44.0
+	go.opentelemetry.io/otel v1.45.0
+	go.opentelemetry.io/otel/trace v1.45.0
 )
 
 require (
@@ -21,7 +21,7 @@ require (
 	github.com/cloudwego/base64x v0.1.7 // indirect
 	github.com/cloudwego/hertz v0.10.5 // indirect
 	github.com/fsnotify/fsnotify v1.10.1 // indirect
-	github.com/go-logr/logr v1.4.3 // indirect
+	github.com/go-logr/logr v1.4.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/hertz-contrib/requestid v1.1.0 // indirect
@@ -34,7 +34,7 @@ require (
 	go.dtapp.net/library/utils/gorequest v1.1.3 // indirect
 	go.dtapp.net/library/utils/gotime v1.0.19 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
-	go.opentelemetry.io/otel/metric v1.44.0 // indirect
+	go.opentelemetry.io/otel/metric v1.45.0 // indirect
 	golang.org/x/arch v0.28.0 // indirect
 	golang.org/x/net v0.56.0 // indirect
 	golang.org/x/sys v0.46.0 // indirect
