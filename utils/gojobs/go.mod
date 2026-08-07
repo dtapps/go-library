@@ -9,7 +9,7 @@ replace go.dtapp.net/library/utils/gorequest => ../../utils/gorequest
 require (
 	entgo.io/ent v0.14.6
 	github.com/google/uuid v1.6.0
-	github.com/redis/go-redis/v9 v9.20.1
+	github.com/redis/go-redis/v9 v9.22.0
 	go.dtapp.net/library/utils/gorequest v1.1.3
 	go.dtapp.net/library/utils/gotime v1.0.19
 	golang.org/x/sync v0.21.0
@@ -21,5 +21,6 @@ require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	golang.org/x/net v0.56.0 // indirect
+	golang.org/x/sys v0.46.0 // indirect
 	golang.org/x/text v0.38.0 // indirect
 )
