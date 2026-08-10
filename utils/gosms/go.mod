@@ -5,7 +5,7 @@ go 1.26.0
 require (
 	github.com/alibabacloud-go/darabonba-openapi/v2 v2.2.1
 	github.com/alibabacloud-go/dysmsapi-20170525/v4 v4.1.3
-	github.com/alibabacloud-go/tea v1.5.0
+	github.com/alibabacloud-go/tea v1.5.2
 	github.com/alibabacloud-go/tea-utils v1.4.5
 	github.com/baidubce/bce-sdk-go v0.9.269
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.3.115
