@@ -3,7 +3,7 @@ module go.dtapp.net/library/contrib/hertz_requestid
 go 1.26.0
 
 require (
-	github.com/cloudwego/hertz v0.10.5
+	github.com/cloudwego/hertz v0.10.6
 	github.com/google/uuid v1.6.0
 	github.com/hertz-contrib/requestid v1.1.0
 )
