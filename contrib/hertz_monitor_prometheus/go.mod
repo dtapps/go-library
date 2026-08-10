@@ -3,7 +3,7 @@ module go.dtapp.net/library/contrib/hertz_monitor_prometheus
 go 1.26.0
 
 require (
-	github.com/cloudwego/hertz v0.10.5
+	github.com/cloudwego/hertz v0.10.6
 	github.com/prometheus/client_golang v1.23.2
 )
 
