@@ -7,7 +7,7 @@ require (
 	github.com/alibabacloud-go/dysmsapi-20170525/v4 v4.1.3
 	github.com/alibabacloud-go/tea v1.5.0
 	github.com/alibabacloud-go/tea-utils v1.4.5
-	github.com/baidubce/bce-sdk-go v0.9.269
+	github.com/baidubce/bce-sdk-go v0.9.270
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.3.115
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.3.93
 	github.com/volcengine/volc-sdk-golang v1.0.250
