@@ -1,12 +1,12 @@
 module go.dtapp.net/library/utils/gojson
 
-go 1.24.1
+go 1.25.0
 
 require github.com/basgys/goxml2json v1.1.0
 
 require (
 	github.com/bitly/go-simplejson v0.5.1 // indirect
 	github.com/stretchr/testify v1.9.0 // indirect
-	golang.org/x/net v0.39.0 // indirect
-	golang.org/x/text v0.24.0 // indirect
+	golang.org/x/net v0.55.0 // indirect
+	golang.org/x/text v0.37.0 // indirect
 )
