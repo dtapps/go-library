@@ -3,7 +3,7 @@ module go.dtapp.net/library/contrib/fiber_requestid
 go 1.26.0
 
 require (
-	github.com/gofiber/fiber/v2 v2.52.13
+	github.com/gofiber/fiber/v2 v2.52.15
 	github.com/google/uuid v1.6.0
 )
 
